@@ -14,11 +14,11 @@ The following is a list of these records
 Proposed
 --------
 
-* `0001 - Actors <0001-actors.rst>`_
-
 
 Accepted
 --------
+
+* `0001 - Actors <0001-actors.rst>`_
 
 
 
