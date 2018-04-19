@@ -15,10 +15,12 @@ Proposed
 --------
 
 
+
 Accepted
 --------
 
 * `0001 - Actors <0001-actors.rst>`_
+* `0002 - Videos languages <0002-videos-languages.rst>`_
 
 
 
