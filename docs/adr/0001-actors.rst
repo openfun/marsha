@@ -4,7 +4,7 @@ ADR 0001 - Actors
 Status
 ------
 
-Proposed
+Accepted
 
 
 Context
