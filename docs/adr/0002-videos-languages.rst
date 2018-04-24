@@ -4,7 +4,7 @@ ADR 0002 - Videos languages
 Status
 ------
 
-Proposed
+Accepted
 
 
 Context
