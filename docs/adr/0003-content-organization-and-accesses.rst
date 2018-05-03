@@ -10,13 +10,13 @@ Accepted
 Context
 -------
 
-We have `actors <0001-actors>`_. And `videos <0002-videos-languages>`_, with their auxiliary files, that we'll call for now "content". We want this content to be organized for actors to manage/view them.
+We have :doc:`actors <0001-actors>`. And :doc:`videos <0002-videos-languages>`, with their auxiliary files, that we'll call for now "content". We want this content to be organized for actors to manage/view them.
 
 
 Decision
 --------
 
-Videos are grouped in playlists, which is a Django model named ``Playlist``. A playlist belongs to an organization (``Organization`` model defined in `actors <0001-actors>`_) and is created by someone who can be a manager of this organization, or an author who belongs to this organization. This link is materialized by an ``author`` field on the ``Video`` model, a ``ForeignKey`` to the ``User`` model.
+Videos are grouped in playlists, which is a Django model named ``Playlist``. A playlist belongs to an organization (``Organization`` model defined in :doc:`actors <0001-actors>`) and is created by someone who can be a manager of this organization, or an author who belongs to this organization. This link is materialized by an ``author`` field on the ``Playlist`` model, a ``ForeignKey`` to the ``User`` model.
 
 The manager can allow many actors to manage a playlist, so there is a ``ManyToMany`` field on the ``Playlist`` model, named ``editors``, pointing to the ``User`` model. And instead of relying on the hidden model created by Django when creating a ``ManyToMany``, we'll define this model and use it via the ``through`` argument, to be able to add more rights constraints later if needed.
 
