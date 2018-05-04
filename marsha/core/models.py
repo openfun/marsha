@@ -37,6 +37,15 @@ class User(BaseModel, AbstractUser):
         verbose_name: str = _("user")
         verbose_name_plural: str = _("users")
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.username}"
+        if self.email:
+            result += f" ({self.email})"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
+
 
 class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
@@ -63,6 +72,13 @@ class ConsumerSite(BaseModel):
         db_table: str = "consumer_site"
         verbose_name: str = _("site")
         verbose_name_plural: str = _("sites")
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
 
 
 class SiteAdmin(BaseModel):
@@ -103,6 +119,13 @@ class SiteAdmin(BaseModel):
                 fields=["user", "site"], condition='"deleted" IS NULL'
             )
         ]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "site": str(self.site)}
+        if self.deleted:
+            return _("%(user)s was admin of %(site)s") % args
+        return _("%(user)s is admin of %(site)s") % args
 
 
 class Organization(BaseModel):
@@ -146,6 +169,13 @@ class Organization(BaseModel):
         verbose_name: str = _("organization")
         verbose_name_plural: str = _("organizations")
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
+
 
 class SiteOrganization(BaseModel):
     """Model representing organizations in sites.
@@ -185,6 +215,13 @@ class SiteOrganization(BaseModel):
                 fields=["site", "organization"], condition='"deleted" IS NULL'
             )
         ]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"organization": str(self.organization), "site": str(self.site)}
+        if self.deleted:
+            return _("%(organization)s was in %(site)s") % args
+        return _("%(organization)s is in %(site)s") % args
 
 
 class OrganizationManager(BaseModel):
@@ -226,6 +263,13 @@ class OrganizationManager(BaseModel):
             )
         ]
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "organization": str(self.organization)}
+        if self.deleted:
+            return _("%(user)s was manager of %(organization)s") % args
+        return _("%(user)s is manager of %(organization)s") % args
+
 
 class Authoring(BaseModel):
     """Model representing authors in an organization.
@@ -266,6 +310,13 @@ class Authoring(BaseModel):
             )
         ]
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "organization": str(self.organization)}
+        if self.deleted:
+            return _("%(user)s was author in %(organization)s") % args
+        return _("%(user)s is author in %(organization)s") % args
+
 
 class Video(BaseModel):
     """Model representing a video, by an author."""
@@ -304,6 +355,7 @@ class Video(BaseModel):
         # don't delete a video if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
 
     # `related_name` of fields pointing to this model, for typing
@@ -320,6 +372,13 @@ class Video(BaseModel):
         db_table: str = "video"
         verbose_name: str = _("video")
         verbose_name_plural: str = _("videos")
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name} by f{self.author.username}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
 
 
 class BaseTrack(BaseModel):
@@ -457,6 +516,7 @@ class Playlist(BaseModel):
         # don't delete a playlist if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     videos: M2MType[Video] = models.ManyToManyField(
         to=Video,
