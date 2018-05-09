@@ -88,7 +88,7 @@ jobs:
           name: Run "mypy" linter
           command: |
             source ~/venv/bin/activate
-            mypy .
+            make mypy
 
   linter_black:
     <<: *python_only_config
@@ -98,7 +98,7 @@ jobs:
           name: Run "black" linter
           command: |
             source ~/venv/bin/activate
-            black --check marsha/ 2>&1 | grep -Ev 'good job|All done'
+            make check-black
 
   linter_flake8:
     <<: *python_only_config
@@ -108,7 +108,7 @@ jobs:
           name: Run "flake8" linter
           command: |
             source ~/venv/bin/activate
-            flake8
+            make flake8
 
   linter_pylint:
     <<: *python_only_config
@@ -118,7 +118,7 @@ jobs:
           name: Run "pylint" linter
           command: |
             source ~/venv/bin/activate
-            pylint marsha
+            make pylint
 
   # django checks
   django_checks:
@@ -129,7 +129,7 @@ jobs:
           name: Django checks
           command: |
             source ~/venv/bin/activate
-            django-admin.py check
+            make check-django
 
   # check migrations files are ok
   check_migrations:
@@ -140,7 +140,7 @@ jobs:
           name: Check migrations
           command: |
             source ~/venv/bin/activate
-            django-admin.py makemigrations --check --dry-run
+            make check-migrations
 
 
   # will build the python package, using the tag as the base version, suffixed with info from git describe if not a tag
@@ -153,7 +153,7 @@ jobs:
           command: |
             sed -i -e "s/^version = .*$/version = $(git describe --tags)/" setup.cfg
             source ~/venv/bin/activate
-            python setup.py sdist bdist_wheel
+            make dist
       - store_artifacts:
           path: dist/
       - persist_to_workspace:
@@ -182,9 +182,7 @@ jobs:
           name: Build package
           command: |
             source ~/venv/bin/activate
-            cd docs
-            sphinx-apidoc -f -o source/ ../marsha/
-            make html
+            make doc
       - store_artifacts:
           path: docs/_build
 
