@@ -14,6 +14,7 @@ import os
 import sys
 
 import configurations
+from sphinx.ext import apidoc
 
 
 sys.path.insert(0, os.path.abspath("../marsha"))
@@ -171,3 +172,18 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+# -- Run apidoc when building the documentation-------------------------------
+
+
+def run_apidoc(_):
+    """Run apidoc on the marsha project and store source doc in ``source`` dir."""
+    current_dir = os.path.dirname(__file__)
+    source_path = os.path.join(current_dir, "source")
+    output_path = os.path.normpath(os.path.join(current_dir, "..", "marsha"))
+    apidoc.main(["-f", "-o", source_path, output_path])
+
+
+def setup(app):
+    """Run apidoc when build is initiated."""
+    app.connect("builder-inited", run_apidoc)
