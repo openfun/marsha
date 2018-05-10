@@ -1,0 +1,8 @@
+pip_install: true
+build:
+  image: latest
+python:
+  version: 3.6
+  pip_install: true
+  extra_requirements:
+    - docs
