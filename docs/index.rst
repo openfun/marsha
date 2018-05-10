@@ -5,6 +5,7 @@ Welcome to marsha's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   About <about>
    Architecture Decision Records <adr/index>
    Development <dev>
    Source <source/modules>
