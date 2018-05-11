@@ -265,6 +265,18 @@ We don't want to lose data, so everything is kept in database, but hidden from u
 
 See :doc:`adr/0004-soft-deletion` for details about the reasoning behind this choice.
 
+django-postgres-extra
+---------------------
+
+With ``django-safedelete``, model instances are not deleted but saved with a field ``deleted`` changing from ``None`` to
+the deletion date-time.
+
+So we cannot anymore use ``unique_together``.
+
+``django-postgres-extra`` provides a ``ConditionalUniqueIndex`` index, that acts like ``unique_together``, but with a
+condition. We use the condition ``WHERE "deleted" IS NULL``, to enforce the fact that only one non-deleted instance
+matching the fields combination can exist.
+
 
 ********
 Makefile
