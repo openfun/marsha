@@ -5,8 +5,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from psqlextra.indexes import ConditionalUniqueIndex
+from safedelete import HARD_DELETE
+
 from marsha.core.base_models import BaseModel
-from marsha.stubs import M2MType, ReverseFKType, UniqueTogether
+from marsha.core.managers import UserManager
+from marsha.stubs import M2MType, ReverseFKType
 
 
 class User(BaseModel, AbstractUser):
@@ -24,6 +28,8 @@ class User(BaseModel, AbstractUser):
     playlists_accesses: ReverseFKType["PlaylistAccess"]
     managed_organizations_links: ReverseFKType["OrganizationManager"]
 
+    objects = UserManager()
+
     class Meta:
         """Options for the ``User`` model."""
 
@@ -36,7 +42,7 @@ class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
 
     name: str = models.CharField(
-        max_length=255, verbose_name=_("site"), help_text=_("Name of the site")
+        max_length=255, verbose_name=_("name"), help_text=_("Name of the site")
     )
     admins: M2MType["User"] = models.ManyToManyField(
         to=User,
@@ -66,12 +72,15 @@ class SiteAdmin(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     user: User = models.ForeignKey(
         to=User,
         related_name="sites_admins",
         verbose_name=_("user"),
         help_text=_("user with access to the site"),
-        # delete the site-admin link if the user is deleted
+        # link is (soft-)deleted if user is (soft-)deleted
         on_delete=models.CASCADE,
     )
     site: ConsumerSite = models.ForeignKey(
@@ -79,7 +88,7 @@ class SiteAdmin(BaseModel):
         related_name="sites_admins",
         verbose_name=_("site"),
         help_text=_("site to which the user has access"),
-        # delete the site-admin link if the site is deleted
+        # link is (soft-)deleted if site is (soft-)deleted
         on_delete=models.CASCADE,
     )
 
@@ -89,16 +98,18 @@ class SiteAdmin(BaseModel):
         db_table: str = "site_admin"
         verbose_name: str = _("site admin")
         verbose_name_plural: str = _("site admins")
-        unique_together: UniqueTogether = [("user", "site")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["user", "site"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class Organization(BaseModel):
     """Model representing an organization to manage its playlists on one or many sites."""
 
     name: str = models.CharField(
-        max_length=255,
-        verbose_name=_("organization"),
-        help_text=_("name of the organization"),
+        max_length=255, verbose_name=_("name"), help_text=_("name of the organization")
     )
     sites: M2MType[ConsumerSite] = models.ManyToManyField(
         to=ConsumerSite,
@@ -143,12 +154,15 @@ class SiteOrganization(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     site: ConsumerSite = models.ForeignKey(
         to=ConsumerSite,
         related_name="organizations_links",
         verbose_name=_("site"),
         help_text=_("site having this organization"),
-        # delete the site-organization link if the site is deleted
+        # link is (soft-)deleted if site is (soft-)deleted
         on_delete=models.CASCADE,
     )
     organization: Organization = models.ForeignKey(
@@ -156,7 +170,7 @@ class SiteOrganization(BaseModel):
         related_name="sites_links",
         verbose_name=_("organization"),
         help_text=_("organization in this site"),
-        # delete the site-organization link if the organization is deleted
+        # link is (soft-)deleted if organization is (soft-)deleted
         on_delete=models.CASCADE,
     )
 
@@ -166,7 +180,11 @@ class SiteOrganization(BaseModel):
         db_table: str = "site_organization"
         verbose_name: str = _("organization in site")
         verbose_name_plural: str = _("organizations in sites")
-        unique_together: UniqueTogether = [("site", "organization")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["site", "organization"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class OrganizationManager(BaseModel):
@@ -176,12 +194,15 @@ class OrganizationManager(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     user: User = models.ForeignKey(
         to=User,
         related_name="managed_organizations_links",
         verbose_name=_("manager"),
         help_text=_("user managing this organization"),
-        # delete the user-organization link if the user is deleted
+        # link is (soft-)deleted if user is (soft-)deleted
         on_delete=models.CASCADE,
     )
     organization: Organization = models.ForeignKey(
@@ -189,7 +210,7 @@ class OrganizationManager(BaseModel):
         related_name="managers_links",
         verbose_name=_("organization"),
         help_text=_("organization managed by this user"),
-        # delete the user-organization link if the organization is deleted
+        # link is (soft-)deleted if organization is (soft-)deleted
         on_delete=models.CASCADE,
     )
 
@@ -199,7 +220,11 @@ class OrganizationManager(BaseModel):
         db_table: str = "organization_manager"
         verbose_name: str = _("organization manager")
         verbose_name_plural: str = _("organizations managers")
-        unique_together: UniqueTogether = [("user", "organization")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["user", "organization"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class Authoring(BaseModel):
@@ -209,12 +234,15 @@ class Authoring(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     user: User = models.ForeignKey(
         to=User,
         related_name="authoring",
         verbose_name=_("author"),
         help_text=_("user having authoring access in this organization"),
-        # delete the user-organization link if the user is deleted
+        # link is (soft-)deleted if user is (soft-)deleted
         on_delete=models.CASCADE,
     )
     organization: Organization = models.ForeignKey(
@@ -222,7 +250,7 @@ class Authoring(BaseModel):
         related_name="authoring",
         verbose_name=_("organization"),
         help_text=_("organization on which the user is an author"),
-        # delete the user-organization link if the organization is deleted
+        # link is (soft-)deleted if organization is (soft-)deleted
         on_delete=models.CASCADE,
     )
 
@@ -232,7 +260,11 @@ class Authoring(BaseModel):
         db_table: str = "authoring"
         verbose_name: str = _("author in organization")
         verbose_name_plural: str = _("authors in organizations")
-        unique_together: UniqueTogether = [("user", "organization")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["user", "organization"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class Video(BaseModel):
@@ -243,8 +275,8 @@ class Video(BaseModel):
         related_name="authored_videos",
         verbose_name=_("author"),
         help_text=_("author of the video"),
-        # don't allow deleting a user if it has some videos
-        on_delete=models.PROTECT,
+        # video is (soft-)deleted if author is (soft-)deleted
+        on_delete=models.CASCADE,
         null=True,
     )
     language: str = models.CharField(
@@ -258,7 +290,7 @@ class Video(BaseModel):
         related_name="duplicates",
         verbose_name=_("duplicate from"),
         help_text=_("original video this one was duplicated from"),
-        # don't delete a video if the one it was duplicated from is deleted
+        # don't delete a video if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
     )
@@ -287,7 +319,7 @@ class BaseTrack(BaseModel):
         related_name="%(class)ss",  # will be `audiotracks` for `AudioTrack` model,
         verbose_name=_("video"),
         help_text=_("video for which this track is"),
-        # delete the track if the video is deleted
+        # track is (soft-)deleted if video is (soft-)deleted
         on_delete=models.CASCADE,
     )
     language: str = models.CharField(
@@ -316,7 +348,11 @@ class AudioTrack(BaseTrack):
         db_table: str = "audio_track"
         verbose_name: str = _("audio track")
         verbose_name_plural: str = _("audio tracks")
-        unique_together: UniqueTogether = [("video", "language")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["video", "language"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class SubtitleTrack(BaseTrack):
@@ -341,8 +377,11 @@ class SubtitleTrack(BaseTrack):
         db_table: str = "subtitle_track"
         verbose_name: str = _("subtitles track")
         verbose_name_plural: str = _("subtitles tracks")
-        unique_together: UniqueTogether = [
-            ("video", "language", "has_closed_captioning")
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["video", "language", "has_closed_captioning"],
+                condition='"deleted" IS NULL',
+            )
         ]
 
 
@@ -359,7 +398,11 @@ class SignTrack(BaseTrack):
         db_table: str = "sign_track"
         verbose_name: str = _("signs language track")
         verbose_name_plural: str = _("signs language tracks")
-        unique_together: UniqueTogether = [("video", "language")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["video", "language"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class Playlist(BaseModel):
@@ -368,15 +411,15 @@ class Playlist(BaseModel):
     organization: Organization = models.ForeignKey(
         to=Organization,
         related_name="playlists",
-        # don't allow deleting an organization if it has some playlists
-        on_delete=models.PROTECT,
+        # playlist is (soft-)deleted if organization is (soft-)deleted
+        on_delete=models.CASCADE,
         null=True,
     )
     author: User = models.ForeignKey(
         to=User,
         related_name="created_playlists",
-        # don't allow deleting a user if it has some playlists
-        on_delete=models.PROTECT,
+        # playlist is (soft-)deleted if author is (soft-)deleted
+        on_delete=models.CASCADE,
         null=True,
     )
     editors: M2MType[User] = models.ManyToManyField(
@@ -396,7 +439,7 @@ class Playlist(BaseModel):
         related_name="duplicates",
         verbose_name=_("duplicate from"),
         help_text=_("original playlist this one was duplicated from"),
-        # don't delete a playlist if the one it was duplicated from is deleted
+        # don't delete a playlist if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
     )
@@ -428,12 +471,15 @@ class PlaylistVideo(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     video: Video = models.ForeignKey(
         to=Video,
         related_name="playlists_links",
         verbose_name=_("video"),
         help_text=_("video contained in this playlist"),
-        # delete the video-playlist link if the video is deleted
+        # link is (soft-)deleted if video is (soft-)deleted
         on_delete=models.CASCADE,
     )
     playlist: Playlist = models.ForeignKey(
@@ -441,7 +487,7 @@ class PlaylistVideo(BaseModel):
         related_name="videos_links",
         verbose_name=_("playlist"),
         help_text=_("playlist containing this video"),
-        # delete the video-playlist link if the playlist is deleted
+        # link is (soft-)deleted if playlist is (soft-)deleted
         on_delete=models.CASCADE,
     )
     order: int = models.PositiveIntegerField(
@@ -454,7 +500,11 @@ class PlaylistVideo(BaseModel):
         db_table: str = "playlist_video"
         verbose_name: str = _("playlist video link")
         verbose_name_plural: str = _("playlist video links")
-        unique_together: UniqueTogether = [("video", "playlist")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["video", "playlist"], condition='"deleted" IS NULL'
+            )
+        ]
 
 
 class PlaylistAccess(BaseModel):
@@ -464,12 +514,15 @@ class PlaylistAccess(BaseModel):
 
     """
 
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
     user: User = models.ForeignKey(
         to=User,
         related_name="playlists_accesses",
         verbose_name=_("user"),
         help_text=_("user having rights to manage this playlist"),
-        # delete the user-playlist link if the user is deleted
+        # link is (soft-)deleted if user is (soft-)deleted
         on_delete=models.CASCADE,
     )
     playlist: Playlist = models.ForeignKey(
@@ -477,7 +530,7 @@ class PlaylistAccess(BaseModel):
         related_name="users_accesses",
         verbose_name=_("playlist"),
         help_text=_("playlist the user has rights to manage"),
-        # delete the user-playlist link if the playlist is deleted
+        # link is (soft-)deleted if playlist is (soft-)deleted
         on_delete=models.CASCADE,
     )
 
@@ -487,4 +540,8 @@ class PlaylistAccess(BaseModel):
         db_table: str = "playlist_access"
         verbose_name: str = _("playlist access")
         verbose_name_plural: str = _("playlists accesses")
-        unique_together: UniqueTogether = [("user", "playlist")]
+        indexes = [
+            ConditionalUniqueIndex(
+                fields=["user", "playlist"], condition='"deleted" IS NULL'
+            )
+        ]

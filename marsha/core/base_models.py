@@ -8,6 +8,8 @@ from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.db.models.fields.reverse_related import ForeignObjectRel
 
+from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
+
 from marsha.stubs import M2MType, ReverseFKType, Typing
 
 
@@ -65,16 +67,27 @@ def _get_fields_by_source_model(
     return fields
 
 
-class BaseModel(models.Model):
+class BaseModel(SafeDeleteModel):
     """Base model for all our models.
 
-    It will check that all fields are correctly annotated. Same for fields pointing
-    to other models: final models must have all related names correctly annotated.
-    It will also checks that all ``ManyToManyField`` use a defined ``through`` table.
-    And that all model have a ``db_table`` defined, not rpefixed with the name of the
-    app or the project.
+    It is based on ``SafeDeleteModel`` to easily manage how we want the instances
+    to be deleted/soft-deleted, with or without its relationships.
+    The default ``safedelete`` policy is ``SOFT_DELETE_CASCADE``, ie the object to
+    delete and its relations will be soft deleted:  their ``deleted`` field will be
+    filled with the current date-time (the opposite, ``None``, is the same as
+    "not deleted")
+
+    Also it adds some checks run with ``django check``:
+        - check that all fields are correctly annotated.
+        - same for fields pointing to other models: final models must have all related
+        names properly annotated.
+        - check that every ``ManyToManyField`` use a defined ``through`` table.
+        - check that every model have a ``db_table`` defined, not prefixed with the name
+        of the app or the project.
 
     """
+
+    _safedelete_policy = SOFT_DELETE_CASCADE
 
     class Meta:
         """Options for the ``BaseModel`` model."""
