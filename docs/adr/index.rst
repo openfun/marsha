@@ -24,6 +24,7 @@ Accepted
    0001-actors
    0002-videos-languages
    0003-content-organization-and-accesses
+   0004-soft-deletion
 
 Deprecated
 ----------
