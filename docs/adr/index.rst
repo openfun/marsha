@@ -8,28 +8,32 @@ These are the architectural decisions that are taken while developing Marsha.
 
 The format is based on Michael `Nygard's article on the subject <http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions>`_.
 
-The following is a list of these records
-
 
 Proposed
 --------
 
-
+.. toctree::
+   :maxdepth: 1
 
 Accepted
 --------
 
-* `0001 - Actors <0001-actors.rst>`_
-* `0002 - Videos languages <0002-videos-languages.rst>`_
-* `0003 - Content organization and accesses <0003-content-organization-and-accesses.rst>`_
+.. toctree::
+   :maxdepth: 1
 
-
+   0001-actors
+   0002-videos-languages
+   0003-content-organization-and-accesses
 
 Deprecated
 ----------
 
-
+.. toctree::
+   :maxdepth: 1
 
 Superseded
 ----------
+
+.. toctree::
+   :maxdepth: 1
 
