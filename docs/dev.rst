@@ -258,6 +258,13 @@ It also provides tools to get some variables from the environment and validating
 As a consequence of this tool, some default behavior of Django don't work anymore. It's why the ``django-admin``
 bash command is redefined in ``setup.cfg``.
 
+django-safedelete
+-----------------
+
+We don't want to lose data, so everything is kept in database, but hidden from users.
+
+See :doc:`adr/0004-soft-deletion` for details about the reasoning behind this choice.
+
 
 ********
 Makefile
