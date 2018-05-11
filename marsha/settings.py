@@ -77,6 +77,8 @@ class Base(Configuration):
         }
     ]
 
+    AUTH_USER_MODEL = "core.User"
+
     WSGI_APPLICATION = "marsha.wsgi.application"
 
     # Password validation
