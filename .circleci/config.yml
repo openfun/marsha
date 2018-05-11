@@ -1,0 +1,239 @@
+version: 2
+
+references:
+
+  # docker container for python only jobs
+  python_only_config: &python_only_config
+    working_directory: ~/marsha
+    docker:
+      - image: circleci/python:3.6.5
+        environment: &django_environ
+          DJANGO_SETTINGS_MODULE: marsha.settings
+          DJANGO_CONFIGURATION: Dev
+          DJANGO_DEBUG: False
+          DJANGO_SECRET_KEY: MarshaSecretKey
+
+  # docker container for complete jobs: python+postgres
+  full_config: &full_config
+    working_directory: ~/marsha
+    docker:
+      - image: circleci/python:3.6.5
+        environment:
+          <<: *django_environ
+          DATABASE_URL: postgresql://root@localhost/marsha?sslmode=disable
+      - image: circleci/postgres:10.3
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: marsha
+
+  # build steps to save/restore the directory used by pip to cache downloaded packages
+  save_pip_cache: &save_pip_cache
+    save_cache:
+      key: v1-pip-cache-{{ .Branch }}-{{ .Revision }}
+      paths:
+        - ~/.cache/pip
+  restore_pip_cache: &restore_pip_cache
+    restore_cache:
+      keys:
+        - v1-pip-cache-{{ .Branch }}-{{ .Revision }}
+        - v1-pip-cache-{{ .Branch }}
+        - v1-pip-cache
+
+  # shortcut to attach the workspace before each job
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: "~/"
+
+
+# jobs definition: they are used in ``workflows``
+jobs:
+
+  # get the code from git and save the repo to pass it to the next job
+  checkout_code:
+    <<: *python_only_config
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: "~/"
+          paths:
+            - marsha
+
+  # install the project code and dependencies and save the venv and pip cache
+  install_code:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - *restore_pip_cache
+      - run:
+          name: Install code
+          command: |
+            python -m venv ~/venv
+            source ~/venv/bin/activate
+            pip install --upgrade pip
+            pip install -e .[dev]
+      - *save_pip_cache
+      - persist_to_workspace:
+          root: "~/"
+          paths:
+            - venv
+            - marsha
+
+  # 4 next jobs are linters: mypy, black, flake8 and pylint
+  # they all use the workspace
+  linter_mypy:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run "mypy" linter
+          command: |
+            source ~/venv/bin/activate
+            make mypy
+
+  linter_black:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run "black" linter
+          command: |
+            source ~/venv/bin/activate
+            make check-black
+
+  linter_flake8:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run "flake8" linter
+          command: |
+            source ~/venv/bin/activate
+            make flake8
+
+  linter_pylint:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run "pylint" linter
+          command: |
+            source ~/venv/bin/activate
+            make pylint
+
+  # django checks
+  django_checks:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Django checks
+          command: |
+            source ~/venv/bin/activate
+            make check-django
+
+  # check migrations files are ok
+  check_migrations:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Check migrations
+          command: |
+            source ~/venv/bin/activate
+            make check-migrations
+
+
+  # will build the python package, using the tag as the base version, suffixed with info from git describe if not a tag
+  build_python_package:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Build package
+          command: |
+            sed -i -e "s/^version = .*$/version = $(git describe --tags)/" setup.cfg
+            source ~/venv/bin/activate
+            make dist
+      - store_artifacts:
+          path: dist/
+      - persist_to_workspace:
+          root: "~/"
+          paths:
+            - marsha/dist
+
+  # will publish the python package on a gemfury account
+  publish_python_package:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Publish distributions to GemFury
+          command: |
+            for dist in $(ls dist/*) ; do \
+              curl -F package=@$dist https://${GEMFURY_API_TOKEN}@push.fury.io/${GEMFURY_USER}/ ; \
+            done
+
+  # will build the documentation
+  build_doc:
+    <<: *python_only_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Build package
+          command: |
+            source ~/venv/bin/activate
+            make doc
+      - store_artifacts:
+          path: docs/_build
+
+workflows:
+  version: 2
+
+  marsha:
+    jobs:
+      - checkout_code
+      - install_code:
+          requires:
+            - checkout_code
+      - linter_mypy:
+          requires:
+            - install_code
+      - linter_black:
+          requires:
+            - install_code
+      - linter_flake8:
+          requires:
+            - install_code
+      - linter_pylint:
+          requires:
+            - install_code
+      - check_migrations:
+          requires:
+            - install_code
+      - django_checks:
+          requires:
+            - install_code
+      - build_python_package:
+          requires:
+            - linter_mypy
+            - linter_black
+            - linter_flake8
+            - linter_pylint
+            - check_migrations
+            - django_checks
+      - publish_python_package:
+          requires:
+            - build_python_package
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.+/
+      - build_doc:
+          requires:
+            - linter_mypy
+            - linter_black
+            - linter_flake8
+            - linter_pylint
+            - check_migrations
+            - django_checks
