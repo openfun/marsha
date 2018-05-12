@@ -27,6 +27,7 @@ fields_type_mapping: Mapping[Type[models.Field], type] = {
     models.DateTimeField: datetime,
     models.FloatField: float,
     models.IntegerField: int,
+    models.TextField: str,
 }
 reverse_fields_type_mapping: Mapping[Type[RelatedField], type] = {
     models.ForeignKey: ReverseFKType, models.ManyToManyField: M2MType
