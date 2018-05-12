@@ -142,6 +142,18 @@ jobs:
             source ~/venv/bin/activate
             make check-migrations
 
+  # run the tests
+  run_tests:
+    <<: *full_config
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run tests
+          # we use a test-runner that does not run the django check command as its done in another job
+          command: |
+            source ~/venv/bin/activate
+            django-admin test --testrunner marsha.test_runner.NoCheckDiscoverRunner
+
 
   # will build the python package, using the tag as the base version, suffixed with info from git describe if not a tag
   build_python_package:
@@ -213,6 +225,9 @@ workflows:
       - django_checks:
           requires:
             - install_code
+      - run_tests:
+          requires:
+            - install_code
       - build_python_package:
           requires:
             - linter_mypy
@@ -221,6 +236,7 @@ workflows:
             - linter_pylint
             - check_migrations
             - django_checks
+            - run_tests
       - publish_python_package:
           requires:
             - build_python_package
@@ -237,3 +253,4 @@ workflows:
             - linter_pylint
             - check_migrations
             - django_checks
+            - run_tests
