@@ -277,6 +277,27 @@ So we cannot anymore use ``unique_together``.
 condition. We use the condition ``WHERE "deleted" IS NULL``, to enforce the fact that only one non-deleted instance
 matching the fields combination can exist.
 
+*****
+Tests
+*****
+
+The whole Marsha project is tested.
+
+Run this command to run all the tests:
+
+.. code-block:: python
+
+    make test
+
+If you want to be more specific about the tests to run, use the Django command:
+
+
+.. code-block:: python
+
+    django-admin test marcha.path.to.module
+    django-admin test marcha.path.to.module.Class
+    django-admin test marcha.path.to.module.Class.method
+
 
 ********
 Makefile
@@ -317,6 +338,9 @@ make check-django
 
 make check-migrations
     Will check that all needed migrations exist.
+
+make tests
+    Will run django tests for the marsha project.
 
 make doc
     Will build the documentation.

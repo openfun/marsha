@@ -24,6 +24,7 @@ dev:  ## Install the project in the current environment, with its dependencies, 
 	@pip install -e .[dev]
 
 .PHONY: check
+checks: check  # we allow "check" and "checks"
 check:  ## Run all linters and checking tools
 check: lint check-django check-migrations
 
@@ -65,6 +66,12 @@ check-django:  ## Run the Django "check" command
 check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
 	@django-admin.py makemigrations --check --dry-run
+
+.PHONY: tests test
+test: tests  # we allow "test" and "tests"
+tests:  ## Run django tests for the marsha project.
+	@echo "$(BOLD)Running tests$(RESET)"
+	@django-admin.py test
 
 .PHONY: doc
 doc:  ## Build the documentation
