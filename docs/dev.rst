@@ -312,6 +312,9 @@ make dev
     Will install the project in the current environment, with its dependencies, including the ones needed in a
     development environment.
 
+make dev-upgrade
+    Will upgrade all default+dev dependencies defined in setup.cfg.
+
 make check
     Will run all linters and checking tools.
 

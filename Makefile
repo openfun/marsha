@@ -23,6 +23,11 @@ dev:  ## Install the project in the current environment, with its dependencies, 
 	@echo "$(BOLD)Installing $(PROJECT_NAME) $(PROJECT_VERSION) in dev mode$(RESET)"
 	@pip install -e .[dev]
 
+.PHONY: dev-upgrade
+dev-upgrade:  ## Upgrade all default+dev dependencies defined in setup.cfg
+	@pip install --upgrade `python -c 'import setuptools; o = setuptools.config.read_configuration("setup.cfg")["options"]; print(" ".join(o["install_requires"] + o["extras_require"]["dev"]))'`
+	@pip install -e .
+
 .PHONY: check
 checks: check  # we allow "check" and "checks"
 check:  ## Run all linters and checking tools
