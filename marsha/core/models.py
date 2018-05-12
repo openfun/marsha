@@ -270,6 +270,17 @@ class Authoring(BaseModel):
 class Video(BaseModel):
     """Model representing a video, by an author."""
 
+    name: str = models.CharField(
+        max_length=255, verbose_name=_("name"), help_text=_("name of the video")
+    )
+
+    description: str = models.TextField(
+        verbose_name=_("description"),
+        help_text=_("description of the video"),
+        blank=True,
+        null=True,
+    )
+
     author: User = models.ForeignKey(
         to=User,
         related_name="authored_videos",
@@ -407,6 +418,10 @@ class SignTrack(BaseTrack):
 
 class Playlist(BaseModel):
     """Model representing a playlist which is a list of videos."""
+
+    name: str = models.CharField(
+        max_length=255, verbose_name=_("name"), help_text=_("name of the playlist")
+    )
 
     organization: Organization = models.ForeignKey(
         to=Organization,
