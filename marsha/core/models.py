@@ -42,7 +42,7 @@ class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
 
     name: str = models.CharField(
-        max_length=255, verbose_name=_("site"), help_text=_("Name of the site")
+        max_length=255, verbose_name=_("name"), help_text=_("Name of the site")
     )
     admins: M2MType["User"] = models.ManyToManyField(
         to=User,
@@ -109,9 +109,7 @@ class Organization(BaseModel):
     """Model representing an organization to manage its playlists on one or many sites."""
 
     name: str = models.CharField(
-        max_length=255,
-        verbose_name=_("organization"),
-        help_text=_("name of the organization"),
+        max_length=255, verbose_name=_("name"), help_text=_("name of the organization")
     )
     sites: M2MType[ConsumerSite] = models.ManyToManyField(
         to=ConsumerSite,
@@ -272,6 +270,17 @@ class Authoring(BaseModel):
 class Video(BaseModel):
     """Model representing a video, by an author."""
 
+    name: str = models.CharField(
+        max_length=255, verbose_name=_("name"), help_text=_("name of the video")
+    )
+
+    description: str = models.TextField(
+        verbose_name=_("description"),
+        help_text=_("description of the video"),
+        blank=True,
+        null=True,
+    )
+
     author: User = models.ForeignKey(
         to=User,
         related_name="authored_videos",
@@ -409,6 +418,10 @@ class SignTrack(BaseTrack):
 
 class Playlist(BaseModel):
     """Model representing a playlist which is a list of videos."""
+
+    name: str = models.CharField(
+        max_length=255, verbose_name=_("name"), help_text=_("name of the playlist")
+    )
 
     organization: Organization = models.ForeignKey(
         to=Organization,
