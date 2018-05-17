@@ -149,10 +149,9 @@ jobs:
       - *attach_workspace
       - run:
           name: Run tests
-          # we use a test-runner that does not run the django check command as its done in another job
           command: |
             source ~/venv/bin/activate
-            django-admin test --testrunner marsha.test_runner.NoCheckDiscoverRunner
+            make test
 
 
   # will build the python package, using the tag as the base version, suffixed with info from git describe if not a tag
