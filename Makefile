@@ -76,7 +76,8 @@ check-migrations:  ## Check that all needed migrations exist
 test: tests  # we allow "test" and "tests"
 tests:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	@django-admin.py test
+	# we use a test-runner that does not run the django check command as its done in another job
+	@django-admin.py test --testrunner marsha.test_runner.NoCheckDiscoverRunner
 
 .PHONY: doc
 doc:  ## Build the documentation
