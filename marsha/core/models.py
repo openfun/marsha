@@ -119,8 +119,8 @@ class SiteAdmin(BaseModel):
         """Get the string representation of an instance."""
         args: dict = {"user": str(self.user), "site": str(self.site)}
         if self.deleted:
-            return _("%(user)s was admin of %(site)s") % args
-        return _("%(user)s is admin of %(site)s") % args
+            return _("{user} was admin of {site}").format(**args)
+        return _("{user} is admin of {site}").format(**args)
 
 
 class Organization(BaseModel):
@@ -211,8 +211,8 @@ class SiteOrganization(BaseModel):
         """Get the string representation of an instance."""
         args: dict = {"organization": str(self.organization), "site": str(self.site)}
         if self.deleted:
-            return _("%(organization)s was in %(site)s") % args
-        return _("%(organization)s is in %(site)s") % args
+            return _("{organization} was in {site}").format(**args)
+        return _("{organization} is in {site}").format(**args)
 
 
 class OrganizationManager(BaseModel):
@@ -254,8 +254,9 @@ class OrganizationManager(BaseModel):
         """Get the string representation of an instance."""
         args: dict = {"user": str(self.user), "organization": str(self.organization)}
         if self.deleted:
-            return _("%(user)s was manager of %(organization)s") % args
-        return _("%(user)s is manager of %(organization)s") % args
+            return _("{user} was manager of {organization}").format(**args)
+
+        return _("{user} is manager of {organization}").format(**args)
 
 
 class Authoring(BaseModel):
@@ -297,8 +298,8 @@ class Authoring(BaseModel):
         """Get the string representation of an instance."""
         args: dict = {"user": str(self.user), "organization": str(self.organization)}
         if self.deleted:
-            return _("%(user)s was author in %(organization)s") % args
-        return _("%(user)s is author in %(organization)s") % args
+            return _("{user} was author in {organization}").format(**args)
+        return _("{user} is author in {organization}").format(**args)
 
 
 class Video(BaseModel):

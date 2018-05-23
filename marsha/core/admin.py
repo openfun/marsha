@@ -31,7 +31,7 @@ from marsha.core.models import (
 class MarshaAdminSite(admin.AdminSite):
     """Admin site for Marsha."""
 
-    site_title: str = _("%(marsha_name)s administration") % {"marsha_name": "Marsha"}
+    site_title: str = _("{marsha_name} administration").format(marsha_name="Marsha")
     site_header: str = "Marsha"
 
 
