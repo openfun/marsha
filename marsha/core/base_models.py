@@ -32,7 +32,8 @@ fields_type_mapping: Mapping[Type[models.Field], type] = {
     models.TextField: str,
 }
 reverse_fields_type_mapping: Mapping[Type[RelatedField], type] = {
-    models.ForeignKey: ReverseFKType, models.ManyToManyField: M2MType
+    models.ForeignKey: ReverseFKType,
+    models.ManyToManyField: M2MType,
 }
 
 
@@ -142,7 +143,8 @@ class BaseModel(SafeDeleteModel):
         """
         if isinstance(field, models.ManyToManyField):
             return M2MType[field.related_model], '%s["%s"]' % (  # type: ignore
-                M2MType.__name__, field.related_model._meta.object_name
+                M2MType.__name__,
+                field.related_model._meta.object_name,
             )
 
         if isinstance(field, models.ForeignKey):  # covers OneToOneField too
@@ -169,7 +171,9 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        from marsha.core import models as core_models  # imported here to avoid cyclic import
+        from marsha.core import (
+            models as core_models
+        )  # imported here to avoid cyclic import
 
         fields: List[models.Field] = [
             field
@@ -257,7 +261,9 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        from marsha.core import models as core_models  # imported here to avoid cyclic import
+        from marsha.core import (
+            models as core_models
+        )  # imported here to avoid cyclic import
 
         related_fields: List[ForeignObjectRel] = [
             field
@@ -278,7 +284,8 @@ class BaseModel(SafeDeleteModel):
             related_model: Type[models.Model] = field.field.model
             related_model_name: str = related_model._meta.object_name
             related_model_full_name: str = "%s.%s" % (
-                related_model._meta.app_label, related_model_name
+                related_model._meta.app_label,
+                related_model_name,
             )
 
             # first, check that related name are defined on fk/m2m/o2o fields
@@ -304,9 +311,7 @@ class BaseModel(SafeDeleteModel):
             if field.multiple:  # reverse relation of a ForeignKey or ManyToManyField
                 expected_annotation_type = reverse_fields_type_mapping[  # type: ignore
                     field.field.__class__
-                ][
-                    related_model
-                ]
+                ][related_model]
                 expected_annotation_string = '%s["%s"]' % (
                     reverse_fields_type_mapping[field.field.__class__].__name__,
                     related_model_name,
@@ -395,7 +400,10 @@ class BaseModel(SafeDeleteModel):
             app_prefix = cls._meta.app_label
             module_prefix = cls.__module__.split(".")[0]
             for prefix in [
-                app_prefix, module_prefix, app_prefix + "_", module_prefix + "_"
+                app_prefix,
+                module_prefix,
+                app_prefix + "_",
+                module_prefix + "_",
             ]:
                 if db_table.startswith(prefix):
                     errors.append(
