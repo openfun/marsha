@@ -2,8 +2,9 @@
 
 from typing import Iterable
 
-from django.contrib import admin
 from django.urls import path
 
+from marsha.core.admin import admin_site
 
-urlpatterns: Iterable[path] = [path("admin/", admin.site.urls)]
+
+urlpatterns: Iterable[path] = [path(f"{admin_site.name}/", admin_site.urls)]
