@@ -72,3 +72,4 @@ class M2MType(Generic[T]):
 
 
 UniqueTogether = Iterable[Iterable[str]]
+TupleOfStr = Tuple[str, ...]
