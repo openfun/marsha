@@ -121,5 +121,5 @@ class Dev(Base):
     ALLOWED_HOSTS = ["*"]
 
     DATABASES = values.DatabaseURLValue(
-        "sqlite:///%s" % os.path.join(BASE_DIR, "db.sqlite3")
+        "sqlite:///{}".format(os.path.join(BASE_DIR, "db.sqlite3"))
     )
