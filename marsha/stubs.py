@@ -2,7 +2,9 @@
 
 # pylint: disable=pointless-statement,missing-docstring,unused-argument,invalid-name
 
-from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
+from typing import Any, Generic, Iterable, Optional, Tuple, Type, TypeVar
+
+from django.db.models import Model
 
 
 T = TypeVar("T")
@@ -45,6 +47,8 @@ ReverseO2O = ReverseFKType
 class M2MType(Generic[T]):
     """Stub to represent both sides of a django ``ManyToManyField``."""
 
+    through: Type[Model]
+
     def add(self, *objs: T) -> None:
         ...
 
@@ -68,3 +72,4 @@ class M2MType(Generic[T]):
 
 
 UniqueTogether = Iterable[Iterable[str]]
+TupleOfStr = Tuple[str, ...]

@@ -5,10 +5,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete import HARD_DELETE
 
-from marsha.core.base_models import BaseModel
+from marsha.core.base_models import BaseModel, NonDeletedUniqueIndex
 from marsha.core.managers import UserManager
 from marsha.stubs import M2MType, ReverseFKType
 
@@ -37,6 +36,15 @@ class User(BaseModel, AbstractUser):
         verbose_name: str = _("user")
         verbose_name_plural: str = _("users")
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.username}"
+        if self.email:
+            result += f" ({self.email})"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
+
 
 class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
@@ -63,6 +71,13 @@ class ConsumerSite(BaseModel):
         db_table: str = "consumer_site"
         verbose_name: str = _("site")
         verbose_name_plural: str = _("sites")
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
 
 
 class SiteAdmin(BaseModel):
@@ -98,11 +113,14 @@ class SiteAdmin(BaseModel):
         db_table: str = "site_admin"
         verbose_name: str = _("site admin")
         verbose_name_plural: str = _("site admins")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "site"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "site"])]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "site": str(self.site)}
+        if self.deleted:
+            return _("{user} was admin of {site}").format(**args)
+        return _("{user} is admin of {site}").format(**args)
 
 
 class Organization(BaseModel):
@@ -146,6 +164,13 @@ class Organization(BaseModel):
         verbose_name: str = _("organization")
         verbose_name_plural: str = _("organizations")
 
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
+
 
 class SiteOrganization(BaseModel):
     """Model representing organizations in sites.
@@ -180,11 +205,14 @@ class SiteOrganization(BaseModel):
         db_table: str = "site_organization"
         verbose_name: str = _("organization in site")
         verbose_name_plural: str = _("organizations in sites")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["site", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["site", "organization"])]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"organization": str(self.organization), "site": str(self.site)}
+        if self.deleted:
+            return _("{organization} was in {site}").format(**args)
+        return _("{organization} is in {site}").format(**args)
 
 
 class OrganizationManager(BaseModel):
@@ -220,11 +248,15 @@ class OrganizationManager(BaseModel):
         db_table: str = "organization_manager"
         verbose_name: str = _("organization manager")
         verbose_name_plural: str = _("organizations managers")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "organization"])]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "organization": str(self.organization)}
+        if self.deleted:
+            return _("{user} was manager of {organization}").format(**args)
+
+        return _("{user} is manager of {organization}").format(**args)
 
 
 class Authoring(BaseModel):
@@ -260,11 +292,14 @@ class Authoring(BaseModel):
         db_table: str = "authoring"
         verbose_name: str = _("author in organization")
         verbose_name_plural: str = _("authors in organizations")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "organization"])]
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        args: dict = {"user": str(self.user), "organization": str(self.organization)}
+        if self.deleted:
+            return _("{user} was author in {organization}").format(**args)
+        return _("{user} is author in {organization}").format(**args)
 
 
 class Video(BaseModel):
@@ -304,6 +339,7 @@ class Video(BaseModel):
         # don't delete a video if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
 
     # `related_name` of fields pointing to this model, for typing
@@ -320,6 +356,13 @@ class Video(BaseModel):
         db_table: str = "video"
         verbose_name: str = _("video")
         verbose_name_plural: str = _("videos")
+
+    def __str__(self) -> str:
+        """Get the string representation of an instance."""
+        result: str = f"{self.name} by f{self.author.username}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
 
 
 class BaseTrack(BaseModel):
@@ -359,11 +402,7 @@ class AudioTrack(BaseTrack):
         db_table: str = "audio_track"
         verbose_name: str = _("audio track")
         verbose_name_plural: str = _("audio tracks")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "language"])]
 
 
 class SubtitleTrack(BaseTrack):
@@ -389,10 +428,7 @@ class SubtitleTrack(BaseTrack):
         verbose_name: str = _("subtitles track")
         verbose_name_plural: str = _("subtitles tracks")
         indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language", "has_closed_captioning"],
-                condition='"deleted" IS NULL',
-            )
+            NonDeletedUniqueIndex(["video", "language", "has_closed_captioning"])
         ]
 
 
@@ -409,11 +445,7 @@ class SignTrack(BaseTrack):
         db_table: str = "sign_track"
         verbose_name: str = _("signs language track")
         verbose_name_plural: str = _("signs language tracks")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "language"])]
 
 
 class Playlist(BaseModel):
@@ -457,6 +489,7 @@ class Playlist(BaseModel):
         # don't delete a playlist if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     videos: M2MType[Video] = models.ManyToManyField(
         to=Video,
@@ -515,11 +548,7 @@ class PlaylistVideo(BaseModel):
         db_table: str = "playlist_video"
         verbose_name: str = _("playlist video link")
         verbose_name_plural: str = _("playlist video links")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "playlist"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "playlist"])]
 
 
 class PlaylistAccess(BaseModel):
@@ -555,8 +584,4 @@ class PlaylistAccess(BaseModel):
         db_table: str = "playlist_access"
         verbose_name: str = _("playlist access")
         verbose_name_plural: str = _("playlists accesses")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "playlist"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "playlist"])]

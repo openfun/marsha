@@ -1,16 +1,18 @@
 """Base models for the core app of the Marsha project."""
 
 from datetime import date, datetime
-from typing import Any, Dict, List, Mapping, Tuple, Type, get_type_hints
+from typing import Any, Dict, List, Mapping, Sequence, Tuple, Type, get_type_hints
 
 from django.core import checks
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.db.models.fields.reverse_related import ForeignObjectRel
 
+from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
-from marsha.stubs import M2MType, ReverseFKType, Typing
+from marsha.stubs import M2MType, ReverseFKType, TupleOfStr, Typing
 
 
 CheckMessages = List[checks.CheckMessage]  # pylint: disable=invalid-name
@@ -30,7 +32,8 @@ fields_type_mapping: Mapping[Type[models.Field], type] = {
     models.TextField: str,
 }
 reverse_fields_type_mapping: Mapping[Type[RelatedField], type] = {
-    models.ForeignKey: ReverseFKType, models.ManyToManyField: M2MType
+    models.ForeignKey: ReverseFKType,
+    models.ManyToManyField: M2MType,
 }
 
 
@@ -66,6 +69,26 @@ def _get_fields_by_source_model(
         fields[field.name] = model
 
     return fields
+
+
+class NonDeletedUniqueIndex(ConditionalUniqueIndex):
+    """A special ConditionalUniqueIndex for non  deleted objects."""
+
+    condition: str = '"deleted" IS NULL'
+
+    def __init__(self, fields: Sequence, name: str = None) -> None:
+        """Override default init to pass our predefined condition.
+
+        For the parameters, see ``ConditionalUniqueIndex.__init__``.
+
+        """
+        super().__init__(condition=self.condition, fields=fields, name=name)
+
+    def deconstruct(self):  # type: ignore
+        """Remove ``condition`` as an argument to be defined in migrations."""
+        path, args, kwargs = super().deconstruct()
+        del kwargs["condition"]
+        return path, args, kwargs
 
 
 class BaseModel(SafeDeleteModel):
@@ -119,12 +142,14 @@ class BaseModel(SafeDeleteModel):
 
         """
         if isinstance(field, models.ManyToManyField):
-            return M2MType[field.related_model], '%s["%s"]' % (  # type: ignore
+            return M2MType[field.related_model], '{}["{}"]'.format(  # type: ignore
                 M2MType.__name__, field.related_model._meta.object_name
             )
 
         if isinstance(field, models.ForeignKey):  # covers OneToOneField too
-            return field.related_model, '"%s"' % field.related_model._meta.object_name
+            return field.related_model, '"{}"'.format(
+                field.related_model._meta.object_name
+            )
 
         field_class: Type[models.Field]
         field_type: Typing
@@ -133,8 +158,9 @@ class BaseModel(SafeDeleteModel):
                 return field_type, field_type.__name__
 
         raise ValueError(
-            "Field type not yet managed for '%s': %s"
-            % (field.name, field.__class__.__name__)
+            "Field type not yet managed for '{}': {}".format(
+                field.name, field.__class__.__name__
+            )
         )
 
     @classmethod
@@ -147,7 +173,9 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        from marsha.core import models as core_models  # imported here to avoid cyclic import
+        from marsha.core import (
+            models as core_models
+        )  # imported here to avoid cyclic import
 
         fields: List[models.Field] = [
             field
@@ -160,7 +188,9 @@ class BaseModel(SafeDeleteModel):
         )
 
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         field: models.Field
         for field in fields:
@@ -171,9 +201,10 @@ class BaseModel(SafeDeleteModel):
             except ValueError:
                 errors.append(
                     checks.Error(
-                        "The expected annotation for the field '%s' on the model '%s', a "
-                        "'%s' is not known: please define it in 'fields_type_mapping'"
-                        % (field_name, model_full_name, field.__class__),
+                        "The expected annotation for the field '{}' on the model '{}', a "
+                        "'{}' is not known: please define it in 'fields_type_mapping'".format(
+                            field_name, model_full_name, field.__class__
+                        ),
                         obj=cls,
                         id="marsha.models.E001",
                     )
@@ -189,10 +220,12 @@ class BaseModel(SafeDeleteModel):
 
                 errors.append(
                     checks.Error(
-                        "There is no typing annotation for the field '%s' on the model '%s'"
-                        % (field_name, model_full_name),
-                        hint="Add the annotation for the '%s' field on the model '%s': ': %s'"
-                        % (field_name, model_full_name, expected_annotation[1]),
+                        "There is no typing annotation for the field '{}' "
+                        "on the model '{}'".format(field_name, model_full_name),
+                        hint="Add the annotation for the '{}' field on "
+                        "the model '{}': ': {}'".format(
+                            field_name, model_full_name, expected_annotation[1]
+                        ),
                         obj=cls,
                         id="marsha.models.E002",
                     )
@@ -205,16 +238,17 @@ class BaseModel(SafeDeleteModel):
             if annotation_type != expected_annotation[0]:
                 errors.append(
                     checks.Error(
-                        "The typing annotation is wrong for the field '%s' on "
-                        "the model '%s': it should be '%s', not '%s'"
-                        % (
+                        "The typing annotation is wrong for the field '{}' on "
+                        "the model '{}': it should be '{}', not '{}'".format(
                             field_name,
                             model_full_name,
                             expected_annotation[1],
                             annotation_type,
                         ),
-                        hint="Change the annotation for the '%s' field on the model '%s': ': %s'"
-                        % (field_name, model_full_name, expected_annotation[1]),
+                        hint="Change the annotation for the '{}' field on the model "
+                        "'{}': ': {}'".format(
+                            field_name, model_full_name, expected_annotation[1]
+                        ),
                         obj=cls,
                         id="marsha.models.E003",
                     )
@@ -235,7 +269,9 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        from marsha.core import models as core_models  # imported here to avoid cyclic import
+        from marsha.core import (
+            models as core_models
+        )  # imported here to avoid cyclic import
 
         related_fields: List[ForeignObjectRel] = [
             field
@@ -246,7 +282,9 @@ class BaseModel(SafeDeleteModel):
         ]
 
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         field: ForeignObjectRel
         for field in related_fields:
@@ -255,7 +293,7 @@ class BaseModel(SafeDeleteModel):
             related_name: str = field.related_name
             related_model: Type[models.Model] = field.field.model
             related_model_name: str = related_model._meta.object_name
-            related_model_full_name: str = "%s.%s" % (
+            related_model_full_name: str = "{}.{}".format(
                 related_model._meta.app_label, related_model_name
             )
 
@@ -263,12 +301,14 @@ class BaseModel(SafeDeleteModel):
             if not related_name:
                 errors.append(
                     checks.Error(
-                        "The field '%s' on the model '%s', pointing to the model '%s' "
-                        "doesn't have the 'related_name' attribute defined."
-                        % (field_name, related_model_full_name, model_full_name),
+                        "The field '{}' on the model '{}', pointing to the model '{}' "
+                        "doesn't have the 'related_name' attribute defined.".format(
+                            field_name, related_model_full_name, model_full_name
+                        ),
                         hint="Set the 'related_name' argument when declaring the "
-                        "'%s' field on the model '%s'"
-                        % (field_name, related_model_full_name),
+                        "'{}' field on the model '{}'".format(
+                            field_name, related_model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E004",
                     )
@@ -282,31 +322,29 @@ class BaseModel(SafeDeleteModel):
             if field.multiple:  # reverse relation of a ForeignKey or ManyToManyField
                 expected_annotation_type = reverse_fields_type_mapping[  # type: ignore
                     field.field.__class__
-                ][
-                    related_model
-                ]
-                expected_annotation_string = '%s["%s"]' % (
+                ][related_model]
+                expected_annotation_string = '{}["{}"]'.format(
                     reverse_fields_type_mapping[field.field.__class__].__name__,
                     related_model_name,
                 )
 
             else:  # reverse relation of a OneToOneField
                 expected_annotation_type = related_model
-                expected_annotation_string = '"%s"' % related_model_name
+                expected_annotation_string = '"{}"'.format(related_model_name)
 
             if related_name not in cls.__annotations__:
                 errors.append(
                     checks.Error(
-                        "There is no typing annotation for the related_name '%s' on the "
-                        "model '%s', pointed by the field '%s' defined on the model '%s'"
-                        % (
+                        "There is no typing annotation for the related_name '{}' on the "
+                        "model '{}', pointed by the field '{}' defined on the model '{}'".format(
                             related_name,
                             model_full_name,
                             field_name,
                             related_model_full_name,
                         ),
-                        hint="Add '%s: %s' in the model '%s'"
-                        % (related_name, expected_annotation_string, model_full_name),
+                        hint="Add '{}: {}' in the model '{}'".format(
+                            related_name, expected_annotation_string, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E005",
                     )
@@ -320,10 +358,9 @@ class BaseModel(SafeDeleteModel):
             if annotation_type != expected_annotation_type:
                 errors.append(
                     checks.Error(
-                        "The typing annotation is wrong for the related_name '%s' on "
-                        "the model '%s', pointed by the field '%s' defined on the "
-                        "model '%s': it should be '%s', not '%s'"
-                        % (
+                        "The typing annotation is wrong for the related_name '{}' on "
+                        "the model '{}', pointed by the field '{}' defined on the "
+                        "model '{}': it should be '{}', not '{}'".format(
                             related_name,
                             model_full_name,
                             field_name,
@@ -331,8 +368,9 @@ class BaseModel(SafeDeleteModel):
                             expected_annotation_string,
                             annotation_type,
                         ),
-                        hint="Change to '%s: %s' in the model '%s'"
-                        % (related_name, expected_annotation_string, model_full_name),
+                        hint="Change to '{}: {}' in the model '{}'".format(
+                            related_name, expected_annotation_string, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E006",
                     )
@@ -353,18 +391,20 @@ class BaseModel(SafeDeleteModel):
 
         """
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         try:
             db_table: str = cls._meta.original_attrs["db_table"]
         except KeyError:
             errors.append(
                 checks.Error(
-                    "The model '%s' must define the 'db_table' attribute on its "
+                    "The model '{}' must define the 'db_table' attribute on its "
                     "'Meta' class. It must not be prefixed with the name of the "
-                    "app or the project." % (model_full_name,),
-                    hint="Add 'db_table: str = \"%s\"' to the 'Meta' class of the "
-                    "model '%s'" % (cls._meta.model_name, model_full_name),
+                    "app or the project.".format(model_full_name),
+                    hint="Add 'db_table: str = \"{}\"' to the 'Meta' class of the "
+                    "model '{}'".format(cls._meta.model_name, model_full_name),
                     obj=cls,
                     id="marsha.models.E007",
                 )
@@ -373,16 +413,21 @@ class BaseModel(SafeDeleteModel):
             app_prefix = cls._meta.app_label
             module_prefix = cls.__module__.split(".")[0]
             for prefix in [
-                app_prefix, module_prefix, app_prefix + "_", module_prefix + "_"
+                app_prefix,
+                module_prefix,
+                app_prefix + "_",
+                module_prefix + "_",
             ]:
                 if db_table.startswith(prefix):
                     errors.append(
                         checks.Error(
-                            "The model 'db_table' attribute of the model '%s'  must not "
-                            "be prefixed with the name of the app ('%s') or the project "
-                            "('%s')." % (model_full_name, app_prefix, module_prefix),
-                            hint="Change to 'db_table: str = \"%s\"' in the 'Meta' class of the "
-                            "model '%s'" % (cls._meta.model_name, model_full_name),
+                            "The model 'db_table' attribute of the model '{}'  must not "
+                            "be prefixed with the name of the app ('{}') or the project "
+                            "('{}').".format(
+                                model_full_name, app_prefix, module_prefix
+                            ),
+                            hint="Change to 'db_table: str = \"{}\"' in the 'Meta' class of the "
+                            "model '{}'".format(cls._meta.model_name, model_full_name),
                             obj=cls,
                             id="marsha.models.E008",
                         )
@@ -405,7 +450,9 @@ class BaseModel(SafeDeleteModel):
             cls
         )
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         m2m_fields: List[models.ManyToManyField] = [
             field
@@ -423,12 +470,14 @@ class BaseModel(SafeDeleteModel):
             if field.remote_field.through._meta.auto_created:
                 errors.append(
                     checks.Error(
-                        "The field '%s' of the model '%s' is a ManyToManyField but "
-                        "without a 'through' model defined"
-                        % (field.name, model_full_name),
-                        hint="Add the attribute 'through' to the field '%s' of the model '%s' "
-                        "and define the appropriate model"
-                        % (field.name, model_full_name),
+                        "The field '{}' of the model '{}' is a ManyToManyField but "
+                        "without a 'through' model defined".format(
+                            field.name, model_full_name
+                        ),
+                        hint="Add the attribute 'through' to the field '{}' of the model '{}' "
+                        "and define the appropriate model".format(
+                            field.name, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E009",
                     )
@@ -459,3 +508,109 @@ class BaseModel(SafeDeleteModel):
         errors.extend(cls._check_annotated_related_names())
 
         return errors
+
+    def validate_unique(self, exclude: List[str] = None) -> None:
+        """Add validation for our ``NonDeletedUniqueIndex`` replacing ``unique_together``.
+
+        For the parameters, see ``django.db.models.base.Model.validate_unique``.
+
+        """
+        super().validate_unique(exclude)
+
+        if not self.deleted:
+            # these uniqueness checks only make sense for non deleted instances
+            # because it's the condition of these unique-together fields
+
+            unique_checks = self._get_conditional_non_deleted_unique_checks(exclude)
+
+            if unique_checks:
+                all_objects = self.__class__.all_objects  # type: ignore
+                try:
+                    # we need to force ``_perform_unique_checks`` from ``SafeDeleteModel``
+                    # to use the default manager to ignore deleted instances
+                    self.__class__.all_objects = self.__class__.objects  # type: ignore
+
+                    errors = self._perform_unique_checks(unique_checks)
+
+                finally:
+                    self.__class__.all_objects = all_objects  # type: ignore
+
+                if errors:
+                    raise ValidationError(errors)
+
+    @classmethod
+    def _get_conditional_non_deleted_indexes_fields(cls) -> List[List[str]]:
+        """Get the tuples of fields for our conditional unique index for non deleted entries.
+
+        Returns
+        -------
+        List[List[str]]
+            A list with one entry for each matching index. Each entry is a tuple with
+            all the fields that compose the unique index.
+
+        """
+        tuples: List[List[str]] = []
+
+        if cls._meta.indexes:
+            tuples.extend(
+                [
+                    index.fields
+                    for index in cls._meta.indexes
+                    if isinstance(index, NonDeletedUniqueIndex)
+                ]
+            )
+
+        return tuples
+
+    def _get_conditional_non_deleted_unique_checks(
+        self, exclude: List[str] = None
+    ) -> List[Tuple[Type["BaseModel"], TupleOfStr]]:
+        """Extract "unique checks" from our conditional unique for ``_perform_unique_checks``.
+
+        This is basically a copy of ``django.db.models.Model_get_unique_checks`` (only the
+        part for ``unique_together``), but using output from
+        ``_get_conditional_non_deleted_indexes_fields`` instead of ``_meta.unique_together``.
+
+        For the parameters, see ``django.db.models.base.Model._get_unique_checks``.
+
+        Returns
+        -------
+        List[Tuple[Type["BaseModel"], TupleOfStr]]
+            ``_perform_unique_checks`` expect a list with each entry being a tuple with:
+            - a model on which the uniqueness is defined
+            - a tuple of fields to be unique together for this model
+
+        """
+        if exclude is None:
+            exclude = []
+
+        unique_checks: List[Tuple[Type["BaseModel"], TupleOfStr]] = []
+
+        unique_togethers = [
+            (self.__class__, self._get_conditional_non_deleted_indexes_fields())
+        ]
+
+        parent_class: Type[models.Model]
+        for parent_class in self._meta.get_parent_list():
+            if issubclass(parent_class, BaseModel):
+                unique_togethers.append(
+                    (
+                        parent_class,
+                        # pylint: disable=protected-access
+                        parent_class._get_conditional_non_deleted_indexes_fields(),
+                    )
+                )
+
+        for model_class, unique_together in unique_togethers:
+            if not unique_together:
+                continue
+
+            for check in unique_together:
+                for name in check:
+                    # If this is an excluded field, don't add this check.
+                    if name in exclude:
+                        break
+                else:
+                    unique_checks.append((model_class, tuple(check)))
+
+        return unique_checks

@@ -1,11 +1,15 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
 from typing import Type
 
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
 from django.test import TestCase
+from django.utils.timezone import now
 
 from factory.django import DjangoModelFactory
 from safedelete.models import HARD_DELETE, SOFT_DELETE_CASCADE
+
+from marsha.core.models import PlaylistAccess
 
 from .factories import (
     AudioTrackFactory,
@@ -509,3 +513,61 @@ class DeletionTestCase(TestCase):
             playlist=PlaylistFactory(author=user, organization=OrganizationFactory()),
             user=user,
         )
+
+    def test_django_default_uniqueness(self):
+        """Verify that by default Django ignores our unique-together."""
+        user = UserFactory()
+        playlist = PlaylistFactory(author=user, organization=OrganizationFactory())
+
+        # fields that should be considered unique together, and force non-deleted objects
+        fields = {"user": user, "playlist": playlist, "deleted": None}
+
+        # create an object with these fields in database
+        playlist_access1 = PlaylistAccessFactory(**fields)
+
+        # create an object without saving it, with same "unique" fields
+        playlist_access2 = PlaylistAccess(**fields)
+
+        # here is the trick: we return nothing on our own method to let django do
+        # the default unique validation only
+        playlist_access2._get_conditional_non_deleted_unique_checks = (
+            lambda exclude=None: []
+        )
+
+        # so this should not raise because for django there is not unique_together on these fields
+        playlist_access2.validate_unique()
+
+        # same if one is already deleted which is the normal behavior
+        playlist_access1.delete(force_policy=SOFT_DELETE_CASCADE)
+        playlist_access2.validate_unique()
+
+        # and if new one is to be deleted
+        playlist_access2.deleted = now()
+        playlist_access2.validate_unique()
+
+    def test_django_enhanced_uniqueness(self):
+        """Verify that our unique-together defined by NonDeletedUniqueIndex are checked."""
+        user = UserFactory()
+        playlist = PlaylistFactory(author=user, organization=OrganizationFactory())
+
+        # fields that should be considered unique together, and force non-deleted objects
+        fields = {"user": user, "playlist": playlist, "deleted": None}
+
+        # create an object with these fields in database
+        playlist_access1 = PlaylistAccessFactory(**fields)
+
+        # create an object without saving it, with same "unique" fields
+        playlist_access2 = PlaylistAccess(**fields)
+
+        # now we check uniqueness for fields defined in a ``NonDeletedUniqueIndex``
+        # so this should raise
+        with self.assertRaises(ValidationError):
+            playlist_access2.validate_unique()
+
+        # but it should be ok if first is soft-deleted
+        playlist_access1.delete(force_policy=SOFT_DELETE_CASCADE)
+        playlist_access2.validate_unique()
+
+        # and also if the second one is to be deleted
+        playlist_access2.deleted = now()
+        playlist_access2.validate_unique()

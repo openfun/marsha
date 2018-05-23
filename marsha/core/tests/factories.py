@@ -17,7 +17,7 @@ class UserFactory(DjangoModelFactory):
     is_staff = False
     is_superuser = False
 
-    username = factory.Sequence(lambda n: "User %03d" % n)
+    username = factory.Sequence("User {:03d}".format)
 
 
 class ConsumerSiteFactory(DjangoModelFactory):
@@ -26,7 +26,7 @@ class ConsumerSiteFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.ConsumerSite
 
-    name = factory.Sequence(lambda n: "Site %03d" % n)
+    name = factory.Sequence("Site {:03d}".format)
 
 
 class SiteAdminFactory(DjangoModelFactory):
@@ -42,7 +42,7 @@ class OrganizationFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Organization
 
-    name = factory.Sequence(lambda n: "Org %03d" % n)
+    name = factory.Sequence("Org {:03d}".format)
 
 
 class SiteOrganizationFactory(DjangoModelFactory):
@@ -72,7 +72,7 @@ class VideoFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Video
 
-    name = factory.Sequence(lambda n: "Video %03d" % n)
+    name = factory.Sequence("Video {:03d}".format)
     language = "en"
     duplicated_from = None
 
@@ -111,7 +111,7 @@ class PlaylistFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Playlist
 
-    name = factory.Sequence(lambda n: "Playlist %03d" % n)
+    name = factory.Sequence("Playlist {:03d}".format)
 
 
 class PlaylistVideoFactory(DjangoModelFactory):
