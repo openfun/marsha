@@ -5,10 +5,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete import HARD_DELETE
 
-from marsha.core.base_models import BaseModel
+from marsha.core.base_models import BaseModel, NonDeletedUniqueIndex
 from marsha.core.managers import UserManager
 from marsha.stubs import M2MType, ReverseFKType
 
@@ -114,11 +113,7 @@ class SiteAdmin(BaseModel):
         db_table: str = "site_admin"
         verbose_name: str = _("site admin")
         verbose_name_plural: str = _("site admins")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "site"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "site"])]
 
     def __str__(self) -> str:
         """Get the string representation of an instance."""
@@ -210,11 +205,7 @@ class SiteOrganization(BaseModel):
         db_table: str = "site_organization"
         verbose_name: str = _("organization in site")
         verbose_name_plural: str = _("organizations in sites")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["site", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["site", "organization"])]
 
     def __str__(self) -> str:
         """Get the string representation of an instance."""
@@ -257,11 +248,7 @@ class OrganizationManager(BaseModel):
         db_table: str = "organization_manager"
         verbose_name: str = _("organization manager")
         verbose_name_plural: str = _("organizations managers")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "organization"])]
 
     def __str__(self) -> str:
         """Get the string representation of an instance."""
@@ -304,11 +291,7 @@ class Authoring(BaseModel):
         db_table: str = "authoring"
         verbose_name: str = _("author in organization")
         verbose_name_plural: str = _("authors in organizations")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "organization"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "organization"])]
 
     def __str__(self) -> str:
         """Get the string representation of an instance."""
@@ -418,11 +401,7 @@ class AudioTrack(BaseTrack):
         db_table: str = "audio_track"
         verbose_name: str = _("audio track")
         verbose_name_plural: str = _("audio tracks")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "language"])]
 
 
 class SubtitleTrack(BaseTrack):
@@ -448,10 +427,7 @@ class SubtitleTrack(BaseTrack):
         verbose_name: str = _("subtitles track")
         verbose_name_plural: str = _("subtitles tracks")
         indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language", "has_closed_captioning"],
-                condition='"deleted" IS NULL',
-            )
+            NonDeletedUniqueIndex(["video", "language", "has_closed_captioning"])
         ]
 
 
@@ -468,11 +444,7 @@ class SignTrack(BaseTrack):
         db_table: str = "sign_track"
         verbose_name: str = _("signs language track")
         verbose_name_plural: str = _("signs language tracks")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "language"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "language"])]
 
 
 class Playlist(BaseModel):
@@ -575,11 +547,7 @@ class PlaylistVideo(BaseModel):
         db_table: str = "playlist_video"
         verbose_name: str = _("playlist video link")
         verbose_name_plural: str = _("playlist video links")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["video", "playlist"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "playlist"])]
 
 
 class PlaylistAccess(BaseModel):
@@ -615,8 +583,4 @@ class PlaylistAccess(BaseModel):
         db_table: str = "playlist_access"
         verbose_name: str = _("playlist access")
         verbose_name_plural: str = _("playlists accesses")
-        indexes = [
-            ConditionalUniqueIndex(
-                fields=["user", "playlist"], condition='"deleted" IS NULL'
-            )
-        ]
+        indexes = [NonDeletedUniqueIndex(["user", "playlist"])]
