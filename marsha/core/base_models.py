@@ -1,13 +1,14 @@
 """Base models for the core app of the Marsha project."""
 
 from datetime import date, datetime
-from typing import Any, Dict, List, Mapping, Tuple, Type, get_type_hints
+from typing import Any, Dict, List, Mapping, Sequence, Tuple, Type, get_type_hints
 
 from django.core import checks
 from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.db.models.fields.reverse_related import ForeignObjectRel
 
+from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
 from marsha.stubs import M2MType, ReverseFKType, Typing
@@ -66,6 +67,26 @@ def _get_fields_by_source_model(
         fields[field.name] = model
 
     return fields
+
+
+class NonDeletedUniqueIndex(ConditionalUniqueIndex):
+    """A special ConditionalUniqueIndex for non  deleted objects."""
+
+    condition: str = '"deleted" IS NULL'
+
+    def __init__(self, fields: Sequence, name: str = None) -> None:
+        """Override default init to pass our predefined condition.
+
+        For the parameters, see ``ConditionalUniqueIndex.__init__``.
+
+        """
+        super().__init__(condition=self.condition, fields=fields, name=name)
+
+    def deconstruct(self):  # type: ignore
+        """Remove ``condition`` as an argument to be defined in migrations."""
+        path, args, kwargs = super().deconstruct()
+        del kwargs["condition"]
+        return path, args, kwargs
 
 
 class BaseModel(SafeDeleteModel):
