@@ -45,7 +45,7 @@ mypy:  ## Run the mypy tool
 .PHONY: check-black
 check-black:  ## Run the black tool in check mode only (won't modify files)
 	@echo "$(BOLD)Checking black$(RESET)"
-	@black --check marsha/ 2>&1 | grep -Ev 'good job|All done'
+	@black --check marsha/ 2>&1
 
 .PHONY: black
 black:  ## Run the black tool and update files that need to
