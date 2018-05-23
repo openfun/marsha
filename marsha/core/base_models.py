@@ -142,13 +142,14 @@ class BaseModel(SafeDeleteModel):
 
         """
         if isinstance(field, models.ManyToManyField):
-            return M2MType[field.related_model], '%s["%s"]' % (  # type: ignore
-                M2MType.__name__,
-                field.related_model._meta.object_name,
+            return M2MType[field.related_model], '{}["{}"]'.format(  # type: ignore
+                M2MType.__name__, field.related_model._meta.object_name
             )
 
         if isinstance(field, models.ForeignKey):  # covers OneToOneField too
-            return field.related_model, '"%s"' % field.related_model._meta.object_name
+            return field.related_model, '"{}"'.format(
+                field.related_model._meta.object_name
+            )
 
         field_class: Type[models.Field]
         field_type: Typing
@@ -157,8 +158,9 @@ class BaseModel(SafeDeleteModel):
                 return field_type, field_type.__name__
 
         raise ValueError(
-            "Field type not yet managed for '%s': %s"
-            % (field.name, field.__class__.__name__)
+            "Field type not yet managed for '{}': {}".format(
+                field.name, field.__class__.__name__
+            )
         )
 
     @classmethod
@@ -186,7 +188,9 @@ class BaseModel(SafeDeleteModel):
         )
 
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         field: models.Field
         for field in fields:
@@ -197,9 +201,10 @@ class BaseModel(SafeDeleteModel):
             except ValueError:
                 errors.append(
                     checks.Error(
-                        "The expected annotation for the field '%s' on the model '%s', a "
-                        "'%s' is not known: please define it in 'fields_type_mapping'"
-                        % (field_name, model_full_name, field.__class__),
+                        "The expected annotation for the field '{}' on the model '{}', a "
+                        "'{}' is not known: please define it in 'fields_type_mapping'".format(
+                            field_name, model_full_name, field.__class__
+                        ),
                         obj=cls,
                         id="marsha.models.E001",
                     )
@@ -215,10 +220,12 @@ class BaseModel(SafeDeleteModel):
 
                 errors.append(
                     checks.Error(
-                        "There is no typing annotation for the field '%s' on the model '%s'"
-                        % (field_name, model_full_name),
-                        hint="Add the annotation for the '%s' field on the model '%s': ': %s'"
-                        % (field_name, model_full_name, expected_annotation[1]),
+                        "There is no typing annotation for the field '{}' "
+                        "on the model '{}'".format(field_name, model_full_name),
+                        hint="Add the annotation for the '{}' field on "
+                        "the model '{}': ': {}'".format(
+                            field_name, model_full_name, expected_annotation[1]
+                        ),
                         obj=cls,
                         id="marsha.models.E002",
                     )
@@ -231,16 +238,17 @@ class BaseModel(SafeDeleteModel):
             if annotation_type != expected_annotation[0]:
                 errors.append(
                     checks.Error(
-                        "The typing annotation is wrong for the field '%s' on "
-                        "the model '%s': it should be '%s', not '%s'"
-                        % (
+                        "The typing annotation is wrong for the field '{}' on "
+                        "the model '{}': it should be '{}', not '{}'".format(
                             field_name,
                             model_full_name,
                             expected_annotation[1],
                             annotation_type,
                         ),
-                        hint="Change the annotation for the '%s' field on the model '%s': ': %s'"
-                        % (field_name, model_full_name, expected_annotation[1]),
+                        hint="Change the annotation for the '{}' field on the model "
+                        "'{}': ': {}'".format(
+                            field_name, model_full_name, expected_annotation[1]
+                        ),
                         obj=cls,
                         id="marsha.models.E003",
                     )
@@ -274,7 +282,9 @@ class BaseModel(SafeDeleteModel):
         ]
 
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         field: ForeignObjectRel
         for field in related_fields:
@@ -283,21 +293,22 @@ class BaseModel(SafeDeleteModel):
             related_name: str = field.related_name
             related_model: Type[models.Model] = field.field.model
             related_model_name: str = related_model._meta.object_name
-            related_model_full_name: str = "%s.%s" % (
-                related_model._meta.app_label,
-                related_model_name,
+            related_model_full_name: str = "{}.{}".format(
+                related_model._meta.app_label, related_model_name
             )
 
             # first, check that related name are defined on fk/m2m/o2o fields
             if not related_name:
                 errors.append(
                     checks.Error(
-                        "The field '%s' on the model '%s', pointing to the model '%s' "
-                        "doesn't have the 'related_name' attribute defined."
-                        % (field_name, related_model_full_name, model_full_name),
+                        "The field '{}' on the model '{}', pointing to the model '{}' "
+                        "doesn't have the 'related_name' attribute defined.".format(
+                            field_name, related_model_full_name, model_full_name
+                        ),
                         hint="Set the 'related_name' argument when declaring the "
-                        "'%s' field on the model '%s'"
-                        % (field_name, related_model_full_name),
+                        "'{}' field on the model '{}'".format(
+                            field_name, related_model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E004",
                     )
@@ -312,28 +323,28 @@ class BaseModel(SafeDeleteModel):
                 expected_annotation_type = reverse_fields_type_mapping[  # type: ignore
                     field.field.__class__
                 ][related_model]
-                expected_annotation_string = '%s["%s"]' % (
+                expected_annotation_string = '{}["{}"]'.format(
                     reverse_fields_type_mapping[field.field.__class__].__name__,
                     related_model_name,
                 )
 
             else:  # reverse relation of a OneToOneField
                 expected_annotation_type = related_model
-                expected_annotation_string = '"%s"' % related_model_name
+                expected_annotation_string = '"{}"'.format(related_model_name)
 
             if related_name not in cls.__annotations__:
                 errors.append(
                     checks.Error(
-                        "There is no typing annotation for the related_name '%s' on the "
-                        "model '%s', pointed by the field '%s' defined on the model '%s'"
-                        % (
+                        "There is no typing annotation for the related_name '{}' on the "
+                        "model '{}', pointed by the field '{}' defined on the model '{}'".format(
                             related_name,
                             model_full_name,
                             field_name,
                             related_model_full_name,
                         ),
-                        hint="Add '%s: %s' in the model '%s'"
-                        % (related_name, expected_annotation_string, model_full_name),
+                        hint="Add '{}: {}' in the model '{}'".format(
+                            related_name, expected_annotation_string, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E005",
                     )
@@ -347,10 +358,9 @@ class BaseModel(SafeDeleteModel):
             if annotation_type != expected_annotation_type:
                 errors.append(
                     checks.Error(
-                        "The typing annotation is wrong for the related_name '%s' on "
-                        "the model '%s', pointed by the field '%s' defined on the "
-                        "model '%s': it should be '%s', not '%s'"
-                        % (
+                        "The typing annotation is wrong for the related_name '{}' on "
+                        "the model '{}', pointed by the field '{}' defined on the "
+                        "model '{}': it should be '{}', not '{}'".format(
                             related_name,
                             model_full_name,
                             field_name,
@@ -358,8 +368,9 @@ class BaseModel(SafeDeleteModel):
                             expected_annotation_string,
                             annotation_type,
                         ),
-                        hint="Change to '%s: %s' in the model '%s'"
-                        % (related_name, expected_annotation_string, model_full_name),
+                        hint="Change to '{}: {}' in the model '{}'".format(
+                            related_name, expected_annotation_string, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E006",
                     )
@@ -380,18 +391,20 @@ class BaseModel(SafeDeleteModel):
 
         """
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         try:
             db_table: str = cls._meta.original_attrs["db_table"]
         except KeyError:
             errors.append(
                 checks.Error(
-                    "The model '%s' must define the 'db_table' attribute on its "
+                    "The model '{}' must define the 'db_table' attribute on its "
                     "'Meta' class. It must not be prefixed with the name of the "
-                    "app or the project." % (model_full_name,),
-                    hint="Add 'db_table: str = \"%s\"' to the 'Meta' class of the "
-                    "model '%s'" % (cls._meta.model_name, model_full_name),
+                    "app or the project.".format(model_full_name),
+                    hint="Add 'db_table: str = \"{}\"' to the 'Meta' class of the "
+                    "model '{}'".format(cls._meta.model_name, model_full_name),
                     obj=cls,
                     id="marsha.models.E007",
                 )
@@ -408,11 +421,13 @@ class BaseModel(SafeDeleteModel):
                 if db_table.startswith(prefix):
                     errors.append(
                         checks.Error(
-                            "The model 'db_table' attribute of the model '%s'  must not "
-                            "be prefixed with the name of the app ('%s') or the project "
-                            "('%s')." % (model_full_name, app_prefix, module_prefix),
-                            hint="Change to 'db_table: str = \"%s\"' in the 'Meta' class of the "
-                            "model '%s'" % (cls._meta.model_name, model_full_name),
+                            "The model 'db_table' attribute of the model '{}'  must not "
+                            "be prefixed with the name of the app ('{}') or the project "
+                            "('{}').".format(
+                                model_full_name, app_prefix, module_prefix
+                            ),
+                            hint="Change to 'db_table: str = \"{}\"' in the 'Meta' class of the "
+                            "model '{}'".format(cls._meta.model_name, model_full_name),
                             obj=cls,
                             id="marsha.models.E008",
                         )
@@ -435,7 +450,9 @@ class BaseModel(SafeDeleteModel):
             cls
         )
         errors: CheckMessages = []
-        model_full_name: str = "%s.%s" % (cls._meta.app_label, cls._meta.object_name)
+        model_full_name: str = "{}.{}".format(
+            cls._meta.app_label, cls._meta.object_name
+        )
 
         m2m_fields: List[models.ManyToManyField] = [
             field
@@ -453,12 +470,14 @@ class BaseModel(SafeDeleteModel):
             if field.remote_field.through._meta.auto_created:
                 errors.append(
                     checks.Error(
-                        "The field '%s' of the model '%s' is a ManyToManyField but "
-                        "without a 'through' model defined"
-                        % (field.name, model_full_name),
-                        hint="Add the attribute 'through' to the field '%s' of the model '%s' "
-                        "and define the appropriate model"
-                        % (field.name, model_full_name),
+                        "The field '{}' of the model '{}' is a ManyToManyField but "
+                        "without a 'through' model defined".format(
+                            field.name, model_full_name
+                        ),
+                        hint="Add the attribute 'through' to the field '{}' of the model '{}' "
+                        "and define the appropriate model".format(
+                            field.name, model_full_name
+                        ),
                         obj=cls,
                         id="marsha.models.E009",
                     )
