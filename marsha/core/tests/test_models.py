@@ -546,7 +546,7 @@ class DeletionTestCase(TestCase):
         playlist_access2.validate_unique()
 
     def test_django_enhanced_uniqueness(self):
-        """Verify that our unique-together defined by ConditionalUniqueIndex are checked."""
+        """Verify that our unique-together defined by NonDeletedUniqueIndex are checked."""
         user = UserFactory()
         playlist = PlaylistFactory(author=user, organization=OrganizationFactory())
 
@@ -559,7 +559,7 @@ class DeletionTestCase(TestCase):
         # create an object without saving it, with same "unique" fields
         playlist_access2 = PlaylistAccess(**fields)
 
-        # now we check uniqueness for fields defined in a ``ConditionalUniqueIndex``
+        # now we check uniqueness for fields defined in a ``NonDeletedUniqueIndex``
         # so this should raise
         with self.assertRaises(ValidationError):
             playlist_access2.validate_unique()
@@ -568,6 +568,6 @@ class DeletionTestCase(TestCase):
         playlist_access1.delete(force_policy=SOFT_DELETE_CASCADE)
         playlist_access2.validate_unique()
 
-        # and also is the second one is to be deleted
+        # and also if the second one is to be deleted
         playlist_access2.deleted = now()
         playlist_access2.validate_unique()
