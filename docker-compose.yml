@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10.3
+    env_file: env.d/development
+    ports:
+        - "5452:5432"
+
+  # We use our production image as a basis for the development image, hence, we
+  # define a "base" service upon which the "app" service depends to force
+  # marsha:latest build.
+  base:
+    build: .
+    image: marsha:latest
+    # Override the default command so that the container exists immediately when
+    # it is run (no server).
+    command: echo "I should exit now. Bye."
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/images/dev/Dockerfile
+    image: marsha:dev
+    env_file: env.d/development
+    # Override production container command that runs gunicorn in favor of the
+    # django development server (wrapped by dockerize to ensure the db is ready
+    # to accept connections before running the development server)
+    command: >
+      dockerize -wait tcp://db:5432 -timeout 60s python ./manage.py runserver 0.0.0.0:8000
+    ports:
+        - "8060:8000"
+    volumes:
+      - .:/app
+      - ./data/static:/data/static
+      - ./data/media:/data/media
+    depends_on:
+      - "base"
+      - "db"

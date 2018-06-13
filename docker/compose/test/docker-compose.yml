@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10.3
+    env_file: env.d/test
+
+  app:
+    image: marsha:dev
+    env_file: env.d/test
+    volumes:
+      - .:/app
+    depends_on:
+      - "db"
