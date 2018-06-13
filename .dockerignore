@@ -1,0 +1,30 @@
+# Python
+__pycache__
+*.pyc
+**/__pycache__
+**/*.pyc
+
+# System-specific files
+.DS_Store
+**/.DS_Store
+
+# Docker
+docker-compose.*
+env.d
+
+# Docs
+docs
+*.md
+*.rst
+
+# Development/test cache & configurations
+.cache
+.circleci
+.git
+.vscode
+
+# Assets
+data
+
+# Front-end
+node_modules

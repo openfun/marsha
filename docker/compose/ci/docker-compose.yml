@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10.3
+    env_file: env.d/ci
+
+  app:
+    image: "marsha:${CIRCLE_SHA1}${IMAGE_SUFFIX}-dev"
+    env_file: env.d/ci
+    depends_on:
+      - "db"
