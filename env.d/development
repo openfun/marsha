@@ -1,0 +1,11 @@
+# Django
+DJANGO_SETTINGS_MODULE=marsha.settings
+DJANGO_CONFIGURATION=Development
+DJANGO_SECRET_KEY=ThisIsAnExampleKeyForDevPurposeOnly
+
+# Database
+POSTGRES_HOST=db
+POSTGRES_DB=marsha
+POSTGRES_USER=fun
+POSTGRES_PASSWORD=pass
+

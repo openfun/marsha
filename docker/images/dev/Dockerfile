@@ -1,0 +1,30 @@
+# The base image we inherit from is marsha:latest, but you can override this by
+# passing a build argument to your build command, e.g.:
+#
+# docker build --build-arg BASE_TAG=${CIRCLE_SHA1} .
+#
+ARG BASE_TAG=latest
+
+FROM marsha:${BASE_TAG}
+
+# Switch back to the root user to install development dependencies
+USER root:root
+
+# Install vim
+RUN apt-get update && \
+    apt-get install -y \
+        vim && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install development dependencies
+RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('setup.cfg'); \
+               print(c['options.extras_require']['dev'])" | xargs pip install
+
+# Install dockerize. It is used to ensure that the database service is accepting
+# connections before trying to access it from the main application.
+ENV DOCKERIZE_VERSION v0.6.1
+RUN curl -L \
+         --output dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+         https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
