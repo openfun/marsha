@@ -9,7 +9,7 @@ references:
       - image: circleci/python:3.6.5
         environment: &django_environ
           DJANGO_SETTINGS_MODULE: marsha.settings
-          DJANGO_CONFIGURATION: Dev
+          DJANGO_CONFIGURATION: Development
           DJANGO_DEBUG: False
           DJANGO_SECRET_KEY: MarshaSecretKey
 

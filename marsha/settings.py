@@ -108,7 +108,7 @@ class Base(Configuration):
     USE_TZ = True
 
 
-class Dev(Base):
+class Development(Base):
     """Development environment settings.
 
     We set ``DEBUG`` to ``True`` by default, configure the server to respond to all hosts,
