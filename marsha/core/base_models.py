@@ -142,13 +142,17 @@ class BaseModel(SafeDeleteModel):
 
         """
         if isinstance(field, models.ManyToManyField):
-            return M2MType[field.related_model], '{}["{}"]'.format(  # type: ignore
-                M2MType.__name__, field.related_model._meta.object_name
+            return (
+                M2MType[field.related_model],  # type: ignore
+                '{}["{}"]'.format(
+                    M2MType.__name__, field.related_model._meta.object_name
+                ),
             )
 
         if isinstance(field, models.ForeignKey):  # covers OneToOneField too
-            return field.related_model, '"{}"'.format(
-                field.related_model._meta.object_name
+            return (
+                field.related_model,
+                '"{}"'.format(field.related_model._meta.object_name),
             )
 
         field_class: Type[models.Field]
