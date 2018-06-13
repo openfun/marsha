@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../marsha"))
 
 # default env var to be used by the doc builder, for example readthedocs
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "marsha.settings")
-os.environ.setdefault("DJANGO_CONFIGURATION", "Dev")
+os.environ.setdefault("DJANGO_CONFIGURATION", "Development")
 os.environ.setdefault("DJANGO_DEBUG", "False")
 os.environ.setdefault("DJANGO_SECRET_KEY", "FooBar")
 

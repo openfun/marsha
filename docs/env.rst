@@ -43,7 +43,7 @@ Default
     None
 
 Choices
-    Actually only ``Dev`` is available
+    Currently only ``Development`` is available
 
 
 *****************
@@ -77,7 +77,7 @@ Mandatory
     No
 
 Default
-    ``True`` if ``DJANGO_CONFIGURATION`` is set to ``Dev``, ``False`` otherwise
+    ``True`` if ``DJANGO_CONFIGURATION`` is set to ``Development``, ``False`` otherwise
 
 Choices
     ``True`` or ``False``
@@ -94,10 +94,10 @@ Type
     String
 
 Mandatory
-    No if ``DJANGO_CONFIGURATION`` is set to ``Dev``, yes otherwise
+    No if ``DJANGO_CONFIGURATION`` is set to ``Development``, yes otherwise
 
 Default
-    ``sqlite:///path/to/project/db.sqlite3`` if ``DJANGO_CONFIGURATION`` is set to ``Dev``, None otherwise
+    ``sqlite:///path/to/project/db.sqlite3`` if ``DJANGO_CONFIGURATION`` is set to ``Development``, None otherwise
 
 Choices
     See `schemas as presented by dj-database-url <https://github.com/kennethreitz/dj-database-url#url-schema>`_
