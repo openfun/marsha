@@ -16,7 +16,8 @@ RUN mkdir -p /data/{media,static}
 # Install curl
 RUN apk --no-cache add --update \
         curl \
-        vim
+        vim \
+        musl-dev  # required for Sphinx
 
 # Install development dependencies
 RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('setup.cfg'); \
