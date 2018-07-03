@@ -1,273 +1,537 @@
+# Configuration file anchors
+generate-version-file: &generate-version-file
+  run:
+    name: Create a version.json
+    command: |
+      # Create a version.json à-la-mozilla
+      # https://github.com/mozilla-services/Dockerflow/blob/master/docs/version_object.md
+      printf '{"commit":"%s","version":"%s","source":"https://github.com/%s/%s","build":"%s"}\n' \
+        "$CIRCLE_SHA1" \
+        "$CIRCLE_TAG" \
+        "$CIRCLE_PROJECT_USERNAME" \
+        "$CIRCLE_PROJECT_REPONAME" \
+        "$CIRCLE_BUILD_URL" > version.json
+
+
 version: 2
-
-references:
-
-  # docker container for python only jobs
-  python_only_config: &python_only_config
-    working_directory: ~/marsha
-    docker:
-      - image: circleci/python:3.6.5
-        environment: &django_environ
-          DJANGO_SETTINGS_MODULE: marsha.settings
-          DJANGO_CONFIGURATION: Development
-          DJANGO_DEBUG: False
-          DJANGO_SECRET_KEY: MarshaSecretKey
-
-  # docker container for complete jobs: python+postgres
-  full_config: &full_config
-    working_directory: ~/marsha
-    docker:
-      - image: circleci/python:3.6.5
-        environment:
-          <<: *django_environ
-          DATABASE_URL: postgresql://root@localhost/marsha?sslmode=disable
-      - image: circleci/postgres:10.3
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: marsha
-
-  # build steps to save/restore the directory used by pip to cache downloaded packages
-  save_pip_cache: &save_pip_cache
-    save_cache:
-      key: v1-pip-cache-{{ .Branch }}-{{ .Revision }}
-      paths:
-        - ~/.cache/pip
-  restore_pip_cache: &restore_pip_cache
-    restore_cache:
-      keys:
-        - v1-pip-cache-{{ .Branch }}-{{ .Revision }}
-        - v1-pip-cache-{{ .Branch }}
-        - v1-pip-cache
-
-  # shortcut to attach the workspace before each job
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: "~/"
-
-
-# jobs definition: they are used in ``workflows``
 jobs:
 
-  # get the code from git and save the repo to pass it to the next job
-  checkout_code:
-    <<: *python_only_config
+  # Git jobs
+  # Check that the git history is clean and complies with our expectations
+  lint-git:
+
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
       - checkout
-      - persist_to_workspace:
-          root: "~/"
+
+      - run:
+          name: Check absence of fixup commits
+          command: |
+            ! git log | grep 'fixup!'
+
+      - run:
+          name: Install gitlint
+          command: |
+            pip install gitlint
+
+      - run:
+          name: lint commit messages added to master
+          command: |
+            gitlint --commits origin/master..HEAD
+
+  # Docker/back-end jobs
+  # Build job
+  # Build the Docker image ready for production
+  build:
+
+    # We use the machine executor, i.e. a VM, not a container
+    machine:
+      # Cache docker layers so that we strongly speed up this job execution
+      docker_layer_caching: true
+
+    working_directory: ~/fun
+
+    steps:
+      # Checkout repository sources
+      - checkout
+
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+
+      # Each image is tagged with the current git commit sha1 to avoid
+      # collisions in parallel builds.
+      - run:
+          name: Build production image
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1} \
+              .
+
+      - run:
+          name: Check built image availability
+          command: docker images "marsha:${CIRCLE_SHA1}*"
+
+      # Since we cannot rely on CircleCI's Docker layers cache (for obscure
+      # reasons some subsequent jobs will benefit from a previous job cache and
+      # some others won't), we choose to save built docker images in cached
+      # directories. This ensures that we will be able to load built docker
+      # images in subsequent jobs.
+      - run:
+          name: Store docker image in cache
+          command: |
+            docker save \
+              -o docker/images/marsha.tar \
+              marsha:${CIRCLE_SHA1}
+
+      - save_cache:
           paths:
-            - marsha
+            - ~/fun/docker/images/
+          key: docker-debian-images-{{ .Revision }}
 
-  # install the project code and dependencies and save the venv and pip cache
-  install_code:
-    <<: *python_only_config
+  # Build dev job
+  # Build the Docker image ready for development
+  build-dev:
+
+    machine:
+      docker_layer_caching: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
-      - *restore_pip_cache
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-{{ .Revision }}
+
       - run:
-          name: Install code
+          name: Load images to docker engine
           command: |
-            python -m venv ~/venv
-            source ~/venv/bin/activate
-            pip install --upgrade pip
-            pip install -e .[dev]
-      - *save_pip_cache
-      - persist_to_workspace:
-          root: "~/"
+            docker load < docker/images/marsha.tar
+
+      - run:
+          name: List available images
+          command: docker images "marsha:${CIRCLE_SHA1}*"
+
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+
+      # Development image build, it uses the dev Dockerfile file
+      - run:
+          name: Build development image
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-dev \
+              -f docker/images/dev/Dockerfile \
+              --build-arg BASE_TAG=${CIRCLE_SHA1} \
+              .
+
+      - run:
+          name: Check built image availability
+          command: docker images "marsha:${CIRCLE_SHA1}*"
+
+      - run:
+          name: Store docker image in cache
+          command: |
+            docker save \
+              -o docker/images/dev/marsha.tar \
+              marsha:${CIRCLE_SHA1} \
+              marsha:${CIRCLE_SHA1}-dev
+
+      - save_cache:
           paths:
-            - venv
-            - marsha
+            - ~/fun/docker/images/dev/
+          key: docker-debian-images-dev-{{ .Revision }}
 
-  # 4 next jobs are linters: mypy, black, flake8 and pylint
-  # they all use the workspace
-  linter_mypy:
-    <<: *python_only_config
+  lint-isort:
+
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
       - run:
-          name: Run "mypy" linter
+          name: Load images to docker engine
           command: |
-            source ~/venv/bin/activate
-            make mypy
+            docker load < docker/images/dev/marsha.tar
 
-  linter_black:
-    <<: *python_only_config
-    steps:
-      - *attach_workspace
       - run:
-          name: Run "black" linter
+          name: Lint code with isort
           command: |
-            source ~/venv/bin/activate
-            make check-black
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm --no-deps app \
+                isort --recursive --check-only .
 
-  linter_flake8:
-    <<: *python_only_config
+  lint-flake8:
+
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
       - run:
-          name: Run "flake8" linter
+          name: Load images to docker engine
           command: |
-            source ~/venv/bin/activate
-            make flake8
+            docker load < docker/images/dev/marsha.tar
 
-  linter_pylint:
-    <<: *python_only_config
-    steps:
-      - *attach_workspace
       - run:
-          name: Run "pylint" linter
+          name: Lint code with flake8
           command: |
-            source ~/venv/bin/activate
-            make pylint
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm --no-deps app \
+                flake8
 
-  # django checks
-  django_checks:
-    <<: *python_only_config
+  lint-pylint:
+
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
       - run:
-          name: Django checks
+          name: Load images to docker engine
           command: |
-            source ~/venv/bin/activate
-            make check-django
+            docker load < docker/images/dev/marsha.tar
 
-  # check migrations files are ok
-  check_migrations:
-    <<: *python_only_config
-    steps:
-      - *attach_workspace
       - run:
-          name: Check migrations
+          name: Lint code with pylint
           command: |
-            source ~/venv/bin/activate
-            make check-migrations
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm --no-deps app \
+                pylint marsha
 
-  # run the tests
-  run_tests:
-    <<: *full_config
+  lint-black:
+
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
+      - run:
+          name: Load images to docker engine
+          command: |
+            docker load < docker/images/dev/marsha.tar
+
+      - run:
+          name: Lint code with black
+          command: |
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm --no-deps app \
+                black marsha --check
+
+  test-back:
+
+    machine: true
+
+    working_directory: ~/fun
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
+      - run:
+          name: Load images to docker engine
+          command: |
+            docker load < docker/images/dev/marsha.tar
+
+      # Run back-end (Django) test suite
+      #
+      # Nota bene: to run the django test suite, we need to ensure that the
+      # PostgreSQL service is up and ready. To achieve this,
+      # we wrap the command execution with dockerize, a tiny tool
+      # installed in the development image. In our case, dockerize will wait
+      # up to one minute until the database container is answering on port 5432.
       - run:
           name: Run tests
           command: |
-            source ~/venv/bin/activate
-            make test
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm app \
+                dockerize \
+                  -wait tcp://db:5432 \
+                  -timeout 60s \
+                    python manage.py test
 
+  # ---- Alpine jobs ----
+  build-alpine:
 
-  # run check and tests for every commit in the history for which it is not already done
-  check_every_commit:
-    <<: *full_config
+    machine:
+      docker_layer_caching: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
-      - *restore_pip_cache
-      - type: shell
-        name: Install system dependencies
-        command: sudo apt-get update -qq -y && sudo apt-get install -y curl jq
-      - run:
-          name: Check every commits
-          command: |
-            source ~/venv/bin/activate
-            .circleci/check-every-commit.sh
+      - checkout
 
-  # will build the python package, using the tag as the base version, suffixed with info from git describe if not a tag
-  build_python_package:
-    <<: *python_only_config
-    steps:
-      - *attach_workspace
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+
       - run:
-          name: Build package
+          name: Build alpine production image
           command: |
-            sed -i -e "s/^version = .*$/version = $(git describe --tags)/" setup.cfg
-            source ~/venv/bin/activate
-            make dist
-      - store_artifacts:
-          path: dist/
-      - persist_to_workspace:
-          root: "~/"
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-alpine \
+              -f docker/images/alpine/Dockerfile \
+              .
+
+      - run:
+          name: Build alpine development image
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-alpine-dev \
+              -f docker/images/alpine/dev/Dockerfile \
+              --build-arg BASE_TAG=${CIRCLE_SHA1}-alpine \
+              .
+
+      - run:
+          name: List available images
+          command: docker images marsha
+
+      - run:
+          name: Store docker image in cache
+          command: |
+            docker save \
+              -o docker/images/alpine/marsha.tar \
+              marsha:${CIRCLE_SHA1}-alpine \
+              marsha:${CIRCLE_SHA1}-alpine-dev
+
+      - save_cache:
           paths:
-            - marsha/dist
+            - ~/fun/docker/images/
+          key: docker-alpine-images-dev-{{ .Revision }}
 
-  # will publish the python package on a gemfury account
-  publish_python_package:
-    <<: *python_only_config
-    steps:
-      - *attach_workspace
-      - run:
-          name: Publish distributions to GemFury
-          command: |
-            for dist in $(ls dist/*) ; do \
-              curl -F package=@$dist https://${GEMFURY_API_TOKEN}@push.fury.io/${GEMFURY_USER}/ ; \
-            done
+  test-alpine:
 
-  # will build the documentation
-  build_doc:
-    <<: *python_only_config
+    machine: true
+
+    working_directory: ~/fun
+
     steps:
-      - *attach_workspace
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-alpine-images-dev-{{ .Revision }}
+
       - run:
-          name: Build package
+          name: Load images to docker engine
           command: |
-            source ~/venv/bin/activate
-            make doc
-      - store_artifacts:
-          path: docs/_build
+            docker load < docker/images/alpine/marsha.tar
+
+      - run:
+          name: Run tests
+          command: |
+            IMAGE_SUFFIX="-alpine" \
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm app \
+                dockerize \
+                  -wait tcp://db:5432 \
+                  -timeout 60s \
+                    python manage.py test
+
+
+  # ---- DockerHub publication job ----
+  hub:
+
+    machine: true
+
+    working_directory: ~/fun
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - docker-debian-images-dev-{{ .Revision }}
+
+      - restore_cache:
+          keys:
+            - docker-alpine-images-dev-{{ .Revision }}
+
+      # Load all built images in all flavors
+      - run:
+          name: Load images to docker engine
+          command: |
+            docker load < docker/images/dev/marsha.tar
+            docker load < docker/images/alpine/marsha.tar
+
+      # Login to DockerHub to Publish new images
+      #
+      # Nota bene: you'll need to define the following secrets environment vars
+      # in CircleCI interface:
+      #
+      #   - DOCKER_USER
+      #   - DOCKER_PASS
+      - run:
+          name: Login to DockerHub
+          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+      # Tag docker images with the same pattern used in Git (Semantic Versioning)
+      #
+      # Git tag: v1.0.1
+      # Docker tag: 1.0.1(-alpine)(-dev)
+      - run:
+          name: Tag images
+          command: |
+            docker images fundocker/marsha
+            DOCKER_TAG=$(echo ${CIRCLE_TAG} | sed 's/^v//')
+            echo "DOCKER_TAG: ${DOCKER_TAG} (from Git tag: ${CIRCLE_TAG})"
+            docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:latest
+            docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:${DOCKER_TAG}
+            docker tag marsha:${CIRCLE_SHA1}-dev fundocker/marsha:${DOCKER_TAG}-dev
+            docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:alpine
+            docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:${DOCKER_TAG}-alpine
+            docker tag marsha:${CIRCLE_SHA1}-alpine-dev fundocker/marsha:${DOCKER_TAG}-alpine-dev
+            docker images "fundocker/marsha:${DOCKER_TAG}*"
+
+      # Publish images to DockerHub
+      #
+      # Nota bene: logged user (see "Login to DockerHub" step) must have write
+      # permission for the project's repository; this also implies that the
+      # DockerHub repository already exists.
+      - run:
+          name: Publish images
+          command: |
+            DOCKER_TAG=$(echo ${CIRCLE_TAG} | sed 's/^v//')
+            echo "DOCKER_TAG: ${DOCKER_TAG} (from Git tag: ${CIRCLE_TAG})"
+            docker push fundocker/marsha:latest
+            docker push fundocker/marsha:${DOCKER_TAG}
+            docker push fundocker/marsha:${DOCKER_TAG}-dev
+            docker push fundocker/marsha:alpine
+            docker push fundocker/marsha:${DOCKER_TAG}-alpine
+            docker push fundocker/marsha:${DOCKER_TAG}-alpine-dev
+
 
 workflows:
   version: 2
 
   marsha:
     jobs:
-      - checkout_code
-      - install_code:
+
+      # Git jobs
+      #
+      # Check validity of git history
+      - lint-git:
+          filters:
+            tags:
+              only: /.*/
+
+      # Docker jobs
+      #
+      # Build, lint and test production and development Docker images
+      # (debian-based)
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - build-dev:
           requires:
-            - checkout_code
-      - linter_mypy:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - lint-black:
           requires:
-            - install_code
-      - linter_black:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
+      - lint-isort:
           requires:
-            - install_code
-      - linter_flake8:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
+      - lint-flake8:
           requires:
-            - install_code
-      - linter_pylint:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
+      - lint-pylint:
           requires:
-            - install_code
-      - check_migrations:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
+      - test-back:
           requires:
-            - install_code
-      - django_checks:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
+
+      # Docker alpine jobs
+      #
+      # Build and run tests in alpine based images
+      - build-alpine:
+          filters:
+            tags:
+              only: /.*/
+      - test-alpine:
           requires:
-            - install_code
-      - run_tests:
+            - build-alpine
+          filters:
+            tags:
+              only: /.*/
+
+      # DockerHub publication.
+      #
+      # Publish docker images only if all build, lint and test jobs succeed and
+      # it has been tagged with a tag starting with the letter v
+      - hub:
           requires:
-            - install_code
-      - check_every_commit:
-          requires:
-            - install_code
-      - build_python_package:
-          requires:
-            - linter_mypy
-            - linter_black
-            - linter_flake8
-            - linter_pylint
-            - check_migrations
-            - django_checks
-            - run_tests
-      - publish_python_package:
-          requires:
-            - build_python_package
+            - test-back
+            - test-alpine
           filters:
             branches:
               ignore: /.*/
             tags:
-              only: /.+/
-      - build_doc:
-          requires:
-            - linter_mypy
-            - linter_black
-            - linter_flake8
-            - linter_pylint
-            - check_migrations
-            - django_checks
-            - run_tests
+              only: /^v.*/
