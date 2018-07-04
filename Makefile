@@ -72,16 +72,21 @@ check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
 	@$(COMPOSE_TEST_RUN_APP) python manage.py makemigrations --check --dry-run
 
+.PHONY: migrate
+migrate:  ## Run django migration for the marsha project.
+	@echo "$(BOLD)Running migrations$(RESET)"
+	@$(COMPOSE_RUN_APP) python manage.py migrate
+
+superuser: ## create a Django superuser
+	@echo "$(BOLD)Creating a Django superuser$(RESET)"
+	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
+.PHONY: superuser
+
 .PHONY: test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
 	# we use a test-runner that does not run the django check command as its done in another job
 	@$(COMPOSE_TEST_RUN_APP) python manage.py test --testrunner marsha.test_runner.NoCheckDiscoverRunner
-
-.PHONY: migrate
-migrate:  ## Run django migration for the marsha project.
-	@echo "$(BOLD)Running migrations$(RESET)"
-	@$(COMPOSE_RUN_APP) python manage.py migrate
 
 
 ##############################################
