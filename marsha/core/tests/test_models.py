@@ -11,18 +11,17 @@ from safedelete.models import HARD_DELETE, SOFT_DELETE_CASCADE
 
 from marsha.core.models import PlaylistAccess
 
-from .factories import (
+from ..factories import (
     AudioTrackFactory,
-    AuthoringFactory,
+    ConsumerSiteAccessFactory,
     ConsumerSiteFactory,
+    ConsumerSiteOrganizationFactory,
+    OrganizationAccessFactory,
     OrganizationFactory,
-    OrganizationManagerFactory,
     PlaylistAccessFactory,
     PlaylistFactory,
     PlaylistVideoFactory,
     SignTrackFactory,
-    SiteAdminFactory,
-    SiteOrganizationFactory,
     SubtitleTrackFactory,
     UserFactory,
     VideoFactory,
@@ -142,17 +141,16 @@ class DeletionTestCase(TestCase):
         # test cascade
         user = UserFactory()
 
-        site = ConsumerSiteFactory()
-        site_admin = SiteAdminFactory(user=user, site=site)
+        consumer_site = ConsumerSiteFactory()
+        site_admin = ConsumerSiteAccessFactory(user=user, consumer_site=consumer_site)
         organization = OrganizationFactory()
-        organization_manager = OrganizationManagerFactory(
+        organization_access = OrganizationAccessFactory(
             user=user, organization=organization
         )
-        authoring = AuthoringFactory(user=user, organization=organization)
-        video = VideoFactory(author=user)
-        user_playlist = PlaylistFactory(author=user, organization=organization)
+        video = VideoFactory(created_by=user)
+        user_playlist = PlaylistFactory(created_by=user, organization=organization)
         other_playlist = PlaylistFactory(
-            author=UserFactory(), organization=organization
+            created_by=UserFactory(), organization=organization
         )
         other_playlist_access = PlaylistAccessFactory(
             user=user, playlist=other_playlist
@@ -160,11 +158,11 @@ class DeletionTestCase(TestCase):
 
         user.delete()
 
-        self.assertIsVisible(site)
+        self.assertIsVisible(consumer_site)
         self.assertIsSoftDeleted(site_admin)
         self.assertIsVisible(organization)
-        self.assertIsSoftDeleted(organization_manager)
-        self.assertIsSoftDeleted(authoring)
+        self.assertIsSoftDeleted(organization_access)
+        self.assertIsSoftDeleted(user)
         self.assertIsSoftDeleted(video)
         self.assertIsSoftDeleted(user_playlist)
         self.assertIsVisible(other_playlist)
@@ -174,17 +172,16 @@ class DeletionTestCase(TestCase):
         """Ensure hard deletion work in cascade as expected for users."""
         user = UserFactory()
 
-        site = ConsumerSiteFactory()
-        site_admin = SiteAdminFactory(user=user, site=site)
+        consumer_site = ConsumerSiteFactory()
+        site_admin = ConsumerSiteAccessFactory(user=user, consumer_site=consumer_site)
         organization = OrganizationFactory()
-        organization_manager = OrganizationManagerFactory(
+        organization_access = OrganizationAccessFactory(
             user=user, organization=organization
         )
-        authoring = AuthoringFactory(user=user, organization=organization)
-        video = VideoFactory(author=user)
-        user_playlist = PlaylistFactory(author=user, organization=organization)
+        video = VideoFactory(created_by=user)
+        user_playlist = PlaylistFactory(created_by=user, organization=organization)
         other_playlist = PlaylistFactory(
-            author=UserFactory(), organization=organization
+            created_by=UserFactory(), organization=organization
         )
         other_playlist_access = PlaylistAccessFactory(
             user=user, playlist=other_playlist
@@ -192,11 +189,10 @@ class DeletionTestCase(TestCase):
 
         user.delete(force_policy=HARD_DELETE)
 
-        self.assertIsVisible(site)
+        self.assertIsVisible(consumer_site)
         self.assertIsHardDeleted(site_admin)
         self.assertIsVisible(organization)
-        self.assertIsHardDeleted(organization_manager)
-        self.assertIsHardDeleted(authoring)
+        self.assertIsHardDeleted(organization_access)
         self.assertIsHardDeleted(video)
         self.assertIsHardDeleted(user_playlist)
         self.assertIsVisible(other_playlist)
@@ -215,15 +211,15 @@ class DeletionTestCase(TestCase):
         self._test_soft_deletion(ConsumerSiteFactory)
 
         # test cascade
-        site = ConsumerSiteFactory()
+        consumer_site = ConsumerSiteFactory()
         user = UserFactory()
-        site_admin = SiteAdminFactory(user=user, site=site)
+        site_admin = ConsumerSiteAccessFactory(user=user, consumer_site=consumer_site)
         organization = OrganizationFactory()
-        site_organization = SiteOrganizationFactory(
-            site=site, organization=organization
+        site_organization = ConsumerSiteOrganizationFactory(
+            consumer_site=consumer_site, organization=organization
         )
 
-        site.delete()
+        consumer_site.delete()
 
         self.assertIsSoftDeleted(site_admin)
         self.assertIsVisible(organization)
@@ -231,16 +227,16 @@ class DeletionTestCase(TestCase):
 
     def test_site_hard_deletion_cascade(self):
         """Ensure hard deletion work in cascade as expected for videos."""
-        site = ConsumerSiteFactory()
+        consumer_site = ConsumerSiteFactory()
 
         user = UserFactory()
-        site_admin = SiteAdminFactory(user=user, site=site)
+        site_admin = ConsumerSiteAccessFactory(user=user, consumer_site=consumer_site)
         organization = OrganizationFactory()
-        site_organization = SiteOrganizationFactory(
-            site=site, organization=organization
+        site_organization = ConsumerSiteOrganizationFactory(
+            consumer_site=consumer_site, organization=organization
         )
 
-        site.delete()
+        consumer_site.delete()
 
         self.assertIsSoftDeleted(site_admin)
         self.assertIsVisible(organization)
@@ -249,13 +245,17 @@ class DeletionTestCase(TestCase):
     def test_site_admin_deletion(self):
         """Ensure directly deleting a site-user link implies hard deletion."""
         self._test_hard_deletion(
-            SiteAdminFactory, user=UserFactory(), site=ConsumerSiteFactory()
+            ConsumerSiteAccessFactory,
+            user=UserFactory(),
+            consumer_site=ConsumerSiteFactory(),
         )
 
     def test_site_admin_uniqueness(self):
         """Ensure a site-user link cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            SiteAdminFactory, user=UserFactory(), site=ConsumerSiteFactory()
+            ConsumerSiteAccessFactory,
+            user=UserFactory(),
+            consumer_site=ConsumerSiteFactory(),
         )
 
     def test_organization_soft_deletion(self):
@@ -266,22 +266,20 @@ class DeletionTestCase(TestCase):
         organization = OrganizationFactory()
 
         user = UserFactory()
-        organization_manager = OrganizationManagerFactory(
+        organization_access = OrganizationAccessFactory(
             user=user, organization=organization
         )
-        authoring = AuthoringFactory(user=user, organization=organization)
-        site = ConsumerSiteFactory()
-        site_organization = SiteOrganizationFactory(
-            site=site, organization=organization
+        consumer_site = ConsumerSiteFactory()
+        site_organization = ConsumerSiteOrganizationFactory(
+            consumer_site=consumer_site, organization=organization
         )
         playlist = PlaylistFactory(organization=organization)
 
         organization.delete()
 
         self.assertIsVisible(user)
-        self.assertIsSoftDeleted(organization_manager)
-        self.assertIsSoftDeleted(authoring)
-        self.assertIsVisible(site)
+        self.assertIsSoftDeleted(organization_access)
+        self.assertIsVisible(consumer_site)
         self.assertIsSoftDeleted(site_organization)
         self.assertIsSoftDeleted(playlist)
 
@@ -290,82 +288,68 @@ class DeletionTestCase(TestCase):
         organization = OrganizationFactory()
 
         user = UserFactory()
-        organization_manager = OrganizationManagerFactory(
+        organization_access = OrganizationAccessFactory(
             user=user, organization=organization
         )
-        authoring = AuthoringFactory(user=user, organization=organization)
-        site = ConsumerSiteFactory()
-        site_organization = SiteOrganizationFactory(
-            site=site, organization=organization
+        consumer_site = ConsumerSiteFactory()
+        site_organization = ConsumerSiteOrganizationFactory(
+            consumer_site=consumer_site, organization=organization
         )
         playlist = PlaylistFactory(organization=organization)
 
         organization.delete(force_policy=HARD_DELETE)
 
         self.assertIsVisible(user)
-        self.assertIsHardDeleted(organization_manager)
-        self.assertIsHardDeleted(authoring)
-        self.assertIsVisible(site)
+        self.assertIsHardDeleted(organization_access)
+        self.assertIsVisible(consumer_site)
         self.assertIsHardDeleted(site_organization)
         self.assertIsHardDeleted(playlist)
 
     def test_site_organization_deletion(self):
         """Ensure directly deleting a site-organization link implies hard deletion."""
         self._test_hard_deletion(
-            SiteOrganizationFactory,
-            site=ConsumerSiteFactory(),
+            ConsumerSiteOrganizationFactory,
+            consumer_site=ConsumerSiteFactory(),
             organization=OrganizationFactory(),
         )
 
     def test_site_organization_uniqueness(self):
         """Ensure a site-organization link cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            SiteOrganizationFactory,
-            site=ConsumerSiteFactory(),
+            ConsumerSiteOrganizationFactory,
+            consumer_site=ConsumerSiteFactory(),
             organization=OrganizationFactory(),
         )
 
-    def test_organization_manager_deletion(self):
+    def test_organization_access_deletion(self):
         """Ensure directly deleting a organization-user link implies hard deletion."""
         self._test_hard_deletion(
-            OrganizationManagerFactory,
+            OrganizationAccessFactory,
             organization=OrganizationFactory(),
             user=UserFactory(),
         )
 
-    def test_organization_manager_uniqueness(self):
+    def test_organization_access_uniqueness(self):
         """Ensure a organization-user link cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            OrganizationManagerFactory,
+            OrganizationAccessFactory,
             organization=OrganizationFactory(),
             user=UserFactory(),
-        )
-
-    def test_authoring_deletion(self):
-        """Ensure directly deleting a organization-user link implies hard deletion."""
-        self._test_hard_deletion(
-            AuthoringFactory, organization=OrganizationFactory(), user=UserFactory()
-        )
-
-    def test_authoring_uniqueness(self):
-        """Ensure a organization-user link cannot exist twice as non-deleted."""
-        self._test_uniqueness_ignores_deleted(
-            AuthoringFactory, organization=OrganizationFactory(), user=UserFactory()
         )
 
     def test_video_soft_deletion(self):
         """Ensure soft deletion work as expected for videos."""
         user = UserFactory()
-        self._test_soft_deletion(VideoFactory, author=user)
+        self._test_soft_deletion(VideoFactory, created_by=user)
 
         # test cascade
-        video = VideoFactory(author=user)
+        video = VideoFactory(created_by=user)
         audio_track = AudioTrackFactory(video=video)
         subtitle_track = SubtitleTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
-        copied_video = VideoFactory(author=user, duplicated_from=video)
+        copied_video = VideoFactory(created_by=user, duplicated_from=video)
         organization = OrganizationFactory()
-        playlist = PlaylistFactory(author=user, organization=organization)
+        playlist = PlaylistFactory(created_by=user, organization=organization)
         playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
 
         video.delete()
@@ -381,14 +365,14 @@ class DeletionTestCase(TestCase):
     def test_video_hard_deletion_cascade(self):
         """Ensure hard deletion work in cascade as expected for videos."""
         user = UserFactory()
-        video = VideoFactory(author=user)
+        video = VideoFactory(created_by=user)
 
         audio_track = AudioTrackFactory(video=video)
         subtitle_track = SubtitleTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
-        copied_video = VideoFactory(author=user, duplicated_from=video)
+        copied_video = VideoFactory(created_by=user, duplicated_from=video)
         organization = OrganizationFactory()
-        playlist = PlaylistFactory(author=user, organization=organization)
+        playlist = PlaylistFactory(created_by=user, organization=organization)
         playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
 
         video.delete(force_policy=HARD_DELETE)
@@ -403,7 +387,7 @@ class DeletionTestCase(TestCase):
 
     def test_video_tracks_soft_deletion(self):
         """Ensure soft deletion work as expected for video tracks."""
-        video = VideoFactory(author=UserFactory())
+        video = VideoFactory(created_by=UserFactory())
 
         for factory in [AudioTrackFactory, SubtitleTrackFactory, SignTrackFactory]:
             with self.subTest(model=factory._meta.model):  # noqa
@@ -412,26 +396,28 @@ class DeletionTestCase(TestCase):
     def test_audio_track_uniqueness(self):
         """Ensure audio track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            AudioTrackFactory, video=VideoFactory(author=UserFactory(), language="en")
+            AudioTrackFactory,
+            video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
     def test_subtitle_track_uniqueness(self):
         """Ensure audio track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
             SubtitleTrackFactory,
-            video=VideoFactory(author=UserFactory(), language="en"),
+            video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
     def test_subtitle_track_can_exist_with_and_without_closed_captioning(self):
         """Ensure tracks can exists in same lang with or without closed captioning."""
-        video = VideoFactory(author=UserFactory())
+        video = VideoFactory(created_by=UserFactory())
         SubtitleTrackFactory(video=video, language="en", has_closed_captioning=True)
         SubtitleTrackFactory(video=video, language="en", has_closed_captioning=False)
 
     def test_sign_track_uniqueness(self):
         """Ensure audio track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            SignTrackFactory, video=VideoFactory(author=UserFactory(), language="en")
+            SignTrackFactory,
+            video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
     def test_playlist_soft_deletion(self):
@@ -439,15 +425,15 @@ class DeletionTestCase(TestCase):
         organization = OrganizationFactory()
         user = UserFactory()
         self._test_soft_deletion(
-            PlaylistFactory, organization=organization, author=user
+            PlaylistFactory, organization=organization, created_by=user
         )
 
         # test cascade
-        playlist = PlaylistFactory(organization=organization, author=user)
-        video = VideoFactory(author=user)
+        playlist = PlaylistFactory(organization=organization, created_by=user)
+        video = VideoFactory(created_by=user)
         playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
         copied_playlist = PlaylistFactory(
-            organization=organization, author=user, duplicated_from=playlist
+            organization=organization, created_by=user, duplicated_from=playlist
         )
         playlist_access = PlaylistAccessFactory(user=user, playlist=playlist)
 
@@ -462,12 +448,12 @@ class DeletionTestCase(TestCase):
         """Ensure hard deletion work in cascade as expected for playlists."""
         organization = OrganizationFactory()
         user = UserFactory()
-        playlist = PlaylistFactory(organization=organization, author=user)
+        playlist = PlaylistFactory(organization=organization, created_by=user)
 
-        video = VideoFactory(author=user)
+        video = VideoFactory(created_by=user)
         playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
         copied_playlist = PlaylistFactory(
-            organization=organization, author=user, duplicated_from=playlist
+            organization=organization, created_by=user, duplicated_from=playlist
         )
         playlist_access = PlaylistAccessFactory(user=user, playlist=playlist)
 
@@ -483,8 +469,10 @@ class DeletionTestCase(TestCase):
         user = UserFactory()
         self._test_hard_deletion(
             PlaylistVideoFactory,
-            playlist=PlaylistFactory(author=user, organization=OrganizationFactory()),
-            video=VideoFactory(author=user),
+            playlist=PlaylistFactory(
+                created_by=user, organization=OrganizationFactory()
+            ),
+            video=VideoFactory(created_by=user),
         )
 
     def test_playlist_video_uniqueness(self):
@@ -492,8 +480,10 @@ class DeletionTestCase(TestCase):
         user = UserFactory()
         self._test_uniqueness_ignores_deleted(
             PlaylistVideoFactory,
-            playlist=PlaylistFactory(author=user, organization=OrganizationFactory()),
-            video=VideoFactory(author=user),
+            playlist=PlaylistFactory(
+                created_by=user, organization=OrganizationFactory()
+            ),
+            video=VideoFactory(created_by=user),
         )
 
     def test_playlist_access_deletion(self):
@@ -501,7 +491,9 @@ class DeletionTestCase(TestCase):
         user = UserFactory()
         self._test_hard_deletion(
             PlaylistAccessFactory,
-            playlist=PlaylistFactory(author=user, organization=OrganizationFactory()),
+            playlist=PlaylistFactory(
+                created_by=user, organization=OrganizationFactory()
+            ),
             user=user,
         )
 
@@ -510,14 +502,16 @@ class DeletionTestCase(TestCase):
         user = UserFactory()
         self._test_uniqueness_ignores_deleted(
             PlaylistAccessFactory,
-            playlist=PlaylistFactory(author=user, organization=OrganizationFactory()),
+            playlist=PlaylistFactory(
+                created_by=user, organization=OrganizationFactory()
+            ),
             user=user,
         )
 
     def test_django_default_uniqueness(self):
         """Verify that by default Django ignores our unique-together."""
         user = UserFactory()
-        playlist = PlaylistFactory(author=user, organization=OrganizationFactory())
+        playlist = PlaylistFactory(created_by=user, organization=OrganizationFactory())
 
         # fields that should be considered unique together, and force non-deleted objects
         fields = {"user": user, "playlist": playlist, "deleted": None}
@@ -548,7 +542,7 @@ class DeletionTestCase(TestCase):
     def test_django_enhanced_uniqueness(self):
         """Verify that our unique-together defined by NonDeletedUniqueIndex are checked."""
         user = UserFactory()
-        playlist = PlaylistFactory(author=user, organization=OrganizationFactory())
+        playlist = PlaylistFactory(created_by=user, organization=OrganizationFactory())
 
         # fields that should be considered unique together, and force non-deleted objects
         fields = {"user": user, "playlist": playlist, "deleted": None}
