@@ -35,7 +35,7 @@ check: lint check-django check-migrations
 
 .PHONY: lint
 lint:  ## Run all linters (isort, black, flake8, pylint)
-lint: isort black flake8 pylint
+lint: lint-isort lint-black lint-flake8 lint-pylint
 
 .PHONY: check-black
 check-black:  ## Run the black tool in check mode only (won't modify files)
