@@ -1,45 +1,22 @@
-"""Base models for the core app of the Marsha project."""
+"""
+Base model for the core app of the Marsha project.
 
-from datetime import date, datetime
-from typing import Any, Dict, List, Mapping, Sequence, Tuple, Type, get_type_hints
+In this base model, we activate generic behaviours that apply to all our models and enforce
+checks and validation that go further than what Django is doing.
+"""
 
 from django.core import checks
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.fields.related import RelatedField
-from django.db.models.fields.reverse_related import ForeignObjectRel
 
 from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
-
-from marsha.stubs import M2MType, ReverseFKType, TupleOfStr, Typing
-
-
-CheckMessages = List[checks.CheckMessage]  # pylint: disable=invalid-name
 
 
 CHECKED_APPS = {"core"}
 
 
-fields_type_mapping: Mapping[Type[models.Field], type] = {
-    models.AutoField: int,
-    models.BooleanField: bool,
-    models.CharField: str,
-    models.DateField: date,
-    models.DateTimeField: datetime,
-    models.FloatField: float,
-    models.IntegerField: int,
-    models.TextField: str,
-}
-reverse_fields_type_mapping: Mapping[Type[RelatedField], type] = {
-    models.ForeignKey: ReverseFKType,
-    models.ManyToManyField: M2MType,
-}
-
-
-def _get_fields_by_source_model(
-    model: Type[models.Model]
-) -> Dict[str, Type[models.Model]]:
+def _get_fields_by_source_model(model):
     """Return all fields of a model and the exact model where they are defined.
 
     Parameters
@@ -54,7 +31,7 @@ def _get_fields_by_source_model(
         field is defined.
 
     """
-    fields: Dict[str, Type[models.Model]] = {}
+    fields = {}
 
     for base in model.__bases__:
         if base is models.Model or not issubclass(base, models.Model):
@@ -74,9 +51,9 @@ def _get_fields_by_source_model(
 class NonDeletedUniqueIndex(ConditionalUniqueIndex):
     """A special ConditionalUniqueIndex for non  deleted objects."""
 
-    condition: str = '"deleted" IS NULL'
+    condition = '"deleted" IS NULL'
 
-    def __init__(self, fields: Sequence, name: str = None) -> None:
+    def __init__(self, fields, name=None):
         """Override default init to pass our predefined condition.
 
         For the parameters, see ``ConditionalUniqueIndex.__init__``.
@@ -84,7 +61,7 @@ class NonDeletedUniqueIndex(ConditionalUniqueIndex):
         """
         super().__init__(condition=self.condition, fields=fields, name=name)
 
-    def deconstruct(self):  # type: ignore
+    def deconstruct(self):
         """Remove ``condition`` as an argument to be defined in migrations."""
         path, args, kwargs = super().deconstruct()
         del kwargs["condition"]
@@ -102,9 +79,6 @@ class BaseModel(SafeDeleteModel):
     "not deleted")
 
     Also it adds some checks run with ``django check``:
-        - check that all fields are correctly annotated.
-        - same for fields pointing to other models: final models must have all related
-        names properly annotated.
         - check that every ``ManyToManyField`` use a defined ``through`` table.
         - check that every model have a ``db_table`` defined, not prefixed with the name
         of the app or the project.
@@ -119,273 +93,7 @@ class BaseModel(SafeDeleteModel):
         abstract = True
 
     @classmethod
-    def _get_expected_field_annotation(cls, field: models.Field) -> Tuple[type, str]:
-        """Get the expected annotation for a django model field.
-
-        Parameters
-        ----------
-        field: models.Field
-            The instance of a field of the ``cls`` model for which we want to know
-            the expected annotation.
-
-        Returns
-        -------
-        Tuple[type, str]
-            A tuple with two entries: the expected type annotation, and a string representation
-            of this annotation.
-
-        Raises
-        ------
-        ValueError
-            If the field is not a ``ManyToManyField``, a ``ForeignKey``, a ``OneToOneField``
-            and not of a type defined in ``fields_type_mapping``.
-
-        """
-        if isinstance(field, models.ManyToManyField):
-            return (
-                M2MType[field.related_model],  # type: ignore
-                '{}["{}"]'.format(
-                    M2MType.__name__, field.related_model._meta.object_name
-                ),
-            )
-
-        if isinstance(field, models.ForeignKey):  # covers OneToOneField too
-            return (
-                field.related_model,
-                '"{}"'.format(field.related_model._meta.object_name),
-            )
-
-        field_class: Type[models.Field]
-        field_type: Typing
-        for field_class, field_type in fields_type_mapping.items():
-            if isinstance(field, field_class):
-                return field_type, field_type.__name__
-
-        raise ValueError(
-            "Field type not yet managed for '{}': {}".format(
-                field.name, field.__class__.__name__
-            )
-        )
-
-    @classmethod
-    def _check_annotated_fields(cls) -> CheckMessages:
-        """Check that all fields are correctly annotated.
-
-        Returns
-        -------
-        List[checks.CheckMessage]
-            A list of the check messages representing problems found on the model.
-
-        """
-        from marsha.core import (
-            models as core_models
-        )  # imported here to avoid cyclic import
-
-        fields: List[models.Field] = [
-            field
-            for field in cls._meta.get_fields()
-            if field.concrete and not field.auto_created
-        ]
-
-        fields_by_model: Dict[str, Type[models.Model]] = _get_fields_by_source_model(
-            cls
-        )
-
-        errors: CheckMessages = []
-        model_full_name: str = "{}.{}".format(
-            cls._meta.app_label, cls._meta.object_name
-        )
-
-        field: models.Field
-        for field in fields:
-            field_name: str = field.name
-
-            try:
-                expected_annotation = cls._get_expected_field_annotation(field)
-            except ValueError:
-                errors.append(
-                    checks.Error(
-                        "The expected annotation for the field '{}' on the model '{}', a "
-                        "'{}' is not known: please define it in 'fields_type_mapping'".format(
-                            field_name, model_full_name, field.__class__
-                        ),
-                        obj=cls,
-                        id="marsha.models.E001",
-                    )
-                )
-                continue
-
-            # check that the field is annotated
-            if field_name not in cls.__annotations__:
-
-                # ignore if defined in a model outside of the scope
-                if fields_by_model[field_name]._meta.app_label not in CHECKED_APPS:
-                    continue
-
-                errors.append(
-                    checks.Error(
-                        "There is no typing annotation for the field '{}' "
-                        "on the model '{}'".format(field_name, model_full_name),
-                        hint="Add the annotation for the '{}' field on "
-                        "the model '{}': ': {}'".format(
-                            field_name, model_full_name, expected_annotation[1]
-                        ),
-                        obj=cls,
-                        id="marsha.models.E002",
-                    )
-                )
-                continue
-
-            # check that the field is correctly annotated
-            annotation_type = get_type_hints(cls, core_models.__dict__)[field_name]
-
-            if annotation_type != expected_annotation[0]:
-                errors.append(
-                    checks.Error(
-                        "The typing annotation is wrong for the field '{}' on "
-                        "the model '{}': it should be '{}', not '{}'".format(
-                            field_name,
-                            model_full_name,
-                            expected_annotation[1],
-                            annotation_type,
-                        ),
-                        hint="Change the annotation for the '{}' field on the model "
-                        "'{}': ': {}'".format(
-                            field_name, model_full_name, expected_annotation[1]
-                        ),
-                        obj=cls,
-                        id="marsha.models.E003",
-                    )
-                )
-                continue
-
-        # expected_annotation_type = sel
-
-        return errors
-
-    @classmethod
-    def _check_annotated_related_names(cls) -> CheckMessages:
-        """Check that all related names are defined and annotated on final models.
-
-        Returns
-        -------
-        List[checks.CheckMessage]
-            A list of the check messages representing problems found on the model.
-
-        """
-        from marsha.core import (
-            models as core_models
-        )  # imported here to avoid cyclic import
-
-        related_fields: List[ForeignObjectRel] = [
-            field
-            for field in cls._meta.get_fields()
-            if field.is_relation
-            and hasattr(field, "related_name")
-            and field.field.model._meta.app_label in CHECKED_APPS
-        ]
-
-        errors: CheckMessages = []
-        model_full_name: str = "{}.{}".format(
-            cls._meta.app_label, cls._meta.object_name
-        )
-
-        field: ForeignObjectRel
-        for field in related_fields:
-
-            field_name: str = field.field.name
-            related_name: str = field.related_name
-            related_model: Type[models.Model] = field.field.model
-            related_model_name: str = related_model._meta.object_name
-            related_model_full_name: str = "{}.{}".format(
-                related_model._meta.app_label, related_model_name
-            )
-
-            # first, check that related name are defined on fk/m2m/o2o fields
-            if not related_name:
-                errors.append(
-                    checks.Error(
-                        "The field '{}' on the model '{}', pointing to the model '{}' "
-                        "doesn't have the 'related_name' attribute defined.".format(
-                            field_name, related_model_full_name, model_full_name
-                        ),
-                        hint="Set the 'related_name' argument when declaring the "
-                        "'{}' field on the model '{}'".format(
-                            field_name, related_model_full_name
-                        ),
-                        obj=cls,
-                        id="marsha.models.E004",
-                    )
-                )
-                continue
-
-            # then check that related names names are annotated on final models
-            expected_annotation_type: Typing
-            expected_annotation_string: str
-
-            if field.multiple:  # reverse relation of a ForeignKey or ManyToManyField
-                expected_annotation_type = reverse_fields_type_mapping[  # type: ignore
-                    field.field.__class__
-                ][related_model]
-                expected_annotation_string = '{}["{}"]'.format(
-                    reverse_fields_type_mapping[field.field.__class__].__name__,
-                    related_model_name,
-                )
-
-            else:  # reverse relation of a OneToOneField
-                expected_annotation_type = related_model
-                expected_annotation_string = '"{}"'.format(related_model_name)
-
-            if related_name not in cls.__annotations__:
-                errors.append(
-                    checks.Error(
-                        "There is no typing annotation for the related_name '{}' on the "
-                        "model '{}', pointed by the field '{}' defined on the model '{}'".format(
-                            related_name,
-                            model_full_name,
-                            field_name,
-                            related_model_full_name,
-                        ),
-                        hint="Add '{}: {}' in the model '{}'".format(
-                            related_name, expected_annotation_string, model_full_name
-                        ),
-                        obj=cls,
-                        id="marsha.models.E005",
-                    )
-                )
-                continue
-
-            # and finally check that annotations of these related names are correct
-
-            annotation_type = get_type_hints(cls, core_models.__dict__)[related_name]
-
-            if annotation_type != expected_annotation_type:
-                errors.append(
-                    checks.Error(
-                        "The typing annotation is wrong for the related_name '{}' on "
-                        "the model '{}', pointed by the field '{}' defined on the "
-                        "model '{}': it should be '{}', not '{}'".format(
-                            related_name,
-                            model_full_name,
-                            field_name,
-                            related_model_full_name,
-                            expected_annotation_string,
-                            annotation_type,
-                        ),
-                        hint="Change to '{}: {}' in the model '{}'".format(
-                            related_name, expected_annotation_string, model_full_name
-                        ),
-                        obj=cls,
-                        id="marsha.models.E006",
-                    )
-                )
-
-                continue
-
-        return errors
-
-    @classmethod
-    def _check_table_name(cls) -> CheckMessages:
+    def _check_table_name(cls):
         """Check that the table name is correctly defined.
 
         Returns
@@ -394,20 +102,20 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        errors: CheckMessages = []
+        errors = []
         model_full_name: str = "{}.{}".format(
             cls._meta.app_label, cls._meta.object_name
         )
 
         try:
-            db_table: str = cls._meta.original_attrs["db_table"]
+            db_table = cls._meta.original_attrs["db_table"]
         except KeyError:
             errors.append(
                 checks.Error(
                     "The model '{}' must define the 'db_table' attribute on its "
                     "'Meta' class. It must not be prefixed with the name of the "
                     "app or the project.".format(model_full_name),
-                    hint="Add 'db_table: str = \"{}\"' to the 'Meta' class of the "
+                    hint="Add 'db_table = \"{}\"' to the 'Meta' class of the "
                     "model '{}'".format(cls._meta.model_name, model_full_name),
                     obj=cls,
                     id="marsha.models.E007",
@@ -430,7 +138,7 @@ class BaseModel(SafeDeleteModel):
                             "('{}').".format(
                                 model_full_name, app_prefix, module_prefix
                             ),
-                            hint="Change to 'db_table: str = \"{}\"' in the 'Meta' class of the "
+                            hint="Change to 'db_table = \"{}\"' in the 'Meta' class of the "
                             "model '{}'".format(cls._meta.model_name, model_full_name),
                             obj=cls,
                             id="marsha.models.E008",
@@ -441,7 +149,7 @@ class BaseModel(SafeDeleteModel):
         return errors
 
     @classmethod
-    def _check_through_models(cls) -> CheckMessages:
+    def _check_through_models(cls):
         """Check that all m2m fields have a defined ``through`` model.
 
         Returns
@@ -450,21 +158,16 @@ class BaseModel(SafeDeleteModel):
             A list of the check messages representing problems found on the model.
 
         """
-        fields_by_model: Dict[str, Type[models.Model]] = _get_fields_by_source_model(
-            cls
-        )
-        errors: CheckMessages = []
-        model_full_name: str = "{}.{}".format(
-            cls._meta.app_label, cls._meta.object_name
-        )
+        fields_by_model = _get_fields_by_source_model(cls)
+        errors = []
+        model_full_name = "{}.{}".format(cls._meta.app_label, cls._meta.object_name)
 
-        m2m_fields: List[models.ManyToManyField] = [
+        m2m_fields = [
             field
             for field in cls._meta.get_fields()
             if isinstance(field, models.ManyToManyField)
         ]
 
-        field: models.ManyToManyField
         for field in m2m_fields:
 
             # ignore if defined in a model outside of the scope
@@ -490,12 +193,12 @@ class BaseModel(SafeDeleteModel):
         return errors
 
     @classmethod
-    def check(cls, **kwargs: Any) -> CheckMessages:
+    def check(cls, **kwargs):
         """Add checks for related names.
 
         Parameters
         ----------
-            kwargs: Any
+            kwargs:
                 Actually not used but asked by django to be present "for possible future usage".
 
         Returns
@@ -508,12 +211,10 @@ class BaseModel(SafeDeleteModel):
 
         errors.extend(cls._check_table_name())
         errors.extend(cls._check_through_models())
-        errors.extend(cls._check_annotated_fields())
-        errors.extend(cls._check_annotated_related_names())
 
         return errors
 
-    def validate_unique(self, exclude: List[str] = None) -> None:
+    def validate_unique(self, exclude=None):
         """Add validation for our ``NonDeletedUniqueIndex`` replacing ``unique_together``.
 
         For the parameters, see ``django.db.models.base.Model.validate_unique``.
@@ -528,22 +229,22 @@ class BaseModel(SafeDeleteModel):
             unique_checks = self._get_conditional_non_deleted_unique_checks(exclude)
 
             if unique_checks:
-                all_objects = self.__class__.all_objects  # type: ignore
+                all_objects = self.__class__.all_objects
                 try:
                     # we need to force ``_perform_unique_checks`` from ``SafeDeleteModel``
                     # to use the default manager to ignore deleted instances
-                    self.__class__.all_objects = self.__class__.objects  # type: ignore
+                    self.__class__.all_objects = self.__class__.objects
 
                     errors = self._perform_unique_checks(unique_checks)
 
                 finally:
-                    self.__class__.all_objects = all_objects  # type: ignore
+                    self.__class__.all_objects = all_objects
 
                 if errors:
                     raise ValidationError(errors)
 
     @classmethod
-    def _get_conditional_non_deleted_indexes_fields(cls) -> List[List[str]]:
+    def _get_conditional_non_deleted_indexes_fields(cls):
         """Get the tuples of fields for our conditional unique index for non deleted entries.
 
         Returns
@@ -553,7 +254,7 @@ class BaseModel(SafeDeleteModel):
             all the fields that compose the unique index.
 
         """
-        tuples: List[List[str]] = []
+        tuples = []
 
         if cls._meta.indexes:
             tuples.extend(
@@ -566,9 +267,7 @@ class BaseModel(SafeDeleteModel):
 
         return tuples
 
-    def _get_conditional_non_deleted_unique_checks(
-        self, exclude: List[str] = None
-    ) -> List[Tuple[Type["BaseModel"], TupleOfStr]]:
+    def _get_conditional_non_deleted_unique_checks(self, exclude=None):
         """Extract "unique checks" from our conditional unique for ``_perform_unique_checks``.
 
         This is basically a copy of ``django.db.models.Model_get_unique_checks`` (only the
@@ -588,13 +287,12 @@ class BaseModel(SafeDeleteModel):
         if exclude is None:
             exclude = []
 
-        unique_checks: List[Tuple[Type["BaseModel"], TupleOfStr]] = []
+        unique_checks = []
 
         unique_togethers = [
             (self.__class__, self._get_conditional_non_deleted_indexes_fields())
         ]
 
-        parent_class: Type[models.Model]
         for parent_class in self._meta.get_parent_list():
             if issubclass(parent_class, BaseModel):
                 unique_togethers.append(
