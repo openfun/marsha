@@ -120,10 +120,6 @@ class Development(Base):
     DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
 
-    DATABASES = values.DatabaseURLValue(
-        "sqlite:///{}".format(os.path.join(BASE_DIR, "db.sqlite3"))
-    )
-
 
 class Test(Base):
     """Test environment settings."""
