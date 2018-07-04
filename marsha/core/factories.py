@@ -3,6 +3,7 @@
 
 import factory
 from factory.django import DjangoModelFactory
+from factory.fuzzy import FuzzyInteger
 
 from marsha.core import models
 
@@ -13,11 +14,7 @@ class UserFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.User
 
-    is_active = True
-    is_staff = False
-    is_superuser = False
-
-    username = factory.Sequence("User {:03d}".format)
+    username = factory.Faker("user_name")
 
 
 class ConsumerSiteFactory(DjangoModelFactory):
@@ -29,11 +26,11 @@ class ConsumerSiteFactory(DjangoModelFactory):
     name = factory.Sequence("Site {:03d}".format)
 
 
-class SiteAdminFactory(DjangoModelFactory):
-    """Factory for the SiteAdmin model."""
+class ConsumerSiteAccessFactory(DjangoModelFactory):
+    """Factory for the ConsumerSiteAccess model."""
 
     class Meta:  # noqa
-        model = models.SiteAdmin
+        model = models.ConsumerSiteAccess
 
 
 class OrganizationFactory(DjangoModelFactory):
@@ -42,28 +39,21 @@ class OrganizationFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Organization
 
-    name = factory.Sequence("Org {:03d}".format)
+    name = factory.Faker("company")
 
 
-class SiteOrganizationFactory(DjangoModelFactory):
+class ConsumerSiteOrganizationFactory(DjangoModelFactory):
     """Factory for the SiteOrganization model."""
 
     class Meta:  # noqa
-        model = models.SiteOrganization
+        model = models.ConsumerSiteOrganization
 
 
-class OrganizationManagerFactory(DjangoModelFactory):
-    """Factory for the OrganizationManager model."""
-
-    class Meta:  # noqa
-        model = models.OrganizationManager
-
-
-class AuthoringFactory(DjangoModelFactory):
-    """Factory for the Authoring model."""
+class OrganizationAccessFactory(DjangoModelFactory):
+    """Factory for the OrganizationAccess model."""
 
     class Meta:  # noqa
-        model = models.Authoring
+        model = models.OrganizationAccess
 
 
 class VideoFactory(DjangoModelFactory):
@@ -73,8 +63,6 @@ class VideoFactory(DjangoModelFactory):
         model = models.Video
 
     name = factory.Sequence("Video {:03d}".format)
-    language = "en"
-    duplicated_from = None
 
 
 class AudioTrackFactory(DjangoModelFactory):
@@ -83,8 +71,6 @@ class AudioTrackFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.AudioTrack
 
-    language = "en"
-
 
 class SubtitleTrackFactory(DjangoModelFactory):
     """Factory for the SubtitleTrack model."""
@@ -92,17 +78,12 @@ class SubtitleTrackFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.SubtitleTrack
 
-    language = "en"
-    has_closed_captioning = False
-
 
 class SignTrackFactory(DjangoModelFactory):
     """Factory for the SignTrack model."""
 
     class Meta:  # noqa
         model = models.SignTrack
-
-    language = "en"
 
 
 class PlaylistFactory(DjangoModelFactory):
@@ -120,7 +101,7 @@ class PlaylistVideoFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.PlaylistVideo
 
-    order = factory.Sequence(lambda n: n)
+    order = FuzzyInteger(0)
 
 
 class PlaylistAccessFactory(DjangoModelFactory):
