@@ -4,10 +4,12 @@ Base model for the core app of the Marsha project.
 In this base model, we activate generic behaviours that apply to all our models and enforce
 checks and validation that go further than what Django is doing.
 """
+import uuid
 
 from django.core import checks
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
@@ -84,6 +86,14 @@ class BaseModel(SafeDeleteModel):
         of the app or the project.
 
     """
+
+    id = models.UUIDField(
+        verbose_name=_("id"),
+        help_text=_("primary key for the record as UUID"),
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
 
     _safedelete_policy = SOFT_DELETE_CASCADE
 
