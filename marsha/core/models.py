@@ -41,6 +41,92 @@ class User(BaseModel, AbstractUser):
         return result
 
 
+class LTIPassport(BaseModel):
+    """
+    Model representing an LTI passport for LTI consumers to interact with Marsha.
+
+    An LTI passport stores credentials that can be used by an LTI consumer to interact with
+    Marsha as an LTI provider.
+
+    """
+
+    oauth_consumer_key = models.CharField(
+        max_length=255,
+        verbose_name=_("oauth consumer key"),
+        help_text=_(
+            "oauth consumer key to authenticate an LTI consumer on the LTI provider"
+        ),
+    )
+    shared_secret = models.CharField(
+        max_length=255,
+        verbose_name=_("shared secret"),
+        help_text=_("LTI Shared secret"),
+    )
+    created_by = models.ForeignKey(
+        to=User,
+        related_name="lti_passports",
+        # don't delete an LTI passport if the user who created it is hard deleted
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    is_enabled = models.BooleanField(
+        verbose_name=_("is enabled"), help_text=_("whether the passport is enabled")
+    )
+
+    class Meta:
+        """Options for the ``LTIPassport`` model."""
+
+        db_table = "lti_passport"
+        verbose_name = _("LTI passport")
+        verbose_name_plural = _("LTI passports")
+
+
+class LTIPassportScope(BaseModel):
+    """
+    Model representing the scope of an LTI passport.
+
+    A passport can be granted for:
+    - a playlist: to be used when we trust an instructor. A playlist pre-exists in Marsha. The
+        course instructor receives credentials and associates them at the level of his/her
+        course to handle the course videos inside the playlist.
+    - a consumer site: to be used when we trust the administrator of a VLE (virtual learning
+        environment). The administrator receives credentials and associates them at the level
+        of the VLE so that all instructors on the VLE can handle their videos inside playlists
+        that will be created on the fly.
+
+    """
+
+    lti_passport = models.ForeignKey(
+        to=LTIPassport,
+        related_name="scopes",
+        # Scope is (soft-)deleted if related LTI passport is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+    consumer_site = models.ForeignKey(
+        to="LTIPassport",
+        related_name="lti_passport_scopes",
+        # don't allow hard deleting a consumer site if it is still linked to a passport
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    playlist = models.ForeignKey(
+        to="Playlist",
+        related_name="lti_passport_scopes",
+        # don't allow hard deleting a playlist if it is still linked to a passport
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        """Options for the ``LTIPassportScope`` model."""
+
+        db_table = "lti_passport_scope"
+        verbose_name = _("LTI passport scope")
+        verbose_name_plural = _("LTI passport scopes")
+
+
 class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
 
@@ -262,14 +348,17 @@ class Video(BaseModel):
     name = models.CharField(
         max_length=255, verbose_name=_("name"), help_text=_("name of the video")
     )
-
     description = models.TextField(
         verbose_name=_("description"),
         help_text=_("description of the video"),
         blank=True,
         null=True,
     )
-
+    lti_id = models.CharField(
+        max_length=255,
+        verbose_name=_("lti id"),
+        help_text=_("ID for synchronization with an external LTI tool"),
+    )
     created_by = models.ForeignKey(
         to=User,
         related_name="created_videos",
@@ -388,7 +477,11 @@ class Playlist(BaseModel):
     name = models.CharField(
         max_length=255, verbose_name=_("name"), help_text=_("name of the playlist")
     )
-
+    lti_id = models.CharField(
+        max_length=255,
+        verbose_name=_("lti id"),
+        help_text=_("ID for synchronization with an external LTI tool"),
+    )
     organization = models.ForeignKey(
         to=Organization,
         related_name="playlists",
