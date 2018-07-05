@@ -1,5 +1,6 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
 from typing import Type
+from unittest import mock
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
@@ -11,6 +12,7 @@ from factory.django import DjangoModelFactory
 from safedelete.models import HARD_DELETE, SOFT_DELETE_CASCADE
 
 from marsha.core.models import PlaylistAccess
+from marsha.core.models.base import BaseModel
 
 from ..factories import (
     AudioTrackFactory,
@@ -29,7 +31,7 @@ from ..factories import (
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc
+# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
 
 
 class DeletionTestCase(TestCase):
@@ -482,7 +484,10 @@ class DeletionTestCase(TestCase):
             user=user,
         )
 
-    def test_django_default_uniqueness(self):
+    @mock.patch.object(
+        BaseModel, "_get_conditional_non_deleted_unique_checks", return_value=[]
+    )  # we return nothing on our own method to let django do the default unique validation only
+    def test_django_default_uniqueness(self, mock_checks):
         """Verify that by default Django ignores our unique-together."""
         user = UserFactory()
         playlist = PlaylistFactory(created_by=user, organization=OrganizationFactory())
@@ -495,12 +500,6 @@ class DeletionTestCase(TestCase):
 
         # create an object without saving it, with same "unique" fields
         playlist_access2 = PlaylistAccess(**fields)
-
-        # here is the trick: we return nothing on our own method to let django do
-        # the default unique validation only
-        playlist_access2._get_conditional_non_deleted_unique_checks = (
-            lambda exclude=None: []
-        )
 
         # so this should not raise because for django there is not unique_together on these fields
         playlist_access2.validate_unique()
