@@ -15,7 +15,6 @@ from marsha.core.models import (
     OrganizationAccess,
     Playlist,
     PlaylistAccess,
-    PlaylistVideo,
     SignTrack,
     SubtitleTrack,
     User,
@@ -129,10 +128,10 @@ class VideoAdmin(BaseModelAdmin):
     inlines = [AudioTrackInline, SubtitleTrackInline, SignTrackInline]
 
 
-class PlaylistVideosInline(admin.TabularInline):
+class VideosInline(admin.TabularInline):
     """Inline for videos in a playlist."""
 
-    model = PlaylistVideo
+    model = Video
     verbose_name = _("video")
     verbose_name_plural = _("videos")
 
@@ -151,4 +150,4 @@ class PlaylistAdmin(BaseModelAdmin):
 
     list_display = ("name", "organization", "created_by", "is_public")
     exclude = ("duplicated_from",)
-    inlines = [PlaylistVideosInline, PlaylistAccessesInline]
+    inlines = [VideosInline, PlaylistAccessesInline]
