@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "/home/sampaccoud/.virtualenvs/vscode3/bin/python3.6",
+    "python.linting.enabled": true,
+    "editor.formatOnType": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "python.linting.flake8Enabled": true
+}

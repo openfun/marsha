@@ -3,6 +3,7 @@ from typing import Type
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.utils.timezone import now
 
@@ -20,7 +21,6 @@ from ..factories import (
     OrganizationFactory,
     PlaylistAccessFactory,
     PlaylistFactory,
-    PlaylistVideoFactory,
     SignTrackFactory,
     SubtitleTrackFactory,
     UserFactory,
@@ -343,47 +343,45 @@ class DeletionTestCase(TestCase):
         self._test_soft_deletion(VideoFactory, created_by=user)
 
         # test cascade
-        video = VideoFactory(created_by=user)
+        organization = OrganizationFactory()
+        playlist = PlaylistFactory(created_by=user, organization=organization)
+        video = VideoFactory(created_by=user, playlist=playlist)
         audio_track = AudioTrackFactory(video=video)
         subtitle_track = SubtitleTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
-        organization = OrganizationFactory()
-        playlist = PlaylistFactory(created_by=user, organization=organization)
-        playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
 
         video.delete()
 
+        self.assertIsSoftDeleted(video)
         self.assertIsSoftDeleted(audio_track)
         self.assertIsSoftDeleted(subtitle_track)
         self.assertIsSoftDeleted(sign_track)
         self.assertIsVisible(copied_video)
         self.assertIsVisible(organization)
         self.assertIsVisible(playlist)
-        self.assertIsSoftDeleted(playlist_video)
 
     def test_video_hard_deletion_cascade(self):
         """Ensure hard deletion work in cascade as expected for videos."""
         user = UserFactory()
-        video = VideoFactory(created_by=user)
+        organization = OrganizationFactory()
+        playlist = PlaylistFactory(created_by=user, organization=organization)
+        video = VideoFactory(created_by=user, playlist=playlist)
 
         audio_track = AudioTrackFactory(video=video)
         subtitle_track = SubtitleTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
-        organization = OrganizationFactory()
-        playlist = PlaylistFactory(created_by=user, organization=organization)
-        playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
 
         video.delete(force_policy=HARD_DELETE)
 
+        self.assertIsHardDeleted(video)
         self.assertIsHardDeleted(audio_track)
         self.assertIsHardDeleted(subtitle_track)
         self.assertIsHardDeleted(sign_track)
         self.assertIsVisible(copied_video)
         self.assertIsVisible(organization)
         self.assertIsVisible(playlist)
-        self.assertIsHardDeleted(playlist_video)
 
     def test_video_tracks_soft_deletion(self):
         """Ensure soft deletion work as expected for video tracks."""
@@ -430,8 +428,7 @@ class DeletionTestCase(TestCase):
 
         # test cascade
         playlist = PlaylistFactory(organization=organization, created_by=user)
-        video = VideoFactory(created_by=user)
-        playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
+        video = VideoFactory(created_by=user, playlist=playlist)
         copied_playlist = PlaylistFactory(
             organization=organization, created_by=user, duplicated_from=playlist
         )
@@ -440,51 +437,28 @@ class DeletionTestCase(TestCase):
         playlist.delete()
 
         self.assertIsVisible(video)
-        self.assertIsSoftDeleted(playlist_video)
         self.assertIsVisible(copied_playlist)
         self.assertIsSoftDeleted(playlist_access)
 
     def test_playlist_hard_deletion_cascade(self):
-        """Ensure hard deletion work in cascade as expected for playlists."""
+        """It should not be possible to hard delete a playlist that still contains videos."""
         organization = OrganizationFactory()
         user = UserFactory()
         playlist = PlaylistFactory(organization=organization, created_by=user)
 
-        video = VideoFactory(created_by=user)
-        playlist_video = PlaylistVideoFactory(playlist=playlist, video=video)
+        video = VideoFactory(created_by=user, playlist=playlist)
         copied_playlist = PlaylistFactory(
             organization=organization, created_by=user, duplicated_from=playlist
         )
         playlist_access = PlaylistAccessFactory(user=user, playlist=playlist)
 
-        playlist.delete(force_policy=HARD_DELETE)
+        with self.assertRaises(ProtectedError):
+            playlist.delete(force_policy=HARD_DELETE)
 
+        self.assertIsVisible(playlist)
         self.assertIsVisible(video)
-        self.assertIsHardDeleted(playlist_video)
         self.assertIsVisible(copied_playlist)
-        self.assertIsHardDeleted(playlist_access)
-
-    def test_playlist_video_deletion(self):
-        """Ensure directly deleting a playlist-video link implies hard deletion."""
-        user = UserFactory()
-        self._test_hard_deletion(
-            PlaylistVideoFactory,
-            playlist=PlaylistFactory(
-                created_by=user, organization=OrganizationFactory()
-            ),
-            video=VideoFactory(created_by=user),
-        )
-
-    def test_playlist_video_uniqueness(self):
-        """Ensure a playlist-video link cannot exist twice as non-deleted."""
-        user = UserFactory()
-        self._test_uniqueness_ignores_deleted(
-            PlaylistVideoFactory,
-            playlist=PlaylistFactory(
-                created_by=user, organization=OrganizationFactory()
-            ),
-            video=VideoFactory(created_by=user),
-        )
+        self.assertIsVisible(playlist_access)
 
     def test_playlist_access_deletion(self):
         """Ensure directly deleting a playlist-user link implies hard deletion."""
