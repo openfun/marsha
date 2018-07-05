@@ -11,6 +11,14 @@ from marsha.core.base_models import BaseModel, NonDeletedUniqueIndex
 from marsha.core.managers import UserManager
 
 
+ADMINISTRATOR, INSTRUCTOR, STUDENT = ("administrator", "instructor", "student")
+ROLE_CHOICES = (
+    (ADMINISTRATOR, _("administrator")),
+    (INSTRUCTOR, _("instructor")),
+    (STUDENT, _("student")),
+)
+
+
 class User(BaseModel, AbstractUser):
     """Model representing a user that can be authenticated to act on the Marsha instance."""
 
@@ -64,9 +72,6 @@ class ConsumerSite(BaseModel):
 class ConsumerSiteAccess(BaseModel):
     """Model representing accesses to a consumer site that are granted to users."""
 
-    ADMIN = "admin"
-    ROLE_CHOICES = ((ADMIN, _("admin")),)
-
     # we allow deleting entries in this through table
     _safedelete_policy = HARD_DELETE
 
@@ -91,7 +96,7 @@ class ConsumerSiteAccess(BaseModel):
         choices=ROLE_CHOICES,
         verbose_name=_("role"),
         help_text=_("role granted to the user on the consumer site"),
-        default=ADMIN,
+        default=ADMINISTRATOR,
     )
 
     class Meta:
@@ -203,9 +208,6 @@ class OrganizationAccess(BaseModel):
 
     """
 
-    ADMIN, TEACHER = ("admin", "teacher")
-    ROLE_CHOICES = ((ADMIN, _("admin")), (TEACHER, _("teacher")))
-
     # we allow deleting entries in this through table
     _safedelete_policy = HARD_DELETE
 
@@ -230,7 +232,7 @@ class OrganizationAccess(BaseModel):
         choices=ROLE_CHOICES,
         verbose_name=_("role"),
         help_text=_("role granted to the user on the consumer site"),
-        default=TEACHER,
+        default=INSTRUCTOR,
     )
 
     class Meta:
@@ -487,9 +489,6 @@ class PlaylistAccess(BaseModel):
 
     """
 
-    ADMIN, TEACHER = ("admin", "teacher")
-    ROLE_CHOICES = ((ADMIN, _("admin")), (TEACHER, _("teacher")))
-
     # we allow deleting entries in this through table
     _safedelete_policy = HARD_DELETE
 
@@ -514,7 +513,7 @@ class PlaylistAccess(BaseModel):
         choices=ROLE_CHOICES,
         verbose_name=_("role"),
         help_text=_("role granted to the user on the consumer site"),
-        default=TEACHER,
+        default=INSTRUCTOR,
     )
 
     class Meta:
