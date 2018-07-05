@@ -94,6 +94,18 @@ class BaseModel(SafeDeleteModel):
         default=uuid.uuid4,
         editable=False,
     )
+    created_on = models.DateTimeField(
+        verbose_name=_("created on"),
+        help_text=_("date and time at which a record was created"),
+        auto_now_add=True,
+        editable=False,
+    )
+    updated_on = models.DateTimeField(
+        verbose_name=_("updated on"),
+        help_text=_("date and time at which a record was last updated"),
+        auto_now=True,
+        editable=False,
+    )
 
     _safedelete_policy = SOFT_DELETE_CASCADE
 
