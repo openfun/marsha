@@ -56,6 +56,22 @@ class OrganizationAccessFactory(DjangoModelFactory):
         model = models.OrganizationAccess
 
 
+class PlaylistFactory(DjangoModelFactory):
+    """Factory for the Playlist model."""
+
+    class Meta:  # noqa
+        model = models.Playlist
+
+    name = factory.Sequence("Playlist {:03d}".format)
+
+
+class PlaylistAccessFactory(DjangoModelFactory):
+    """Factory for the PlaylistAccess model."""
+
+    class Meta:  # noqa
+        model = models.PlaylistAccess
+
+
 class VideoFactory(DjangoModelFactory):
     """Factory for the Video model."""
 
@@ -63,6 +79,8 @@ class VideoFactory(DjangoModelFactory):
         model = models.Video
 
     name = factory.Sequence("Video {:03d}".format)
+    order = FuzzyInteger(0)
+    playlist = factory.SubFactory(PlaylistFactory)
 
 
 class AudioTrackFactory(DjangoModelFactory):
@@ -84,28 +102,3 @@ class SignTrackFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.SignTrack
-
-
-class PlaylistFactory(DjangoModelFactory):
-    """Factory for the Playlist model."""
-
-    class Meta:  # noqa
-        model = models.Playlist
-
-    name = factory.Sequence("Playlist {:03d}".format)
-
-
-class PlaylistVideoFactory(DjangoModelFactory):
-    """Factory for the PlaylistVideo model."""
-
-    class Meta:  # noqa
-        model = models.PlaylistVideo
-
-    order = FuzzyInteger(0)
-
-
-class PlaylistAccessFactory(DjangoModelFactory):
-    """Factory for the PlaylistAccess model."""
-
-    class Meta:  # noqa
-        model = models.PlaylistAccess

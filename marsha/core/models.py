@@ -103,7 +103,7 @@ class LTIPassportScope(BaseModel):
         on_delete=models.CASCADE,
     )
     consumer_site = models.ForeignKey(
-        to="LTIPassport",
+        to=LTIPassport,
         related_name="lti_passport_scopes",
         # don't allow hard deleting a consumer site if it is still linked to a passport
         on_delete=models.PROTECT,
@@ -374,6 +374,17 @@ class Video(BaseModel):
         verbose_name=_("language"),
         help_text=_("language of the video"),
     )
+    playlist = models.ForeignKey(
+        to="Playlist",
+        related_name="videos",
+        verbose_name=_("playlist"),
+        help_text=_("playlist to which this video belongs"),
+        # don't allow hard deleting a playlist if it still contains videos
+        on_delete=models.PROTECT,
+    )
+    order = models.PositiveIntegerField(
+        verbose_name=_("order"), help_text=_("video order in the playlist"), default=0
+    )
     duplicated_from = models.ForeignKey(
         to="self",
         related_name="duplicates",
@@ -389,6 +400,7 @@ class Video(BaseModel):
         """Options for the ``Video`` model."""
 
         db_table = "video"
+        ordering = ["order", "id"]
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
@@ -518,13 +530,6 @@ class Playlist(BaseModel):
         verbose_name=_("users"),
         help_text=_("users who have been granted access to this playlist"),
     )
-    videos = models.ManyToManyField(
-        to=Video,
-        through="PlaylistVideo",
-        related_name="playlists",
-        verbose_name=_("videos"),
-        help_text=_("videos in this playlist"),
-    )
 
     class Meta:
         """Options for the ``Playlist`` model."""
@@ -532,46 +537,6 @@ class Playlist(BaseModel):
         db_table = "playlist"
         verbose_name = _("playlist")
         verbose_name_plural = _("playlists")
-
-
-class PlaylistVideo(BaseModel):
-    """Model representing a video in a playlist.
-
-    ``through`` model between ``Playlist.videos`` and ``Video.playlists``.
-
-    """
-
-    # we allow deleting entries in this through table
-    _safedelete_policy = HARD_DELETE
-
-    video = models.ForeignKey(
-        to=Video,
-        related_name="playlist_links",
-        verbose_name=_("video"),
-        help_text=_("video contained in this playlist"),
-        # link is (soft-)deleted if video is (soft-)deleted
-        on_delete=models.CASCADE,
-    )
-    playlist = models.ForeignKey(
-        to=Playlist,
-        related_name="video_links",
-        verbose_name=_("playlist"),
-        help_text=_("playlist containing this video"),
-        # link is (soft-)deleted if playlist is (soft-)deleted
-        on_delete=models.CASCADE,
-    )
-    order = models.PositiveIntegerField(
-        verbose_name=_("order"), help_text=_("video order in the playlist"), default=0
-    )
-
-    class Meta:
-        """Options for the ``PlaylistVideo`` model."""
-
-        db_table = "playlist_video"
-        verbose_name = _("playlist video link")
-        verbose_name_plural = _("playlist video links")
-        ordering = ["order", "id"]
-        indexes = [NonDeletedUniqueIndex(["video", "playlist"])]
 
 
 class PlaylistAccess(BaseModel):
