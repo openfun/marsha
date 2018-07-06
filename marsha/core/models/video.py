@@ -150,8 +150,10 @@ class Video(BaseModel):
         # don't allow hard deleting a playlist if it still contains videos
         on_delete=models.PROTECT,
     )
-    order = models.PositiveIntegerField(
-        verbose_name=_("order"), help_text=_("video order in the playlist"), default=0
+    position = models.PositiveIntegerField(
+        verbose_name=_("position"),
+        help_text=_("position of this video in the playlist"),
+        default=0,
     )
     duplicated_from = models.ForeignKey(
         to="self",
@@ -168,7 +170,7 @@ class Video(BaseModel):
         """Options for the ``Video`` model."""
 
         db_table = "video"
-        ordering = ["order", "id"]
+        ordering = ["position", "id"]
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
