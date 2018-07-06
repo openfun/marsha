@@ -79,7 +79,7 @@ class VideoFactory(DjangoModelFactory):
         model = models.Video
 
     name = factory.Sequence("Video {:03d}".format)
-    order = FuzzyInteger(0)
+    position = FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
 
 
