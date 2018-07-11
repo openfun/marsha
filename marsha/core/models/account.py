@@ -103,7 +103,7 @@ class LTIPassportScope(BaseModel):
         on_delete=models.CASCADE,
     )
     consumer_site = models.ForeignKey(
-        to=LTIPassport,
+        to="ConsumerSite",
         related_name="lti_passport_scopes",
         # don't allow hard deleting a consumer site if it is still linked to a passport
         on_delete=models.PROTECT,
