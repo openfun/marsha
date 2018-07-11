@@ -63,6 +63,7 @@ class PlaylistFactory(DjangoModelFactory):
         model = models.Playlist
 
     name = factory.Sequence("Playlist {:03d}".format)
+    consumer_site = factory.SubFactory(ConsumerSiteFactory)
 
 
 class PlaylistAccessFactory(DjangoModelFactory):

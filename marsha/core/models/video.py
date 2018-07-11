@@ -28,6 +28,12 @@ class Playlist(BaseModel):
         on_delete=models.CASCADE,
         null=True,
     )
+    consumer_site = models.ForeignKey(
+        to="ConsumerSite",
+        related_name="playlists",
+        # playlist is (soft-)deleted if organization is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
     created_by = models.ForeignKey(
         to="User",
         related_name="created_playlists",
