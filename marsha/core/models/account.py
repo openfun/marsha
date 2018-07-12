@@ -80,53 +80,6 @@ class LTIPassport(BaseModel):
         verbose_name = _("LTI passport")
         verbose_name_plural = _("LTI passports")
 
-
-class LTIPassportScope(BaseModel):
-    """
-    Model representing the scope of an LTI passport.
-
-    A passport can be granted for:
-    - a playlist: to be used when we trust an instructor. A playlist pre-exists in Marsha. The
-        course instructor receives credentials and associates them at the level of his/her
-        course to handle the course videos inside the playlist.
-    - a consumer site: to be used when we trust the administrator of a VLE (virtual learning
-        environment). The administrator receives credentials and associates them at the level
-        of the VLE so that all instructors on the VLE can handle their videos inside playlists
-        that will be created on the fly.
-
-    """
-
-    lti_passport = models.ForeignKey(
-        to=LTIPassport,
-        related_name="scopes",
-        # Scope is (soft-)deleted if related LTI passport is (soft-)deleted
-        on_delete=models.CASCADE,
-    )
-    consumer_site = models.ForeignKey(
-        to=LTIPassport,
-        related_name="lti_passport_scopes",
-        # don't allow hard deleting a consumer site if it is still linked to a passport
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
-    playlist = models.ForeignKey(
-        to="Playlist",
-        related_name="lti_passport_scopes",
-        # don't allow hard deleting a playlist if it is still linked to a passport
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        """Options for the ``LTIPassportScope`` model."""
-
-        db_table = "lti_passport_scope"
-        verbose_name = _("LTI passport scope")
-        verbose_name_plural = _("LTI passport scopes")
-
-
 class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
 
@@ -153,6 +106,54 @@ class ConsumerSite(BaseModel):
         if self.deleted:
             result += _(" [deleted]")
         return result
+
+
+class LTIPassportScope(BaseModel):
+    """
+    Model representing the scope of an LTI passport.
+
+    A passport can be granted for:
+    - a playlist: to be used when we trust an instructor. A playlist pre-exists in Marsha. The
+        course instructor receives credentials and associates them at the level of his/her
+        course to handle the course videos inside the playlist.
+    - a consumer site: to be used when we trust the administrator of a VLE (virtual learning
+        environment). The administrator receives credentials and associates them at the level
+        of the VLE so that all instructors on the VLE can handle their videos inside playlists
+        that will be created on the fly.
+
+    """
+
+    lti_passport = models.ForeignKey(
+        to=LTIPassport,
+        related_name="lti_passport_scopes",
+        # Scope is (soft-)deleted if related LTI passport is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+    consumer_site = models.ForeignKey(
+        to=ConsumerSite,
+        related_name="lti_passport_scopes",
+        # don't allow hard deleting a consumer site if it is still linked to a passport
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    playlist = models.ForeignKey(
+        to="Playlist",
+        related_name="lti_passport_scopes",
+        # don't allow hard deleting a playlist if it is still linked to a passport
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        """Options for the ``LTIPassportScope`` model."""
+
+        db_table = "lti_passport_scope"
+        verbose_name = _("LTI passport scope")
+        verbose_name_plural = _("LTI passport scopes")
+
+
 
 
 class ConsumerSiteAccess(BaseModel):
