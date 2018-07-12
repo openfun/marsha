@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Course Configuration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" />
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container">
+                <div class="jumbotron">
+                    <h2>Course Configuration</h2>
+                    <p>
+                        Your {{title}} course has not been configured to use this component.</p>
+                    <p>
+                    <small>
+                        Please contact your help desk to enable the component.<br />
+
+                        {% if is_instructor or is_administrator %}
+                            <h3>Administrators &amp; Instructors</h3>
+                            <p>@todo - tell them how to enable</p>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div> 
+</body>
+</html>
