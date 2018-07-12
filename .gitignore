@@ -1,5 +1,8 @@
 # Created by IntelliJ .ignore support plugin (hsz.mobi)
 
+# Mac OS
+.DS_Store
+
 # IntelliJ project files
 .idea
 *.iml
