@@ -53,6 +53,95 @@ class LTIConfigView(TemplateView):
         return ctx
 
 
+
+class LTILandingPage(LTIAuthMixin, TemplateView):
+    template_name = 'lti_provider/landing_page.html'
+    def get_context_data(self, **kwargs):
+        domain = self.request.get_host()
+        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
+            self.request.scheme, domain, self.lti.course_context(self.request))
+        #procan
+        consumer = LTIPassport.objects.get(oauth_consumer_key=self.lti.oauth_consumer_key(self.request),is_enabled=True)
+        ltipassscope=LTIPassportScope.objects.get(lti_passport=consumer)
+        if ltipassscope.consumer_site is None and ltipassscope.playlist is None:
+           self.template_name='lti_provider/404.html'
+           return {}
+        play=None 
+        if ltipassscope.consumer_site is not None:
+           playlist=Playlist.objects.filter(lti_id=self.lti.course_context(self.request),consumer_site=ltipassscope.consumer_site)
+           if len(playlist)!=0:
+                play=playlist[0]
+
+           if play is None and self.lti.is_student(self.request):
+                self.template_name='lti_provider/404.html'
+                return {}
+           if play is None and (self.lti.is_instructor(self.request) or self.lti.is_administrator(self.request)):
+                try:
+                    #uuid_playlist_lti=uuid.uuid1()
+                    play= Playlist.objects.create(name="playlist1",lti_id=self.lti.course_context(self.request),is_public=True,consumer_site=ltipassscope.consumer_site)
+                except:
+                    log.info('error:{}'.format(sys.exc_info()[0]))
+           if play is None :
+               self.template_name='lti_provider/404.html'
+               return {}
+        else:
+           play=ltipassscope.playlist
+        #find videos
+        site_name=self.lti.resource_link_id(self.request).rsplit('-', 1)[1]
+        video=Video.objects.filter(lti_id=site_name,playlist=play)
+        videolti=None
+        if len(video)!=0:
+                videolti=video[0]
+        if videolti is None and self.lti.is_student(self.request):
+                self.template_name='lti_provider/404.html'
+                return {}
+        a=False
+        if(self.lti.is_instructor(self.request) or self.lti.is_administrator(self.request)):
+                a=True
+        return {
+            'title': settings.LTI_TOOL_CONFIGURATION.get('title'),
+            'is_instructor': a,
+            'is_administrator': self.lti.is_administrator(self.request),
+            'videolti':videolti,
+            'playlist_id':play.pk,
+            'xblock_id':site_name,
+        }
+
+class AddVideo(LTIAuthMixin,TemplateView):
+    template_name = 'lti_provider/landing_page.html'
+    def get_context_data(self, **kwargs):
+        name=self.request.GET.get('name')
+        playlist_id=self.request.GET.get('playlist_id')
+        xblock_id=self.request.GET.get('xblock_id')
+        is_instructor=self.request.GET.get('is_instructor')
+        upload=self.request.GET.get('upload')
+        description=self.request.GET.get('description')
+        language=self.request.GET.get('language')
+        position=self.request.GET.get('position')
+        try:
+             if is_instructor:
+                playlist=Playlist.objects.get(pk=playlist_id)
+                if playlist is not None:
+                   if upload=="True":
+                      Video.objects.create(playlist=playlist,name=name,description=description,language=language,lti_id=xblock_id)
+                   else:
+                     vid= Video.objects.filter(playlist=playlist,lti_id=xblock_id)
+                     if len(vid)!=0:
+                         video=vid[0]
+                         video.name=name
+                         video.description=description
+                         video.language=language
+                         video.save()
+
+        except:
+             log.info('error:{}'.format(sys.exc_info()[1]))
+
+
+        return {}
+class LTIFailAuthorization(TemplateView):
+    template_name = 'lti_provider/fail_auth.html'
+
+
 class LTIRoutingView(LTIAuthMixin, View):
     request_type = 'initial'
     role_type = 'any'
@@ -97,140 +186,3 @@ class LTIRoutingView(LTIAuthMixin, View):
         return HttpResponseRedirect(url)
 
 
-class LTILandingPage(LTIAuthMixin, TemplateView):
-    template_name = 'lti_provider/landing_page.html'
-    def get_context_data(self, **kwargs):
-        domain = self.request.get_host()
-        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
-            self.request.scheme, domain, self.lti.course_context(self.request))
-        #procan
-        consumer = LTIPassport.objects.get(oauth_consumer_key=self.lti.oauth_consumer_key(self.request),is_enabled=True)
-        ltipassscope=LTIPassportScope.objects.get(lti_passport=consumer)
-        if ltipassscope.consumer_site is None and ltipassscope.playlist is None:
-           self.template_name='lti_provider/404.html'
-           return {}
-        play=None 
-        if ltipassscope.consumer_site is not None:
-           playlist=Playlist.objects.filter(lti_id=self.lti.course_context(self.request),consumer_site=ltipassscope.consumer_site)
-           if len(playlist)!=0:
-                play=playlist[0]
-
-           if play is None and self.lti.is_student(self.request):
-                self.template_name='lti_provider/404.html'
-                return {}
-           if play is None and (self.lti.is_instructor(self.request) or self.lti.is_administrator(self.request)):
-                try:
-                    uuid_playlist_lti=uuid.uuid1()
-                    play= Playlist.objects.create(name="playlist1",lti_id=self.lti.course_context(self.request),is_public=True,consumer_site=ltipassscope.consumer_site)
-                except:
-                    log.info('error:{}'.format(sys.exc_info()[0]))
-           if play is None :
-               self.template_name='lti_provider/404.html'
-               return {}
-        else:
-           play=ltipassscope.playlist
-        #find videos
-        site_name=self.lti.resource_link_id(self.request).rsplit('-', 1)[1]
-        video=Video.objects.filter(lti_id=site_name,playlist=play)
-        videolti=None
-        if len(video)!=0:
-                videolti=videolti[0]
-        if videolti is None and self.lti.is_student(self.request):
-                self.template_name='lti_provider/404.html'
-                return {}
-
-        return {
-            'landing_url': url,
-            'title': settings.LTI_TOOL_CONFIGURATION.get('title'),
-            'is_instructor': self.lti.is_instructor(self.request),
-            'is_administrator': self.lti.is_administrator(self.request),
-            'idlti':ltipassscope.pk,
-        }
-
-
-class LTIFailAuthorization(TemplateView):
-    template_name = 'lti_provider/fail_auth.html'
-
-
-class LTICourseConfigure(LTIAuthMixin, TemplateView):
-    template_name = 'lti_provider/fail_course_configuration.html'
-
-    def get_context_data(self, **kwargs):
-        return {
-            'is_instructor': self.lti.is_instructor(self.request),
-            'is_administrator': self.lti.is_administrator(self.request),
-            'user': self.request.user,
-            'lms_course': self.lti.course_context(self.request),
-            'lms_course_title': self.lti.course_title(self.request),
-            'sis_course_id': self.lti.sis_course_id(self.request),
-            'domain': self.lti.canvas_domain(self.request)
-        }
-
-
-class LTICourseEnableView(LTIAuthMixin, View):
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(self.__class__, self).dispatch(request, *args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        group_id = self.request.POST.get('group')
-        faculty_group_id = self.request.POST.get('faculty_group')
-        course_context = self.lti.course_context(self.request)
-        title = self.lti.course_title(self.request)
-
-        '''(ctx, created) = LTICourseContext.objects.get_or_create(
-            group=get_object_or_404(Group, id=group_id),
-            faculty_group=get_object_or_404(Group, id=faculty_group_id),
-            lms_course_context=course_context)'''
-
-        messages.add_message(
-            self.request, messages.INFO,
-            '<strong>Success!</strong> {} is connected to {}.'.format(
-                title, settings.LTI_TOOL_CONFIGURATION.get('title')))
-
-        url = reverse('lti-landing-page', args=[course_context])
-        return HttpResponseRedirect(url)
-
-
-class LTIPostGrade(LTIAuthMixin, View):
-
-    def message_identifier(self):
-        return '{:.0f}'.format(time.time())
-
-    def post(self, request, *args, **kwargs):
-        """
-        Post grade to LTI consumer using XML
-
-        :param: score: 0 <= score <= 1. (Score MUST be between 0 and 1)
-        :return: True if post successful and score valid
-        :exception: LTIPostMessageException if call failed
-        """
-        try:
-            score = float(request.POST.get('score'))
-        except ValueError:
-            score = 0
-
-        redirect_url = request.POST.get('next', '/')
-        launch_url = request.POST.get('launch_url', None)
-
-        xml = self.lti.generate_request_xml(
-            self.message_identifier(), 'replaceResult',
-            self.lti.lis_result_sourcedid(request), score, launch_url)
-
-        if not post_message(
-            self.lti.consumers(), self.lti.oauth_consumer_key(request),
-                self.lti.lis_outcome_service_url(request), xml):
-
-            msg = ('An error occurred while saving your score. '
-                   'Please try again.')
-            messages.add_message(request, messages.ERROR, msg)
-
-            # Something went wrong, display an error.
-            # Is 500 the right thing to do here?
-            raise LTIPostMessageException('Post grade failed')
-        else:
-            msg = ('Your score was submitted. Great job!')
-            messages.add_message(request, messages.INFO, msg)
-
-            return HttpResponseRedirect(redirect_url)

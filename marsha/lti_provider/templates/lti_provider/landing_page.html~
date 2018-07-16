@@ -102,7 +102,10 @@
                         var name = $('#name').val();
                         var url = "https://www.youtube.com/embed/" + name + "?rel=0&amp;showinfo=0&amp;enablejsapi=1";
                         $('#FrameID').attr("src", url);
+
                     }
+
+
                 });
                 $('.modal').modal('toggle');
             }
