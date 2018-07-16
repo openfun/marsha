@@ -26,32 +26,6 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 
-class LTIConfigView(TemplateView):
-    template_name = 'lti_provider/config.xml'
-    content_type = 'text/xml; charset=utf-8'
-
-    def get_context_data(self, **kwargs):
-        domain = self.request.get_host()
-        launch_url = '%s://%s/%s' % (
-            self.request.scheme, domain,
-            settings.LTI_TOOL_CONFIGURATION.get('launch_url'))
-
-        ctx = {
-            'domain': domain,
-            'launch_url': launch_url,
-            'title': settings.LTI_TOOL_CONFIGURATION.get('title'),
-            'description': settings.LTI_TOOL_CONFIGURATION.get('description'),
-            'embed_icon_url':
-                settings.LTI_TOOL_CONFIGURATION.get('embed_icon_url'),
-            'embed_tool_id': settings.LTI_TOOL_CONFIGURATION.get(
-                'embed_tool_id'),
-            'frame_width': settings.LTI_TOOL_CONFIGURATION.get('frame_width'),
-            'frame_height': settings.LTI_TOOL_CONFIGURATION.get(
-                'frame_height'),
-            'navigation': settings.LTI_TOOL_CONFIGURATION.get('navigation')
-        }
-        return ctx
-
 
 
 class LTILandingPage(LTIAuthMixin, TemplateView):
