@@ -6,7 +6,24 @@ from pylti.common import LTIException, LTINotInSessionException, \
 from marsha.core.models.account import LTIPassportScope
 from django.db.models import Q
 import logging
+<<<<<<< HEAD
 log = logging.getLogger(__name__)
+=======
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+LTI_PROPERTY_LIST_EX = getattr(settings,
+                               'LTI_PROPERTY_LIST_EX',
+                               [
+                                   'user_id',
+                                   'context_title',
+                                   'lis_course_offering_sourcedid',
+                                   'context_id'
+                               ])
+
+LTI_PROPERTY_USER_USERNAME = getattr(settings,
+                                     'LTI_PROPERTY_USER_USERNAME',
+                                     'user_id')
+
+>>>>>>> 15e2439a77faa369cd6902d6dce45e1ba595e0c7
 
 
 class LTI(object):
@@ -133,6 +150,7 @@ class LTI(object):
         found_consumers = {}
 
         try:
+<<<<<<< HEAD
             consumer_key = self.request.POST.get('oauth_consumer_key',
                     False)
             site_name = self.request.POST.get('resource_link_id', ''
@@ -151,6 +169,25 @@ class LTI(object):
             log.info('found_consumers:{}'.format(found_consumers))
         except Exception as exc:
 
+=======
+            #foo = LTIPassport.objects.create(pk="2B99E07E-36D4-4E07-9A6C-8DBEB66DA9BF",deleted="2018-07-09 15:06:33.781507+00",created_on="2018-07-09 15:06:33.781507+00",updated_on="2018-07-09 15:06:33.781507+00",oauth_consumer_key="mykey",shared_secret="mysecret",is_enabled=True)
+            key=self.request.POST.get('oauth_consumer_key', False)
+            consumer = LTIPassport.objects.get(oauth_consumer_key=key,is_enabled=True)
+            ltipassscope=LTIPassportScope.objects.get(lti_passport=consumer)
+            if ltipassscope.consumer_site is None and ltipassscope.playlist is None:
+                return found_consumers
+            site_name=self.request.POST.get('resource_link_id', '').rsplit('-', 1)[0]
+
+            if ltipassscope.consumer_site is not None and site_name!=ltipassscope.consumer_site.name:
+                   return found_consumers
+            if ltipassscope.consumer_site is None and ltipassscope.playlist is not None and site_name!=ltipassscope.playlist.consumer_site.name:
+                   return found_consumers
+
+            found_consumers = {
+               str(consumer.oauth_consumer_key): { 'secret': str(consumer.shared_secret)}
+            }
+        except Exception as exc:
+>>>>>>> 15e2439a77faa369cd6902d6dce45e1ba595e0c7
             log.info('error:{}'.format(exc))
             found_consumers = None
 
@@ -239,3 +276,7 @@ class LTI(object):
             return []
         return roles.lower().split(',')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 15e2439a77faa369cd6902d6dce45e1ba595e0c7
