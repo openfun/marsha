@@ -1,6 +1,3 @@
-import time
-import sys
-import uuid
 from django.conf import settings
 from django.http.response import HttpResponseRedirect
 from django.utils.decorators import method_decorator
