@@ -20,15 +20,6 @@ class LTIAuthMixin(object):
             lti.clear_session(request)
             return HttpResponseRedirect(reverse('lti-fail-auth'))
 
-        # login
-        login(request, user)
-
         # configure course groups if requested
-        '''
-        try:
-            self.course_configuration(request, lti)
-        except (KeyError, ValueError):
-            return HttpResponseRedirect(reverse('lti-course-config'))
-        '''
         self.lti = lti
         return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)

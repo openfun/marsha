@@ -1,19 +1,14 @@
 from django.conf.urls import url
 
-from marsha.lti_provider.views import LTIConfigView, LTILandingPage, LTIRoutingView, \
-    LTICourseEnableView, LTIPostGrade, LTIFailAuthorization, LTICourseConfigure
+from marsha.lti_provider.views import LTILandingPage, \
+    LTIFailAuthorization, LTIRoutingView, VideoCreate, VideoUpdate
 
+urlpatterns = [url(r'^$', LTIRoutingView.as_view(), {}, 'lti-login'),
+               url(r'^landing/$', LTILandingPage.as_view(), {},
+               'lti-landing-page'), url(r'^auth$',
+               LTIFailAuthorization.as_view(), {}, 'lti-fail-auth'),
+               url(r'^video/add/$', VideoCreate.as_view(), {},
+               'lti-video-add'),
+               url(r'^video/update/(?P<pk>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$'
+               , VideoUpdate.as_view(), {}, 'lti-video-update')]
 
-urlpatterns = [
-    url(r'^config.xml$', LTIConfigView.as_view(), {}, 'lti-config'),
-    url(r'^auth$', LTIFailAuthorization.as_view(), {}, 'lti-fail-auth'),
-    url(r'^course/config$',
-        LTICourseConfigure.as_view(), {}, 'lti-course-config'),
-    url(r'^course/enable/$',
-        LTICourseEnableView.as_view(), {}, 'lti-course-enable'),
-    url(r'^landing/$', LTILandingPage.as_view(), {}, 'lti-landing-page'),
-    url('^grade/$', LTIPostGrade.as_view(), {}, 'lti-post-grade'),
-    url(r'^$', LTIRoutingView.as_view(), {}, 'lti-login'),
-    url(r'^assignment/(?P<assignment_name>.*)/$',
-        LTIRoutingView.as_view(), {}, 'lti-assignment-view'),
-]
