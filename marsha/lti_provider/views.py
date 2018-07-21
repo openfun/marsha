@@ -4,22 +4,16 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
-
 from marsha.lti_provider.mixins import LTIAuthMixin
-from marsha.core.models.account import LTIPassport, LTIPassportScope, \
-    ConsumerSite
 from marsha.core.models.video import Playlist, Video
 from marsha.core.factories import PlaylistFactory
 from . forms import VideoForm
-
 import logging
 log = logging.getLogger(__name__)
-
 try:
     from django.urls import reverse
 except ImportError:
     from django.core.urlresolvers import reverse
-
 
 class LTILandingPage(LTIAuthMixin, TemplateView):
 
@@ -29,8 +23,7 @@ class LTILandingPage(LTIAuthMixin, TemplateView):
 
         form = VideoForm()
         playlist_id = self.request.session.get('playlist_id', None)
-        lti_id = self.lti.resource_link_id(self.request).rsplit('-',
-                1)[1]
+        lti_id = self.lti.resource_link_id(self.request).rsplit('-', 1)[1]
         self.request.session['lti_id'] = str(lti_id)
         video = Video.objects.filter(lti_id=lti_id,
                 playlist__pk=playlist_id).first()
@@ -54,8 +47,7 @@ class VideoCreate(LTIAuthMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         playlist = \
-            Playlist.objects.filter(pk=self.request.session.get('playlist_id'
-                                    )).first()
+            Playlist.objects.filter(pk=self.request.session.get('playlist_id')).first()
         self.object.playlist = playlist
         self.object.lti_id = self.request.session.get('lti_id')
         self.object.save()
@@ -63,8 +55,7 @@ class VideoCreate(LTIAuthMixin, CreateView):
 
     def form_invalid(self, form):
         log.info('form is invalid')
-        return http.HttpResponse('form is invalid.. this is just an HttpResponse object'
-                                 )
+        return http.HttpResponse('form is invalid.. this is just an HttpResponse object')
 
 
 class VideoUpdate(LTIAuthMixin, UpdateView):
@@ -112,9 +103,8 @@ class LTIRoutingView(LTIAuthMixin, View):
 
         url = reverse('lti-landing-page')
 
-        if settings.LTI_TOOL_CONFIGURATION.get('new_tab') == False:
+        if settings.LTI_TOOL_CONFIGURATION.get('new_tab') is False:
             url = self.request.scheme + '://' + self.request.get_host() \
                 + url
 
         return HttpResponseRedirect(url)
-

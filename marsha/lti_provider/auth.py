@@ -1,7 +1,6 @@
-from marsha.core.models import User
 from nameparser import HumanName
+from marsha.core.models import User
 from pylti.common import LTIException
-
 
 class LTIBackend(object):
 

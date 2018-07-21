@@ -1,5 +1,4 @@
 from django.conf.urls import url
-
 from marsha.lti_provider.views import LTILandingPage, \
     LTIFailAuthorization, LTIRoutingView, VideoCreate, VideoUpdate
 

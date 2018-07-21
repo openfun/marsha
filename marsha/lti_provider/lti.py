@@ -1,13 +1,12 @@
-from django.conf import settings
+import logging
 from pylti.common import LTIException, LTINotInSessionException, \
     LTI_SESSION_KEY, verify_request_common, LTIRoleException, \
     LTI_ROLES, LTI_PROPERTY_LIST
 
 from marsha.core.models.account import LTIPassportScope
 from django.db.models import Q
-import logging
-log = logging.getLogger(__name__)
 
+log = logging.getLogger(__name__)
 
 class LTI(object):
 
@@ -19,12 +18,7 @@ class LTI(object):
     This object is instantiated by the LTIMixin
     """
 
-    def __init__(
-        self,
-        request,
-        request_type,
-        role_type,
-        ):
+    def __init__(self, request, request_type, role_type):
         self.request_type = request_type
         self.role_type = role_type
         self.request = request
@@ -98,8 +92,7 @@ class LTI(object):
         """
 
         if not request.session.get(LTI_SESSION_KEY, False):
-            raise LTINotInSessionException('Session expired or unavailable'
-                    )
+            raise LTINotInSessionException('Session expired or unavailable')
 
     def _verify_request(self, request):
         """
@@ -125,18 +118,12 @@ class LTI(object):
             raise
 
     def consumers(self, request):
-        """
-        Gets consumer's map from settings 
-        :return: consumers map
-        """
 
         found_consumers = {}
 
         try:
-            consumer_key = self.request.POST.get('oauth_consumer_key',
-                    False)
-            site_name = self.request.POST.get('resource_link_id', ''
-                    ).rsplit('-', 1)[0]
+            consumer_key = self.request.POST.get('oauth_consumer_key', False)
+            site_name = self.request.POST.get('resource_link_id', '').rsplit('-', 1)[0]
 
             ltipassscope = \
                 LTIPassportScope.objects.filter(Q(lti_passport__oauth_consumer_key=consumer_key,
@@ -238,4 +225,3 @@ class LTI(object):
         if not roles:
             return []
         return roles.lower().split(',')
-

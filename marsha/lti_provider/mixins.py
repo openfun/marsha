@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.contrib.auth import authenticate, login
 try:
     from django.urls import reverse
 except ImportError:
@@ -7,12 +5,11 @@ except ImportError:
 from django.http.response import HttpResponseRedirect
 from marsha.lti_provider.lti import LTI
 
-
 class LTIAuthMixin(object):
     role_type = 'any'
     request_type = 'any'
     def dispatch(self, request, *args, **kwargs):
-        lti = LTI(request,self.request_type, self.role_type)
+        lti = LTI(request, self.request_type, self.role_type)
 
         # validate the user via oauth
         user = authenticate(request=request, lti=lti)
