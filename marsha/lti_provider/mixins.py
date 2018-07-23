@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 try:
     from django.urls import reverse
 except ImportError:

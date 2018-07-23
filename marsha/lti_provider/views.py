@@ -1,5 +1,7 @@
+import logging
 from django.conf import settings
 from django.http.response import HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View, TemplateView
@@ -8,25 +10,29 @@ from marsha.lti_provider.mixins import LTIAuthMixin
 from marsha.core.models.video import Playlist, Video
 from marsha.core.factories import PlaylistFactory
 from . forms import VideoForm
-import logging
-log = logging.getLogger(__name__)
 try:
     from django.urls import reverse
 except ImportError:
     from django.core.urlresolvers import reverse
+log = logging.getLogger(__name__)
 
 class LTILandingPage(LTIAuthMixin, TemplateView):
+
+    """
+    The LTILandingPage object displays the landing page once the LTI request is validated.
+    """
 
     template_name = 'lti_provider/landing_page.html'
 
     def get_context_data(self, **kwargs):
-
+        """
+        Find the video corresponding to lti_id and playlist_id
+        """
         form = VideoForm()
         playlist_id = self.request.session.get('playlist_id', None)
         lti_id = self.lti.resource_link_id(self.request).rsplit('-', 1)[1]
         self.request.session['lti_id'] = str(lti_id)
-        video = Video.objects.filter(lti_id=lti_id,
-                playlist__pk=playlist_id).first()
+        video = Video.objects.filter(lti_id=lti_id, playlist__pk=playlist_id).first()
 
         return {
             'title': settings.LTI_TOOL_CONFIGURATION.get('title'),
@@ -38,7 +44,9 @@ class LTILandingPage(LTIAuthMixin, TemplateView):
 
 
 class VideoCreate(LTIAuthMixin, CreateView):
-
+    """
+    Create a new video
+    """
     model = Video
     success_url = '/lti/landing'
     form_class = VideoForm
@@ -60,6 +68,10 @@ class VideoCreate(LTIAuthMixin, CreateView):
 
 class VideoUpdate(LTIAuthMixin, UpdateView):
 
+    """
+    Modify an existing video
+    """
+
     model = Video
     success_url = '/lti/landing'
     form_class = VideoForm
@@ -73,6 +85,10 @@ class LTIFailAuthorization(TemplateView):
 
 class LTIRoutingView(LTIAuthMixin, View):
 
+    """
+    Access route with 'initial' request and 'any' role 
+    """
+
     request_type = 'initial'
     role_type = 'any'
 
@@ -80,15 +96,15 @@ class LTIRoutingView(LTIAuthMixin, View):
     def dispatch(self, *args, **kwargs):
         return super(LTIRoutingView, self).dispatch(*args, **kwargs)
 
-    def add_playlist(
-        self,
-        request,
-        lti_id,
-        site_name,
-        ):
-        PlaylistFactory(lti_id=lti_id, consumer_site__name=site_name)
+    def add_playlist(self, request, lti_id, site_name):
+        """
+        Create a new playlist 
+        """  
+        playlist=PlaylistFactory(lti_id=lti_id, consumer_site__name=site_name)
+        request.session['playlist_id']=str(playlist.pk)
 
     def post(self, request):
+
         site_name = self.lti.resource_link_id(request).rsplit('-', 1)[0]
         lti_id = self.lti.course_context(request)
 

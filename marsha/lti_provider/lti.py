@@ -118,6 +118,11 @@ class LTI(object):
             raise
 
     def consumers(self, request):
+        """
+        Gets consumer's map from DB
+
+        :return: consumers map
+        """
 
         found_consumers = {}
 
