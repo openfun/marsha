@@ -2,11 +2,13 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import CreateView, UpdateView
 
 from marsha.core.factories import PlaylistFactory
+from marsha.core.models.account import ConsumerSite
 from marsha.core.models.video import Playlist, Video
 from marsha.lti_provider.mixins import LTIAuthMixin
 
@@ -20,17 +22,12 @@ except ImportError:
 
 
 class LTILandingPage(LTIAuthMixin, TemplateView):
-
-    """
-    The LTILandingPage object displays the landing page once the LTI request is validated.
-    """
+    """The LTILandingPage object displays the landing page once the LTI request is validated."""
 
     template_name = "lti_provider/landing_page.html"
 
     def get_context_data(self, **kwargs):
-        """
-        Find the video corresponding to lti_id and playlist_id
-        """
+        """Find the video corresponding to lti_id and playlist_id."""
         form = VideoForm()
         playlist_id = self.request.session.get("playlist_id", None)
         lti_id = self.lti.resource_link_id(self.request).rsplit("-", 1)[1]
@@ -47,9 +44,7 @@ class LTILandingPage(LTIAuthMixin, TemplateView):
 
 
 class VideoCreate(LTIAuthMixin, CreateView):
-    """
-    Create a new video
-    """
+    """Create a new video."""
 
     model = Video
     success_url = "/lti/landing"
@@ -71,10 +66,7 @@ class VideoCreate(LTIAuthMixin, CreateView):
 
 
 class VideoUpdate(LTIAuthMixin, UpdateView):
-
-    """
-    Modify an existing video
-    """
+    """Modify an existing video."""
 
     model = Video
     success_url = "/lti/landing"
@@ -83,32 +75,31 @@ class VideoUpdate(LTIAuthMixin, UpdateView):
 
 
 class LTIFailAuthorization(TemplateView):
+    """Fail Authorization."""
 
     template_name = "lti_provider/fail_auth.html"
 
 
 class LTIRoutingView(LTIAuthMixin, View):
-
-    """
-    Access route with 'initial' request and 'any' role 
-    """
+    """Access route with 'initial' request and 'any' role."""
 
     request_type = "initial"
     role_type = "any"
 
-    @method_decorator(csrf_exempt)
+    @method_decorator(csrf_exempt, xframe_options_exempt)
     def dispatch(self, *args, **kwargs):
+        """Dispatsh."""
         return super(LTIRoutingView, self).dispatch(*args, **kwargs)
 
     def add_playlist(self, request, lti_id, site_name):
-        """
-        Create a new playlist 
-        """
-        playlist = PlaylistFactory(lti_id=lti_id, consumer_site__name=site_name)
+        """Create a new playlist."""
+
+        consumersite = ConsumerSite.objects.filter(name=site_name).first()
+        playlist = PlaylistFactory(lti_id=lti_id, consumer_site=consumersite)
         request.session["playlist_id"] = str(playlist.pk)
 
     def post(self, request):
-
+        """post."""
         site_name = self.lti.resource_link_id(request).rsplit("-", 1)[0]
         lti_id = self.lti.course_context(request)
 
