@@ -1,14 +1,15 @@
 from nameparser import HumanName
-from marsha.core.models import User
 from pylti.common import LTIException
 
-class LTIBackend(object):
+from marsha.core.models import User
 
+
+class LTIBackend(object):
     def find_user(self, request, lti):
         username = lti.user_name(request)
-        user = User(username=username, password='LTI user')
+        user = User(username=username, password="LTI user")
         user.set_unusable_password()
-        user.email = lti.user_email(request) or ''
+        user.email = lti.user_email(request) or ""
         name = HumanName(lti.user_fullname(request))
         user.first_name = name.first[:30]
         user.last_name = name.last[:30]
@@ -21,4 +22,3 @@ class LTIBackend(object):
         except LTIException:
             lti.clear_session(request)
             return None
-
