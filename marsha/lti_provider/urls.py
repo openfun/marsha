@@ -1,3 +1,5 @@
+"""URLs for the ``lti_provider`` app of the Marsha project."""
+
 from django.conf.urls import url
 
 from marsha.lti_provider.views import (

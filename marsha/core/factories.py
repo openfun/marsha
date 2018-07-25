@@ -22,6 +22,7 @@ class ConsumerSiteFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.ConsumerSite
+        django_get_or_create = ("name",)
 
     name = factory.Sequence("Site {:03d}".format)
 

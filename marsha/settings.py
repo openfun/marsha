@@ -90,7 +90,6 @@ class Base(Configuration):
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
     ]
-    X_FRAME_OPTIONS = "ALLOW-ALL"
     ROOT_URLCONF = "marsha.urls"
 
     TEMPLATES = [
@@ -185,6 +184,7 @@ class Development(Base):
 
     DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
+    X_FRAME_OPTIONS = "ALLOW-ALL"
 
 
 class Test(Base):

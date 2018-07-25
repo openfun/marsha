@@ -1,3 +1,5 @@
+"""Mixin for the ``lti_provider`` app of the Marsha project."""
+
 from django.contrib.auth import authenticate
 from django.http.response import HttpResponseRedirect
 
@@ -10,11 +12,22 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 
-class LTIAuthMixin(object):
+class LTIAuthMixin:
+    """Validate the user and return authentication failure if the user is invalid."""
+
     role_type = "any"
     request_type = "any"
 
     def dispatch(self, request, *args, **kwargs):
+        """Validate the user via oauth in order to redirect him to the correct url.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+            args: arguments
+            kwargs: arguments
+        Returns:
+            url: dispatched url.
+        """
         lti = LTI(request, self.request_type, self.role_type)
 
         # validate the user via oauth
@@ -23,6 +36,5 @@ class LTIAuthMixin(object):
             lti.clear_session(request)
             return HttpResponseRedirect(reverse("lti-fail-auth"))
 
-        # configure course groups if requested
         self.lti = lti
         return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)

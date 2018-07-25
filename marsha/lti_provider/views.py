@@ -1,3 +1,5 @@
+"""Views for the ``lti_provider`` app of the Marsha project."""
+
 from django.conf import settings
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
@@ -8,7 +10,6 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import CreateView, UpdateView
 
 from marsha.core.factories import PlaylistFactory
-from marsha.core.models.account import ConsumerSite
 from marsha.core.models.video import Playlist, Video
 from marsha.lti_provider.mixins import LTIAuthMixin
 
@@ -27,7 +28,13 @@ class LTILandingPage(LTIAuthMixin, TemplateView):
     template_name = "lti_provider/landing_page.html"
 
     def get_context_data(self, **kwargs):
-        """Find the video corresponding to lti_id and playlist_id."""
+        """Find the video corresponding to lti_id and playlist_id.
+
+        Arguments:
+            kwargs: arguments
+        Returns:
+            JSON: the information passed to the html template
+        """
         form = VideoForm()
         playlist_id = self.request.session.get("playlist_id", None)
         lti_id = self.lti.resource_link_id(self.request).rsplit("-", 1)[1]
@@ -52,6 +59,13 @@ class VideoCreate(LTIAuthMixin, CreateView):
     template_name = "lti_provider/landing_page.html"
 
     def form_valid(self, form):
+        """If the form is valid, save video object.
+
+        Arguments:
+            form(Form): Video Form
+        Returns:
+            Form: form_valid
+        """
         self.object = form.save(commit=False)
         playlist = Playlist.objects.filter(
             pk=self.request.session.get("playlist_id")
@@ -62,6 +76,13 @@ class VideoCreate(LTIAuthMixin, CreateView):
         return super(VideoCreate, self).form_valid(form)
 
     def form_invalid(self, form):
+        """If the form is not valid, return error.
+
+        Arguments:
+            form(Form): Video Form
+        Returns:
+            django.http.HttpResponse: redirected url
+        """
         return HttpResponse("form is invalid.. this is just an HttpResponse object")
 
 
@@ -87,19 +108,37 @@ class LTIRoutingView(LTIAuthMixin, View):
     role_type = "any"
 
     @method_decorator(csrf_exempt, xframe_options_exempt)
-    def dispatch(self, *args, **kwargs):
-        """Dispatsh."""
-        return super(LTIRoutingView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        """Decorate the dispatch method for csrf_exempt and xframe_options_exempt.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+            args: arguments
+            kwargs: arguments
+        Returns:
+            url: dispatched url.
+        """
+        return super(LTIRoutingView, self).dispatch(request, *args, **kwargs)
 
     def add_playlist(self, request, lti_id, site_name):
-        """Create a new playlist."""
+        """Create a new playlist.
 
-        consumersite = ConsumerSite.objects.filter(name=site_name).first()
-        playlist = PlaylistFactory(lti_id=lti_id, consumer_site=consumersite)
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+            lti_id(String): Id of LTI course
+            site_name(String): name of ConsumerSite
+        """
+        playlist = PlaylistFactory(lti_id=lti_id, consumer_site__name=site_name)
         request.session["playlist_id"] = str(playlist.pk)
 
     def post(self, request):
-        """post."""
+        """Check the user's role and the existence of playlist to redirect him to the correct url.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            django.http.response.HttpResponseRedirect: redirected url
+        """
         site_name = self.lti.resource_link_id(request).rsplit("-", 1)[0]
         lti_id = self.lti.course_context(request)
 

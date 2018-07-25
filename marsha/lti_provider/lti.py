@@ -1,3 +1,5 @@
+"""LTI module that supports LTI 1.0."""
+
 from django.db.models import Q
 
 from pylti.common import (
@@ -13,44 +15,57 @@ from pylti.common import (
 from marsha.core.models.account import LTIPassportScope
 
 
-class LTI(object):
-    """
+class LTI:
+    """This object is instantiated by the LTIMixin.
+
     LTI Object represents abstraction of current LTI session. It provides
     callback methods and methods that allow developer to inspect
     LTI basic-launch-request.
-
-    This object is instantiated by the LTIMixin
     """
 
     def __init__(self, request, request_type, role_type):
+        """Initialize the LTI system.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+            request_type(String): type of request (generally ``any``)
+            role_type(String): user's role (generally ``any``)
+        """
         self.request_type = request_type
         self.role_type = role_type
         self.request = request
 
     def clear_session(self, request):
-        """
-        Invalidate the session
-        """
+        """Clear the session.
 
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        """
         request.session.flush()
 
     def initialize_session(self, request, params):
+        """Initialize the session.
 
-        # All good to go, store all of the LTI params into a
-        # session dict for use in views
+        Store all of the LTI params into a session dict for use in views.
 
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+            params(params): contains all custom LTI parameters
+        """
         for prop in LTI_PROPERTY_LIST:
             if params.get(prop, None):
                 request.session[prop] = params[prop]
 
     def verify(self, request):
-        """
-        Verify if LTI request is valid, validation
-        depends on arguments
+        """Verify if the LTI request is valid, validation depends on arguments.
 
-        :raises: LTIException
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        Raises:
+           LTIException: if suffix cannot be parsed or is not in its expected form
+        Returns:
+           boolean: True if request type is valid
         """
-
         if self.request_type == "session":
             self._verify_session(request)
         elif self.request_type == "initial":
@@ -63,23 +78,28 @@ class LTI(object):
         return True
 
     def _params(self, request):
+        """Return the HTTP parameters.
+
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        Returns:
+            dict: a dictionary object containing all given HTTP parameters
+                  (for POST and GET methods)
+        """
         if request.method == "POST":
             return dict(request.POST.items())
         return dict(request.GET.items())
 
     def _verify_any(self, request):
+        """Verify that request is in session or initial request.
+
+        if an oauth_consumer_key is present, assume this is an initial
+        launch request and complete a full verification
+        otherwise, just check the session for the LTI_SESSION_KEY.
+
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
         """
-        Verify that request is in session or initial request.
-        Guess what type of request is being sent over based on
-        the request params.
-
-        :raises: LTIException
-        """
-
-        # if an oauth_consumer_key is present, assume this is an initial
-        # launch request and complete a full verification
-        # otherwise, just check the session for the LTI_SESSION_KEY
-
         params = self._params(request)
         if "oauth_consumer_key" in params:
             self._verify_request(request)
@@ -88,22 +108,28 @@ class LTI(object):
 
     @staticmethod
     def _verify_session(request):
-        """
-        Verify that session was already created
+        """Verify that session was already created.
 
-        :raises: LTIException
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        Raises:
+            LTINotInSessionException: if suffix cannot be parsed or is not in its expected form
         """
-
         if not request.session.get(LTI_SESSION_KEY, False):
             raise LTINotInSessionException("Session expired or unavailable")
 
     def _verify_request(self, request):
-        """
-        Verify LTI request
+        """Verify LTI request.
 
-        :raises: LTIException is request validation failed
-        """
+        LTIException if request validation failed.
 
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        Raises:
+            LTIException: LTI Exception
+        Returns:
+            Boolean: True if request is valid
+        """
         try:
             params = self._params(request)
             verify_request_common(
@@ -125,17 +151,18 @@ class LTI(object):
             raise
 
     def consumers(self, request):
-        """
-        Gets consumer's map from DB
+        """Get consumer list from DB.
 
-        :return: consumers map
+        Arguments:
+            request(request): request is used to access the parameters stored in the session
+        Returns:
+            JSON: consumer list
         """
-
         found_consumers = {}
 
         try:
-            consumer_key = self.request.POST.get("oauth_consumer_key", False)
-            site_name = self.request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
+            consumer_key = request.POST.get("oauth_consumer_key", False)
+            site_name = request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
 
             ltipassscope = LTIPassportScope.objects.filter(
                 Q(
@@ -156,26 +183,25 @@ class LTI(object):
                     }
                 }
 
-        except Exception as exc:
+        except LTIException as exc:
             found_consumers = None
+            print("An exception occurred: {}".format(exc))
 
         return found_consumers
 
     def _validate_role(self):
-        """
-        Check that user is in accepted/specified role
+        """Check that user is in accepted/specified role.
 
-        :exception: LTIException if user is not in roles
+        Exception: LTIException if user is not in roles.
         """
-
         if self.role_type != u"any":
             if self.role_type in LTI_ROLES:
                 role_list = LTI_ROLES[self.role_type]
 
                 # find the intersection of the roles
 
-                roles = set(role_list) & set(self.user_roles())
-                if len(roles) < 1:
+                roles = set(role_list) & set(self.user_roles(self.request))
+                if not roles:
                     raise LTIRoleException("Not authorized.")
             else:
                 raise LTIException("Unknown role {}.".format(self.role_type))
@@ -183,59 +209,159 @@ class LTI(object):
         return True
 
     def resource_link_id(self, request):
+        """Get the resource link id.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get resource_link_id from the request session
+        """
         return request.session.get("resource_link_id", None)
 
     def consumer_user_id(self, request):
-        return "%s-%s" % (self.oauth_consumer_key(request), self.user_id(request))
+        """Get the consumer user id.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get consumer_user_id from the request session
+        """
+        return self.oauth_consumer_key(request) + "-" + self.user_id(request)
 
     def course_context(self, request):
+        """Get the course context id.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get course_context from the request session
+        """
         return request.session.get("context_id", None)
 
     def course_title(self, request):
+        """Get the course title.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get course_title from the request session
+        """
         return request.session.get("context_title", None)
 
     def is_administrator(self, request):
+        """Verify if the role is 'administrator'.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            Boolean: True if the user is administrator (else False)
+        """
         return "administrator" in request.session.get("roles", "").lower()
 
     def is_student(self, request):
+        """Verify if the role is 'student'.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            Boolean: True if the user is student (else False)
+        """
         return "student" in request.session.get("roles", "").lower()
 
     def is_instructor(self, request):
+        """Verify if the role is 'instructor'.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            Boolean: True if the user is instructor (else False)
+        """
         roles = request.session.get("roles", "").lower()
         return "instructor" in roles or "staff" in roles
 
     def lis_outcome_service_url(self, request):
+        """Get the LIS Outcome Service URL associated with this launch.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get lis_outcome_service_url from the request session
+        """
         return request.session.get("lis_outcome_service_url", None)
 
     def lis_result_sourcedid(self, request):
+        """Get the LIS Result ID .
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get lis_result_sourcedid from the request session
+        """
         return request.session.get("lis_result_sourcedid", None)
 
     def oauth_consumer_key(self, request):
+        """Get the oauth_consumer_key parameter.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get oauth_consumer_key from the request session
+        """
         return request.session.get("oauth_consumer_key", None)
 
     def user_email(self, request):
+        """Get the user email parameter.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get email of user from the request session
+        """
         return request.session.get("lis_person_contact_email_primary", None)
 
     def user_fullname(self, request):
+        """Get the user fullname.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get user's fullname from the request session
+        """
         name = request.session.get("lis_person_name_full", None)
-        if not name or len(name) < 1:
+        if not name:
             name = self.user_id(request)
 
         return name or ""
 
     def user_id(self, request):
+        """Get the user id.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get user_id from the request session
+        """
         return request.session.get("user_id", None)
 
     def user_name(self, request):
+        """Get the user name.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get username from the request session
+        """
         return request.session.get("lis_person_sourcedid", None)
 
     def user_roles(self, request):  # pylint: disable=no-self-use
         """
-        LTI roles of the authenticated user
+        LTI roles of the authenticated user.
 
-        :return: roles
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            Array: user'roles from the request session
         """
-
         roles = request.session.get("roles", None)
         if not roles:
             return []
