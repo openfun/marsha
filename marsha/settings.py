@@ -47,8 +47,33 @@ class Base(Configuration):
         "django.contrib.staticfiles",
         "django_extensions",
         "marsha.core.apps.CoreConfig",
+        "marsha.lti_provider",
     ]
-
+    BASE_LTI_PARAMS = {
+        u"launch_presentation_return_url": u"/asset/",
+        u"lis_person_contact_email_primary": u"foo@bar.com",
+        u"lis_person_name_full": u"Foo Bar Baz",
+        u"lis_result_sourcedid": u"course-v1%3AedX%2BDemoX%2BDemo_Course"
+        u":dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa:student",
+        u"lti_message_type": u"basic-lti-launch-request",
+        u"lti_version": u"LTI-1p0",
+        u"roles": u"urn:lti:instrole:ims/lis/Instructor,urn:lti:instrole:ims/lis/Staff",
+        u"resource_link_id": u"dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa",
+        u"user_id": u"student",
+    }
+    AUTHENTICATION_BACKENDS = [
+        "django.contrib.auth.backends.ModelBackend",
+        "marsha.lti_provider.auth.LTIBackend",
+    ]
+    LTI_TOOL_CONFIGURATION = {
+        "title": "Sample LTI Tool",
+        "description": "This tool includes launch, navigation and assignments",
+        "launch_url": "lti/",
+        "landing_url": "/",
+        "new_tab": False,
+        "frame_width": 1024,
+        "frame_height": 1024,
+    }
     MIDDLEWARE = [
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,7 +83,6 @@ class Base(Configuration):
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
     ]
-
     ROOT_URLCONF = "marsha.urls"
 
     TEMPLATES = [
@@ -94,7 +118,41 @@ class Base(Configuration):
 
     # Internationalization
     # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "complete": {"format": "%(levelname)s %(asctime)s %(name)s %(message)s"},
+            "simple": {"format": "%(levelname)s %(message)s"},
+        },
+        "filters": {
+            "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+            "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
+        },
+        "handlers": {
+            "null": {"level": "DEBUG", "class": "logging.NullHandler"},
+            "console": {
+                "level": "INFO",
+                "filters": ["require_debug_true"],
+                "class": "logging.StreamHandler",
+                "formatter": "complete",
+            },
+        },
+        "loggers": {
+            "": {"handlers": ["console"], "level": "INFO"},
+            "django": {"handlers": ["console"]},
+            "django.request": {
+                "handlers": ["console"],
+                "level": "ERROR",
+                "propagate": False,
+            },
+            "botocore.vendored.requests.packages.urllib3.connectionpool": {
+                "handlers": ["console"],
+                "level": "ERROR",
+            },
+            "py.warnings": {"handlers": ["console"]},
+        },
+    }
     LANGUAGE_CODE = "en-us"
 
     LANGUAGES = [("en", _("english")), ("fr", _("french"))]
@@ -119,6 +177,7 @@ class Development(Base):
 
     DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
+    X_FRAME_OPTIONS = "ALLOW-ALL"
 
 
 class Test(Base):
