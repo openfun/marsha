@@ -70,13 +70,13 @@ class VideoCreate(LTIAuthMixin, CreateView):
         Returns:
             Form: form_valid
         """
+        self.object = form.save(commit=False)
+        playlist = Playlist.objects.filter(
+            pk=self.request.session.get("playlist_id")
+        ).first()
+        self.object.playlist = playlist
+        self.object.lti_id = self.request.session.get("lti_id")
         try:
-            self.object = form.save(commit=False)
-            playlist = Playlist.objects.filter(
-                pk=self.request.session.get("playlist_id")
-            ).first()
-            self.object.playlist = playlist
-            self.object.lti_id = self.request.session.get("lti_id")
             self.object.save()
             return super(VideoCreate, self).form_valid(form)
         except BaseException:
