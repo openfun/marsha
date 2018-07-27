@@ -70,16 +70,10 @@ class Base(Configuration):
         "title": "Sample LTI Tool",
         "description": "This tool includes launch, navigation and assignments",
         "launch_url": "lti/",
-        "embed_url": "",  # @todo - add an editor embed example
-        "embed_icon_url": "",
-        "embed_tool_id": "",
         "landing_url": "/",
-        "navigation": True,
-        "new_tab": True,
-        "course_aware": False,
+        "new_tab": False,
         "frame_width": 1024,
         "frame_height": 1024,
-        "assignments": {"1": "/assignment/1/", "2": "/assignment/2/"},
     }
     MIDDLEWARE = [
         "django.middleware.security.SecurityMiddleware",

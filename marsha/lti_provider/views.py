@@ -36,9 +36,13 @@ class LTILandingPage(LTIAuthMixin, TemplateView):
             JSON: the information passed to the html template
         """
         form = VideoForm()
+        # get playlist_id from session
         playlist_id = self.request.session.get("playlist_id", None)
-        lti_id = self.lti.resource_link_id(self.request).rsplit("-", 1)[1]
+        # get xblock_id
+        lti_id = self.lti.resource_link_id(self.request)
+        # set xblock_id in session to be able to retrieve it during the addition of video
         self.request.session["lti_id"] = str(lti_id)
+        # retrieve the video linked to the xblock_id and playlist
         video = Video.objects.filter(lti_id=lti_id, playlist__pk=playlist_id).first()
 
         return {
@@ -66,14 +70,17 @@ class VideoCreate(LTIAuthMixin, CreateView):
         Returns:
             Form: form_valid
         """
-        self.object = form.save(commit=False)
-        playlist = Playlist.objects.filter(
-            pk=self.request.session.get("playlist_id")
-        ).first()
-        self.object.playlist = playlist
-        self.object.lti_id = self.request.session.get("lti_id")
-        self.object.save()
-        return super(VideoCreate, self).form_valid(form)
+        try:
+            self.object = form.save(commit=False)
+            playlist = Playlist.objects.filter(
+                pk=self.request.session.get("playlist_id")
+            ).first()
+            self.object.playlist = playlist
+            self.object.lti_id = self.request.session.get("lti_id")
+            self.object.save()
+            return super(VideoCreate, self).form_valid(form)
+        except BaseException:
+            return super(VideoCreate, self).form_invalid(form)
 
     def form_invalid(self, form):
         """If the form is not valid, return error.
@@ -83,7 +90,7 @@ class VideoCreate(LTIAuthMixin, CreateView):
         Returns:
             django.http.HttpResponse: redirected url
         """
-        return HttpResponse("form is invalid.. this is just an HttpResponse object")
+        return HttpResponse("Form is invalid.. Error occurred while adding video")
 
 
 class VideoUpdate(LTIAuthMixin, UpdateView):
@@ -128,7 +135,9 @@ class LTIRoutingView(LTIAuthMixin, View):
             lti_id(String): Id of LTI course
             site_name(String): name of ConsumerSite
         """
+        # create playlist and link it to an existing consumer site
         playlist = PlaylistFactory(lti_id=lti_id, consumer_site__name=site_name)
+        # set playlist_id in session to be able to retrieve it during the addition of video
         request.session["playlist_id"] = str(playlist.pk)
 
     def post(self, request):
@@ -139,15 +148,21 @@ class LTIRoutingView(LTIAuthMixin, View):
         Returns:
             django.http.response.HttpResponseRedirect: redirected url
         """
-        site_name = self.lti.resource_link_id(request).rsplit("-", 1)[0]
+        # get the consumer sitename
+        site_name = self.lti.consumer_sitename(request)
+        # get the course_id from the lti request
         lti_id = self.lti.course_context(request)
 
+        # retrieve playlist linked to the course_id and sitename
         playlist = Playlist.objects.filter(
             lti_id=lti_id, consumer_site__name=site_name
         ).first()
         if playlist:
+            # set playlist_id in session to be able to retrieve it during the addition of video
             request.session["playlist_id"] = str(playlist.pk)
         else:
+            # create playlist if it does not exist and
+            # if user's role is either instructor or administrator
             if self.lti.is_instructor(self.request) or self.lti.is_administrator(
                 self.request
             ):
@@ -155,6 +170,7 @@ class LTIRoutingView(LTIAuthMixin, View):
 
         url = reverse("lti-landing-page")
 
+        # a templated landing page view for those LMS who do not have a 'launch in new tab' option
         if settings.LTI_TOOL_CONFIGURATION.get("new_tab") is False:
             url = self.request.scheme + "://" + self.request.get_host() + url
 

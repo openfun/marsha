@@ -161,9 +161,16 @@ class LTI:
         found_consumers = {}
 
         try:
-            consumer_key = request.POST.get("oauth_consumer_key", False)
-            site_name = request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
+            # get consumer_key
+            consumer_key = self.get_post_or_get(request).get(
+                "oauth_consumer_key", False
+            )
 
+            # get consumer sitename
+            site_name = self.consumer_sitename(request)
+
+            # find ltipassscope related to either the customersite or the playlist
+            # while checking the sitename retrieved from the lti request
             ltipassscope = LTIPassportScope.objects.filter(
                 Q(
                     lti_passport__oauth_consumer_key=consumer_key,
@@ -182,7 +189,6 @@ class LTI:
                         "secret": str(ltipassscope.lti_passport.shared_secret)
                     }
                 }
-
         except LTIException as exc:
             found_consumers = None
             print("An exception occurred: {}".format(exc))
@@ -208,6 +214,16 @@ class LTI:
 
         return True
 
+    def get_post_or_get(self, request):
+        """Return the equivalent of request.REQUEST.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            requestType: request.POST or request.GET
+        """
+        return request.POST or request.GET
+
     def resource_link_id(self, request):
         """Get the resource link id.
 
@@ -217,6 +233,33 @@ class LTI:
             String: get resource_link_id from the request session
         """
         return request.session.get("resource_link_id", None)
+
+    def consumer_sitename(self, request):
+        """Get consumer_sitename.
+
+        Arguments:
+            request(django.http.request): the request that stores the LTI parameters in the session
+        Returns:
+            String: get consumer sitename from the request session
+        """
+        # get the consumer sitename from the lti request
+        if self.get_post_or_get(request).get(
+            "tool_consumer_info_product_family_code", None
+        ):
+            site_name = self.get_post_or_get(request).get(
+                "tool_consumer_instance_guid", ""
+            )
+        else:
+            # in the case of OpenEDX, resource_link_id format is defined in settings.py file.
+            # it is defined as follow: ``sitename-id_xblock``
+            # example: ``dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa``
+            site_name = (
+                self.get_post_or_get(request)
+                .get("resource_link_id", "")
+                .rsplit("-", 1)[0]
+            )
+
+        return site_name
 
     def consumer_user_id(self, request):
         """Get the consumer user id.
