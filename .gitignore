@@ -118,3 +118,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Front
+node_modules
+data/static/js

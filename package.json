@@ -3,7 +3,29 @@
   "version": "0.1.0",
   "description": "🐠 A FUN LTI video provider",
   "main": "front/index.tsx",
+  "scripts": {
+    "build": "webpack"
+  },
   "repository": "git@github.com:openfun/marsha.git",
   "author": "France Université Numérique",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.56",
+    "@babel/polyfill": "7.0.0-beta.56",
+    "@babel/preset-env": "7.0.0-beta.56",
+    "@types/react": "16.4.7",
+    "@types/react-dom": "16.0.6",
+    "babel-loader": "8.0.0-beta.4",
+    "babel-plugin-react-intl": "2.4.0",
+    "babel-preset-react": "7.0.0-beta.3",
+    "source-map-loader": "0.2.3",
+    "ts-loader": "4.4.2",
+    "typescript": "3.0.1",
+    "webpack": "4.16.5",
+    "webpack-cli": "3.1.0"
+  },
+  "dependencies": {
+    "react": "16.4.2",
+    "react-dom": "16.4.2"
+  }
 }
