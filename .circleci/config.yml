@@ -296,6 +296,30 @@ jobs:
                   -timeout 60s \
                     python manage.py test
 
+  # ---- Front-end jobs ----
+  build-front:
+    docker:
+      - image: circleci/node:9-browsers
+    working_directory: ~/fun
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v3-front-dependencies-{{ checksum "package.json" }}
+          - v3-front-dependencies-
+      # If the yarn.lock file is not up-to-date with the package.json file,
+      # using the --frozen-lockfile should fail.
+      - run:
+          name: Install front-end dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Build front-end application
+          command: yarn build
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v3-front-dependencies-{{ checksum "package.json" }}
+
   # ---- Alpine jobs ----
   build-alpine:
 
@@ -459,6 +483,14 @@ workflows:
       #
       # Check validity of git history
       - lint-git:
+          filters:
+            tags:
+              only: /.*/
+
+      # Front-end jobs
+      #
+      # Build (and later lint and test the front-end app)
+      - build-front:
           filters:
             tags:
               only: /.*/
