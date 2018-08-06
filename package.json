@@ -1,0 +1,9 @@
+{
+  "name": "marsha",
+  "version": "0.1.0",
+  "description": "🐠 A FUN LTI video provider",
+  "main": "front/index.tsx",
+  "repository": "git@github.com:openfun/marsha.git",
+  "author": "France Université Numérique",
+  "license": "MIT"
+}
