@@ -4,7 +4,8 @@
   "description": "🐠 A FUN LTI video provider",
   "main": "front/index.tsx",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "lint": "tslint -c tslint.json 'front/**/*.ts?(x)'"
   },
   "repository": "git@github.com:openfun/marsha.git",
   "author": "France Université Numérique",
@@ -21,6 +22,7 @@
     "prettier": "1.14.0",
     "source-map-loader": "0.2.3",
     "ts-loader": "4.4.2",
+    "tslint": "5.11.0",
     "typescript": "3.0.1",
     "webpack": "4.16.5",
     "webpack-cli": "3.1.0"

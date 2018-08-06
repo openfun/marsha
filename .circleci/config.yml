@@ -320,6 +320,19 @@ jobs:
             - ./node_modules
           key: v3-front-dependencies-{{ checksum "package.json" }}
 
+  lint-front-tslint:
+    docker:
+      - image: circleci/node:9-browsers
+    working_directory: ~/fun
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v3-front-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Lint code with tslint
+          command: yarn lint
+
   lint-front-prettier:
     docker:
       - image: circleci/node:9-browsers
@@ -505,6 +518,12 @@ workflows:
       #
       # Build (and later lint and test the front-end app)
       - build-front:
+          filters:
+            tags:
+              only: /.*/
+      - lint-front-tslint:
+          requires:
+            - build-front
           filters:
             tags:
               only: /.*/
