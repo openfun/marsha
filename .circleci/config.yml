@@ -22,7 +22,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -52,7 +52,7 @@ jobs:
       # Cache docker layers so that we strongly speed up this job execution
       docker_layer_caching: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       # Checkout repository sources
@@ -88,7 +88,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/fun/docker/images/
+            - ~/marsha/docker/images/
           key: docker-debian-images-{{ .Revision }}
 
   # Build dev job
@@ -98,7 +98,7 @@ jobs:
     machine:
       docker_layer_caching: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -143,14 +143,14 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/fun/docker/images/dev/
+            - ~/marsha/docker/images/dev/
           key: docker-debian-images-dev-{{ .Revision }}
 
   lint-isort:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -178,7 +178,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -206,7 +206,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -234,7 +234,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -262,7 +262,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -300,7 +300,7 @@ jobs:
   build-front:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/fun
+    working_directory: ~/marsha
     steps:
       - checkout
       - restore_cache:
@@ -323,7 +323,7 @@ jobs:
   lint-front-tslint:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/fun
+    working_directory: ~/marsha
     steps:
       - checkout
       - restore_cache:
@@ -336,7 +336,7 @@ jobs:
   lint-front-prettier:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/fun
+    working_directory: ~/marsha
     steps:
       - checkout
       - restore_cache:
@@ -353,7 +353,7 @@ jobs:
     machine:
       docker_layer_caching: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -392,14 +392,14 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/fun/docker/images/
+            - ~/marsha/docker/images/
           key: docker-alpine-images-dev-{{ .Revision }}
 
   test-alpine:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout
@@ -433,7 +433,7 @@ jobs:
 
     machine: true
 
-    working_directory: ~/fun
+    working_directory: ~/marsha
 
     steps:
       - checkout

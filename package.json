@@ -1,7 +1,7 @@
 {
   "name": "marsha",
   "version": "0.1.0",
-  "description": "🐠 A FUN LTI video provider",
+  "description": "🐠 a FUN LTI video provider",
   "main": "front/index.tsx",
   "scripts": {
     "build": "webpack",
