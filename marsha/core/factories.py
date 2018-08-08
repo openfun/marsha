@@ -8,6 +8,24 @@ from factory.fuzzy import FuzzyInteger
 from marsha.core import models
 
 
+class PlaylistLTIPassportFactory(DjangoModelFactory):
+    """Factory to create LTI passport for a playlist."""
+
+    class Meta:  # noqa
+        model = models.LTIPassport
+
+    playlist = factory.SubFactory("marsha.core.factories.PlaylistFactory")
+
+
+class ConsumerSiteLTIPassportFactory(DjangoModelFactory):
+    """Factory to create LTI passport for a consumer site."""
+
+    class Meta:  # noqa
+        model = models.LTIPassport
+
+    consumer_site = factory.SubFactory("marsha.core.factories.ConsumerSiteFactory")
+
+
 class UserFactory(DjangoModelFactory):
     """Factory for the User model."""
 
