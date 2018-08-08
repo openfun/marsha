@@ -346,6 +346,18 @@ jobs:
           name: Lint code with prettier
           command: yarn prettier --list-different "**/*.+(ts|tsx|json|js|jsx)"
 
+  test-front:
+    docker:
+      - image: circleci/node:9-browsers
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v3-front-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: yarn test
 
   # ---- Alpine jobs ----
   build-alpine:
@@ -528,6 +540,12 @@ workflows:
             tags:
               only: /.*/
       - lint-front-prettier:
+          requires:
+            - build-front
+          filters:
+            tags:
+              only: /.*/
+      - test-front:
           requires:
             - build-front
           filters:
