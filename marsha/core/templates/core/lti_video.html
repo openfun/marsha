@@ -1,0 +1,7 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <div data-state="{{ state }}" {% for key, value in policy.items %} data-{{ key }}="{{ value }}"{% endfor %}></div>
+  </body>
+</html>
