@@ -19,6 +19,10 @@ SHARED_SECRET_CHARS = string.ascii_letters + string.digits + string.punctuation
 SHARED_SECRET_SIZE = 40
 
 ADMINISTRATOR, INSTRUCTOR, STUDENT = ("administrator", "instructor", "student")
+LTI_ROLES = {
+    INSTRUCTOR: {"instructor", "teacher", "staff"},
+    STUDENT: {"student", "learner"},
+}
 ROLE_CHOICES = (
     (ADMINISTRATOR, _("administrator")),
     (INSTRUCTOR, _("instructor")),
