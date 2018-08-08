@@ -1,4 +1,6 @@
 """This module holds the models for the marsha project."""
+import random
+import string
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -10,6 +12,11 @@ from marsha.core.managers import UserManager
 
 from .base import BaseModel, NonDeletedUniqueIndex
 
+
+OAUTH_CONSUMER_KEY_CHARS = string.ascii_uppercase + string.digits
+OAUTH_CONSUMER_KEY_SIZE = 20
+SHARED_SECRET_CHARS = string.ascii_letters + string.digits + string.punctuation
+SHARED_SECRET_SIZE = 40
 
 ADMINISTRATOR, INSTRUCTOR, STUDENT = ("administrator", "instructor", "student")
 ROLE_CHOICES = (
@@ -46,44 +53,7 @@ class LTIPassport(BaseModel):
     Model representing an LTI passport for LTI consumers to interact with Marsha.
 
     An LTI passport stores credentials that can be used by an LTI consumer to interact with
-    Marsha as an LTI provider.
-
-    """
-
-    oauth_consumer_key = models.CharField(
-        max_length=255,
-        verbose_name=_("oauth consumer key"),
-        help_text=_(
-            "oauth consumer key to authenticate an LTI consumer on the LTI provider"
-        ),
-    )
-    shared_secret = models.CharField(
-        max_length=255,
-        verbose_name=_("shared secret"),
-        help_text=_("LTI Shared secret"),
-    )
-    created_by = models.ForeignKey(
-        to=User,
-        related_name="lti_passports",
-        # don't delete an LTI passport if the user who created it is hard deleted
-        on_delete=models.SET_NULL,
-        null=True,
-    )
-    is_enabled = models.BooleanField(
-        verbose_name=_("is enabled"), help_text=_("whether the passport is enabled")
-    )
-
-    class Meta:
-        """Options for the ``LTIPassport`` model."""
-
-        db_table = "lti_passport"
-        verbose_name = _("LTI passport")
-        verbose_name_plural = _("LTI passports")
-
-
-class LTIPassportScope(BaseModel):
-    """
-    Model representing the scope of an LTI passport.
+    Marsha acting as an LTI provider.
 
     A passport can be granted for:
     - a playlist: to be used when we trust an instructor. A playlist pre-exists in Marsha. The
@@ -93,38 +63,82 @@ class LTIPassportScope(BaseModel):
         environment). The administrator receives credentials and associates them at the level
         of the VLE so that all instructors on the VLE can handle their videos inside playlists
         that will be created on the fly.
-
     """
 
-    lti_passport = models.ForeignKey(
-        to=LTIPassport,
-        related_name="scopes",
-        # Scope is (soft-)deleted if related LTI passport is (soft-)deleted
-        on_delete=models.CASCADE,
+    oauth_consumer_key = models.CharField(
+        max_length=255,
+        verbose_name=_("oauth consumer key"),
+        unique=True,
+        help_text=_(
+            "oauth consumer key to authenticate an LTI consumer on the LTI provider"
+        ),
+        editable=False,
+    )
+    shared_secret = models.CharField(
+        max_length=255,
+        verbose_name=_("shared secret"),
+        help_text=_("LTI Shared secret"),
+        editable=False,
     )
     consumer_site = models.ForeignKey(
         to="ConsumerSite",
         related_name="lti_passport_scopes",
-        # don't allow hard deleting a consumer site if it is still linked to a passport
-        on_delete=models.PROTECT,
+        # don't delete an LTI passport if the related consumer site is hard deleted
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     playlist = models.ForeignKey(
         to="Playlist",
         related_name="lti_passport_scopes",
-        # don't allow hard deleting a playlist if it is still linked to a passport
-        on_delete=models.PROTECT,
+        # don't delete an LTI passport if the related playlist site is hard deleted
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
+    created_by = models.ForeignKey(
+        to=User,
+        related_name="lti_passports",
+        # don't delete an LTI passport if the user who created it is hard deleted
+        on_delete=models.SET_NULL,
+        null=True,
+        editable=False,
+    )
+    is_enabled = models.BooleanField(
+        verbose_name=_("is enabled"),
+        help_text=_("whether the passport is enabled"),
+        default=True,
+    )
 
     class Meta:
-        """Options for the ``LTIPassportScope`` model."""
+        """Options for the ``LTIPassport`` model."""
 
-        db_table = "lti_passport_scope"
-        verbose_name = _("LTI passport scope")
-        verbose_name_plural = _("LTI passport scopes")
+        db_table = "lti_passport"
+        verbose_name = _("LTI passport")
+        verbose_name_plural = _("LTI passports")
+
+    # pylint: disable=arguments-differ
+    def save(self, *args, **kwargs):
+        """Generate the oauth consumer key and shared secret randomly upon creation.
+
+        Parameters
+        ----------
+        args : list
+            Passed onto parent's `save` method
+        kwargs: dict
+            Passed onto parent's `save` method
+
+        """
+        if not self.oauth_consumer_key:
+            self.oauth_consumer_key = "".join(
+                random.choice(OAUTH_CONSUMER_KEY_CHARS)
+                for _ in range(OAUTH_CONSUMER_KEY_SIZE)
+            )
+        if not self.shared_secret:
+            self.shared_secret = "".join(
+                random.choice(SHARED_SECRET_CHARS) for _ in range(SHARED_SECRET_SIZE)
+            )
+        super().save(*args, **kwargs)
 
 
 class ConsumerSite(BaseModel):
