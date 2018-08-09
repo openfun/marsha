@@ -121,4 +121,5 @@ venv.bak/
 
 # Front
 node_modules
+marsha/static/js
 data/static/js
