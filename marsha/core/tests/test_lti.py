@@ -1,8 +1,6 @@
 """Test the LTI interconnection with Open edX."""
-from importlib import import_module
 from unittest import mock
 
-from django.shortcuts import render
 from django.test import RequestFactory, TestCase
 
 import oauth2
@@ -61,20 +59,8 @@ class VideoLTITestCase(TestCase):
         super().setUp()
         self.factory = RequestFactory()
 
-    def test_lti_video_launch_request_render_context(self):
-        """The context should be rendered to html on the launch request page."""
-        policy = {"a": 1, "b": 2}
-        request = self.factory.get("/")
-        response = render(
-            request, "core/lti_video.html", {"policy": policy, "state": "s"}
-        )
-        self.assertContains(
-            response, '<div data-state="s" data-a="1" data-b="2"></div>', html=True
-        )
-
     def test_lti_video_instructor(self):
         """The instructor role should be identified even when a synonym is used."""
-        request = self.factory.get("/")
         for roles_string in [
             "instructor",
             "Teacher",  # upper case letters should be normalized
@@ -83,12 +69,12 @@ class VideoLTITestCase(TestCase):
             ", staff",  # a leading comma should be ignored
             "staff,",  # a trailing comma should be ignored
         ]:
-            request.session = {"roles": roles_string}
+            request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request)
             self.assertTrue(lti.is_instructor)
 
         for roles_string in ["", "instructori", "student", "administrator,student"]:
-            request.session = {"roles": roles_string}
+            request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request)
             self.assertFalse(lti.is_instructor)
 
@@ -96,20 +82,12 @@ class VideoLTITestCase(TestCase):
     def test_lti_passport_unknown(self, mock_verify):
         """Launch request for an unknown passport.
 
-        A launch request that does not refer to an existing passport should fail and the current
-        session should be flushed.
+        A launch request that does not refer to an existing passport should fail.
         """
         request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
-        engine = import_module("django.contrib.sessions.backends.file")
-        store = engine.SessionStore()
-        store.save()
-        request.session = store
-        request.session["key"] = "value"
         lti = LTI(request)
-        self.assertEqual(request.session.get("key"), "value")
         with self.assertRaises(LTIException):
-            lti.initialize_session()
-        self.assertEqual(request.session.get("key"), None)
+            lti.verify()
         self.assertFalse(mock_verify.called)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -121,11 +99,8 @@ class VideoLTITestCase(TestCase):
             consumer_site__name="example.com",
         )
         request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
-        request.session = {}
         lti = LTI(request)
-        self.assertTrue(lti.initialize_session())
-        OPENEDX_SESSION["scope"] = "consumer_site"
-        self.assertEqual(request.session, OPENEDX_SESSION)
+        self.assertTrue(lti.verify())
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -137,30 +112,20 @@ class VideoLTITestCase(TestCase):
             playlist__consumer_site__name="example.com",
         )
         request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
-        request.session = {}
         lti = LTI(request)
-        self.assertTrue(lti.initialize_session())
-        OPENEDX_SESSION["scope"] = "playlist"
-        self.assertEqual(request.session, OPENEDX_SESSION)
+        self.assertTrue(lti.verify())
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", side_effect=oauth2.Error)
     def test_lti_verify_request_flush_on_error(self, mock_verify):
-        """When an LTI launch request fails to verify, the current session should be flushed."""
+        """When an LTI launch request fails to verify."""
         PlaylistLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
             playlist__consumer_site__name="example.com",
         )
         request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
-        engine = import_module("django.contrib.sessions.backends.file")
-        store = engine.SessionStore()
-        store.save()
-        request.session = store
-        request.session["key"] = "value"
         lti = LTI(request)
-        self.assertEqual(request.session.get("key"), "value")
         with self.assertRaises(LTIException):
-            lti.initialize_session()
-        self.assertEqual(request.session.get("key"), None)
+            lti.verify()
         self.assertEqual(mock_verify.call_count, 1)
