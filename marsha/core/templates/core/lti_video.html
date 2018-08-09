@@ -2,6 +2,8 @@
   <head>
   </head>
   <body>
-    <div data-state="{{ state }}" {% for key, value in policy.items %} data-{{ key }}="{{ value }}"{% endfor %}></div>
+    <div data-resource-link-id="{{ resource_link_id }}" data-state="{{ state }}" data-jwt="{{ jwt_token }}"></div>
+    <div {% for key, value in policy.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
+
   </body>
 </html>

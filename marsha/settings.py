@@ -5,6 +5,7 @@ config from the environment
 
 """
 
+from datetime import timedelta
 import os
 
 from django.utils.translation import gettext_lazy as _
@@ -92,6 +93,8 @@ class Base(Configuration):
         {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
     ]
 
+    JWT_SIGNING_KEY = values.SecretValue()
+
     # Internationalization
     # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -106,6 +109,20 @@ class Base(Configuration):
     USE_L10N = True
 
     USE_TZ = True
+
+    # pylint: disable=invalid-name
+    @property
+    def SIMPLE_JWT(self):
+        """Define settings for `djangorestframework_simplejwt`.
+
+        The JWT_SIGNING_KEY must be evaluated late as the jwt library check for string type.
+        """
+        return {
+            "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+            "ALGORITHM": "HS256",
+            "SIGNING_KEY": str(self.JWT_SIGNING_KEY),
+            "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+        }
 
 
 class Development(Base):
