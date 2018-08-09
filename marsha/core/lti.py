@@ -3,12 +3,7 @@ import re
 
 from django.db.models import Q
 
-from pylti.common import (
-    LTI_PROPERTY_LIST,
-    LTI_SESSION_KEY,
-    LTIException,
-    verify_request_common,
-)
+from pylti.common import LTIException, verify_request_common
 
 from .models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
@@ -29,10 +24,11 @@ class LTI:
         Parameters
         ----------
         request : django.http.request.HttpRequest
-            The request that stores the LTI parameters in the session
+            The request that holds the LTI parameters
 
         """
         self.request = request
+        self.scope = None
 
     def get_passport(self):
         """Retrieve the passeport linked to an LTI launch request.
@@ -74,7 +70,7 @@ class LTI:
         Returns
         -------
         string
-            Consumer site name from the request session
+            Consumer site name from the request parameters
 
         """
         # get the consumer sitename from the lti request
@@ -86,10 +82,8 @@ class LTI:
         # example: ``dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa``
         return self.request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
 
-    def initialize_session(self):
-        """Verify the LTI request and initialize a session.
-
-        All the LTI parameters are stored into the session dict for use in views.
+    def verify(self):
+        """Verify the LTI request.
 
         Raises
         ------
@@ -102,44 +96,40 @@ class LTI:
             True if the request is a valid LTI launch request
 
         """
-        try:
-            lti_passport = self.get_passport()
-            consumers = {
-                str(lti_passport.oauth_consumer_key): {
-                    "secret": str(lti_passport.shared_secret)
-                }
+        lti_passport = self.get_passport()
+
+        # The scope of the passport is useful to determine user permissions (e.g. right to create
+        # a new playlist). It can be:
+        #
+        # - "playlist": to be used when we trust an instructor. A playlist pre-exists in Marsha.
+        #   The course instructor receives credentials and associates them at the level of his/her
+        #   course to handle the course videos inside the playlist.
+        #
+        # - "consumer_site": to be used when we trust the administrator of a VLE (virtual learning
+        #   environment). The administrator receives credentials and associates them at the level
+        #   of the VLE so that all instructors on the VLE can handle their videos inside playlists
+        #   that will be created on the fly.
+        self.scope = CONSUMER_SITE if lti_passport.consumer_site else PLAYLIST
+
+        consumers = {
+            str(lti_passport.oauth_consumer_key): {
+                "secret": str(lti_passport.shared_secret)
             }
-            # A call to the verification function should raise an LTIException but
-            # we can further check that it returns True.
-            if (
-                verify_request_common(
-                    consumers,
-                    self.request.build_absolute_uri(),
-                    self.request.method,
-                    self.request.META,
-                    dict(self.request.POST.items()),
-                )
-                is not True
-            ):
-                raise LTIException()
+        }
+        # A call to the verification function should raise an LTIException but
+        # we can further check that it returns True.
+        if (
+            verify_request_common(
+                consumers,
+                self.request.build_absolute_uri(),
+                self.request.method,
+                self.request.META,
+                dict(self.request.POST.items()),
+            )
+            is not True
+        ):
+            raise LTIException()
 
-        except LTIException:
-            self.request.session.flush()
-            raise
-
-        for field in LTI_PROPERTY_LIST:
-            param = self.request.POST.get(field, None)
-            if param:
-                self.request.session[field] = param
-
-        # Record the scope of the applicable passport in the session
-        # This will be useful to determine user permissions (e.g. right to create a new playlist)
-        assert lti_passport.consumer_site or lti_passport.playlist
-        self.request.session["scope"] = (
-            CONSUMER_SITE if lti_passport.consumer_site else PLAYLIST
-        )
-
-        self.request.session[LTI_SESSION_KEY] = True
         return True
 
     @property
@@ -152,7 +142,7 @@ class LTI:
             normalized LTI roles from the session
 
         """
-        roles = self.request.session.get("roles", "")
+        roles = self.request.POST.get("roles", "")
         # Remove all spaces from the string and extra trailing or leading commas
         roles = re.sub(r"[\s+]", "", roles).strip(",")
         # Return a set of the roles mentioned in the request
@@ -184,12 +174,12 @@ class LTI:
 
     @property
     def resource_link_id(self):
-        """Get the resource link id from the session.
+        """Get the resource link id from the LTI launch request.
 
         Returns
         -------
         string
-            `resource_link_id` from the request session
+            `resource_link_id` from the request parameters
 
         """
-        return self.request.session.get("resource_link_id", None)
+        return self.request.POST.get("resource_link_id", None)
