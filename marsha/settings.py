@@ -29,6 +29,8 @@ class Base(Configuration):
 
     STATIC_URL = "/static/"
 
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
     SECRET_KEY = values.SecretValue()
 
     DEBUG = values.BooleanValue(False)
