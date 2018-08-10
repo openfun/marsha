@@ -28,7 +28,14 @@ class VideoLTITemplatesTestCase(TestCase):
         )
         self.assertContains(
             response,
-            '<div data-resource-link-id="rli" data-state="s" data-jwt="jwt"></div>',
+            (
+                '<div class="marsha-frontend-data" data-jwt="jwt"'
+                'data-resource-link-id="rli" data-state="s"></div>'
+            ),
             html=True,
         )
-        self.assertContains(response, '<div data-a="1" data-b="2"></div>', html=True)
+        self.assertContains(
+            response,
+            '<div class="marsha-frontend-data" id="policy" data-a="1" data-b="2"></div>',
+            html=True,
+        )

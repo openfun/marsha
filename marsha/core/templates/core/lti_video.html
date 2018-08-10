@@ -1,13 +1,16 @@
 {% load staticfiles %}
 
 <html>
-  <head>
-    <script src='{% static "js/index.js" %}'></script>
-  </head>
-  <body>
-    <div data-resource-link-id="{{ resource_link_id }}" data-state="{{ state }}" data-jwt="{{ jwt_token }}"></div>
-    <div {% for key, value in policy.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
 
-    <div id="marsha-frontend-root">
-  </body>
+<head>
+  <script src='{% static "js/index.js" %}'></script>
+</head>
+
+<body>
+  <div class="marsha-frontend-data" data-jwt="{{ jwt_token }}" data-resource-link-id="{{ resource_link_id }}" data-state="{{ state }}"></div>
+  <div class="marsha-frontend-data" id="policy" {% for key, value in policy.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
+
+  <div id="marsha-frontend-root">
+</body>
+
 </html>
