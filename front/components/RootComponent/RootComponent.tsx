@@ -1,3 +1,9 @@
 import React from 'react';
 
-export const RootComponent = () => <div className="root" />;
+import { VideoJsPlayer } from '../VideoJsPlayer/VideoJsPlayer';
+
+export const RootComponent = () => (
+  <div className="root">
+    <VideoJsPlayer />
+  </div>
+);
