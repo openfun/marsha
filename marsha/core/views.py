@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI
 from .models.account import INSTRUCTOR, STUDENT
+from .serializers import VideoSerializer
 
 
 class VideoLTIView(TemplateView):
@@ -64,6 +65,6 @@ class VideoLTIView(TemplateView):
         else:
             context = {"state": STUDENT}
 
-        context["video"] = video
+        context["video"] = VideoSerializer(video).data if video else None
 
         return context

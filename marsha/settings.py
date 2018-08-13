@@ -49,6 +49,7 @@ class Base(Configuration):
         "django.contrib.messages",
         "django.contrib.staticfiles",
         "django_extensions",
+        "rest_framework",
         "marsha.core.apps.CoreConfig",
     ]
 
@@ -84,6 +85,12 @@ class Base(Configuration):
 
     WSGI_APPLICATION = "marsha.wsgi.application"
 
+    REST_FRAMEWORK = {
+        "DEFAULT_AUTHENTICATION_CLASSES": (
+            "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
+        )
+    }
+
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
     AUTH_PASSWORD_VALIDATORS = [
@@ -111,6 +118,8 @@ class Base(Configuration):
     USE_L10N = True
 
     USE_TZ = True
+
+    VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
     # pylint: disable=invalid-name
     @property
