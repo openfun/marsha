@@ -1,9 +1,11 @@
 """Test the LTI interconnection with Open edX."""
-from datetime import datetime
 from unittest import mock
 
 from django.test import RequestFactory, TestCase
 
+from rest_framework_simplejwt.state import token_backend
+
+from ..factories import VideoFactory
 from ..lti import LTI
 from ..views import VideoLTIView
 
@@ -23,32 +25,47 @@ class ViewsTestCase(TestCase):
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_instructor(self, mock_initialize):
         """."""
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site__name="example.com",
+        )
         view = VideoLTIView()
         view.request = self.factory.post(
-            "/", {"resource_link_id": "123", "roles": "instructor"}
-        )
-        with mock.patch(
-            "rest_framework_simplejwt.tokens.aware_utcnow",
-            return_value=datetime(2015, 5, 5),
-        ):
-            context = view.get_context_data()
-        self.assertEqual(
-            context,
+            "/",
             {
-                "jwt_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNz"
-                "IiwiZXhwIjoxNDMwODcwNDAwLCJqdGkiOiIxMjMifQ.mePJBhus9BIP9NrspCeVvxuu3EItD23YKlO"
-                "ZRmBSpew",
-                "state": "instructor",
                 "resource_link_id": "123",
+                "roles": "instructor",
+                "context_id": "abc",
+                "tool_consumer_instance_guid": "example.com",
             },
         )
+
+        context = view.get_context_data()
+
+        jwt_token = context.pop("jwt_token")
+        decoded_token = token_backend.decode(jwt_token)
+        self.assertEqual(decoded_token["video_id"], str(video.id))
+
+        self.assertEqual(context, {"state": "instructor", "video": video})
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_student(self, mock_initialize):
         """."""
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site__name="example.com",
+        )
         view = VideoLTIView()
         view.request = self.factory.post(
-            "/", {"resource_link_id": "123", "roles": "student"}
+            "/",
+            {
+                "resource_link_id": "123",
+                "roles": "student",
+                "context_id": "abc",
+                "tool_consumer_instance_guid": "example.com",
+            },
         )
         context = view.get_context_data()
-        self.assertEqual(context, {"state": "student", "resource_link_id": "123"})
+        self.assertEqual(context, {"state": "student", "video": video})
