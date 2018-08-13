@@ -18,8 +18,7 @@ class VideoLTIView(TemplateView):
     template_name = "core/lti_video.html"
 
     def get_context_data(self, **kwargs):
-        """
-        Populate the context with data retrieved from the LTI launch request.
+        """Populate the context with data retrieved from the LTI launch request.
 
         Parameters
         ----------
@@ -34,36 +33,37 @@ class VideoLTIView(TemplateView):
             For all roles
             +++++++++++++
 
-            - resource-link-id: resource targetted by the LTI launch request.
             - state: state of the LTI launch request. Can be one of `student`, `instructor` or
                 `error`.
+            - video: representation of the video including urls for the video file in all
+                resolutions, thumbnails and subtitles.
 
             For instructors only
             ++++++++++++++++++++
 
-            - jwt_token: a short-lived JWT token linked to the `resource_link_id` that will be used
-                as authentication to request an upload policy.
+            - jwt_token: a short-lived JWT token linked to the video ID that will be
+                used as authentication to request an upload policy for the video or update its
+                name or description.
 
         """
         context = super().get_context_data(**kwargs)
 
         lti = LTI(self.request)
         try:
-            lti.verify()
+            video = lti.get_or_create_video()
         except LTIException:
             return {"state": "error"}
 
         if lti.is_instructor:
-            # Create a short-lived JWT token for the "resource_link_id"
+            # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
-            jwt_token.payload["jti"] = lti.resource_link_id
+            jwt_token.payload["video_id"] = str(video.id)
 
             # Evaluating the token as a string computes it from its payload
             context = {"state": INSTRUCTOR, "jwt_token": str(jwt_token)}
-
         else:
             context = {"state": STUDENT}
 
-        context["resource_link_id"] = lti.resource_link_id
+        context["video"] = video
 
         return context

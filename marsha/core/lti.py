@@ -2,14 +2,12 @@
 import re
 
 from django.db.models import Q
+from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
 
+from .models import ConsumerSite, Playlist, Video
 from .models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
-
-
-# Define passport scopes
-CONSUMER_SITE, PLAYLIST = "consumer_site", "playlist"
 
 
 class LTI:
@@ -28,59 +26,7 @@ class LTI:
 
         """
         self.request = request
-        self.scope = None
-
-    def get_passport(self):
-        """Retrieve the passeport linked to an LTI launch request.
-
-        Returns
-        -------
-        json
-            LTI passport as a dictionary
-
-        Raises
-        ------
-        LTIException
-            exception if the passport is not valid or the LTI verification fails
-
-        """
-        consumer_key = self.request.POST.get("oauth_consumer_key", None)
-        site_name = self.get_sitename()
-
-        # find a passport scope related to either the consumer site or the playlist
-        try:
-            return LTIPassport.objects.get(
-                Q(
-                    oauth_consumer_key=consumer_key,
-                    is_enabled=True,
-                    consumer_site__name=site_name,
-                )
-                | Q(
-                    oauth_consumer_key=consumer_key,
-                    is_enabled=True,
-                    playlist__consumer_site__name=site_name,
-                )
-            )
-        except LTIPassport.DoesNotExist:
-            raise LTIException()
-
-    def get_sitename(self):
-        """Get sitename from request.
-
-        Returns
-        -------
-        string
-            Consumer site name from the request parameters
-
-        """
-        # get the consumer sitename from the lti request
-        if self.request.POST.get("tool_consumer_info_product_family_code", None):
-            return self.request.POST.get("tool_consumer_instance_guid", "")
-
-        # in the case of OpenEDX, resource_link_id format is defined in settings.py file.
-        # it is defined as follow: ``sitename-id_xblock``
-        # example: ``dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa``
-        return self.request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
+        self._is_verified = False
 
     def verify(self):
         """Verify the LTI request.
@@ -96,20 +42,45 @@ class LTI:
             True if the request is a valid LTI launch request
 
         """
-        lti_passport = self.get_passport()
+        consumer_key = self.request.POST.get("oauth_consumer_key", None)
+        consumer_site_name = self.consumer_site_name
 
-        # The scope of the passport is useful to determine user permissions (e.g. right to create
-        # a new playlist). It can be:
-        #
-        # - "playlist": to be used when we trust an instructor. A playlist pre-exists in Marsha.
-        #   The course instructor receives credentials and associates them at the level of his/her
-        #   course to handle the course videos inside the playlist.
-        #
-        # - "consumer_site": to be used when we trust the administrator of a VLE (virtual learning
-        #   environment). The administrator receives credentials and associates them at the level
-        #   of the VLE so that all instructors on the VLE can handle their videos inside playlists
-        #   that will be created on the fly.
-        self.scope = CONSUMER_SITE if lti_passport.consumer_site else PLAYLIST
+        try:
+            assert consumer_key
+        except AssertionError:
+            raise LTIException("An oauth consumer key is required.")
+
+        try:
+            assert self.context_id
+        except AssertionError:
+            raise LTIException("A context ID is required.")
+
+        try:
+            assert consumer_site_name
+        except AssertionError:
+            raise LTIException("A consumer site name is required.")
+
+        # find a passport related to either the consumer site or the playlist
+        try:
+            lti_passport = LTIPassport.objects.get(
+                Q(
+                    oauth_consumer_key=consumer_key,
+                    is_enabled=True,
+                    consumer_site__name=consumer_site_name,
+                )
+                | Q(
+                    oauth_consumer_key=consumer_key,
+                    is_enabled=True,
+                    playlist__consumer_site__name=consumer_site_name,
+                )
+            )
+        except LTIPassport.DoesNotExist:
+            raise LTIException(
+                "Could not find a valid passport for this consumer site and this "
+                "oauth consumer key: {:s}/{:s}.".format(
+                    consumer_site_name, consumer_key
+                )
+            )
 
         consumers = {
             str(lti_passport.oauth_consumer_key): {
@@ -130,7 +101,62 @@ class LTI:
         ):
             raise LTIException()
 
+        self._is_verified = True
         return True
+
+    def __getattr__(self, name):
+        """Look for attributes in the request's POST parameters as a last resort.
+
+        Parameters
+        ----------
+        name : string
+            The property to retrieve
+
+        Returns
+        -------
+        any
+            Value of this parameter in the request's POST parameters
+
+        Raises
+        ------
+        AttributeError
+            Raised if the attribute was not found in the request's POST parameters
+
+        """
+        try:
+            return self.request.POST[name]
+        except MultiValueDictKeyError:
+            raise AttributeError(name)
+
+    @property
+    def resource_link_title(self):
+        """Return the resource link id as default for its title."""
+        return self.request.POST.get("resource_link_title", self.resource_link_id)
+
+    @property
+    def context_title(self):
+        """Return the context id as default for its title."""
+        return self.request.POST.get("context_title", self.context_id)
+
+    @property
+    def consumer_site_name(self):
+        """Get consumer site name from the LTI launch request.
+
+        Returns
+        -------
+        string
+            Consumer site name from the request POST parameters
+
+        """
+        # get the consumer sitename from the lti request
+        try:
+            return self.request.POST["tool_consumer_instance_guid"]
+        except MultiValueDictKeyError:
+            # in the case of OpenEDX, resource_link_id format is defined in settings.py file.
+            # it is defined as follow: ``consumer-site-id_xblock-id``
+            # example: ``dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa``
+            # except
+            return self.request.POST.get("resource_link_id", "").rsplit("-", 1)[0]
 
     @property
     def roles(self):
@@ -172,14 +198,47 @@ class LTI:
         """
         return bool(LTI_ROLES[STUDENT] & self.roles)
 
-    @property
-    def resource_link_id(self):
-        """Get the resource link id from the LTI launch request.
+    def get_or_create_video(self):
+        """Get or create the video targetted by the LTI launch request.
+
+        Create the playlist if it does not pre-exist (it can only happen with consumer site scope
+        passports).
 
         Returns
         -------
-        string
-            `resource_link_id` from the request parameters
+        core.models.video.Video
+            The video instance targetted by the `resource_link_id` or None.
 
         """
-        return self.request.POST.get("resource_link_id", None)
+        # Make sure LTI verification have run successfully
+        assert getattr(self, "_is_verified", False) or self.verify()
+
+        # If the video already exist, retrieve it from database
+        try:
+            return Video.objects.get(
+                lti_id=self.resource_link_id,
+                playlist__lti_id=self.context_id,
+                playlist__consumer_site__name=self.consumer_site_name,
+            )
+        except Video.DoesNotExist:
+            # Only create the video if the request comes from an instructor
+            if not self.is_instructor:
+                return None
+
+        # Creating the video...
+        # - Get the consumer site (we know it exists because the passport verified)
+        consumer_site = ConsumerSite.objects.get(name=self.consumer_site_name)
+
+        # - Get the playlist if it exists or create it
+        playlist, _ = Playlist.objects.get_or_create(
+            lti_id=self.context_id,
+            consumer_site=consumer_site,
+            defaults={"title": self.context_title},
+        )
+
+        # Create the video
+        return Video.objects.create(
+            lti_id=self.resource_link_id,
+            title=self.resource_link_title,
+            playlist=playlist,
+        )

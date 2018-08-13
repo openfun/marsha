@@ -6,8 +6,13 @@ from django.test import RequestFactory, TestCase
 import oauth2
 from pylti.common import LTIException, LTIOAuthServer
 
-from ..factories import ConsumerSiteLTIPassportFactory, PlaylistLTIPassportFactory
+from ..factories import (
+    ConsumerSiteLTIPassportFactory,
+    PlaylistLTIPassportFactory,
+    VideoFactory,
+)
 from ..lti import LTI
+from ..models import Playlist, Video
 
 
 # We don't enforce arguments documentation in tests
@@ -52,7 +57,7 @@ OPENEDX_SESSION = {
 
 
 class VideoLTITestCase(TestCase):
-    """Test the LTI provider endpoint to upload and view videos."""
+    """Test the LTI provider."""
 
     def setUp(self):
         """Override the setUp method to instanciate and serve a request factory."""
@@ -119,6 +124,7 @@ class VideoLTITestCase(TestCase):
     @mock.patch.object(LTIOAuthServer, "verify_request", side_effect=oauth2.Error)
     def test_lti_verify_request_flush_on_error(self, mock_verify):
         """When an LTI launch request fails to verify."""
+        # mock_verify is forced to raise an oauth2 Error upon verification
         PlaylistLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
@@ -129,3 +135,93 @@ class VideoLTITestCase(TestCase):
         with self.assertRaises(LTIException):
             lti.verify()
         self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_lti_get_video(self, mock_verify):
+        """The video should be retrieved by the LTI object when available."""
+        video = VideoFactory(
+            lti_id="example.com-df7",
+            playlist__lti_id="course-v1:ufr+mathematics+0001",
+            playlist__consumer_site__name="example.com",
+        )
+        request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
+        lti = LTI(request)
+        self.assertEqual(lti.get_or_create_video(), video)
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_lti_get_video_wrong_playlist_student(self, mock_verify):
+        """A student retrieving a video with the wrong playlist.
+
+        The video should not be retrieved if a student tries to access a video that exists
+        but for another playlist.
+        """
+        VideoFactory(
+            lti_id="example.com-df7",
+            playlist__lti_id="wrong",
+            playlist__consumer_site__name="example.com",
+        )
+        data = {
+            "resource_link_id": "example.com-df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post("/", data)
+        lti = LTI(request)
+        self.assertIsNone(lti.get_or_create_video())
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_lti_get_video_wrong_playlist_instructor(self, mock_verify):
+        """An instructor retrieving a video with the wrong playlist.
+
+        A new playlist and a new video should be created if an instructor tries to access a
+        video that exists but for another playlist.
+        """
+        video = VideoFactory(
+            lti_id="example.com-df7",
+            playlist__lti_id="wrong",
+            playlist__consumer_site__name="example.com",
+        )
+        request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
+        lti = LTI(request)
+        new_video = lti.get_or_create_video()
+        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
+        self.assertNotEqual(new_video.playlist, video.playlist)
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_lti_get_video_wrong_lti_id_student(self, mock_verify):
+        """The video should not be retrieved if a student tries to access an unknown video."""
+        VideoFactory(
+            lti_id="example.com-wrong",
+            playlist__lti_id="course-v1:ufr+mathematics+0001",
+            playlist__consumer_site__name="example.com",
+        )
+        data = {
+            "resource_link_id": "example.com-df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post("/", data)
+        lti = LTI(request)
+        self.assertIsNone(lti.get_or_create_video())
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_lti_get_video_wrong_lti_id_intructor(self, mock_verify):
+        """An instructor retrieving an unknown video.
+
+        A new video should be created and returned if an instructor tries to access an unknown
+        video for in existing playlist.
+        """
+        video = VideoFactory(
+            lti_id="example.com-wrong",
+            playlist__lti_id="course-v1:ufr+mathematics+0001",
+            playlist__consumer_site__name="example.com",
+        )
+        request = self.factory.post("/", OPENEDX_LAUNCH_REQUEST_DATA)
+        lti = LTI(request)
+        new_video = lti.get_or_create_video()
+        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
+        self.assertEqual(new_video.playlist, video.playlist)
+        # No new playlist is created
+        self.assertEqual(Playlist.objects.count(), 1)

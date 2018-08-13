@@ -1,5 +1,5 @@
 """Factories for the ``core`` app of the Marsha project."""
-
+from django.contrib.auth.hashers import make_password
 
 import factory
 from factory.django import DjangoModelFactory
@@ -33,6 +33,7 @@ class UserFactory(DjangoModelFactory):
         model = models.User
 
     username = factory.Faker("user_name")
+    password = make_password(u"password")
 
 
 class ConsumerSiteFactory(DjangoModelFactory):
@@ -82,6 +83,7 @@ class PlaylistFactory(DjangoModelFactory):
 
     title = factory.Sequence("Playlist {:03d}".format)
     consumer_site = factory.SubFactory(ConsumerSiteFactory)
+    lti_id = factory.Sequence("playlist#{:d}".format)
 
 
 class PlaylistAccessFactory(DjangoModelFactory):
@@ -101,6 +103,7 @@ class VideoFactory(DjangoModelFactory):
     description = factory.Faker("catch_phrase")
     position = FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
+    lti_id = factory.Sequence("video#{:d}".format)
 
 
 class AudioTrackFactory(DjangoModelFactory):
