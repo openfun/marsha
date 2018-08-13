@@ -47,7 +47,12 @@ class ViewsTestCase(TestCase):
         decoded_token = token_backend.decode(jwt_token)
         self.assertEqual(decoded_token["video_id"], str(video.id))
 
-        self.assertEqual(context, {"state": "instructor", "video": video})
+        self.assertEqual(set(context.keys()), {"state", "video"})
+        self.assertEqual(context["state"], "instructor")
+        self.assertEqual(context["video"]["id"], str(video.id))
+        self.assertEqual(context["video"]["title"], str(video.title))
+        self.assertEqual(context["video"]["description"], str(video.description))
+        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "jpeg"})
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_student(self, mock_initialize):
@@ -68,4 +73,9 @@ class ViewsTestCase(TestCase):
             },
         )
         context = view.get_context_data()
-        self.assertEqual(context, {"state": "student", "video": video})
+        self.assertEqual(set(context.keys()), {"state", "video"})
+        self.assertEqual(context["state"], "student")
+        self.assertEqual(context["video"]["id"], str(video.id))
+        self.assertEqual(context["video"]["title"], str(video.title))
+        self.assertEqual(context["video"]["description"], str(video.description))
+        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "jpeg"})
