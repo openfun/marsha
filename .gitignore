@@ -101,6 +101,7 @@ celerybeat-schedule
 .env
 .venv
 env/
+env.d/
 venv/
 ENV/
 env.bak/
@@ -123,3 +124,14 @@ venv.bak/
 node_modules
 marsha/static/js
 data/static/js
+
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.backup
+
+# Lambda build
+dist
+node_modules
+package-lock.json
+

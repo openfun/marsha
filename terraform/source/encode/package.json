@@ -1,0 +1,26 @@
+{
+  "author": "GIP FUN MOOC",
+  "name": "aws-marsha-convert",
+  "version": "0.0.1",
+  "engines": {
+    "node": "^8.10"
+  },
+  "description": "Convert a source video to all the formats used in Marsha",
+  "dependencies": {
+    "aws-sdk": "*"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "*",
+    "chai": "*",
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/openfun/marsha"
+  },
+  "scripts": {
+    "test": "mocha *.spec.js"
+  }
+}

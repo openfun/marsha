@@ -1,0 +1,31 @@
+{
+  "Description": "Frame capture, JPEG, 1920x1080p",
+  "Category": "JPEG",
+  "Name": "marsha_jpeg_1080",
+  "Settings": {
+    "ContainerSettings": {
+      "Container": "RAW"
+    },
+    "VideoDescription": {
+      "AfdSignaling": "NONE",
+      "AntiAlias": "ENABLED",
+      "CodecSettings": {
+        "Codec": "FRAME_CAPTURE",
+        "FrameCaptureSettings": {
+          "FramerateNumerator": 1,
+          "FramerateDenominator": 10,
+          "MaxCaptures": 1000,
+          "Quality": 80
+        }
+      },
+      "ColorMetadata": "INSERT",
+      "DropFrameTimecode": "ENABLED",
+      "Height": 1080,
+      "RespondToAfd": "NONE",
+      "ScalingBehavior": "DEFAULT",
+      "Sharpness": 50,
+      "TimecodeInsertion": "DISABLED",
+      "Width": 1920
+    }
+  }
+}
