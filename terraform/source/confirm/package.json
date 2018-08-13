@@ -1,0 +1,26 @@
+{
+  "author": "GIP FUN MOOC",
+  "name": "aws-marsha-confirm",
+  "version": "0.0.1",
+  "engines": {
+    "node": "^8.10"
+  },
+  "description": "Confirm to the server when encoding for a video is complete",
+  "dependencies": {
+    "aws-sdk": "*"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "*",
+    "chai": "*",
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/openfun/marsha"
+  },
+  "scripts": {
+    "test": "mocha *.spec.js"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "Description": "Frame capture, JPEG, 854x480p",
+  "Category": "JPEG",
+  "Name": "marsha_jpeg_480",
+  "Settings": {
+    "ContainerSettings": {
+      "Container": "RAW"
+    },
+    "VideoDescription": {
+      "AfdSignaling": "NONE",
+      "AntiAlias": "ENABLED",
+      "CodecSettings": {
+        "Codec": "FRAME_CAPTURE",
+        "FrameCaptureSettings": {
+          "FramerateNumerator": 1,
+          "FramerateDenominator": 10,
+          "MaxCaptures": 1000,
+          "Quality": 80
+        }
+      },
+      "ColorMetadata": "INSERT",
+      "DropFrameTimecode": "ENABLED",
+      "Height": 480,
+      "RespondToAfd": "NONE",
+      "ScalingBehavior": "DEFAULT",
+      "Sharpness": 50,
+      "TimecodeInsertion": "DISABLED",
+      "Width": 854
+    }
+  }
+}
