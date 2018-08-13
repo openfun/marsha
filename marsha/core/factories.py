@@ -80,7 +80,7 @@ class PlaylistFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Playlist
 
-    name = factory.Sequence("Playlist {:03d}".format)
+    title = factory.Sequence("Playlist {:03d}".format)
     consumer_site = factory.SubFactory(ConsumerSiteFactory)
 
 
@@ -97,7 +97,8 @@ class VideoFactory(DjangoModelFactory):
     class Meta:  # noqa
         model = models.Video
 
-    name = factory.Sequence("Video {:03d}".format)
+    title = factory.Sequence("Video {:03d}".format)
+    description = factory.Faker("catch_phrase")
     position = FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
 

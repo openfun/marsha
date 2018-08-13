@@ -123,7 +123,7 @@ class SignTrackInline(admin.TabularInline):
 class VideoAdmin(BaseModelAdmin):
     """Admin class for the Video model."""
 
-    list_display = ("name", "created_by", "language")
+    list_display = ("title", "created_by", "language")
     exclude = ("duplicated_from",)
     inlines = [AudioTrackInline, SubtitleTrackInline, SignTrackInline]
 
@@ -148,6 +148,6 @@ class PlaylistAccessesInline(admin.TabularInline):
 class PlaylistAdmin(BaseModelAdmin):
     """Admin class for the Playlist model."""
 
-    list_display = ("name", "organization", "created_by", "is_public")
+    list_display = ("title", "organization", "created_by", "is_public")
     exclude = ("duplicated_from",)
     inlines = [VideosInline, PlaylistAccessesInline]
