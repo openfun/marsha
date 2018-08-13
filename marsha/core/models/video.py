@@ -13,8 +13,8 @@ from .base import BaseModel, NonDeletedUniqueIndex
 class Playlist(BaseModel):
     """Model representing a playlist which is a list of videos."""
 
-    name = models.CharField(
-        max_length=255, verbose_name=_("name"), help_text=_("name of the playlist")
+    title = models.CharField(
+        max_length=255, verbose_name=_("title"), help_text=_("title of the playlist")
     )
     lti_id = models.CharField(
         max_length=255,
@@ -119,8 +119,8 @@ class PlaylistAccess(BaseModel):
 class Video(BaseModel):
     """Model representing a video, created by an author."""
 
-    name = models.CharField(
-        max_length=255, verbose_name=_("name"), help_text=_("name of the video")
+    title = models.CharField(
+        max_length=255, verbose_name=_("title"), help_text=_("title of the video")
     )
     description = models.TextField(
         verbose_name=_("description"),
@@ -182,7 +182,7 @@ class Video(BaseModel):
 
     def __str__(self):
         """Get the string representation of an instance."""
-        result = f"{self.name} by f{self.created_by.username}"
+        result = f"{self.title}"
         if self.deleted:
             result += _(" [deleted]")
         return result
