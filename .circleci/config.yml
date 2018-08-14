@@ -359,6 +359,29 @@ jobs:
           name: Run tests
           command: yarn test
 
+  # ---- Lambda related jobs ----
+  test-lambda-configure:
+    docker:
+      - image: circleci/node:8.11.3
+    working_directory: ~/marsha/terraform/source/configure
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+          - v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
+          - v3-lambdas-configure-dependencies-
+      - run:
+          name: Install configure lambda dependencies
+          command: yarn install --ignore-engines --frozen-lockfile
+      - run:
+          name: Run configure lambda tests
+          command: yarn test
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
+
   # ---- Alpine jobs ----
   build-alpine:
 
@@ -548,6 +571,12 @@ workflows:
       - test-front:
           requires:
             - build-front
+          filters:
+            tags:
+              only: /.*/
+
+      # Lambda related jobs
+      - test-lambda-configure:
           filters:
             tags:
               only: /.*/
