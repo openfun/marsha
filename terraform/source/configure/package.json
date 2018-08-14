@@ -1,5 +1,5 @@
 {
-  "author": "GIP FUN MOOC",
+  "author": "France Université Numérique",
   "name": "aws-marsha-configure",
   "version": "0.0.1",
   "engines": {
@@ -7,14 +7,14 @@
   },
   "description": "Configure AWS via a Lambda for what can not be configured via Terraform for the Marsha video workflow",
   "dependencies": {
-    "aws-sdk": "*"
+    "aws-sdk": "2.292.0"
   },
   "devDependencies": {
-    "aws-sdk-mock": "*",
-    "chai": "*",
-    "mocha": "*",
-    "sinon": "*",
-    "sinon-chai": "*"
+    "aws-sdk-mock": "4.1.0",
+    "chai": "4.1.0",
+    "mocha": "5.2.0",
+    "sinon": "6.1.5",
+    "sinon-chai": "3.2.0"
   },
   "repository": {
     "type": "git",
