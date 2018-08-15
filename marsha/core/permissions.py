@@ -55,7 +55,8 @@ class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
         Returns
         -------
         None
-            The response of this method is ignored by its caller in restframework
+            The response of this method is ignored by its caller in restframework (we delegate
+            checking if the user is Admin to the parent class `IsAdminUser`)
 
         """
         # Users authentified via LTI are identified by a TokenUser with the

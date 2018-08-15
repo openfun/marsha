@@ -187,6 +187,10 @@ class Video(BaseModel):
             result += _(" [deleted]")
         return result
 
+    def get_source_s3_key(self):
+        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video)."""
+        return "{!s}/{!s}".format(self.playlist.id, self.id)
+
 
 class BaseTrack(BaseModel):
     """Base model for different kinds of tracks tied to a video."""
