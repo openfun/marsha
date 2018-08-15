@@ -121,6 +121,10 @@ class Base(Configuration):
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
+    AWS_ACCESS_KEY_ID = values.SecretValue()
+    AWS_SECRET_ACCESS_KEY = values.SecretValue()
+    AWS_DEFAULT_REGION = values.Value("eu-west-1")
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):
@@ -149,8 +153,12 @@ class Development(Base):
     DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
 
+    AWS_SOURCE_BUCKET_NAME = "development-marsha-source"
+
 
 class Test(Base):
     """Test environment settings."""
 
-    pass
+    AWS_ACCESS_KEY_ID = "ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY = "SECRET_ACCESS_KEY"
+    AWS_SOURCE_BUCKET_NAME = "test-marsha-source"
