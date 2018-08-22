@@ -15,12 +15,12 @@ class VideoLTITemplatesTestCase(TestCase):
         """The context should be rendered to html on the launch request page."""
         request = RequestFactory().get("/")
 
-        policy = {"a": 1, "b": 2}
+        video = {"a": 1, "b": 2}
         response = render(
             request,
             "core/lti_video.html",
             {
-                "policy": policy,
+                "video": video,
                 "state": "s",
                 "resource_link_id": "rli",
                 "jwt_token": "jwt",
@@ -36,6 +36,6 @@ class VideoLTITemplatesTestCase(TestCase):
         )
         self.assertContains(
             response,
-            '<div class="marsha-frontend-data" id="policy" data-a="1" data-b="2"></div>',
+            '<div class="marsha-frontend-data" id="video" data-a="1" data-b="2"></div>',
             html=True,
         )

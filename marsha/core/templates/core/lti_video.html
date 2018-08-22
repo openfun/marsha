@@ -8,7 +8,7 @@
 
 <body>
   <div class="marsha-frontend-data" data-jwt="{{ jwt_token }}" data-resource-link-id="{{ resource_link_id }}" data-state="{{ state }}"></div>
-  <div class="marsha-frontend-data" id="policy" {% for key, value in policy.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
+  <div class="marsha-frontend-data" id="video" {% for key, value in video.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
 
   <div id="marsha-frontend-root">
 </body>
