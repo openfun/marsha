@@ -1,8 +1,12 @@
 export interface AWSPolicy {
   acl: string;
-  awsaccesskeyid: string;
+  bucket: string;
   key: string;
   policy: string;
-  signature: string;
-  url: string;
+  s3_endpoint: string;
+  x_amz_algorithm: string;
+  x_amz_credential: string;
+  x_amz_date: string;
+  x_amz_expires: string;
+  x_amz_signature: string;
 }
