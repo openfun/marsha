@@ -1,5 +1,8 @@
 """Views of the ``core`` app of the Marsha project."""
-from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View
+from django.views.generic.base import TemplateResponseMixin
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
@@ -9,7 +12,8 @@ from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
 
 
-class VideoLTIView(TemplateView):
+@method_decorator(csrf_exempt, name="dispatch")
+class VideoLTIView(TemplateResponseMixin, View):
     """View called by an LTI launch request.
 
     It is designed to work as a React single page application.
@@ -18,13 +22,8 @@ class VideoLTIView(TemplateView):
 
     template_name = "core/lti_video.html"
 
-    def get_context_data(self, **kwargs):
-        """Populate the context with data retrieved from the LTI launch request.
-
-        Parameters
-        ----------
-        kwargs : dictionary
-            passed on to the parent's method
+    def get_context_data(self):
+        """Build a context with data retrieved from the LTI launch request.
 
         Returns
         -------
@@ -47,8 +46,6 @@ class VideoLTIView(TemplateView):
                 name or description.
 
         """
-        context = super().get_context_data(**kwargs)
-
         lti = LTI(self.request)
         try:
             video = lti.get_or_create_video()
@@ -68,3 +65,26 @@ class VideoLTIView(TemplateView):
         context["video"] = VideoSerializer(video).data if video else None
 
         return context
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST requests with the LTI Video template.
+
+        Populated with context retrieved by get_context_data in the LTI launch request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response(self.get_context_data())
