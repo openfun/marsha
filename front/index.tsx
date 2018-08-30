@@ -5,20 +5,19 @@ import { IntlProvider } from 'react-intl';
 import { RootComponent } from './components/RootComponent/RootComponent';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 
-export const StateContext = React.createContext('state');
+const appData = parseDataElements(
+  // Spread to pass an array instead of a NodeList
+  [...document.querySelectorAll('.marsha-frontend-data')],
+);
+export const AppDataContext = React.createContext(appData);
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', event => {
-  const appData = parseDataElements(
-    // Spread to pass an array instead of a NodeList
-    [...document.querySelectorAll('.marsha-frontend-data')],
-  );
-
   ReactDOM.render(
     <IntlProvider>
-      <StateContext.Provider value={appData.state}>
+      <AppDataContext.Provider value={appData}>
         <RootComponent />
-      </StateContext.Provider>
+      </AppDataContext.Provider>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );

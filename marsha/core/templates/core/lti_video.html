@@ -3,14 +3,14 @@
 <html>
 
 <head>
-  <script src='{% static "js/index.js" %}'></script>
 </head>
 
 <body>
   <div class="marsha-frontend-data" data-jwt="{{ jwt_token }}" data-resource-link-id="{{ resource_link_id }}" data-state="{{ state }}"></div>
   <div class="marsha-frontend-data" id="video" {% for key, value in video.items %}data-{{ key }}="{{ value }}" {% endfor %}></div>
 
-  <div id="marsha-frontend-root">
+  <div id="marsha-frontend-root"></div>
+  <script src='{% static "js/index.js" %}'></script>
 </body>
 
 </html>
