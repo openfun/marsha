@@ -7,11 +7,7 @@ import { IntlProvider } from 'react-intl';
 import { VideoUploadField } from './VideoUploadField';
 
 test('VideoUploadField renders a Dropzone with the relevant messages', () => {
-  const wrapper = mount(
-    <IntlProvider locale="en">
-      <VideoUploadField onContentUpdated={jest.fn()} />
-    </IntlProvider>,
-  );
+  const wrapper = mount(<VideoUploadField onContentUpdated={jest.fn()} />);
 
   expect(wrapper.html()).toContain('dropzone');
   expect(wrapper.text()).toContain('Pick a video to upload');
@@ -20,12 +16,8 @@ test('VideoUploadField renders a Dropzone with the relevant messages', () => {
 
 test('VideoUploadField.onDrop() passes the file to the callback and updates the UI', () => {
   const callback = jest.fn();
-  const wrapper = mount(
-    <IntlProvider locale="en">
-      <VideoUploadField onContentUpdated={callback} />
-    </IntlProvider>,
-  );
-  const componentInstance = wrapper.childAt(0).instance() as VideoUploadField;
+  const wrapper = mount(<VideoUploadField onContentUpdated={callback} />);
+  const componentInstance = wrapper.instance() as VideoUploadField;
   componentInstance.onDrop(['file_1']);
 
   expect(callback).toHaveBeenCalledWith('file_1');
@@ -36,12 +28,8 @@ test('VideoUploadField.onDrop() passes the file to the callback and updates the 
 
 test('VideoUploadField.clearFile() calls the callback with undefined and resets the UI', () => {
   const callback = jest.fn();
-  const wrapper = mount(
-    <IntlProvider locale="en">
-      <VideoUploadField onContentUpdated={callback} />
-    </IntlProvider>,
-  );
-  const componentInstance = wrapper.childAt(0).instance() as VideoUploadField;
+  const wrapper = mount(<VideoUploadField onContentUpdated={callback} />);
+  const componentInstance = wrapper.instance() as VideoUploadField;
   componentInstance.onDrop(['file_1']);
   callback.mockReset();
   componentInstance.clearFile();
