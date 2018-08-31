@@ -3,6 +3,7 @@
 //   - use a cleaner API than calling formData.append N times manually
 export const makeFormData = (
   // NB: order of keys is important here, which is why we do not iterate over an object
+  // tslint:disable:trailing-comma
   ...keyValuePairs: Array<[string, string | File]>
 ) => {
   const formData = new FormData();
