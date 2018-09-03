@@ -32,10 +32,41 @@ describe('Media Convert', () => {
       EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
     };
 
-    // Mock the function that create presets and return a different name
-    // for the preset time it is called
+    // Mock the function that gets presets to fake all new presets
+    AWS.mock('MediaConvert', 'getPreset', (params, callback) =>
+      callback('Preset does not exist'),
+    );
+
+    // Mock the function that creates presets and return a different name
+    // for the preset each time it is called
     let callCount = 0;
     AWS.mock('MediaConvert', 'createPreset', (params, callback) =>
+      callback(null, { Preset: { Name: callCount++ } }),
+    );
+
+    lambda
+      .MediaConvertPresets(event)
+      .then(data => {
+        expect(data).to.deep.equal({ Presets: Array.from(Array(11).keys()) });
+        done();
+      })
+      .catch(err => done(err));
+  });
+
+  it('should update existing presets', done => {
+    const event = {
+      EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
+    };
+
+    // Mock the function that gets presets to fake all existing presets
+    AWS.mock('MediaConvert', 'getPreset', (params, callback) =>
+      callback(null, {}),
+    );
+
+    // Mock the function that updates presets and return a different name
+    // for the preset each time it is called
+    let callCount = 0;
+    AWS.mock('MediaConvert', 'updatePreset', (params, callback) =>
       callback(null, { Preset: { Name: callCount++ } }),
     );
 
