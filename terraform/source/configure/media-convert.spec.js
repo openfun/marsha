@@ -28,6 +28,7 @@ describe('Media Convert', () => {
   });
 
   it('should return data when creating presets', done => {
+    process.env.ENV_TYPE = 'test';
     const event = {
       EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
     };
@@ -54,6 +55,7 @@ describe('Media Convert', () => {
   });
 
   it('should update existing presets', done => {
+    process.env.ENV_TYPE = 'test';
     const event = {
       EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
     };
