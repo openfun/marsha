@@ -1,4 +1,4 @@
-# Create S3 Bucket for source videos
+# Create source S3 Bucket for uploaded videos to be converted
 resource "aws_s3_bucket" "marsha_source" {
   bucket = "${terraform.workspace}-marsha-source"
   acl    = "private"
@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "marsha_source" {
   }
 }
 
-# Create S3 Bucket for converted videos
+# Create destination S3 Bucket for converted videos and images
 resource "aws_s3_bucket" "marsha_destination" {
   bucket = "${terraform.workspace}-marsha-destination"
   acl    = "private"
