@@ -38,6 +38,10 @@ let createPreset = (preset, url) => {
   });
   return new Promise((resolve, reject) => {
     let params = JSON.parse(fs.readFileSync(preset, 'utf8'));
+
+    // Supplement the preset name with the environment
+    params.Name = process.env.ENV_TYPE + '_' + params.Name;
+
     mediaconvert.getPreset({ Name: params.Name }, function(error, data) {
       if (error) {
         // the preset does not exist, let's create it
@@ -63,6 +67,12 @@ let createPreset = (preset, url) => {
 };
 
 let createPresets = event => {
+  if (!process.env.ENV_TYPE) {
+    const message = 'You must set the ENV_TYPE environment variable.';
+    console.log(message);
+    throw message;
+  }
+
   return new Promise((resolve, reject) => {
     let promises = [];
     let url = event.EndPoint;
