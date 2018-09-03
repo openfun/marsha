@@ -61,23 +61,23 @@ exports.handler = (event, context, callback) => {
           },
           Outputs: [
             {
-              Preset: 'marsha_video_mp4_144',
+              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_144',
               NameModifier: '_144',
             },
             {
-              Preset: 'marsha_video_mp4_240',
+              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_240',
               NameModifier: '_240',
             },
             {
-              Preset: 'marsha_video_mp4_480',
+              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_480',
               NameModifier: '_480',
             },
             {
-              Preset: 'marsha_video_mp4_720',
+              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_720',
               NameModifier: '_720',
             },
             {
-              Preset: 'marsha_video_mp4_1080',
+              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_1080',
               NameModifier: '_1080',
             },
           ],
@@ -98,23 +98,23 @@ exports.handler = (event, context, callback) => {
           },
           Outputs: [
             {
-              Preset: 'marsha_thumbnail_jpeg_144',
+              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_144',
               NameModifier: '_thumbnail_144',
             },
             {
-              Preset: 'marsha_thumbnail_jpeg_240',
+              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_240',
               NameModifier: '_thumbnail_240',
             },
             {
-              Preset: 'marsha_thumbnail_jpeg_480',
+              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_480',
               NameModifier: '_thumbnail_480',
             },
             {
-              Preset: 'marsha_thumbnail_jpeg_720',
+              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_720',
               NameModifier: '_thumbnail_720',
             },
             {
-              Preset: 'marsha_thumbnail_jpeg_1080',
+              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_1080',
               NameModifier: '_thumbnail_1080',
             },
           ],
@@ -135,7 +135,7 @@ exports.handler = (event, context, callback) => {
           },
           Outputs: [
             {
-              Preset: 'marsha_preview_jpeg_100',
+              Preset: process.env.ENV_TYPE + '_marsha_preview_jpeg_100',
               NameModifier: '_preview_100',
             },
           ],
