@@ -4,16 +4,17 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 
 const presets = [
-  './presets/jpeg_144p.json',
-  './presets/jpeg_240p.json',
-  './presets/jpeg_480p.json',
-  './presets/jpeg_720p.json',
-  './presets/jpeg_1080p.json',
-  './presets/mp4_h264_144p_30fps_300kbps.json',
-  './presets/mp4_h264_240p_30fps_600kbps.json',
-  './presets/mp4_h264_480p_30fps_1200kbps.json',
-  './presets/mp4_h264_720p_30fps_2400kbps.json',
-  './presets/mp4_h264_1080p_30fps_5400kbps.json',
+  './presets/thumbnail_jpeg_144p.json',
+  './presets/thumbnail_jpeg_240p.json',
+  './presets/thumbnail_jpeg_480p.json',
+  './presets/thumbnail_jpeg_720p.json',
+  './presets/thumbnail_jpeg_1080p.json',
+  './presets/preview_jpeg_100p.json',
+  './presets/video_mp4_h264_144p_30fps_300kbps.json',
+  './presets/video_mp4_h264_240p_30fps_600kbps.json',
+  './presets/video_mp4_h264_480p_30fps_1200kbps.json',
+  './presets/video_mp4_h264_720p_30fps_2400kbps.json',
+  './presets/video_mp4_h264_1080p_30fps_5400kbps.json',
 ];
 
 let response;

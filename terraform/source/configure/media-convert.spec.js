@@ -42,7 +42,7 @@ describe('Media Convert', () => {
     lambda
       .MediaConvertPresets(event)
       .then(data => {
-        expect(data).to.deep.equal({ Presets: Array.from(Array(10).keys()) });
+        expect(data).to.deep.equal({ Presets: Array.from(Array(11).keys()) });
         done();
       })
       .catch(err => done(err));

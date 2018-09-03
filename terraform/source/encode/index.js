@@ -61,29 +61,29 @@ exports.handler = (event, context, callback) => {
           },
           Outputs: [
             {
-              Preset: 'marsha_mp4_144',
+              Preset: 'marsha_video_mp4_144',
               NameModifier: '_144',
             },
             {
-              Preset: 'marsha_mp4_240',
+              Preset: 'marsha_video_mp4_240',
               NameModifier: '_240',
             },
             {
-              Preset: 'marsha_mp4_480',
+              Preset: 'marsha_video_mp4_480',
               NameModifier: '_480',
             },
             {
-              Preset: 'marsha_mp4_720',
+              Preset: 'marsha_video_mp4_720',
               NameModifier: '_720',
             },
             {
-              Preset: 'marsha_mp4_1080',
+              Preset: 'marsha_video_mp4_1080',
               NameModifier: '_1080',
             },
           ],
         },
         {
-          CustomName: 'Frame Capture outputs',
+          CustomName: 'Thumbnails outputs',
           Name: 'File Group',
           OutputGroupSettings: {
             Type: 'FILE_GROUP_SETTINGS',
@@ -93,29 +93,50 @@ exports.handler = (event, context, callback) => {
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
                 objectKey.split('/')[0] +
-                '/jpeg/',
+                '/thumbnails/',
             },
           },
           Outputs: [
             {
-              Preset: 'marsha_jpeg_144',
-              NameModifier: '_144',
+              Preset: 'marsha_thumbnail_jpeg_144',
+              NameModifier: '_thumbnail_144',
             },
             {
-              Preset: 'marsha_jpeg_240',
-              NameModifier: '_240',
+              Preset: 'marsha_thumbnail_jpeg_240',
+              NameModifier: '_thumbnail_240',
             },
             {
-              Preset: 'marsha_jpeg_480',
-              NameModifier: '_480',
+              Preset: 'marsha_thumbnail_jpeg_480',
+              NameModifier: '_thumbnail_480',
             },
             {
-              Preset: 'marsha_jpeg_720',
-              NameModifier: '_720',
+              Preset: 'marsha_thumbnail_jpeg_720',
+              NameModifier: '_thumbnail_720',
             },
             {
-              Preset: 'marsha_jpeg_1080',
-              NameModifier: '_1080',
+              Preset: 'marsha_thumbnail_jpeg_1080',
+              NameModifier: '_thumbnail_1080',
+            },
+          ],
+        },
+        {
+          CustomName: 'Previews outputs',
+          Name: 'File Group',
+          OutputGroupSettings: {
+            Type: 'FILE_GROUP_SETTINGS',
+            FileGroupSettings: {
+              Destination:
+                's3://' +
+                process.env.S3_DESTINATION_BUCKET +
+                '/' +
+                objectKey.split('/')[0] +
+                '/previews/',
+            },
+          },
+          Outputs: [
+            {
+              Preset: 'marsha_preview_jpeg_100',
+              NameModifier: '_preview_100',
             },
           ],
         },
@@ -130,8 +151,5 @@ exports.handler = (event, context, callback) => {
       console.log(JSON.stringify(data, null, 2));
       callback(null, { Job: data.Job.Id });
     })
-    .catch(err => {
-      error.handler(event, err);
-      callback(err);
-    });
+    .catch(error => callback(error));
 };

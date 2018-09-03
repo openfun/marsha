@@ -1,7 +1,7 @@
 {
-  "Description": "Frame capture, JPEG, 1280x720p",
+  "Description": "Frame capture, JPEG, 1/10, 1280x720p",
   "Category": "JPEG",
-  "Name": "marsha_jpeg_720",
+  "Name": "marsha_thumbnail_jpeg_720",
   "Settings": {
     "ContainerSettings": {
       "Container": "RAW"
@@ -14,7 +14,7 @@
         "FrameCaptureSettings": {
           "FramerateNumerator": 1,
           "FramerateDenominator": 10,
-          "MaxCaptures": 1000,
+          "MaxCaptures": 1,
           "Quality": 80
         }
       },
