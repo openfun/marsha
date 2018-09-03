@@ -1,11 +1,11 @@
 {
-  "Description": "Video, H264, 426x240p, 29.97fps, 600kbps",
+  "Description": "Video, H264, 256x144p, 29.97fps, 300kbps",
   "Category": "MP4",
-  "Name": "marsha_mp4_240",
+  "Name": "marsha_video_mp4_144",
   "Settings": {
     "VideoDescription": {
-      "Width": 426,
-      "Height": 240,
+      "Width": 256,
+      "Height": 144,
       "ScalingBehavior": "STRETCH_TO_OUTPUT",
       "VideoPreprocessors": {
         "Deinterlacer": {
@@ -34,7 +34,7 @@
           "TemporalAdaptiveQuantization": "ENABLED",
           "FlickerAdaptiveQuantization": "DISABLED",
           "EntropyEncoding": "CABAC",
-          "Bitrate": 600000,
+          "Bitrate": 300000,
           "FramerateControl": "SPECIFIED",
           "RateControlMode": "CBR",
           "CodecProfile": "MAIN",

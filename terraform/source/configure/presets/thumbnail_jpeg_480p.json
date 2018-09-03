@@ -1,7 +1,7 @@
 {
-  "Description": "Frame capture, JPEG, 1920x1080p",
+  "Description": "Frame capture, JPEG, 1/10, 854x480p",
   "Category": "JPEG",
-  "Name": "marsha_jpeg_1080",
+  "Name": "marsha_thumbnail_jpeg_480",
   "Settings": {
     "ContainerSettings": {
       "Container": "RAW"
@@ -14,18 +14,18 @@
         "FrameCaptureSettings": {
           "FramerateNumerator": 1,
           "FramerateDenominator": 10,
-          "MaxCaptures": 1000,
+          "MaxCaptures": 1,
           "Quality": 80
         }
       },
       "ColorMetadata": "INSERT",
       "DropFrameTimecode": "ENABLED",
-      "Height": 1080,
+      "Height": 480,
       "RespondToAfd": "NONE",
       "ScalingBehavior": "DEFAULT",
       "Sharpness": 50,
       "TimecodeInsertion": "DISABLED",
-      "Width": 1920
+      "Width": 854
     }
   }
 }
