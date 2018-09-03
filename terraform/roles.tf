@@ -61,6 +61,7 @@ resource "aws_iam_policy" "lambda_media_convert_policy" {
       "Action": [
         "mediaconvert:CreateJob",
         "mediaconvert:CreatePreset",
+        "mediaconvert:GetPreset",
         "mediaconvert:UpdatePreset",
         "mediaconvert:DescribeEndpoints"
       ],
