@@ -22,9 +22,32 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
   enabled         = true
   is_ipv6_enabled = true
 
+  # Allow public access by default
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "${local.s3_origin_id}"
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  # For MP4 videos, access is restricted to signed urls/cookies
+  ordered_cache_behavior {
+    path_pattern     = "*/mp4/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "${local.s3_origin_id}"
     trusted_signers  = ["${var.cloudfront_access_key_id}"]
 
@@ -36,10 +59,34 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
       }
     }
 
-    viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  # For subtitle tracks, access is restricted to signed urls/cookies
+  ordered_cache_behavior {
+    path_pattern     = "*/subtitles/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "${local.s3_origin_id}"
+    trusted_signers  = ["${var.cloudfront_access_key_id}"]
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
   }
 
   price_class = "${lookup(var.cloudfront_price_class, terraform.workspace, "PriceClass_100")}"
