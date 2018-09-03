@@ -2,7 +2,7 @@
 #########################
 
 resource "aws_iam_role" "lambda_invocation_role" {
-  name = "lambda-invocation-role"
+  name = "${terraform.workspace}-marsha-lambda-invocation-role"
 
   assume_role_policy = <<EOF
 {
@@ -21,7 +21,7 @@ EOF
 }
 
 resource "aws_iam_policy" "lambda_logging_policy" {
-  name        = "lambda-logging-policy"
+  name        = "${terraform.workspace}-marsha-lambda-logging-policy"
   path        = "/"
   description = "IAM policy for logging from a lambda"
 
@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logging_policy_attachment" {
 }
 
 resource "aws_iam_policy" "lambda_media_convert_policy" {
-  name        = "lambda-media-convert-policy"
+  name        = "${terraform.workspace}-marsha-lambda-media-convert-policy"
   path        = "/"
   description = "IAM policy for configuring media convert from a lambda"
 
@@ -79,7 +79,7 @@ resource "aws_iam_role_policy_attachment" "lambda_media_convert_policy_attachmen
 }
 
 resource "aws_iam_policy" "lambda_pass_role_policy" {
-  name        = "lambda-pass-role-policy"
+  name        = "${terraform.workspace}-marsha-lambda-pass-role-policy"
   path        = "/"
   description = "IAM policy for passing a role from a lambda"
 
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy_attachment" "lambda_pass_role_policy_attachment" {
 #####################
 
 resource "aws_iam_role" "media_convert_role" {
-  name = "media-convert-role"
+  name = "${terraform.workspace}-marsha-media-convert-role"
 
   assume_role_policy = <<EOF
 {
@@ -125,7 +125,7 @@ EOF
 }
 
 resource "aws_iam_policy" "media_convert_s3_policy" {
-  name        = "media-convert-s3-policy"
+  name        = "${terraform.workspace}-marsha-media-convert-s3-policy"
   path        = "/"
   description = "IAM policy for accessing S3 from Media Convert"
 
@@ -157,7 +157,7 @@ resource "aws_iam_role_policy_attachment" "media_convert_s3_policy_attachment" {
 ###################
 
 resource "aws_iam_role" "event_rule_role" {
-  name = "event-rule-role"
+  name = "${terraform.workspace}-marsha-event-rule-role"
 
   assume_role_policy = <<EOF
 {
@@ -176,7 +176,7 @@ EOF
 }
 
 resource "aws_iam_policy" "event_rule_lambda_invoke_policy" {
-  name        = "event-lambda-invoke-policy"
+  name        = "${terraform.workspace}-marsha-event-lambda-invoke-policy"
   path        = "/"
   description = "IAM policy for invoking a lambda from an event rule"
 
