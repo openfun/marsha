@@ -38,12 +38,25 @@ let createPreset = (preset, url) => {
   });
   return new Promise((resolve, reject) => {
     let params = JSON.parse(fs.readFileSync(preset, 'utf8'));
-    // TODO: update does not work
-    mediaconvert.createPreset(params, (error, data) => {
-      if (error) reject(error);
-      else {
-        console.log('created preset: ', data.Preset.Name);
-        resolve(data);
+    mediaconvert.getPreset({ Name: params.Name }, function(error, data) {
+      if (error) {
+        // the preset does not exist, let's create it
+        mediaconvert.createPreset(params, (error, data) => {
+          if (error) reject(error);
+          else {
+            console.log('created preset: ', data.Preset.Name);
+            resolve(data);
+          }
+        });
+      } else {
+        // the preset exists, let's update it
+        mediaconvert.updatePreset(params, (error, data) => {
+          if (error) reject(error);
+          else {
+            console.log('updated existing preset: ', data.Preset.Name);
+            resolve(data);
+          }
+        });
       }
     });
   });
