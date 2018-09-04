@@ -1,4 +1,5 @@
 """Test the LTI interconnection with Open edX."""
+import json
 from unittest import mock
 
 from django.test import RequestFactory, TestCase
@@ -52,7 +53,9 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "thumbnails"})
+        self.assertEqual(
+            set(json.loads(context["video"]["urls"]).keys()), {"mp4", "thumbnails"}
+        )
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_student(self, mock_initialize):
@@ -78,4 +81,6 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "thumbnails"})
+        self.assertEqual(
+            set(json.loads(context["video"]["urls"]).keys()), {"mp4", "thumbnails"}
+        )
