@@ -99,7 +99,7 @@ class VideoAPITest(TestCase):
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
-                "urls": {"thumbnails": thumbnails_dict, "mp4": mp4_dict},
+                "urls": json.dumps({"mp4": mp4_dict, "thumbnails": thumbnails_dict}),
             },
         )
 
@@ -141,7 +141,7 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         self.assertEqual(
-            content["urls"]["thumbnails"]["144"],
+            json.loads(content["urls"])["thumbnails"]["144"],
             (
                 "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/thumbnails/"
                 "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.0000000.jpg?Expires=1533693600&"
@@ -154,7 +154,7 @@ class VideoAPITest(TestCase):
             ),
         )
         self.assertEqual(
-            content["urls"]["mp4"]["144"],
+            json.loads(content["urls"])["mp4"]["144"],
             (
                 "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/mp4/"
                 "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.mp4?Expires=1533693600&"

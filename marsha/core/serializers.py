@@ -1,5 +1,6 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
+import json
 
 from django.conf import settings
 from django.utils import timezone
@@ -68,4 +69,4 @@ class VideoSerializer(serializers.ModelSerializer):
             urls["mp4"][resolution] = mp4_url
             urls["thumbnails"][resolution] = thumbnail_url
 
-        return urls
+        return json.dumps(urls)
