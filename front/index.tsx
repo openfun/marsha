@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 
-import { RootComponent } from './components/RootComponent/RootComponent';
+import { AppRoutes } from './components/AppRoutes/AppRoutes';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 
 const appData = parseDataElements(
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', event => {
   ReactDOM.render(
     <IntlProvider>
       <AppDataContext.Provider value={appData}>
-        <RootComponent />
+        <AppRoutes />
       </AppDataContext.Provider>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
