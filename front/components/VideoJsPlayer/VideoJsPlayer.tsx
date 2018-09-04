@@ -1,11 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.min.css';
 
+import { Video, videoSize } from '../../types/Video';
 import { Nullable } from '../../utils/types';
 
-// tslint:disable-next-line:no-empty-interface
-export interface VideoJsPlayerProps extends videojs.PlayerOptions {}
+export interface VideoJsPlayerProps extends videojs.PlayerOptions {
+  video: Video;
+}
 
 interface VideoJsPlayerState {
   player: videojs.Player;
@@ -33,6 +35,8 @@ export class VideoJsPlayer extends React.Component<
   }
 
   render() {
+    const { video } = this.props;
+
     // Wrap the player in a div with a `data-vjs-player` attribute so videojs won't create an additional
     // wrapper in the DOM; see https://github.com/videojs/video.js/pull/3856
     return (
@@ -42,7 +46,13 @@ export class VideoJsPlayer extends React.Component<
           className="video-js"
           controls={true}
         >
-          <source src="/static/vid/video.mp4" type="video/mp4" />
+          {(Object.keys(video.urls.mp4) as videoSize[]).map(size => (
+            <source
+              src={video.urls.mp4[size]}
+              type="video/mp4"
+              key={video.urls.mp4[size]}
+            />
+          ))}
         </video>
       </div>
     );

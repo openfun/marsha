@@ -1,4 +1,4 @@
-type sizes = '144' | '240' | '480' | '720' | '1080';
+export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
 export interface Video {
   description: string;
@@ -6,7 +6,7 @@ export interface Video {
   status: string;
   title: string;
   urls: {
-    jpeg: { [key in sizes]: string };
-    mp4: { [key in sizes]: string };
+    mp4: { [key in videoSize]: string };
+    thumbnails: { [key in videoSize]: string };
   };
 }
