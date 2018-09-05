@@ -2,10 +2,19 @@ import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import { AppDataContext } from '../..';
-import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
-import { RedirectOnLoad } from '../RedirectOnLoad/RedirectOnLoad';
-import { VideoForm } from '../VideoForm/VideoForm';
-import { VideoJsPlayer } from '../VideoJsPlayer/VideoJsPlayer';
+import {
+  ErrorComponent,
+  ROUTE as ERROR_ROUTE,
+} from '../ErrorComponent/ErrorComponent';
+import {
+  RedirectOnLoad,
+  ROUTE as HOME_ROUTE,
+} from '../RedirectOnLoad/RedirectOnLoad';
+import { ROUTE as FORM_ROUTE, VideoForm } from '../VideoForm/VideoForm';
+import {
+  ROUTE as PLAYER_ROUTE,
+  VideoJsPlayer,
+} from '../VideoJsPlayer/VideoJsPlayer';
 
 export const AppRoutes = () => {
   return (
@@ -13,7 +22,7 @@ export const AppRoutes = () => {
       <Switch>
         <Route
           exact
-          path="/player"
+          path={PLAYER_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
               {({ video }) => <VideoJsPlayer video={video} />}
@@ -22,7 +31,7 @@ export const AppRoutes = () => {
         />
         <Route
           exact
-          path="/form"
+          path={FORM_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
               {({ jwt, video }) => <VideoForm jwt={jwt} video={video} />}
@@ -31,10 +40,10 @@ export const AppRoutes = () => {
         />
         <Route
           exact
-          path="/errors/:code"
+          path={ERROR_ROUTE()}
           render={({ match }) => <ErrorComponent code={match.params.code} />}
         />
-        <Route path="/" component={RedirectOnLoad} />
+        <Route path={HOME_ROUTE()} component={RedirectOnLoad} />
       </Switch>
     </HashRouter>
   );

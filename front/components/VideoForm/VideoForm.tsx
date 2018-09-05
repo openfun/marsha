@@ -7,6 +7,8 @@ import { AWSPolicy } from '../../types/AWSPolicy';
 import { Video } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../utils/types';
+import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ROUTE as PLAYER_ROUTE } from '../VideoJsPlayer/VideoJsPlayer';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
 
 export interface VideoFormProps {
@@ -33,6 +35,8 @@ const messages = defineMessages({
     id: 'components.VideoForm.title',
   },
 });
+
+export const ROUTE = () => '/form';
 
 export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
   async componentDidMount() {
@@ -92,13 +96,13 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
 
     switch (status) {
       case 'success':
-        return <Redirect push to="/player" />;
+        return <Redirect push to={PLAYER_ROUTE()} />;
 
       case 'policy_error':
-        return <Redirect push to="/errors/policy" />;
+        return <Redirect push to={ERROR_ROUTE('policy')} />;
 
       case 'upload_error':
-        return <Redirect push to="/errors/upload" />;
+        return <Redirect push to={ERROR_ROUTE('upload')} />;
 
       default:
         return (
