@@ -32,13 +32,15 @@ class VideoSerializer(serializers.ModelSerializer):
                 - jpeg thumbnails of the video in each resolution
 
         """
-        urls = {"mp4": {}, "jpeg": {}}
+        urls = {"mp4": {}, "thumbnails": {}}
 
         for resolution in settings.VIDEO_RESOLUTIONS:
             urls["mp4"][str(resolution)] = "{!s}/mp4/{!s}_{:d}.mp4".format(
                 obj.playlist.id, obj.id, resolution
             )
-            urls["jpeg"][str(resolution)] = "{!s}/jpeg/{!s}_{:d}.0000000.jpg".format(
+            urls["thumbnails"][
+                str(resolution)
+            ] = "{!s}/thumbnails/{!s}_{:d}.0000000.jpg".format(
                 obj.playlist.id, obj.id, resolution
             )
         return urls

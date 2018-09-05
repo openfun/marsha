@@ -45,12 +45,14 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
-        jpeg_dict = {
-            "144": "{!s}/jpeg/{!s}_144.0000000.jpg".format(playlist.id, video.id),
-            "240": "{!s}/jpeg/{!s}_240.0000000.jpg".format(playlist.id, video.id),
-            "480": "{!s}/jpeg/{!s}_480.0000000.jpg".format(playlist.id, video.id),
-            "720": "{!s}/jpeg/{!s}_720.0000000.jpg".format(playlist.id, video.id),
-            "1080": "{!s}/jpeg/{!s}_1080.0000000.jpg".format(playlist.id, video.id),
+        thumbnails_dict = {
+            "144": "{!s}/thumbnails/{!s}_144.0000000.jpg".format(playlist.id, video.id),
+            "240": "{!s}/thumbnails/{!s}_240.0000000.jpg".format(playlist.id, video.id),
+            "480": "{!s}/thumbnails/{!s}_480.0000000.jpg".format(playlist.id, video.id),
+            "720": "{!s}/thumbnails/{!s}_720.0000000.jpg".format(playlist.id, video.id),
+            "1080": "{!s}/thumbnails/{!s}_1080.0000000.jpg".format(
+                playlist.id, video.id
+            ),
         }
         mp4_dict = {
             "144": "{!s}/mp4/{!s}_144.mp4".format(playlist.id, video.id),
@@ -65,7 +67,7 @@ class VideoAPITest(TestCase):
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
-                "urls": {"jpeg": jpeg_dict, "mp4": mp4_dict},
+                "urls": {"thumbnails": thumbnails_dict, "mp4": mp4_dict},
             },
         )
 
