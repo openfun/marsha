@@ -65,7 +65,7 @@ class VideoSerializer(serializers.ModelSerializer):
                     thumbnail_url, date_less_than=date_less_than
                 )
 
-            urls["mp4"][str(resolution)] = mp4_url
-            urls["thumbnails"][str(resolution)] = thumbnail_url
+            urls["mp4"][resolution] = mp4_url
+            urls["thumbnails"][resolution] = thumbnail_url
 
         return urls
