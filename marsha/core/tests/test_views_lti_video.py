@@ -24,7 +24,7 @@ class ViewsTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_instructor(self, mock_initialize):
-        """."""
+        """Validate the context returned for an instructor request."""
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
@@ -52,11 +52,11 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "jpeg"})
+        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "thumbnails"})
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_student(self, mock_initialize):
-        """."""
+        """Validate the context returned for a student request."""
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
@@ -78,4 +78,4 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "jpeg"})
+        self.assertEqual(set(context["video"]["urls"].keys()), {"mp4", "thumbnails"})
