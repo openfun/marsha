@@ -135,3 +135,5 @@ dist
 node_modules
 package-lock.json
 
+# Ssh keys
+.ssh

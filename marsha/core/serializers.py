@@ -1,9 +1,13 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
+from datetime import timedelta
+
 from django.conf import settings
+from django.utils import timezone
 
 from rest_framework import serializers
 
 from .models import Video
+from .utils.aws_cloudfront import cloudfront_signer
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -34,13 +38,30 @@ class VideoSerializer(serializers.ModelSerializer):
         """
         urls = {"mp4": {}, "thumbnails": {}}
 
+        date_less_than = timezone.now() + timedelta(
+            seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
+        )
         for resolution in settings.VIDEO_RESOLUTIONS:
-            urls["mp4"][str(resolution)] = "{!s}/mp4/{!s}_{:d}.mp4".format(
-                obj.playlist.id, obj.id, resolution
+            # MP4
+            mp4_url = "{:s}/{!s}/mp4/{!s}_{:d}.mp4".format(
+                settings.CLOUDFRONT_URL, obj.playlist.id, obj.id, resolution
             )
-            urls["thumbnails"][
-                str(resolution)
-            ] = "{!s}/thumbnails/{!s}_{:d}.0000000.jpg".format(
-                obj.playlist.id, obj.id, resolution
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                mp4_url = cloudfront_signer.generate_presigned_url(
+                    mp4_url, date_less_than=date_less_than
+                )
+
+            urls["mp4"][str(resolution)] = mp4_url
+
+            # Thumbnails
+            thumbnail_url = "{:s}/{!s}/thumbnails/{!s}_{:d}.0000000.jpg".format(
+                settings.CLOUDFRONT_URL, obj.playlist.id, obj.id, resolution
             )
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                thumbnail_url = cloudfront_signer.generate_presigned_url(
+                    thumbnail_url, date_less_than=date_less_than
+                )
+
+            urls["thumbnails"][str(resolution)] = thumbnail_url
+
         return urls
