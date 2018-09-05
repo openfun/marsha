@@ -125,6 +125,15 @@ class Base(Configuration):
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_DEFAULT_REGION = values.Value("eu-west-1")
 
+    # Cloud Front key pair for signed urls
+    CLOUDFRONT_ACCESS_KEY_ID = values.SecretValue()
+    CLOUDFRONT_PRIVATE_KEY_PATH = os.path.join(
+        BASE_DIR, "..", ".ssh", "cloudfront_private_key"
+    )
+    CLOUDFRONT_URL = values.SecretValue()
+    CLOUDFRONT_SIGNED_URLS_ACTIVE = True
+    CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):
@@ -160,3 +169,5 @@ class Test(Base):
     """Test environment settings."""
 
     AWS_SOURCE_BUCKET_NAME = "test-marsha-source"
+
+    CLOUDFRONT_SIGNED_URLS_ACTIVE = False
