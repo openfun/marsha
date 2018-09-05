@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 import pytz
 from rest_framework_simplejwt.tokens import AccessToken
@@ -12,6 +12,36 @@ from ..factories import UserFactory, VideoFactory
 from ..models import Video
 from ..utils.aws_s3 import timezone
 
+
+RSA_KEY_MOCK = b"""
+-----BEGIN RSA PRIVATE KEY-----
+MIIEoQIBAAKCAQBNUKgvL8k3rd882JuuAwg/3102KEuOgJV47X+cEmaWDKZWbnIL
+1r+ondm8xtpLTDtYtZ2IYBZsrfa5DJjhllkIhtSOWpT/YnDJWnV9mHeuh1elfsB+
+szs/aCDezf3piNi4WdpDzNwmqcUBopn4rydKpADjup6zXoBXyh7pLtLyLk2Xdnt5
+LHlnRTgatBQmCcraLMRrvQfmscD0zA0TRlZyimWmktt/+eEli0bWgNwm2kPkcfG8
+SSdIp2GUMpV3rjILlWlybRDpNR0H7qO9Ea6JzjcNAAi+33pKDTJZ472TmetT51G/
+ZypymDNyh1wn3CIavQLMGBOp4HtoX0cX7x3/AgMBAAECggEAOsDffjRXOhvEeI23
+CK6/NyK7x+spN9qZPDNndSg6ky57vVTjEAIa1b1W+PE4dF4y/z/MvhUfFWnCA3AC
+QfQqJqOnpaJKdiTNxwYaIN6bnKK3RUmkaOQ1UwMDb62kljLrVnTZvApTBoKe9pYl
+Yelg94TYNDbeYTqgV5Z+lP+DSIx3dg+2Ow90scQt8ZQt20XsL9CANZye9bUwUcLn
+JQEjLIE3k+YpGSSDvJz+vbgozBvNfv0M4/BTLGvUvMRBinfqRJVXc09WTqqsDJb9
+GJHcP8TSdwm/6CHrkUkVjsDZvzUiVIp8R+DBmZfPO6KfS0ig5H/uA5NwaHhSMRi+
+6KSL+QKBgQCRMxdFjcCJFc5T/H3A/uJreAyuH8gn7jiK6pF3bplvnE6zpz9LzhNW
+5a+7F5rSZrRYRIQ6Rn67PpRd/T7N9wvMEItIp7cAGqfAwPwhaX/INkkVtmxFGrjg
+Muwpxi9zb8cmRYKL/j7WgwtzRsoR+BRqkAd+WqltRxq0dYqrAIExtQKBgQCIUD83
+WDoa8fguIj3VHeRnLBEg+5L7IUf7ldOhgzifhde/cEOlqFy7AQuLMnj4NJzmEwa8
+IKV+brcbAW1v7e3hElpFBFmVjcj9JSezuK3NS41iX5ZDPlLCGy0b1+3BS7ucMrHv
+CLWsDaTVacnD+vLzYk1ssppotAlFOMt4Z+hxYwKBgAw7Yp2AaJTj2mLm5W0py8dD
+8MWGdeUvQ2IoiqKmFZT6dQLbdxCaxrROWzSGs4tADbdV5lHGeIyro/IbEHxncH37
+ctBnGJqQpEsvts3VxmcGc7e5i3ty2dpBT/Xg9URjSUKnHm1OuNp3ZbKLZyCGZqnn
+gkoZtyY2lEBZmpn3S+r1AoGAY+CAYTnY4TNYB9149rU/TEUii8spB658Ap/l/5qZ
+G3FDAnbsae2xfCeo4KXrstlB+OYJ8j/tYnUW3set+uwXdukukRE93nGTyb+2ll2D
+oz9vaZvmCoEYvDaTV6pf/1hRL4KJkz4LdvRMST6I4nr2FlR5rGI09vCrNjgGBcQE
+sUcCgYBgICkGE5v7DltVOA1cT65bjyRh8xso+/LGTM2A6jORVZpC4DnqyxkVpJaA
+FjzCJG6LdHZH5df8TbqEz4dl2ddNT5wgYheLizH5YcJ+MyeMeGM+JHHAWyl2p016
+ASOu/Da3/eg8PI5Rsh6ubNVlEAMQdDFhL/TpfaHqSwim6mxbrQ==
+-----END RSA PRIVATE KEY-----
+"""
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=missing-param-doc,missing-type-doc,unused-argument
@@ -30,9 +60,13 @@ class VideoAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user(self):
         """A token user associated to a video should be able to read the detail of this video."""
-        video = VideoFactory()
+        video = VideoFactory(
+            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+        )
         playlist = video.playlist
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -45,22 +79,20 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
+        thumbnails_template = (
+            "https://abc.cloudfront.net/{!s}/thumbnails/{!s}_{!s}.0000000.jpg"
+        )
         thumbnails_dict = {
-            "144": "{!s}/thumbnails/{!s}_144.0000000.jpg".format(playlist.id, video.id),
-            "240": "{!s}/thumbnails/{!s}_240.0000000.jpg".format(playlist.id, video.id),
-            "480": "{!s}/thumbnails/{!s}_480.0000000.jpg".format(playlist.id, video.id),
-            "720": "{!s}/thumbnails/{!s}_720.0000000.jpg".format(playlist.id, video.id),
-            "1080": "{!s}/thumbnails/{!s}_1080.0000000.jpg".format(
-                playlist.id, video.id
-            ),
+            str(rate): thumbnails_template.format(playlist.id, video.id, rate)
+            for rate in [144, 240, 480, 720, 1080]
         }
+
+        mp4_template = "https://abc.cloudfront.net/{!s}/mp4/{!s}_{!s}.mp4"
         mp4_dict = {
-            "144": "{!s}/mp4/{!s}_144.mp4".format(playlist.id, video.id),
-            "240": "{!s}/mp4/{!s}_240.mp4".format(playlist.id, video.id),
-            "480": "{!s}/mp4/{!s}_480.mp4".format(playlist.id, video.id),
-            "720": "{!s}/mp4/{!s}_720.mp4".format(playlist.id, video.id),
-            "1080": "{!s}/mp4/{!s}_1080.mp4".format(playlist.id, video.id),
+            str(rate): mp4_template.format(playlist.id, video.id, rate)
+            for rate in [144, 240, 480, 720, 1080]
         }
+
         self.assertEqual(
             content,
             {
@@ -81,6 +113,55 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=True)
+    @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
+    def test_api_video_read_detail_token_user_signed_urls(self, mock_open):
+        """Activating signed urls should add Cloudfront query string authentication parameters."""
+        video = VideoFactory(
+            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+
+        # Get the video linked to the JWT token
+        # fix the time so that the url signature is deterministic and can be checked
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.get(
+                "/api/videos/{!s}/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content["urls"]["thumbnails"]["144"],
+            (
+                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/thumbnails/"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.0000000.jpg?Expires=1533693600&"
+                "Signature=Mlbu2b2rGSO2ijPxyh36c9QM9STSNwDNsONDhngMA3Zou8eVx61mcsZ0qi4W-oK56"
+                "9apoDjmbhHqCuWiYU3s-PxQsO5WS6aubfkQs8oPGR9Do~7cOCjVeG52WzTppXA-S9kMQNufQXkb"
+                "cYDkCZnKWMZ7o-wzgWgaVjgQUBbUR7Mz2CslBxNIo~l5uXwVlJQ6sQzRtvnoEZpNw7Kf4pDm45m"
+                "lES6Br8bOKBhPF~1toU12b1ZVpbIQI4DQU5I6HuneFaDV9g37u~Gny4LPNCYGbsBv7hK59aPiQq"
+                "QhibZHp4i66d9ZphuK6z4kxvExoYqhCR~BIegIGXoBBKVuoJeOsg__&"
+                "Key-Pair-Id=cloudfront-access-key-id"
+            ),
+        )
+        self.assertEqual(
+            content["urls"]["mp4"]["144"],
+            (
+                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/mp4/"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.mp4?Expires=1533693600&"
+                "Signature=Izn2zQEr2H4qgVLRoKRcPZPemvyYpB3rSHgHLJD7hYqYvQhmgvSV~EzSJQ8AOmKajHN"
+                "ZSjWFlpNJQiQav9hH~oAiBp2mMChSdMs6m7O1V924a250B2aBE4K~AC1Q-GCF9O0I7Phc1Uz5b-u4"
+                "98jsL9cZYHKW0gbp34XncOIZbLfs3yP3SvBf4TvHS62kstmQSemj-58WxBkywAj-kb8VXuDZomGWD"
+                "W9AFtSLYKX6yenDxOPt46FiNfMMONY95uLthKDJOUonRwLjEJKfe73~p1e9ROxQEc3cWcpA9mEyRw"
+                "-PQwH3X-CeOE6W6Xi0ROGs9~a8zVAgYGyiJ1-rWcMuKg__&"
+                "Key-Pair-Id=cloudfront-access-key-id"
+            ),
         )
 
     def test_api_video_read_detail_staff_or_user(self):

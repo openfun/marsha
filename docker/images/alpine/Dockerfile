@@ -24,6 +24,7 @@ FROM base as back-builder
 # Pillow and psycopg2)
 RUN apk --no-cache add --update \
         gcc \
+        libffi-dev \
         musl-dev \
         postgresql-dev && \
     rm -rf /var/cache/apk/*
