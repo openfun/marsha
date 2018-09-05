@@ -7,7 +7,7 @@ import { IntlProvider } from 'react-intl';
 import { ErrorComponent } from './ErrorComponent';
 
 test('ErrorComponent displays the content for 404 not found errors', () => {
-  const wrapper = render(<ErrorComponent code="not_found" />);
+  const wrapper = render(<ErrorComponent code="notFound" />);
   expect(wrapper.text()).toContain(
     'The video you are looking for could not be found',
   );
