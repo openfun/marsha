@@ -14,26 +14,29 @@ jest.doMock('../..', () => {
   };
 });
 
+import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
+import { ROUTE as PLAYER_ROUTE } from '../VideoJsPlayer/VideoJsPlayer';
 import { RedirectOnLoad } from './RedirectOnLoad';
 
 describe('<RedirectOnLoad />', () => {
-  it('redirects to /errors/lti on LTI error', () => {
+  it('redirects to the error view on LTI error', () => {
     context.state = 'error';
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/errors/lti');
+    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('lti'));
   });
 
-  it('redirects instructors to /player when the video is ready', () => {
+  it('redirects instructors to the player when the video is ready', () => {
     context.state = 'instructor';
     context.video = { status: 'ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/player');
+    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
   });
 
   it('redirects students to /player when the video is ready', () => {
@@ -43,7 +46,7 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/player');
+    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
   });
 
   it('redirects instructors to /form when the video is not ready', () => {
@@ -53,16 +56,16 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/form');
+    expect(wrapper.prop('to')).toEqual(FORM_ROUTE());
   });
 
-  it('redirects students to /errors/notFound when the video is not ready', () => {
+  it('redirects students to the error view when the video is not ready', () => {
     context.state = 'student';
     context.video = { status: 'not_ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/errors/notFound');
+    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('notFound'));
   });
 });

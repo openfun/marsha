@@ -61,6 +61,9 @@ const messages = {
   }),
 };
 
+export const ROUTE = (code?: ErrorComponentProps['code']) =>
+  code ? `/errors/${code}` : '/errors/:code';
+
 export const ErrorComponent = (props: ErrorComponentProps) => {
   return (
     <div className="error-component">

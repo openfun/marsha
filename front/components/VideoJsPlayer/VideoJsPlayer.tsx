@@ -14,6 +14,8 @@ interface VideoJsPlayerState {
   videoNode: Nullable<HTMLVideoElement>;
 }
 
+export const ROUTE = () => '/player';
+
 export class VideoJsPlayer extends React.Component<
   VideoJsPlayerProps,
   VideoJsPlayerState
