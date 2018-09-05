@@ -56,13 +56,13 @@ describe('<RedirectOnLoad />', () => {
     expect(wrapper.prop('to')).toEqual('/form');
   });
 
-  it('redirects students to /errors/not_found when the video is not ready', () => {
+  it('redirects students to /errors/notFound when the video is not ready', () => {
     context.state = 'student';
     context.video = { status: 'not_ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/errors/not_found');
+    expect(wrapper.prop('to')).toEqual('/errors/notFound');
   });
 });

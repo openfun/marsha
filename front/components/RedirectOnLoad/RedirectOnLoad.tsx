@@ -26,7 +26,7 @@ export const RedirectOnLoad = () => {
         // For safety default to the 404 view: this is for students, and any other role we add later on and don't add
         // a special clause for, when the video is not ready.
         else {
-          return <Redirect push to="/errors/not_found" />;
+          return <Redirect push to="/errors/notFound" />;
         }
       }}
     </AppDataContext.Consumer>
