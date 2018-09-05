@@ -343,17 +343,17 @@ class VideoAPITest(TestCase):
                     "Q4OGUtOWQ3MC02ZWM1OTlhNjc4MDYvYTJmMjdmZGUtOTczYS00ZTg5LThkY2EtY2M1OWUwMWQyNTV"
                     "jIn0sIHsiYWNsIjogInByaXZhdGUifSwgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwg"
                     "InZpZGVvLyJdLCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF0sIHsieC1hb"
-                    "XotY3JlZGVudGlhbCI6ICJBQ0NFU1NfS0VZX0lELzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3"
-                    "JlcXVlc3QifSwgeyJ4LWFtei1hbGdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW1"
-                    "6LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                    "XotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYX"
+                    "dzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ"
+                    "4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                 ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
-                "x_amz_credential": "ACCESS_KEY_ID/20180808/eu-west-1/s3/aws4_request",
+                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "8d7d40f125a70d6cc173130f5985be88291459928126638555694d2295882166"
+                    "ae5de31f8d6db6495e9b1ef0cbb06fa7506864cda0dcada97e2f6ef5cff24498"
                 ),
             },
         )

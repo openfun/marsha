@@ -159,6 +159,4 @@ class Development(Base):
 class Test(Base):
     """Test environment settings."""
 
-    AWS_ACCESS_KEY_ID = "ACCESS_KEY_ID"
-    AWS_SECRET_ACCESS_KEY = "SECRET_ACCESS_KEY"
     AWS_SOURCE_BUCKET_NAME = "test-marsha-source"
