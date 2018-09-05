@@ -11,3 +11,6 @@ POSTGRES_DB=marsha
 POSTGRES_USER=fun
 POSTGRES_PASSWORD=pass
 
+# AWS User
+DJANGO_AWS_ACCESS_KEY_ID=aws-access-key-id
+DJANGO_AWS_SECRET_ACCESS_KEY=aws-secret-access-key
