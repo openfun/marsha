@@ -6,7 +6,6 @@ https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloud
 """
 from django.conf import settings
 
-from botocore.signers import CloudFrontSigner
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
@@ -41,6 +40,3 @@ def rsa_signer(message):
         raise MissingRSAKey()
 
     return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
-
-
-cloudfront_signer = CloudFrontSigner(settings.CLOUDFRONT_ACCESS_KEY_ID, rsa_signer)

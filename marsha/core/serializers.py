@@ -4,10 +4,11 @@ from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
 
+from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
 from .models import Video
-from .utils.aws_cloudfront import cloudfront_signer
+from .utils.aws_cloudfront import rsa_signer
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -46,22 +47,25 @@ class VideoSerializer(serializers.ModelSerializer):
             mp4_url = "{:s}/{!s}/mp4/{!s}_{:d}.mp4".format(
                 settings.CLOUDFRONT_URL, obj.playlist.id, obj.id, resolution
             )
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                mp4_url = cloudfront_signer.generate_presigned_url(
-                    mp4_url, date_less_than=date_less_than
-                )
-
-            urls["mp4"][str(resolution)] = mp4_url
 
             # Thumbnails
             thumbnail_url = "{:s}/{!s}/thumbnails/{!s}_{:d}.0000000.jpg".format(
                 settings.CLOUDFRONT_URL, obj.playlist.id, obj.id, resolution
             )
+
+            # Sign urls if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                cloudfront_signer = CloudFrontSigner(
+                    settings.CLOUDFRONT_ACCESS_KEY_ID, rsa_signer
+                )
+                mp4_url = cloudfront_signer.generate_presigned_url(
+                    mp4_url, date_less_than=date_less_than
+                )
                 thumbnail_url = cloudfront_signer.generate_presigned_url(
                     thumbnail_url, date_less_than=date_less_than
                 )
 
+            urls["mp4"][str(resolution)] = mp4_url
             urls["thumbnails"][str(resolution)] = thumbnail_url
 
         return urls
