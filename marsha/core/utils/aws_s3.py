@@ -1,4 +1,4 @@
-"""Utils for the ``core`` app of the Marsha project."""
+"""Utils for direct upload to AWS S3."""
 from base64 import b64encode
 from datetime import timedelta
 import hashlib
@@ -8,7 +8,7 @@ import json
 from django.conf import settings
 from django.utils import timezone
 
-from .defaults import AWS_UPLOAD_EXPIRATION_DELAY, VIDEO_SOURCE_MAX_SIZE
+from ..defaults import AWS_UPLOAD_EXPIRATION_DELAY, VIDEO_SOURCE_MAX_SIZE
 
 
 def sign(key, message):
