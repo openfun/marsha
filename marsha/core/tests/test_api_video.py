@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..factories import UserFactory, VideoFactory
 from ..models import Video
-from ..utils import timezone
+from ..utils.aws_s3 import timezone
 
 
 # We don't enforce arguments documentation in tests

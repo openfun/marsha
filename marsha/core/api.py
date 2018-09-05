@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .models import Video
 from .permissions import IsVideoTokenOrAdminUser
 from .serializers import VideoSerializer
-from .utils import get_s3_policy
+from .utils.aws_s3 import get_s3_policy
 
 
 class VideoViewSet(
