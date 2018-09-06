@@ -74,6 +74,7 @@ describe('VideoForm', () => {
       ['Content-Type', 'video/mp4'],
       ['X-Amz-Credential', 'policy##x_amz_credential'],
       ['X-Amz-Algorithm', 'policy##x_amz_algorithm'],
+      ['X-Amz-Meta-Jwt', 'some_token'],
       ['X-Amz-Date', 'policy##x_amz_date'],
       ['Policy', 'policy##policy'],
       ['X-Amz-Signature', 'policy##x_amz_signature'],
