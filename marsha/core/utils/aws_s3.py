@@ -100,6 +100,7 @@ def get_s3_policy(bucket, key):
             {"x-amz-credential": x_amz_credential},
             {"x-amz-algorithm": x_amz_algorithm},
             {"x-amz-date": x_amz_date},
+            ["starts-with", "$x-amz-meta-jwt", ""],
         ],
     }
 
