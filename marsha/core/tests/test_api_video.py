@@ -431,7 +431,8 @@ class VideoAPITest(TestCase):
                     "InZpZGVvLyJdLCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF0sIHsieC1hb"
                     "XotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYX"
                     "dzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ"
-                    "4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
+                    "4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgWyJzdGFydHMtd2l0aCIsICIkeC1hbXot"
+                    "bWV0YS1qd3QiLCAiIl1dfQ=="
                 ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
@@ -439,7 +440,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "ae5de31f8d6db6495e9b1ef0cbb06fa7506864cda0dcada97e2f6ef5cff24498"
+                    "434a8c9d285b6b287647adc527676beaee0943d36aa2bc3fad3657f53f8b0d09"
                 ),
             },
         )

@@ -63,6 +63,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
   }
 
   async upload() {
+    const { jwt } = this.props;
     const { file, policy } = this.state;
 
     // Use FormData to meet the requirement of a multi-part POST request for s3
@@ -73,6 +74,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       ['Content-Type', file!.type],
       ['X-Amz-Credential', policy.x_amz_credential],
       ['X-Amz-Algorithm', policy.x_amz_algorithm],
+      ['X-Amz-Meta-Jwt', jwt],
       ['X-Amz-Date', policy.x_amz_date],
       ['Policy', policy.policy],
       ['X-Amz-Signature', policy.x_amz_signature],
