@@ -1,5 +1,6 @@
 """Views of the ``core`` app of the Marsha project."""
 from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
@@ -13,6 +14,7 @@ from .serializers import VideoSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
 class VideoLTIView(TemplateResponseMixin, View):
     """View called by an LTI launch request.
 
