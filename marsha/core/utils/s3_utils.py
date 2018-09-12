@@ -9,6 +9,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from ..defaults import AWS_UPLOAD_EXPIRATION_DELAY, VIDEO_SOURCE_MAX_SIZE
+from ..utils.time_utils import to_timestamp
 
 
 def sign(key, message):
@@ -63,15 +64,15 @@ def get_signature_key(secret_key, date_stamp, region_name, service_name):
     return k_signing
 
 
-def get_s3_policy(bucket, key):
+def get_s3_policy(bucket, video):
     """Build a S3 policy to allow uploading a video to our video source bucket.
 
     Parameters
     ----------
     bucket : string
         The name of the S3 bucket to which we want to upload a video.
-    key : string
-        The S3 bucket key at which we want to allow uploading a video.
+    video : Type[models.Model]
+        The video object for which we want to upload a video file.
 
     Returns
     -------
@@ -80,6 +81,8 @@ def get_s3_policy(bucket, key):
 
     """
     now = timezone.now()
+    stamp = str(to_timestamp(now))
+    key = video.get_source_s3_key(stamp=stamp)
 
     expires_at = now + timedelta(seconds=AWS_UPLOAD_EXPIRATION_DELAY)
     acl = "private"
@@ -120,6 +123,7 @@ def get_s3_policy(bucket, key):
     return {
         "acl": acl,
         "bucket": bucket,
+        "stamp": stamp,
         "key": key,
         "max_file_size": VIDEO_SOURCE_MAX_SIZE,
         "policy": policy_b64,

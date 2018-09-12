@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .models import Video
 from .permissions import IsVideoTokenOrAdminUser
 from .serializers import VideoSerializer
-from .utils.aws_s3 import get_s3_policy
+from .utils.s3_utils import get_s3_policy
 
 
 class VideoViewSet(
@@ -38,8 +38,5 @@ class VideoViewSet(
             HttpResponse carrying the policy as a JSON object.
 
         """
-        video = self.get_object()
-        policy = get_s3_policy(
-            settings.AWS_SOURCE_BUCKET_NAME, video.get_source_s3_key()
-        )
+        policy = get_s3_policy(settings.AWS_SOURCE_BUCKET_NAME, self.get_object())
         return Response(policy)

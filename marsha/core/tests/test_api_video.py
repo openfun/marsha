@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..factories import UserFactory, VideoFactory
 from ..models import Video
-from ..utils.aws_s3 import timezone
+from ..utils.s3_utils import timezone
 
 
 RSA_KEY_MOCK = b"""
@@ -66,6 +66,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(
             id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
         )
         playlist = video.playlist
         jwt_token = AccessToken()
@@ -80,25 +81,26 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         thumbnails_template = (
-            "https://abc.cloudfront.net/{!s}/thumbnails/{!s}_{!s}.0000000.jpg"
+            "https://abc.cloudfront.net/"
+            "{!s}/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
             str(rate): thumbnails_template.format(playlist.id, video.id, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
 
-        mp4_template = "https://abc.cloudfront.net/{!s}/mp4/{!s}_{!s}.mp4"
+        mp4_template = "https://abc.cloudfront.net/{!s}/{!s}/videos/1533686400_{!s}.mp4"
         mp4_dict = {
             str(rate): mp4_template.format(playlist.id, video.id, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
-
         self.assertEqual(
             content,
             {
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
+                "active_stamp": 1533686400,
                 "urls": json.dumps({"mp4": mp4_dict, "thumbnails": thumbnails_dict}),
             },
         )
@@ -115,6 +117,36 @@ class VideoAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_video_read_detail_token_user_no_active_stamp(self):
+        """A video with no active stamp should not fail and its "urls" should be set to `None`."""
+        video = VideoFactory(
+            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            uploaded_on=None,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "urls": None,
+            },
+        )
+
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
         CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
@@ -125,6 +157,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(
             id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -143,26 +176,26 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             json.loads(content["urls"])["thumbnails"]["144"],
             (
-                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/thumbnails/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.0000000.jpg?Expires=1533693600&"
-                "Signature=Mlbu2b2rGSO2ijPxyh36c9QM9STSNwDNsONDhngMA3Zou8eVx61mcsZ0qi4W-oK56"
-                "9apoDjmbhHqCuWiYU3s-PxQsO5WS6aubfkQs8oPGR9Do~7cOCjVeG52WzTppXA-S9kMQNufQXkb"
-                "cYDkCZnKWMZ7o-wzgWgaVjgQUBbUR7Mz2CslBxNIo~l5uXwVlJQ6sQzRtvnoEZpNw7Kf4pDm45m"
-                "lES6Br8bOKBhPF~1toU12b1ZVpbIQI4DQU5I6HuneFaDV9g37u~Gny4LPNCYGbsBv7hK59aPiQq"
-                "QhibZHp4i66d9ZphuK6z4kxvExoYqhCR~BIegIGXoBBKVuoJeOsg__&"
+                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c/thumbnails/1533686400_144.0000000.jpg?"
+                "Expires=1533693600&Signature=MMm0VE8kDAOHrTJiVAa7cWQIn8sdF9lT6TOulfncbgf~AF3WgnLU"
+                "S2-OFvE0xbqi4MjxYBWZ1MkzZKDuRGTR6~YViYTz4WcomTPnVVc4euKM~HZYXxQDPKFVAcJ7hwsqhOEgn"
+                "X9npz-6uiXDgqjIlFbMcK~NkaZz3drwguWMdu6I5UUYFiLlwMpMjT0ecFtmTV9yDjIhan~k8HYWagjyAf"
+                "WtpfJsaSMlPJ2y4Gd4aaVYM16fspO6REZQzb4cC62aHB7ycpqUpmbThYH1saSuMtOcCemLcqzSVNNS7MX"
+                "YT-vNoSRbLNf5ydmtIGqvHv9YAJHQJKdBluwd~AUU3hmtPA__&"
                 "Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
         self.assertEqual(
             json.loads(content["urls"])["mp4"]["144"],
             (
-                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/mp4/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c_144.mp4?Expires=1533693600&"
-                "Signature=Izn2zQEr2H4qgVLRoKRcPZPemvyYpB3rSHgHLJD7hYqYvQhmgvSV~EzSJQ8AOmKajHN"
-                "ZSjWFlpNJQiQav9hH~oAiBp2mMChSdMs6m7O1V924a250B2aBE4K~AC1Q-GCF9O0I7Phc1Uz5b-u4"
-                "98jsL9cZYHKW0gbp34XncOIZbLfs3yP3SvBf4TvHS62kstmQSemj-58WxBkywAj-kb8VXuDZomGWD"
-                "W9AFtSLYKX6yenDxOPt46FiNfMMONY95uLthKDJOUonRwLjEJKfe73~p1e9ROxQEc3cWcpA9mEyRw"
-                "-PQwH3X-CeOE6W6Xi0ROGs9~a8zVAgYGyiJ1-rWcMuKg__&"
+                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c/videos/1533686400_144.mp4?"
+                "Expires=1533693600&Signature=SPadcxIoCVoLQbKk3hp2LdtgZY899OXJMjInxUiGnSVivMBKkXfT"
+                "yRn3wA9J~2mumU3PCZnIUguAKmvRUAgpbnSHj-f695OPiJtncPZufGmXCcnLcn7OhFy8SnqfOX9zK~K8m"
+                "A6AQKfI2TXKVl5wy6JTZYxGwkMpLM~CsGwJAWo-dxbIGPtRW9H2xKAEhC5glP5of4bjOQryvrzo1PGHJV"
+                "cUMcBL23eGSh9HAZHQFleI01ypQu75L~Z6BlbncjHO6tE0hKCqVU08rkdnoEDMRPRzMCVg~SdJvzZ7sth"
+                "8bu4iTv-v08pWDlSXhkmO-uBfKui0CI10eALwFLZ5cMpiRQ__&"
                 "Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
@@ -276,6 +309,29 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(video.description, "my new description")
+
+    def test_api_video_update_detail_token_user_uploaded_on(self):
+        """Token users should be able to confirm the datetime of upload through the API."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        data = json.loads(response.content)
+        data["active_stamp"] = "1533686400"
+
+        response = self.client.put(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
 
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
@@ -408,6 +464,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["video_id"] = str(video.id)
 
         # Get the upload policy for this video
+        # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
@@ -416,23 +473,27 @@ class VideoAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
+
         self.assertEqual(
             content,
             {
                 "acl": "private",
                 "bucket": "test-marsha-source",
-                "key": "{!s}/{!s}".format(video.playlist.id, video.id),
+                "stamp": "1533686400",
+                "key": "{!s}/{!s}/videos/1533686400".format(
+                    video.playlist.id, video.id
+                ),
                 "max_file_size": 1073741824,
                 "policy": (
-                    "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDAuMDAwWiIsICJjb25kaXRpb25zIjogW"
-                    "3siYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJmNzZmNmFmZC03MTM1LT"
-                    "Q4OGUtOWQ3MC02ZWM1OTlhNjc4MDYvYTJmMjdmZGUtOTczYS00ZTg5LThkY2EtY2M1OWUwMWQyNTV"
-                    "jIn0sIHsiYWNsIjogInByaXZhdGUifSwgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwg"
-                    "InZpZGVvLyJdLCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF0sIHsieC1hb"
-                    "XotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYX"
-                    "dzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ"
-                    "4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgWyJzdGFydHMtd2l0aCIsICIkeC1hbXot"
-                    "bWV0YS1qd3QiLCAiIl1dfQ=="
+                    "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDAuMDAwWiIsICJjb25kaXRpb25zIjog"
+                    "W3siYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJmNzZmNmFmZC03MTM1"
+                    "LTQ4OGUtOWQ3MC02ZWM1OTlhNjc4MDYvYTJmMjdmZGUtOTczYS00ZTg5LThkY2EtY2M1OWUwMWQy"
+                    "NTVjL3ZpZGVvcy8xNTMzNjg2NDAwIn0sIHsiYWNsIjogInByaXZhdGUifSwgWyJzdGFydHMtd2l0"
+                    "aCIsICIkQ29udGVudC1UeXBlIiwgInZpZGVvLyJdLCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwg"
+                    "MCwgMTA3Mzc0MTgyNF0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8y"
+                    "MDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjog"
+                    "IkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwg"
+                    "WyJzdGFydHMtd2l0aCIsICIkeC1hbXotbWV0YS1qd3QiLCAiIl1dfQ=="
                 ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
@@ -440,7 +501,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "434a8c9d285b6b287647adc527676beaee0943d36aa2bc3fad3657f53f8b0d09"
+                    "f359246c2c2c7d8eedeca623b4f28d3f4baf5f71294a3de60a742bbff0be9c7e"
                 ),
             },
         )

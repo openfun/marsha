@@ -7,9 +7,12 @@ exports.handler = (event, context, callback) => {
 
   const objectKey = event.Records[0].s3.object.key;
 
-  if (objectKey.split('/').length != 2) {
+  if (objectKey.split('/').length != 4) {
     let error =
-      'Source videos should be uploaded in the folder of their playlist.';
+      'Source videos should be uploaded in a folder of the form ' +
+      '"{playlist_id}/{video_id}/videos/{version}".' +
+      'Source subtitles should be uploaded to a folder of the form ' +
+      '"{playlist_id}/{video_id}/subtitles/{version}_{language}[_{has_closed_caption}]".';
     callback(error);
     return;
   }
@@ -55,8 +58,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.split('/')[0] +
-                '/mp4/',
+                objectKey.substring(0, objectKey.lastIndexOf('/')),
             },
           },
           Outputs: [
@@ -92,8 +94,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.split('/')[0] +
-                '/thumbnails/',
+                objectKey.substring(0, objectKey.lastIndexOf('/')),
             },
           },
           Outputs: [
@@ -129,8 +130,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.split('/')[0] +
-                '/previews/',
+                objectKey.substring(0, objectKey.lastIndexOf('/')),
             },
           },
           Outputs: [
