@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE
 
+from ..utils.time_utils import to_timestamp
 from .account import INSTRUCTOR, ROLE_CHOICES
 from .base import BaseModel, NonDeletedUniqueIndex
 
@@ -171,6 +172,12 @@ class Video(BaseModel):
         null=True,
         blank=True,
     )
+    uploaded_on = models.DateTimeField(
+        verbose_name=_("uploaded on"),
+        help_text=_("datetime at which the active version of the video was uploaded."),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         """Options for the ``Video`` model."""
@@ -187,9 +194,34 @@ class Video(BaseModel):
             result += _(" [deleted]")
         return result
 
-    def get_source_s3_key(self):
-        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video)."""
-        return "{!s}/{!s}".format(self.playlist.id, self.id)
+    def get_source_s3_key(self, stamp=None):
+        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video).
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the video assuming
+            its active stamp is set to this value. This is useful to create an upload policy for
+            this prospective version of the video, so that the client can upload the file to S3
+            and the confirmation lambda can set the `uploaded_on` field to this value only after
+            the video transcoding job is successful.
+
+        Returns
+        -------
+        string
+            The S3 key for the video in the source bucket, where uploaded videos are stored before
+            they are converted to the destination bucket.
+
+        """
+        stamp = stamp or self.active_stamp
+        return "{playlist!s}/{video!s}/videos/{stamp:s}".format(
+            playlist=self.playlist.id, video=self.id, stamp=stamp
+        )
+
+    @property
+    def active_stamp(self):
+        """Return the current valid datetime of upload as a timestamp."""
+        return str(to_timestamp(self.uploaded_on)) if self.uploaded_on else None
 
 
 class BaseTrack(BaseModel):
