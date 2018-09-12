@@ -22,8 +22,9 @@ services:
       context: .
       dockerfile: ./docker/images/dev/Dockerfile
     image: marsha:dev
-    env_file: env.d/development
-    env_file: env.d/development_secret
+    env_file:
+      - env.d/development
+      - env.d/development_secret
     # Override production container command that runs gunicorn in favor of the
     # django development server (wrapped by dockerize to ensure the db is ready
     # to accept connections before running the development server)
