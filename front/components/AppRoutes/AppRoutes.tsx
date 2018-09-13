@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { AppDataContext } from '../..';
 import {
@@ -18,7 +18,7 @@ import {
 
 export const AppRoutes = () => {
   return (
-    <HashRouter>
+    <MemoryRouter>
       <Switch>
         <Route
           exact
@@ -45,6 +45,6 @@ export const AppRoutes = () => {
         />
         <Route path={HOME_ROUTE()} component={RedirectOnLoad} />
       </Switch>
-    </HashRouter>
+    </MemoryRouter>
   );
 };
