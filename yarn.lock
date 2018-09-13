@@ -5398,6 +5398,10 @@ styled-components@3.4.5:
     stylis-rule-sheet "^0.0.10"
     supports-color "^3.2.3"
 
+styled-reboot@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/styled-reboot/-/styled-reboot-3.0.0.tgz#a0bbc01ccb36b045ee2be07eba1598d1147ef1f6"
+
 stylis-rule-sheet@^0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.10.tgz#44e64a2b076643f4b52e5ff71efc04d8c3c4a430"
