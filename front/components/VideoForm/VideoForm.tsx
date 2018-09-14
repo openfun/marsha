@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
@@ -8,8 +9,10 @@ import { Video } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { IframeHeading } from '../Headings/Headings';
 import { ROUTE as PLAYER_ROUTE } from '../VideoJsPlayer/VideoJsPlayer';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
+import { UploadingLoader } from './UploadingLoader';
 
 export interface VideoFormProps {
   jwt: string;
@@ -19,7 +22,7 @@ export interface VideoFormProps {
 interface VideoFormState {
   file: Maybe<File>;
   policy: AWSPolicy;
-  status: Maybe<'policy_error' | 'upload_error' | 'success'>;
+  status: Maybe<'policy_error' | 'uploading' | 'upload_error' | 'success'>;
 }
 
 const messages = defineMessages({
@@ -37,6 +40,24 @@ const messages = defineMessages({
 });
 
 export const ROUTE = () => '/form';
+
+const VideoFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+`;
+
+const IframeHeadingWithLayout = styled(IframeHeading)`
+  flex-grow: 0;
+  margin: 0;
+  text-align: center;
+`;
+
+const VideoUploadFieldContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+`;
 
 export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
   async componentDidMount() {
@@ -60,11 +81,14 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
 
   onVideoFieldContentUpdated(file: Maybe<File>) {
     this.setState({ file });
+    this.upload();
   }
 
   async upload() {
     const { jwt } = this.props;
     const { file, policy } = this.state;
+
+    this.setState({ status: 'uploading' });
 
     // Use FormData to meet the requirement of a multi-part POST request for s3
     // NB: order of keys is important here, which is why we do not iterate over an object
@@ -83,11 +107,18 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
     );
 
     try {
-      await fetch(`https://${policy.s3_endpoint}/${policy.bucket}`, {
-        body: formData,
-        method: 'POST',
-      });
-      this.setState({ status: 'success' });
+      const response = await fetch(
+        `https://${policy.s3_endpoint}/${policy.bucket}`,
+        {
+          body: formData,
+          method: 'POST',
+        },
+      );
+      if (response.ok) {
+        this.setState({ status: 'success' });
+      } else {
+        this.setState({ status: 'upload_error' });
+      }
     } catch (error) {
       this.setState({ status: 'upload_error' });
     }
@@ -106,21 +137,21 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       case 'upload_error':
         return <Redirect push to={ERROR_ROUTE('upload')} />;
 
+      case 'uploading':
+        return <UploadingLoader />;
+
       default:
         return (
-          <div className="video-form">
-            <h2>
+          <VideoFormContainer>
+            <IframeHeadingWithLayout>
               <FormattedMessage {...messages.title} />
-            </h2>
-            <input type="text" name="title" />
-            <textarea name="description" />
-            <VideoUploadField
-              onContentUpdated={this.onVideoFieldContentUpdated.bind(this)}
-            />
-            <button disabled={!file} onClick={this.upload.bind(this)}>
-              <FormattedMessage {...messages.button} />
-            </button>
-          </div>
+            </IframeHeadingWithLayout>
+            <VideoUploadFieldContainer>
+              <VideoUploadField
+                onContentUpdated={this.onVideoFieldContentUpdated.bind(this)}
+              />
+            </VideoUploadFieldContainer>
+          </VideoFormContainer>
         );
     }
   }

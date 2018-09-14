@@ -29,8 +29,6 @@ describe('VideoForm', () => {
     const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
 
     expect(wrapper.html()).toContain('Create a new video');
-    expect(wrapper.html()).toContain('<input type="text" name="title"/>');
-    expect(wrapper.html()).toContain('<textarea name="description">');
   });
 
   it('gets the policy from the API and uses it to upload the file', async () => {
