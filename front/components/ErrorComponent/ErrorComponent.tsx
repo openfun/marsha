@@ -1,10 +1,31 @@
 import * as React from 'react';
-
 import { defineMessages, FormattedMessage } from 'react-intl';
+import styled from 'styled-components';
+
+import { H2 } from '../Headings/Headings';
 
 export interface ErrorComponentProps {
   code: 'lti' | 'notFound' | 'policy' | 'upload';
 }
+
+const ErrorComponentStyled = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2rem;
+`;
+
+const ErrorContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-grow: 1;
+  padding-top: 4rem;
+  padding-bottom: 6rem;
+  text-align: center;
+`;
 
 const messages = {
   lti: defineMessages({
@@ -66,13 +87,15 @@ export const ROUTE = (code?: ErrorComponentProps['code']) =>
 
 export const ErrorComponent = (props: ErrorComponentProps) => {
   return (
-    <div className="error-component">
-      <h2>
-        <FormattedMessage {...messages[props.code].title} />
-      </h2>
-      <p>
-        <FormattedMessage {...messages[props.code].text} />
-      </p>
-    </div>
+    <ErrorComponentStyled>
+      <ErrorContent>
+        <H2>
+          <FormattedMessage {...messages[props.code].title} />
+        </H2>
+        <p>
+          <FormattedMessage {...messages[props.code].text} />
+        </p>
+      </ErrorContent>
+    </ErrorComponentStyled>
   );
 };
