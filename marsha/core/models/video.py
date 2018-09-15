@@ -120,6 +120,9 @@ class PlaylistAccess(BaseModel):
 class Video(BaseModel):
     """Model representing a video, created by an author."""
 
+    PENDING, ERROR, READY = "pending", "error", "ready"
+    STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
+
     title = models.CharField(
         max_length=255, verbose_name=_("title"), help_text=_("title of the video")
     )
@@ -177,6 +180,13 @@ class Video(BaseModel):
         help_text=_("datetime at which the active version of the video was uploaded."),
         null=True,
         blank=True,
+    )
+    state = models.CharField(
+        max_length=20,
+        verbose_name=_("state"),
+        help_text=_("state of the upload and transcoding pipeline in AWS."),
+        choices=STATE_CHOICES,
+        default=PENDING,
     )
 
     class Meta:

@@ -60,7 +60,7 @@ class VideoSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = Video
-        fields = ("id", "title", "description", "active_stamp", "urls")
+        fields = ("id", "title", "description", "active_stamp", "state", "urls")
         read_only_fields = ("id",)
 
     active_stamp = TimestampField(source="uploaded_on", required=False)
@@ -83,7 +83,7 @@ class VideoSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if obj.uploaded_on is None:
+        if obj.uploaded_on is None or obj.state != Video.READY:
             return None
 
         urls = {"mp4": {}, "thumbnails": {}}
