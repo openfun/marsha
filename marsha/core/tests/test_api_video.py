@@ -67,6 +67,7 @@ class VideoAPITest(TestCase):
             id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            state="ready",
         )
         playlist = video.playlist
         jwt_token = AccessToken()
@@ -101,6 +102,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": 1533686400,
+                "state": "ready",
                 "urls": json.dumps({"mp4": mp4_dict, "thumbnails": thumbnails_dict}),
             },
         )
@@ -120,11 +122,7 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
-        video = VideoFactory(
-            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
-            uploaded_on=None,
-        )
+        video = VideoFactory(uploaded_on=None)
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
 
@@ -143,9 +141,42 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "state": "pending",
                 "urls": None,
             },
         )
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_video_read_detail_token_user_not_ready(self):
+        """A video that is not ready should have its "urls" set to `None`."""
+        for state, _ in Video.STATE_CHOICES:
+            if state == "ready":
+                continue
+
+            video = VideoFactory(
+                uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), state=state
+            )
+            jwt_token = AccessToken()
+            jwt_token.payload["video_id"] = str(video.id)
+
+            # Get the video linked to the JWT token
+            response = self.client.get(
+                "/api/videos/{!s}/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+            self.assertEqual(response.status_code, 200)
+            content = json.loads(response.content)
+            self.assertEqual(
+                content,
+                {
+                    "description": video.description,
+                    "id": str(video.id),
+                    "title": video.title,
+                    "active_stamp": 1533686400,
+                    "state": state,
+                    "urls": None,
+                },
+            )
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -158,6 +189,7 @@ class VideoAPITest(TestCase):
             id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            state="ready",
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
