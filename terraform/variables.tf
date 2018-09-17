@@ -10,3 +10,7 @@ variable "cloudfront_access_key_id" {
   type = "string"
 }
 
+variable "aws_region" {
+  type    = "string"
+  default = "eu-west-1"
+}
