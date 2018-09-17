@@ -41,7 +41,7 @@ output:
 .PHONY: init
 init: ## Initialize Terraform
 init:
-	docker-compose run --rm app /bin/terraform init
+	docker-compose run --rm app /bin/terraform init -backend-config="env.d/terraform_state"
 
 .PHONY: destroy
 destroy: ## Destroy Terraform config

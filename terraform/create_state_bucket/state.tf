@@ -4,4 +4,6 @@
 # state. The state is encrypted using a KMS key because it will
 # contain sensitive information.
 
-provider "aws" {}
+provider "aws" {
+  region = "${var.aws_region}"
+}
