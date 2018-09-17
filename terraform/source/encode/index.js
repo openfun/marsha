@@ -10,9 +10,9 @@ exports.handler = (event, context, callback) => {
   if (objectKey.split('/').length != 4) {
     let error =
       'Source videos should be uploaded in a folder of the form ' +
-      '"{playlist_id}/{video_id}/videos/{version}".' +
+      '"{playlist_id}/{video_id}/videos/{stamp}".' +
       'Source subtitles should be uploaded to a folder of the form ' +
-      '"{playlist_id}/{video_id}/subtitles/{version}_{language}[_{has_closed_caption}]".';
+      '"{playlist_id}/{video_id}/subtitles/{stamp}_{language}[_{has_closed_caption}]".';
     callback(error);
     return;
   }
@@ -55,10 +55,7 @@ exports.handler = (event, context, callback) => {
             Type: 'FILE_GROUP_SETTINGS',
             FileGroupSettings: {
               Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.substring(0, objectKey.lastIndexOf('/')),
+                's3://' + process.env.S3_DESTINATION_BUCKET + '/' + objectKey,
             },
           },
           Outputs: [
@@ -94,7 +91,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.substring(0, objectKey.lastIndexOf('/')),
+                objectKey.replace('/videos/', '/thumbnails/'),
             },
           },
           Outputs: [
@@ -130,7 +127,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.substring(0, objectKey.lastIndexOf('/')),
+                objectKey.replace('/videos/', '/previews/'),
             },
           },
           Outputs: [
