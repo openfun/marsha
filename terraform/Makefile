@@ -16,10 +16,16 @@ refresh: ## Refresh Terraform config
 refresh:
 	docker-compose run --rm app /bin/terraform refresh
 
-.PHONY: create-state
-create-state:
-	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform refresh
-	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform apply  ## Create bucket in AWS to store Terraform state files
+.PHONY: state-create
+state-create: ## Create bucket in AWS to store Terraform state files
+state-create:
+	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform apply
+
+.PHONY: state-output
+state-output: ## Display output of the terraform state bucket creation
+state-output:
+	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform output
+
 
 .PHONY: deploy
 deploy: ## Create or update the complete AWS infrastructure for Marsha
