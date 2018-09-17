@@ -2,8 +2,10 @@ provider "aws" {}
 
 terraform {
   backend "s3" {
-    bucket = "marsha-terraform"
-    key    = "state_file/marsha.tfstate"
     region = "eu-west-1"
+    key            = "marsha.tfstate"
+    bucket         = "marsha-terraform"
+    dynamodb_table = "terraform_state_locks"
+    encrypt        = true
   }
 }
