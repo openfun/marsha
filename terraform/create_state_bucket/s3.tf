@@ -1,16 +1,22 @@
-# A separate terraform project that just creates the bucket where
-# we will store the state. It needs to be created before the other
-# project because that's where the other project will store its
-# state.
+resource "aws_kms_key" "state_key" {
+  description = "Used by Terraform to store remote state"
+}
 
-provider "aws" {}
-
-resource "aws_s3_bucket" "state" {
+resource "aws_s3_bucket" "state_bucket" {
   bucket = "marsha-terraform"
   acl    = "private"
 
   versioning {
     enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = "${aws_kms_key.state_key.arn}"
+        sse_algorithm     = "aws:kms"
+      }
+    }
   }
 
   tags {
