@@ -9,6 +9,10 @@ resource "aws_lambda_function" "marsha_configure_lambda" {
   source_code_hash = "${base64sha256(file("dist/marsha_configure.zip"))}"
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
 
+  # The configuration lambda is invocated by Terraform upon deployment and may take
+  # some time (for example when creating all the media convert presets from scratch)
+  timeout = 60
+
   environment {
     variables = {
       ENV_TYPE = "${terraform.workspace}"
@@ -53,7 +57,7 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
 
   environment {
     variables = {
-      ENV_TYPE = "${terraform.workspace}"
+      ENV_TYPE                = "${terraform.workspace}"
       S3_DESTINATION_BUCKET   = "${aws_s3_bucket.marsha_destination.id}"
       MEDIA_CONVERT_ROLE      = "${aws_iam_role.media_convert_role.arn}"
       MEDIA_CONVERT_END_POINT = "${data.aws_lambda_invocation.configure_lambda_endpoint.result_map["EndpointUrl"]}"
