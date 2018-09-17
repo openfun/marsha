@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "${local.s3_origin_id}"
-    trusted_signers  = ["${aws_iam_user.marsha_user.unique_id}"]
+    trusted_signers  = ["${var.cloudfront_access_key_id}"]
 
     forwarded_values {
       query_string = false
