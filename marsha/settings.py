@@ -40,7 +40,30 @@ class Base(Configuration):
 
     DEBUG = values.BooleanValue(False)
 
-    DATABASES = values.DatabaseURLValue()
+    DATABASES = {
+        "default": {
+            "ENGINE": values.Value(
+                "django.db.backends.postgresql_psycopg2",
+                environ_name="DATABASE_ENGINE",
+                environ_prefix=None,
+            ),
+            "NAME": values.Value(
+                "marsha", environ_name="POSTGRES_DB", environ_prefix=None
+            ),
+            "USER": values.Value(
+                "marsha_user", environ_name="POSTGRES_USER", environ_prefix=None
+            ),
+            "PASSWORD": values.Value(
+                "pass", environ_name="POSTGRES_PASSWORD", environ_prefix=None
+            ),
+            "HOST": values.Value(
+                "localhost", environ_name="POSTGRES_HOST", environ_prefix=None
+            ),
+            "PORT": values.Value(
+                5432, environ_name="POSTGRES_PORT", environ_prefix=None
+            ),
+        }
+    }
 
     ALLOWED_HOSTS = []
 
