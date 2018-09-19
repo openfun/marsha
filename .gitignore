@@ -120,10 +120,12 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# Development static/media files
+data
+
 # Front
 node_modules
 marsha/static/js
-data/static/js
 
 # Terraform
 .terraform

@@ -26,10 +26,15 @@ class Base(Configuration):
     """
 
     BASE_DIR = os.path.dirname(__file__)
+    DATA_DIR = values.Value(os.path.join("/", "data"))
 
-    STATIC_URL = "/static/"
-
+    # Static files (CSS, JavaScript, Images)
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"
+    # Allow to configure location of static/media files for non-Docker installation
+    MEDIA_ROOT = values.Value(os.path.join(str(DATA_DIR), "media"))
+    STATIC_ROOT = values.Value(os.path.join(str(DATA_DIR), "static"))
 
     SECRET_KEY = values.SecretValue()
 
@@ -111,16 +116,15 @@ class Base(Configuration):
 
     LANGUAGES = [("en", _("english")), ("fr", _("french"))]
 
+    # Internationalization
     TIME_ZONE = "UTC"
-
     USE_I18N = True
-
     USE_L10N = True
-
     USE_TZ = True
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
+    # AWS
     AWS_ACCESS_KEY_ID = values.SecretValue()
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_DEFAULT_REGION = values.Value("eu-west-1")
@@ -156,8 +160,6 @@ class Development(Base):
     We set ``DEBUG`` to ``True`` by default, configure the server to respond to all hosts,
     and use a local sqlite database by default.
     """
-
-    BASE_DIR = os.path.dirname(__file__)
 
     DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
