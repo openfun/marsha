@@ -155,8 +155,8 @@ class Base(Configuration):
     # Cloud Front key pair for signed urls
     CLOUDFRONT_URL = values.SecretValue()
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
-    CLOUDFRONT_PRIVATE_KEY_PATH = os.path.join(
-        BASE_DIR, "..", ".ssh", "cloudfront_private_key"
+    CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
+        os.path.join(BASE_DIR, "..", ".ssh", "cloudfront_private_key")
     )
     CLOUDFRONT_SIGNED_URLS_ACTIVE = True
     CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
