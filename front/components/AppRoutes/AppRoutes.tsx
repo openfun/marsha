@@ -11,10 +11,7 @@ import {
   ROUTE as HOME_ROUTE,
 } from '../RedirectOnLoad/RedirectOnLoad';
 import { ROUTE as FORM_ROUTE, VideoForm } from '../VideoForm/VideoForm';
-import {
-  ROUTE as PLAYER_ROUTE,
-  VideoJsPlayer,
-} from '../VideoJsPlayer/VideoJsPlayer';
+import { ROUTE as PLAYER_ROUTE, VideoPlayer } from '../VideoPlayer/VideoPlayer';
 
 export const AppRoutes = () => {
   return (
@@ -25,7 +22,7 @@ export const AppRoutes = () => {
           path={PLAYER_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ video }) => <VideoJsPlayer video={video} />}
+              {({ video }) => <VideoPlayer video={video} />}
             </AppDataContext.Consumer>
           )}
         />

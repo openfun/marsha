@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { AppDataContext } from '../..';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
-import { ROUTE as PLAYER_ROUTE } from '../VideoJsPlayer/VideoJsPlayer';
+import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 
 export const ROUTE = () => '/';
 

@@ -1,13 +1,13 @@
 import '../../testSetup';
 
 import { mount, shallow } from 'enzyme';
+import Plyr from 'plyr';
 import * as React from 'react';
-import videojs from 'video.js';
 
 import { Video } from '../../types/Video';
-import { VideoJsPlayer } from './VideoJsPlayer';
+import { VideoPlayer } from './VideoPlayer';
 
-describe('VideoJsPlayer', () => {
+describe('VideoPlayer', () => {
   const video = {
     description: 'Some description',
     id: 'video-id',
@@ -22,26 +22,26 @@ describe('VideoJsPlayer', () => {
   } as Video;
 
   it('renders the video element with all the relevant sources', () => {
-    const wrapper = shallow(<VideoJsPlayer video={video} />);
+    const wrapper = shallow(<VideoPlayer video={video} />);
 
     expect(wrapper.html()).toContain(
-      '<source src="https://example.com/144p.mp4" type="video/mp4"/>',
+      '<source size="144" src="https://example.com/144p.mp4" type="video/mp4"/>',
     );
     expect(wrapper.html()).toContain(
-      '<source src="https://example.com/1080p.mp4" type="video/mp4"/>',
+      '<source size="1080" src="https://example.com/1080p.mp4" type="video/mp4"/>',
     );
   });
 
   it('starts up the player when it mounts', () => {
-    mount(<VideoJsPlayer video={video} />); // Mount so videojs is called with an element
-    expect(videojs).toHaveBeenCalledWith(expect.any(Element), { video });
+    mount(<VideoPlayer video={video} />); // Mount so videojs is called with an element
+    expect(Plyr).toHaveBeenCalledWith(expect.any(Element));
   });
 
   it('cleans up the player when it unmounts', () => {
     const instance = shallow(
-      <VideoJsPlayer video={video} />,
-    ).instance() as VideoJsPlayer;
+      <VideoPlayer video={video} />,
+    ).instance() as VideoPlayer;
     instance.componentWillUnmount();
-    expect(instance.state.player.dispose).toHaveBeenCalled();
+    expect(instance.state.player!.destroy).toHaveBeenCalled();
   });
 });
