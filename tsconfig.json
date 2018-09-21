@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "baseUrl": ".",
     "jsx": "preserve",
     "lib": [
       "dom",
@@ -14,6 +15,9 @@
     ],
     "module": "es6",
     "moduleResolution": "node",
+    "paths": {
+      "plyr": ["front/types/libs/plyr"]
+    },
     "strict": true,
     "sourceMap": true,
     "target": "es6"
