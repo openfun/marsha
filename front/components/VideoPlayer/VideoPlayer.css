@@ -1,0 +1,20 @@
+/*
+ * Update some plyr styles to properly display videos when there is a mismatch between the video aspect-ratio
+ * and the iframe aspect ratio.
+ *
+ * In those cases we want to show the video scaled to the smallest compatible dimension and centered, with
+ * the rest of the viewport filled with black bands.
+ */
+.plyr {
+  height: 100%;
+}
+
+.plyr__video-wrapper {
+  display: flex;
+  height: 100%;
+}
+
+.plyr video,
+.plyr audio {
+  max-height: 100%;
+}

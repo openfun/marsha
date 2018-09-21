@@ -25,7 +25,6 @@
     "@types/react-intl": "2.3.9",
     "@types/react-router-dom": "4.3.0",
     "@types/styled-components": "3.0.0",
-    "@types/video.js": "7.2.0",
     "babel-jest": "23.4.2",
     "babel-loader": "8.0.0-beta.4",
     "babel-plugin-react-intl": "2.4.0",
@@ -46,13 +45,13 @@
     "webpack-cli": "3.1.0"
   },
   "dependencies": {
+    "plyr": "3.4.3",
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-dropzone": "4.3.0",
     "react-intl": "2.4.0",
     "react-router-dom": "4.3.1",
     "styled-components": "3.4.5",
-    "styled-reboot": "3.0.0",
-    "video.js": "7.1.0"
+    "styled-reboot": "3.0.0"
   }
 }

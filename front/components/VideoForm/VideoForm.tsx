@@ -10,7 +10,7 @@ import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
-import { ROUTE as PLAYER_ROUTE } from '../VideoJsPlayer/VideoJsPlayer';
+import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
 import { UploadingLoader } from './UploadingLoader';
 
