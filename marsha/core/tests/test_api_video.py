@@ -8,9 +8,9 @@ from django.test import TestCase, override_settings
 import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..factories import UserFactory, VideoFactory
+from ..api import timezone
+from ..factories import SubtitleTrackFactory, UserFactory, VideoFactory
 from ..models import Video
-from ..utils.s3_utils import timezone
 
 
 RSA_KEY_MOCK = b"""
@@ -70,6 +70,15 @@ class VideoAPITest(TestCase):
             state="ready",
         )
         playlist = video.playlist
+        subtitle = SubtitleTrackFactory(
+            id="e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
+            video=video,
+            has_closed_captioning=True,
+            language="fr",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            state="ready",
+        )
+
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
 
@@ -101,8 +110,23 @@ class VideoAPITest(TestCase):
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
-                "active_stamp": 1533686400,
+                "active_stamp": "1533686400",
                 "state": "ready",
+                "subtitle_tracks": [
+                    {
+                        "active_stamp": "1533686400",
+                        "has_closed_captioning": True,
+                        "id": str(subtitle.id),
+                        "language": "fr",
+                        "state": "ready",
+                        "url": (
+                            "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/subtitles/"
+                            "e8ed0374-ffaa-4693-9ea9-03f0d2cbe627/1533686400_fr_cc.vtt"
+                        ),
+                        "video": "a2f27fde-973a-4e89-8dca-cc59e01d255c",
+                    }
+                ],
                 "urls": json.dumps({"mp4": mp4_dict, "thumbnails": thumbnails_dict}),
             },
         )
@@ -142,6 +166,7 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "state": "pending",
+                "subtitle_tracks": [],
                 "urls": None,
             },
         )
@@ -172,8 +197,9 @@ class VideoAPITest(TestCase):
                     "description": video.description,
                     "id": str(video.id),
                     "title": video.title,
-                    "active_stamp": 1533686400,
+                    "active_stamp": "1533686400",
                     "state": state,
+                    "subtitle_tracks": [],
                     "urls": None,
                 },
             )
@@ -518,14 +544,14 @@ class VideoAPITest(TestCase):
                 "max_file_size": 1073741824,
                 "policy": (
                     "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDAuMDAwWiIsICJjb25kaXRpb25zIjog"
-                    "W3siYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJmNzZmNmFmZC03MTM1"
-                    "LTQ4OGUtOWQ3MC02ZWM1OTlhNjc4MDYvYTJmMjdmZGUtOTczYS00ZTg5LThkY2EtY2M1OWUwMWQy"
-                    "NTVjL3ZpZGVvcy8xNTMzNjg2NDAwIn0sIHsiYWNsIjogInByaXZhdGUifSwgWyJzdGFydHMtd2l0"
-                    "aCIsICIkQ29udGVudC1UeXBlIiwgInZpZGVvLyJdLCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwg"
-                    "MCwgMTA3Mzc0MTgyNF0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8y"
-                    "MDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjog"
-                    "IkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwg"
-                    "WyJzdGFydHMtd2l0aCIsICIkeC1hbXotbWV0YS1qd3QiLCAiIl1dfQ=="
+                    "W3siYWNsIjogInByaXZhdGUifSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsi"
+                    "eC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEv"
+                    "czMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYi"
+                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiZjc2ZjZhZmQt"
+                    "NzEzNS00ODhlLTlkNzAtNmVjNTk5YTY3ODA2L2EyZjI3ZmRlLTk3M2EtNGU4OS04ZGNhLWNjNTll"
+                    "MDFkMjU1Yy92aWRlb3MvMTUzMzY4NjQwMCJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5"
+                    "cGUiLCAidmlkZW8vIl0sIFsic3RhcnRzLXdpdGgiLCAiJHgtYW16LW1ldGEtand0IiwgIiJdLCBb"
+                    "ImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF1dfQ=="
                 ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
@@ -533,7 +559,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "f359246c2c2c7d8eedeca623b4f28d3f4baf5f71294a3de60a742bbff0be9c7e"
+                    "15d0c4fc6b5264c96cfb237346b53dd99e6570f2c475fe149630029479b879ea"
                 ),
             },
         )
@@ -555,6 +581,7 @@ class VideoAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             video = VideoFactory()
+
             response = self.client.get(
                 "/api/videos/{!s}/upload-policy/".format(video.id)
             )

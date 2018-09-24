@@ -7,3 +7,4 @@ AWS_UPLOAD_EXPIRATION_DELAY = getattr(
 )  # 24h
 
 VIDEO_SOURCE_MAX_SIZE = getattr(settings, "VIDEO_SOURCE_MAX_SIZE", 2 ** 30)  # 1GB
+SUBTITLE_SOURCE_MAX_SIZE = getattr(settings, "SUBTITLE_SOURCE_MAX_SIZE", 2 ** 20)  # 1MB

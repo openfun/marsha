@@ -223,15 +223,10 @@ class Video(BaseModel):
             they are converted to the destination bucket.
 
         """
-        stamp = stamp or self.active_stamp
+        stamp = stamp or to_timestamp(self.uploaded_on)
         return "{playlist!s}/{video!s}/videos/{stamp:s}".format(
             playlist=self.playlist.id, video=self.id, stamp=stamp
         )
-
-    @property
-    def active_stamp(self):
-        """Return the current valid datetime of upload as a timestamp."""
-        return str(to_timestamp(self.uploaded_on)) if self.uploaded_on else None
 
 
 class BaseTrack(BaseModel):

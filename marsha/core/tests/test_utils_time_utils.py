@@ -18,7 +18,7 @@ class TimeUtilsTestCase(TestCase):
     def test_utils_time_utils_to_timestamp(self):
         """Test computing a Unix timestamp from a datetime value."""
         value = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        self.assertEqual(time_utils.to_timestamp(value), 1533686400)
+        self.assertEqual(time_utils.to_timestamp(value), "1533686400")
 
     def test_utils_time_utils_to_timestamp_none(self):
         """Trying to computing a Unix timestamp from a null value should return None."""

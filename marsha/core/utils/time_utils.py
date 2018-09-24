@@ -22,7 +22,7 @@ def to_timestamp(value):
 
     """
     try:
-        return int(calendar.timegm(value.utctimetuple()))
+        return str(calendar.timegm(value.utctimetuple()))
     except (AttributeError, TypeError):
         return None
 

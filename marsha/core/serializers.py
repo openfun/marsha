@@ -7,8 +7,9 @@ from django.utils import timezone
 
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
+from rest_framework_simplejwt.models import TokenUser
 
-from .models import Video
+from .models import SubtitleTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -55,15 +56,109 @@ class TimestampField(serializers.DateTimeField):
         )
 
 
+class SubtitleTrackSerializer(serializers.ModelSerializer):
+    """Serializer to display a subtitle track model."""
+
+    class Meta:  # noqa
+        model = SubtitleTrack
+        fields = (
+            "active_stamp",
+            "id",
+            "has_closed_captioning",
+            "language",
+            "state",
+            "url",
+            "video",
+        )
+        read_only_fields = ("id", "url", "video")
+
+    active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
+    url = serializers.SerializerMethodField()
+
+    def create(self, validated_data):
+        """Force the video field to the video of the JWT Token if any.
+
+        Parameters
+        ----------
+        validated_data : dictionary
+            Dictionary of the deserialized values of each field after validation.
+
+        Returns
+        -------
+        dictionary
+            The "validated_data" dictionary is returned after modification.
+
+        """
+        user = self.context["request"].user
+        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+            validated_data["video_id"] = user.id
+        return super().create(validated_data)
+
+    def get_url(self, obj):
+        """Url of the subtitle track, signed with a CloudFront key if activated.
+
+        Parameters
+        ----------
+        obj : Type[models.SubtitleTrack]
+            The subtitle track that we want to serialize
+
+        Returns
+        -------
+        string or None
+            The url for the subtitle track converted to vtt.
+            None if the subtitle track is still not uploaded to S3 with success.
+
+        """
+        if obj.uploaded_on and obj.state == SubtitleTrack.READY:
+
+            base = "{cloudfront:s}/{playlist!s}/{video!s}".format(
+                cloudfront=settings.CLOUDFRONT_URL,
+                playlist=obj.video.playlist_id,
+                video=obj.video_id,
+            )
+            url = "{base:s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}.vtt".format(
+                base=base,
+                subtitle=obj.id,
+                stamp=time_utils.to_timestamp(obj.uploaded_on),
+                language=obj.language,
+                cc="_cc" if obj.has_closed_captioning else "",
+            )
+
+            # Sign the url only if the functionality is activated
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                date_less_than = timezone.now() + timedelta(
+                    seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
+                )
+                cloudfront_signer = CloudFrontSigner(
+                    settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+                )
+                url = cloudfront_signer.generate_presigned_url(
+                    url, date_less_than=date_less_than
+                )
+            return url
+        return None
+
+
 class VideoSerializer(serializers.ModelSerializer):
     """Serializer to display a video model with all its resolution options."""
 
     class Meta:  # noqa
         model = Video
-        fields = ("id", "title", "description", "active_stamp", "state", "urls")
-        read_only_fields = ("id",)
+        fields = (
+            "id",
+            "title",
+            "description",
+            "active_stamp",
+            "state",
+            "subtitle_tracks",
+            "urls",
+        )
+        read_only_fields = ("id", "urls")
 
     active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
+    subtitle_tracks = SubtitleTrackSerializer(
+        source="subtitletracks", many=True, read_only=True
+    )
     urls = serializers.SerializerMethodField()
 
     def get_urls(self, obj):
@@ -88,7 +183,7 @@ class VideoSerializer(serializers.ModelSerializer):
 
         urls = {"mp4": {}, "thumbnails": {}}
         base = "{cloudfront:s}/{playlist!s}/{video!s}".format(
-            cloudfront=settings.CLOUDFRONT_URL, playlist=obj.playlist.id, video=obj.id
+            cloudfront=settings.CLOUDFRONT_URL, playlist=obj.playlist_id, video=obj.id
         )
 
         date_less_than = timezone.now() + timedelta(
@@ -97,15 +192,19 @@ class VideoSerializer(serializers.ModelSerializer):
         for resolution in settings.VIDEO_RESOLUTIONS:
             # MP4
             mp4_url = "{base:s}/videos/{stamp:s}_{resolution:d}.mp4".format(
-                base=base, stamp=obj.active_stamp, resolution=resolution
+                base=base,
+                stamp=time_utils.to_timestamp(obj.uploaded_on),
+                resolution=resolution,
             )
 
             # Thumbnails
             thumbnail_url = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
-                base=base, stamp=obj.active_stamp, resolution=resolution
+                base=base,
+                stamp=time_utils.to_timestamp(obj.uploaded_on),
+                resolution=resolution,
             )
 
-            # Sign urls if the functionality is activated
+            # Sign the urls only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
                 cloudfront_signer = CloudFrontSigner(
                     settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
