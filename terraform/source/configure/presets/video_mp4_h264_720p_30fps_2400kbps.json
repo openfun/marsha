@@ -72,7 +72,7 @@
             "CodecProfile": "LC",
             "CodingMode": "CODING_MODE_2_0",
             "RawFormat": "NONE",
-            "SampleRate": 44100,
+            "SampleRate": 48000,
             "Specification": "MPEG4"
           }
         },
