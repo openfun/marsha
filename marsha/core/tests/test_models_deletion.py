@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+import random
 from typing import Type
 from unittest import mock
 
@@ -127,7 +128,7 @@ class DeletionTestCase(TestCase):
         # we can create it again
         obj2 = factory(**kwargs)
 
-        # soft delete this one two: no uniqueness for deleted objects
+        # soft delete this one too: no uniqueness for deleted objects
         obj2.delete(force_policy=SOFT_DELETE_CASCADE)
         self.assertIsSoftDeleted(obj2)
 
@@ -397,13 +398,16 @@ class DeletionTestCase(TestCase):
         """Ensure audio track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
             AudioTrackFactory,
+            language="en",
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
     def test_subtitle_track_uniqueness(self):
-        """Ensure audio track cannot exist twice as non-deleted."""
+        """Ensure subtitle track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
             SubtitleTrackFactory,
+            language="en",
+            has_closed_captioning=random.choice([True, False]),
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
@@ -414,9 +418,10 @@ class DeletionTestCase(TestCase):
         SubtitleTrackFactory(video=video, language="en", has_closed_captioning=False)
 
     def test_sign_track_uniqueness(self):
-        """Ensure audio track cannot exist twice as non-deleted."""
+        """Ensure sign track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
             SignTrackFactory,
+            language="en",
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 

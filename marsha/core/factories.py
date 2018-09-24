@@ -1,4 +1,5 @@
 """Factories for the ``core`` app of the Marsha project."""
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 
 import factory
@@ -106,21 +107,30 @@ class VideoFactory(DjangoModelFactory):
     lti_id = factory.Sequence("video#{:d}".format)
 
 
-class AudioTrackFactory(DjangoModelFactory):
+class BaseTrackFactory(DjangoModelFactory):
+    """Base factory to factorize code between all tracks models."""
+
+    video = factory.SubFactory(VideoFactory)
+    language = factory.fuzzy.FuzzyChoice(tuple(lang[0] for lang in settings.LANGUAGES))
+
+
+class AudioTrackFactory(BaseTrackFactory):
     """Factory for the AudioTrack model."""
 
     class Meta:  # noqa
         model = models.AudioTrack
 
 
-class SubtitleTrackFactory(DjangoModelFactory):
+class SubtitleTrackFactory(BaseTrackFactory):
     """Factory for the SubtitleTrack model."""
+
+    has_closed_captioning = factory.fuzzy.FuzzyChoice([False, True])
 
     class Meta:  # noqa
         model = models.SubtitleTrack
 
 
-class SignTrackFactory(DjangoModelFactory):
+class SignTrackFactory(BaseTrackFactory):
     """Factory for the SignTrack model."""
 
     class Meta:  # noqa
