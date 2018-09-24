@@ -237,6 +237,9 @@ class Video(BaseModel):
 class BaseTrack(BaseModel):
     """Base model for different kinds of tracks tied to a video."""
 
+    PENDING, ERROR, READY = "pending", "error", "ready"
+    STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
+
     video = models.ForeignKey(
         to="Video",
         related_name="%(class)ss",  # will be `audiotracks` for `AudioTrack` model,
@@ -250,6 +253,19 @@ class BaseTrack(BaseModel):
         choices=settings.LANGUAGES,
         verbose_name=_("track language"),
         help_text=_("language of this track"),
+    )
+    uploaded_on = models.DateTimeField(
+        verbose_name=_("uploaded on"),
+        help_text=_("datetime at which the active version of the video was uploaded."),
+        null=True,
+        blank=True,
+    )
+    state = models.CharField(
+        max_length=20,
+        verbose_name=_("state"),
+        help_text=_("state of the upload and transcoding pipeline in AWS."),
+        choices=STATE_CHOICES,
+        default=PENDING,
     )
 
     class Meta:
@@ -291,6 +307,35 @@ class SubtitleTrack(BaseTrack):
         indexes = [
             NonDeletedUniqueIndex(["video", "language", "has_closed_captioning"])
         ]
+
+    def get_source_s3_key(self, stamp=None):
+        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video).
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the subtitles
+            assuming its active stamp is set to this value. This is useful to create an upload
+            policy for this prospective version of the subtitles, so that the client can upload
+            the file to S3 and the confirmation lambda can set the `uploaded_on` field to this
+            value only after the subtitle upload and processing is successful.
+
+        Returns
+        -------
+        string
+            The S3 key for the subtitles in the source bucket, where uploaded subtitles are stored
+            before they are converted and copied to the destination bucket.
+
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+        return "{playlist!s}/{video!s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
+            playlist=self.video.playlist.id,
+            video=self.video.id,
+            subtitle=self.id,
+            stamp=stamp,
+            language=self.language,
+            cc="_cc" if self.has_closed_captioning else "",
+        )
 
 
 class SignTrack(BaseTrack):
