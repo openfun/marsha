@@ -67,12 +67,12 @@
           "Codec": "AAC",
           "AacSettings": {
             "AudioDescriptionBroadcasterMix": "NORMAL",
-            "Bitrate": 160000,
+            "Bitrate": 64000,
             "RateControlMode": "CBR",
             "CodecProfile": "LC",
             "CodingMode": "CODING_MODE_2_0",
             "RawFormat": "NONE",
-            "SampleRate": 44100,
+            "SampleRate": 32000,
             "Specification": "MPEG4"
           }
         },
