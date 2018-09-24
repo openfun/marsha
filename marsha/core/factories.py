@@ -1,6 +1,5 @@
 """Factories for the ``core`` app of the Marsha project."""
 from django.contrib.auth.hashers import make_password
-from django.utils import timezone
 
 import factory
 from factory import fuzzy
@@ -105,7 +104,6 @@ class VideoFactory(DjangoModelFactory):
     position = fuzzy.FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("video#{:d}".format)
-    uploaded_on = fuzzy.FuzzyDateTime(timezone.now())
 
 
 class AudioTrackFactory(DjangoModelFactory):

@@ -63,7 +63,7 @@ class VideoSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "description", "active_stamp", "state", "urls")
         read_only_fields = ("id",)
 
-    active_stamp = TimestampField(source="uploaded_on", required=False)
+    active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
     urls = serializers.SerializerMethodField()
 
     def get_urls(self, obj):
