@@ -6,10 +6,8 @@ import hmac
 import json
 
 from django.conf import settings
-from django.utils import timezone
 
-from ..defaults import AWS_UPLOAD_EXPIRATION_DELAY, VIDEO_SOURCE_MAX_SIZE
-from ..utils.time_utils import to_timestamp
+from ..defaults import AWS_UPLOAD_EXPIRATION_DELAY
 
 
 def sign(key, message):
@@ -64,28 +62,26 @@ def get_signature_key(secret_key, date_stamp, region_name, service_name):
     return k_signing
 
 
-def get_s3_policy(bucket, video):
+def get_s3_upload_policy_signature(now, conditions):
     """Build a S3 policy to allow uploading a video to our video source bucket.
 
     Parameters
     ----------
-    bucket : string
-        The name of the S3 bucket to which we want to upload a video.
-    video : Type[models.Model]
-        The video object for which we want to upload a video file.
+    conditions : Type[List]
+        A list of extra conditions to impose on the uploaded file on top of the basic conditions
+        that apply to all our objects and hardcoded in the present function.
+        See AWS documentation for more details:
+        https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-HTTPPOSTConstructPolicy.html
 
     Returns
     -------
-    Tuple[string, string]
-        A tuple of the policy and its signature both encoded in b64.
+    Dictionary
+        A dictionary including the basic conditions imposed to all our objects and the computed
+        signautre.
 
     """
-    now = timezone.now()
-    stamp = str(to_timestamp(now))
-    key = video.get_source_s3_key(stamp=stamp)
-
-    expires_at = now + timedelta(seconds=AWS_UPLOAD_EXPIRATION_DELAY)
     acl = "private"
+    expires_at = now + timedelta(seconds=AWS_UPLOAD_EXPIRATION_DELAY)
     x_amz_algorithm = "AWS4-HMAC-SHA256"
     x_amz_credential = "{key:s}/{date:%Y%m%d}/{region:s}/s3/aws4_request".format(
         date=now, key=settings.AWS_ACCESS_KEY_ID, region=settings.AWS_DEFAULT_REGION
@@ -95,16 +91,13 @@ def get_s3_policy(bucket, video):
     policy = {
         "expiration": expires_at.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
         "conditions": [
-            {"bucket": bucket},
-            {"key": key},
             {"acl": acl},
-            ["starts-with", "$Content-Type", "video/"],
-            ["content-length-range", 0, VIDEO_SOURCE_MAX_SIZE],
+            {"bucket": settings.AWS_SOURCE_BUCKET_NAME},
             {"x-amz-credential": x_amz_credential},
             {"x-amz-algorithm": x_amz_algorithm},
             {"x-amz-date": x_amz_date},
-            ["starts-with", "$x-amz-meta-jwt", ""],
-        ],
+        ]
+        + conditions,
     }
 
     policy_b64 = b64encode(
@@ -122,10 +115,7 @@ def get_s3_policy(bucket, video):
 
     return {
         "acl": acl,
-        "bucket": bucket,
-        "stamp": stamp,
-        "key": key,
-        "max_file_size": VIDEO_SOURCE_MAX_SIZE,
+        "bucket": settings.AWS_SOURCE_BUCKET_NAME,
         "policy": policy_b64,
         "s3_endpoint": get_s3_endpoint(settings.AWS_DEFAULT_REGION),
         "x_amz_algorithm": x_amz_algorithm,
