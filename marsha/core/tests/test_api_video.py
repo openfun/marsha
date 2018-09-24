@@ -280,7 +280,7 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should not be able to read a list of videos."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["resource_link_id"] = video.lti_id
+        jwt_token.payload["video_id"] = str(video.id)
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -321,9 +321,11 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_anonymous(self):
         """Anonymous users should not be allowed to update a video through the API."""
         video = VideoFactory(title="my title")
-        data = json.dumps({"title": "my new title"})
+        data = {"title": "my new title"}
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id), data, content_type="application/json"
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 401)
         video.refresh_from_db()
@@ -334,10 +336,10 @@ class VideoAPITest(TestCase):
         video = VideoFactory(title="my title")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
-        data = json.dumps({"title": "my new title"})
+        data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
-            data,
+            json.dumps(data),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             content_type="application/json",
         )
@@ -357,7 +359,6 @@ class VideoAPITest(TestCase):
         )
         data = json.loads(response.content)
         data["description"] = "my new description"
-
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
             json.dumps(data),
@@ -391,6 +392,29 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
 
+    def test_api_video_update_detail_token_user_state(self):
+        """Token users should be able to update the state through the API."""
+        video = VideoFactory(state="pending")
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        data = json.loads(response.content)
+        data["state"] = "ready"
+
+        response = self.client.put(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.state, "ready")
+
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
         video = VideoFactory()
@@ -420,17 +444,46 @@ class VideoAPITest(TestCase):
         video_token = VideoFactory()
         video_update = VideoFactory(title="my title")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = video_token.lti_id
-        data = json.dumps({"title": "my new title"})
+        jwt_token.payload["video_id"] = str(video_token.id)
+
+        data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video_update.id),
-            data,
+            json.dumps(data),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             content_type="application/json",
         )
+
         self.assertEqual(response.status_code, 403)
         video_update.refresh_from_db()
         self.assertEqual(video_update.title, "my title")
+
+    def test_api_video_patch_detail_token_user_uploaded_on_and_state(self):
+        """Token users should be able to patch the state and stamp of their video through the API.
+
+        The `confirm` lambda in AWS will patch just these 2 fields to avoid interfering with the
+        user modifying its title for example. In opposition, an update requires posting all the
+        required fields like `title` and is therefore performed in 2 steps (a GET followed by a
+        PUT) which is dangerous.
+        """
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        self.assertEqual(video.state, "pending")
+        self.assertIsNone(video.uploaded_on)
+
+        data = {"active_stamp": "1533686400", "state": "ready"}
+
+        response = self.client.patch(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.state, "ready")
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
@@ -447,7 +500,7 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should not be able to delete it or any other."""
         videos = VideoFactory.create_batch(2)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = videos[0].lti_id
+        jwt_token.payload["video_id"] = str(videos[0].id)
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -462,10 +515,12 @@ class VideoAPITest(TestCase):
 
     def test_api_video_delete_detail_staff_or_user(self):
         """Users authenticated via a session should not be able to delete a video."""
+        video = VideoFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+
             response = self.client.delete("/api/videos/{!s}/".format(video.id))
+
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -476,15 +531,17 @@ class VideoAPITest(TestCase):
     def test_api_video_delete_list_anonymous(self):
         """Anonymous users should not be able to delete a list of videos."""
         video = VideoFactory()
+
         response = self.client.delete("/api/videos/")
+
         self.assertEqual(response.status_code, 404)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_token_user(self):
-        """A token user associated to a video should be able to delete a list of videos."""
+        """A token user associated to a video should not be able to delete a list of videos."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["resource_link_id"] = video.lti_id
+        jwt_token.payload["video_id"] = str(video.id)
 
         response = self.client.delete(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -497,7 +554,9 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
+
             response = self.client.delete("/api/videos/")
+
             self.assertEqual(response.status_code, 404)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
@@ -506,6 +565,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
 
         response = self.client.get("/api/videos/{!s}/upload-policy/".format(video.id))
+
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
