@@ -55,7 +55,10 @@ exports.handler = (event, context, callback) => {
             Type: 'FILE_GROUP_SETTINGS',
             FileGroupSettings: {
               Destination:
-                's3://' + process.env.S3_DESTINATION_BUCKET + '/' + objectKey,
+                's3://' +
+                process.env.S3_DESTINATION_BUCKET +
+                '/' +
+                objectKey.replace('/videos/', '/mp4/'),
             },
           },
           Outputs: [
@@ -82,6 +85,97 @@ exports.handler = (event, context, callback) => {
           ],
         },
         {
+          CustomName: 'Video DASH outputs',
+          Name: 'DASH ISO',
+          OutputGroupSettings: {
+            Type: 'DASH_ISO_GROUP_SETTINGS',
+            DashIsoGroupSettings: {
+              HbbtvCompliance: 'NONE',
+              SegmentLength: 30,
+              FragmentLength: 2,
+              SegmentControl: 'SEGMENTED_FILES',
+              Destination:
+                's3://' +
+                process.env.S3_DESTINATION_BUCKET +
+                '/' +
+                objectKey.replace('/videos/', '/dash/'),
+            },
+          },
+          Outputs: [
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_dash_144',
+              NameModifier: '_144',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_dash_240',
+              NameModifier: '_240',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_dash_480',
+              NameModifier: '_480',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_dash_720',
+              NameModifier: '_720',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_dash_1080',
+              NameModifier: '_1080',
+            },
+          ],
+        },
+        {
+          CustomName: 'Video HLS outputs',
+          Name: 'Apple HLS',
+          OutputGroupSettings: {
+            Type: 'HLS_GROUP_SETTINGS',
+            HlsGroupSettings: {
+              ManifestDurationFormat: 'INTEGER',
+              SegmentLength: 10,
+              TimedMetadataId3Period: 6,
+              CaptionLanguageSetting: 'OMIT',
+              TimedMetadataId3Frame: 'PRIV',
+              CodecSpecification: 'RFC_4281',
+              OutputSelection: 'MANIFESTS_AND_SEGMENTS',
+              ProgramDateTimePeriod: 600,
+              MinSegmentLength: 0,
+              DirectoryStructure: 'SINGLE_DIRECTORY',
+              ProgramDateTime: 'EXCLUDE',
+              SegmentControl: 'SEGMENTED_FILES',
+              ManifestCompression: 'NONE',
+              ClientCache: 'ENABLED',
+              StreamInfResolution: 'INCLUDE',
+              Destination:
+                's3://' +
+                process.env.S3_DESTINATION_BUCKET +
+                '/' +
+                objectKey.replace('/videos/', '/hls/'),
+            },
+          },
+          Outputs: [
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_hls_144',
+              NameModifier: '_144',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_hls_240',
+              NameModifier: '_240',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_hls_480',
+              NameModifier: '_480',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_hls_720',
+              NameModifier: '_720',
+            },
+            {
+              Preset: process.env.ENV_TYPE + '_marsha_video_hls_1080',
+              NameModifier: '_1080',
+            },
+          ],
+        },
+        {
           CustomName: 'Thumbnails outputs',
           Name: 'File Group',
           OutputGroupSettings: {
@@ -97,23 +191,23 @@ exports.handler = (event, context, callback) => {
           Outputs: [
             {
               Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_144',
-              NameModifier: '_thumbnail_144',
+              NameModifier: '_144',
             },
             {
               Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_240',
-              NameModifier: '_thumbnail_240',
+              NameModifier: '_240',
             },
             {
               Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_480',
-              NameModifier: '_thumbnail_480',
+              NameModifier: '_480',
             },
             {
               Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_720',
-              NameModifier: '_thumbnail_720',
+              NameModifier: '_720',
             },
             {
               Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_1080',
-              NameModifier: '_thumbnail_1080',
+              NameModifier: '_1080',
             },
           ],
         },
@@ -133,7 +227,7 @@ exports.handler = (event, context, callback) => {
           Outputs: [
             {
               Preset: process.env.ENV_TYPE + '_marsha_preview_jpeg_100',
-              NameModifier: '_preview_100',
+              NameModifier: '_100',
             },
           ],
         },

@@ -15,6 +15,16 @@ const presets = [
   './presets/video_mp4_h264_480p_30fps_1200kbps.json',
   './presets/video_mp4_h264_720p_30fps_2400kbps.json',
   './presets/video_mp4_h264_1080p_30fps_5400kbps.json',
+  './presets/video_dash_h264_144p_30fps_300kbps.json',
+  './presets/video_dash_h264_240p_30fps_600kbps.json',
+  './presets/video_dash_h264_480p_30fps_1200kbps.json',
+  './presets/video_dash_h264_720p_30fps_2400kbps.json',
+  './presets/video_dash_h264_1080p_30fps_5400kbps.json',
+  './presets/video_hls_h264_144p_30fps_300kbps.json',
+  './presets/video_hls_h264_240p_30fps_600kbps.json',
+  './presets/video_hls_h264_480p_30fps_1200kbps.json',
+  './presets/video_hls_h264_720p_30fps_2400kbps.json',
+  './presets/video_hls_h264_1080p_30fps_5400kbps.json',
 ];
 
 let response;
