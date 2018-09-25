@@ -235,13 +235,7 @@ class VideoAPITest(TestCase):
             json.loads(content["urls"])["thumbnails"]["144"],
             (
                 "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c/thumbnails/1533686400_144.0000000.jpg?"
-                "Expires=1533693600&Signature=MMm0VE8kDAOHrTJiVAa7cWQIn8sdF9lT6TOulfncbgf~AF3WgnLU"
-                "S2-OFvE0xbqi4MjxYBWZ1MkzZKDuRGTR6~YViYTz4WcomTPnVVc4euKM~HZYXxQDPKFVAcJ7hwsqhOEgn"
-                "X9npz-6uiXDgqjIlFbMcK~NkaZz3drwguWMdu6I5UUYFiLlwMpMjT0ecFtmTV9yDjIhan~k8HYWagjyAf"
-                "WtpfJsaSMlPJ2y4Gd4aaVYM16fspO6REZQzb4cC62aHB7ycpqUpmbThYH1saSuMtOcCemLcqzSVNNS7MX"
-                "YT-vNoSRbLNf5ydmtIGqvHv9YAJHQJKdBluwd~AUU3hmtPA__&"
-                "Key-Pair-Id=cloudfront-access-key-id"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c/thumbnails/1533686400_144.0000000.jpg"
             ),
         )
         self.assertEqual(
