@@ -99,7 +99,7 @@ class VideoAPITest(TestCase):
             for rate in [144, 240, 480, 720, 1080]
         }
 
-        mp4_template = "https://abc.cloudfront.net/{!s}/{!s}/videos/1533686400_{!s}.mp4"
+        mp4_template = "https://abc.cloudfront.net/{!s}/{!s}/mp4/1533686400_{!s}.mp4"
         mp4_dict = {
             str(rate): mp4_template.format(playlist.id, video.id, rate)
             for rate in [144, 240, 480, 720, 1080]
@@ -127,7 +127,26 @@ class VideoAPITest(TestCase):
                         "video": "a2f27fde-973a-4e89-8dca-cc59e01d255c",
                     }
                 ],
-                "urls": json.dumps({"mp4": mp4_dict, "thumbnails": thumbnails_dict}),
+                "urls": json.dumps(
+                    {
+                        "mp4": mp4_dict,
+                        "thumbnails": thumbnails_dict,
+                        "manifests": {
+                            "dash": (
+                                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                                "a2f27fde-973a-4e89-8dca-cc59e01d255c/dash/1533686400.mpd"
+                            ),
+                            "hls": (
+                                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                                "a2f27fde-973a-4e89-8dca-cc59e01d255c/hls/1533686400.m3u8"
+                            ),
+                        },
+                        "previews": (
+                            "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
+                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/previews/1533686400_100.jpg"
+                        ),
+                    }
+                ),
             },
         )
 
@@ -242,12 +261,12 @@ class VideoAPITest(TestCase):
             json.loads(content["urls"])["mp4"]["144"],
             (
                 "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c/videos/1533686400_144.mp4?"
-                "Expires=1533693600&Signature=SPadcxIoCVoLQbKk3hp2LdtgZY899OXJMjInxUiGnSVivMBKkXfT"
-                "yRn3wA9J~2mumU3PCZnIUguAKmvRUAgpbnSHj-f695OPiJtncPZufGmXCcnLcn7OhFy8SnqfOX9zK~K8m"
-                "A6AQKfI2TXKVl5wy6JTZYxGwkMpLM~CsGwJAWo-dxbIGPtRW9H2xKAEhC5glP5of4bjOQryvrzo1PGHJV"
-                "cUMcBL23eGSh9HAZHQFleI01ypQu75L~Z6BlbncjHO6tE0hKCqVU08rkdnoEDMRPRzMCVg~SdJvzZ7sth"
-                "8bu4iTv-v08pWDlSXhkmO-uBfKui0CI10eALwFLZ5cMpiRQ__&"
+                "a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/1533686400_144.mp4?"
+                "Expires=1533693600&Signature=DOsxZ8MeXL9FBqGs28V-oGDJ9jX9OPxDC-X2o~Hw7qN3UujzOG7"
+                "2WnangFhr4b1MqR5tmGL0BYFqfy1zEWYPdCDfVN79llcDod8J0MjL7CJx9iKVCdCTB8heAu6m~WiotZ5"
+                "cMeyAH48Zwdq2NdWiSlQkB0JrA-Pgie8m3zkyxGax8ZnzRp51hq5gjm-vqWMT-Bu7eIezidufWLgfk-1"
+                "vckzUgA5RMNgUaRE1YsUZh52RfsEYF5aC2gHJ2d1uG8WH-Ekn1v4OC6EexPCJUSr0B~AXKQWFeJRGxmc"
+                "XmRt6BWwPTONXZ5XwBBlZFwBAOx9oLrM5AkpYpzEUHx5vw1gTxg__&"
                 "Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
