@@ -162,7 +162,7 @@ class VideoSerializer(serializers.ModelSerializer):
     urls = serializers.SerializerMethodField()
 
     def get_urls(self, obj):
-        """Urls of the video for each type of encoding and in each resolution.
+        """Urls of the video for each type of encoding.
 
         Parameters
         ----------
@@ -175,6 +175,8 @@ class VideoSerializer(serializers.ModelSerializer):
             A dictionary of all urls for:
                 - mp4 encodings of the video in each resolution
                 - jpeg thumbnails of the video in each resolution
+                - manifest of the DASH encodings of the video
+                - manifest of the HLS encodings of the video
             None if the video is still not uploaded to S3 with success
 
         """
@@ -185,23 +187,24 @@ class VideoSerializer(serializers.ModelSerializer):
         base = "{cloudfront:s}/{playlist!s}/{video!s}".format(
             cloudfront=settings.CLOUDFRONT_URL, playlist=obj.playlist_id, video=obj.id
         )
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
 
         date_less_than = timezone.now() + timedelta(
             seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
         )
         for resolution in settings.VIDEO_RESOLUTIONS:
             # MP4
-            mp4_url = "{base:s}/videos/{stamp:s}_{resolution:d}.mp4".format(
+            mp4_url = "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4".format(
                 base=base,
                 stamp=time_utils.to_timestamp(obj.uploaded_on),
                 resolution=resolution,
             )
 
             # Thumbnails
-            thumbnail_url = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
-                base=base,
-                stamp=time_utils.to_timestamp(obj.uploaded_on),
-                resolution=resolution,
+            urls["thumbnails"][
+                resolution
+            ] = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
+                base=base, stamp=stamp, resolution=resolution
             )
 
             # Sign the urls of mp4 videos only if the functionality is activated
@@ -214,6 +217,16 @@ class VideoSerializer(serializers.ModelSerializer):
                 )
 
             urls["mp4"][resolution] = mp4_url
-            urls["thumbnails"][resolution] = thumbnail_url
+
+        # Adaptive Bit Rate manifests
+        urls["manifests"] = {
+            "dash": "{base:s}/dash/{stamp:s}.mpd".format(base=base, stamp=stamp),
+            "hls": "{base:s}/hls/{stamp:s}.m3u8".format(base=base, stamp=stamp),
+        }
+
+        # Previews
+        urls["previews"] = "{base:s}/previews/{stamp:s}_100.jpg".format(
+            base=base, stamp=stamp
+        )
 
         return json.dumps(urls)
