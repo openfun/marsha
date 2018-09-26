@@ -1,4 +1,5 @@
 """This module holds the models for the marsha project."""
+import uuid
 
 from django.conf import settings
 from django.db import models
@@ -132,6 +133,12 @@ class Video(BaseModel):
         blank=True,
         null=True,
     )
+    resource_id = models.UUIDField(
+        verbose_name=_("Resource UUID"),
+        help_text=_("UUID to identify the resource in the backend"),
+        default=uuid.uuid4,
+        editable=False,
+    )
     lti_id = models.CharField(
         max_length=255,
         verbose_name=_("lti id"),
@@ -205,7 +212,7 @@ class Video(BaseModel):
         return result
 
     def get_source_s3_key(self, stamp=None):
-        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video).
+        """Compute the S3 key in the source bucket (resource ID + ID of the video + version stamp).
 
         Parameters
         ----------
@@ -224,8 +231,8 @@ class Video(BaseModel):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{playlist!s}/{video!s}/videos/{stamp:s}".format(
-            playlist=self.playlist.id, video=self.id, stamp=stamp
+        return "{resource!s}/videos/{video!s}/{stamp:s}".format(
+            resource=self.resource_id, video=self.id, stamp=stamp
         )
 
 
@@ -304,7 +311,10 @@ class SubtitleTrack(BaseTrack):
         ]
 
     def get_source_s3_key(self, stamp=None):
-        """Compute the S3 key in the source bucket (ID of the playlist/ID of the video).
+        """Compute the S3 key in the source bucket.
+
+        It is built from the resource ID + ID of the subtitle track + version stamp + language +
+        closed captioning flag.
 
         Parameters
         ----------
@@ -323,9 +333,8 @@ class SubtitleTrack(BaseTrack):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{playlist!s}/{video!s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
-            playlist=self.video.playlist.id,
-            video=self.video.id,
+        return "{resource!s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
+            resource=self.video.resource_id,
             subtitle=self.id,
             stamp=stamp,
             language=self.language,

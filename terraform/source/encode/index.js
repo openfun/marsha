@@ -58,7 +58,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.replace('/videos/', '/mp4/'),
+                objectKey.replace(/\/videos\/.*\//, '/mp4/'),
             },
           },
           Outputs: [
@@ -98,7 +98,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.replace('/videos/', '/dash/'),
+                objectKey.replace(/\/videos\/.*\//, '/dash/'),
             },
           },
           Outputs: [
@@ -149,7 +149,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.replace('/videos/', '/hls/'),
+                objectKey.replace(/\/videos\/.*\//, '/hls/'),
             },
           },
           Outputs: [
@@ -185,7 +185,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.replace('/videos/', '/thumbnails/'),
+                objectKey.replace(/\/videos\/.*\//, '/thumbnails/'),
             },
           },
           Outputs: [
@@ -221,7 +221,7 @@ exports.handler = (event, context, callback) => {
                 's3://' +
                 process.env.S3_DESTINATION_BUCKET +
                 '/' +
-                objectKey.replace('/videos/', '/previews/'),
+                objectKey.replace(/\/videos\/.*\//, '/previews/'),
             },
           },
           Outputs: [
