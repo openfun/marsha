@@ -37,9 +37,7 @@ class SubtitleTrackAPITest(TestCase):
     def test_api_subtitle_track_read_detail_token_user(self):
         """A token user associated to a video can read a subtitle track related to this video."""
         subtitle_track = SubtitleTrackFactory(
-            id="e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
-            video__id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            video__playlist__id="534dee2f-9d0e-40be-bbca-ad123eaf8bb2",
+            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             has_closed_captioning=True,
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -61,16 +59,15 @@ class SubtitleTrackAPITest(TestCase):
             content,
             {
                 "active_stamp": "1533686400",
-                "id": "e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
+                "id": str(subtitle_track.id),
                 "has_closed_captioning": True,
                 "language": "fr",
                 "state": "ready",
                 "url": (
-                    "https://abc.cloudfront.net/534dee2f-9d0e-40be-bbca-ad123eaf8bb2/"
-                    "b8d40ed7-95b8-4848-98c9-50728dfee25d/subtitles/"
-                    "e8ed0374-ffaa-4693-9ea9-03f0d2cbe627/1533686400_fr_cc.vtt"
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "subtitles/1533686400_fr_cc.vtt"
                 ),
-                "video": "b8d40ed7-95b8-4848-98c9-50728dfee25d",
+                "video": str(subtitle_track.video.id),
             },
         )
 
@@ -133,9 +130,7 @@ class SubtitleTrackAPITest(TestCase):
     def test_api_subtitle_track_read_detail_token_user_signed_urls(self, mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         subtitle_track = SubtitleTrackFactory(
-            id="e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
-            video__id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            video__playlist__id="534dee2f-9d0e-40be-bbca-ad123eaf8bb2",
+            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             has_closed_captioning=True,
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -154,17 +149,16 @@ class SubtitleTrackAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
+
         self.assertEqual(
             content["url"],
             (
-                "https://abc.cloudfront.net/534dee2f-9d0e-40be-bbca-ad123eaf8bb2/"
-                "b8d40ed7-95b8-4848-98c9-50728dfee25d/subtitles/"
-                "e8ed0374-ffaa-4693-9ea9-03f0d2cbe627/1533686400_fr_cc.vtt?"
-                "Expires=1533693600&Signature=Jthr3V66g-QWXQHzb77yp17n5jgOXy7gWmg-xeuuX7nIY~sM-Pz"
-                "3SKXHpqGYZorpPIQKHmnVjL2N9Z~hL1QUffLymbF-uB1ezapxI7qewTZiFslCu3dcgBO~1voOZuq9Zpe"
-                "U8r9s0hqtGiTylxSSIc17mXfcuQvdQxYTnnVOl4BgUWvY212RlOky8oyxGVV0h5BuRUR4PakwGjfwfXf"
-                "x--pcwbKsUxF6XeP~uIp8dpTZNbSYQLeWsQ0kRr0iSGLyn5MzdM4h1YNs85sv5-rZqhLIfDDqoxwMqpQ"
-                "4jtz-cvi91WqRPOAJjzVAG5Qs7IBMazRFh-BLUpDg4-Un~VttQA__&"
+                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/subtitles/"
+                "1533686400_fr_cc.vtt?Expires=1533693600&Signature=MqGQW7V3iI2kIGruCKQWmrKvu7~sdv"
+                "owselEZ41j16aberPYcFyUPFAE4KmcfRcbPiF8xee56lFrrm4VC30f0f7TyppTssymn3wVz6afE12BDi"
+                "WpP0ED80xBdnbtNmb~hRBpYTIJhJ8UA0geQnh98dK0vm8IO9p6EopmZCVP6sqlorV3It2CP8IR6rmSbE"
+                "aQQm2LHdO5AqTLn1BuVolGKBuxTE6CI7L-bzHXpnqEpybKSRHKbr6LwMdHXdY9tp5oZg-mtvNKKMK4b2"
+                "YqD6Wd6uWf3koQ9oO6lP2HGgEV68F1t7q7zyxbp5JtkFMzmUStYkIUx-bCFkkWH5drrTjTAA__&"
                 "Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
@@ -552,9 +546,8 @@ class SubtitleTrackAPITest(TestCase):
     def test_api_subtitle_track_upload_policy_token_user(self):
         """A token user should be able to retrieve an upload policy."""
         subtitle_track = SubtitleTrackFactory(
-            id="e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
-            video__id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            video__playlist__id="534dee2f-9d0e-40be-bbca-ad123eaf8bb2",
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             language="fr",
             has_closed_captioning=True,
         )
@@ -578,10 +571,8 @@ class SubtitleTrackAPITest(TestCase):
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{!s}/{!s}/subtitles/{!s}/1533686400_fr_cc".format(
-                    subtitle_track.video.playlist.id,
-                    subtitle_track.video.id,
-                    subtitle_track.id,
+                "key": "{!s}/subtitles/{!s}/1533686400_fr_cc".format(
+                    subtitle_track.video.resource_id, subtitle_track.id
                 ),
                 "max_file_size": 1048576,
                 "policy": (
@@ -589,10 +580,10 @@ class SubtitleTrackAPITest(TestCase):
                     "W3siYWNsIjogInByaXZhdGUifSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsi"
                     "eC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEv"
                     "czMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYi"
-                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiNTM0ZGVlMmYt"
-                    "OWQwZS00MGJlLWJiY2EtYWQxMjNlYWY4YmIyL2I4ZDQwZWQ3LTk1YjgtNDg0OC05OGM5LTUwNzI4"
-                    "ZGZlZTI1ZC9zdWJ0aXRsZXMvZThlZDAzNzQtZmZhYS00NjkzLTllYTktMDNmMGQyY2JlNjI3LzE1"
-                    "MzM2ODY0MDBfZnJfY2MifSwgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDEwNDg1NzZdXX0="
+                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiYjhkNDBlZDct"
+                    "OTViOC00ODQ4LTk4YzktNTA3MjhkZmVlMjVkL3N1YnRpdGxlcy81YzAxOTAyNy0xZTFmLTRkOGMt"
+                    "OWY4My1jNWUyMGVkYWFkMmIvMTUzMzY4NjQwMF9mcl9jYyJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJh"
+                    "bmdlIiwgMCwgMTA0ODU3Nl1dfQ=="
                 ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
@@ -600,7 +591,7 @@ class SubtitleTrackAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "e22e1847ef43bff30f7a2bc7b2b4fa93631f238f3259b9575c29207058d89ada"
+                    "0e4b8bbcad3d4c8b1ac57c9ef87b9ef16c35c3789040074e6f3c6517aa6cdfb7"
                 ),
             },
         )

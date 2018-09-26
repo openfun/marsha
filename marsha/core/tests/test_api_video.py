@@ -64,14 +64,11 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user(self):
         """A token user associated to a video should be able to read the detail of this video."""
         video = VideoFactory(
-            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
         )
-        playlist = video.playlist
         subtitle = SubtitleTrackFactory(
-            id="e8ed0374-ffaa-4693-9ea9-03f0d2cbe627",
             video=video,
             has_closed_captioning=True,
             language="fr",
@@ -91,19 +88,19 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         thumbnails_template = (
-            "https://abc.cloudfront.net/"
-            "{!s}/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
+            "https://abc.cloudfront.net/" "{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
-            str(rate): thumbnails_template.format(playlist.id, video.id, rate)
+            str(rate): thumbnails_template.format(video.resource_id, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
 
-        mp4_template = "https://abc.cloudfront.net/{!s}/{!s}/mp4/1533686400_{!s}.mp4"
+        mp4_template = "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
         mp4_dict = {
-            str(rate): mp4_template.format(playlist.id, video.id, rate)
+            str(rate): mp4_template.format(video.resource_id, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
+
         self.assertEqual(
             content,
             {
@@ -120,11 +117,10 @@ class VideoAPITest(TestCase):
                         "language": "fr",
                         "state": "ready",
                         "url": (
-                            "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/subtitles/"
-                            "e8ed0374-ffaa-4693-9ea9-03f0d2cbe627/1533686400_fr_cc.vtt"
+                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "subtitles/1533686400_fr_cc.vtt"
                         ),
-                        "video": "a2f27fde-973a-4e89-8dca-cc59e01d255c",
+                        "video": str(video.id),
                     }
                 ],
                 "urls": json.dumps(
@@ -133,17 +129,17 @@ class VideoAPITest(TestCase):
                         "thumbnails": thumbnails_dict,
                         "manifests": {
                             "dash": (
-                                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                                "a2f27fde-973a-4e89-8dca-cc59e01d255c/dash/1533686400.mpd"
+                                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                                "dash/1533686400.mpd"
                             ),
                             "hls": (
-                                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                                "a2f27fde-973a-4e89-8dca-cc59e01d255c/hls/1533686400.m3u8"
+                                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                                "hls/1533686400.m3u8"
                             ),
                         },
                         "previews": (
-                            "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/previews/1533686400_100.jpg"
+                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "previews/1533686400_100.jpg"
                         ),
                     }
                 ),
@@ -231,8 +227,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user_signed_urls(self, mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         video = VideoFactory(
-            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
         )
@@ -253,20 +248,19 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             json.loads(content["urls"])["thumbnails"]["144"],
             (
-                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c/thumbnails/1533686400_144.0000000.jpg"
+                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                "thumbnails/1533686400_144.0000000.jpg"
             ),
         )
         self.assertEqual(
             json.loads(content["urls"])["mp4"]["144"],
             (
-                "https://abc.cloudfront.net/f76f6afd-7135-488e-9d70-6ec599a67806/"
-                "a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/1533686400_144.mp4?"
-                "Expires=1533693600&Signature=DOsxZ8MeXL9FBqGs28V-oGDJ9jX9OPxDC-X2o~Hw7qN3UujzOG7"
-                "2WnangFhr4b1MqR5tmGL0BYFqfy1zEWYPdCDfVN79llcDod8J0MjL7CJx9iKVCdCTB8heAu6m~WiotZ5"
-                "cMeyAH48Zwdq2NdWiSlQkB0JrA-Pgie8m3zkyxGax8ZnzRp51hq5gjm-vqWMT-Bu7eIezidufWLgfk-1"
-                "vckzUgA5RMNgUaRE1YsUZh52RfsEYF5aC2gHJ2d1uG8WH-Ekn1v4OC6EexPCJUSr0B~AXKQWFeJRGxmc"
-                "XmRt6BWwPTONXZ5XwBBlZFwBAOx9oLrM5AkpYpzEUHx5vw1gTxg__&"
+                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/"
+                "1533686400_144.mp4?Expires=1533693600&Signature=Sr8lng3~F7DC~omoNl-~brtKo0W7oZj8"
+                "gSMmcRjMGPvWJst5lGvLjt5IYKGArcgh7VCHrdDa35Vg5NKqnUisFGfAujeMqktbYuwTgx1UDIq0479M"
+                "mQlkZU3UxS8CDgMQyPzjJjy7-BmlYRkqDBXBvCIE3oHE~y2kqjYp1vse5JTJse8SFwYNuyUxU3Dx9cvG"
+                "nlPxql~yZmwz17wAJ9bYK3riIvfyy3wcgbdEm2KoopPAE22moEyBW6CD8m3MNNXj0mx-DkTWBkRolwZW"
+                "voVZULcqlG2OO7wD4eJq8qFYs5~woBwuHx7HD96WT464XrN6mhjL3tO~zcNfOrLtS3oVVQ__&"
                 "Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
@@ -588,8 +582,8 @@ class VideoAPITest(TestCase):
     def test_api_video_upload_policy_token_user(self):
         """A token user associated to a video should be able to retrieve an upload policy."""
         video = VideoFactory(
-            id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            playlist__id="f76f6afd-7135-488e-9d70-6ec599a67806",
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -611,8 +605,8 @@ class VideoAPITest(TestCase):
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{!s}/{!s}/videos/1533686400".format(
-                    video.playlist.id, video.id
+                "key": "{!s}/videos/{!s}/1533686400".format(
+                    video.resource_id, video.id
                 ),
                 "max_file_size": 1073741824,
                 "policy": (
@@ -620,9 +614,9 @@ class VideoAPITest(TestCase):
                     "W3siYWNsIjogInByaXZhdGUifSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsi"
                     "eC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEv"
                     "czMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYi"
-                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiZjc2ZjZhZmQt"
-                    "NzEzNS00ODhlLTlkNzAtNmVjNTk5YTY3ODA2L2EyZjI3ZmRlLTk3M2EtNGU4OS04ZGNhLWNjNTll"
-                    "MDFkMjU1Yy92aWRlb3MvMTUzMzY4NjQwMCJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5"
+                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiYTJmMjdmZGUt"
+                    "OTczYS00ZTg5LThkY2EtY2M1OWUwMWQyNTVjL3ZpZGVvcy8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRm"
+                    "YS02OTdiNTljZmUzYzcvMTUzMzY4NjQwMCJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5"
                     "cGUiLCAidmlkZW8vIl0sIFsic3RhcnRzLXdpdGgiLCAiJHgtYW16LW1ldGEtand0IiwgIiJdLCBb"
                     "ImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF1dfQ=="
                 ),
@@ -632,7 +626,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "15d0c4fc6b5264c96cfb237346b53dd99e6570f2c475fe149630029479b879ea"
+                    "13c35c0bb9afd9dc7cc61a7e3a279f829421945864aeb6486f7d286a68de0b00"
                 ),
             },
         )

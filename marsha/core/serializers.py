@@ -111,14 +111,11 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
         """
         if obj.uploaded_on and obj.state == SubtitleTrack.READY:
 
-            base = "{cloudfront:s}/{playlist!s}/{video!s}".format(
-                cloudfront=settings.CLOUDFRONT_URL,
-                playlist=obj.video.playlist_id,
-                video=obj.video_id,
+            base = "{cloudfront:s}/{resource!s}".format(
+                cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
             )
-            url = "{base:s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}.vtt".format(
+            url = "{base:s}/subtitles/{stamp:s}_{language:s}{cc:s}.vtt".format(
                 base=base,
-                subtitle=obj.id,
                 stamp=time_utils.to_timestamp(obj.uploaded_on),
                 language=obj.language,
                 cc="_cc" if obj.has_closed_captioning else "",
@@ -184,8 +181,8 @@ class VideoSerializer(serializers.ModelSerializer):
             return None
 
         urls = {"mp4": {}, "thumbnails": {}}
-        base = "{cloudfront:s}/{playlist!s}/{video!s}".format(
-            cloudfront=settings.CLOUDFRONT_URL, playlist=obj.playlist_id, video=obj.id
+        base = "{cloudfront:s}/{resource!s}".format(
+            cloudfront=settings.CLOUDFRONT_URL, resource=obj.resource_id
         )
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
