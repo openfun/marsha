@@ -1,12 +1,13 @@
 """Marsha URLs configuration."""
 
+from django.conf import settings
 from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
 from marsha.core.admin import admin_site
 from marsha.core.api import SubtitleTrackViewSet, VideoViewSet
-from marsha.core.views import VideoLTIView
+from marsha.core.views import LTIDevelopmentView, VideoLTIView
 
 
 router = DefaultRouter()
@@ -18,3 +19,8 @@ urlpatterns = [
     path("lti-video/", VideoLTIView.as_view(), name="lti-video"),
     path("api/", include(router.urls)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("development/", LTIDevelopmentView.as_view(), name="lti-development-view")
+    ]

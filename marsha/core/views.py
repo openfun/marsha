@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from django.views.generic.base import TemplateResponseMixin
+from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
@@ -90,3 +90,13 @@ class VideoLTIView(TemplateResponseMixin, View):
 
         """
         return self.render_to_response(self.get_context_data())
+
+
+class LTIDevelopmentView(TemplateView):
+    """A development view with iframe POST / plain POST helpers.
+
+    Not available outside of DEBUG = true environments.
+
+    """
+
+    template_name = "core/lti_development.html"
