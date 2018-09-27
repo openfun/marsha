@@ -1,4 +1,5 @@
 """Tests for the SubtitleTrack API of the Marsha project."""
+from base64 import b64decode
 from datetime import datetime
 import json
 from unittest import mock
@@ -565,33 +566,46 @@ class SubtitleTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
+        policy = content.pop("policy")
+        self.assertEqual(
+            json.loads(b64decode(policy)),
+            {
+                "expiration": "2018-08-09T00:00:00.000Z",
+                "conditions": [
+                    {"acl": "private"},
+                    {"bucket": "test-marsha-source"},
+                    {
+                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
+                    },
+                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
+                    {"x-amz-date": "20180808T000000Z"},
+                    {
+                        "key": (
+                            "b8d40ed7-95b8-4848-98c9-50728dfee25d/subtitletrack/"
+                            "5c019027-1e1f-4d8c-9f83-c5e20edaad2b/1533686400_fr_cc"
+                        )
+                    },
+                    ["content-length-range", 0, 1048576],
+                ],
+            },
+        )
         self.assertEqual(
             content,
             {
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{!s}/subtitles/{!s}/1533686400_fr_cc".format(
+                "key": "{!s}/subtitletrack/{!s}/1533686400_fr_cc".format(
                     subtitle_track.video.resource_id, subtitle_track.id
                 ),
                 "max_file_size": 1048576,
-                "policy": (
-                    "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDAuMDAwWiIsICJjb25kaXRpb25zIjog"
-                    "W3siYWNsIjogInByaXZhdGUifSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsi"
-                    "eC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEv"
-                    "czMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYi"
-                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiYjhkNDBlZDct"
-                    "OTViOC00ODQ4LTk4YzktNTA3MjhkZmVlMjVkL3N1YnRpdGxlcy81YzAxOTAyNy0xZTFmLTRkOGMt"
-                    "OWY4My1jNWUyMGVkYWFkMmIvMTUzMzY4NjQwMF9mcl9jYyJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJh"
-                    "bmdlIiwgMCwgMTA0ODU3Nl1dfQ=="
-                ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
                 "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "0e4b8bbcad3d4c8b1ac57c9ef87b9ef16c35c3789040074e6f3c6517aa6cdfb7"
+                    "22e5e75aee4104c3382b584f83adb19a872a12f58f09bc19fbe909b357e28efd"
                 ),
             },
         )
