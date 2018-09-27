@@ -378,7 +378,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.description, "my new description")
 
     def test_api_video_update_detail_token_user_uploaded_on(self):
-        """Token users should be able to confirm the datetime of upload through the API."""
+        """Token users trying to update "uploaded_on" through the API should be ignored."""
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -388,6 +388,7 @@ class VideoAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         data = json.loads(response.content)
+        self.assertIsNone(data["active_stamp"])
         data["active_stamp"] = "1533686400"
 
         response = self.client.put(
@@ -398,10 +399,10 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.uploaded_on, None)
 
     def test_api_video_update_detail_token_user_state(self):
-        """Token users should be able to update the state through the API."""
+        """Token users trying to update the state through the API should be ignored."""
         video = VideoFactory(state="pending")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -421,7 +422,7 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.state, "ready")
+        self.assertEqual(video.state, "pending")
 
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
@@ -466,21 +467,13 @@ class VideoAPITest(TestCase):
         video_update.refresh_from_db()
         self.assertEqual(video_update.title, "my title")
 
-    def test_api_video_patch_detail_token_user_uploaded_on_and_state(self):
-        """Token users should be able to patch the state and stamp of their video through the API.
-
-        The `confirm` lambda in AWS will patch just these 2 fields to avoid interfering with the
-        user modifying its title for example. In opposition, an update requires posting all the
-        required fields like `title` and is therefore performed in 2 steps (a GET followed by a
-        PUT) which is dangerous.
-        """
-        video = VideoFactory()
+    def test_api_video_patch_detail_token_user_description(self):
+        """Token users should be able to patch fields on their video through the API."""
+        video = VideoFactory(description="my description")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
-        self.assertEqual(video.state, "pending")
-        self.assertIsNone(video.uploaded_on)
 
-        data = {"active_stamp": "1533686400", "state": "ready"}
+        data = {"description": "my new description"}
 
         response = self.client.patch(
             "/api/videos/{!s}/".format(video.id),
@@ -490,8 +483,7 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
-        self.assertEqual(video.state, "ready")
+        self.assertEqual(video.description, "my new description")
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
