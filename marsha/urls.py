@@ -6,7 +6,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from marsha.core.admin import admin_site
-from marsha.core.api import SubtitleTrackViewSet, VideoViewSet
+from marsha.core.api import SubtitleTrackViewSet, VideoViewSet, upload_confirm
 from marsha.core.views import LTIDevelopmentView, VideoLTIView
 
 
@@ -16,7 +16,8 @@ router.register(r"subtitle-tracks", SubtitleTrackViewSet, base_name="subtitle_tr
 
 urlpatterns = [
     path(f"{admin_site.name}/", admin_site.urls),
-    path("lti-video/", VideoLTIView.as_view(), name="lti-video"),
+    path("lti-video/", VideoLTIView.as_view(), name="lti_video"),
+    path("api/upload-confirm", upload_confirm, name="upload_confirm"),
     path("api/", include(router.urls)),
 ]
 

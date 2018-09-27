@@ -1,16 +1,64 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+from django.apps import apps
 from django.utils import timezone
 
 from rest_framework import mixins, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
 from .models import SubtitleTrack, Video
 from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
-from .serializers import SubtitleTrackSerializer, VideoSerializer
+from .serializers import (
+    SubtitleTrackSerializer,
+    UploadConfirmSerializer,
+    VideoSerializer,
+)
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
+
+
+@api_view(["POST"])
+def upload_confirm(request):
+    """View handling AWS POST request to confirm the state of an upload to an object key.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint, it should contain a payload with the following fields:
+            - key: the key of an object in the source bucket as delivered in the upload policy,
+            - state: state of the upload, should be either "ready" or "error",
+            - signature: has of the payload salted with a shared secret to authenticate AWS.
+
+    Returns
+    -------
+    Type[rest_framework.response.Response]
+        HttpResponse acknowledging the success or failure of the confirm operation.
+
+    """
+    serializer = UploadConfirmSerializer(data=request.data)
+
+    if serializer.is_valid() is not True:
+        return Response(serializer.errors, status=400)
+
+    # pylint: disable=fixme
+    # FIXME: check the validity of the signature once it is implemented in AWS
+
+    # Retrieve the elements from the key
+    key_elements = serializer.get_key_elements()
+
+    # Update the object targeted by the "object_id" and "resource_id"
+    model = apps.get_model(app_label="core", model_name=key_elements["model_name"])
+
+    updated = model.objects.filter(id=key_elements["object_id"]).update(
+        uploaded_on=key_elements["uploaded_on"],
+        state=serializer.validated_data["state"],
+    )
+
+    if updated:
+        return Response({"success": True})
+
+    return Response({"success": False}, status=404)
 
 
 class VideoViewSet(
