@@ -9,7 +9,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from .models import SubtitleTrack, Video
+from .models import ERROR, READY, STATE_CHOICES, SubtitleTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -109,7 +109,7 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
             None if the subtitle track is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on and obj.state == SubtitleTrack.READY:
+        if obj.uploaded_on and obj.state == READY:
 
             base = "{cloudfront:s}/{resource!s}".format(
                 cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
@@ -177,7 +177,7 @@ class VideoSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if obj.uploaded_on is None or obj.state != Video.READY:
+        if obj.uploaded_on is None or obj.state != READY:
             return None
 
         urls = {"mp4": {}, "thumbnails": {}}

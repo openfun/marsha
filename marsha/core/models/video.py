@@ -12,6 +12,10 @@ from .account import INSTRUCTOR, ROLE_CHOICES
 from .base import BaseModel, NonDeletedUniqueIndex
 
 
+PENDING, ERROR, READY = "pending", "error", "ready"
+STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
+
+
 class Playlist(BaseModel):
     """Model representing a playlist which is a list of videos."""
 
@@ -120,9 +124,6 @@ class PlaylistAccess(BaseModel):
 
 class Video(BaseModel):
     """Model representing a video, created by an author."""
-
-    PENDING, ERROR, READY = "pending", "error", "ready"
-    STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
 
     title = models.CharField(
         max_length=255, verbose_name=_("title"), help_text=_("title of the video")
@@ -238,9 +239,6 @@ class Video(BaseModel):
 
 class BaseTrack(BaseModel):
     """Base model for different kinds of tracks tied to a video."""
-
-    PENDING, ERROR, READY = "pending", "error", "ready"
-    STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
 
     video = models.ForeignKey(
         to="Video",
