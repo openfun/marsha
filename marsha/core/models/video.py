@@ -232,7 +232,7 @@ class Video(BaseModel):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/videos/{video!s}/{stamp:s}".format(
+        return "{resource!s}/video/{video!s}/{stamp:s}".format(
             resource=self.resource_id, video=self.id, stamp=stamp
         )
 
@@ -331,7 +331,7 @@ class SubtitleTrack(BaseTrack):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/subtitles/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
+        return "{resource!s}/subtitletrack/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
             resource=self.video.resource_id,
             subtitle=self.id,
             stamp=stamp,

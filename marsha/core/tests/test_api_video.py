@@ -1,4 +1,5 @@
 """Tests for the Video API of the Marsha project."""
+from base64 import b64decode
 from datetime import datetime
 import json
 from unittest import mock
@@ -599,34 +600,46 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
+        policy = content.pop("policy")
+        self.assertEqual(
+            json.loads(b64decode(policy)),
+            {
+                "expiration": "2018-08-09T00:00:00.000Z",
+                "conditions": [
+                    {"acl": "private"},
+                    {"bucket": "test-marsha-source"},
+                    {
+                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
+                    },
+                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
+                    {"x-amz-date": "20180808T000000Z"},
+                    {
+                        "key": (
+                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/video/"
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
+                        )
+                    },
+                    ["starts-with", "$Content-Type", "video/"],
+                    ["starts-with", "$x-amz-meta-jwt", ""],
+                    ["content-length-range", 0, 1073741824],
+                ],
+            },
+        )
         self.assertEqual(
             content,
             {
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{!s}/videos/{!s}/1533686400".format(
-                    video.resource_id, video.id
-                ),
+                "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
                 "max_file_size": 1073741824,
-                "policy": (
-                    "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDAuMDAwWiIsICJjb25kaXRpb25zIjog"
-                    "W3siYWNsIjogInByaXZhdGUifSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsi"
-                    "eC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEv"
-                    "czMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYi"
-                    "fSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifSwgeyJrZXkiOiAiYTJmMjdmZGUt"
-                    "OTczYS00ZTg5LThkY2EtY2M1OWUwMWQyNTVjL3ZpZGVvcy8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRm"
-                    "YS02OTdiNTljZmUzYzcvMTUzMzY4NjQwMCJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5"
-                    "cGUiLCAidmlkZW8vIl0sIFsic3RhcnRzLXdpdGgiLCAiJHgtYW16LW1ldGEtand0IiwgIiJdLCBb"
-                    "ImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MTgyNF1dfQ=="
-                ),
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
                 "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "13c35c0bb9afd9dc7cc61a7e3a279f829421945864aeb6486f7d286a68de0b00"
+                    "293eff73208b628b06e4fc047af6782ef4228446c0843f65be63bd751c978b63"
                 ),
             },
         )
