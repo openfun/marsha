@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
 from ..factories import SubtitleTrackFactory, UserFactory, VideoFactory
-from ..models import SubtitleTrack
+from ..models import STATE_CHOICES, SubtitleTrack
 from .test_api_video import RSA_KEY_MOCK
 
 
@@ -103,7 +103,7 @@ class SubtitleTrackAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_subtitle_track_read_detail_token_user_not_ready(self):
         """A subtitle_track that is not ready should have its "url" field set to `None`."""
-        for state, _ in SubtitleTrack.STATE_CHOICES:
+        for state, _ in STATE_CHOICES:
             if state == "ready":
                 continue
 

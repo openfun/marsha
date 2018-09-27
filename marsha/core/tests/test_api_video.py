@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
 from ..factories import SubtitleTrackFactory, UserFactory, VideoFactory
-from ..models import Video
+from ..models import STATE_CHOICES, Video
 
 
 RSA_KEY_MOCK = b"""
@@ -189,7 +189,7 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_not_ready(self):
         """A video that is not ready should have its "urls" set to `None`."""
-        for state, _ in Video.STATE_CHOICES:
+        for state, _ in STATE_CHOICES:
             if state == "ready":
                 continue
 
