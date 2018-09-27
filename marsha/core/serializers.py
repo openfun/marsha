@@ -150,9 +150,11 @@ class VideoSerializer(serializers.ModelSerializer):
             "subtitle_tracks",
             "urls",
         )
-        read_only_fields = ("id", "urls")
+        read_only_fields = ("id", "active_stamp", "state", "urls")
 
-    active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
+    active_stamp = TimestampField(
+        source="uploaded_on", required=False, allow_null=True, read_only=True
+    )
     subtitle_tracks = SubtitleTrackSerializer(
         source="subtitletracks", many=True, read_only=True
     )
