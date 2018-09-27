@@ -1,8 +1,10 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
 import json
+import re
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from botocore.signers import CloudFrontSigner
@@ -11,6 +13,15 @@ from rest_framework_simplejwt.models import TokenUser
 
 from .models import ERROR, READY, STATE_CHOICES, SubtitleTrack, Video
 from .utils import cloudfront_utils, time_utils
+
+
+UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+# This regex matches keys in AWS for videos or subtitle tracks
+KEY_PATTERN = (
+    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|subtitletrack)/(?P<object_id>{uuid:s})/"
+    "(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}(_cc)?)?$".format(uuid=UUID_REGEX)
+)
+KEY_REGEX = re.compile(KEY_PATTERN)
 
 
 class TimestampField(serializers.DateTimeField):
@@ -51,9 +62,12 @@ class TimestampField(serializers.DateTimeField):
             when the value passed in argument is not a valid timestamp
 
         """
-        return super(TimestampField, self).to_internal_value(
-            time_utils.to_datetime(value)
-        )
+        try:
+            return super(TimestampField, self).to_internal_value(
+                time_utils.to_datetime(value)
+            )
+        except OverflowError as error:
+            raise ValidationError(error)
 
 
 class SubtitleTrackSerializer(serializers.ModelSerializer):
@@ -229,3 +243,19 @@ class VideoSerializer(serializers.ModelSerializer):
         )
 
         return json.dumps(urls)
+
+
+class UploadConfirmSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadConfirm API endpoint."""
+
+    key = serializers.RegexField(KEY_REGEX)
+    state = serializers.ChoiceField(
+        tuple(c for c in STATE_CHOICES if c[0] in (READY, ERROR))
+    )
+    signature = serializers.CharField(max_length=200)
+
+    def get_key_elements(self):
+        """Use a regex to parse elements from the key."""
+        elements = KEY_REGEX.match(self.validated_data["key"]).groupdict()
+        elements["uploaded_on"] = time_utils.to_datetime(elements["stamp"])
+        return elements
