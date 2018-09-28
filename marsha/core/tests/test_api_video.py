@@ -612,7 +612,6 @@ class VideoAPITest(TestCase):
                         )
                     },
                     ["starts-with", "$Content-Type", "video/"],
-                    ["starts-with", "$x-amz-meta-jwt", ""],
                     ["content-length-range", 0, 1073741824],
                 ],
             },
@@ -631,7 +630,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "293eff73208b628b06e4fc047af6782ef4228446c0843f65be63bd751c978b63"
+                    "7b4bb2a1d0620d1bcf5adeec87173cdfa048cdc45705f77370af017dd7772a6f"
                 ),
             },
         )

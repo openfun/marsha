@@ -99,7 +99,6 @@ class VideoViewSet(
             [
                 {"key": key},
                 ["starts-with", "$Content-Type", "video/"],
-                ["starts-with", "$x-amz-meta-jwt", ""],
                 ["content-length-range", 0, VIDEO_SOURCE_MAX_SIZE],
             ],
         )
