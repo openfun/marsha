@@ -2,10 +2,13 @@
 
 const AWS = require('aws-sdk');
 
-exports.handler = (event, context, callback) => {
+exports.handler = async (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
+  const envType = process.env.ENV_TYPE;
   const objectKey = event.Records[0].s3.object.key;
+  const sourceBucket = event.Records[0].s3.bucket.name;
+  const destinationBucket = process.env.S3_DESTINATION_BUCKET;
 
   if (objectKey.split('/').length != 4) {
     let error =
@@ -20,7 +23,7 @@ exports.handler = (event, context, callback) => {
   let params = {
     Role: process.env.MEDIA_CONVERT_ROLE,
     UserMetadata: {
-      Bucket: event.Records[0].s3.bucket.name,
+      Bucket: sourceBucket,
       ObjectKey: objectKey,
     },
     Settings: {
@@ -43,8 +46,7 @@ exports.handler = (event, context, callback) => {
               ProgramSelection: 1,
             },
           },
-          FileInput:
-            's3://' + event.Records[0].s3.bucket.name + '/' + objectKey,
+          FileInput: `s3://${sourceBucket}/${objectKey}`,
         },
       ],
       OutputGroups: [
@@ -54,35 +56,16 @@ exports.handler = (event, context, callback) => {
           OutputGroupSettings: {
             Type: 'FILE_GROUP_SETTINGS',
             FileGroupSettings: {
-              Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.replace(/\/video\/.*\//, '/mp4/'),
+              Destination: `s3://${destinationBucket}/${objectKey.replace(
+                /\/video\/.*\//,
+                '/mp4/',
+              )}`,
             },
           },
-          Outputs: [
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_144',
-              NameModifier: '_144',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_240',
-              NameModifier: '_240',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_480',
-              NameModifier: '_480',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_720',
-              NameModifier: '_720',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_mp4_1080',
-              NameModifier: '_1080',
-            },
-          ],
+          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+            Preset: `${envType}_marsha_video_mp4_${size}`,
+            NameModifier: `_${size}`,
+          })),
         },
         {
           CustomName: 'Video DASH outputs',
@@ -94,35 +77,16 @@ exports.handler = (event, context, callback) => {
               SegmentLength: 30,
               FragmentLength: 2,
               SegmentControl: 'SEGMENTED_FILES',
-              Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.replace(/\/video\/.*\//, '/dash/'),
+              Destination: `s3://${destinationBucket}/${objectKey.replace(
+                /\/video\/.*\//,
+                '/dash/',
+              )}`,
             },
           },
-          Outputs: [
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_dash_144',
-              NameModifier: '_144',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_dash_240',
-              NameModifier: '_240',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_dash_480',
-              NameModifier: '_480',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_dash_720',
-              NameModifier: '_720',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_dash_1080',
-              NameModifier: '_1080',
-            },
-          ],
+          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+            Preset: `${envType}_marsha_video_dash_${size}`,
+            NameModifier: `_${size}`,
+          })),
         },
         {
           CustomName: 'Video HLS outputs',
@@ -145,35 +109,16 @@ exports.handler = (event, context, callback) => {
               ManifestCompression: 'NONE',
               ClientCache: 'ENABLED',
               StreamInfResolution: 'INCLUDE',
-              Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.replace(/\/video\/.*\//, '/hls/'),
+              Destination: `s3://${destinationBucket}/${objectKey.replace(
+                /\/video\/.*\//,
+                '/hls/',
+              )}`,
             },
           },
-          Outputs: [
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_hls_144',
-              NameModifier: '_144',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_hls_240',
-              NameModifier: '_240',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_hls_480',
-              NameModifier: '_480',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_hls_720',
-              NameModifier: '_720',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_video_hls_1080',
-              NameModifier: '_1080',
-            },
-          ],
+          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+            Preset: `${envType}_marsha_video_hls_${size}`,
+            NameModifier: `_${size}`,
+          })),
         },
         {
           CustomName: 'Thumbnails outputs',
@@ -181,35 +126,16 @@ exports.handler = (event, context, callback) => {
           OutputGroupSettings: {
             Type: 'FILE_GROUP_SETTINGS',
             FileGroupSettings: {
-              Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.replace(/\/video\/.*\//, '/thumbnails/'),
+              Destination: `s3://${destinationBucket}/${objectKey.replace(
+                /\/video\/.*\//,
+                '/thumbnails/',
+              )}`,
             },
           },
-          Outputs: [
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_144',
-              NameModifier: '_144',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_240',
-              NameModifier: '_240',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_480',
-              NameModifier: '_480',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_720',
-              NameModifier: '_720',
-            },
-            {
-              Preset: process.env.ENV_TYPE + '_marsha_thumbnail_jpeg_1080',
-              NameModifier: '_1080',
-            },
-          ],
+          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+            Preset: `${envType}_marsha_thumbnail_jpeg_${size}`,
+            NameModifier: `_${size}`,
+          })),
         },
         {
           CustomName: 'Previews outputs',
@@ -217,16 +143,15 @@ exports.handler = (event, context, callback) => {
           OutputGroupSettings: {
             Type: 'FILE_GROUP_SETTINGS',
             FileGroupSettings: {
-              Destination:
-                's3://' +
-                process.env.S3_DESTINATION_BUCKET +
-                '/' +
-                objectKey.replace(/\/video\/.*\//, '/previews/'),
+              Destination: `s3://${destinationBucket}/${objectKey.replace(
+                /\/video\/.*\//,
+                '/previews/',
+              )}`,
             },
           },
           Outputs: [
             {
-              Preset: process.env.ENV_TYPE + '_marsha_preview_jpeg_100',
+              Preset: `${envType}_marsha_preview_jpeg_100`,
               NameModifier: '_100',
             },
           ],
@@ -235,12 +160,16 @@ exports.handler = (event, context, callback) => {
     },
   };
 
-  new AWS.MediaConvert({ endpoint: process.env.MEDIA_CONVERT_END_POINT })
-    .createJob(params)
-    .promise()
-    .then(data => {
-      console.log(JSON.stringify(data, null, 2));
-      callback(null, { Job: data.Job.Id });
+  try {
+    const jobData = await new AWS.MediaConvert({
+      endpoint: process.env.MEDIA_CONVERT_END_POINT,
     })
-    .catch(error => callback(error));
+      .createJob(params)
+      .promise();
+
+    console.log(JSON.stringify(jobData, null, 2));
+    callback(null, { Job: jobData.Job.Id });
+  } catch (error) {
+    callback(error);
+  }
 };
