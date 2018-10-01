@@ -17,3 +17,4 @@ DJANGO_AWS_SECRET_ACCESS_KEY=aws-secret-access-key
 
 # AWS 
 DJANGO_CLOUDFRONT_URL=https://abc.cloudfront.net
+DJANGO_UPLOAD_CONFIRM_SHARED_SECRET=dummy
