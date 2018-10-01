@@ -17,3 +17,7 @@ output "iam_access_key_id" {
 output "iam_secret_access_key" {
   value = "${aws_iam_access_key.marsha_access_key.secret}"
 }
+
+output "upload_confirm_secret" {
+  value = "${random_string.upload_confirm_secret.result}"
+}

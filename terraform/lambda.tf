@@ -76,6 +76,15 @@ resource "aws_lambda_permission" "allow_bucket" {
 # Confirmation
 ################
 
+resource "random_string" "upload_confirm_secret" {
+  length = 32
+  special = true
+
+  keepers = {
+    stamp = "${var.deployment_stamp}"
+  }
+}
+
 resource "aws_lambda_function" "marsha_confirm_lambda" {
   function_name    = "${terraform.workspace}-marsha-confirm"
   handler          = "index.handler"
@@ -87,6 +96,8 @@ resource "aws_lambda_function" "marsha_confirm_lambda" {
   environment {
     variables = {
       ENV_TYPE = "${terraform.workspace}"
+      SHARED_SECRET = "${random_string.upload_confirm_secret.result}"
+      ENDPOINT = "${var.upload_confirm_endpoint}"
     }
   }
 }
