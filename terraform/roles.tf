@@ -102,34 +102,6 @@ resource "aws_iam_role_policy_attachment" "lambda_pass_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.lambda_pass_role_policy.arn}"
 }
 
-resource "aws_iam_policy" "lambda_readonly_s3_source_objects" {
-  name        = "${terraform.workspace}-marsha-lambda-readonly-s3-source-objects-policy"
-  path        = "/"
-  description = "IAM policy to read s3 source bucket objects"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-      {
-          "Effect": "Allow",
-          "Action": [
-              "s3:GetObject",
-              "s3:GetObjectTagging",
-              "s3:GetObjectVersion"
-          ],
-          "Resource": "${aws_s3_bucket.marsha_source.arn}/*"
-      }
-  ]
-}
-  EOF
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_readonly_s3_source_policy_attachment" {
-  role       = "${aws_iam_role.lambda_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_readonly_s3_source_objects.arn}"
-}
-
 # Media Convert role
 #####################
 
