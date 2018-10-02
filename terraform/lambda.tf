@@ -86,7 +86,9 @@ resource "aws_lambda_function" "marsha_confirm_lambda" {
 
   environment {
     variables = {
+      ENDPOINT = "${var.upload_confirm_endpoint}"
       ENV_TYPE = "${terraform.workspace}"
+      SHARED_SECRET = "${var.upload_confirm_secret}"
     }
   }
 }
