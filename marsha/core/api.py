@@ -1,5 +1,9 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+import hashlib
+import hmac
+
 from django.apps import apps
+from django.conf import settings
 from django.utils import timezone
 
 from rest_framework import mixins, viewsets
@@ -41,8 +45,23 @@ def upload_confirm(request):
     if serializer.is_valid() is not True:
         return Response(serializer.errors, status=400)
 
-    # pylint: disable=fixme
-    # FIXME: check the validity of the signature once it is implemented in AWS
+    # The signed message is the s3 object key
+    msg = serializer.validated_data["key"]
+
+    # Check if the provided signature is valid against any secret in our list
+    #
+    # We need to do this to support 2 or more versions of our infrastructure at the same time.
+    # It then enables us to do updates and change the secret without incurring downtime.
+    signature_is_valid = any(
+        serializer.validated_data["signature"]
+        == hmac.new(
+            secret.encode("utf-8"), msg=msg.encode("utf-8"), digestmod=hashlib.sha256
+        ).hexdigest()
+        for secret in settings.UPLOAD_CONFIRM_SHARED_SECRETS
+    )
+
+    if not signature_is_valid:
+        return Response("Forbidden", status=403)
 
     # Retrieve the elements from the key
     key_elements = serializer.get_key_elements()
