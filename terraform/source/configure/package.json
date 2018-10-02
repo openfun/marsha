@@ -6,21 +6,19 @@
     "node": "^8.10"
   },
   "description": "Configure AWS via a Lambda for what can not be configured via Terraform for the Marsha video workflow",
-  "dependencies": {
-    "aws-sdk": "2.292.0"
-  },
-  "devDependencies": {
-    "aws-sdk-mock": "4.1.0",
-    "chai": "4.1.0",
-    "mocha": "5.2.0",
-    "sinon": "6.1.5",
-    "sinon-chai": "3.2.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://www.github.com/openfun/marsha"
   },
   "scripts": {
-    "test": "mocha *.spec.js"
+    "test": "jest"
+  },
+  "dependencies": {
+    "aws-sdk": "2.292.0"
+  },
+  "devDependencies": {
+    "@types/jest": "23.3.2",
+    "aws-sdk-mock": "4.1.0",
+    "jest": "23.6.0"
   }
 }

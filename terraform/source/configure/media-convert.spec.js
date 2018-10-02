@@ -1,16 +1,20 @@
 'use strict';
 
-const expect = require('chai').expect;
 const path = require('path');
 const AWS = require('aws-sdk-mock');
 AWS.setSDK(path.resolve('./node_modules/aws-sdk'));
 
+// Don't pollute tests with logs intended for CloudWatch
+jest.spyOn(console, 'log');
+
 const lambda = require('./media-convert.js');
 
 describe('Media Convert', () => {
+  beforeEach(() => console.log.mockReset());
+
   afterEach(() => AWS.restore('MediaConvert'));
 
-  it('should return data when getting endpoint', done => {
+  it('returns data when its gets an endpoint', async () => {
     const data = {
       Endpoints: [{ Url: 'https://test.mediaconvert.eu-west-1.amazonaws.com' }],
     };
@@ -19,15 +23,13 @@ describe('Media Convert', () => {
       callback(null, data),
     );
 
-    lambda.MediaConvertEndPoint().then(data => {
-      expect(data.EndpointUrl).to.equal(
-        'https://test.mediaconvert.eu-west-1.amazonaws.com',
-      );
-      done();
-    });
+    const result = await lambda.MediaConvertEndPoint();
+    expect(result.EndpointUrl).toEqual(
+      'https://test.mediaconvert.eu-west-1.amazonaws.com',
+    );
   });
 
-  it('should return data when creating presets', done => {
+  it('returns data when it creates presets', async () => {
     process.env.ENV_TYPE = 'test';
     const event = {
       EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
@@ -45,16 +47,11 @@ describe('Media Convert', () => {
       callback(null, { Preset: { Name: callCount++ } }),
     );
 
-    lambda
-      .MediaConvertPresets(event)
-      .then(data => {
-        expect(data).to.deep.equal({ Presets: Array.from(Array(21).keys()) });
-        done();
-      })
-      .catch(err => done(err));
+    const result = await lambda.MediaConvertPresets(event);
+    expect(result).toEqual({ Presets: Array.from(Array(21).keys()) });
   });
 
-  it('should update existing presets', done => {
+  it('updates existing presets', async () => {
     process.env.ENV_TYPE = 'test';
     const event = {
       EndPoint: 'https://test.mediaconvert.eu-west-1.amazonaws.com',
@@ -72,12 +69,7 @@ describe('Media Convert', () => {
       callback(null, { Preset: { Name: callCount++ } }),
     );
 
-    lambda
-      .MediaConvertPresets(event)
-      .then(data => {
-        expect(data).to.deep.equal({ Presets: Array.from(Array(21).keys()) });
-        done();
-      })
-      .catch(err => done(err));
+    const result = await lambda.MediaConvertPresets(event);
+    expect(result).toEqual({ Presets: Array.from(Array(21).keys()) });
   });
 });
