@@ -27,8 +27,6 @@ const presets = [
   './presets/video_hls_h264_1080p_30fps_5400kbps.json',
 ];
 
-let response;
-
 // Return MediaConvert regional account Endpoint
 let createEndPoint = () => {
   const mediaconvert = new AWS.MediaConvert();
