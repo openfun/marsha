@@ -6,14 +6,21 @@
     "node": "^8.10"
   },
   "description": "Confirm to the server when encoding for a video is complete",
-  "dependencies": {
-    "aws-sdk": "2.292.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://www.github.com/openfun/marsha"
   },
   "scripts": {
     "test": "mocha *.spec.js"
+  },
+  "dependencies": {
+    "aws-sdk": "2.292.0",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.5"
+  },
+  "devDependencies": {
+    "@types/jest": "23.3.2",
+    "@types/request-promise-native": "1.0.15",
+    "jest": "23.6.0"
   }
 }
