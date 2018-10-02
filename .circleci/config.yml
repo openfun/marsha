@@ -382,6 +382,28 @@ jobs:
             - ./node_modules
           key: v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
 
+  test-lambda-confirm:
+    docker:
+      - image: circleci/node:8.11.3
+    working_directory: ~/marsha/terraform/source/confirm
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+          - v3-lambdas-confirm-dependencies-{{ checksum "package.json" }}
+          - v3-lambdas-confirm-dependencies-
+      - run:
+          name: Install confirm lambda dependencies
+          command: yarn install --ignore-engines --frozen-lockfile
+      - run:
+          name: Run confirm lambda tests
+          command: yarn test
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v3-lambdas-confirm-dependencies-{{ checksum "package.json" }}
+
   # ---- Alpine jobs ----
   build-alpine:
 
@@ -577,6 +599,10 @@ workflows:
 
       # Lambda related jobs
       - test-lambda-configure:
+          filters:
+            tags:
+              only: /.*/
+      - test-lambda-confirm:
           filters:
             tags:
               only: /.*/

@@ -11,7 +11,7 @@
     "url": "https://www.github.com/openfun/marsha"
   },
   "scripts": {
-    "test": "mocha *.spec.js"
+    "test": "jest"
   },
   "dependencies": {
     "aws-sdk": "2.292.0",
