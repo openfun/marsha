@@ -52,7 +52,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertIsNone(context["video"]["urls"])
+        self.assertEqual(context["video"]["urls"], "null")
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_student(self, mock_initialize):
@@ -78,4 +78,4 @@ class ViewsTestCase(TestCase):
         self.assertEqual(context["video"]["id"], str(video.id))
         self.assertEqual(context["video"]["title"], str(video.title))
         self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertIsNone(context["video"]["urls"])
+        self.assertEqual(context["video"]["urls"], "null")

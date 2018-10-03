@@ -194,7 +194,8 @@ class VideoSerializer(serializers.ModelSerializer):
 
         """
         if obj.uploaded_on is None or obj.state != READY:
-            return None
+            # Return JSON here to be consistent with the other possible return value below
+            return json.dumps(None)
 
         urls = {"mp4": {}, "thumbnails": {}}
         base = "{cloudfront:s}/{resource!s}".format(

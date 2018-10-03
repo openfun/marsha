@@ -161,7 +161,7 @@ class VideoAPITest(TestCase):
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
-        """A video with no active stamp should not fail and its "urls" should be set to `None`."""
+        """A video with no active stamp should not fail and its "urls" should be set to `null`."""
         video = VideoFactory(uploaded_on=None)
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -183,13 +183,13 @@ class VideoAPITest(TestCase):
                 "active_stamp": None,
                 "state": "pending",
                 "subtitle_tracks": [],
-                "urls": None,
+                "urls": "null",
             },
         )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_not_ready(self):
-        """A video that is not ready should have its "urls" set to `None`."""
+        """A video that is not ready should have its "urls" set to `null`."""
         for state, _ in STATE_CHOICES:
             if state == "ready":
                 continue
@@ -216,7 +216,7 @@ class VideoAPITest(TestCase):
                     "active_stamp": "1533686400",
                     "state": state,
                     "subtitle_tracks": [],
-                    "urls": None,
+                    "urls": "null",
                 },
             )
 
