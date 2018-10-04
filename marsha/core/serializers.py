@@ -1,6 +1,5 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
-import json
 import re
 
 from django.conf import settings
@@ -242,7 +241,7 @@ class VideoSerializer(serializers.ModelSerializer):
             base=base, stamp=stamp
         )
 
-        return json.dumps(urls)
+        return urls
 
 
 class UploadConfirmSerializer(serializers.Serializer):
