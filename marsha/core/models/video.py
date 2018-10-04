@@ -69,6 +69,8 @@ class Playlist(BaseModel):
         verbose_name=_("users"),
         help_text=_("users who have been granted access to this playlist"),
     )
+    is_portable_to_playlist = models.BooleanField(default=True)
+    is_portable_to_consumer_site = models.BooleanField(default=False)
 
     class Meta:
         """Options for the ``Playlist`` model."""
