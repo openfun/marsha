@@ -97,8 +97,8 @@ class SubtitleTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 200)
+        self.assertIn('"url":null', response.content.decode("utf-8"))
         content = json.loads(response.content)
-
         self.assertIsNone(content["url"])
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
@@ -120,6 +120,7 @@ class SubtitleTrackAPITest(TestCase):
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
             self.assertEqual(response.status_code, 200)
+            self.assertIn('"url":null', response.content.decode("utf-8"))
             content = json.loads(response.content)
             self.assertIsNone(content["url"])
 

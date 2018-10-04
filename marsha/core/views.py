@@ -1,4 +1,6 @@
 """Views of the ``core`` app of the Marsha project."""
+import json
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
@@ -52,7 +54,7 @@ class VideoLTIView(TemplateResponseMixin, View):
         try:
             video = lti.get_or_create_video()
         except LTIException:
-            return {"state": "error"}
+            return {"state": "error", "video_data": "null"}
 
         if lti.is_instructor:
             # Create a short-lived JWT token for the video
@@ -64,7 +66,9 @@ class VideoLTIView(TemplateResponseMixin, View):
         else:
             context = {"state": STUDENT}
 
-        context["video"] = VideoSerializer(video).data if video else None
+        context["video_data"] = json.dumps(
+            VideoSerializer(video).data if video else None
+        )
 
         return context
 
