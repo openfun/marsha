@@ -6,7 +6,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
 
-from .models import ConsumerSite, Playlist, Video
+from .models import PENDING, READY, ConsumerSite, Playlist, Video
 from .models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
 
@@ -139,6 +139,17 @@ class LTI:
         return self.request.POST.get("context_title", self.context_id)
 
     @property
+    def resource_link_id(self):
+        """Handle Open edX specific resource_link_id."""
+        # The Open edX launch request is recognizable by the absence of consumer instance guid
+        # It's consumer instance guid is concatenated in the resource link id which is wrong so
+        # let's strip it...
+        if self.request.POST.get("tool_consumer_instance_guid"):
+            return self.request.POST["resource_link_id"]
+
+        return self.request.POST["resource_link_id"].rsplit("-", 1)[-1]
+
+    @property
     def consumer_site_name(self):
         """Get consumer site name from the LTI launch request.
 
@@ -221,8 +232,47 @@ class LTI:
                 playlist__consumer_site__name=self.consumer_site_name,
             )
         except Video.DoesNotExist:
-            # Only create the video if the request comes from an instructor
-            if not self.is_instructor:
+            # Look for the same resource id from another playlist on the same consumer site
+            origin_video = (
+                Video.objects.filter(
+                    lti_id=self.resource_link_id,
+                    playlist__consumer_site__name=self.consumer_site_name,
+                    playlist__is_portable_to_playlist=True,
+                    state=READY,
+                )
+                .order_by("-uploaded_on")
+                .first()
+            )
+
+            if origin_video is None:
+                # Look for the same resource id from the same playlist on another consumer site
+                origin_video = (
+                    Video.objects.filter(
+                        lti_id=self.resource_link_id,
+                        playlist__lti_id=self.context_id,
+                        playlist__is_portable_to_consumer_site=True,
+                        state=READY,
+                    )
+                    .order_by("-uploaded_on")
+                    .first()
+                )
+
+            if origin_video is None:
+                # Look for the same resource id from another playlist on another consumer site
+                origin_video = (
+                    Video.objects.filter(
+                        lti_id=self.resource_link_id,
+                        state=READY,
+                        playlist__is_portable_to_playlist=True,
+                        playlist__is_portable_to_consumer_site=True,
+                    )
+                    .order_by("-uploaded_on")
+                    .first()
+                )
+
+            # If we still didn't find any existing video, we will only create a new video if the
+            # request comes from an instructor
+            if origin_video is None and not self.is_instructor:
                 return None
 
         # Creating the video...
@@ -233,12 +283,27 @@ class LTI:
         playlist, _ = Playlist.objects.get_or_create(
             lti_id=self.context_id,
             consumer_site=consumer_site,
-            defaults={"title": self.context_title},
+            defaults={
+                "title": self.context_title,
+                "is_portable_to_playlist": (
+                    origin_video.playlist.is_portable_to_playlist
+                    if origin_video
+                    else True
+                ),
+                "is_portable_to_consumer_site": (
+                    origin_video.playlist.is_portable_to_consumer_site
+                    if origin_video
+                    else False
+                ),
+            },
         )
 
-        # Create the video
+        # Create the video, pointing to the file from the origin video if any
         return Video.objects.create(
+            duplicated_from=origin_video,
             lti_id=self.resource_link_id,
-            title=self.resource_link_title,
             playlist=playlist,
+            state=READY if origin_video else PENDING,
+            title=self.resource_link_title,
+            uploaded_on=origin_video.uploaded_on if origin_video else None,
         )
