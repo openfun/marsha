@@ -89,7 +89,7 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         thumbnails_template = (
-            "https://abc.cloudfront.net/" "{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
+            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
             str(rate): thumbnails_template.format(video.resource_id, rate)
@@ -124,26 +124,24 @@ class VideoAPITest(TestCase):
                         "video": str(video.id),
                     }
                 ],
-                "urls": json.dumps(
-                    {
-                        "mp4": mp4_dict,
-                        "thumbnails": thumbnails_dict,
-                        "manifests": {
-                            "dash": (
-                                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                                "dash/1533686400.mpd"
-                            ),
-                            "hls": (
-                                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                                "hls/1533686400.m3u8"
-                            ),
-                        },
-                        "previews": (
+                "urls": {
+                    "mp4": mp4_dict,
+                    "thumbnails": thumbnails_dict,
+                    "manifests": {
+                        "dash": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "previews/1533686400_100.jpg"
+                            "dash/1533686400.mpd"
                         ),
-                    }
-                ),
+                        "hls": (
+                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "hls/1533686400.m3u8"
+                        ),
+                    },
+                    "previews": (
+                        "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                        "previews/1533686400_100.jpg"
+                    ),
+                },
             },
         )
 
@@ -171,9 +169,10 @@ class VideoAPITest(TestCase):
             "/api/videos/{!s}/".format(video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
 
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('"urls":null', response.content.decode("utf-8"))
+        content = json.loads(response.content)
         self.assertEqual(
             content,
             {
@@ -206,6 +205,7 @@ class VideoAPITest(TestCase):
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
             self.assertEqual(response.status_code, 200)
+            self.assertIn('"urls":null', response.content.decode("utf-8"))
             content = json.loads(response.content)
             self.assertEqual(
                 content,
@@ -247,14 +247,14 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         self.assertEqual(
-            json.loads(content["urls"])["thumbnails"]["144"],
+            content["urls"]["thumbnails"]["144"],
             (
                 "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                 "thumbnails/1533686400_144.0000000.jpg"
             ),
         )
         self.assertEqual(
-            json.loads(content["urls"])["mp4"]["144"],
+            content["urls"]["mp4"]["144"],
             (
                 "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/"
                 "1533686400_144.mp4?Expires=1533693600&Signature=Sr8lng3~F7DC~omoNl-~brtKo0W7oZj8"

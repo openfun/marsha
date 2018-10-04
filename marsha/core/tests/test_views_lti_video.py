@@ -1,13 +1,17 @@
 """Test the LTI interconnection with Open edX."""
+from html import unescape
+import json
+import random
+import re
 from unittest import mock
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
-from rest_framework_simplejwt.state import token_backend
+from pylti.common import LTIException
+from rest_framework_simplejwt.tokens import AccessToken
 
 from ..factories import VideoFactory
 from ..lti import LTI
-from ..views import VideoLTIView
 
 
 # We don't enforce arguments documentation in tests
@@ -17,65 +21,141 @@ from ..views import VideoLTIView
 class ViewsTestCase(TestCase):
     """Test the views in the ``core`` app of the Marsha project."""
 
-    def setUp(self):
-        """Override the setUp method to instanciate and serve a request factory."""
-        super().setUp()
-        self.factory = RequestFactory()
-
     @mock.patch.object(LTI, "verify", return_value=True)
-    def test_views_video_lti_instructor(self, mock_initialize):
-        """Validate the context returned for an instructor request."""
+    def test_views_video_lti_post_instructor(self, mock_initialize):
+        """Validate the format of the response returned by the view for a student request."""
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
             playlist__consumer_site__name="example.com",
         )
-        view = VideoLTIView()
-        view.request = self.factory.post(
-            "/",
+        data = {
+            "resource_link_id": "123",
+            "roles": "instructor",
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
+        }
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        # Extract the JWT Token and state
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+
+        data_state = match.group(2)
+        self.assertEqual(data_state, "instructor")
+
+        # Extract the video data
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+
+        self.assertEqual(
+            json.loads(unescape(data_video)),
             {
-                "resource_link_id": "123",
-                "roles": "instructor",
-                "context_id": "abc",
-                "tool_consumer_instance_guid": "example.com",
+                "active_stamp": None,
+                "description": video.description,
+                "id": str(video.id),
+                "state": "pending",
+                "subtitle_tracks": [],
+                "title": video.title,
+                "urls": None,
             },
         )
 
-        context = view.get_context_data()
-
-        jwt_token = context.pop("jwt_token")
-        decoded_token = token_backend.decode(jwt_token)
-        self.assertEqual(decoded_token["video_id"], str(video.id))
-
-        self.assertEqual(set(context.keys()), {"state", "video"})
-        self.assertEqual(context["state"], "instructor")
-        self.assertEqual(context["video"]["id"], str(video.id))
-        self.assertEqual(context["video"]["title"], str(video.title))
-        self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertIsNone(context["video"]["urls"])
-
     @mock.patch.object(LTI, "verify", return_value=True)
-    def test_views_video_lti_student(self, mock_initialize):
-        """Validate the context returned for a student request."""
+    def test_views_video_lti_post_student(self, mock_initialize):
+        """Validate the format of the response returned by the view for a student request."""
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
             playlist__consumer_site__name="example.com",
         )
-        view = VideoLTIView()
-        view.request = self.factory.post(
-            "/",
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
+        }
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "student")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+
+        self.assertEqual(
+            json.loads(unescape(data_video)),
             {
-                "resource_link_id": "123",
-                "roles": "student",
-                "context_id": "abc",
-                "tool_consumer_instance_guid": "example.com",
+                "active_stamp": None,
+                "description": video.description,
+                "id": str(video.id),
+                "state": "pending",
+                "subtitle_tracks": [],
+                "title": video.title,
+                "urls": None,
             },
         )
-        context = view.get_context_data()
-        self.assertEqual(set(context.keys()), {"state", "video"})
-        self.assertEqual(context["state"], "student")
-        self.assertEqual(context["video"]["id"], str(video.id))
-        self.assertEqual(context["video"]["title"], str(video.title))
-        self.assertEqual(context["video"]["description"], str(video.description))
-        self.assertIsNone(context["video"]["urls"])
+
+    @mock.patch.object(LTI, "verify", return_value=True)
+    def test_views_video_lti_post_student_no_video(self, mock_initialize):
+        """Validate the response returned for a student request when there is no video."""
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
+        }
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "student")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_video, "null")
+
+    @mock.patch.object(LTI, "verify", side_effect=LTIException)
+    def test_views_video_lti_post_error(self, mock_initialize):
+        """Validate the response returned in case of an LTI exception."""
+        role = random.choice(["instructor", "student"])
+        data = {
+            "resource_link_id": "123",
+            "roles": role,
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
+        }
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "error")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_video, "null")
