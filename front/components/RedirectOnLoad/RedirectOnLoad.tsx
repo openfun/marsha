@@ -21,7 +21,7 @@ export const RedirectOnLoad = () => {
           return <Redirect push to={ERROR_ROUTE('lti')} />;
         }
         // Everyone gets the video when it exists (so that instructors see the iframes like a student would by default)
-        else if (video.status === 'ready') {
+        else if (video.state === 'ready') {
           return <Redirect push to={PLAYER_ROUTE()} />;
         }
         // Only instructors are allowed to interact with a non-ready video

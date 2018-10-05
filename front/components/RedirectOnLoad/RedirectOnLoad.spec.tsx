@@ -31,7 +31,7 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects instructors to the player when the video is ready', () => {
     context.state = 'instructor';
-    context.video = { status: 'ready' };
+    context.video = { state: 'ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
@@ -41,7 +41,7 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects students to /player when the video is ready', () => {
     context.state = 'student';
-    context.video = { status: 'ready' };
+    context.video = { state: 'ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
