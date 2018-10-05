@@ -34,13 +34,13 @@ export const parseDataElements: (
         // Build the policy object using the element as data-{key}="value"
         .reduce((acc: any, key) => {
           if (element.id) {
-            // Use of ID denotes a nested object: merge on it, creating it if necessary
+            // Use of ID denotes a nested object
+            // Nested objects use straight JSON instead of a series of data-attributes
             return {
               ...acc,
-              [element.id]: {
-                ...(acc[element.id] ? acc[element.id] : {}),
-                [key.substr(5)]: element.getAttribute(key),
-              },
+              [element.id]: JSON.parse(
+                element.getAttribute(`data-${element.id}`)!,
+              ),
             };
           } else {
             // If there's no ID, just merge on the main accumulator

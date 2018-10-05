@@ -10,8 +10,6 @@ const appData = parseDataElements(
   // Spread to pass an array instead of a NodeList
   [...document.querySelectorAll('.marsha-frontend-data')],
 );
-// urls are a JSON object. Parse it once here so we can use it as needed
-appData.video.urls = JSON.parse(appData.video.urls as any);
 export const AppDataContext = React.createContext(appData);
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
