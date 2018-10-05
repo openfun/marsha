@@ -30,6 +30,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
 
     forwarded_values {
       query_string = false
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 
       cookies {
         forward = "none"
@@ -53,6 +54,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
 
     forwarded_values {
       query_string = false
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 
       cookies {
         forward = "none"
@@ -76,6 +78,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
 
     forwarded_values {
       query_string = false
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 
       cookies {
         forward = "none"

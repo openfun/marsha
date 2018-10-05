@@ -21,6 +21,13 @@ resource "aws_s3_bucket" "marsha_destination" {
   bucket = "${terraform.workspace}-marsha-destination"
   acl    = "private"
 
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3600
+  }
+
   tags {
     Name        = "marsha-destination"
     Environment = "${terraform.workspace}"
