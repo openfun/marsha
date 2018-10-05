@@ -11,7 +11,7 @@ describe('VideoPlayer', () => {
   const video = {
     description: 'Some description',
     id: 'video-id',
-    status: 'ready',
+    state: 'ready',
     title: 'Some title',
     urls: {
       mp4: {

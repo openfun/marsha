@@ -18,7 +18,7 @@ describe('VideoForm', () => {
   const video = {
     description: '',
     id: 'ab42',
-    status: 'no_ready',
+    state: 'pending',
     title: '',
   } as Video;
 
