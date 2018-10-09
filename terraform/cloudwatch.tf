@@ -18,5 +18,5 @@ PATTERN
 resource "aws_cloudwatch_event_target" "marsha_encode_complete_target" {
   rule      = "${aws_cloudwatch_event_rule.marsha_encode_complete_rule.name}"
   target_id = "check_foo"
-  arn       = "${aws_lambda_function.marsha_confirm_lambda.arn}"
+  arn       = "${aws_lambda_function.marsha_update_state_lambda.arn}"
 }

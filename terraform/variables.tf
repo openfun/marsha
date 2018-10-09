@@ -15,10 +15,10 @@ variable "aws_region" {
   default = "eu-west-1"
 }
 
-variable "upload_confirm_endpoint" {
+variable "update_state_endpoint" {
   type    = "string"
 }
 
-variable "upload_confirm_secret" {
+variable "update_state_secret" {
   type    = "string"
 }

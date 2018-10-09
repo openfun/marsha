@@ -1,6 +1,6 @@
 'use strict';
 
-const endpoint = 'https://example.com/confirm-endpoint/';
+const endpoint = 'https://example.com/update-state-endpoint/';
 process.env.ENDPOINT = endpoint;
 process.env.SHARED_SECRET = 'some secret';
 
@@ -78,7 +78,7 @@ describe('Confirm', () => {
     const event = {
       detail: {
         userMetadata: {
-          ObjectKey: 'object key that will fail to confirm',
+          ObjectKey: 'object key that will fail to update',
         },
         status: 'COMPLETE',
       },

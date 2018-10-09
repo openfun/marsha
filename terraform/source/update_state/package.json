@@ -1,6 +1,6 @@
 {
   "author": "France Université Numérique",
-  "name": "aws-marsha-confirm",
+  "name": "aws-marsha-update-state",
   "version": "0.0.1",
   "engines": {
     "node": "^8.10"
