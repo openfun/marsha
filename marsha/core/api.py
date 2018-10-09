@@ -13,18 +13,14 @@ from rest_framework.response import Response
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
 from .models import SubtitleTrack, Video
 from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
-from .serializers import (
-    SubtitleTrackSerializer,
-    UploadConfirmSerializer,
-    VideoSerializer,
-)
+from .serializers import SubtitleTrackSerializer, UpdateStateSerializer, VideoSerializer
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
 
 
 @api_view(["POST"])
-def upload_confirm(request):
-    """View handling AWS POST request to confirm the state of an upload to an object key.
+def update_state(request):
+    """View handling AWS POST request to update the state of an object by key.
 
     Parameters
     ----------
@@ -37,10 +33,10 @@ def upload_confirm(request):
     Returns
     -------
     Type[rest_framework.response.Response]
-        HttpResponse acknowledging the success or failure of the confirm operation.
+        HttpResponse acknowledging the success or failure of the state update operation.
 
     """
-    serializer = UploadConfirmSerializer(data=request.data)
+    serializer = UpdateStateSerializer(data=request.data)
 
     if serializer.is_valid() is not True:
         return Response(serializer.errors, status=400)
@@ -57,7 +53,7 @@ def upload_confirm(request):
         == hmac.new(
             secret.encode("utf-8"), msg=msg.encode("utf-8"), digestmod=hashlib.sha256
         ).hexdigest()
-        for secret in settings.UPLOAD_CONFIRM_SHARED_SECRETS
+        for secret in settings.UPDATE_STATE_SHARED_SECRETS
     )
 
     if not signature_is_valid:

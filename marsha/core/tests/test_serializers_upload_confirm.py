@@ -1,4 +1,4 @@
-"""Tests for the UploadConfirmSerializer serializer of the Marsha project."""
+"""Tests for the UpdateStateSerializer serializer of the Marsha project."""
 from datetime import datetime
 import random
 from uuid import uuid4
@@ -7,17 +7,17 @@ from django.test import TestCase
 
 import pytz
 
-from ..serializers import UploadConfirmSerializer
+from ..serializers import UpdateStateSerializer
 
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=missing-param-doc,missing-type-doc,unused-argument
 
 
-class UploadConfirmSerializerTest(TestCase):
-    """Test the serializer that receives upload confirmations."""
+class UpdateStateSerializerTest(TestCase):
+    """Test the serializer that receives upload & processing state updates."""
 
-    def test_serializers_upload_confirm_valid_data(self):
+    def test_serializers_update_state_valid_data(self):
         """The serializer should return the validated data."""
         valid_keys = (
             "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
@@ -28,14 +28,14 @@ class UploadConfirmSerializerTest(TestCase):
         for key in valid_keys:
             state = random.choice(("ready", "error"))
             valid_data = {"key": key, "state": state, "signature": "123abc"}
-            serializer = UploadConfirmSerializer(data=valid_data)
+            serializer = UpdateStateSerializer(data=valid_data)
             self.assertTrue(serializer.is_valid())
             self.assertEqual(
                 dict(serializer.validated_data),
                 {"key": key, "state": state, "signature": "123abc"},
             )
 
-    def test_serializers_upload_confirm_missing_field(self):
+    def test_serializers_update_state_missing_field(self):
         """All fields in the serializer are required."""
         valid_data = {
             "key": "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
@@ -45,11 +45,11 @@ class UploadConfirmSerializerTest(TestCase):
         for field in valid_data:
             invalid_data = valid_data.copy()
             invalid_data.pop(field, None)
-            serializer = UploadConfirmSerializer(data=invalid_data)
+            serializer = UpdateStateSerializer(data=invalid_data)
             self.assertFalse(serializer.is_valid())
             self.assertEqual(serializer.errors[field][0], "This field is required.")
 
-    def test_serializers_upload_confirm_invalid_key(self):
+    def test_serializers_update_state_invalid_key(self):
         """The serializer should not be valid if the key is not of a valid format."""
         invalid_uuids = (
             "a2f27fdz-973a-4e89-8dca-cc59e01d255c",
@@ -71,14 +71,14 @@ class UploadConfirmSerializerTest(TestCase):
         )
         for key in invalid_keys:
             invalid_data = {"key": key, "state": "ready", "signature": "123abc"}
-            serializer = UploadConfirmSerializer(data=invalid_data)
+            serializer = UpdateStateSerializer(data=invalid_data)
             self.assertFalse(serializer.is_valid())
             self.assertEqual(
                 serializer.errors["key"][0],
                 "This value does not match the required pattern.",
             )
 
-    def test_serializers_upload_confirm_invalid_state(self):
+    def test_serializers_update_state_invalid_state(self):
         """The serializer should not be valid if the state is not of a valid value."""
         invalid_states = {
             "pending": '"pending" is not a valid choice.',
@@ -90,11 +90,11 @@ class UploadConfirmSerializerTest(TestCase):
                 "state": state,
                 "signature": "123abc",
             }
-            serializer = UploadConfirmSerializer(data=invalid_data)
+            serializer = UpdateStateSerializer(data=invalid_data)
             self.assertFalse(serializer.is_valid())
             self.assertEqual(serializer.errors["state"][0], message)
 
-    def test_serializers_upload_confirm_key_elements(self):
+    def test_serializers_update_state_key_elements(self):
         """The serializer has a method that helps to extract key elements."""
         resource_id, object_id = uuid4(), uuid4()
         valid_data = {
@@ -102,7 +102,7 @@ class UploadConfirmSerializerTest(TestCase):
             "state": "ready",
             "signature": "123abc",
         }
-        serializer = UploadConfirmSerializer(data=valid_data)
+        serializer = UpdateStateSerializer(data=valid_data)
 
         self.assertTrue(serializer.is_valid())
         self.assertEqual(

@@ -151,7 +151,7 @@ class Base(Configuration):
     AWS_ACCESS_KEY_ID = values.SecretValue()
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_DEFAULT_REGION = values.Value("eu-west-1")
-    UPLOAD_CONFIRM_SHARED_SECRETS = values.ListValue()
+    UPDATE_STATE_SHARED_SECRETS = values.ListValue()
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_URL = values.SecretValue()

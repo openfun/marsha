@@ -10,7 +10,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from .models import ERROR, READY, STATE_CHOICES, SubtitleTrack, Video
+from .models import ERROR, PROCESSING, READY, STATE_CHOICES, SubtitleTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -244,12 +244,12 @@ class VideoSerializer(serializers.ModelSerializer):
         return urls
 
 
-class UploadConfirmSerializer(serializers.Serializer):
-    """A serializer to validate data submitted on the UploadConfirm API endpoint."""
+class UpdateStateSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UpdateState API endpoint."""
 
     key = serializers.RegexField(KEY_REGEX)
     state = serializers.ChoiceField(
-        tuple(c for c in STATE_CHOICES if c[0] in (READY, ERROR))
+        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR))
     )
     signature = serializers.CharField(max_length=200)
 
