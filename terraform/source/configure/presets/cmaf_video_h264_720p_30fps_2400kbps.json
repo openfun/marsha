@@ -1,11 +1,11 @@
 {
-  "Description": "Video, Dash, H264, 426x240p, 29.97fps, 600kbps",
-  "Category": "DASH",
-  "Name": "marsha_video_dash_240",
+  "Description": "Video, Cmaf, H264, 1280x720p, 29.97fps, 2400kbps",
+  "Category": "CMAF",
+  "Name": "marsha_cmaf_video_720",
   "Settings": {
     "VideoDescription": {
-      "Width": 426,
-      "Height": 240,
+      "Width": 1280,
+      "Height": 720,
       "ScalingBehavior": "STRETCH_TO_OUTPUT",
       "TimecodeInsertion": "DISABLED",
       "AntiAlias": "ENABLED",
@@ -27,7 +27,7 @@
           "TemporalAdaptiveQuantization": "ENABLED",
           "FlickerAdaptiveQuantization": "DISABLED",
           "EntropyEncoding": "CABAC",
-          "Bitrate": 600000,
+          "Bitrate": 2400000,
           "FramerateControl": "SPECIFIED",
           "RateControlMode": "CBR",
           "CodecProfile": "MAIN",
@@ -52,25 +52,6 @@
       "RespondToAfd": "NONE",
       "ColorMetadata": "INSERT"
     },
-    "AudioDescriptions": [
-      {
-        "AudioTypeControl": "FOLLOW_INPUT",
-        "CodecSettings": {
-          "Codec": "AAC",
-          "AacSettings": {
-            "AudioDescriptionBroadcasterMix": "NORMAL",
-            "Bitrate": 64000,
-            "RateControlMode": "CBR",
-            "CodecProfile": "LC",
-            "CodingMode": "CODING_MODE_2_0",
-            "RawFormat": "NONE",
-            "SampleRate": 32000,
-            "Specification": "MPEG4"
-          }
-        },
-        "LanguageCodeControl": "FOLLOW_INPUT"
-      }
-    ],
     "ContainerSettings": {
       "Container": "MPD"
     }
