@@ -1,7 +1,7 @@
 {
-  "Description": "Video, Dash, H264, 256x144p, 29.97fps, 300kbps",
-  "Category": "DASH",
-  "Name": "marsha_video_dash_144",
+  "Description": "Video, Cmaf, H264, 256x144p, 29.97fps, 300kbps",
+  "Category": "CMAF",
+  "Name": "marsha_cmaf_video_144",
   "Settings": {
     "VideoDescription": {
       "Width": 256,
@@ -52,25 +52,6 @@
       "RespondToAfd": "NONE",
       "ColorMetadata": "INSERT"
     },
-    "AudioDescriptions": [
-      {
-        "AudioTypeControl": "FOLLOW_INPUT",
-        "CodecSettings": {
-          "Codec": "AAC",
-          "AacSettings": {
-            "AudioDescriptionBroadcasterMix": "NORMAL",
-            "Bitrate": 64000,
-            "RateControlMode": "CBR",
-            "CodecProfile": "LC",
-            "CodingMode": "CODING_MODE_2_0",
-            "RawFormat": "NONE",
-            "SampleRate": 32000,
-            "Specification": "MPEG4"
-          }
-        },
-        "LanguageCodeControl": "FOLLOW_INPUT"
-      }
-    ],
     "ContainerSettings": {
       "Container": "MPD"
     }

@@ -4,6 +4,16 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 
 const presets = [
+  './presets/cmaf_audio_aac_64kbps.json',
+  './presets/cmaf_audio_aac_96kbps.json',
+  './presets/cmaf_audio_aac_128kbps.json',
+  './presets/cmaf_audio_aac_160kbps.json',
+  './presets/cmaf_audio_aac_192kbps.json',
+  './presets/cmaf_video_h264_144p_30fps_300kbps.json',
+  './presets/cmaf_video_h264_240p_30fps_600kbps.json',
+  './presets/cmaf_video_h264_480p_30fps_1200kbps.json',
+  './presets/cmaf_video_h264_720p_30fps_2400kbps.json',
+  './presets/cmaf_video_h264_1080p_30fps_5400kbps.json',
   './presets/thumbnail_jpeg_144p.json',
   './presets/thumbnail_jpeg_240p.json',
   './presets/thumbnail_jpeg_480p.json',
@@ -15,16 +25,6 @@ const presets = [
   './presets/video_mp4_h264_480p_30fps_1200kbps.json',
   './presets/video_mp4_h264_720p_30fps_2400kbps.json',
   './presets/video_mp4_h264_1080p_30fps_5400kbps.json',
-  './presets/video_dash_h264_144p_30fps_300kbps.json',
-  './presets/video_dash_h264_240p_30fps_600kbps.json',
-  './presets/video_dash_h264_480p_30fps_1200kbps.json',
-  './presets/video_dash_h264_720p_30fps_2400kbps.json',
-  './presets/video_dash_h264_1080p_30fps_5400kbps.json',
-  './presets/video_hls_h264_144p_30fps_300kbps.json',
-  './presets/video_hls_h264_240p_30fps_600kbps.json',
-  './presets/video_hls_h264_480p_30fps_1200kbps.json',
-  './presets/video_hls_h264_720p_30fps_2400kbps.json',
-  './presets/video_hls_h264_1080p_30fps_5400kbps.json',
 ];
 
 // Return MediaConvert regional account Endpoint

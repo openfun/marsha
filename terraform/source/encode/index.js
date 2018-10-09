@@ -68,57 +68,32 @@ exports.handler = async (event, context, callback) => {
           })),
         },
         {
-          CustomName: 'Video DASH outputs',
-          Name: 'DASH ISO',
+          CustomName: 'Video CMAF outputs',
+          Name: 'CMAF',
           OutputGroupSettings: {
-            Type: 'DASH_ISO_GROUP_SETTINGS',
-            DashIsoGroupSettings: {
-              HbbtvCompliance: 'NONE',
-              SegmentLength: 30,
+            Type: 'CMAF_GROUP_SETTINGS',
+            CmafGroupSettings: {
+              WriteDashManifest: 'ENABLED',
+              WriteHlsManifest: 'ENABLED',
               FragmentLength: 2,
+              SegmentLength: 14,
               SegmentControl: 'SEGMENTED_FILES',
               Destination: `s3://${destinationBucket}/${objectKey.replace(
                 /\/video\/.*\//,
-                '/dash/',
+                '/cmaf/',
               )}`,
             },
           },
-          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
-            Preset: `${envType}_marsha_video_dash_${size}`,
-            NameModifier: `_${size}`,
-          })),
-        },
-        {
-          CustomName: 'Video HLS outputs',
-          Name: 'Apple HLS',
-          OutputGroupSettings: {
-            Type: 'HLS_GROUP_SETTINGS',
-            HlsGroupSettings: {
-              ManifestDurationFormat: 'INTEGER',
-              SegmentLength: 10,
-              TimedMetadataId3Period: 6,
-              CaptionLanguageSetting: 'OMIT',
-              TimedMetadataId3Frame: 'PRIV',
-              CodecSpecification: 'RFC_4281',
-              OutputSelection: 'MANIFESTS_AND_SEGMENTS',
-              ProgramDateTimePeriod: 600,
-              MinSegmentLength: 0,
-              DirectoryStructure: 'SINGLE_DIRECTORY',
-              ProgramDateTime: 'EXCLUDE',
-              SegmentControl: 'SEGMENTED_FILES',
-              ManifestCompression: 'NONE',
-              ClientCache: 'ENABLED',
-              StreamInfResolution: 'INCLUDE',
-              Destination: `s3://${destinationBucket}/${objectKey.replace(
-                /\/video\/.*\//,
-                '/hls/',
-              )}`,
-            },
-          },
-          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
-            Preset: `${envType}_marsha_video_hls_${size}`,
-            NameModifier: `_${size}`,
-          })),
+          Outputs: [
+            ...['144', '240', '480', '720', '1080'].map(size => ({
+              Preset: `${envType}_marsha_cmaf_video_${size}`,
+              NameModifier: `_${size}`,
+            })),
+            ...['64k', '96k', '128k', '160k', '192k'].map(bitrate => ({
+              Preset: `${envType}_marsha_cmaf_audio_${bitrate}`,
+              NameModifier: `_${bitrate}`,
+            })),
+          ],
         },
         {
           CustomName: 'Thumbnails outputs',
