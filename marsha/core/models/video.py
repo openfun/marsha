@@ -12,8 +12,13 @@ from .account import INSTRUCTOR, ROLE_CHOICES
 from .base import BaseModel, NonDeletedUniqueIndex
 
 
-PENDING, ERROR, READY = "pending", "error", "ready"
-STATE_CHOICES = ((PENDING, _("pending")), (ERROR, _("error")), (READY, _("ready")))
+PENDING, PROCESSING, ERROR, READY = "pending", "processing", "error", "ready"
+STATE_CHOICES = (
+    (PENDING, _("pending")),
+    (PROCESSING, _("processing")),
+    (ERROR, _("error")),
+    (READY, _("ready")),
+)
 
 
 class Playlist(BaseModel):
