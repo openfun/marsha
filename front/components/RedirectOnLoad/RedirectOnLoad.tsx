@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { AppDataContext } from '../..';
+import { videoState } from '../../types/Video';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
@@ -21,7 +22,7 @@ export const RedirectOnLoad = () => {
           return <Redirect push to={ERROR_ROUTE('lti')} />;
         }
         // Everyone gets the video when it exists (so that instructors see the iframes like a student would by default)
-        else if (video.state === 'ready') {
+        else if (video.state === videoState.READY) {
           return <Redirect push to={PLAYER_ROUTE()} />;
         }
         // Only instructors are allowed to interact with a non-ready video
