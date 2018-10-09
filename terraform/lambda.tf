@@ -76,19 +76,19 @@ resource "aws_lambda_permission" "allow_bucket" {
 # Confirmation
 ################
 
-resource "aws_lambda_function" "marsha_confirm_lambda" {
-  function_name    = "${terraform.workspace}-marsha-confirm"
+resource "aws_lambda_function" "marsha_update_state_lambda" {
+  function_name    = "${terraform.workspace}-marsha-update-state"
   handler          = "index.handler"
   runtime          = "nodejs8.10"
-  filename         = "dist/marsha_confirm.zip"
-  source_code_hash = "${base64sha256(file("dist/marsha_confirm.zip"))}"
+  filename         = "dist/marsha_update_state.zip"
+  source_code_hash = "${base64sha256(file("dist/marsha_update_state.zip"))}"
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
 
   environment {
     variables = {
-      ENDPOINT = "${var.upload_confirm_endpoint}"
+      ENDPOINT = "${var.update_state_endpoint}"
       ENV_TYPE = "${terraform.workspace}"
-      SHARED_SECRET = "${var.upload_confirm_secret}"
+      SHARED_SECRET = "${var.update_state_secret}"
     }
   }
 }
@@ -96,7 +96,7 @@ resource "aws_lambda_function" "marsha_confirm_lambda" {
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.marsha_confirm_lambda.arn}"
+  function_name = "${aws_lambda_function.marsha_update_state_lambda.arn}"
   principal     = "events.amazonaws.com"
   source_arn    = "${aws_cloudwatch_event_rule.marsha_encode_complete_rule.arn}"
 }

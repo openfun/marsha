@@ -56,7 +56,7 @@ lambda:
 	@find ./source -maxdepth 2  -name "node_modules" -exec rm -rf "{}" \;
 	@cd ./source/configure && npm install --production && zip -q -r9 ../../dist/marsha_configure.zip *;
 	@cd ./source/encode && npm install --production && zip -q -r9 ../../dist/marsha_encode.zip *;
-	@cd ./source/confirm && npm install --production && zip -q -r9 ../../dist/marsha_confirm.zip *;
+	@cd ./source/update_state && npm install --production && zip -q -r9 ../../dist/marsha_update_state.zip *;
 
 .PHONY: test
 test: ## test all lambda packages

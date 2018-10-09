@@ -188,7 +188,7 @@ resource "aws_iam_policy" "event_rule_lambda_invoke_policy" {
       "Action": [
         "lambda:InvokeFunction"
       ],
-      "Resource": "${aws_lambda_function.marsha_confirm_lambda.arn}",
+      "Resource": "${aws_lambda_function.marsha_update_state_lambda.arn}",
       "Effect": "Allow"
     }
   ]
