@@ -130,11 +130,11 @@ class VideoAPITest(TestCase):
                     "manifests": {
                         "dash": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "dash/1533686400.mpd"
+                            "cmaf/1533686400.mpd"
                         ),
                         "hls": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "hls/1533686400.m3u8"
+                            "cmaf/1533686400.m3u8"
                         ),
                     },
                     "previews": (
