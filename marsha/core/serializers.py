@@ -232,8 +232,8 @@ class VideoSerializer(serializers.ModelSerializer):
 
         # Adaptive Bit Rate manifests
         urls["manifests"] = {
-            "dash": "{base:s}/dash/{stamp:s}.mpd".format(base=base, stamp=stamp),
-            "hls": "{base:s}/hls/{stamp:s}.m3u8".format(base=base, stamp=stamp),
+            "dash": "{base:s}/cmaf/{stamp:s}.mpd".format(base=base, stamp=stamp),
+            "hls": "{base:s}/cmaf/{stamp:s}.m3u8".format(base=base, stamp=stamp),
         }
 
         # Previews
