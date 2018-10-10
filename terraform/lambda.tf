@@ -57,10 +57,12 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
 
   environment {
     variables = {
-      ENV_TYPE                = "${terraform.workspace}"
-      S3_DESTINATION_BUCKET   = "${aws_s3_bucket.marsha_destination.id}"
+      ENDPOINT = "${var.update_state_endpoint}"
+      ENV_TYPE = "${terraform.workspace}"
       MEDIA_CONVERT_ROLE      = "${aws_iam_role.media_convert_role.arn}"
       MEDIA_CONVERT_END_POINT = "${data.aws_lambda_invocation.configure_lambda_endpoint.result_map["EndpointUrl"]}"
+      S3_DESTINATION_BUCKET   = "${aws_s3_bucket.marsha_destination.id}"
+      SHARED_SECRET = "${var.update_state_secret}"
     }
   }
 }

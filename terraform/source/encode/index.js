@@ -2,6 +2,8 @@
 
 const AWS = require('aws-sdk');
 
+const updateState = require('./src/updateState');
+
 exports.handler = async (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
@@ -141,6 +143,8 @@ exports.handler = async (event, context, callback) => {
     })
       .createJob(params)
       .promise();
+
+    await updateState(objectKey, 'processing');
 
     console.log(JSON.stringify(jobData, null, 2));
     callback(null, { Job: jobData.Job.Id });
