@@ -12,31 +12,23 @@ generate-version-file: &generate-version-file
         "$CIRCLE_PROJECT_REPONAME" \
         "$CIRCLE_BUILD_URL" > version.json
 
-
 version: 2
 jobs:
-
   # Git jobs
   # Check that the git history is clean and complies with our expectations
   lint-git:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - run:
           name: Check absence of fixup commits
           command: |
             ! git log | grep 'fixup!'
-
       - run:
           name: Install gitlint
           command: |
             pip install gitlint
-
       - run:
           name: lint commit messages added to master
           command: |
@@ -46,21 +38,16 @@ jobs:
   # Build job
   # Build the Docker image ready for production
   build:
-
     # We use the machine executor, i.e. a VM, not a container
     machine:
       # Cache docker layers so that we strongly speed up this job execution
       docker_layer_caching: true
-
     working_directory: ~/marsha
-
     steps:
       # Checkout repository sources
       - checkout
-
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
@@ -69,11 +56,9 @@ jobs:
             docker build \
               -t marsha:${CIRCLE_SHA1} \
               .
-
       - run:
           name: Check built image availability
           command: docker images "marsha:${CIRCLE_SHA1}*"
-
       # Since we cannot rely on CircleCI's Docker layers cache (for obscure
       # reasons some subsequent jobs will benefit from a previous job cache and
       # some others won't), we choose to save built docker images in cached
@@ -85,7 +70,6 @@ jobs:
             docker save \
               -o docker/images/marsha.tar \
               marsha:${CIRCLE_SHA1}
-
       - save_cache:
           paths:
             - ~/marsha/docker/images/
@@ -94,31 +78,23 @@ jobs:
   # Build dev job
   # Build the Docker image ready for development
   build-dev:
-
     machine:
       docker_layer_caching: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/marsha.tar
-
       - run:
           name: List available images
           command: docker images "marsha:${CIRCLE_SHA1}*"
-
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-
       # Development image build, it uses the dev Dockerfile file
       - run:
           name: Build development image
@@ -128,11 +104,9 @@ jobs:
               -f docker/images/dev/Dockerfile \
               --build-arg BASE_TAG=${CIRCLE_SHA1} \
               .
-
       - run:
           name: Check built image availability
           command: docker images "marsha:${CIRCLE_SHA1}*"
-
       - run:
           name: Store docker image in cache
           command: |
@@ -140,30 +114,23 @@ jobs:
               -o docker/images/dev/marsha.tar \
               marsha:${CIRCLE_SHA1} \
               marsha:${CIRCLE_SHA1}-dev
-
       - save_cache:
           paths:
             - ~/marsha/docker/images/dev/
           key: docker-debian-images-dev-{{ .Revision }}
 
   lint-isort:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/dev/marsha.tar
-
       - run:
           name: Lint code with isort
           command: |
@@ -175,23 +142,17 @@ jobs:
                 isort --recursive --check-only .
 
   lint-flake8:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/dev/marsha.tar
-
       - run:
           name: Lint code with flake8
           command: |
@@ -203,23 +164,17 @@ jobs:
                 flake8
 
   lint-pylint:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/dev/marsha.tar
-
       - run:
           name: Lint code with pylint
           command: |
@@ -231,23 +186,17 @@ jobs:
                 pylint marsha
 
   lint-black:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/dev/marsha.tar
-
       - run:
           name: Lint code with black
           command: |
@@ -259,23 +208,17 @@ jobs:
                 black marsha --check
 
   test-back:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/dev/marsha.tar
-
       # Run back-end (Django) test suite
       #
       # Nota bene: to run the django test suite, we need to ensure that the
@@ -305,8 +248,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-front-dependencies-{{ checksum "package.json" }}
-          - v3-front-dependencies-
+            - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -328,7 +271,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -341,7 +284,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Lint code with prettier
           command: yarn prettier --list-different "**/*.+(ts|tsx|json|js|jsx)"
@@ -354,7 +297,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Run tests
           command: yarn test
@@ -369,8 +312,8 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-          - v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
-          - v3-lambdas-configure-dependencies-
+            - v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
+            - v3-lambdas-configure-dependencies-
       - run:
           name: Install configure lambda dependencies
           command: yarn install --ignore-engines --frozen-lockfile
@@ -391,8 +334,8 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-          - v3-lambdas-confirm-dependencies-{{ checksum "package.json" }}
-          - v3-lambdas-confirm-dependencies-
+            - v3-lambdas-confirm-dependencies-{{ checksum "package.json" }}
+            - v3-lambdas-confirm-dependencies-
       - run:
           name: Install confirm lambda dependencies
           command: yarn install --ignore-engines --frozen-lockfile
@@ -406,18 +349,13 @@ jobs:
 
   # ---- Alpine jobs ----
   build-alpine:
-
     machine:
       docker_layer_caching: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-
       - run:
           name: Build alpine production image
           command: |
@@ -425,7 +363,6 @@ jobs:
               -t marsha:${CIRCLE_SHA1}-alpine \
               -f docker/images/alpine/Dockerfile \
               .
-
       - run:
           name: Build alpine development image
           command: |
@@ -434,11 +371,9 @@ jobs:
               -f docker/images/alpine/dev/Dockerfile \
               --build-arg BASE_TAG=${CIRCLE_SHA1}-alpine \
               .
-
       - run:
           name: List available images
           command: docker images marsha
-
       - run:
           name: Store docker image in cache
           command: |
@@ -446,30 +381,23 @@ jobs:
               -o docker/images/alpine/marsha.tar \
               marsha:${CIRCLE_SHA1}-alpine \
               marsha:${CIRCLE_SHA1}-alpine-dev
-
       - save_cache:
           paths:
             - ~/marsha/docker/images/
           key: docker-alpine-images-dev-{{ .Revision }}
 
   test-alpine:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-alpine-images-dev-{{ .Revision }}
-
       - run:
           name: Load images to docker engine
           command: |
             docker load < docker/images/alpine/marsha.tar
-
       - run:
           name: Run tests
           command: |
@@ -484,25 +412,18 @@ jobs:
                   -timeout 60s \
                     python manage.py test
 
-
   # ---- DockerHub publication job ----
   hub:
-
     machine: true
-
     working_directory: ~/marsha
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - docker-debian-images-dev-{{ .Revision }}
-
       - restore_cache:
           keys:
             - docker-alpine-images-dev-{{ .Revision }}
-
       # Load all built images in all flavors
       - run:
           name: Load images to docker engine
@@ -519,7 +440,8 @@ jobs:
       #   - DOCKER_PASS
       - run:
           name: Login to DockerHub
-          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          command:
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
@@ -556,13 +478,11 @@ jobs:
             docker push fundocker/marsha:${DOCKER_TAG}-alpine
             docker push fundocker/marsha:${DOCKER_TAG}-alpine-dev
 
-
 workflows:
   version: 2
 
   marsha:
     jobs:
-
       # Git jobs
       #
       # Check validity of git history
