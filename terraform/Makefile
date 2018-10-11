@@ -53,13 +53,22 @@ lambda: ## Zip and copy source files to dist/
 lambda:
 	@echo "Zip and copy source files to dist/"
 	@rm -rf dist && mkdir dist
-	@find ./source -maxdepth 2  -name "node_modules" -exec rm -rf "{}" \;
-	@cd ./source/configure && npm install --production && zip -q -r9 ../../dist/marsha_configure.zip *;
-	@cd ./source/encode && npm install --production && zip -q -r9 ../../dist/marsha_encode.zip *;
-	@cd ./source/update_state && npm install --production && zip -q -r9 ../../dist/marsha_update_state.zip *;
+	@for lambda in configure encode update_state ; do \
+		cd ./source/$$lambda ; \
+		rm -rf node_modules ; \
+		yarn install --frozen-lockfile --production=true ; \
+		zip -q -r9 ../../dist/marsha_$$lambda.zip *; \
+		cd - ; \
+	done
 
 .PHONY: test
 test: ## test all lambda packages
 test:
 	@echo "Test all lambda packages"
-	@cd ./source/configure && npm install && npm test;
+	@for lambda in configure encode update_state ; do \
+		cd ./source/$$lambda ; \
+		rm -rf node_modules ; \
+		yarn install --frozen-lockfile ; \
+		yarn test; \
+		cd - ; \
+	done
