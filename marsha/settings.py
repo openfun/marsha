@@ -218,3 +218,27 @@ class Test(Base):
     AWS_SOURCE_BUCKET_NAME = "test-marsha-source"
 
     CLOUDFRONT_SIGNED_URLS_ACTIVE = False
+
+
+class Production(Base):
+    """Production environment settings.
+
+    You must define the DJANGO_ALLOWED_HOSTS environment variable in Production
+    configuration (and derived configurations):
+
+    DJANGO_ALLOWED_HOSTS="foo.com,foo.fr"
+    """
+
+    ALLOWED_HOSTS = values.ListValue(None)
+
+
+class Staging(Production):
+    """Staging environment settings."""
+
+    pass
+
+
+class PreProduction(Production):
+    """Pre-production environment settings."""
+
+    pass
