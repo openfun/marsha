@@ -11,6 +11,8 @@ import os
 from django.utils.translation import gettext_lazy as _
 
 from configurations import Configuration, values
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 class Base(Configuration):
@@ -176,6 +178,25 @@ class Base(Configuration):
             "USER_ID_CLAIM": "video_id",
             "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
         }
+
+    @classmethod
+    def post_setup(cls):
+        """Post setup configuration.
+
+        This is the place where you can configure settings that require other
+        settings to be loaded.
+        """
+        super().post_setup()
+
+        # The DJANGO_SENTRY_DSN environment variable should be set to activate
+        # sentry for an environment
+        sentry_dsn = values.Value(None, environ_name="SENTRY_DSN")
+        if sentry_dsn is not None:
+            sentry_sdk.init(
+                dsn=sentry_dsn,
+                environment=cls.__name__.lower(),
+                integrations=[DjangoIntegration()],
+            )
 
 
 class Development(Base):
