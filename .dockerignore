@@ -3,6 +3,9 @@ __pycache__
 *.pyc
 **/__pycache__
 **/*.pyc
+*.egg-info
+build
+venv
 
 # System-specific files
 .DS_Store
