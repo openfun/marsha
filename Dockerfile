@@ -20,12 +20,15 @@ FROM python:3.6-stretch as base
 # ---- back-end builder image ----
 FROM base as back-builder
 
-WORKDIR /install
+# We want the most up-to-date stable pip release
+RUN pip install --upgrade pip
 
-COPY setup.cfg /setup.cfg
+WORKDIR /builder
 
-RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('/setup.cfg'); \
-               print(c['options']['install_requires'])" | xargs pip install --prefix=/install
+COPY marsha setup.* /builder/
+
+RUN mkdir /install && \
+    pip install --prefix=/install .
 
 # ---- final application image ----
 FROM base
