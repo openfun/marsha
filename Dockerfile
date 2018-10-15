@@ -30,6 +30,16 @@ COPY marsha setup.* /builder/
 RUN mkdir /install && \
     pip install --prefix=/install .
 
+# ---- front-end builder image ----
+FROM node:9 as front-builder
+
+WORKDIR /app
+
+COPY . /app/
+
+RUN yarn install && \
+    yarn build
+
 # ---- final application image ----
 FROM base
 
@@ -38,6 +48,9 @@ COPY --from=back-builder /install /usr/local
 
 # Copy marsha application (see .dockerignore)
 COPY . /app/
+
+# Copy front-end dependencies
+COPY --from=front-builder /app/marsha/static /app/marsha/static
 
 WORKDIR /app
 
