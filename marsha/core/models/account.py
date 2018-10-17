@@ -15,7 +15,7 @@ from .base import BaseModel, NonDeletedUniqueIndex
 
 OAUTH_CONSUMER_KEY_CHARS = string.ascii_uppercase + string.digits
 OAUTH_CONSUMER_KEY_SIZE = 20
-SHARED_SECRET_CHARS = string.ascii_letters + string.digits + string.punctuation
+SHARED_SECRET_CHARS = string.ascii_letters + string.digits + "!#$%&*+-=?@^_"
 SHARED_SECRET_SIZE = 40
 
 ADMINISTRATOR, INSTRUCTOR, STUDENT = ("administrator", "instructor", "student")
