@@ -10,7 +10,7 @@ from django.test import TestCase
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..factories import VideoFactory
+from ..factories import ConsumerSiteLTIPassportFactory, VideoFactory
 from ..lti import LTI
 
 
@@ -23,17 +23,19 @@ class ViewsTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_post_instructor(self, mock_initialize):
-        """Validate the format of the response returned by the view for a student request."""
+        """Validate the format of the response returned by the view for an instructor request."""
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site=passport.consumer_site,
         )
         data = {
             "resource_link_id": "123",
             "roles": "instructor",
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
+            "oauth_consumer_key": "ABC123",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -73,16 +75,18 @@ class ViewsTestCase(TestCase):
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_post_student(self, mock_initialize):
         """Validate the format of the response returned by the view for a student request."""
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site=passport.consumer_site,
         )
         data = {
             "resource_link_id": "123",
             "roles": "student",
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
+            "oauth_consumer_key": "ABC123",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -114,11 +118,13 @@ class ViewsTestCase(TestCase):
     @mock.patch.object(LTI, "verify", return_value=True)
     def test_views_video_lti_post_student_no_video(self, mock_initialize):
         """Validate the response returned for a student request when there is no video."""
+        ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
         data = {
             "resource_link_id": "123",
             "roles": "student",
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
+            "oauth_consumer_key": "ABC123",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
