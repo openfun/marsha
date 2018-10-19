@@ -1,4 +1,9 @@
-export type colorName = 'darkGray' | 'lightGray' | 'mediumGray' | 'primary';
+export type colorName =
+  | 'darkGray'
+  | 'lightGray'
+  | 'mediumGray'
+  | 'mediumTextGray'
+  | 'primary';
 
 export interface Color {
   contrast: string;
@@ -17,6 +22,10 @@ export const colors: { [clr in colorName]: Color } = {
   mediumGray: {
     contrast: '#dee2e6',
     main: '#ced4da',
+  },
+  mediumTextGray: {
+    contrast: '#949ca4',
+    main: '#6e7881',
   },
   primary: {
     contrast: '#0069d9',
