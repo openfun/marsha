@@ -1,3 +1,4 @@
+import * as React from 'react';
 import styled from 'styled-components';
 
 import { colors } from '../../utils/theme/theme';
@@ -24,6 +25,7 @@ const LoaderStyled = styled.div`
   }
 `;
 
+/** Component. Displays a rotating CSS loader. */
 export const Loader = () => (
   <LoaderStyled aria-busy="true" aria-live="polite" />
 );
