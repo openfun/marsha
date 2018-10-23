@@ -11,7 +11,7 @@ jest.doMock('react-router-dom', () => ({
   Redirect: () => {},
 }));
 
-import { Video } from '../../types/Video';
+import { Video, videoState } from '../../types/Video';
 import { VideoForm } from './VideoForm';
 
 describe('VideoForm', () => {
@@ -51,7 +51,16 @@ describe('VideoForm', () => {
     // 2nd call: AWS bucket multipart POST to upload the file
     fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', {});
 
-    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    // updateVideo is a utility that updates the video held in AppData
+    const mockUpdateVideo = jest.fn();
+
+    const wrapper = shallow(
+      <VideoForm
+        jwt={'some_token'}
+        updateVideo={mockUpdateVideo}
+        video={video}
+      />,
+    );
     const componentInstance = wrapper.instance() as VideoForm;
 
     expect(fetchMock.lastCall()).toEqual([
@@ -81,6 +90,15 @@ describe('VideoForm', () => {
       'https://s3.aws.example.com/good-ol-bucket',
       { body: 'form data body', method: 'POST' },
     ]);
+
+    await flushAllPromises();
+
+    expect(mockUpdateVideo).toHaveBeenCalledWith({
+      description: '',
+      id: 'ab42',
+      state: videoState.PROCESSING,
+      title: '',
+    });
   });
 
   it('redirects to /errors/policy when it fails to get the policy', async () => {
