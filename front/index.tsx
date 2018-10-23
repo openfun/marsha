@@ -2,15 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 
+import { App } from './components/App/App';
 import { AppRoutes } from './components/AppRoutes/AppRoutes';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 import { baseStyles } from './utils/theme/baseStyles';
 
-const appData = parseDataElements(
-  // Spread to pass an array instead of a NodeList
-  [...document.querySelectorAll('.marsha-frontend-data')],
-);
-export const AppDataContext = React.createContext(appData);
+export const appData = {
+  ...parseDataElements(
+    // Spread to pass an array instead of a NodeList
+    [...document.querySelectorAll('.marsha-frontend-data')],
+  ),
+};
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', event => {
@@ -19,9 +21,9 @@ document.addEventListener('DOMContentLoaded', event => {
   // Render our actual component tree
   ReactDOM.render(
     <IntlProvider>
-      <AppDataContext.Provider value={appData}>
+      <App>
         <AppRoutes />
-      </AppDataContext.Provider>
+      </App>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );

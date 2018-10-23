@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
-import { AppDataContext } from '../..';
+import { AppDataContext } from '../App/App';
 import {
   ErrorComponent,
   ROUTE as ERROR_ROUTE,

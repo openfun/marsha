@@ -7,4 +7,6 @@ export interface AppData {
   resourceLinkid: string;
   state: 'error' | 'instructor' | 'student';
   video: Video;
+
+  updateVideo?: (video: Video) => void;
 }

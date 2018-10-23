@@ -6,7 +6,7 @@ import * as React from 'react';
 // Mock the state context before we import RedirectOnLoad. We'll be able to mutate the
 // context object to vary it for every test
 const context = { state: '', video: {} };
-jest.doMock('../..', () => {
+jest.doMock('../App/App', () => {
   return {
     AppDataContext: {
       Consumer: (props: any) => props.children(context),
