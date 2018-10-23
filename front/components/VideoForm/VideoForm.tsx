@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
-import { Video } from '../../types/Video';
+import { Video, videoState } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
@@ -13,17 +13,6 @@ import { IframeHeading } from '../Headings/Headings';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
 import { UploadingLoader } from './UploadingLoader';
-
-export interface VideoFormProps {
-  jwt: string;
-  video: Video;
-}
-
-interface VideoFormState {
-  file: Maybe<File>;
-  policy: AWSPolicy;
-  status: Maybe<'policy_error' | 'uploading' | 'upload_error' | 'success'>;
-}
 
 const messages = defineMessages({
   button: {
@@ -58,6 +47,18 @@ const VideoUploadFieldContainer = styled.div`
   flex-grow: 1;
   display: flex;
 `;
+
+export interface VideoFormProps {
+  jwt: string;
+  updateVideo?: (video: Video) => void;
+  video: Video;
+}
+
+interface VideoFormState {
+  file: Maybe<File>;
+  policy: AWSPolicy;
+  status: Maybe<'policy_error' | 'uploading' | 'upload_error' | 'success'>;
+}
 
 export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
   async componentDidMount() {
@@ -113,6 +114,12 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
         },
       );
       if (response.ok) {
+        if (this.props.updateVideo) {
+          this.props.updateVideo({
+            ...this.props.video,
+            state: videoState.PROCESSING,
+          });
+        }
         this.setState({ status: 'success' });
       } else {
         this.setState({ status: 'upload_error' });
