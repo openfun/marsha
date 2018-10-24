@@ -49,7 +49,7 @@ export class UploadStatus extends React.Component<UploadStatusProps> {
         break;
 
       case statusIconKey.TICK:
-        icon = '✓';
+        icon = ' ✓';
         break;
     }
 
