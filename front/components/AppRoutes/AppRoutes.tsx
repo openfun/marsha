@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { AppDataContext } from '../App/App';
+import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import {
   ErrorComponent,
   ROUTE as ERROR_ROUTE,
@@ -31,7 +32,9 @@ export const AppRoutes = () => {
           path={FORM_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ jwt, video }) => <VideoForm jwt={jwt} video={video} />}
+              {({ jwt, updateVideo, video }) => (
+                <VideoForm jwt={jwt} updateVideo={updateVideo} video={video} />
+              )}
             </AppDataContext.Consumer>
           )}
         />
@@ -39,6 +42,15 @@ export const AppRoutes = () => {
           exact
           path={ERROR_ROUTE()}
           render={({ match }) => <ErrorComponent code={match.params.code} />}
+        />
+        <Route
+          exact
+          path={DASHBOARD_ROUTE()}
+          render={() => (
+            <AppDataContext.Consumer>
+              {({ jwt, video }) => <Dashboard jwt={jwt} video={video} />}
+            </AppDataContext.Consumer>
+          )}
         />
         <Route path={HOME_ROUTE()} component={RedirectOnLoad} />
       </Switch>
