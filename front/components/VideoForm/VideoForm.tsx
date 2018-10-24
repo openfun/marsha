@@ -8,11 +8,10 @@ import { AWSPolicy } from '../../types/AWSPolicy';
 import { Video, videoState } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../utils/types';
+import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
-import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
-import { UploadingLoader } from './UploadingLoader';
 
 const messages = defineMessages({
   button: {
@@ -130,11 +129,11 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
   }
 
   render() {
-    const { file, status } = this.state || { file: undefined, status: '' };
+    const { status } = this.state || { status: '' };
 
     switch (status) {
       case 'success':
-        return <Redirect push to={PLAYER_ROUTE()} />;
+        return <Redirect push to={DASHBOARD_ROUTE()} />;
 
       case 'policy_error':
         return <Redirect push to={ERROR_ROUTE('policy')} />;
@@ -143,7 +142,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
         return <Redirect push to={ERROR_ROUTE('upload')} />;
 
       case 'uploading':
-        return <UploadingLoader />;
+        return <Dashboard {...this.props} isUploading={true} />;
 
       default:
         return (

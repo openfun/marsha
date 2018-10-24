@@ -12,6 +12,8 @@ jest.doMock('react-router-dom', () => ({
 }));
 
 import { Video, videoState } from '../../types/Video';
+import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
+import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { VideoForm } from './VideoForm';
 
 describe('VideoForm', () => {
@@ -99,6 +101,9 @@ describe('VideoForm', () => {
       state: videoState.PROCESSING,
       title: '',
     });
+    expect(wrapper.name()).toEqual('Redirect');
+    expect(wrapper.prop('push')).toBeTruthy();
+    expect(wrapper.prop('to')).toEqual(DASHBOARD_ROUTE());
   });
 
   it('redirects to /errors/policy when it fails to get the policy', async () => {
@@ -109,7 +114,7 @@ describe('VideoForm', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/errors/policy');
+    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('policy'));
   });
 
   it('redirects to /errors/upload when it fails to upload the file', async () => {
@@ -144,6 +149,42 @@ describe('VideoForm', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual('/errors/upload');
+    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('upload'));
+  });
+
+  it('shows the Dashboard with `isUploading` while the file is uploading', async () => {
+    // 1st call: home API call to get the AWS upload policy
+    fetchMock.mock(
+      '/api/videos/ab42/upload-policy/',
+      JSON.stringify({
+        acl: 'policy##acl',
+        bucket: 'good-ol-bucket',
+        key: 'policy##key',
+        policy: 'policy##policy',
+        s3_endpoint: 's3.aws.example.com',
+        x_amz_algorithm: 'policy##x_amz_algorithm',
+        x_amz_credential: 'policy##x_amz_credential',
+        x_amz_date: 'policy##x_amz_date',
+        x_amz_signature: 'policy##x_amz_signature',
+      }),
+    );
+
+    // 2nd call: AWS bucket multipart POST to upload the file
+    // We're not completing the promise in order to say in the UPLOADING state
+    const awsMockPromise = new Promise(() => {});
+    fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', awsMockPromise);
+
+    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    const componentInstance = wrapper.instance() as VideoForm;
+    componentInstance.setState({
+      file: { stub: 'file', type: 'video/mp4' } as any,
+    });
+    componentInstance.upload();
+
+    expect(
+      wrapper.equals(
+        <Dashboard isUploading={true} jwt={'some_token'} video={video} />,
+      ),
+    ).toBeTruthy();
   });
 });
