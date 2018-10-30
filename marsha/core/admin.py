@@ -11,6 +11,7 @@ from marsha.core.models import (
     ConsumerSite,
     ConsumerSiteAccess,
     ConsumerSiteOrganization,
+    LTIPassport,
     Organization,
     OrganizationAccess,
     Playlist,
@@ -151,3 +152,12 @@ class PlaylistAdmin(BaseModelAdmin):
     list_display = ("title", "organization", "created_by", "is_public")
     exclude = ("duplicated_from",)
     inlines = [VideosInline, PlaylistAccessesInline]
+
+
+@admin.register(LTIPassport, site=admin_site)
+class LTIPassportAdmin(BaseModelAdmin):
+    """Admin class for the LTIPassport model."""
+
+    list_display = ("created_on", "consumer_site", "playlist", "is_enabled")
+    readonly_fields = ["created_on", "oauth_consumer_key", "shared_secret"]
+    verbose_name = _("LTI passport")
