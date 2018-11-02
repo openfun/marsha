@@ -53,11 +53,11 @@ lambda: ## Zip and copy source files to dist/
 lambda:
 	@echo "Zip and copy source files to dist/"
 	@rm -rf dist && mkdir dist
-	@for lambda in configure encode update_state ; do \
-		cd ./source/$$lambda ; \
+	@for lambda_name in configure encode update-state ; do \
+		cd ./lambda-$$lambda_name ; \
 		rm -rf node_modules ; \
 		yarn install --frozen-lockfile --production=true ; \
-		zip -q -r9 ../../dist/marsha_$$lambda.zip *; \
+		zip -q -r9 ../dist/marsha_$$lambda_name.zip *; \
 		cd - ; \
 	done
 
@@ -65,8 +65,8 @@ lambda:
 test: ## test all lambda packages
 test:
 	@echo "Test all lambda packages"
-	@for lambda in configure encode update_state ; do \
-		cd ./source/$$lambda ; \
+	@for lambda_name in configure encode update-state ; do \
+		cd ./lambda-$$lambda_name ; \
 		rm -rf node_modules ; \
 		yarn install --frozen-lockfile ; \
 		yarn test; \

@@ -310,7 +310,7 @@ jobs:
   test-lambda-configure:
     docker:
       - image: circleci/node:8.11.3
-    working_directory: ~/marsha/terraform/source/configure
+    working_directory: ~/marsha/src/aws/lambda-configure
     steps:
       - checkout:
           path: ~/marsha
@@ -332,7 +332,7 @@ jobs:
   test-lambda-encode:
     docker:
       - image: circleci/node:8.11.3
-    working_directory: ~/marsha/terraform/source/encode
+    working_directory: ~/marsha/src/aws/lambda-encode
     steps:
       - checkout:
           path: ~/marsha
@@ -354,7 +354,7 @@ jobs:
   test-lambda-update-state:
     docker:
       - image: circleci/node:8.11.3
-    working_directory: ~/marsha/terraform/source/update_state
+    working_directory: ~/marsha/src/aws/lambda-update-state
     steps:
       - checkout:
           path: ~/marsha
