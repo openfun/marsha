@@ -22,6 +22,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check presence of all commit authors in CONTRIBUTORS.md file
+          command: |
+            for contributor in $(git log --pretty="format:%ae" 33587e4faee29ef55d0c8e8dd96eaa4989ea714a.. | sort | uniq ); do grep $contributor CONTRIBUTORS.md; done
+      - run:
           name: Check absence of fixup commits
           command: |
             ! git log | grep 'fixup!'
