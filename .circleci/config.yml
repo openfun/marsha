@@ -243,9 +243,10 @@ jobs:
   build-front:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/marsha
+    working_directory: ~/marsha/src/frontend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
             - v3-front-dependencies-{{ checksum "package.json" }}
@@ -266,9 +267,10 @@ jobs:
   lint-front-tslint:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/marsha
+    working_directory: ~/marsha/src/frontend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
             - v3-front-dependencies-{{ checksum "package.json" }}
@@ -279,9 +281,10 @@ jobs:
   lint-front-prettier:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/marsha
+    working_directory: ~/marsha/src/frontend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
             - v3-front-dependencies-{{ checksum "package.json" }}
@@ -292,9 +295,10 @@ jobs:
   test-front:
     docker:
       - image: circleci/node:9-browsers
-    working_directory: ~/marsha
+    working_directory: ~/marsha/src/frontend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
             - v3-front-dependencies-{{ checksum "package.json" }}

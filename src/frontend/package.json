@@ -5,7 +5,7 @@
   "main": "front/index.tsx",
   "scripts": {
     "build": "webpack",
-    "lint": "tslint -c tslint.json 'front/**/*.ts?(x)'",
+    "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "test": "jest"
   },
   "repository": "git@github.com:openfun/marsha.git",
