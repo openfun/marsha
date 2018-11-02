@@ -125,7 +125,8 @@ data
 
 # Front
 node_modules
-marsha/static/js
+src/frontend/i18n
+src/backend/marsha/static/js
 
 # Terraform
 .terraform

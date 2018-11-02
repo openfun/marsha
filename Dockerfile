@@ -35,10 +35,10 @@ FROM node:9 as front-builder
 
 WORKDIR /app
 
-COPY . /app/
+COPY ./src/frontend /app/
 
 RUN yarn install && \
-    yarn build
+    yarn build -o marsha/static/js/index.js
 
 # ---- final application image ----
 FROM base

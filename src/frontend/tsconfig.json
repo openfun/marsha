@@ -16,8 +16,8 @@
     "module": "es6",
     "moduleResolution": "node",
     "paths": {
-      "plyr": ["front/types/libs/plyr"],
-      "shaka-player": ["front/types/libs/shaka-player"]
+      "plyr": ["types/libs/plyr"],
+      "shaka-player": ["types/libs/shaka-player"]
     },
     "strict": true,
     "sourceMap": true,
