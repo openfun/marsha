@@ -8,10 +8,10 @@ module.exports = {
 
   // Include whatwg fetch as an entry point (and not an import) as it's replacing (when necessary)
   // a globally available browser-provided function
-  entry: ['./front/index.tsx'],
+  entry: ['./index.tsx'],
   output: {
     filename: 'index.js',
-    path: __dirname + '/marsha/static/js',
+    path: __dirname + '/../../' + '/marsha/static/js',
   },
 
   // Enable sourcemaps for debugging webpack's output.
