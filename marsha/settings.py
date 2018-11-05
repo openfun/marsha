@@ -149,6 +149,9 @@ class Base(Configuration):
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
+    # Logging
+    LOGGING = values.DictValue({"version": 1})
+
     # AWS
     AWS_ACCESS_KEY_ID = values.SecretValue()
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
