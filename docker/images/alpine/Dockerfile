@@ -31,7 +31,7 @@ RUN apk --no-cache add --update \
 
 WORKDIR /install
 
-COPY setup.cfg /setup.cfg
+COPY src/backend/setup.cfg /setup.cfg
 
 RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('/setup.cfg'); \
                print(c['options']['install_requires'])" | xargs pip install --prefix=/install
