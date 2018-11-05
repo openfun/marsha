@@ -1,5 +1,5 @@
-PROJECT_NAME := $(shell python setup.py --name)
-PROJECT_VERSION := $(shell python setup.py --version)
+PROJECT_NAME := $(shell python src/backend/setup.py --name)
+PROJECT_VERSION := $(shell python src/backend/setup.py --version)
 
 BOLD := \033[1m
 RESET := \033[0m
@@ -40,53 +40,53 @@ lint: lint-isort lint-black lint-flake8 lint-pylint
 .PHONY: check-black
 check-black:  ## Run the black tool in check mode only (won't modify files)
 	@echo "$(BOLD)Checking black$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) black --check marsha/ 2>&1
+	@$(COMPOSE_TEST_RUN_APP) black --check src/backend/marsha/ 2>&1
 
 .PHONY: lint-black
 lint-black:  ## Run the black tool and update files that need to
 	@echo "$(BOLD)Running black$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) black marsha/
+	@$(COMPOSE_TEST_RUN_APP) black src/backend/marsha/
 
 .PHONY: lint-flake8
 lint-flake8:  ## Run the flake8 tool
 	@echo "$(BOLD)Running flake8$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) flake8 --format=abspath
+	@$(COMPOSE_TEST_RUN_APP) flake8 src/backend/marsha --format=abspath
 
 .PHONY: lint-pylint
 lint-pylint:  ## Run the pylint tool
 	@echo "$(BOLD)Running pylint$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) pylint marsha
+	@$(COMPOSE_TEST_RUN_APP) pylint --rcfile=src/backend/pylintrc src/backend/marsha
 
 .PHONY: lint-isort
 lint-isort:  ## automatically re-arrange python imports in code base
 	@echo "$(BOLD)Running isort$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) isort --recursive --atomic
+	@$(COMPOSE_TEST_RUN_APP) isort src/backend/marsha --recursive --atomic
 
 .PHONY: check-django
 check-django:  ## Run the Django "check" command
 	@echo "$(BOLD)Checking django$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) python manage.py check
+	@$(COMPOSE_TEST_RUN_APP) python src/backend/manage.py check
 
 .PHONY: check-migrations
 check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) python manage.py makemigrations --check --dry-run
+	@$(COMPOSE_TEST_RUN_APP) python src/backend/manage.py makemigrations --check --dry-run
 
 .PHONY: migrate
 migrate:  ## Run django migration for the marsha project.
 	@echo "$(BOLD)Running migrations$(RESET)"
-	@$(COMPOSE_RUN_APP) python manage.py migrate
+	@$(COMPOSE_RUN_APP) python src/backend/manage.py migrate
 
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
-	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
+	@$(COMPOSE_RUN_APP) python src/backend/manage.py createsuperuser
 .PHONY: superuser
 
 .PHONY: test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
 	# we use a test-runner that does not run the django check command as its done in another job
-	@$(COMPOSE_TEST_RUN_APP) python manage.py test --testrunner marsha.test_runner.NoCheckDiscoverRunner
+	@$(COMPOSE_TEST_RUN_APP) python src/backend/manage.py test src/backend --testrunner marsha.test_runner.NoCheckDiscoverRunner
 
 
 ##############################################

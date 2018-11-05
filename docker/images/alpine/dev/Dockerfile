@@ -20,7 +20,7 @@ RUN apk --no-cache add --update \
         musl-dev  # required for Sphinx
 
 # Install development dependencies
-RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('setup.cfg'); \
+RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('src/backend/setup.cfg'); \
                print(c['options.extras_require']['dev'])" | xargs pip install
 
 # Install dockerize. It is used to ensure that the database service is accepting

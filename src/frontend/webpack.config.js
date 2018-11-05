@@ -11,7 +11,7 @@ module.exports = {
   entry: ['./index.tsx'],
   output: {
     filename: 'index.js',
-    path: __dirname + '/../../' + '/marsha/static/js',
+    path: __dirname + '/../backend/marsha/static/js',
   },
 
   // Enable sourcemaps for debugging webpack's output.

@@ -29,7 +29,7 @@ services:
     # django development server (wrapped by dockerize to ensure the db is ready
     # to accept connections before running the development server)
     command: >
-      dockerize -wait tcp://db:5432 -timeout 60s python ./manage.py runserver 0.0.0.0:8000
+      dockerize -wait tcp://db:5432 -timeout 60s python ./src/backend/manage.py runserver 0.0.0.0:8000
     ports:
         - "8060:8000"
     volumes:

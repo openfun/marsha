@@ -139,7 +139,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                isort --recursive --check-only .
+                isort --recursive --check-only src/backend/marsha
 
   lint-flake8:
     machine: true
@@ -161,7 +161,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                flake8
+                flake8 src/backend/marsha
 
   lint-pylint:
     machine: true
@@ -183,7 +183,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                pylint marsha
+                pylint --rcfile=src/backend/pylintrc src/backend/marsha
 
   lint-black:
     machine: true
@@ -205,7 +205,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                black marsha --check
+                black src/backend/marsha/ --check
 
   test-back:
     machine: true
@@ -237,7 +237,7 @@ jobs:
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
-                    python manage.py test
+                    python src/backend/manage.py test
 
   # ---- Front-end jobs ----
   build-front:
@@ -436,7 +436,7 @@ jobs:
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
-                    python manage.py test
+                    python src/backend/manage.py test
 
   # ---- DockerHub publication job ----
   hub:
