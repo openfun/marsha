@@ -5,13 +5,15 @@ import random
 import re
 from unittest import mock
 
-from django.test import TestCase
+from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase, override_settings
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..factories import ConsumerSiteLTIPassportFactory, VideoFactory
 from ..lti import LTI
+from ..models import Video
 
 
 # We don't enforce arguments documentation in tests
@@ -21,8 +23,7 @@ from ..lti import LTI
 class ViewsTestCase(TestCase):
     """Test the views in the ``core`` app of the Marsha project."""
 
-    @mock.patch.object(LTI, "verify", return_value=True)
-    def test_views_video_lti_post_instructor(self, mock_initialize):
+    def test_views_video_lti_post_instructor(self):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
         video = VideoFactory(
@@ -34,8 +35,216 @@ class ViewsTestCase(TestCase):
             "resource_link_id": "123",
             "roles": "instructor",
             "context_id": "abc",
-            "tool_consumer_instance_guid": "example.com",
             "oauth_consumer_key": "ABC123",
+        }
+        with mock.patch.object(
+            LTI, "verify", return_value=passport.consumer_site
+        ) as mock_verify:
+            response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        # Extract the JWT Token and state
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+
+        data_state = match.group(2)
+        self.assertEqual(data_state, "instructor")
+
+        # Extract the video data
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+
+        self.assertEqual(
+            json.loads(unescape(data_video)),
+            {
+                "active_stamp": None,
+                "description": video.description,
+                "id": str(video.id),
+                "state": "pending",
+                "subtitle_tracks": [],
+                "title": video.title,
+                "urls": None,
+            },
+        )
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    def test_views_video_lti_post_student(self):
+        """Validate the format of the response returned by the view for a student request."""
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "oauth_consumer_key": "ABC123",
+        }
+        with mock.patch.object(
+            LTI, "verify", return_value=passport.consumer_site
+        ) as mock_verify:
+            response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "student")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+        self.assertEqual(
+            json.loads(unescape(data_video)),
+            {
+                "active_stamp": None,
+                "description": video.description,
+                "id": str(video.id),
+                "state": "pending",
+                "subtitle_tracks": [],
+                "title": video.title,
+                "urls": None,
+            },
+        )
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    def test_views_video_lti_post_student_no_video(self):
+        """Validate the response returned for a student request when there is no video."""
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "oauth_consumer_key": "ABC123",
+        }
+        with mock.patch.object(
+            LTI, "verify", return_value=passport.consumer_site
+        ) as mock_verify:
+            response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "student")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_video, "null")
+
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify", side_effect=LTIException)
+    def test_views_video_lti_post_error(self, mock_verify):
+        """Validate the response returned in case of an LTI exception."""
+        role = random.choice(["instructor", "student"])
+        data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "error")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_video, "null")
+
+
+class DevelopmentViewsTestCase(TestCase):
+    """Test the views in the ``core`` app of the Marsha project for development use cases.
+
+    When developing on marsha, we are using the LTIDevelopmentView to simulate a launch request
+    from an iframe in an LMS. However:
+    - This simple view does not compute the LTI signature,
+    - We don't want to have to create an LTI passport to make it work.
+
+    Setting the "BYPASS_LTI_VERIFICATION" setting to True, allows Marsha to work "normally" without
+    a passport and without the LTI verification. This is only allowed when DEBUG is True.
+    """
+
+    @override_settings(DEBUG=True)
+    @override_settings(BYPASS_LTI_VERIFICATION=True)
+    def test_views_video_lti_post_bypass_lti_student(self):
+        """In development, passport creation and LTI verification can be bypassed for a student."""
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site__name="example.com",
+        )
+        # There is no need to provide an "oauth_consumer_key"
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
+        }
+        response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        data_state = re.search(
+            '<div class="marsha-frontend-data" data-state="(.*)">', content
+        ).group(1)
+        self.assertEqual(data_state, "student")
+
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+
+        self.assertEqual(
+            json.loads(unescape(data_video)),
+            {
+                "active_stamp": None,
+                "description": video.description,
+                "id": str(video.id),
+                "state": "pending",
+                "subtitle_tracks": [],
+                "title": video.title,
+                "urls": None,
+            },
+        )
+
+    @override_settings(DEBUG=True)
+    @override_settings(BYPASS_LTI_VERIFICATION=True)
+    def test_views_video_lti_post_bypass_lti_instructor(self):
+        """In development, passport creation and LTI verif can be bypassed for a instructor."""
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site__name="example.com",
+        )
+        data = {
+            "resource_link_id": "123",
+            "roles": "instructor",
+            "context_id": "abc",
+            "tool_consumer_instance_guid": "example.com",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -72,32 +281,34 @@ class ViewsTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTI, "verify", return_value=True)
-    def test_views_video_lti_post_student(self, mock_initialize):
-        """Validate the format of the response returned by the view for a student request."""
-        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
-        video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="abc",
-            playlist__consumer_site=passport.consumer_site,
-        )
+    @override_settings(DEBUG=True)
+    @override_settings(BYPASS_LTI_VERIFICATION=True)
+    def test_views_video_lti_post_bypass_lti_instructor_no_video(self):
+        """When bypassing LTI, the "example.com" consumer site is automatically created."""
         data = {
             "resource_link_id": "123",
-            "roles": "student",
+            "roles": "instructor",
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
-            "oauth_consumer_key": "ABC123",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
+        # Extract the JWT Token and state
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        video = Video.objects.get()
+        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "student")
+        data_state = match.group(2)
+        self.assertEqual(data_state, "instructor")
 
+        # Extract the video data
         data_video = re.search(
             '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
         ).group(1)
@@ -115,53 +326,16 @@ class ViewsTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTI, "verify", return_value=True)
-    def test_views_video_lti_post_student_no_video(self, mock_initialize):
-        """Validate the response returned for a student request when there is no video."""
-        ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
-        data = {
-            "resource_link_id": "123",
-            "roles": "student",
-            "context_id": "abc",
-            "tool_consumer_instance_guid": "example.com",
-            "oauth_consumer_key": "ABC123",
-        }
-        response = self.client.post("/lti-video/", data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<html>")
-        content = response.content.decode("utf-8")
-
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "student")
-
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_video, "null")
-
-    @mock.patch.object(LTI, "verify", side_effect=LTIException)
-    def test_views_video_lti_post_error(self, mock_initialize):
-        """Validate the response returned in case of an LTI exception."""
+    @override_settings(BYPASS_LTI_VERIFICATION=True)
+    def test_views_video_lti_post_bypass_lti_no_debug_mode(self):
+        """Bypassing LTI verification is only allowed in debug mode."""
+        VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site__name="example.com",
+        )
         role = random.choice(["instructor", "student"])
-        data = {
-            "resource_link_id": "123",
-            "roles": role,
-            "context_id": "abc",
-            "tool_consumer_instance_guid": "example.com",
-        }
-        response = self.client.post("/lti-video/", data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<html>")
-        content = response.content.decode("utf-8")
+        data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "error")
-
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_video, "null")
+        with self.assertRaises(ImproperlyConfigured):
+            self.client.post("/lti-video/", data)
