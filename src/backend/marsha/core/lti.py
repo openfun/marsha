@@ -1,9 +1,10 @@
 """LTI module that supports LTI 1.0."""
 import re
 
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
-from django.utils.functional import cached_property
 
 from pylti.common import LTIException, verify_request_common
 
@@ -27,7 +28,6 @@ class LTI:
 
         """
         self.request = request
-        self._is_verified = False
 
     def verify(self):
         """Verify the LTI request.
@@ -35,18 +35,29 @@ class LTI:
         Raises
         ------
         LTIException
-            Exception raised if request validation fails
+            Raised if request validation fails
+        ImproperlyConfigured
+            Raised if BYPASS_LTI_VERIFICATION is True but we are not in DEBUG mode
 
         Returns
         -------
-        boolean
-            True if the request is a valid LTI launch request
+        string
+            It returns the consumer site name related to the passport used in the LTI launch
+            request if it is valid.
+            If the BYPASS_LTI_VERIFICATION and DEBUG settings are True, it creates and return a
+            consumer site with the consumer site name passed in the LTI request.
 
         """
+        if settings.BYPASS_LTI_VERIFICATION:
+            if not settings.DEBUG:
+                raise ImproperlyConfigured(
+                    "Bypassing LTI verification only works in DEBUG mode."
+                )
+            return ConsumerSite.objects.get_or_create(name=self.consumer_site_name)[0]
+
+        passport = self.get_passport()
         consumers = {
-            str(self.passport.oauth_consumer_key): {
-                "secret": str(self.passport.shared_secret)
-            }
+            str(passport.oauth_consumer_key): {"secret": str(passport.shared_secret)}
         }
         # A call to the verification function should raise an LTIException but
         # we can further check that it returns True.
@@ -62,8 +73,7 @@ class LTI:
         ):
             raise LTIException()
 
-        self._is_verified = True
-        return True
+        return passport.consumer_site or passport.playlist.consumer_site
 
     def __getattr__(self, name):
         """Look for attributes in the request's POST parameters as a last resort.
@@ -89,8 +99,7 @@ class LTI:
         except MultiValueDictKeyError:
             raise AttributeError(name)
 
-    @cached_property
-    def passport(self):
+    def get_passport(self):
         """Find and return the passport targeted by the LTI request or raise an LTIException."""
         consumer_key = self.request.POST.get("oauth_consumer_key", None)
 
@@ -209,33 +218,27 @@ class LTI:
             The video instance targeted by the `resource_link_id` or None.
 
         """
-        # Make sure LTI verification has run successfully
-        assert getattr(self, "_is_verified", False) or self.verify()
+        # Make sure LTI verification has run successfully. It raises an LTIException otherwise.
+        consumer_site = self.verify()
 
         try:
             assert self.context_id
         except AssertionError:
             raise LTIException("A context ID is required.")
 
-        consumer_site_name = (
-            self.passport.consumer_site.name
-            if self.passport.consumer_site
-            else self.passport.playlist.consumer_site.name
-        )
-
         # If the video already exist, retrieve it from database
         try:
             return Video.objects.get(
                 lti_id=self.resource_link_id,
                 playlist__lti_id=self.context_id,
-                playlist__consumer_site__name=consumer_site_name,
+                playlist__consumer_site=consumer_site,
             )
         except Video.DoesNotExist:
             # Look for the same resource id from another playlist on the same consumer site
             origin_video = (
                 Video.objects.filter(
                     lti_id=self.resource_link_id,
-                    playlist__consumer_site__name=consumer_site_name,
+                    playlist__consumer_site=consumer_site,
                     playlist__is_portable_to_playlist=True,
                     state=READY,
                 )
@@ -275,9 +278,6 @@ class LTI:
                 return None
 
         # Creating the video...
-        # - Get the consumer site (we know it exists because the passport verified)
-        consumer_site = ConsumerSite.objects.get(name=consumer_site_name)
-
         # - Get the playlist if it exists or create it
         playlist, _ = Playlist.objects.get_or_create(
             lti_id=self.context_id,
