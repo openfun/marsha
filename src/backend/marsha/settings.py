@@ -156,6 +156,7 @@ class Base(Configuration):
     AWS_ACCESS_KEY_ID = values.SecretValue()
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_DEFAULT_REGION = values.Value("eu-west-1")
+    AWS_SOURCE_BUCKET_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
 
     # Cloud Front key pair for signed urls
@@ -211,18 +212,16 @@ class Development(Base):
     and use a local sqlite database by default.
     """
 
-    DEBUG = values.BooleanValue(True)
     ALLOWED_HOSTS = ["*"]
-
-    AWS_SOURCE_BUCKET_NAME = "development-marsha-source"
+    AWS_SOURCE_BUCKET_NAME = values.Value("development-marsha-source")
+    DEBUG = values.BooleanValue(True)
 
 
 class Test(Base):
     """Test environment settings."""
 
-    AWS_SOURCE_BUCKET_NAME = "test-marsha-source"
-
     CLOUDFRONT_SIGNED_URLS_ACTIVE = False
+    AWS_SOURCE_BUCKET_NAME = values.Value("test-marsha-source")
 
 
 class Production(Base):
@@ -235,15 +234,16 @@ class Production(Base):
     """
 
     ALLOWED_HOSTS = values.ListValue(None)
+    AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
 
 
 class Staging(Production):
     """Staging environment settings."""
 
-    pass
+    AWS_SOURCE_BUCKET_NAME = values.Value("staging-marsha-source")
 
 
 class PreProduction(Production):
     """Pre-production environment settings."""
 
-    pass
+    AWS_SOURCE_BUCKET_NAME = values.Value("preprod-marsha-source")
