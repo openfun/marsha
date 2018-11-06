@@ -167,6 +167,8 @@ class Base(Configuration):
     CLOUDFRONT_SIGNED_URLS_ACTIVE = True
     CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
 
+    BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):
