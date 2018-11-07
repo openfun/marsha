@@ -111,8 +111,11 @@ venv-upgrade-dev:  ## Upgrade all default+dev dependencies defined in setup.cfg
 ##########################################
 # Targets specific to Docker installations
 
+env.d/development:
+	cp env.d/development.dist env.d/development
+
 .PHONY: bootstrap
-bootstrap:  ## Prepare Docker images for the project
+bootstrap: env.d/development ## Prepare Docker images for the project
 	@$(COMPOSE) build base;
 	@$(COMPOSE) build app;
 	@echo 'Waiting until database is up…';
