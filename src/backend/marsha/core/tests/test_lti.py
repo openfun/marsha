@@ -125,6 +125,24 @@ class VideoLTITestCase(TestCase):
             lti.verify()
         self.assertEqual(mock_verify.call_count, 1)
 
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_behing_tls_termination_proxy(self, mock_verify):
+        """Then url should be corrected when place behing a tls termination proxy."""
+        ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post("/lti-video/", data, HTTP_X_FORWARDED_PROTO="https")
+        self.assertEqual(request.build_absolute_uri(), "http://testserver/lti-video/")
+        lti = LTI(request)
+        lti.verify()
+        self.assertEqual(
+            mock_verify.call_args[0][0].url, "https://testserver/lti-video/"
+        )
+
 
 class PortabilityVideoLTITestCase(TestCase):
     """Test the portability of videos beween playlists and consumer sites.
