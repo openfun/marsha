@@ -125,3 +125,11 @@ bootstrap: env.d/development ## Prepare Docker images for the project
 .PHONY: run
 run: ## start the development server using Docker
 	@$(COMPOSE) up -d
+
+.PHONY: stop
+stop: ## stop the development server using Docker
+	@$(COMPOSE) stop
+
+.PHONY: down
+down: ## Stop and remove containers, networks, images, and volumes
+	@$(COMPOSE) down	
