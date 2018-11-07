@@ -24,7 +24,6 @@ class Base(Configuration):
     You may also want to override default configuration by setting the following
     environment variables:
     - DJANGO_DEBUG
-    - DATABASE_URL
     """
 
     BASE_DIR = os.path.dirname(__file__)
