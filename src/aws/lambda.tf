@@ -82,8 +82,8 @@ resource "aws_lambda_function" "marsha_update_state_lambda" {
   function_name    = "${terraform.workspace}-marsha-update-state"
   handler          = "index.handler"
   runtime          = "nodejs8.10"
-  filename         = "dist/marsha_update_state.zip"
-  source_code_hash = "${base64sha256(file("dist/marsha_update_state.zip"))}"
+  filename         = "dist/marsha_update-state.zip"
+  source_code_hash = "${base64sha256(file("dist/marsha_update-state.zip"))}"
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
 
   environment {
