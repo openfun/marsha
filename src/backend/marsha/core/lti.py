@@ -59,12 +59,23 @@ class LTI:
         consumers = {
             str(passport.oauth_consumer_key): {"secret": str(passport.shared_secret)}
         }
+
+        # The LTI signature is computed using the url of the LTI launch request. But when Marsha
+        # is behind a TLS termination proxy, the url as seen by Django is changed and starts with
+        # "http". We need to revert this so that the signature we calculate matches the one
+        # calculated by our LTI consumer.
+        # Note that this is normally done in pylti's "verify_request_common" method but it does
+        # not support WSGI normalized headers so let's do it ourselves.
+        url = self.request.build_absolute_uri()
+        if self.request.META.get("HTTP_X_FORWARDED_PROTO", "http") == "https":
+            url = url.replace("http:", "https:", 1)
+
         # A call to the verification function should raise an LTIException but
         # we can further check that it returns True.
         if (
             verify_request_common(
                 consumers,
-                self.request.build_absolute_uri(),
+                url,
                 self.request.method,
                 self.request.META,
                 dict(self.request.POST.items()),
