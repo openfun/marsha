@@ -1,0 +1,29 @@
+# Django
+DJANGO_SETTINGS_MODULE=marsha.settings
+DJANGO_CONFIGURATION=Development
+DJANGO_SECRET_KEY=ThisIsAnExampleKeyForDevPurposeOnly
+DJANGO_JWT_SIGNING_KEY=ThisIsAnExampleKeyForDevPurposeOnly
+DJANGO_BYPASS_LTI_VERIFICATION=True
+
+# Database
+POSTGRES_HOST=db
+POSTGRES_DB=marsha
+POSTGRES_USER=marsha_user
+POSTGRES_PASSWORD=pass
+
+# Python
+PYTHONUNBUFFERED=1
+
+#  AWS Admin role for development purposes
+DJANGO_AWS_ACCESS_KEY_ID=yourAwsAccesKey
+DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKey
+DJANGO_AWS_DEFAULT_REGION=eu-west-1
+DJANGO_AWS_SOURCE_BUCKET_NAME=dev-marsha-source
+
+# Cloudfront Signed URLs for mp4 files
+DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE=False
+# variable below should be uncommented if DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE is set to True
+# DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key 
+# DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudFrontAccessKey
+
+DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
