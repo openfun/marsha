@@ -1,117 +1,268 @@
 # Environment variables
 
-We try to follow [12 factors app](https://12factor.net/) and so use
-environment variables for configuration.
+`marsha` contains several projects, two of which are configured through environment variables. There are therefore two `env.d` folders with different environment variables.
 
-Here is a list of the ones that are needed or optional:
+First, there is our Django backend. We try to follow [12 factors app](https://12factor.net/) and so use environment variables for configuration.
 
-## DJANGO_SETTINGS_MODULE
+Then, there is our aws deployment configurations in the `src/aws` folder. It looks in `src/aws/env.d`.
 
-Description
+## 1. Django backend environment
 
-:   Define the settings file to use
+Specified in `{REPO_ROOT}/env.d/development`.
 
-Type
+### General Django settings
 
-:   String
+#### DJANGO_ALLOWED_HOSTS
 
-Mandatory
+A string of comma separated domains that Django should accept and answer to. See [Django documentation](https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts) for more details about this setting.
 
-:   Yes
+- Type: String
+- Required: Varies depending on the environment.
+  - No in development, this setting is not available and its value is forced to accept any originating domain;
+  - Yes otherwise.
+- Default: Varies depending on the environment.
+  - ["*"] in development: all originating domains are accepted;
+  - None otherwise: all originating domains are rejected.
 
-Default
+#### DJANGO_CONFIGURATION
 
-:   None
+Define the environment in which the application should run. It conditions which version of the settings will be loaded.
 
-Choices
+- Type: `String`
+- Required: Yes
+- Default: `Development`
+- Choices: One of `Development`, `Test`, `Staging`, `Preprod` or `Production`.
 
-:   Must be set to `marsha.settings`
+#### DJANGO_DEBUG
 
-## DJANGO_CONFIGURATION
+Turns on/off debug mode.
 
-Description
+- Type: Boolean
+- Required: No
+- Default: `True` if `DJANGO_CONFIGURATION` is set to `Development`, `False` otherwise
+- Choices: `True` or `False`
 
-:   Define the configuration to use in settings
+#### DJANGO_SECRET_KEY
 
-Type
+Standard Django secret key used to make the instance unique and generate hashes such as CSRF tokens or auth keys.
 
-:   String
+See [Django documentation](https://docs.djangoproject.com/en/dev/ref/settings/#secret-key) for more information about this setting.
 
-Mandatory
+- Type: String
+- Required: Yes
+- Default: None
 
-:   Yes
+#### DJANGO_SETTINGS_MODULE
 
-Default
+Define the settings file to use, relative to `src/backend`.
 
-:   None
+- Type: `String`
+- Required: Yes
+- Default: `marsha.settings`
+- Choices: Must be set to `marsha.settings`.
 
-Choices
+### Marsha specific settings
 
-:   Currently only `Development` is available
+#### DJANGO_BYPASS_LTI_VERIFICATION
 
-## DJANGO_SECRET_KEY
+Whether to skip all LTI-related checks and accept all requests on LTI endpoints as valid. This is useful for development but should never be set to `True` on publicly accessible deployments.
 
-Description
+Note: Can't be set to `True` unless `DJANGO_DEBUG` is `True` too.
 
-:   Used to provide cryptographic signing, and should be set to a
-    unique, unpredictable value
+- Type: Boolean
+- Required: No
+- Default: `False`
+- Choices: `True` or `False`
 
-Type
+#### DJANGO_JWT_SIGNING_KEY
 
-:   String
+Secret key used to sign JWTs. Those are used to communicate between the Django backend and authenticated third parties (including the frontend).
 
-Mandatory
+- Type: string
+- Required: Yes
+- Default: `DJANGO_SECRET_KEY`. The SIGNING_KEY setting defaults to the value of the SECRET_KEY setting for your django project. This is a reasonable default. We still recommend you change this setting to an indenpendent value so you can easily invalidate the tokens by changing the key if it becomes compromise.
 
-:   Yes
+#### DJANGO_SENTRY_DSN
 
-Default
+Should be set to activate sentry for an environment. The value of this DSN is given when you add a project to your Sentry instance.
 
-:   None
+- Type: string
+- Required: No
+- Default: None
 
-## DJANGO_DEBUG
+#### DJANGO_UPDATE_STATE_SHARED_SECRETS
 
-Description
+Secrets used to sign messages sent to the Django backend from AWS lambdas (like state updates). This being a list lets us support 1 or more shared secrets — and 1 or more deployments — at the same time.
 
-:   Turns on/off debug mode
+Note: should include the value from `TF_VAR_update_state_secret` in `src/aws` for any stack deployed to AWS which should communicate with the Django backend.
 
-Type
+- Type: comma-separated list of strings
+- Required: Yes
+- Default: None
 
-:   Boolean
+### Database-related settings
 
-Mandatory
+#### POSTGRES_DB
 
-:   No
+Name for the Postgres database used by Marsha.
 
-Default
+- Type: string
+- Required: No
+- Default: `"marsha"`
 
-:   `True` if `DJANGO_CONFIGURATION` is set to `Development`, `False`
-    otherwise
+#### POSTGRES_HOST
 
-Choices
+Address for the Postgres database used by Marsha.
 
-:   `True` or `False`
+- Type: string
+- Required: No
+- Default: `"localhost"`
+
+#### POSTGRES_PASSWORD
+
+Password corresponding to the user specified in `POSTGRES_USER`, for the Postgres database used by Marsha.
+
+- Type: string
+- Required: No
+- Default: `"pass"`
+
+#### POSTGRES_PORT
+
+Port for the Postgres database used by Marsha.
+
+- Type: number
+- Required: No
+- Default: `5432"`
+
+#### POSTGRES_USER
+
+User to connect to the Postgres database used by Marsha.
+
+- Type: string
+- Required: No
+- Default: `"marsha_user"`
+
+### Amazon Web Services-related settings
+
+#### DJANGO_AWS_ACCESS_KEY_ID, DJANGO_AWS_SECRET_ACCESS_KEY
+
+A key ID + secret pair for an AWS IAM account with administrative access to the resources the relevant AWS deployment is using.
+
+- Type: string
+- Required: Yes
+- Default: None
+
+#### DJANGO_AWS_DEFAULT_REGION
+
+The Amazon Web Services region where we deployed or want to deploy our serverless stack.
+
+- Type: string
+- Required: No
+- Default: `"eu-west-1"`
+- Choices: Any valid AWS region name.
+
+#### DJANGO_AWS_SOURCE_BUCKET_NAME
+
+The source AWS S3 bucket where files will be uploaded by end users. This should match the name of the bucket created by the relevant AWS deployment.
+
+- Type: string
+- Required: No
+- Default: Varies depending on the environment.
+  - `"development-marsha-source"` in development;
+  - `"test-marsha-source"` in test;
+  - `"staging-marsha-source"` in staging;
+  - `"preprod-marsha-source"` in preproduction;
+  - `"production-marsha-source"` in production.
+
+#### DJANGO_CLOUDFRONT_ACCESS_KEY_ID
+
+The ID of the AWS master account with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
+
+Note: Must be associated with a master account as IAM accounts cannot sign URLs.
+
+- Type: string
+- Required:
+  - Yes when `DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE` is `True`;
+  - No otherwise.
+- Default: None;
+
+#### CLOUDFRONT_PRIVATE_KEY_PATH
+
+Path to a private key corresponding to the id in `DJANGO_CLOUDFRONT_ACCESS_KEY_ID`. Also used to sign Cloudfront URLs.
+
+- Type: string
+- Required:
+  - Yes when `DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE` is `True` and the key is not located in the default path;
+  - No otherwise.
+- Default: `src/backend/.ssh/cloudfront_private_key`
+
+#### DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE
+
+Whether Cloudfront URLs for MP4 files and subtitle tracks should be cryptographically signed.
+
+Note: Preview images are never signed as a matter of policy; adaptive streaming formats pose technical challenges when it comes to signed URLs, so we're not doing any signing there for now.
+
+- Type: Boolean
+- Required: No
+- Default: Varies depending on the environment:
+  - `False` in development and test;
+  - `True` in all other environments.
+- Choices: `True` or `False`
+
+#### DJANGO_CLOUDFRONT_URL
+
+The URL for the AWS Cloudfront distribution for the relevant AWS deployment. This is the domain that will be used to distribute processed files to end users.
+
+- Type: string
+- Required: Yes
+- Default: None
 
 
-## DATABASE_URL
+## 2. AWS deployment environment
 
-Description
+Specified in `{REPO_ROOT}/src/aws/env.d/development`.
 
-:   URL to represent the connection string to a database
+#### AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
-Type
+A key ID + secret pair for an AWS IAM account with administrative access to the resources the AWS deployment we're operating on is using.
 
-:   String
+- Type: string
+- Required: Yes
+- Default: None
 
-Mandatory
+#### TF_VAR_aws_region
 
-:   No if `DJANGO_CONFIGURATION` is set to `Development`, yes otherwise
+The Amazon Web Services region where we deployed or want to deploy our serverless stack.
 
-Default
+- Type: string
+- Required: No
+- Default: `"eu-west-1"`
+- Choices: Any valid AWS region name.
 
-:   `sqlite:///path/to/project/db.sqlite3` if `DJANGO_CONFIGURATION` is
-    set to `Development`, None otherwise
+#### TF_VAR_cloudfront_access_key_id
 
-Choices
+The ID of the AWS master account with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
 
-:   See [schemas as presented by
-    dj-database-url](https://github.com/kennethreitz/dj-database-url#url-schema)
+- Type: string
+- Required: Yes
+- Default: None
+
+#### TF_VAR_update_state_secret
+
+Secret used to sign messages exchanged between the Django backend & AWS lambdas.
+
+Note: should be included in the list of values declared in `DJANGO_UPDATE_STATE_SHARED_SECRETS` for the Django backend deployment with which our deployment's lambdas will communicate.
+
+- Type: string
+- Required: Yes
+- Default: None
+
+#### TF_VAR_update_state_endpoint
+
+URL of the endpoint in Marsha to which our lambdas should POST state updates when they process files.
+
+Example: `https://example.com/api/update-state`.
+
+- Type: string
+- Required: Yes
+- Default: None
