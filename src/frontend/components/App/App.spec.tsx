@@ -23,7 +23,7 @@ describe('<App />', () => {
             if (updateVideo) {
               doUpdateVideo = updateVideo;
             }
-            getCurrentVideo = () => video;
+            getCurrentVideo = () => video!;
             return <div />;
           }}
         </AppDataContext.Consumer>
