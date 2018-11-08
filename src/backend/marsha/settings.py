@@ -214,6 +214,7 @@ class Development(Base):
     ALLOWED_HOSTS = ["*"]
     AWS_SOURCE_BUCKET_NAME = values.Value("development-marsha-source")
     DEBUG = values.BooleanValue(True)
+    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
 
 
 class Test(Base):
