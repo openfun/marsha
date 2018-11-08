@@ -22,6 +22,7 @@ DJANGO_AWS_SOURCE_BUCKET_NAME=dev-marsha-source
 
 # Cloudfront Signed URLs for mp4 files
 DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE=False
+DJANGO_CLOUDFRONT_URL=https://yourCloudfrontUrl
 # variable below should be uncommented if DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE is set to True
 # DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key 
 # DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudFrontAccessKey
