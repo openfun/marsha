@@ -23,7 +23,7 @@ export const AppRoutes = () => {
           path={PLAYER_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ video }) => <VideoPlayer video={video} />}
+              {({ video }) => <VideoPlayer video={video!} />}
             </AppDataContext.Consumer>
           )}
         />
@@ -33,7 +33,7 @@ export const AppRoutes = () => {
           render={() => (
             <AppDataContext.Consumer>
               {({ jwt, updateVideo, video }) => (
-                <VideoForm jwt={jwt} updateVideo={updateVideo} video={video} />
+                <VideoForm jwt={jwt} updateVideo={updateVideo} video={video!} />
               )}
             </AppDataContext.Consumer>
           )}
@@ -48,7 +48,7 @@ export const AppRoutes = () => {
           path={DASHBOARD_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ jwt, video }) => <Dashboard jwt={jwt} video={video} />}
+              {({ jwt, video }) => <Dashboard jwt={jwt} video={video!} />}
             </AppDataContext.Consumer>
           )}
         />
