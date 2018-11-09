@@ -131,7 +131,7 @@ class Base(Configuration):
         {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
     ]
 
-    JWT_SIGNING_KEY = values.SecretValue()
+    JWT_SIGNING_KEY = values.Value(SECRET_KEY)
 
     # Internationalization
     # https://docs.djangoproject.com/en/2.0/topics/i18n/
