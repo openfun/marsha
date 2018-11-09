@@ -18,6 +18,7 @@ jest.doMock('../App/App', () => {
 });
 
 import { Nullable } from 'utils/types';
+import { appState } from '../../types/AppData';
 import { videoState } from '../../types/Video';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
@@ -27,7 +28,7 @@ import { RedirectOnLoad } from './RedirectOnLoad';
 
 describe('<RedirectOnLoad />', () => {
   it('redirects to the error view on LTI error', () => {
-    context.state = 'error';
+    context.state = appState.ERROR;
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
@@ -36,7 +37,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects instructors to the player when the video is ready', () => {
-    context.state = 'instructor';
+    context.state = appState.INSTRUCTOR;
     context.video = { state: videoState.READY };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
@@ -46,7 +47,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects students to /player when the video is ready', () => {
-    context.state = 'student';
+    context.state = appState.STUDENT;
     context.video = { state: videoState.READY };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
@@ -56,7 +57,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects instructors to /form when there is no video yet', () => {
-    context.state = 'instructor';
+    context.state = appState.INSTRUCTOR;
     context.video = { state: videoState.PENDING };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
@@ -66,7 +67,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects instructors to /dashboard when there is a video undergoing processing', () => {
-    context.state = 'instructor';
+    context.state = appState.INSTRUCTOR;
     context.video = { state: videoState.PROCESSING };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
@@ -76,7 +77,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects students to the error view when the video is not ready', () => {
-    context.state = 'student';
+    context.state = appState.STUDENT;
     context.video = { state: 'not_ready' };
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
@@ -86,7 +87,7 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects students to the error view when the video is null', () => {
-    context.state = 'student';
+    context.state = appState.STUDENT;
     context.video = null;
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
