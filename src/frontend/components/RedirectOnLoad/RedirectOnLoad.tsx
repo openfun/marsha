@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
+import { appState } from '../../types/AppData';
 import { videoState } from '../../types/Video';
 import { AppDataContext } from '../App/App';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
@@ -19,7 +20,7 @@ export const RedirectOnLoad = () => {
         const { state, video } = appData;
 
         // Get LTI errors out of the way
-        if (state === 'error') {
+        if (state === appState.ERROR) {
           return <Redirect push to={ERROR_ROUTE('lti')} />;
         }
         // Everyone gets the video when it exists (so that instructors see the iframes like a student would by default)
@@ -27,7 +28,7 @@ export const RedirectOnLoad = () => {
           return <Redirect push to={PLAYER_ROUTE()} />;
         }
         // Only instructors are allowed to interact with a non-ready video
-        else if (state === 'instructor') {
+        else if (state === appState.INSTRUCTOR) {
           if (video!.state === videoState.PENDING) {
             return <Redirect push to={FORM_ROUTE()} />;
           } else {
