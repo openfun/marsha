@@ -5,7 +5,10 @@ import * as React from 'react';
 
 // Mock the state context before we import RedirectOnLoad. We'll be able to mutate the
 // context object to vary it for every test
-const context = { state: '', video: {} };
+const context: {
+  state: string;
+  video: Nullable<{}>;
+} = { state: '', video: {} };
 jest.doMock('../App/App', () => {
   return {
     AppDataContext: {
@@ -14,6 +17,7 @@ jest.doMock('../App/App', () => {
   };
 });
 
+import { Nullable } from 'utils/types';
 import { videoState } from '../../types/Video';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
@@ -74,6 +78,16 @@ describe('<RedirectOnLoad />', () => {
   it('redirects students to the error view when the video is not ready', () => {
     context.state = 'student';
     context.video = { state: 'not_ready' };
+    const wrapper = shallow(<RedirectOnLoad />).dive();
+
+    expect(wrapper.name()).toEqual('Redirect');
+    expect(wrapper.prop('push')).toBeTruthy();
+    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('notFound'));
+  });
+
+  it('redirects students to the error view when the video is null', () => {
+    context.state = 'student';
+    context.video = null;
     const wrapper = shallow(<RedirectOnLoad />).dive();
 
     expect(wrapper.name()).toEqual('Redirect');
