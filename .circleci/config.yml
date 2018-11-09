@@ -63,6 +63,12 @@ jobs:
       - run:
           name: Check built image availability
           command: docker images "marsha:${CIRCLE_SHA1}*"
+      - run:
+          name: Test running production image
+          command: ./docker/tests/run.sh marsha ${CIRCLE_SHA1}
+      - run:
+          name: Test statics location in production image
+          command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}
       # Since we cannot rely on CircleCI's Docker layers cache (for obscure
       # reasons some subsequent jobs will benefit from a previous job cache and
       # some others won't), we choose to save built docker images in cached
@@ -241,7 +247,7 @@ jobs:
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
-                    python src/backend/manage.py test
+                    python manage.py test
 
   # ---- Front-end jobs ----
   build-front:
@@ -405,6 +411,12 @@ jobs:
           name: List available images
           command: docker images marsha
       - run:
+          name: Test running alpine production image
+          command: ./docker/tests/run.sh marsha ${CIRCLE_SHA1}-alpine
+      - run:
+          name: Test statics location in alpine production image
+          command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}-alpine
+      - run:
           name: Store docker image in cache
           command: |
             docker save \
@@ -440,7 +452,7 @@ jobs:
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
-                    python src/backend/manage.py test
+                    python manage.py test
 
   # ---- DockerHub publication job ----
   hub:
@@ -470,8 +482,7 @@ jobs:
       #   - DOCKER_PASS
       - run:
           name: Login to DockerHub
-          command:
-            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
