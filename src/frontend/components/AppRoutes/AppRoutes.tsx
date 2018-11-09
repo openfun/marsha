@@ -11,6 +11,10 @@ import {
   RedirectOnLoad,
   ROUTE as HOME_ROUTE,
 } from '../RedirectOnLoad/RedirectOnLoad';
+import {
+  ROUTE as UPDATABLE_VIDEO_ROUTE,
+  UpdatableVideoPlayer,
+} from '../UpdatableVideoPlayer/UpdatableVideoPlayer';
 import { ROUTE as FORM_ROUTE, VideoForm } from '../VideoForm/VideoForm';
 import { ROUTE as PLAYER_ROUTE, VideoPlayer } from '../VideoPlayer/VideoPlayer';
 
@@ -24,6 +28,15 @@ export const AppRoutes = () => {
           render={() => (
             <AppDataContext.Consumer>
               {({ video }) => <VideoPlayer video={video!} />}
+            </AppDataContext.Consumer>
+          )}
+        />
+        <Route
+          exact
+          path={UPDATABLE_VIDEO_ROUTE()}
+          render={() => (
+            <AppDataContext.Consumer>
+              {({ video }) => <UpdatableVideoPlayer video={video!} />}
             </AppDataContext.Consumer>
           )}
         />

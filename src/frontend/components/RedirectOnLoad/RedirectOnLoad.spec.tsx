@@ -22,6 +22,7 @@ import { appState } from '../../types/AppData';
 import { videoState } from '../../types/Video';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ROUTE as UPDATABLE_VIDEO_ROUTE } from '../UpdatableVideoPlayer/UpdatableVideoPlayer';
 import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { RedirectOnLoad } from './RedirectOnLoad';
@@ -43,7 +44,7 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(UPDATABLE_VIDEO_ROUTE());
   });
 
   it('redirects students to /player when the video is ready', () => {

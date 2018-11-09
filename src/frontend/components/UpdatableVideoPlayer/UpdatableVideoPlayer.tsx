@@ -26,16 +26,18 @@ const messages = defineMessages({
 const UpdateVideoContainer = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 `;
 
 const UpdateButtonsStyled = styled.div`
   display: flex;
   flex-direction: row;
+  flex-grow: 1;
 `;
 
 const UpdateButtonStyled = withLink(styled(Button)`
   flex-grow: 1;
-  margin: 1rem;
+  margin: 0.3rem;
 `);
 
 export class UpdatableVideoPlayer extends React.Component<

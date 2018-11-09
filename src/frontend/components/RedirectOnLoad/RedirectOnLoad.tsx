@@ -6,6 +6,7 @@ import { videoState } from '../../types/Video';
 import { AppDataContext } from '../App/App';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ROUTE as UPDATABLE_VIDEO_ROUTE } from '../UpdatableVideoPlayer/UpdatableVideoPlayer';
 import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 
@@ -25,7 +26,11 @@ export const RedirectOnLoad = () => {
         }
         // Everyone gets the video when it exists (so that instructors see the iframes like a student would by default)
         else if (video && video.state === videoState.READY) {
-          return <Redirect push to={PLAYER_ROUTE()} />;
+          if (state === 'instructor') {
+            return <Redirect push to={UPDATABLE_VIDEO_ROUTE()} />;
+          } else {
+            return <Redirect push to={PLAYER_ROUTE()} />;
+          }
         }
         // Only instructors are allowed to interact with a non-ready video
         else if (state === appState.INSTRUCTOR) {
