@@ -36,6 +36,16 @@ COPY src/backend/setup.cfg /setup.cfg
 RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('/setup.cfg'); \
     print(c['options']['install_requires'])" | xargs pip install --prefix=/install
 
+# ---- front-end builder image ----
+FROM node:9 as front-builder
+
+WORKDIR /app
+
+COPY ./src/frontend /app/
+
+RUN yarn install && \
+    yarn build -o marsha/static/js/index.js
+
 # ---- final application image ----
 FROM base
 
@@ -51,6 +61,9 @@ RUN apk --no-cache add --update \
 
 # Copy marsha application (see .dockerignore)
 COPY . /app/
+
+# Copy front-end dependencies
+COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
 
 WORKDIR /app/src/backend
 
