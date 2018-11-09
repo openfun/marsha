@@ -23,10 +23,10 @@ FROM base as back-builder
 # Install development libraries required for compiled python dependencies (lxml,
 # Pillow and psycopg2)
 RUN apk --no-cache add --update \
-        gcc \
-        libffi-dev \
-        musl-dev \
-        postgresql-dev && \
+    gcc \
+    libffi-dev \
+    musl-dev \
+    postgresql-dev && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /install
@@ -34,7 +34,7 @@ WORKDIR /install
 COPY src/backend/setup.cfg /setup.cfg
 
 RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('/setup.cfg'); \
-               print(c['options']['install_requires'])" | xargs pip install --prefix=/install
+    print(c['options']['install_requires'])" | xargs pip install --prefix=/install
 
 # ---- final application image ----
 FROM base
@@ -45,14 +45,14 @@ COPY --from=back-builder /install /usr/local
 # Install only (linked) libraries required for compiled python dependencies
 # (lxml, Pillow and psycopg2)
 RUN apk --no-cache add --update \
-        gcc \
-        postgresql && \
+    gcc \
+    postgresql && \
     rm -rf /var/cache/apk/*
 
 # Copy marsha application (see .dockerignore)
 COPY . /app/
 
-WORKDIR /app
+WORKDIR /app/src/backend
 
 # Gunicorn
 RUN mkdir -p /usr/local/etc/gunicorn
