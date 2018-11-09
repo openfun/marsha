@@ -5,7 +5,7 @@ services:
     image: postgres:10.3
     env_file: env.d/development
     ports:
-        - "5452:5432"
+      - "5452:5432"
 
   # We use our production image as a basis for the development image, hence, we
   # define a "base" service upon which the "app" service depends to force
@@ -28,9 +28,9 @@ services:
     # django development server (wrapped by dockerize to ensure the db is ready
     # to accept connections before running the development server)
     command: >
-      dockerize -wait tcp://db:5432 -timeout 60s python ./src/backend/manage.py runserver 0.0.0.0:8000
+      dockerize -wait tcp://db:5432 -timeout 60s python manage.py runserver 0.0.0.0:8000
     ports:
-        - "8060:8000"
+      - "8060:8000"
     volumes:
       - .:/app
       - ./data/static:/data/static

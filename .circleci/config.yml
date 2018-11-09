@@ -143,7 +143,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                isort --recursive --check-only src/backend/marsha
+                isort --recursive --check-only marsha
 
   lint-flake8:
     machine: true
@@ -165,7 +165,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                flake8 src/backend/marsha
+                flake8 marsha
 
   lint-pylint:
     machine: true
@@ -187,7 +187,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                pylint --rcfile=src/backend/pylintrc src/backend/marsha
+                pylint --rcfile=pylintrc marsha
 
   lint-black:
     machine: true
@@ -209,7 +209,7 @@ jobs:
               -f docker/compose/ci/docker-compose.yml \
               --project-directory . \
               run --rm --no-deps app \
-                black src/backend/marsha/ --check
+                black marsha/ --check
 
   test-back:
     machine: true

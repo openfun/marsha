@@ -50,9 +50,9 @@ COPY --from=back-builder /install /usr/local
 COPY . /app/
 
 # Copy front-end dependencies
-COPY --from=front-builder /app/marsha/static /app/marsha/static
+COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
 
-WORKDIR /app
+WORKDIR /app/src/backend
 
 # Gunicorn
 RUN mkdir -p /usr/local/etc/gunicorn
