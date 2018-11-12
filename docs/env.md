@@ -1,14 +1,17 @@
 # Environment variables
 
-`marsha` contains several projects, two of which are configured through environment variables. There are therefore two `env.d` folders with different environment variables.
+`marsha` contains several projects, three of which are configured through environment variables.
 
-First, there is our Django backend. We try to follow [12 factors app](https://12factor.net/) and so use environment variables for configuration.
+First, there is our Django backend. We try to follow [12 factors app](https://12factor.net/) and so use environment variables for configuration. It looks for environment variables in `env.d/{environment}`.
 
-Then, there is our aws deployment configurations in the `src/aws` folder. It looks in `src/aws/env.d`.
+Then, there is our AWS deployment configurations in the `src/aws` folder:
+
+- The main Terraform project in charge of deploying Marsha looks for environment variables in `src/aws/env.d/{environment}`,
+- A small side Terraform project located in `src/aws/create_state_bucket` is responsible just for creating an S3 bucket in AWS that Terraform will use to record the state of the main Marsha project with encryption and versioning. This Terraform project looks for environment variables in `src/aws/env.d/state_bucket`.
 
 ## 1. Django backend environment
 
-Specified in `{REPO_ROOT}/env.d/development`.
+Specified in `{REPO_ROOT}/env.d/{environment}`.
 
 ### General Django settings
 
@@ -218,9 +221,9 @@ The URL for the AWS Cloudfront distribution for the relevant AWS deployment. Thi
 - Default: None
 
 
-## 2. AWS deployment environment
+## 2. Environment to deploy Marsha to AWS
 
-Specified in `{REPO_ROOT}/src/aws/env.d/development`.
+Specified in `{REPO_ROOT}/src/aws/env.d/{environment}`.
 
 #### AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
@@ -266,3 +269,24 @@ Example: `https://example.com/api/update-state`.
 - Type: string
 - Required: Yes
 - Default: None
+
+## 3. Environment to create the state bucket in AWS
+
+Specified in `{REPO_ROOT}/src/aws/env.d/state_bucket`.
+
+#### AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+
+A key ID + secret pair for an AWS IAM account with administrative access to the resources we need to access to create the state bucket (see Terraform configuration files).
+
+- Type: string
+- Required: Yes
+- Default: None
+
+#### TF_VAR_aws_region
+
+The Amazon Web Services region where we deployed or want to deploy our state bucket.
+
+- Type: string
+- Required: No
+- Default: `"eu-west-1"`
+- Choices: Any valid AWS region name.
