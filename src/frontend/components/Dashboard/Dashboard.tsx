@@ -61,6 +61,7 @@ const DashboardInnerContainer = styled.div`
 export interface DashboardProps {
   isUploading?: boolean;
   jwt: string;
+  updateVideo?: (video: Video) => void;
   video: Video;
 }
 
@@ -75,6 +76,7 @@ interface DashboardState {
  * Will also be used to manage related tracks such as subtitles when they are available.
  * @param isUploading Whether the relevant video file is currently being uploaded.
  * @param jwt The token that will be used to fetch the video record from the server to update it.
+ * @param updateVideo Callback to update the video in App state.
  * @param video The video object from AppData. We need it to populate the component before polling starts.
  */
 export class Dashboard extends React.Component<DashboardProps, DashboardState> {
@@ -115,6 +117,12 @@ export class Dashboard extends React.Component<DashboardProps, DashboardState> {
       ) {
         // Disregard the server-provided video.
         return;
+      }
+      // When the video is ready, we need to update the App state so VideoForm has access to the URLs when it loads
+      else if (incomingVideo.state === videoState.READY) {
+        if (this.props.updateVideo) {
+          this.props.updateVideo(incomingVideo);
+        }
       }
       this.setState({ video: incomingVideo });
     } catch (error) {

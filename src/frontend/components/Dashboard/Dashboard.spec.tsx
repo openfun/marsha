@@ -17,9 +17,14 @@ describe('<Dashboard />', () => {
     // Create a mock video with the initial state (PROCESSING)
     const mockVideo: any = { id: 'dd44', state: videoState.PROCESSING };
     fetchMock.mock('/api/videos/dd44/', mockVideo);
+    const mockUpdateVideo = jest.fn();
 
     const wrapper = shallow(
-      <Dashboard jwt={'cool_token_m8'} video={mockVideo} />,
+      <Dashboard
+        jwt={'cool_token_m8'}
+        updateVideo={mockUpdateVideo}
+        video={mockVideo}
+      />,
     );
 
     // Dashboard shows the video as PROCESSING
@@ -53,6 +58,10 @@ describe('<Dashboard />', () => {
     expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
       videoState.READY,
     );
+    expect(mockUpdateVideo).toHaveBeenCalledWith({
+      id: 'dd44',
+      state: 'ready',
+    });
 
     // Unmount Dashboard to get rid of its interval
     wrapper.unmount();

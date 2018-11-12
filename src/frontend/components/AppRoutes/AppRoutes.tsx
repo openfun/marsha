@@ -48,7 +48,9 @@ export const AppRoutes = () => {
           path={DASHBOARD_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ jwt, video }) => <Dashboard jwt={jwt} video={video!} />}
+              {({ jwt, updateVideo, video }) => (
+                <Dashboard jwt={jwt} updateVideo={updateVideo} video={video!} />
+              )}
             </AppDataContext.Consumer>
           )}
         />
