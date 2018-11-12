@@ -10,7 +10,7 @@ output "presets" {
   value = "${data.aws_lambda_invocation.configure_lambda_presets.result}"
 }
 
-output "iam_access_key_id" {
+output "iam_trusted_signer_id" {
   value = "${aws_iam_access_key.marsha_access_key.id}"
 }
 

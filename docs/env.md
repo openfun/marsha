@@ -176,7 +176,7 @@ The source AWS S3 bucket where files will be uploaded by end users. This should 
 
 #### DJANGO_CLOUDFRONT_ACCESS_KEY_ID
 
-The ID of the AWS master account with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
+The access key ID of the AWS master account (not its account id!) with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
 
 Note: Must be associated with a master account as IAM accounts cannot sign URLs.
 
@@ -188,7 +188,7 @@ Note: Must be associated with a master account as IAM accounts cannot sign URLs.
 
 #### CLOUDFRONT_PRIVATE_KEY_PATH
 
-Path to a private key corresponding to the id in `DJANGO_CLOUDFRONT_ACCESS_KEY_ID`. Also used to sign Cloudfront URLs.
+Path to a private key corresponding to the acess key ID in `DJANGO_CLOUDFRONT_ACCESS_KEY_ID`. Also used to sign Cloudfront URLs.
 
 - Type: string
 - Required:
@@ -239,9 +239,9 @@ The Amazon Web Services region where we deployed or want to deploy our serverles
 - Default: `"eu-west-1"`
 - Choices: Any valid AWS region name.
 
-#### TF_VAR_cloudfront_access_key_id
+#### TF_VAR_cloudfront_trusted_signer_id
 
-The ID of the AWS master account with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
+The ID of the AWS master account (not its access key!) with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
 
 - Type: string
 - Required: Yes
