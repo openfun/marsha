@@ -6,7 +6,7 @@ variable "cloudfront_price_class" {
   }
 }
 
-variable "cloudfront_access_key_id" {
+variable "cloudfront_trusted_signer_id" {
   type = "string"
 }
 
