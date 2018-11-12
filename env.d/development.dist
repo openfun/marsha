@@ -1,3 +1,5 @@
+# See `docs/env.md` for details about these environment variables
+
 # Django
 DJANGO_SETTINGS_MODULE=marsha.settings
 DJANGO_CONFIGURATION=Development
@@ -14,9 +16,9 @@ POSTGRES_PASSWORD=pass
 # Python
 PYTHONUNBUFFERED=1
 
-#  AWS Admin role for development purposes
+# AWS Admin role for development purposes
 DJANGO_AWS_ACCESS_KEY_ID=yourAwsAccesKey
-DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKey
+DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKeyId
 DJANGO_AWS_DEFAULT_REGION=eu-west-1
 DJANGO_AWS_SOURCE_BUCKET_NAME=dev-marsha-source
 
