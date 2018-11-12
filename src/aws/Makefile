@@ -6,8 +6,11 @@ help:  ## Show this help
 	@echo "Please use 'make $(BOLD)target$(RESET)' where $(BOLD)target$(RESET) is one of:"
 	@grep -h ':\s\+##' Makefile | column -tn -s# | awk -F ":" '{ print "  $(BOLD)" $$1 "$(RESET)" $$2 }'
 
+env.d/development:
+	cp env.d/development.dist env.d/development
+
 .PHONY: apply
-apply: ## Apply Terraform config
+apply: env.d/development ## Apply Terraform config
 apply:
 	docker-compose run --rm app /bin/terraform apply
 
@@ -17,7 +20,7 @@ refresh:
 	docker-compose run --rm app /bin/terraform refresh
 
 .PHONY: state-create
-state-create: ## Create bucket in AWS to store Terraform state files
+state-create: env.d/development ## Create bucket in AWS to store Terraform state files
 state-create:
 	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform apply
 
@@ -39,9 +42,9 @@ output:
 	docker-compose run --rm app /bin/terraform output
 
 .PHONY: init
-init: ## Initialize Terraform
+init: env.d/development ## Initialize Terraform
 init:
-	docker-compose run --rm app /bin/terraform init -backend-config="env.d/terraform_state"
+	docker-compose run --rm app /bin/terraform init
 
 .PHONY: destroy
 destroy: ## Destroy Terraform config
