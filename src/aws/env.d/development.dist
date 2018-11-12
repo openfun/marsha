@@ -1,0 +1,11 @@
+# See `docs/env.md` for details about these environment variables
+
+# AWS admin credentials
+AWS_ACCESS_KEY_ID=yourAwsAccesKeyId
+AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKey
+
+# Terraform variables
+TF_VAR_cloudfront_trusted_signer_id=888888888888
+TF_VAR_aws_region=eu-west-1
+TF_VAR_update_state_secret=YourUpdateStateSecret
+TF_VAR_update_state_endpoint=https://example.com/update-state
