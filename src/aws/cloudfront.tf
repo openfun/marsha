@@ -50,7 +50,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "${local.s3_origin_id}"
-    trusted_signers  = ["${var.cloudfront_access_key_id}"]
+    trusted_signers  = ["${var.cloudfront_trusted_signer_id}"]
 
     forwarded_values {
       query_string = false
@@ -74,7 +74,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "${local.s3_origin_id}"
-    trusted_signers  = ["${var.cloudfront_access_key_id}"]
+    trusted_signers  = ["${var.cloudfront_trusted_signer_id}"]
 
     forwarded_values {
       query_string = false
