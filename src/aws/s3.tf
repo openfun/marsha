@@ -2,6 +2,7 @@
 resource "aws_s3_bucket" "marsha_source" {
   bucket = "${terraform.workspace}-marsha-source"
   acl    = "private"
+  region = "${var.aws_region}"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -20,6 +21,7 @@ resource "aws_s3_bucket" "marsha_source" {
 resource "aws_s3_bucket" "marsha_destination" {
   bucket = "${terraform.workspace}-marsha-destination"
   acl    = "private"
+  region = "${var.aws_region}"
 
   cors_rule {
     allowed_headers = ["*"]
