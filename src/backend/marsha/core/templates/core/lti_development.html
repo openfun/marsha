@@ -1,72 +1,100 @@
+{% load staticfiles %}
+
 <html>
+  <head>
+    <style>
+      * {
+        font-family: Helvetica, sans-serif;
+      }
 
-<head>
-  <style>
-    * {
-      font-family: Helvetica, sans-serif;
-    }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 1rem;
+      }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
-      padding: 1rem;
-    }
+      section {
+        flex-basis: 50%;
+        text-align: center;
+      }
 
-    section {
-      flex-basis: 50%;
-      text-align: center;
-    }
+      section:last-of-type {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
 
-    section:last-of-type {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-    }
+      section p {
+        max-width: 40rem;
+      }
 
-    section p {
-      max-width: 40rem;
-    }
+      section iframe {
+        width: 533px;
+        height: 100px; /* Explicitly set a bogus height to force iframe-resizer action */
+        resize: both;
+        overflow: auto;
+        border: 1px solid lightslategray;
+      }
+    </style>
+  </head>
 
-    section iframe {
-      width: 533px;
-      height: 300px;
-      resize: both;
-      overflow: auto;
-      border: 1px solid lightslategray;
-    }
-  </style>
-</head>
+  <body>
+    <section>
+      <h2>Iframe LTI setup</h2>
+      <p>
+        Open the `/lti-video/` view in the iframe below, with a POST request.
+        Simulates execution in real conditions, except this is not a
+        cross-origin call.
+      </p>
+      <form action="http://localhost:8060/lti-video/" method="post" target="lti_iframe">
+        <input type="text" name="resource_link_id" value="example.com-df7" />
+        <input
+          type="text"
+          name="context_id"
+          value="course-v1:ufr+mathematics+0001"
+        />
+        <input type="text" name="roles" value="Instructor" />
+        <input type="submit" />
+      </form>
 
-<body>
-  <section>
-    <h2>Iframe LTI setup</h2>
-    <p>Open the `/lti-video/` view in the iframe below, with a POST request. Simulates
-      execution in real conditions, except this is not a cross-origin call.</p>
-    <form action="/lti-video/" method="post" target="lti_iframe">
-      <input type="text" name="resource_link_id" value="example.com-df7" />
-      <input type="text" name="context_id" value="course-v1:ufr+mathematics+0001" />
-      <input type="text" name="roles" value="Instructor" />
-      <input type="submit" />
-    </form>
+      <iframe
+        class="controlled-iframe"
+        name="lti_iframe"
+        srcdoc="<body style='position: absolute; display: flex; justify-content: center; align-items: center; width: 100%; margin: 0;'><h2 style='font-family: Helvetica, sans-serif;'>Fill the form above to load the LTI view</h2></body>"
+        frameborder="0"
+        allowfullscreen
+        allow="fullscreen *"
+        webkitallowfullscreen
+        mozallowfullscreen
+      >
+      </iframe>
 
-    <iframe name="lti_iframe" srcdoc="<body style='position: absolute; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; margin: 0;'><h2 style='font-family: Helvetica, sans-serif;'>Fill the form above to load the LTI view</h2></body>"
-      frameborder="0" allowfullscreen allow="fullscreen *" webkitallowfullscreen mozallowfullscreen>
-    </iframe>
-  </section>
+      <script src="{% static 'js/iframeResizer.min.js' %}"></script>
+      <script>
+        iFrameResize({
+          checkOrigin: ['http://localhost:8060'],
+        });
+      </script>
+    </section>
 
-  <section>
-    <h2>New page LTI setup</h2>
-    <p style="margin-top: 0;">Open the `/lti-video/` view in a regular full-screen page, with a POST
-      request.</p>
-    <form action="/lti-video/" method="post">
-      <input type="text" name="resource_link_id" value="example.com-df7" />
-      <input type="text" name="context_id" value="course-v1:ufr+mathematics+0001" />
-      <input type="text" name="roles" value="Instructor" />
-      <input type="submit" />
-    </form>
-  </section>
-</body>
-
+    <section>
+      <h2>New page LTI setup</h2>
+      <p style="margin-top: 0;">
+        Open the `/lti-video/` view in a regular full-screen page, with a POST
+        request.
+      </p>
+      <form action="/lti-video/" method="post">
+        <input type="text" name="resource_link_id" value="example.com-df7" />
+        <input
+          type="text"
+          name="context_id"
+          value="course-v1:ufr+mathematics+0001"
+        />
+        <input type="text" name="roles" value="Instructor" />
+        <input type="submit" />
+      </form>
+    </section>
+  </body>
 </html>

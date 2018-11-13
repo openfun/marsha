@@ -1,3 +1,5 @@
+import 'iframe-resizer/js/iframeResizer.contentWindow';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
