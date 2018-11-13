@@ -22,6 +22,7 @@ refresh:
 .PHONY: state-create
 state-create: env.d/development ## Create bucket in AWS to store Terraform state files
 state-create:
+	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform init
 	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform apply
 
 .PHONY: state-output
