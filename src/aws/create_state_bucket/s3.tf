@@ -5,6 +5,7 @@ resource "aws_kms_key" "state_key" {
 resource "aws_s3_bucket" "state_bucket" {
   bucket = "marsha-terraform"
   acl    = "private"
+  region = "${var.aws_region}"
 
   versioning {
     enabled = true
