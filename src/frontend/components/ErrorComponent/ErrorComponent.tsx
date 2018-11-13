@@ -3,14 +3,13 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { H2 } from '../Headings/Headings';
+import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 
 export interface ErrorComponentProps {
   code: 'lti' | 'notFound' | 'policy' | 'upload';
 }
 
-const ErrorComponentStyled = styled.div`
-  width: 100%;
-  height: 100%;
+const ErrorComponentStyled = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   padding: 0 2rem;

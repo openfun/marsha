@@ -11,6 +11,7 @@ import { Maybe } from '../../utils/types';
 import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
+import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
 
 const messages = defineMessages({
@@ -29,11 +30,10 @@ const messages = defineMessages({
 
 export const ROUTE = () => '/form';
 
-const VideoFormContainer = styled.div`
+const VideoFormContainer = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  height: 100%;
 `;
 
 const IframeHeadingWithLayout = styled(IframeHeading)`

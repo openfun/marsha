@@ -8,6 +8,7 @@ import { Video, videoState } from '../../types/Video';
 import { Maybe } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { H6, IframeHeading } from '../Headings/Headings';
+import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
 import { DashboardButtons } from './DashboardButtons';
 import { DashboardHelptext } from './DashboardHelptext';
@@ -37,11 +38,10 @@ const IframeHeadingWithLayout = styled(IframeHeading)`
   text-align: center;
 `;
 
-const DashboardContainer = styled.div`
+const DashboardContainer = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  height: 100%;
 `;
 
 const DashboardInternalHeading = styled(H6)`
