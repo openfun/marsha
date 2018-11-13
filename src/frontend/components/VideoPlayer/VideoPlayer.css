@@ -6,7 +6,13 @@
  * the rest of the viewport filled with black bands.
  */
 .plyr {
-  height: 100%;
+  /**
+   * 100/56.25 == 16/9
+   * We use this ratio as we base marsha's layout on video display
+   */
+  width: 100vw;
+  height: 56.25vw;
+  overflow: hidden;
 }
 
 .plyr__video-wrapper {
