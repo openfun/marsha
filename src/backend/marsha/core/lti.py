@@ -1,5 +1,6 @@
 """LTI module that supports LTI 1.0."""
 import re
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -87,7 +88,18 @@ class LTI:
         ):
             raise LTIException()
 
-        return passport.consumer_site or passport.playlist.consumer_site
+        consumer_site = passport.consumer_site or passport.playlist.consumer_site
+
+        # Make sure we only accept requests from domains in which the "top parts" match
+        # the URL for the consumer_site associated with the passport.
+        # eg. sub.example.com & example.com for an example.com consumer site.
+        domain_check = urlparse(self.request.META.get("HTTP_REFERER")).hostname
+        if domain_check != consumer_site.domain and not domain_check.endswith(
+            ".{:s}".format(consumer_site.domain)
+        ):
+            raise LTIException("Host domain does not match registered passport.")
+
+        return consumer_site
 
     def __getattr__(self, name):
         """Look for attributes in the request's POST parameters as a last resort.
