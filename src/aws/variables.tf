@@ -1,3 +1,9 @@
+
+variable "aws_region" {
+  type    = "string"
+  default = "eu-west-1"
+}
+
 variable "cloudfront_price_class" {
   type = "map"
 
@@ -10,9 +16,9 @@ variable "cloudfront_trusted_signer_id" {
   type = "string"
 }
 
-variable "aws_region" {
+variable "update_state_disable_ssl_validation" {
   type    = "string"
-  default = "eu-west-1"
+  default = "false"
 }
 
 variable "update_state_endpoint" {
