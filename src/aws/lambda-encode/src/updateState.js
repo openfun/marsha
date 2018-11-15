@@ -1,4 +1,4 @@
-// DUPLICATE CODE: terraform/source/update_state/src/updateState
+// DUPLICATE CODE: src/aws/lambda-update-state/src/updateState
 /**
  * Post an update to the state of an object to any endpoint, using hmac with a shared secret
  * to sign the object key and provide authorization for the request.
@@ -13,12 +13,16 @@ module.exports = async (key, state) => {
   hmac.update(key);
   const signature = hmac.digest('hex');
 
+  const body = {
+    key,
+    signature,
+    state,
+  };
+
+  console.log(`Updating state: POST ${ENDPOINT} \n ${JSON.stringify(body)}`);
+
   await request({
-    body: {
-      key,
-      signature,
-      state,
-    },
+    body,
     json: true,
     method: 'POST',
     uri: ENDPOINT,
