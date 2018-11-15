@@ -270,6 +270,14 @@ Example: `https://example.com/api/update-state`.
 - Required: Yes
 - Default: None
 
+#### TF_VAR_update_state_disable_ssl_validation
+
+Whether SSL certificate validation in requests made by the AWS lambdas should be disabled. This allows Django to run on a domain with a self-signed or otherwise invalid certificate in non-production environments.
+
+- Type: boolean
+- Required: No
+- Default: false
+
 ## 3. Environment to create the state bucket in AWS
 
 Specified in `{REPO_ROOT}/src/aws/env.d/state_bucket`.

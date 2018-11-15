@@ -1,4 +1,5 @@
 const endpoint = 'https://example.com/update-state-endpoint/';
+process.env.DISABLE_SSL_VALIDATION = 'false';
 process.env.ENDPOINT = endpoint;
 process.env.SHARED_SECRET = 'some secret';
 
@@ -9,12 +10,19 @@ jest.doMock('request-promise-native', () => requestStub);
 // Don't pollute tests with logs intended for CloudWatch
 const mockConsoleLog = jest.spyOn(console, 'log');
 
-const updateState = require('./updateState');
-
 describe('lambda/update_state/src/updateState()', () => {
-  beforeEach(mockConsoleLog.mockReset);
+  beforeEach(() => {
+    // Make sure to reset the modules so we get a chance to alter process.env between tests
+    jest.resetModules();
+
+    // Reset the mocks we'll be testing
+    mockConsoleLog.mockReset();
+    requestStub.mockReset();
+  });
 
   it('calculates the signature and posts the new state to the server', async () => {
+    const updateState = require('./updateState');
+
     await updateState('successful object key', 'ready');
 
     const anteLogArgument = mockConsoleLog.mock.calls[0][0];
@@ -39,11 +47,35 @@ describe('lambda/update_state/src/updateState()', () => {
       },
       json: true,
       method: 'POST',
+      strictSSL: true,
       uri: endpoint,
     });
   });
 
+  it('disables SSL when DISABLE_SSL_VALIDATION is truthy', async () => {
+    process.env.DISABLE_SSL_VALIDATION = 'true';
+    const updateState = require('./updateState');
+
+    await updateState('unsecure object key', 'ready');
+
+    expect(requestStub).toHaveBeenCalledWith({
+      body: {
+        key: 'unsecure object key',
+        signature:
+          '5206d32540bb479dbca49728cb8f9394fff6b32224b74c46eb59872f9ea3d60b',
+        state: 'ready',
+      },
+      json: true,
+      method: 'POST',
+      strictSSL: false,
+      uri: endpoint,
+    });
+
+    process.env.DISABLE_SSL_VALIDATION = 'false';
+  });
+
   it('rejects when the request fails', async () => {
+    const updateState = require('./updateState');
     requestStub.mockImplementation(
       () => new Promise((resolve, reject) => reject('Failed!')),
     );

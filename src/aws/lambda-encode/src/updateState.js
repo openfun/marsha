@@ -7,6 +7,7 @@ const request = require('request-promise-native');
 const crypto = require('crypto');
 
 const { ENDPOINT, SHARED_SECRET } = process.env;
+const DISABLE_SSL_VALIDATION = JSON.parse(process.env.DISABLE_SSL_VALIDATION);
 
 module.exports = async (key, state) => {
   const hmac = crypto.createHmac('sha256', SHARED_SECRET);
@@ -25,6 +26,7 @@ module.exports = async (key, state) => {
     body,
     json: true,
     method: 'POST',
+    strictSSL: DISABLE_SSL_VALIDATION ? false : true,
     uri: ENDPOINT,
   });
 

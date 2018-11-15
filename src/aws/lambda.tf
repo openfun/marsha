@@ -57,6 +57,7 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
 
   environment {
     variables = {
+      DISABLE_SSL_VALIDATION = "${var.update_state_disable_ssl_validation}"
       ENDPOINT = "${var.update_state_endpoint}"
       ENV_TYPE = "${terraform.workspace}"
       MEDIA_CONVERT_ROLE      = "${aws_iam_role.media_convert_role.arn}"
@@ -88,6 +89,7 @@ resource "aws_lambda_function" "marsha_update_state_lambda" {
 
   environment {
     variables = {
+      DISABLE_SSL_VALIDATION = "${var.update_state_disable_ssl_validation}"
       ENDPOINT = "${var.update_state_endpoint}"
       ENV_TYPE = "${terraform.workspace}"
       SHARED_SECRET = "${var.update_state_secret}"
