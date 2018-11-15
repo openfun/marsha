@@ -99,7 +99,7 @@ Secrets used to sign messages sent to the Django backend from AWS lambdas (like 
 
 Note: should include the value from `TF_VAR_update_state_secret` in `src/aws` for any stack deployed to AWS which should communicate with the Django backend.
 
-- Type: comma-separated list of strings
+- Type: comma-separated list of strings <br> ⚠️ *ITEMS MUST NOT INCLUDE ANY COMMAS* as commas are used to separated items.
 - Required: Yes
 - Default: None
 
@@ -256,7 +256,7 @@ Secret used to sign messages exchanged between the Django backend & AWS lambdas.
 
 Note: should be included in the list of values declared in `DJANGO_UPDATE_STATE_SHARED_SECRETS` for the Django backend deployment with which our deployment's lambdas will communicate.
 
-- Type: string
+- Type: string <br> ⚠️ *MUST NOT INCLUDE ANY COMMAS* as the corresponding Django setting is a comma-separated list.
 - Required: Yes
 - Default: None
 
