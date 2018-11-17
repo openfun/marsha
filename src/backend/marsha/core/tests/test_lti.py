@@ -124,7 +124,7 @@ class VideoLTITestCase(TestCase):
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_passport_consumer_site(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a consumer site."""
-        ConsumerSiteLTIPassportFactory(
+        passport = ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
             consumer_site__name="example.com",
@@ -137,13 +137,13 @@ class VideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data)
         lti = LTI(request)
-        self.assertTrue(lti.verify())
+        self.assertEqual(lti.verify(), passport.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_passport_playlist(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a playlist."""
-        PlaylistLTIPassportFactory(
+        passport = PlaylistLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
             playlist__consumer_site__name="example.com",
@@ -156,7 +156,7 @@ class VideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data)
         lti = LTI(request)
-        self.assertTrue(lti.verify())
+        self.assertEqual(lti.verify(), passport.playlist.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", side_effect=oauth2.Error)
