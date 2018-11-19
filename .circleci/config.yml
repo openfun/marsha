@@ -300,7 +300,7 @@ jobs:
             - v3-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Lint code with prettier
-          command: yarn prettier --list-different "**/*.+(ts|tsx|json|js|jsx)" --ignore-path "../.prettierignore"
+          command: yarn prettier
 
   test-front:
     docker:
