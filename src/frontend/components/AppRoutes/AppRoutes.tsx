@@ -7,6 +7,7 @@ import {
   ErrorComponent,
   ROUTE as ERROR_ROUTE,
 } from '../ErrorComponent/ErrorComponent';
+import { InstructorWrapper } from '../InstructorWrapper/InstructorWrapper';
 import {
   RedirectOnLoad,
   ROUTE as HOME_ROUTE,
@@ -23,7 +24,11 @@ export const AppRoutes = () => {
           path={PLAYER_ROUTE()}
           render={() => (
             <AppDataContext.Consumer>
-              {({ video }) => <VideoPlayer video={video!} />}
+              {({ video }) => (
+                <InstructorWrapper>
+                  <VideoPlayer video={video!} />
+                </InstructorWrapper>
+              )}
             </AppDataContext.Consumer>
           )}
         />
