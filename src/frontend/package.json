@@ -8,6 +8,10 @@
     "build-dev": "yarn copy-iframe-resizer; yarn build",
     "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
     "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
+    "lint-fix": "tslint --fix -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
+    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
+    "prettier-write": "prettier --write '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
+    "lint-all": "yarn lint-fix && yarn prettier-fix",
     "test": "jest"
   },
   "repository": "git@github.com:openfun/marsha.git",
