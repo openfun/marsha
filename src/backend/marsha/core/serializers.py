@@ -74,15 +74,7 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = SubtitleTrack
-        fields = (
-            "active_stamp",
-            "id",
-            "has_closed_captioning",
-            "language",
-            "state",
-            "url",
-            "video",
-        )
+        fields = ("active_stamp", "id", "mode", "language", "state", "url", "video")
         read_only_fields = ("id", "url", "video")
 
     active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
@@ -127,11 +119,11 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
             base = "{cloudfront:s}/{resource!s}".format(
                 cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
             )
-            url = "{base:s}/subtitles/{stamp:s}_{language:s}{cc:s}.vtt".format(
+            url = "{base:s}/subtitles/{stamp:s}_{language:s}{mode:s}.vtt".format(
                 base=base,
                 stamp=time_utils.to_timestamp(obj.uploaded_on),
                 language=obj.language,
-                cc="_cc" if obj.has_closed_captioning else "",
+                mode="_{:s}".format(obj.mode) if obj.mode else "",
             )
 
             # Sign the url only if the functionality is activated

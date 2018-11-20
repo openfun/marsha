@@ -29,6 +29,7 @@ from ..factories import (
     UserFactory,
     VideoFactory,
 )
+from ..models import SubtitleTrack
 
 
 # We don't enforce arguments documentation in tests
@@ -407,15 +408,16 @@ class DeletionTestCase(TestCase):
         self._test_uniqueness_ignores_deleted(
             SubtitleTrackFactory,
             language="en",
-            has_closed_captioning=random.choice([True, False]),
+            mode=random.choice([m[0] for m in SubtitleTrack.MODE_CHOICES]),
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
     def test_subtitle_track_can_exist_with_and_without_closed_captioning(self):
-        """Ensure tracks can exists in same lang with or without closed captioning."""
+        """Ensure tracks can exists simultaneously in all modes for the same lang."""
         video = VideoFactory(created_by=UserFactory())
-        SubtitleTrackFactory(video=video, language="en", has_closed_captioning=True)
-        SubtitleTrackFactory(video=video, language="en", has_closed_captioning=False)
+        SubtitleTrackFactory(video=video, language="en", mode=None)
+        for mode, _ in SubtitleTrack.MODE_CHOICES:
+            SubtitleTrackFactory(video=video, language="en", mode=mode)
 
     def test_sign_track_uniqueness(self):
         """Ensure sign track cannot exist twice as non-deleted."""

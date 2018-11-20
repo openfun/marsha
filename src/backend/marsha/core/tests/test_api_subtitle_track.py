@@ -39,7 +39,7 @@ class SubtitleTrackAPITest(TestCase):
         """A token user associated to a video can read a subtitle track related to this video."""
         subtitle_track = SubtitleTrackFactory(
             video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            has_closed_captioning=True,
+            mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
@@ -61,7 +61,7 @@ class SubtitleTrackAPITest(TestCase):
             {
                 "active_stamp": "1533686400",
                 "id": str(subtitle_track.id),
-                "has_closed_captioning": True,
+                "mode": "cc",
                 "language": "fr",
                 "state": "ready",
                 "url": (
@@ -133,7 +133,7 @@ class SubtitleTrackAPITest(TestCase):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         subtitle_track = SubtitleTrackFactory(
             video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            has_closed_captioning=True,
+            mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
@@ -231,7 +231,7 @@ class SubtitleTrackAPITest(TestCase):
             {
                 "id": str(SubtitleTrack.objects.first().id),
                 "active_stamp": None,
-                "has_closed_captioning": False,
+                "mode": None,
                 "language": "fr",
                 "state": "pending",
                 "url": None,
@@ -278,8 +278,8 @@ class SubtitleTrackAPITest(TestCase):
         self.assertEqual(subtitle_track.language, "en")
 
     def test_api_subtitle_track_update_detail_token_user_closed_captioning(self):
-        """Token users should be able to update the closed captioning flag through the API."""
-        subtitle_track = SubtitleTrackFactory(has_closed_captioning=False)
+        """Token users should be able to update the mode flag through the API."""
+        subtitle_track = SubtitleTrackFactory(mode="cc")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(subtitle_track.video.id)
 
@@ -288,7 +288,7 @@ class SubtitleTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         data = json.loads(response.content)
-        data["has_closed_captioning"] = True
+        data["mode"] = "ts"
         response = self.client.put(
             "/api/subtitle-tracks/{!s}/".format(subtitle_track.id),
             json.dumps(data),
@@ -298,7 +298,7 @@ class SubtitleTrackAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         subtitle_track.refresh_from_db()
-        self.assertEqual(subtitle_track.has_closed_captioning, True)
+        self.assertEqual(subtitle_track.mode, "ts")
 
     def test_api_subtitle_track_update_detail_token_user_uploaded_on(self):
         """Token users should be able to confirm the datetime of upload through the API."""
@@ -551,7 +551,7 @@ class SubtitleTrackAPITest(TestCase):
             id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
             video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             language="fr",
-            has_closed_captioning=True,
+            mode="cc",
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(subtitle_track.video.id)

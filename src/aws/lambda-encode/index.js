@@ -17,7 +17,7 @@ exports.handler = async (event, context, callback) => {
       'Source videos should be uploaded in a folder of the form ' +
       '"{playlist_id}/{video_id}/videos/{stamp}".' +
       'Source subtitles should be uploaded to a folder of the form ' +
-      '"{playlist_id}/{video_id}/subtitles/{stamp}_{language}[_{has_closed_caption}]".';
+      '"{playlist_id}/{video_id}/subtitles/{stamp}_{language}[_{mode}]".';
     callback(error);
     return;
   }

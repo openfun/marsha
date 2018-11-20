@@ -296,13 +296,22 @@ class AudioTrack(BaseTrack):
 class SubtitleTrack(BaseTrack):
     """Model representing a subtitle track for a video."""
 
-    has_closed_captioning = models.BooleanField(
-        default=False,
-        verbose_name=_("closed captioning"),
+    TRANSCRIPT, CLOSED_CAPTIONING = "ts", "cc"
+    MODE_CHOICES = (
+        (TRANSCRIPT, "Transcript"),
+        (CLOSED_CAPTIONING, "Closed captioning"),
+    )
+
+    mode = models.CharField(
+        verbose_name=_("mode"),
+        max_length=2,
+        choices=MODE_CHOICES,
         help_text=_(
-            "if closed captioning (for deaf or hard of hearing viewers) "
-            "is on for this subtitle track"
+            "Activate a special mode for this subtitle track: closed captioning (for deaf or hard"
+            " of hearing viewers) or transcription (complete text below aside of the player)."
         ),
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -311,9 +320,7 @@ class SubtitleTrack(BaseTrack):
         db_table = "subtitle_track"
         verbose_name = _("subtitles track")
         verbose_name_plural = _("subtitles tracks")
-        indexes = [
-            NonDeletedUniqueIndex(["video", "language", "has_closed_captioning"])
-        ]
+        indexes = [NonDeletedUniqueIndex(["video", "language", "mode"])]
 
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket.
@@ -338,12 +345,12 @@ class SubtitleTrack(BaseTrack):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/subtitletrack/{subtitle!s}/{stamp:s}_{language:s}{cc:s}".format(
+        return "{resource!s}/subtitletrack/{subtitle!s}/{stamp:s}_{language:s}{mode:s}".format(
             resource=self.video.resource_id,
             subtitle=self.id,
             stamp=stamp,
             language=self.language,
-            cc="_cc" if self.has_closed_captioning else "",
+            mode="_{:s}".format(self.mode) if self.mode else "",
         )
 
 
