@@ -71,7 +71,7 @@ class VideoAPITest(TestCase):
         )
         subtitle = SubtitleTrackFactory(
             video=video,
-            has_closed_captioning=True,
+            mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
@@ -113,7 +113,7 @@ class VideoAPITest(TestCase):
                 "subtitle_tracks": [
                     {
                         "active_stamp": "1533686400",
-                        "has_closed_captioning": True,
+                        "mode": "cc",
                         "id": str(subtitle.id),
                         "language": "fr",
                         "state": "ready",
