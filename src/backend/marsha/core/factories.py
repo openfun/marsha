@@ -124,7 +124,7 @@ class AudioTrackFactory(BaseTrackFactory):
 class SubtitleTrackFactory(BaseTrackFactory):
     """Factory for the SubtitleTrack model."""
 
-    has_closed_captioning = factory.fuzzy.FuzzyChoice([False, True])
+    mode = factory.fuzzy.FuzzyChoice([m[0] for m in models.SubtitleTrack.MODE_CHOICES])
 
     class Meta:  # noqa
         model = models.SubtitleTrack
