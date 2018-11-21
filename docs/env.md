@@ -201,7 +201,7 @@ Path to a private key corresponding to the acess key ID in `DJANGO_CLOUDFRONT_AC
 
 #### DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE
 
-Whether Cloudfront URLs for MP4 files and subtitle tracks should be cryptographically signed.
+Whether Cloudfront URLs for MP4 files and timed text tracks should be cryptographically signed.
 
 Note: Preview images are never signed as a matter of policy; adaptive streaming formats pose technical challenges when it comes to signed URLs, so we're not doing any signing there for now.
 

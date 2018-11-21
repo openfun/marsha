@@ -68,9 +68,9 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # For subtitle tracks, access is restricted to signed urls/cookies
+  # For timed text tracks, access is restricted to signed urls/cookies
   ordered_cache_behavior {
-    path_pattern     = "*/subtitles/*"
+    path_pattern     = "*/timedtext/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "${local.s3_origin_id}"

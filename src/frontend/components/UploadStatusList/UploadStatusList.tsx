@@ -11,27 +11,27 @@ const { PROCESSING, READY, UPLOADING } = videoState;
 const messages = defineMessages({
   statusProcessed: {
     defaultMessage: 'Processed',
-    description: 'Status information for a video/audio/subtitle track',
+    description: 'Status information for a video/audio/timed text track',
     id: 'components.UploadStatusList.statusProcessed',
   },
   statusProcessing: {
     defaultMessage: 'Processing',
-    description: 'Status information for a video/audio/subtitle track',
+    description: 'Status information for a video/audio/timed text track',
     id: 'components.UploadStatusList.statusProcessing',
   },
   statusReady: {
     defaultMessage: 'Ready',
-    description: 'Status information for a video/audio/subtitle track',
+    description: 'Status information for a video/audio/timed text track',
     id: 'components.UploadStatusList.statusReady',
   },
   statusUploaded: {
     defaultMessage: 'Uploaded',
-    description: 'Status information for a video/audio/subtitle track',
+    description: 'Status information for a video/audio/timed text track',
     id: 'components.UploadStatusList.statusUploaded',
   },
   statusUploading: {
     defaultMessage: 'Uploading',
-    description: 'Status information for a video/audio/subtitle track',
+    description: 'Status information for a video/audio/timed text track',
     id: 'components.UploadStatusList.statusUploading',
   },
 });
