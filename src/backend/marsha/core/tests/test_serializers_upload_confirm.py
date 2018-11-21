@@ -21,9 +21,9 @@ class UpdateStateSerializerTest(TestCase):
         """The serializer should return the validated data."""
         valid_keys = (
             "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
-            "{!s}/subtitletrack/{!s}/0123456789".format(uuid4(), uuid4()),
-            "{!s}/subtitletrack/{!s}/0123456789_fr".format(uuid4(), uuid4()),
-            "{!s}/subtitletrack/{!s}/0123456789_fr_cc".format(uuid4(), uuid4()),
+            "{!s}/timedtexttrack/{!s}/0123456789".format(uuid4(), uuid4()),
+            "{!s}/timedtexttrack/{!s}/0123456789_fr".format(uuid4(), uuid4()),
+            "{!s}/timedtexttrack/{!s}/0123456789_fr_cc".format(uuid4(), uuid4()),
         )
         for key in valid_keys:
             state = random.choice(("ready", "error"))
@@ -65,8 +65,8 @@ class UpdateStateSerializerTest(TestCase):
             + [
                 "{!s}/pideos/{!s}/0123456789".format(uuid4(), uuid4()),
                 "{!s}/video/{!s}/012345678a".format(uuid4(), uuid4()),
-                "{!s}/subtitle/{!s}/0123456789_f1".format(uuid4(), uuid4()),
-                "{!s}/subtitle/{!s}/0123456789_fr_cf".format(uuid4(), uuid4()),
+                "{!s}/timedtexttrack/{!s}/0123456789_f1".format(uuid4(), uuid4()),
+                "{!s}/timedtexttrack/{!s}/0123456789_fr_cf".format(uuid4(), uuid4()),
             ]
         )
         for key in invalid_keys:

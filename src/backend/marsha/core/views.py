@@ -40,7 +40,7 @@ class VideoLTIView(TemplateResponseMixin, View):
             - state: state of the LTI launch request. Can be one of `student`, `instructor` or
                 `error`.
             - video: representation of the video including urls for the video file in all
-                resolutions, thumbnails and subtitles.
+                resolutions, with thumbnails and timed text tracks.
 
             For instructors only
             ++++++++++++++++++++

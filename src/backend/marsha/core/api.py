@@ -11,9 +11,13 @@ from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
-from .models import SubtitleTrack, Video
+from .models import TimedTextTrack, Video
 from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
-from .serializers import SubtitleTrackSerializer, UpdateStateSerializer, VideoSerializer
+from .serializers import (
+    TimedTextTrackSerializer,
+    UpdateStateSerializer,
+    VideoSerializer,
+)
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
 
@@ -125,29 +129,29 @@ class VideoViewSet(
         return Response(policy)
 
 
-class SubtitleTrackViewSet(
+class TimedTextTrackViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
-    """Viewset for the API of the subtitle object."""
+    """Viewset for the API of the TimedTextTrack object."""
 
-    queryset = SubtitleTrack.objects.all()
-    serializer_class = SubtitleTrackSerializer
+    queryset = TimedTextTrack.objects.all()
+    serializer_class = TimedTextTrackSerializer
     permission_classes = [IsRelatedVideoTokenOrAdminUser]
 
     @action(methods=["get"], detail=True, url_path="upload-policy")
     # pylint: disable=unused-argument
     def upload_policy(self, request, pk=None):
-        """Get a policy for direct upload of a subtitle track to our AWS S3 source bucket.
+        """Get a policy for direct upload of a timed text track to our AWS S3 source bucket.
 
         Parameters
         ----------
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the subtitle track
+            The primary key of the timed text track
 
         Returns
         -------
@@ -158,8 +162,8 @@ class SubtitleTrackViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        subtitle_track = self.get_object()
-        key = subtitle_track.get_source_s3_key(stamp=stamp)
+        timed_text_track = self.get_object()
+        key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         policy = get_s3_upload_policy_signature(
             now, [{"key": key}, ["content-length-range", 0, SUBTITLE_SOURCE_MAX_SIZE]]

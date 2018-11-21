@@ -121,13 +121,13 @@ class AudioTrackFactory(BaseTrackFactory):
         model = models.AudioTrack
 
 
-class SubtitleTrackFactory(BaseTrackFactory):
-    """Factory for the SubtitleTrack model."""
+class TimedTextTrackFactory(BaseTrackFactory):
+    """Factory for the TimedTextTrack model."""
 
-    mode = factory.fuzzy.FuzzyChoice([m[0] for m in models.SubtitleTrack.MODE_CHOICES])
+    mode = factory.fuzzy.FuzzyChoice([m[0] for m in models.TimedTextTrack.MODE_CHOICES])
 
     class Meta:  # noqa
-        model = models.SubtitleTrack
+        model = models.TimedTextTrack
 
 
 class SignTrackFactory(BaseTrackFactory):

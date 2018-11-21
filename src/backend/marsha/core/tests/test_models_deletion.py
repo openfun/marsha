@@ -25,11 +25,11 @@ from ..factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
     SignTrackFactory,
-    SubtitleTrackFactory,
+    TimedTextTrackFactory,
     UserFactory,
     VideoFactory,
 )
-from ..models import SubtitleTrack
+from ..models import TimedTextTrack
 
 
 # We don't enforce arguments documentation in tests
@@ -351,7 +351,7 @@ class DeletionTestCase(TestCase):
         playlist = PlaylistFactory(created_by=user, organization=organization)
         video = VideoFactory(created_by=user, playlist=playlist)
         audio_track = AudioTrackFactory(video=video)
-        subtitle_track = SubtitleTrackFactory(video=video)
+        timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
 
@@ -359,7 +359,7 @@ class DeletionTestCase(TestCase):
 
         self.assertIsSoftDeleted(video)
         self.assertIsSoftDeleted(audio_track)
-        self.assertIsSoftDeleted(subtitle_track)
+        self.assertIsSoftDeleted(timed_text_track)
         self.assertIsSoftDeleted(sign_track)
         self.assertIsVisible(copied_video)
         self.assertIsVisible(organization)
@@ -373,7 +373,7 @@ class DeletionTestCase(TestCase):
         video = VideoFactory(created_by=user, playlist=playlist)
 
         audio_track = AudioTrackFactory(video=video)
-        subtitle_track = SubtitleTrackFactory(video=video)
+        timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
 
@@ -381,7 +381,7 @@ class DeletionTestCase(TestCase):
 
         self.assertIsHardDeleted(video)
         self.assertIsHardDeleted(audio_track)
-        self.assertIsHardDeleted(subtitle_track)
+        self.assertIsHardDeleted(timed_text_track)
         self.assertIsHardDeleted(sign_track)
         self.assertIsVisible(copied_video)
         self.assertIsVisible(organization)
@@ -391,7 +391,7 @@ class DeletionTestCase(TestCase):
         """Ensure soft deletion work as expected for video tracks."""
         video = VideoFactory(created_by=UserFactory())
 
-        for factory in [AudioTrackFactory, SubtitleTrackFactory, SignTrackFactory]:
+        for factory in [AudioTrackFactory, TimedTextTrackFactory, SignTrackFactory]:
             with self.subTest(model=factory._meta.model):  # noqa
                 self._test_soft_deletion(factory, video=video)
 
@@ -403,21 +403,20 @@ class DeletionTestCase(TestCase):
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
-    def test_subtitle_track_uniqueness(self):
-        """Ensure subtitle track cannot exist twice as non-deleted."""
+    def test_timed_text_track_uniqueness(self):
+        """Ensure timed text track cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
-            SubtitleTrackFactory,
+            TimedTextTrackFactory,
             language="en",
-            mode=random.choice([m[0] for m in SubtitleTrack.MODE_CHOICES]),
+            mode=random.choice([m[0] for m in TimedTextTrack.MODE_CHOICES]),
             video=VideoFactory(created_by=UserFactory(), language="en"),
         )
 
-    def test_subtitle_track_can_exist_with_and_without_closed_captioning(self):
-        """Ensure tracks can exists simultaneously in all modes for the same lang."""
+    def test_timed_text_track_can_exist_with_and_without_closed_captioning(self):
+        """Ensure tracks can exist simultaneously in all modes for the same language."""
         video = VideoFactory(created_by=UserFactory())
-        SubtitleTrackFactory(video=video, language="en", mode=None)
-        for mode, _ in SubtitleTrack.MODE_CHOICES:
-            SubtitleTrackFactory(video=video, language="en", mode=mode)
+        for mode, _ in TimedTextTrack.MODE_CHOICES:
+            TimedTextTrackFactory(video=video, language="en", mode=mode)
 
     def test_sign_track_uniqueness(self):
         """Ensure sign track cannot exist twice as non-deleted."""

@@ -10,7 +10,7 @@ import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
-from ..factories import SubtitleTrackFactory, UserFactory, VideoFactory
+from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from ..models import STATE_CHOICES, Video
 
 
@@ -69,7 +69,7 @@ class VideoAPITest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             state="ready",
         )
-        subtitle = SubtitleTrackFactory(
+        timed_text_track = TimedTextTrackFactory(
             video=video,
             mode="cc",
             language="fr",
@@ -110,16 +110,16 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": "1533686400",
                 "state": "ready",
-                "subtitle_tracks": [
+                "timed_text_tracks": [
                     {
                         "active_stamp": "1533686400",
                         "mode": "cc",
-                        "id": str(subtitle.id),
+                        "id": str(timed_text_track.id),
                         "language": "fr",
                         "state": "ready",
                         "url": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "subtitles/1533686400_fr_cc.vtt"
+                            "timedtext/1533686400_fr_cc.vtt"
                         ),
                         "video": str(video.id),
                     }
@@ -181,7 +181,7 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "state": "pending",
-                "subtitle_tracks": [],
+                "timed_text_tracks": [],
                 "urls": None,
             },
         )
@@ -215,7 +215,7 @@ class VideoAPITest(TestCase):
                     "title": video.title,
                     "active_stamp": "1533686400",
                     "state": state,
-                    "subtitle_tracks": [],
+                    "timed_text_tracks": [],
                     "urls": None,
                 },
             )

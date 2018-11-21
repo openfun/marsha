@@ -19,12 +19,12 @@ const messages = defineMessages({
   subtitleForVideo: {
     defaultMessage: 'Video preparation',
     description:
-      'Subtitle for the video part of the dashboard (right now the only part until we add subtitles).',
+      'Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).',
     id: 'components.Dashboard.subtitleForVideo',
   },
   title: {
     defaultMessage: 'Dashboard',
-    description: `Title for the dashboard, where the user can see the status of the video/audio/subtitles upload
+    description: `Title for the dashboard, where the user can see the status of the video/audio/timed text upload
       & processing, and will be able to manage them.`,
     id: 'components.Dashboard.title',
   },
@@ -73,7 +73,7 @@ interface DashboardState {
 
 /** Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
  * the player and to the form to replace the video with another one.
- * Will also be used to manage related tracks such as subtitles when they are available.
+ * Will also be used to manage related tracks such as timed text when they are available.
  * @param isUploading Whether the relevant video file is currently being uploaded.
  * @param jwt The token that will be used to fetch the video record from the server to update it.
  * @param updateVideo Callback to update the video in App state.
