@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 
 import pytz
 
-from ..factories import SubtitleTrackFactory, VideoFactory
+from ..factories import TimedTextTrackFactory, VideoFactory
 
 
 # We don't enforce arguments documentation in tests
@@ -14,7 +14,7 @@ from ..factories import SubtitleTrackFactory, VideoFactory
 
 
 class UpdateStateAPITest(TestCase):
-    """Test the API that allows to update video & subtitle track objects' state."""
+    """Test the API that allows to update video & timed text track objects' state."""
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video(self):
@@ -62,29 +62,29 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.state, "error")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    def test_api_update_state_subtitle_track(self):
-        """Confirming the successful upload of a subtitle track."""
-        subtitle_track = SubtitleTrackFactory(
+    def test_api_update_state_timed_text_track(self):
+        """Confirming the successful upload of a timed text track."""
+        timed_text_track = TimedTextTrackFactory(
             id="673d4400-acab-454b-99eb-f7ef422af2cb",
             video__resource_id="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
         )
         data = {
-            "key": "{!s}/subtitletrack/{!s}/1533686400_fr_cc".format(
-                subtitle_track.video.resource_id, subtitle_track.id
+            "key": "{!s}/timedtexttrack/{!s}/1533686400_fr_cc".format(
+                timed_text_track.video.resource_id, timed_text_track.id
             ),
             "state": "ready",
-            "signature": "afe34c3bd624d8064e8d4b92ac8eba3b690988c4b27e316320851ada8f8304fd",
+            "signature": "7d3701b28d3bc7bcec1c846e1c932b9e79b4aff053ea9168898e2504e53ca03d",
         }
 
         response = self.client.post("/api/update-state", data)
-        subtitle_track.refresh_from_db()
+        timed_text_track.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(
-            subtitle_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
+            timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
         )
-        self.assertEqual(subtitle_track.state, "ready")
+        self.assertEqual(timed_text_track.state, "ready")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_unknown_video(self):

@@ -10,14 +10,14 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from .models import ERROR, PROCESSING, READY, STATE_CHOICES, SubtitleTrack, Video
+from .models import ERROR, PROCESSING, READY, STATE_CHOICES, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
 UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-# This regex matches keys in AWS for videos or subtitle tracks
+# This regex matches keys in AWS for videos or timed text tracks
 KEY_PATTERN = (
-    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|subtitletrack)/(?P<object_id>{uuid:s})/"
+    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|timedtexttrack)/(?P<object_id>{uuid:s})/"
     "(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}(_cc)?)?$".format(uuid=UUID_REGEX)
 )
 KEY_REGEX = re.compile(KEY_PATTERN)
@@ -69,11 +69,11 @@ class TimestampField(serializers.DateTimeField):
             raise ValidationError(error)
 
 
-class SubtitleTrackSerializer(serializers.ModelSerializer):
-    """Serializer to display a subtitle track model."""
+class TimedTextTrackSerializer(serializers.ModelSerializer):
+    """Serializer to display a timed text track model."""
 
     class Meta:  # noqa
-        model = SubtitleTrack
+        model = TimedTextTrack
         fields = ("active_stamp", "id", "mode", "language", "state", "url", "video")
         read_only_fields = ("id", "url", "video")
 
@@ -100,18 +100,18 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def get_url(self, obj):
-        """Url of the subtitle track, signed with a CloudFront key if activated.
+        """Url of the timed text track, signed with a CloudFront key if activated.
 
         Parameters
         ----------
-        obj : Type[models.SubtitleTrack]
-            The subtitle track that we want to serialize
+        obj : Type[models.TimedTextTrack]
+            The timed text track that we want to serialize
 
         Returns
         -------
         string or None
-            The url for the subtitle track converted to vtt.
-            None if the subtitle track is still not uploaded to S3 with success.
+            The url for the timed text track converted to vtt.
+            None if the timed text track is still not uploaded to S3 with success.
 
         """
         if obj.uploaded_on and obj.state == READY:
@@ -119,7 +119,7 @@ class SubtitleTrackSerializer(serializers.ModelSerializer):
             base = "{cloudfront:s}/{resource!s}".format(
                 cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
             )
-            url = "{base:s}/subtitles/{stamp:s}_{language:s}{mode:s}.vtt".format(
+            url = "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt".format(
                 base=base,
                 stamp=time_utils.to_timestamp(obj.uploaded_on),
                 language=obj.language,
@@ -152,7 +152,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "description",
             "active_stamp",
             "state",
-            "subtitle_tracks",
+            "timed_text_tracks",
             "urls",
         )
         read_only_fields = ("id", "active_stamp", "state", "urls")
@@ -160,8 +160,8 @@ class VideoSerializer(serializers.ModelSerializer):
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
     )
-    subtitle_tracks = SubtitleTrackSerializer(
-        source="subtitletracks", many=True, read_only=True
+    timed_text_tracks = TimedTextTrackSerializer(
+        source="timedtexttracks", many=True, read_only=True
     )
     urls = serializers.SerializerMethodField()
 

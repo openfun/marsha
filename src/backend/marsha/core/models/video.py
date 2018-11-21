@@ -90,7 +90,6 @@ class PlaylistAccess(BaseModel):
     Model representing accesses to playlists that are granted to users.
 
     ``through`` model between ``Playlist.users`` and ``User.playlists``.
-
     """
 
     # we allow deleting entries in this through table
@@ -293,13 +292,17 @@ class AudioTrack(BaseTrack):
         indexes = [NonDeletedUniqueIndex(["video", "language"])]
 
 
-class SubtitleTrack(BaseTrack):
-    """Model representing a subtitle track for a video."""
+class TimedTextTrack(BaseTrack):
+    """Model representing a timed text track for a video.
 
-    TRANSCRIPT, CLOSED_CAPTIONING = "ts", "cc"
+    Can be subtitles, closed captioning or transcripts.
+    """
+
+    SUBTITLE, TRANSCRIPT, CLOSED_CAPTIONING = "st", "ts", "cc"
     MODE_CHOICES = (
-        (TRANSCRIPT, "Transcript"),
-        (CLOSED_CAPTIONING, "Closed captioning"),
+        (SUBTITLE, _("Subtitle")),
+        (TRANSCRIPT, _("Transcript")),
+        (CLOSED_CAPTIONING, _("Closed captioning")),
     )
 
     mode = models.CharField(
@@ -307,47 +310,47 @@ class SubtitleTrack(BaseTrack):
         max_length=2,
         choices=MODE_CHOICES,
         help_text=_(
-            "Activate a special mode for this subtitle track: closed captioning (for deaf or hard"
-            " of hearing viewers) or transcription (complete text below aside of the player)."
+            "Activate a special mode for this timed text track: simple subtitles, closed "
+            "captioning (for deaf or hard of hearing viewers) or transcription (complete text "
+            "below aside of the player)."
         ),
-        blank=True,
-        null=True,
+        default=SUBTITLE,
     )
 
     class Meta:
-        """Options for the ``SubtitleTrack`` model."""
+        """Options for the ``TimedTextTrack`` model."""
 
-        db_table = "subtitle_track"
-        verbose_name = _("subtitles track")
-        verbose_name_plural = _("subtitles tracks")
+        db_table = "timed_text_track"
+        verbose_name = _("timed text track")
+        verbose_name_plural = _("timed text tracks")
         indexes = [NonDeletedUniqueIndex(["video", "language", "mode"])]
 
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket.
 
-        It is built from the resource ID + ID of the subtitle track + version stamp + language +
+        It is built from the resource ID + ID of the timed text track + version stamp + language +
         closed captioning flag.
 
         Parameters
         ----------
         stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the subtitles
-            assuming its active stamp is set to this value. This is useful to create an upload
-            policy for this prospective version of the subtitles, so that the client can upload
-            the file to S3 and the confirmation lambda can set the `uploaded_on` field to this
-            value only after the subtitle upload and processing is successful.
+            Passing a value for this argument will return the source S3 key for the timed text
+            track assuming its active stamp is set to this value. This is useful to create an
+            upload policy for this prospective version of the track, so that the client can
+            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
+            to this value only after the file upload and processing is successful.
 
         Returns
         -------
         string
-            The S3 key for the subtitles in the source bucket, where uploaded subtitles are stored
-            before they are converted and copied to the destination bucket.
+            The S3 key for the timed text files in the source bucket, where uploaded files are
+            stored before they are converted and copied to the destination bucket.
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/subtitletrack/{subtitle!s}/{stamp:s}_{language:s}{mode:s}".format(
+        return "{resource!s}/timedtexttrack/{id!s}/{stamp:s}_{language:s}{mode:s}".format(
             resource=self.video.resource_id,
-            subtitle=self.id,
+            id=self.id,
             stamp=stamp,
             language=self.language,
             mode="_{:s}".format(self.mode) if self.mode else "",

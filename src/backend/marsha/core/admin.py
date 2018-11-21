@@ -17,7 +17,7 @@ from marsha.core.models import (
     Playlist,
     PlaylistAccess,
     SignTrack,
-    SubtitleTrack,
+    TimedTextTrack,
     User,
     Video,
 )
@@ -108,10 +108,10 @@ class AudioTrackInline(admin.TabularInline):
     model = AudioTrack
 
 
-class SubtitleTrackInline(admin.TabularInline):
-    """Inline for subtitle tracks of a video."""
+class TimedTextTrackInline(admin.TabularInline):
+    """Inline for timed text tracks of a video."""
 
-    model = SubtitleTrack
+    model = TimedTextTrack
 
 
 class SignTrackInline(admin.TabularInline):
@@ -126,7 +126,7 @@ class VideoAdmin(BaseModelAdmin):
 
     list_display = ("title", "created_by", "language")
     exclude = ("duplicated_from",)
-    inlines = [AudioTrackInline, SubtitleTrackInline, SignTrackInline]
+    inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
 
 
 class VideosInline(admin.TabularInline):
