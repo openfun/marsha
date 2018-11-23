@@ -37,7 +37,7 @@ class VideoLTITestCase(TestCase):
         This test uses the oauthlib library to simulate an LTI launch request and make sure
         that our LTI verification works.
         """
-        passport = ConsumerSiteLTIPassportFactory(consumer_site__name="testserver")
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="testserver")
         lti_parameters = {
             "resource_link_id": "df7",
             "context_id": "course-v1:ufr+mathematics+0001",
@@ -127,7 +127,7 @@ class VideoLTITestCase(TestCase):
         passport = ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
-            consumer_site__name="example.com",
+            consumer_site__domain="example.com",
         )
         data = {
             "resource_link_id": "df7",
@@ -146,7 +146,7 @@ class VideoLTITestCase(TestCase):
         passport = PlaylistLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site__domain="example.com",
         )
         data = {
             "resource_link_id": "df7",
@@ -166,7 +166,7 @@ class VideoLTITestCase(TestCase):
         PlaylistLTIPassportFactory(
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site__domain="example.com",
         )
         data = {
             "resource_link_id": "df7",
@@ -314,7 +314,7 @@ class PortabilityVideoLTITestCase(TestCase):
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": random.choice(["Student", "Instructor"]),
-            "tool_consumer_instance_guid": video.playlist.consumer_site.name,
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data)

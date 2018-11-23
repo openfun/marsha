@@ -3,6 +3,7 @@ import random
 import string
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.sites.models import _simple_domain_name_validator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -149,8 +150,17 @@ class ConsumerSite(BaseModel):
     """Model representing an external site with access to the Marsha instance."""
 
     name = models.CharField(
-        max_length=255, verbose_name=_("name"), help_text=_("Name of the site")
+        max_length=50,
+        verbose_name=_("display name"),
+        help_text=_("name of the consumer site"),
     )
+    domain = models.CharField(
+        max_length=100,
+        verbose_name=_("domain name"),
+        help_text=_("base domain allowed for consumer site."),
+        validators=[_simple_domain_name_validator],
+    )
+
     users = models.ManyToManyField(
         to=User,
         through="ConsumerSiteAccess",
@@ -167,9 +177,9 @@ class ConsumerSite(BaseModel):
 
     def __str__(self):
         """Get the string representation of an instance."""
-        result = f"{self.name}"
+        result = f"{self.name} ({self.domain})"
         if self.deleted:
-            result += _(" [deleted]")
+            result = _("{:s} [deleted]").format(result)
         return result
 
 
