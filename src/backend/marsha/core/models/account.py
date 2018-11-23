@@ -122,6 +122,20 @@ class LTIPassport(BaseModel):
         verbose_name = _("LTI passport")
         verbose_name_plural = _("LTI passports")
 
+    def __str__(self):
+        """Get the string representation of an instance."""
+        result = "{key:s}{type:s}".format(
+            key=self.oauth_consumer_key,
+            type=" [cs]"
+            if self.consumer_site_id
+            else " [pl]"
+            if self.playlist_id
+            else "",
+        )
+        if self.deleted:
+            result = _("{:s}[deleted]").format(result)
+        return result
+
     # pylint: disable=arguments-differ
     def save(self, *args, **kwargs):
         """Generate the oauth consumer key and shared secret randomly upon creation.
