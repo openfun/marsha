@@ -42,10 +42,10 @@ class LTI:
         Returns
         -------
         string
-            It returns the consumer site name related to the passport used in the LTI launch
+            It returns the consumer site related to the passport used in the LTI launch
             request if it is valid.
             If the BYPASS_LTI_VERIFICATION and DEBUG settings are True, it creates and return a
-            consumer site with the consumer site name passed in the LTI request.
+            consumer site with the consumer site domain passed in the LTI request.
 
         """
         if settings.BYPASS_LTI_VERIFICATION:
@@ -53,7 +53,10 @@ class LTI:
                 raise ImproperlyConfigured(
                     "Bypassing LTI verification only works in DEBUG mode."
                 )
-            return ConsumerSite.objects.get_or_create(name=self.consumer_site_name)[0]
+            return ConsumerSite.objects.get_or_create(
+                domain=self.consumer_site_domain,
+                defaults={"name": self.consumer_site_domain},
+            )[0]
 
         passport = self.get_passport()
         consumers = {
@@ -153,16 +156,16 @@ class LTI:
         return self.request.POST["resource_link_id"].rsplit("-", 1)[-1]
 
     @property
-    def consumer_site_name(self):
-        """Get consumer site name from the LTI launch request.
+    def consumer_site_domain(self):
+        """Get consumer site domain from the LTI launch request.
 
         Returns
         -------
         string
-            Consumer site name from the request POST parameters
+            Consumer site domain from the request POST parameters
 
         """
-        # get the consumer sitename from the lti request
+        # get the consumer site domain from the lti request
         try:
             return self.request.POST["tool_consumer_instance_guid"]
         except MultiValueDictKeyError:
