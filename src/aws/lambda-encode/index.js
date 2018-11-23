@@ -1,5 +1,6 @@
 'use strict';
 
+const encodeTimedTextTrack = require('./src/encodeTimedTextTrack');
 const encodeVideo = require('./src/encodeVideo');
 const updateState = require('./src/updateState');
 
@@ -9,23 +10,40 @@ exports.handler = async (event, context, callback) => {
   const objectKey = event.Records[0].s3.object.key;
   const sourceBucket = event.Records[0].s3.bucket.name;
 
-  if (objectKey.split('/').length != 4) {
+  const parts = objectKey.split('/');
+  const [resourceId, kind, recordId, extendedStamp] = parts;
+  if (parts.length != 4 || !['timedtexttrack', 'video'].includes(kind)) {
     let error =
-      'Source videos should be uploaded in a folder of the form ' +
-      '"{playlist_id}/{video_id}/videos/{stamp}".' +
-      'Source timed text files should be uploaded to a folder of the form ' +
-      '"{playlist_id}/{video_id}/timedtext/{stamp}_{language}[_{mode}]".';
+      kind === 'video'
+        ? 'Source videos should be uploaded in a folder of the form ' +
+          '"{playlist_id}/videos/{video_id}/{stamp}".'
+        : kind === 'timedtexttrack'
+        ? 'Source timed text files should be uploaded to a folder of the form ' +
+          '"{playlist_id}/timedtexttrack/{timedtext_id}/{stamp}_{language}[_{has_closed_caption}]".'
+        : kind
+        ? `Unrecognized kind ${kind} in key "${objectKey}".`
+        : `Unrecognized key format "${objectKey}"`;
     callback(error);
     return;
   }
 
   try {
-    await encodeVideo(objectKey, sourceBucket);
+    switch (kind) {
+      case 'timedtexttrack':
+        await encodeTimedTextTrack(objectKey, sourceBucket);
+        await updateState(objectKey, 'ready');
+        console.log(
+          `Successfully received and encoded timedtexttrack ${objectKey} from ${sourceBucket}.`,
+        );
+        break;
 
-    await updateState(objectKey, 'processing');
-
-    console.log(JSON.stringify(jobData, null, 2));
-    callback(null, { Job: jobData.Job.Id });
+      case 'video':
+        await encodeVideo(objectKey, sourceBucket);
+        await updateState(objectKey, 'processing');
+        console.log(JSON.stringify(jobData, null, 2));
+        callback(null, { Job: jobData.Job.Id });
+        break;
+    }
   } catch (error) {
     callback(error);
   }
