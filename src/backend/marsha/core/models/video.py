@@ -215,7 +215,7 @@ class Video(BaseModel):
         """Get the string representation of an instance."""
         result = f"{self.title}"
         if self.deleted:
-            result += _(" [deleted]")
+            result = _("{:s} [deleted]").format(result)
         return result
 
     def get_source_s3_key(self, stamp=None):
