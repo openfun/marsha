@@ -166,7 +166,7 @@ class SignTrackInline(admin.TabularInline):
 class VideoAdmin(admin.ModelAdmin):
     """Admin class for the Video model."""
 
-    list_display = ("title", "created_by", "language")
+    list_display = ("title", "created_by")
     exclude = ("duplicated_from",)
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
 

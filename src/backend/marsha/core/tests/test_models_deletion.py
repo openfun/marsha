@@ -400,7 +400,7 @@ class DeletionTestCase(TestCase):
         self._test_uniqueness_ignores_deleted(
             AudioTrackFactory,
             language="en",
-            video=VideoFactory(created_by=UserFactory(), language="en"),
+            video=VideoFactory(created_by=UserFactory()),
         )
 
     def test_timed_text_track_uniqueness(self):
@@ -409,7 +409,7 @@ class DeletionTestCase(TestCase):
             TimedTextTrackFactory,
             language="en",
             mode=random.choice([m[0] for m in TimedTextTrack.MODE_CHOICES]),
-            video=VideoFactory(created_by=UserFactory(), language="en"),
+            video=VideoFactory(created_by=UserFactory()),
         )
 
     def test_timed_text_track_can_exist_with_and_without_closed_captioning(self):
@@ -423,7 +423,7 @@ class DeletionTestCase(TestCase):
         self._test_uniqueness_ignores_deleted(
             SignTrackFactory,
             language="en",
-            video=VideoFactory(created_by=UserFactory(), language="en"),
+            video=VideoFactory(created_by=UserFactory()),
         )
 
     def test_playlist_soft_deletion(self):

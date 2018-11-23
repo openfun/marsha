@@ -160,12 +160,6 @@ class Video(BaseModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    language = models.CharField(
-        max_length=5,
-        choices=settings.LANGUAGES,
-        verbose_name=_("language"),
-        help_text=_("language of the video"),
-    )
     playlist = models.ForeignKey(
         to="Playlist",
         related_name="videos",
