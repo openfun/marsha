@@ -7,6 +7,7 @@
   },
   "description": "Convert a source video to all the formats used in Marsha",
   "dependencies": {
+    "@openfun/subsrt": "1.0.1",
     "aws-sdk": "2.292.0",
     "request": "2.88.0",
     "request-promise-native": "1.0.5"

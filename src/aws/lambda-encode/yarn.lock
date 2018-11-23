@@ -16,6 +16,11 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@openfun/subsrt@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@openfun/subsrt/-/subsrt-1.0.1.tgz#b735038ef887ffd185a19dd83766f0dc6c58a77b"
+  integrity sha512-zcfdY/q5QGJJkcsCuxIYX/z+8C0ySJfJK5yY2i3oMwylrTZhs80pgdlQnvt09urskb6B54vI6H5sJUitIAAlYA==
+
 "@types/caseless@*":
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.1.tgz#9794c69c8385d0192acc471a540d1f8e0d16218a"

@@ -102,6 +102,37 @@ resource "aws_iam_role_policy_attachment" "lambda_pass_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.lambda_pass_role_policy.arn}"
 }
 
+resource "aws_iam_policy" "lambda_s3_access_policy" {
+  name        = "${terraform.workspace}-marsha-lambda-s3-access-policy"
+  path        = "/"
+  description = "IAM policy to read in source bucket and write in destination bucket"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["s3:GetObject"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.marsha_source.bucket}/*"
+    },
+    {
+      "Action": ["s3:PutObject"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.marsha_destination.bucket}/*"
+    }
+  ]
+}
+EOF
+}
+
+# `lambda-encode` needs read access to the source bucket and write access to the destination
+# bucket to read timed text files from the former and write them to the latter.
+resource "aws_iam_role_policy_attachment" "lambda_s3_access_policy_attachment" {
+  role        = "${aws_iam_role.lambda_invocation_role.name}"
+  policy_arn  = "${aws_iam_policy.lambda_s3_access_policy.arn}"
+}
+
 # Media Convert role
 #####################
 
