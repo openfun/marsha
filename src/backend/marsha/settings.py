@@ -68,6 +68,8 @@ class Base(Configuration):
 
     ALLOWED_HOSTS = []
 
+    SITE_ID = 1
+
     # Application definition
 
     INSTALLED_APPS = [
@@ -76,6 +78,7 @@ class Base(Configuration):
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.messages",
+        "django.contrib.sites",
         "django.contrib.staticfiles",
         "django_extensions",
         "rest_framework",

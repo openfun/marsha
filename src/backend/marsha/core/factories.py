@@ -44,6 +44,7 @@ class ConsumerSiteFactory(DjangoModelFactory):
         model = models.ConsumerSite
 
     name = factory.Sequence("Site {:03d}".format)
+    domain = factory.Faker("domain_name")
 
 
 class ConsumerSiteAccessFactory(DjangoModelFactory):

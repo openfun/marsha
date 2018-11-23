@@ -17,7 +17,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
-from ..models import Video
+from ..models import ConsumerSite, Video
 
 
 # We don't enforce arguments documentation in tests
@@ -225,7 +225,7 @@ class DevelopmentViewsTestCase(TestCase):
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site__domain="example.com",
         )
         # There is no need to provide an "oauth_consumer_key"
         data = {
@@ -268,7 +268,7 @@ class DevelopmentViewsTestCase(TestCase):
         video = VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site__domain="example.com",
         )
         data = {
             "resource_link_id": "123",
@@ -355,6 +355,8 @@ class DevelopmentViewsTestCase(TestCase):
                 "urls": None,
             },
         )
+        # The consumer site was created with a name and a domain name
+        ConsumerSite.objects.get(name="example.com", domain="example.com")
 
     @override_settings(BYPASS_LTI_VERIFICATION=True)
     def test_views_video_lti_post_bypass_lti_no_debug_mode(self):
@@ -362,7 +364,7 @@ class DevelopmentViewsTestCase(TestCase):
         VideoFactory(
             lti_id="123",
             playlist__lti_id="abc",
-            playlist__consumer_site__name="example.com",
+            playlist__consumer_site__domain="example.com",
         )
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
