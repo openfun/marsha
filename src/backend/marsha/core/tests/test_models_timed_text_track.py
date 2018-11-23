@@ -1,7 +1,7 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
 import random
 
-from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from ..factories import TimedTextTrackFactory, VideoFactory
@@ -17,8 +17,9 @@ class TimedTextTrackModelsTestCase(TestCase):
 
     def test_models_timedtexttrack_fields_mode_required(self):
         """The `mode` field is required on timed text tracks."""
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError) as context:
             TimedTextTrackFactory(mode=None)
+        self.assertEqual(context.exception.messages, ["This field cannot be null."])
 
     def test_models_timedtexttrack_fields_mode_unique(self):
         """Timed text tracks should be unique for a given triplet: video/language/mode."""
@@ -46,7 +47,11 @@ class TimedTextTrackModelsTestCase(TestCase):
 
         # Trying to create a timed text track with all three fields identitcal should raise a
         # database error
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError) as context:
             TimedTextTrack.objects.create(
                 video=timed_text_track.video, language="fr", mode=timed_text_track.mode
             )
+        self.assertEqual(
+            context.exception.messages,
+            ["Timed text track with this Video, Language and Mode already exists."],
+        )

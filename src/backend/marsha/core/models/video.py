@@ -38,6 +38,7 @@ class Playlist(BaseModel):
         # playlist is (soft-)deleted if organization is (soft-)deleted
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     consumer_site = models.ForeignKey(
         to="ConsumerSite",
@@ -51,6 +52,7 @@ class Playlist(BaseModel):
         # playlist is (soft-)deleted if author is (soft-)deleted
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     is_public = models.BooleanField(
         default=False,
@@ -137,8 +139,8 @@ class Video(BaseModel):
     description = models.TextField(
         verbose_name=_("description"),
         help_text=_("description of the video"),
-        blank=True,
         null=True,
+        blank=True,
     )
     resource_id = models.UUIDField(
         verbose_name=_("Resource UUID"),
@@ -159,6 +161,7 @@ class Video(BaseModel):
         # video is (soft-)deleted if author is (soft-)deleted
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     playlist = models.ForeignKey(
         to="Playlist",
@@ -251,7 +254,7 @@ class BaseTrack(BaseModel):
     language = models.CharField(
         max_length=5,
         choices=settings.LANGUAGES,
-        verbose_name=_("track language"),
+        verbose_name=_("language"),
         help_text=_("language of this track"),
     )
     uploaded_on = models.DateTimeField(
