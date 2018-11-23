@@ -2,6 +2,8 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from marsha.core.models import (
@@ -19,6 +21,53 @@ from marsha.core.models import (
     User,
     Video,
 )
+
+
+def link_field(field_name):
+    """Convert a foreign key value into a clickable link. # noqa
+
+    Parameters
+    ----------
+    field_name: Type[string]
+        If `field_name` is "name", link text will be str(obj.name) and link will be the admin
+        url for obj.name.id:change.
+
+    Returns
+    -------
+    function
+        The function that Django admin must call with the object as arguement to render the field
+        as a link.
+
+    """
+
+    def _link_field(obj):
+        """Render a link in Django admin for foreign key fields.
+
+        The link replaces the string representation of the linked object that is rendered
+        by Django by default for foreign keys.
+
+        Parameters
+        ----------
+        obj: Type[models.Model]
+            The instance of Django model for which we want to render the field `field_name`.
+
+        Returns
+        -------
+        string
+            The html representing the link to the object admin change view.
+
+        """
+        app_label = obj._meta.app_label
+        linked_obj = getattr(obj, field_name)
+        if linked_obj is None:
+            return "-"
+        model_name = linked_obj._meta.model_name
+        view_name = f"admin:{app_label}_{model_name}_change"
+        link_url = reverse(view_name, args=[linked_obj.id])
+        return format_html('<a href="{}">{}</a>', link_url, linked_obj)
+
+    _link_field.short_description = field_name
+    return _link_field
 
 
 class MarshaAdminSite(admin.AdminSite):
@@ -66,7 +115,8 @@ class ConsumerSiteOrganizationsInline(admin.TabularInline):
 class ConsumerSiteAdmin(admin.ModelAdmin):
     """Admin class for the ConsumerSite model."""
 
-    list_display = ("name",)
+    list_display = ("name", "domain", "created_on", "updated_on")
+    search_fields = ("name", "domain")
     inlines = [ConsumerSiteUsersInline, ConsumerSiteOrganizationsInline]
 
 
@@ -150,6 +200,34 @@ class PlaylistAdmin(admin.ModelAdmin):
 class LTIPassportAdmin(admin.ModelAdmin):
     """Admin class for the LTIPassport model."""
 
-    list_display = ("created_on", "consumer_site", "playlist", "is_enabled")
-    readonly_fields = ["created_on", "oauth_consumer_key", "shared_secret"]
+    list_display = (
+        "oauth_consumer_key",
+        link_field("consumer_site"),
+        link_field("playlist"),
+        "is_enabled",
+        "created_on",
+        "updated_on",
+    )
+    fields = (
+        "oauth_consumer_key",
+        "shared_secret",
+        "consumer_site",
+        "playlist",
+        "is_enabled",
+        "created_on",
+        "updated_on",
+    )
+    readonly_fields = [
+        "created_on",
+        "oauth_consumer_key",
+        "shared_secret",
+        "updated_on",
+    ]
+    list_filter = ("is_enabled",)
+    search_fields = (
+        "oauth_consumer_key",
+        "consumer_site__name",
+        "consumer_site__domain",
+        "playlist__title",
+    )
     verbose_name = _("LTI passport")

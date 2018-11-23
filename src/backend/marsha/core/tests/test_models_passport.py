@@ -15,6 +15,17 @@ from ..models import LTIPassport
 class LTIPassportModelsTestCase(TestCase):
     """Test our intentions about the passport model."""
 
+    def test_models_lti_passport_str(self):
+        """The str method should display oauth consumer key, scope and soft deletion."""
+        cs_passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="clé_cs")
+        self.assertEqual(str(cs_passport), "clé_cs [cs]")
+
+        pl_passport = PlaylistLTIPassportFactory(oauth_consumer_key="clé_pl")
+        self.assertEqual(str(pl_passport), "clé_pl [pl]")
+
+        pl_passport.delete()
+        self.assertEqual(str(pl_passport), "clé_pl [pl][deleted]")
+
     def test_models_lti_passport_fields_nothing_required(self):
         """The LTIPassport model can be instantiated without setting any field.
 
