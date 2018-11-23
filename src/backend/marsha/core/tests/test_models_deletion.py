@@ -4,7 +4,7 @@ from typing import Type
 from unittest import mock
 
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError, models
+from django.db import models
 from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.utils.timezone import now
@@ -135,7 +135,7 @@ class DeletionTestCase(TestCase):
 
         # when exists non-deleted, cannot create another one
         factory(**kwargs)
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError):
             factory(**kwargs)
 
     def test_user_soft_deletion(self):
@@ -207,8 +207,11 @@ class DeletionTestCase(TestCase):
         user = UserFactory(username="foo")
         user.delete()
 
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError) as context:
             UserFactory(username="foo")
+        self.assertEqual(
+            context.exception.messages, ["A user with that username already exists."]
+        )
 
     def test_site_soft_deletion(self):
         """Ensure soft deletion work as expected for videos."""

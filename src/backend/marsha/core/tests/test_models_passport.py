@@ -1,5 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from safedelete.models import HARD_DELETE
@@ -45,10 +45,14 @@ class LTIPassportModelsTestCase(TestCase):
         """The "oauth_consumer_key" field should be unique."""
         lti_passport = LTIPassport.objects.create()
 
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError) as context:
             LTIPassport.objects.create(
                 oauth_consumer_key=lti_passport.oauth_consumer_key
             )
+        self.assertEqual(
+            context.exception.messages,
+            ["LTI passport with this Oauth consumer key already exists."],
+        )
 
     def test_models_lti_passport_fields_oauth_consumer_key_unique_deleted(self):
         """The "oauth_consumer_key" field should even be unique including the deleted instances."""
@@ -59,8 +63,12 @@ class LTIPassportModelsTestCase(TestCase):
             LTIPassport.objects.all_with_deleted().get(pk=lti_passport.pk).deleted
         )
 
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError) as context:
             LTIPassport.objects.create(oauth_consumer_key=oauth_consumer_key)
+        self.assertEqual(
+            context.exception.messages,
+            ["LTI passport with this Oauth consumer key already exists."],
+        )
 
     def test_models_lti_passport_fields_consumer_site_hard_delete(self):
         """The LTIPassport should not be deleted if the related consumer site is hard deleted."""
