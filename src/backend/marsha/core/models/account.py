@@ -107,6 +107,7 @@ class LTIPassport(BaseModel):
         # don't delete an LTI passport if the user who created it is hard deleted
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         editable=False,
     )
     is_enabled = models.BooleanField(

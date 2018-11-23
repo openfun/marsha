@@ -114,6 +114,12 @@ class BaseModel(SafeDeleteModel):
 
         abstract = True
 
+    # pylint: disable=arguments-differ,missing-param-doc
+    def save(self, *args, **kwargs):
+        """Enforce validation each time an instance is saved."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     @classmethod
     def _check_table_name(cls):
         """Check that the table name is correctly defined.
