@@ -7,6 +7,7 @@ from django.test import TestCase
 
 import pytz
 
+from ..models.video import TimedTextTrack
 from ..serializers import UpdateStateSerializer
 
 
@@ -19,12 +20,15 @@ class UpdateStateSerializerTest(TestCase):
 
     def test_serializers_update_state_valid_data(self):
         """The serializer should return the validated data."""
-        valid_keys = (
+        valid_keys = [
             "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
-            "{!s}/timedtexttrack/{!s}/0123456789".format(uuid4(), uuid4()),
-            "{!s}/timedtexttrack/{!s}/0123456789_fr".format(uuid4(), uuid4()),
-            "{!s}/timedtexttrack/{!s}/0123456789_fr_cc".format(uuid4(), uuid4()),
-        )
+            *[
+                "{!s}/timedtexttrack/{!s}/0123456789_fr_{!s}".format(
+                    uuid4(), uuid4(), mode
+                )
+                for mode, _ in TimedTextTrack.MODE_CHOICES
+            ],
+        ]
         for key in valid_keys:
             state = random.choice(("ready", "error"))
             valid_data = {"key": key, "state": state, "signature": "123abc"}
