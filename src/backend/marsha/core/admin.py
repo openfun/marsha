@@ -4,8 +4,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from safedelete.admin import SafeDeleteAdmin
-
 from marsha.core.models import (
     AudioTrack,
     ConsumerSite,
@@ -31,12 +29,6 @@ class MarshaAdminSite(admin.AdminSite):
 
 
 admin_site = MarshaAdminSite(name="admin")
-
-
-class BaseModelAdmin(SafeDeleteAdmin):
-    """Base for all our model admins."""
-
-    pass
 
 
 class UserOrganizationsInline(admin.TabularInline):
@@ -71,7 +63,7 @@ class ConsumerSiteOrganizationsInline(admin.TabularInline):
 
 
 @admin.register(ConsumerSite, site=admin_site)
-class ConsumerSiteAdmin(BaseModelAdmin):
+class ConsumerSiteAdmin(admin.ModelAdmin):
     """Admin class for the ConsumerSite model."""
 
     list_display = ("name",)
@@ -95,7 +87,7 @@ class OrganizationConsumerSitesInline(admin.TabularInline):
 
 
 @admin.register(Organization, site=admin_site)
-class OrganizationAdmin(BaseModelAdmin):
+class OrganizationAdmin(admin.ModelAdmin):
     """Admin class for the Organization model."""
 
     list_display = ("name",)
@@ -121,7 +113,7 @@ class SignTrackInline(admin.TabularInline):
 
 
 @admin.register(Video, site=admin_site)
-class VideoAdmin(BaseModelAdmin):
+class VideoAdmin(admin.ModelAdmin):
     """Admin class for the Video model."""
 
     list_display = ("title", "created_by", "language")
@@ -146,7 +138,7 @@ class PlaylistAccessesInline(admin.TabularInline):
 
 
 @admin.register(Playlist, site=admin_site)
-class PlaylistAdmin(BaseModelAdmin):
+class PlaylistAdmin(admin.ModelAdmin):
     """Admin class for the Playlist model."""
 
     list_display = ("title", "organization", "created_by", "is_public")
@@ -155,7 +147,7 @@ class PlaylistAdmin(BaseModelAdmin):
 
 
 @admin.register(LTIPassport, site=admin_site)
-class LTIPassportAdmin(BaseModelAdmin):
+class LTIPassportAdmin(admin.ModelAdmin):
     """Admin class for the LTIPassport model."""
 
     list_display = ("created_on", "consumer_site", "playlist", "is_enabled")
