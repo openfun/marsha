@@ -16,10 +16,11 @@ from .utils import cloudfront_utils, time_utils
 
 UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 # This regex matches keys in AWS for videos or timed text tracks
+TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
-    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|timedtexttrack)/(?P<object_id>{uuid:s})/"
-    "(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}(_cc)?)?$".format(uuid=UUID_REGEX)
-)
+    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|timedtexttrack)/(?P<object_id>"
+    "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}_({tt_ex}))?$"
+).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS)
 KEY_REGEX = re.compile(KEY_PATTERN)
 
 
