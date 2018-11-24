@@ -79,6 +79,10 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
     active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
     url = serializers.SerializerMethodField()
+    # Make sure video UUID is converted to a string during serialization
+    video = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
 
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
@@ -94,6 +98,8 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             The "validated_data" dictionary is returned after modification.
 
         """
+        # user here is a video as it comes from the JWT
+        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
         if not validated_data.get("video_id") and isinstance(user, TokenUser):
             validated_data["video_id"] = user.id
