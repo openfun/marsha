@@ -11,7 +11,11 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..factories import ConsumerSiteLTIPassportFactory, VideoFactory
+from ..factories import (
+    ConsumerSiteLTIPassportFactory,
+    TimedTextTrackFactory,
+    VideoFactory,
+)
 from ..lti import LTI
 from ..models import Video
 
@@ -174,6 +178,32 @@ class ViewsTestCase(TestCase):
             '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
         ).group(1)
         self.assertEqual(data_video, "null")
+
+    def test_views_video_lti_with_timed_text(self):
+        """Make sure the LTI Video view functions when the Video has associated TimedTextTracks.
+
+        NB: This is a bug-reproducing test case.
+        The comprehensive test suite in test_api_video does not cover this case as it uses a JWT
+        and therefore falls in another case when it comes to handling of video ids.
+        """
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        # Create a TimedTextTrack associated with the video to trigger the error
+        TimedTextTrackFactory(video=video)
+
+        data = {
+            "resource_link_id": "123",
+            "roles": "instructor",
+            "context_id": "abc",
+            "oauth_consumer_key": "ABC123",
+        }
+        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
+            response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
 
 
 class DevelopmentViewsTestCase(TestCase):
