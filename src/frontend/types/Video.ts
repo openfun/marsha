@@ -1,3 +1,5 @@
+import { Resource } from './Resource';
+
 /** Possible sizes for a video file or stream. Used as keys in lists of files. */
 export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
@@ -23,7 +25,7 @@ export enum videoState {
 }
 
 /** A Video record as it exists on the backend. */
-export interface Video {
+export interface Video extends Resource {
   description: string;
   id: string;
   state: videoState;
