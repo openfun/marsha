@@ -120,9 +120,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Development static/media files
-data
-
 # Front
 node_modules
 src/frontend/i18n
