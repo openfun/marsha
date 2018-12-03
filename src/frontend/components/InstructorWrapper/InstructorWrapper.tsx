@@ -1,17 +1,20 @@
 import * as React from 'react';
 
 import { appState } from '../../types/AppData';
-import { AppDataContext } from '../App/App';
 import { InstructorView } from '../InstructorView/InstructorView';
 
-export const InstructorWrapper = (props: { children: React.ReactNode }) => (
-  <AppDataContext.Consumer>
-    {({ state }) =>
-      state === appState.INSTRUCTOR ? (
-        <InstructorView>{props.children}</InstructorView>
-      ) : (
-        props.children
-      )
+interface InstructorWrapperProps {
+  ltiState: appState;
+}
+
+export class InstructorWrapper extends React.Component<InstructorWrapperProps> {
+  render() {
+    const { children, ltiState } = this.props;
+
+    if (ltiState === appState.INSTRUCTOR) {
+      return <InstructorView>{children}</InstructorView>;
+    } else {
+      return children;
     }
-  </AppDataContext.Consumer>
-);
+  }
+}

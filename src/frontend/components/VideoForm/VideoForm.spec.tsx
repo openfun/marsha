@@ -11,10 +11,13 @@ jest.doMock('react-router-dom', () => ({
   Redirect: () => {},
 }));
 
+import { modelName } from '../../types/models';
 import { Video, videoState } from '../../types/Video';
 import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { VideoForm } from './VideoForm';
+
+const mockUpdateVideo = jest.fn();
 
 describe('VideoForm', () => {
   const video = {
@@ -24,11 +27,19 @@ describe('VideoForm', () => {
     title: '',
   } as Video;
 
+  beforeEach(mockUpdateVideo.mockReset);
+
   afterEach(fetchMock.restore);
 
   it('renders the form by default', () => {
     fetchMock.mock('/api/videos/ab42/upload-policy/', {});
-    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    const wrapper = shallow(
+      <VideoForm
+        jwt={'some_token'}
+        updateVideo={mockUpdateVideo}
+        video={video}
+      />,
+    );
 
     expect(wrapper.html()).toContain('Create a new video');
   });
@@ -52,9 +63,6 @@ describe('VideoForm', () => {
 
     // 2nd call: AWS bucket multipart POST to upload the file
     fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', {});
-
-    // updateVideo is a utility that updates the video held in AppData
-    const mockUpdateVideo = jest.fn();
 
     const wrapper = shallow(
       <VideoForm
@@ -110,7 +118,13 @@ describe('VideoForm', () => {
     fetchMock.mock('/api/videos/ab42/upload-policy/', {
       throws: 'invalid policy',
     });
-    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    const wrapper = shallow(
+      <VideoForm
+        jwt={'some_token'}
+        updateVideo={mockUpdateVideo}
+        video={video}
+      />,
+    );
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
@@ -139,7 +153,13 @@ describe('VideoForm', () => {
       throws: 'failed to upload file',
     });
 
-    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    const wrapper = shallow(
+      <VideoForm
+        jwt={'some_token'}
+        updateVideo={mockUpdateVideo}
+        video={video}
+      />,
+    );
     const componentInstance = wrapper.instance() as VideoForm;
     await flushAllPromises();
     componentInstance.setState({
@@ -174,7 +194,13 @@ describe('VideoForm', () => {
     const awsMockPromise = new Promise(() => {});
     fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', awsMockPromise);
 
-    const wrapper = shallow(<VideoForm jwt={'some_token'} video={video} />);
+    const wrapper = shallow(
+      <VideoForm
+        jwt={'some_token'}
+        updateVideo={mockUpdateVideo}
+        video={video}
+      />,
+    );
     const componentInstance = wrapper.instance() as VideoForm;
     componentInstance.setState({
       file: { stub: 'file', type: 'video/mp4' } as any,
@@ -183,7 +209,12 @@ describe('VideoForm', () => {
 
     expect(
       wrapper.equals(
-        <Dashboard isUploading={true} jwt={'some_token'} video={video} />,
+        <Dashboard
+          isUploading={true}
+          jwt={'some_token'}
+          updateVideo={mockUpdateVideo}
+          video={video}
+        />,
       ),
     ).toBeTruthy();
   });

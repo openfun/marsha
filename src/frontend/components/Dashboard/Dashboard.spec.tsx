@@ -4,20 +4,24 @@ import { shallow } from 'enzyme';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
+import { modelName } from '../../types/models';
 import { videoState } from '../../types/Video';
-import { UploadStatus } from '../UploadStatusList/UploadStatus';
 import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
 import { Dashboard } from './Dashboard';
 
+const mockUpdateVideo = jest.fn();
+
 describe('<Dashboard />', () => {
   jest.useFakeTimers();
+
+  beforeEach(mockUpdateVideo.mockReset);
+
   afterEach(fetchMock.restore);
 
   it('renders & starts polling for the video', async () => {
     // Create a mock video with the initial state (PROCESSING)
     const mockVideo: any = { id: 'dd44', state: videoState.PROCESSING };
     fetchMock.mock('/api/videos/dd44/', mockVideo);
-    const mockUpdateVideo = jest.fn();
 
     const wrapper = shallow(
       <Dashboard
@@ -74,6 +78,7 @@ describe('<Dashboard />', () => {
     const wrapper = shallow(
       <Dashboard
         jwt={'cool_token_m8'}
+        updateVideo={mockUpdateVideo}
         video={{ id: 'ee55', state: videoState.PROCESSING } as any}
       />,
     );
