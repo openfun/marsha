@@ -7,7 +7,7 @@ import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { Video, videoState } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
-import { Maybe } from '../../utils/types';
+import { Maybe, Nullable } from '../../utils/types';
 import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
@@ -47,9 +47,9 @@ const VideoUploadFieldContainer = styled.div`
   display: flex;
 `;
 
-export interface VideoFormProps {
-  jwt: string;
-  updateVideo?: (video: Video) => void;
+interface VideoFormProps {
+  jwt: Nullable<string>;
+  updateVideo: (video: Video) => void;
   video: Video;
 }
 
@@ -113,12 +113,10 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
         },
       );
       if (response.ok) {
-        if (this.props.updateVideo) {
-          this.props.updateVideo({
-            ...this.props.video,
-            state: videoState.PROCESSING,
-          });
-        }
+        this.props.updateVideo({
+          ...this.props.video,
+          state: videoState.PROCESSING,
+        });
         this.setState({ status: 'success' });
       } else {
         this.setState({ status: 'upload_error' });

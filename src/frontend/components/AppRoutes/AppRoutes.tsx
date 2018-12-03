@@ -1,21 +1,26 @@
 import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
-import { AppDataContext } from '../App/App';
-import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
+import { RootState } from '../../data/rootReducer';
+import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
+import { DashboardConnected } from '../DashboardConnected/DashboardConnected';
 import {
   ErrorComponent,
   ROUTE as ERROR_ROUTE,
 } from '../ErrorComponent/ErrorComponent';
-import { InstructorWrapper } from '../InstructorWrapper/InstructorWrapper';
-import {
-  RedirectOnLoad,
-  ROUTE as HOME_ROUTE,
-} from '../RedirectOnLoad/RedirectOnLoad';
-import { ROUTE as FORM_ROUTE, VideoForm } from '../VideoForm/VideoForm';
-import { ROUTE as PLAYER_ROUTE, VideoPlayer } from '../VideoPlayer/VideoPlayer';
+import { InstructorWrapperConnected } from '../InstructorWrapperConnected/InstructorWrapperConnected';
+import { ROUTE as HOME_ROUTE } from '../RedirectOnLoad/RedirectOnLoad';
+import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
+import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
+import { VideoFormConnected } from '../VideoFormConnected/VideoFormConnected';
+import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
+import { VideoPlayerConnected } from '../VideoPlayerConnected/VideoPlayerConnected';
 
-export const AppRoutes = () => {
+interface AppRoutesProps {
+  context: RootState['context'];
+}
+
+export const AppRoutes = ({ context }: AppRoutesProps) => {
   return (
     <MemoryRouter>
       <Switch>
@@ -23,25 +28,15 @@ export const AppRoutes = () => {
           exact
           path={PLAYER_ROUTE()}
           render={() => (
-            <AppDataContext.Consumer>
-              {({ video }) => (
-                <InstructorWrapper>
-                  <VideoPlayer video={video!} />
-                </InstructorWrapper>
-              )}
-            </AppDataContext.Consumer>
+            <InstructorWrapperConnected>
+              <VideoPlayerConnected video={context.ltiResourceVideo} />
+            </InstructorWrapperConnected>
           )}
         />
         <Route
           exact
           path={FORM_ROUTE()}
-          render={() => (
-            <AppDataContext.Consumer>
-              {({ jwt, updateVideo, video }) => (
-                <VideoForm jwt={jwt} updateVideo={updateVideo} video={video!} />
-              )}
-            </AppDataContext.Consumer>
-          )}
+          render={() => <VideoFormConnected video={context.ltiResourceVideo} />}
         />
         <Route
           exact
@@ -51,15 +46,9 @@ export const AppRoutes = () => {
         <Route
           exact
           path={DASHBOARD_ROUTE()}
-          render={() => (
-            <AppDataContext.Consumer>
-              {({ jwt, updateVideo, video }) => (
-                <Dashboard jwt={jwt} updateVideo={updateVideo} video={video!} />
-              )}
-            </AppDataContext.Consumer>
-          )}
+          render={() => <DashboardConnected video={context.ltiResourceVideo} />}
         />
-        <Route path={HOME_ROUTE()} component={RedirectOnLoad} />
+        <Route path={HOME_ROUTE()} component={RedirectOnLoadConnected} />
       </Switch>
     </MemoryRouter>
   );

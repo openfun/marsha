@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { Video, videoState } from '../../types/Video';
-import { Maybe } from '../../utils/types';
+import { Maybe, Nullable } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { H6, IframeHeading } from '../Headings/Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
@@ -58,10 +58,10 @@ const DashboardInnerContainer = styled.div`
 `;
 
 /** Props shape for the Dashboard component. */
-export interface DashboardProps {
+interface DashboardProps {
   isUploading?: boolean;
-  jwt: string;
-  updateVideo?: (video: Video) => void;
+  jwt: Nullable<string>;
+  updateVideo: (video: Video) => void;
   video: Video;
 }
 
@@ -76,7 +76,7 @@ interface DashboardState {
  * Will also be used to manage related tracks such as timed text when they are available.
  * @param isUploading Whether the relevant video file is currently being uploaded.
  * @param jwt The token that will be used to fetch the video record from the server to update it.
- * @param updateVideo Callback to update the video in App state.
+ * @param updateVideo Callback to update the video in the store.
  * @param video The video object from AppData. We need it to populate the component before polling starts.
  */
 export class Dashboard extends React.Component<DashboardProps, DashboardState> {
@@ -100,7 +100,7 @@ export class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   async pollForVideo() {
-    const { jwt, video } = this.props; // NB: Video from props
+    const { jwt, updateVideo, video } = this.props; // NB: Video from props
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
         headers: {
@@ -120,9 +120,7 @@ export class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
       // When the video is ready, we need to update the App state so VideoForm has access to the URLs when it loads
       else if (incomingVideo.state === videoState.READY) {
-        if (this.props.updateVideo) {
-          this.props.updateVideo(incomingVideo);
-        }
+        updateVideo(incomingVideo);
       }
       this.setState({ video: incomingVideo });
     } catch (error) {

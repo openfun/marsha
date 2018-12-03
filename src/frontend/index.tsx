@@ -3,9 +3,10 @@ import 'iframe-resizer/js/iframeResizer.contentWindow';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 
-import { App } from './components/App/App';
-import { AppRoutes } from './components/AppRoutes/AppRoutes';
+import { AppRoutesConnected } from './components/AppRoutesConnected/AppRoutesConnected';
+import { bootstrapStore } from './data/bootstrapStore';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 import { baseStyles } from './utils/theme/baseStyles';
 
@@ -16,6 +17,8 @@ export const appData = {
   ),
 };
 
+const store = bootstrapStore(appData);
+
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', event => {
   // Load our style reboot into the DOM
@@ -23,9 +26,9 @@ document.addEventListener('DOMContentLoaded', event => {
   // Render our actual component tree
   ReactDOM.render(
     <IntlProvider>
-      <App>
-        <AppRoutes />
-      </App>
+      <Provider store={store}>
+        <AppRoutesConnected />
+      </Provider>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );
