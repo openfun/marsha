@@ -4,15 +4,15 @@ import { shallow } from 'enzyme';
 import * as React from 'react';
 
 import { videoState } from '../../types/Video';
-import { DashboardButtons } from './DashboardButtons';
+import { DashboardVideoPaneButtons } from './DashboardVideoPaneButtons';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = videoState;
 
-describe('<DashboardButtons />', () => {
+describe('<DashboardVideoPaneButtons />', () => {
   it('disables the "Watch" button unless the video is ready', () => {
     // We're testing the "Watch" button
     expect(
-      shallow(<DashboardButtons state={READY} />)
+      shallow(<DashboardVideoPaneButtons state={READY} />)
         .childAt(1)
         .html(),
     ).toContain('Watch');
@@ -20,14 +20,14 @@ describe('<DashboardButtons />', () => {
     // Can't watch the video before it's ready and uploaded
     for (const state of [ERROR, PENDING, PROCESSING, UPLOADING]) {
       expect(
-        shallow(<DashboardButtons state={state} />)
+        shallow(<DashboardVideoPaneButtons state={state} />)
           .childAt(1)
           .prop('disabled'),
       ).toBeTruthy();
     }
 
     expect(
-      shallow(<DashboardButtons state={READY} />)
+      shallow(<DashboardVideoPaneButtons state={READY} />)
         .childAt(1)
         .prop('disabled'),
     ).not.toBeTruthy();
@@ -36,14 +36,14 @@ describe('<DashboardButtons />', () => {
   it('adapts the text of the "Upload" button to the video state', () => {
     for (const state of [ERROR, PROCESSING, READY, UPLOADING]) {
       expect(
-        shallow(<DashboardButtons state={state} />)
+        shallow(<DashboardVideoPaneButtons state={state} />)
           .childAt(0)
           .html(),
       ).toContain('Replace the video');
     }
 
     expect(
-      shallow(<DashboardButtons state={PENDING} />)
+      shallow(<DashboardVideoPaneButtons state={PENDING} />)
         .childAt(0)
         .html(),
     ).toContain('Upload a video');

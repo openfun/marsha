@@ -4,19 +4,17 @@ import { mapStateToProps } from './DashboardConnected';
 describe('<DashboardConnected />', () => {
   describe('mapStateToProps()', () => {
     const props = {
-      jwt: 'some token',
+      dispatch: jest.fn(),
       video: { id: 42 } as any,
     };
 
-    it('picks the video and jwt from the store if available', () => {
+    it('picks the video from the store if available', () => {
       const state = {
-        context: { jwt: 'some token' },
         resources: {
           [modelName.VIDEOS]: { byId: { 42: 'some video' as any } },
         },
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
-        jwt: 'some token',
         video: 'some video',
       });
     });
