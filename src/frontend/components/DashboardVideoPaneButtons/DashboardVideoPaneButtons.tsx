@@ -15,23 +15,23 @@ const messages = defineMessages({
     defaultMessage: 'Watch',
     description:
       'Dashboard button to play the existing video, if there is one.',
-    id: 'components.Dashboard.DashboardButtons.btnPlayVideo',
+    id: 'components.Dashboard.DashboardVideoPaneButtons.btnPlayVideo',
   },
   btnReplaceVideo: {
     defaultMessage: 'Replace the video',
     description:
       'Dashboard button to upload a video to replace the existing one, when there *is* an existing video.',
-    id: 'components.Dashboard.DashboardButtons.btnReplaceVideo',
+    id: 'components.Dashboard.DashboardVideoPaneButtons.btnReplaceVideo',
   },
   btnUploadFirstVideo: {
     defaultMessage: 'Upload a video',
     description:
       'Dashboard button to upload a video, when there is no existing video.',
-    id: 'components.Dashboard.DashboardButtons.btnUploadFirstVideo',
+    id: 'components.Dashboard.DashboardVideoPaneButtons.btnUploadFirstVideo',
   },
 });
 
-const DashboardButtonsStyled = styled.div`
+const DashboardVideoPaneButtonsStyled = styled.div`
   display: flex;
 `;
 
@@ -41,8 +41,8 @@ const DashboardButtonStyled = withLink(styled(Button)`
   margin: 0 1rem;
 `);
 
-/** Props shape for the DashboardButtons component. */
-export interface DashboardButtonsProps {
+/** Props shape for the DashboardVideoPaneButtons component. */
+export interface DashboardVideoPaneButtonsProps {
   state: videoState;
 }
 
@@ -50,8 +50,10 @@ export interface DashboardButtonsProps {
  * look to the video's current state.
  * @param state The current state of the video/track upload.
  */
-export const DashboardButtons = (props: DashboardButtonsProps) => (
-  <DashboardButtonsStyled>
+export const DashboardVideoPaneButtons = (
+  props: DashboardVideoPaneButtonsProps,
+) => (
+  <DashboardVideoPaneButtonsStyled>
     <DashboardButtonStyled variant="primary" to={FORM_ROUTE()}>
       <FormattedMessage
         {...(props.state === PENDING
@@ -66,5 +68,5 @@ export const DashboardButtons = (props: DashboardButtonsProps) => (
     >
       <FormattedMessage {...messages.btnPlayVideo} />
     </DashboardButtonStyled>
-  </DashboardButtonsStyled>
+  </DashboardVideoPaneButtonsStyled>
 );

@@ -21,7 +21,6 @@ export const mapStateToProps = (
   state: RootState,
   { video }: DashboardConnectedProps,
 ) => ({
-  jwt: state && state.context && state.context.jwt,
   video:
     (state &&
       state.resources[modelName.VIDEOS]!.byId &&
@@ -29,18 +28,9 @@ export const mapStateToProps = (
     video,
 });
 
-/** Create a function that updates a single video in the store. */
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateVideo: (video: Video) => dispatch(addResource(modelName.VIDEOS, video)),
-});
-
 /**
  * Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
  * the player and to the form to replace the video with another one.
- * @param jwt The JSON web token that allows the client to authenticate API requests.
  * @param video The relevant Video record for which we're showing the state.
  */
-export const DashboardConnected = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Dashboard);
+export const DashboardConnected = connect(mapStateToProps)(Dashboard);

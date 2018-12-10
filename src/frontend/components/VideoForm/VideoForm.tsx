@@ -8,7 +8,7 @@ import { AWSPolicy } from '../../types/AWSPolicy';
 import { Video, videoState } from '../../types/Video';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
-import { Dashboard, ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
+import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
@@ -56,7 +56,7 @@ interface VideoFormProps {
 interface VideoFormState {
   file: Maybe<File>;
   policy: AWSPolicy;
-  status: Maybe<'policy_error' | 'uploading' | 'upload_error' | 'success'>;
+  status: Maybe<'policy_error' | 'uploading' | 'success'>;
 }
 
 export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
@@ -86,6 +86,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
 
   async upload() {
     const { file, policy } = this.state;
+    const { updateVideo, video } = this.props;
 
     this.setState({ status: 'uploading' });
 
@@ -105,6 +106,13 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
     );
 
     try {
+      // Update the state to reflect the in-progress upload (for the dashboard)
+      // Useful for the Dashboard loader and help text.
+      updateVideo({
+        ...video,
+        state: videoState.UPLOADING,
+      });
+
       const response = await fetch(
         `https://${policy.s3_endpoint}/${policy.bucket}`,
         {
@@ -112,17 +120,20 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
           method: 'POST',
         },
       );
+
       if (response.ok) {
-        this.props.updateVideo({
-          ...this.props.video,
+        updateVideo({
+          ...video,
           state: videoState.PROCESSING,
         });
-        this.setState({ status: 'success' });
       } else {
-        this.setState({ status: 'upload_error' });
+        throw new Error('Failed to upload video.');
       }
     } catch (error) {
-      this.setState({ status: 'upload_error' });
+      updateVideo({
+        ...video,
+        state: videoState.ERROR,
+      });
     }
   }
 
@@ -131,16 +142,11 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
 
     switch (status) {
       case 'success':
+      case 'uploading':
         return <Redirect push to={DASHBOARD_ROUTE()} />;
 
       case 'policy_error':
         return <Redirect push to={ERROR_ROUTE('policy')} />;
-
-      case 'upload_error':
-        return <Redirect push to={ERROR_ROUTE('upload')} />;
-
-      case 'uploading':
-        return <Dashboard {...this.props} isUploading={true} />;
 
       default:
         return (

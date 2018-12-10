@@ -14,49 +14,51 @@ const messages: {
       'There was an error with your video. Retry or upload another one.',
     description:
       'Dashboard helptext for when the video failed to upload or get processed.',
-    id: 'components.Dashboard.DashboardHelptext.helptextError',
+    id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextError',
   },
   [PENDING]: {
     defaultMessage: 'There is currently no video to display here.',
     description:
       'Dashboard helptext for the case when there is no existing video nor anything in progress.',
-    id: 'components.Dashboard.DashboardHelptext.helptextPending',
+    id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextPending',
   },
   [PROCESSING]: {
     defaultMessage:
       'Your video is currently processing. This may take up to an hour. Please come back later.',
     description:
       'Dashboard helptext to warn users not to wait for video processing in front of this page.',
-    id: 'components.Dashboard.DashboardHelptext.helptextProcessing',
+    id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextProcessing',
   },
   [READY]: {
     defaultMessage: 'Your video is ready to play.',
     description: 'Dashboard helptext for ready-to-play videos.',
-    id: 'components.Dashboard.DashboardHelptext.helptextReady',
+    id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextReady',
   },
   [UPLOADING]: {
     defaultMessage:
       'Upload in progress... Please do not close or reload this page.',
     description:
       'Dashboard helptext to warn user not to navigate away during video upload.',
-    id: 'components.Dashboard.DashboardHelptext.helptextUploading',
+    id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextUploading',
   },
 });
 
-const DashboardHelptextStyled = styled.div`
+const DashboardVideoPaneHelptextStyled = styled.div`
   padding: 0 1rem;
 `;
 
-/** Props shape for the DashboardHelptext component. */
-export interface DashboardHelptextProps {
+/** Props shape for the DashboardVideoPaneHelptext component. */
+export interface DashboardVideoPaneHelptextProps {
   state: videoState;
 }
 
 /** Component. Displays the relevant helptext for the user depending on the video state.
  * @param state The current state of the video/track upload.
  */
-export const DashboardHelptext = (props: DashboardHelptextProps) => (
-  <DashboardHelptextStyled>
+export const DashboardVideoPaneHelptext = (
+  props: DashboardVideoPaneHelptextProps,
+) => (
+  <DashboardVideoPaneHelptextStyled>
     <FormattedMessage {...messages[props.state]} />
-  </DashboardHelptextStyled>
+  </DashboardVideoPaneHelptextStyled>
 );
