@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import shaka from 'shaka-player';
 
-import { Video, videoSize } from '../../types/Video';
+import { Video, videoSize } from '../../types/tracks';
 import { Maybe, Nullable } from '../../utils/types';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import './VideoPlayer.css'; // Improve some plyr styles

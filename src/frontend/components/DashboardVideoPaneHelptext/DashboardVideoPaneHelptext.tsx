@@ -2,12 +2,12 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = videoState;
+const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = trackState;
 
 const messages: {
-  [state in videoState]: FormattedMessage.MessageDescriptor
+  [state in trackState]: FormattedMessage.MessageDescriptor
 } = defineMessages({
   [ERROR]: {
     defaultMessage:
@@ -49,7 +49,7 @@ const DashboardVideoPaneHelptextStyled = styled.div`
 
 /** Props shape for the DashboardVideoPaneHelptext component. */
 export interface DashboardVideoPaneHelptextProps {
-  state: videoState;
+  state: trackState;
 }
 
 /** Component. Displays the relevant helptext for the user depending on the video state.

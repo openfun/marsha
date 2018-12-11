@@ -2,7 +2,7 @@ import { Reducer } from 'redux';
 
 import { appState } from '../types/AppData';
 import { modelName } from '../types/models';
-import { Video } from '../types/Video';
+import { Video } from '../types/tracks';
 import { Nullable } from '../utils/types';
 import { videos, VideosState } from './videos/reducer';
 

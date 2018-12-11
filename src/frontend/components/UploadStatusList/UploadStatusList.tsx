@@ -2,11 +2,11 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { colors } from '../../utils/theme/theme';
 import { statusIconKey, UploadStatus } from './UploadStatus';
 
-const { PROCESSING, READY, UPLOADING } = videoState;
+const { PROCESSING, READY, UPLOADING } = trackState;
 
 const messages = defineMessages({
   statusProcessed: {
@@ -47,7 +47,7 @@ const UploadStatusListStyled = styled.ul`
 
 /** Props shape for the UploadStatusList component. */
 export interface UploadStatusListProps {
-  state: videoState;
+  state: trackState;
 }
 
 /** Component. Displays the list of statuses for an upload, showing (and/or highlighting)

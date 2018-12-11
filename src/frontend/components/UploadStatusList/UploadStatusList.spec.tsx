@@ -3,11 +3,11 @@ import '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { statusIconKey, UploadStatus } from './UploadStatus';
 import { UploadStatusList } from './UploadStatusList';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = videoState;
+const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = trackState;
 
 describe('<UploadStatusList />', () => {
   it('renders the status list for PENDING', () => {

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
-import { Video, videoState } from '../../types/Video';
+import { trackState, Video } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
@@ -120,7 +120,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       // Useful for the Dashboard loader and help text.
       updateVideo({
         ...video,
-        state: videoState.UPLOADING,
+        state: trackState.UPLOADING,
       });
 
       const response = await fetch(
@@ -134,7 +134,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       if (response.ok) {
         updateVideo({
           ...video,
-          state: videoState.PROCESSING,
+          state: trackState.PROCESSING,
         });
       } else {
         throw new Error('Failed to upload video.');
@@ -142,7 +142,7 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
     } catch (error) {
       updateVideo({
         ...video,
-        state: videoState.ERROR,
+        state: trackState.ERROR,
       });
     }
   }

@@ -14,7 +14,7 @@ jest.doMock('react-router-dom', () => ({
   Redirect: () => {},
 }));
 
-import { Video, videoState } from '../../types/Video';
+import { trackState, Video } from '../../types/tracks';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { VideoForm } from './VideoForm';
@@ -91,7 +91,7 @@ describe('VideoForm', () => {
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: videoState.UPLOADING,
+      state: trackState.UPLOADING,
       title: '',
     });
     expect(mockMakeFormData).toHaveBeenCalledWith(
@@ -115,7 +115,7 @@ describe('VideoForm', () => {
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: videoState.PROCESSING,
+      state: trackState.PROCESSING,
       title: '',
     });
     expect(wrapper.name()).toEqual('Redirect');
@@ -179,7 +179,7 @@ describe('VideoForm', () => {
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: videoState.ERROR,
+      state: trackState.ERROR,
       title: '',
     });
   });

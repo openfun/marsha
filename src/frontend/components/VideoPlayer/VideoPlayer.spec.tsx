@@ -5,7 +5,7 @@ import Plyr from 'plyr';
 import * as React from 'react';
 import shaka from 'shaka-player';
 
-import { Video } from '../../types/Video';
+import { Video } from '../../types/tracks';
 import { VideoPlayer } from './VideoPlayer';
 
 const mockShakaPlayer: jest.Mocked<typeof shaka.Player> = shaka.Player as any;

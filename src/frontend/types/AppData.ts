@@ -1,6 +1,6 @@
 import { Nullable } from '../utils/types';
 import { AWSPolicy } from './AWSPolicy';
-import { Video } from './Video';
+import { Video } from './tracks';
 
 export enum appState {
   ERROR = 'error',

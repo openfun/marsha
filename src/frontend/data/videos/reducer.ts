@@ -2,7 +2,7 @@ import { AnyAction, Reducer } from 'redux';
 
 import { modelName } from '../../types/models';
 import { ResourceByIdState } from '../../types/Resource';
-import { Video } from '../../types/Video';
+import { Video } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import {
   ResourceAdd,
