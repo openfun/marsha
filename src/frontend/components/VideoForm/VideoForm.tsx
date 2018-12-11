@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
@@ -20,6 +20,11 @@ const messages = defineMessages({
     description:
       'CTA for the form button for a video & its title & description',
     id: 'components.VideoForm.button',
+  },
+  linkToDashboard: {
+    defaultMessage: 'Back to dashboard',
+    description: 'Text for the link to the dashboard in the video form.',
+    id: 'components.VideoForm.linkToDashboard',
   },
   title: {
     defaultMessage: 'Create a new video',
@@ -45,6 +50,11 @@ const IframeHeadingWithLayout = styled(IframeHeading)`
 const VideoUploadFieldContainer = styled.div`
   flex-grow: 1;
   display: flex;
+`;
+
+const VideoFormBack = styled.div`
+  line-height: 2rem;
+  padding: 0.5rem 1rem;
 `;
 
 interface VideoFormProps {
@@ -150,16 +160,23 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
 
       default:
         return (
-          <VideoFormContainer>
-            <IframeHeadingWithLayout>
-              <FormattedMessage {...messages.title} />
-            </IframeHeadingWithLayout>
-            <VideoUploadFieldContainer>
-              <VideoUploadField
-                onContentUpdated={this.onVideoFieldContentUpdated.bind(this)}
-              />
-            </VideoUploadFieldContainer>
-          </VideoFormContainer>
+          <div>
+            <VideoFormContainer>
+              <IframeHeadingWithLayout>
+                <FormattedMessage {...messages.title} />
+              </IframeHeadingWithLayout>
+              <VideoUploadFieldContainer>
+                <VideoUploadField
+                  onContentUpdated={this.onVideoFieldContentUpdated.bind(this)}
+                />
+              </VideoUploadFieldContainer>
+            </VideoFormContainer>
+            <VideoFormBack>
+              <Link to={DASHBOARD_ROUTE()}>
+                <FormattedMessage {...messages.linkToDashboard} />
+              </Link>
+            </VideoFormBack>
+          </div>
         );
     }
   }

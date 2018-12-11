@@ -10,6 +10,7 @@ jest.doMock('../../utils/makeFormData/makeFormData', () => ({
 }));
 
 jest.doMock('react-router-dom', () => ({
+  Link: () => null,
   Redirect: () => {},
 }));
 
