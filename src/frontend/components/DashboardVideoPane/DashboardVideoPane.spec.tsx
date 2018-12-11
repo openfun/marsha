@@ -8,7 +8,7 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
   DashboardVideoPaneButtons: () => {},
 }));
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
@@ -23,7 +23,7 @@ describe('<DashboardVideoPane />', () => {
 
   it('renders & starts polling for the video', async () => {
     // Create a mock video with the initial state (PROCESSING)
-    const mockVideo: any = { id: 'dd44', state: videoState.PROCESSING };
+    const mockVideo: any = { id: 'dd44', state: trackState.PROCESSING };
     fetchMock.mock('/api/videos/dd44/', mockVideo);
 
     let wrapper = shallow(
@@ -36,7 +36,7 @@ describe('<DashboardVideoPane />', () => {
 
     // DashboardVideoPane shows the video as PROCESSING
     expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
-      videoState.PROCESSING,
+      trackState.PROCESSING,
     );
     expect(fetchMock.called()).not.toBeTruthy();
 
@@ -50,7 +50,7 @@ describe('<DashboardVideoPane />', () => {
 
     // The video will be ready in further responses
     fetchMock.reset();
-    mockVideo.state = videoState.READY;
+    mockVideo.state = trackState.READY;
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 60 + 200);
@@ -75,7 +75,7 @@ describe('<DashboardVideoPane />', () => {
     );
     // DashboardVideoPane shows the video as READY
     expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
-      videoState.READY,
+      trackState.READY,
     );
 
     // Unmount DashboardVideoPane to get rid of its interval
@@ -90,7 +90,7 @@ describe('<DashboardVideoPane />', () => {
       <DashboardVideoPane
         jwt={'cool_token_m8'}
         updateVideo={mockUpdateVideo}
-        video={{ id: 'ee55', state: videoState.PROCESSING } as any}
+        video={{ id: 'ee55', state: trackState.PROCESSING } as any}
       />,
     );
 
@@ -110,7 +110,7 @@ describe('<DashboardVideoPane />', () => {
       <DashboardVideoPane
         jwt={'cool_token_m8'}
         updateVideo={mockUpdateVideo}
-        video={{ id: 'ff66', state: videoState.ERROR } as any}
+        video={{ id: 'ff66', state: trackState.ERROR } as any}
       />,
     );
 

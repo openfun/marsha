@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
-import { Video, videoState } from '../../types/Video';
+import { trackState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
@@ -78,14 +78,14 @@ export class DashboardVideoPane extends React.Component<
       // If the video is PENDING on the backend and PROCESSING on our end, we're probably experiencing a race
       // condition where the backend is not yet aware of the end of the upload.
       if (
-        incomingVideo.state === videoState.PENDING &&
-        video.state === videoState.PROCESSING
+        incomingVideo.state === trackState.PENDING &&
+        video.state === trackState.PROCESSING
       ) {
         // Disregard the server-provided video.
         return;
       }
       // When the video is ready, we need to update the App state so VideoForm has access to the URLs when it loads
-      else if (incomingVideo.state === videoState.READY) {
+      else if (incomingVideo.state === trackState.READY) {
         updateVideo(incomingVideo);
       }
     } catch (error) {
@@ -100,7 +100,7 @@ export class DashboardVideoPane extends React.Component<
       return <Redirect push to={ERROR_ROUTE('notFound')} />;
     }
 
-    if (video.state === videoState.ERROR) {
+    if (video.state === trackState.ERROR) {
       return <Redirect push to={ERROR_ROUTE('upload')} />;
     }
 

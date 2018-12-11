@@ -3,10 +3,10 @@ import '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { DashboardVideoPaneButtons } from './DashboardVideoPaneButtons';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = videoState;
+const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = trackState;
 
 describe('<DashboardVideoPaneButtons />', () => {
   it('disables the "Watch" button unless the video is ready', () => {

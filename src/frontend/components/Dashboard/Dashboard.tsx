@@ -2,7 +2,7 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { Video } from '../../types/Video';
+import { Video } from '../../types/tracks';
 import { DashboardVideoPaneConnected } from '../DashboardVideoPaneConnected/DashboardVideoPaneConnected';
 import { IframeHeading } from '../Headings/Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';

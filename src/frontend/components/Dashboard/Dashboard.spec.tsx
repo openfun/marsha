@@ -3,12 +3,12 @@ import '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { Dashboard } from './Dashboard';
 
 describe('<Dashboard />', () => {
   it('renders', () => {
-    const mockVideo: any = { id: 'dd44', state: videoState.PROCESSING };
+    const mockVideo: any = { id: 'dd44', state: trackState.PROCESSING };
 
     const wrapper = shallow(<Dashboard video={mockVideo} />)
       .dive()

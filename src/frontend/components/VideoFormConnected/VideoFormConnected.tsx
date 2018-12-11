@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { modelName } from '../../types/models';
-import { Video } from '../../types/Video';
+import { Video } from '../../types/tracks';
 import { VideoForm } from '../VideoForm/VideoForm';
 
 /** Props shape for the VideoFormConnected component. */

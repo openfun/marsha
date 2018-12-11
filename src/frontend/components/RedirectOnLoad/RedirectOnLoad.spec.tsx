@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import * as React from 'react';
 
 import { appState } from '../../types/AppData';
-import { videoState } from '../../types/Video';
+import { trackState } from '../../types/tracks';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
@@ -26,7 +26,7 @@ describe('<RedirectOnLoad />', () => {
     const wrapper = shallow(
       <RedirectOnLoad
         ltiState={appState.INSTRUCTOR}
-        video={{ state: videoState.READY } as any}
+        video={{ state: trackState.READY } as any}
       />,
     );
 
@@ -39,7 +39,7 @@ describe('<RedirectOnLoad />', () => {
     const wrapper = shallow(
       <RedirectOnLoad
         ltiState={appState.STUDENT}
-        video={{ state: videoState.READY } as any}
+        video={{ state: trackState.READY } as any}
       />,
     );
 
@@ -52,7 +52,7 @@ describe('<RedirectOnLoad />', () => {
     const wrapper = shallow(
       <RedirectOnLoad
         ltiState={appState.INSTRUCTOR}
-        video={{ state: videoState.PENDING } as any}
+        video={{ state: trackState.PENDING } as any}
       />,
     );
 
@@ -65,7 +65,7 @@ describe('<RedirectOnLoad />', () => {
     const wrapper = shallow(
       <RedirectOnLoad
         ltiState={appState.INSTRUCTOR}
-        video={{ state: videoState.PROCESSING } as any}
+        video={{ state: trackState.PROCESSING } as any}
       />,
     );
 
