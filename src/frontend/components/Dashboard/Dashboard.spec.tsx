@@ -8,11 +8,8 @@ import { Dashboard } from './Dashboard';
 
 describe('<Dashboard />', () => {
   it('renders', () => {
-    const mockVideo: any = { id: 'dd44', upload_state: uploadState.PROCESSING };
-
-    const wrapper = shallow(<Dashboard video={mockVideo} />)
-      .dive()
-      .dive();
+    const mockVideo: any = { id: 'dd44', state: uploadState.PROCESSING };
+    const wrapper = shallow(<Dashboard video={mockVideo} />).dive();
     expect(wrapper.text()).toContain('Dashboard');
   });
 });

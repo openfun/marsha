@@ -9,7 +9,7 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
 }));
 
 import { uploadState } from '../../types/tracks';
-import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
+import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
 const mockUpdateVideo = jest.fn();
@@ -35,7 +35,7 @@ describe('<DashboardVideoPane />', () => {
     );
 
     // DashboardVideoPane shows the video as PROCESSING
-    expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
+    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(
       uploadState.PROCESSING,
     );
     expect(fetchMock.called()).not.toBeTruthy();
@@ -74,7 +74,7 @@ describe('<DashboardVideoPane />', () => {
       />,
     );
     // DashboardVideoPane shows the video as READY
-    expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
+    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(
       uploadState.READY,
     );
 
@@ -155,7 +155,7 @@ describe('<DashboardVideoPane />', () => {
         .dive()
         .childAt(0)
         .html(),
-    ).toContain('Video preparation');
+    ).toContain('Video status');
 
     // Unmount DashboardVideoPane to get rid of its interval
     wrapper.unmount();
