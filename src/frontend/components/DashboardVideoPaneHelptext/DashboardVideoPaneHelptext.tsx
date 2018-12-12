@@ -17,7 +17,7 @@ const messages: {
     id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextError',
   },
   [PENDING]: {
-    defaultMessage: 'There is currently no video to display here.',
+    defaultMessage: 'There is currently no video to display.',
     description:
       'Dashboard helptext for the case when there is no existing video nor anything in progress.',
     id: 'components.Dashboard.DashboardVideoPaneHelptext.helptextPending',
@@ -43,10 +43,6 @@ const messages: {
   },
 });
 
-const DashboardVideoPaneHelptextStyled = styled.div`
-  padding: 0 1rem;
-`;
-
 /** Props shape for the DashboardVideoPaneHelptext component. */
 export interface DashboardVideoPaneHelptextProps {
   state: uploadState;
@@ -58,7 +54,7 @@ export interface DashboardVideoPaneHelptextProps {
 export const DashboardVideoPaneHelptext = (
   props: DashboardVideoPaneHelptextProps,
 ) => (
-  <DashboardVideoPaneHelptextStyled>
+  <div>
     <FormattedMessage {...messages[props.state]} />
-  </DashboardVideoPaneHelptextStyled>
+  </div>
 );

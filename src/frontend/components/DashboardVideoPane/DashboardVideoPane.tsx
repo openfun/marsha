@@ -10,22 +10,32 @@ import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading'
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
+import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
 const messages = defineMessages({
   title: {
-    defaultMessage: 'Video preparation',
+    defaultMessage: 'Video status',
     description:
       'Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).',
     id: 'components.Dashboard.title',
   },
 });
 
-const DashboardInnerContainer = styled.div`
+const DashboardVideoPaneInnerContainer = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  padding: 1rem;
+`;
+
+const DashboardVideoPaneStatusLine = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const DashboardVideoPaneInternalHeading = styled(DashboardInternalHeading)`
+  padding: 0 1rem 0 0;
 `;
 
 /** Props shape for the DashboardVideoPane component. */
@@ -105,14 +115,16 @@ export class DashboardVideoPane extends React.Component<
     }
 
     return (
-      <DashboardInnerContainer>
-        <DashboardInternalHeading>
-          <FormattedMessage {...messages.title} />
-        </DashboardInternalHeading>
-        <UploadStatusList state={video.upload_state} />
+      <DashboardVideoPaneInnerContainer>
+        <DashboardVideoPaneStatusLine>
+          <DashboardVideoPaneInternalHeading>
+            <FormattedMessage {...messages.title} />
+          </DashboardVideoPaneInternalHeading>
+          <UploadStatusPicker state={video.upload_state} />
+        </DashboardVideoPaneStatusLine>
         <DashboardVideoPaneHelptext state={video.upload_state} />
         <DashboardVideoPaneButtons state={video.upload_state} />
-      </DashboardInnerContainer>
+      </DashboardVideoPaneInnerContainer>
     );
   }
 }

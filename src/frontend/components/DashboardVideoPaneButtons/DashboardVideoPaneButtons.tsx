@@ -35,11 +35,19 @@ const DashboardVideoPaneButtonsStyled = styled.div`
   display: flex;
 `;
 
-const DashboardButtonStyled = withLink(styled(Button)`
+const DashboardButtonStyled = styled(Button)`
   flex-grow: 1;
   flex-basis: 8rem;
-  margin: 0 1rem;
-`);
+
+  :first-child {
+    margin-right: 1rem;
+  }
+
+  :last-child {
+    margin-left: 1rem;
+  }
+`;
+const DashboardButtonWithLink = withLink(DashboardButtonStyled);
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardVideoPaneButtonsProps {
@@ -54,19 +62,19 @@ export const DashboardVideoPaneButtons = (
   props: DashboardVideoPaneButtonsProps,
 ) => (
   <DashboardVideoPaneButtonsStyled>
-    <DashboardButtonStyled variant="primary" to={UPLOAD_FORM_ROUTE()}>
+    <DashboardButtonWithLink variant="primary" to={UPLOAD_FORM_ROUTE()}>
       <FormattedMessage
         {...(props.state === PENDING
           ? messages.btnUploadFirstVideo
           : messages.btnReplaceVideo)}
       />
-    </DashboardButtonStyled>
-    <DashboardButtonStyled
+    </DashboardButtonWithLink>
+    <DashboardButtonWithLink
       variant="primary"
       disabled={props.state !== READY}
       to={VIDEO_PLAYER_ROUTE()}
     >
       <FormattedMessage {...messages.btnPlayVideo} />
-    </DashboardButtonStyled>
+    </DashboardButtonWithLink>
   </DashboardVideoPaneButtonsStyled>
 );

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Video } from '../../types/tracks';
 import { DashboardVideoPaneConnected } from '../DashboardVideoPaneConnected/DashboardVideoPaneConnected';
 import { IframeHeading } from '../Headings/Headings';
-import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 
 const messages = defineMessages({
   title: {
@@ -22,10 +21,12 @@ const IframeHeadingWithLayout = styled(IframeHeading)`
   text-align: center;
 `;
 
-const DashboardContainer = styled(LayoutMainArea)`
+const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: 100vw;
+  min-height: 56.25vw; /* Default to LayoutMainArea aspect ratio, ie. 16/9. */
 `;
 
 /** Props shape for the Dashboard component. */
