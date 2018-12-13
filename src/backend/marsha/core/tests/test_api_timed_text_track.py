@@ -189,15 +189,24 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_read_list_token_user(self):
-        """A token user associated to a video is not able to read a list of timed text tracks."""
-        timed_text_track = TimedTextTrackFactory()
+        """A token user associated to a video is able to read a list of timed text tracks."""
+        timed_text_track_one = TimedTextTrackFactory()
+        timed_text_track_two = TimedTextTrackFactory(video=timed_text_track_one.video)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["video_id"] = str(timed_text_track_one.video.id)
 
         response = self.client.get(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 200)
+        timed_text_track_list = json.loads(response.content)
+        self.assertEqual(len(timed_text_track_list), 2)
+        self.assertTrue(
+            str(timed_text_track_one.id) in [ttt["id"] for ttt in timed_text_track_list]
+        )
+        self.assertTrue(
+            str(timed_text_track_two.id) in [ttt["id"] for ttt in timed_text_track_list]
+        )
 
     def test_api_timed_text_track_read_list_staff_or_user(self):
         """Users authenticated via a session shouldn't be able to read timed text tracks."""
