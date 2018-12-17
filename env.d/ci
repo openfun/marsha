@@ -18,3 +18,7 @@ DJANGO_AWS_SECRET_ACCESS_KEY=aws-secret-access-key
 # AWS
 DJANGO_CLOUDFRONT_URL=https://abc.cloudfront.net
 DJANGO_UPDATE_STATE_SHARED_SECRETS=dummy,secret
+
+# Learning Locker
+DJANGO_LRS_BASIC_AUTH=ThisIsABasicAuth
+DJANGO_LRS_URL=https://LRS.url
