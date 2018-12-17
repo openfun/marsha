@@ -12,6 +12,7 @@ ifndef NO_DOCKER
 	COMPOSE              = docker-compose
 	COMPOSE_RUN          = $(COMPOSE) run --rm
 	COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
+	COMPOSE_RUN_LRS	     = $(COMPOSE_RUN) api
 	COMPOSE_TEST         = $(COMPOSE) -p marsha-test -f docker/compose/test/docker-compose.yml --project-directory .
 	COMPOSE_TEST_RUN     = $(COMPOSE_TEST) run --rm
 	COMPOSE_TEST_RUN_APP = $(COMPOSE_TEST_RUN) app
@@ -114,8 +115,14 @@ venv-upgrade-dev:  ## Upgrade all default+dev dependencies defined in setup.cfg
 env.d/development:
 	cp env.d/development.dist env.d/development
 
+env.d/learninglocker:
+	cp env.d/learninglocker.dist env.d/learninglocker
+
+env.d/learninglocker_nginx:
+	cp env.d/learninglocker_nginx.dist env.d/learninglocker_nginx
+
 .PHONY: bootstrap
-bootstrap: env.d/development ## Prepare Docker images for the project
+bootstrap: env.d/development env.d/learninglocker env.d/learninglocker_nginx ## Prepare Docker images for the project
 	@$(COMPOSE) build base;
 	@$(COMPOSE) build app;
 	@echo 'Waiting until database is up…';
@@ -124,6 +131,10 @@ bootstrap: env.d/development ## Prepare Docker images for the project
 
 .PHONY: run
 run: ## start the development server using Docker
+	@$(COMPOSE) up -d app
+
+.PHONY: run-all
+run-all: ## start app and xapi containers
 	@$(COMPOSE) up -d
 
 .PHONY: stop
@@ -133,3 +144,11 @@ stop: ## stop the development server using Docker
 .PHONY: down
 down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
+
+##########################################
+# Targets specific to xapi
+
+.PHONY: xapi-superuser
+xapi-superuser: ## create a superuser in learninglocker application
+	@$(COMPOSE_RUN_LRS) node cli/dist/server createSiteAdmin "admin@openfun.fr" "openfun" "password"
+
