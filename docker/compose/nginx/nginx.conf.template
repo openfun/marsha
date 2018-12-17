@@ -1,0 +1,79 @@
+# This file is to be preprocessed by entrypoint.sh.
+# Env variables starting with dollar sign will be replaced.
+#
+# Dollar signs that are not to be replaced are presented as ${DOLLAR},
+# and will be replaced to simple '$' after the preprocessing.
+#
+
+upstream backend_ui {
+  server $UI_NODE;
+}
+
+upstream backend_xapi {
+  server $XAPI_NODE;
+}
+
+upstream backend_api {
+  server $API_NODE;
+}
+
+server {
+  listen       80 default_server;
+  listen       [::]:80 default_server;
+
+  # Max request size
+  client_max_body_size 20M;
+  large_client_header_buffers 4 256k;
+
+  # xAPI endpoints
+  location ~* ^/data/xAPI(.*)$ {
+    proxy_pass http://backend_xapi/data/xAPI${DOLLAR}1${DOLLAR}is_args${DOLLAR}args;
+  }
+
+  # API endpoints
+  location = /api {
+    rewrite /api / break;
+    proxy_redirect off;
+    proxy_pass http://backend_api;
+  }
+
+  location ~* ^/api(.*)$ {
+    proxy_pass http://backend_api${DOLLAR}1${DOLLAR}is_args${DOLLAR}args;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade ${DOLLAR}http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host ${DOLLAR}host;
+    proxy_cache_bypass ${DOLLAR}http_upgrade;
+  }
+
+  # All other traffic directed to statics or Node server
+  location / {
+    try_files ${DOLLAR}uri @node_server;
+  }
+
+  # Node UI server
+  location @node_server {
+    proxy_pass http://backend_ui;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade ${DOLLAR}http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host ${DOLLAR}host;
+    proxy_cache_bypass ${DOLLAR}http_upgrade;
+  }
+
+  # Load configuration files for the default server block.
+  error_page 404 /404.html;
+  location = /40x.html {
+    root /usr/share/nginx/html;
+  }
+
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root /usr/share/nginx/html;
+  }
+
+  # We don't need .ht files with nginx.
+  location ~ /\.ht {
+    deny all;
+  }
+}
