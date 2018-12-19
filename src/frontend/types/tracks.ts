@@ -40,3 +40,5 @@ export interface Video extends Resource {
     thumbnails: { [key in videoSize]: string };
   };
 }
+
+export type UploadableObject = Video;

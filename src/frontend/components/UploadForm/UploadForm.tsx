@@ -5,37 +5,33 @@ import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
-import { trackState, Video } from '../../types/tracks';
+import { modelName } from '../../types/models';
+import { trackState, UploadableObject } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { IframeHeading } from '../Headings/Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
-import { VideoUploadField } from '../VideoUploadField/VideoUploadField';
+import { UploadField } from '../UploadField/UploadField';
 
 const messages = defineMessages({
-  button: {
-    defaultMessage: 'Send',
-    description:
-      'CTA for the form button for a video & its title & description',
-    id: 'components.VideoForm.button',
-  },
   linkToDashboard: {
     defaultMessage: 'Back to dashboard',
-    description: 'Text for the link to the dashboard in the video form.',
-    id: 'components.VideoForm.linkToDashboard',
-  },
-  title: {
-    defaultMessage: 'Create a new video',
-    description: 'Title for the video upload form',
-    id: 'components.VideoForm.title',
+    description: 'Text for the link to the dashboard in the upload form.',
+    id: 'components.UploadForm.linkToDashboard',
   },
 });
 
-export const ROUTE = () => '/form';
+const titleMessages = defineMessages({
+  [modelName.VIDEOS]: {
+    defaultMessage: 'Create a new video',
+    description: 'Title for the video upload form',
+    id: 'components.UploadForm.title',
+  },
+});
 
-const VideoFormContainer = styled(LayoutMainArea)`
+const UploadFormContainer = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -47,35 +43,69 @@ const IframeHeadingWithLayout = styled(IframeHeading)`
   text-align: center;
 `;
 
-const VideoUploadFieldContainer = styled.div`
+const UploadFieldContainer = styled.div`
   flex-grow: 1;
   display: flex;
 `;
 
-const VideoFormBack = styled.div`
+const UploadFormBack = styled.div`
   line-height: 2rem;
   padding: 0.5rem 1rem;
 `;
 
-interface VideoFormProps {
+/**
+ * Route for the `<UploadForm />` component.
+ * @param objectType The model name for the object for which we're uploading a file.
+ * @param objectId The ID of said object.
+ */
+export const ROUTE = (
+  objectType?: modelName,
+  objectId?: UploadableObject['id'],
+) => {
+  if (objectType) {
+    return `/form/${objectType}/${objectId}`;
+  } else {
+    return `/form/:objectType(${Object.values(modelName).join('|')})/:objectId`;
+  }
+};
+
+/** Props shape for the UploadForm component. */
+interface UploadFormProps {
   jwt: Nullable<string>;
-  updateVideo: (video: Video) => void;
-  video: Video;
+  object: Maybe<UploadableObject>;
+  objectType: modelName;
+  updateObject: (object: UploadableObject) => void;
 }
 
-interface VideoFormState {
+/** State shape for the UploadForm component. */
+interface UploadFormState {
   file: Maybe<File>;
   policy: AWSPolicy;
-  status: Maybe<'policy_error' | 'uploading' | 'success'>;
+  status: Maybe<'not_found_error' | 'policy_error' | 'uploading' | 'success'>;
 }
 
-export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
+/**
+ * Component. Displays a form with a dropzone and a file upload button to add a file to the
+ * object passed in the props.
+ * @param jwt The token that will be used to fetch the object record from the server to update it.
+ * @param object The object for which we want to add a file.
+ * @param objectType The model name for the object.
+ * @param updateObject Action creator that takes an object to update it in the store.
+ */
+export class UploadForm extends React.Component<
+  UploadFormProps,
+  UploadFormState
+> {
   async componentDidMount() {
-    const { jwt, video } = this.props;
+    const { jwt, object, objectType } = this.props;
+
+    if (!object) {
+      return this.setState({ status: 'not_found_error' });
+    }
 
     try {
       const response = await fetch(
-        `${API_ENDPOINT}/videos/${video.id}/upload-policy/`,
+        `${API_ENDPOINT}/${objectType}/${object.id}/upload-policy/`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -89,14 +119,18 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
     }
   }
 
-  onVideoFieldContentUpdated(file: Maybe<File>) {
+  onUploadFieldContentUpdated(file: Maybe<File>) {
     this.setState({ file });
     this.upload();
   }
 
   async upload() {
     const { file, policy } = this.state;
-    const { updateVideo, video } = this.props;
+    const { object, objectType, updateObject } = this.props;
+
+    if (!object) {
+      return this.setState({ status: 'not_found_error' });
+    }
 
     this.setState({ status: 'uploading' });
 
@@ -118,8 +152,8 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
     try {
       // Update the state to reflect the in-progress upload (for the dashboard)
       // Useful for the Dashboard loader and help text.
-      updateVideo({
-        ...video,
+      updateObject({
+        ...object,
         state: trackState.UPLOADING,
       });
 
@@ -132,22 +166,23 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       );
 
       if (response.ok) {
-        updateVideo({
-          ...video,
+        updateObject({
+          ...object,
           state: trackState.PROCESSING,
         });
       } else {
-        throw new Error('Failed to upload video.');
+        throw new Error(`Failed to upload ${objectType}.`);
       }
     } catch (error) {
-      updateVideo({
-        ...video,
+      updateObject({
+        ...object,
         state: trackState.ERROR,
       });
     }
   }
 
   render() {
+    const { objectType } = this.props;
     const { status } = this.state || { status: '' };
 
     switch (status) {
@@ -155,27 +190,30 @@ export class VideoForm extends React.Component<VideoFormProps, VideoFormState> {
       case 'uploading':
         return <Redirect push to={DASHBOARD_ROUTE()} />;
 
+      case 'not_found_error':
+        return <Redirect push to={ERROR_ROUTE('notFound')} />;
+
       case 'policy_error':
         return <Redirect push to={ERROR_ROUTE('policy')} />;
 
       default:
         return (
           <div>
-            <VideoFormContainer>
+            <UploadFormContainer>
               <IframeHeadingWithLayout>
-                <FormattedMessage {...messages.title} />
+                <FormattedMessage {...titleMessages[objectType]} />
               </IframeHeadingWithLayout>
-              <VideoUploadFieldContainer>
-                <VideoUploadField
-                  onContentUpdated={this.onVideoFieldContentUpdated.bind(this)}
+              <UploadFieldContainer>
+                <UploadField
+                  onContentUpdated={this.onUploadFieldContentUpdated.bind(this)}
                 />
-              </VideoUploadFieldContainer>
-            </VideoFormContainer>
-            <VideoFormBack>
+              </UploadFieldContainer>
+            </UploadFormContainer>
+            <UploadFormBack>
               <Link to={DASHBOARD_ROUTE()}>
                 <FormattedMessage {...messages.linkToDashboard} />
               </Link>
-            </VideoFormBack>
+            </UploadFormBack>
           </div>
         );
     }

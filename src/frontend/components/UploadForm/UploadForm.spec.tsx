@@ -14,15 +14,16 @@ jest.doMock('react-router-dom', () => ({
   Redirect: () => {},
 }));
 
+import { modelName } from '../../types/models';
 import { trackState, Video } from '../../types/tracks';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
-import { VideoForm } from './VideoForm';
+import { UploadForm } from './UploadForm';
 
-const mockUpdateVideo = jest.fn();
+const mockUpdateObject = jest.fn();
 
-describe('VideoForm', () => {
-  const video = {
+describe('UploadForm', () => {
+  const object = {
     description: '',
     id: 'ab42',
     state: 'pending',
@@ -36,10 +37,11 @@ describe('VideoForm', () => {
   it('renders the form by default', () => {
     fetchMock.mock('/api/videos/ab42/upload-policy/', {});
     const wrapper = shallow(
-      <VideoForm
+      <UploadForm
         jwt={'some_token'}
-        updateVideo={mockUpdateVideo}
-        video={video}
+        object={object}
+        objectType={modelName.VIDEOS}
+        updateObject={mockUpdateObject}
       />,
     );
 
@@ -67,13 +69,14 @@ describe('VideoForm', () => {
     fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', {});
 
     const wrapper = shallow(
-      <VideoForm
+      <UploadForm
         jwt={'some_token'}
-        updateVideo={mockUpdateVideo}
-        video={video}
+        object={object}
+        objectType={modelName.VIDEOS}
+        updateObject={mockUpdateObject}
       />,
     );
-    const componentInstance = wrapper.instance() as VideoForm;
+    const componentInstance = wrapper.instance() as UploadForm;
 
     expect(fetchMock.lastCall()).toEqual([
       '/api/videos/ab42/upload-policy/',
@@ -88,7 +91,7 @@ describe('VideoForm', () => {
     });
     componentInstance.upload();
 
-    expect(mockUpdateVideo).toHaveBeenCalledWith({
+    expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
       state: trackState.UPLOADING,
@@ -112,7 +115,7 @@ describe('VideoForm', () => {
 
     await flushAllPromises();
 
-    expect(mockUpdateVideo).toHaveBeenCalledWith({
+    expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
       state: trackState.PROCESSING,
@@ -128,10 +131,11 @@ describe('VideoForm', () => {
       throws: 'invalid policy',
     });
     const wrapper = shallow(
-      <VideoForm
+      <UploadForm
         jwt={'some_token'}
-        updateVideo={mockUpdateVideo}
-        video={video}
+        object={object}
+        objectType={modelName.VIDEOS}
+        updateObject={mockUpdateObject}
       />,
     );
 
@@ -140,7 +144,7 @@ describe('VideoForm', () => {
     expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('policy'));
   });
 
-  it('marks the video with an error state when it fails to upload the file', async () => {
+  it('marks the object with an error state when it fails to upload the file', async () => {
     // 1st call: home API call to get the AWS upload policy
     fetchMock.mock(
       '/api/videos/ab42/upload-policy/',
@@ -163,20 +167,21 @@ describe('VideoForm', () => {
     });
 
     const wrapper = shallow(
-      <VideoForm
+      <UploadForm
         jwt={'some_token'}
-        updateVideo={mockUpdateVideo}
-        video={video}
+        object={object}
+        objectType={modelName.VIDEOS}
+        updateObject={mockUpdateObject}
       />,
     );
-    const componentInstance = wrapper.instance() as VideoForm;
+    const componentInstance = wrapper.instance() as UploadForm;
     await flushAllPromises();
     componentInstance.setState({
       file: { stub: 'file', type: 'video/mp4' } as any,
     });
     componentInstance.upload();
 
-    expect(mockUpdateVideo).toHaveBeenCalledWith({
+    expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
       state: trackState.ERROR,

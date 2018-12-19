@@ -11,8 +11,8 @@ import {
 import { InstructorWrapperConnected } from '../InstructorWrapperConnected/InstructorWrapperConnected';
 import { ROUTE as HOME_ROUTE } from '../RedirectOnLoad/RedirectOnLoad';
 import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
-import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
-import { VideoFormConnected } from '../VideoFormConnected/VideoFormConnected';
+import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
+import { UploadFormConnected } from '../UploadFormConnected/UploadFormConnected';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { VideoPlayerConnected } from '../VideoPlayerConnected/VideoPlayerConnected';
 
@@ -36,7 +36,12 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
         <Route
           exact
           path={FORM_ROUTE()}
-          render={() => <VideoFormConnected video={context.ltiResourceVideo} />}
+          render={({ match }) => (
+            <UploadFormConnected
+              objectId={match.params.objectId}
+              objectType={match.params.objectType}
+            />
+          )}
         />
         <Route
           exact
