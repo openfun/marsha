@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { trackState } from '../../types/tracks';
 import { Button } from '../Button/Button';
-import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
+import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { withLink } from '../withLink/withLink';
 

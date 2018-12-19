@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { colors } from '../../utils/theme/theme';
 import { Button } from '../Button/Button';
-import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
+import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
 import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({

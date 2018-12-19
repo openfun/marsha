@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { Maybe } from '../../utils/types';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
 
-export interface VideoUploadFieldProps {
+export interface UploadFieldProps {
   onContentUpdated: (fieldContent: Maybe<File>) => void;
 }
 
-interface VideoUploadFieldState {
+interface UploadFieldState {
   file: Maybe<File>;
 }
 
@@ -18,9 +18,9 @@ const DropzoneStyled = styled(Dropzone)`
   flex-grow: 1;
 `;
 
-export class VideoUploadField extends React.Component<
-  VideoUploadFieldProps,
-  VideoUploadFieldState
+export class UploadField extends React.Component<
+  UploadFieldProps,
+  UploadFieldState
 > {
   onDrop(files: any) {
     this.setState({ file: files[0] });

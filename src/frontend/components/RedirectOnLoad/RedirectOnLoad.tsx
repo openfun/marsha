@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { appState } from '../../types/AppData';
+import { modelName } from '../../types/models';
 import { trackState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
-import { ROUTE as FORM_ROUTE } from '../VideoForm/VideoForm';
+import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 
 export const ROUTE = () => '/';
@@ -30,7 +31,7 @@ export const RedirectOnLoad = ({ ltiState, video }: RedirectOnLoadProps) => {
   // Only instructors are allowed to interact with a non-ready video
   else if (ltiState === appState.INSTRUCTOR) {
     if (video!.state === trackState.PENDING) {
-      return <Redirect push to={FORM_ROUTE()} />;
+      return <Redirect push to={FORM_ROUTE(modelName.VIDEOS, video!.id)} />;
     } else {
       return <Redirect push to={DASHBOARD_ROUTE()} />;
     }

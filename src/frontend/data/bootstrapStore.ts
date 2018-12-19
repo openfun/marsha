@@ -12,6 +12,10 @@ export const bootstrapStore = (appData: AppData) =>
       ltiState: appData.state,
     },
     resources: {
-      [modelName.VIDEOS]: {},
+      [modelName.VIDEOS]: {
+        ...(appData.video
+          ? { byId: { [appData.video.id]: appData.video } }
+          : {}),
+      },
     },
   });
