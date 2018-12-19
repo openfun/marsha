@@ -2,6 +2,8 @@
 from rest_framework import exceptions, permissions
 from rest_framework_simplejwt.models import TokenUser
 
+from .models.account import INSTRUCTOR, LTI_ROLES
+
 
 class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
     """A custom permission class for JWT Tokens related to a video object.
@@ -30,7 +32,10 @@ class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
             True if the request is authorized, False otherwise
 
         """
-        if isinstance(request.user, TokenUser):
+        user = request.user
+        if isinstance(user, TokenUser) and LTI_ROLES[INSTRUCTOR] & set(
+            user.token.payload.get("roles", [])
+        ):
             return True
 
         return super().has_permission(request, view)
@@ -77,9 +82,11 @@ class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
         """
         # Users authentified via LTI are identified by a TokenUser with the
         # resource_link_id as user ID.
+        user = request.user
         if (
-            isinstance(request.user, TokenUser)
-            and str(self.get_video_id(obj)) != request.user.id
+            isinstance(user, TokenUser)
+            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+            and str(self.get_video_id(obj)) != user.id
         ):
             raise exceptions.PermissionDenied()
 

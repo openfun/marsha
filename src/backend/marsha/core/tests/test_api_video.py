@@ -61,9 +61,26 @@ class VideoAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
+    def test_api_video_read_detail_student(self):
+        """Student users should not be allowed to read a video detail."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "Only admin users or object owners are allowed."}
+        )
+
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user(self):
-        """A token user associated to a video should be able to read the detail of this video."""
+        """Instructors should be able to read the detail of their video."""
         video = VideoFactory(
             resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -79,6 +96,7 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -163,6 +181,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(uploaded_on=None)
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -198,6 +217,7 @@ class VideoAPITest(TestCase):
             )
             jwt_token = AccessToken()
             jwt_token.payload["video_id"] = str(video.id)
+            jwt_token.payload["roles"] = ["instructor"]
 
             # Get the video linked to the JWT token
             response = self.client.get(
@@ -234,6 +254,7 @@ class VideoAPITest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -289,6 +310,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -344,6 +366,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(title="my title")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
         data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
@@ -360,6 +383,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(description="my description")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -382,6 +406,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -406,6 +431,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(state="pending")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -430,6 +456,7 @@ class VideoAPITest(TestCase):
         original_id = video.id
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -454,6 +481,7 @@ class VideoAPITest(TestCase):
         video_update = VideoFactory(title="my title")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video_token.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -472,6 +500,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(description="my description")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         data = {"description": "my new description"}
 
@@ -501,6 +530,7 @@ class VideoAPITest(TestCase):
         videos = VideoFactory.create_batch(2)
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(videos[0].id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -542,6 +572,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.delete(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -580,6 +611,7 @@ class VideoAPITest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
