@@ -1,4 +1,5 @@
 """Views of the ``core`` app of the Marsha project."""
+import hashlib
 import json
 
 from django.utils.decorators import method_decorator
@@ -46,8 +47,7 @@ class VideoLTIView(TemplateResponseMixin, View):
             ++++++++++++++++++++
 
             - jwt_token: a short-lived JWT token linked to the video ID that will be
-                used as authentication to request an upload policy for the video or update its
-                name or description.
+                used as authentication.
 
         """
         lti = LTI(self.request)
@@ -56,15 +56,23 @@ class VideoLTIView(TemplateResponseMixin, View):
         except LTIException:
             return {"state": "error", "video_data": "null"}
 
-        if lti.is_instructor:
+        context = {"state": INSTRUCTOR if lti.is_instructor else STUDENT}
+
+        if video is not None:
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
-            jwt_token.payload["video_id"] = str(video.id)
-
-            # Evaluating the token as a string computes it from its payload
-            context = {"state": INSTRUCTOR, "jwt_token": str(jwt_token)}
-        else:
-            context = {"state": STUDENT}
+            jwt_token.payload.update(
+                {
+                    "video_id": str(video.id),
+                    "context_id": str(lti.context_id),
+                    "user_id": str(lti.user_id),
+                    "roles": lti.roles,
+                    "email": hashlib.sha256(
+                        lti.lis_person_contact_email_primary.encode("utf8")
+                    ).hexdigest(),
+                }
+            )
+            context["jwt_token"] = str(jwt_token)
 
         context["video_data"] = json.dumps(
             VideoSerializer(video).data if video else None

@@ -201,7 +201,7 @@ class LTI:
         # Remove all spaces from the string and extra trailing or leading commas
         roles = re.sub(r"[\s+]", "", roles).strip(",")
         # Return a set of the roles mentioned in the request
-        return set(roles.lower().split(",")) if roles else set()
+        return roles.lower().split(",") if roles else []
 
     @property
     def is_instructor(self):
@@ -213,7 +213,7 @@ class LTI:
             True if the user is an instructor, False otherwise
 
         """
-        return bool(LTI_ROLES[INSTRUCTOR] & self.roles)
+        return bool(LTI_ROLES[INSTRUCTOR] & set(self.roles))
 
     @property
     def is_student(self):
@@ -225,7 +225,7 @@ class LTI:
             True if the user is a student, False otherwise
 
         """
-        return bool(LTI_ROLES[STUDENT] & self.roles)
+        return bool(LTI_ROLES[STUDENT] & set(self.roles))
 
     def get_or_create_video(self):
         """Get or create the video targeted by the LTI launch request.
