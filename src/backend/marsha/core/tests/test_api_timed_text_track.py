@@ -211,8 +211,12 @@ class TimedTextTrackAPITest(TestCase):
 
     def test_api_timed_text_track_read_list_token_user(self):
         """A token user associated to a video is able to read a list of timed text tracks."""
-        timed_text_track_one = TimedTextTrackFactory()
-        timed_text_track_two = TimedTextTrackFactory(video=timed_text_track_one.video)
+        # Make sure modes differ to avoid random failures as attempting to create a TTT with the
+        # same language and mode as an existing one raises an exception.
+        timed_text_track_one = TimedTextTrackFactory(mode="st")
+        timed_text_track_two = TimedTextTrackFactory(
+            mode="cc", video=timed_text_track_one.video
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track_one.video.id)
         jwt_token.payload["roles"] = ["instructor"]
