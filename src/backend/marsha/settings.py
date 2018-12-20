@@ -123,6 +123,17 @@ class Base(Configuration):
         )
     }
 
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "console": {"class": "logging.StreamHandler", "stream": "ext://sys.stdout"}
+        },
+        "loggers": {
+            "marsha": {"handlers": ["console"], "level": "INFO", "propagate": True}
+        },
+    }
+
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
     AUTH_PASSWORD_VALIDATORS = [
@@ -225,6 +236,17 @@ class Development(Base):
     AWS_SOURCE_BUCKET_NAME = values.Value("development-marsha-source")
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
+
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "console": {"class": "logging.StreamHandler", "stream": "ext://sys.stdout"}
+        },
+        "loggers": {
+            "marsha": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+        },
+    }
 
 
 class Test(Base):
