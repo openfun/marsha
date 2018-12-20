@@ -1,6 +1,7 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
 import re
+import uuid
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -14,7 +15,9 @@ from .models import ERROR, PROCESSING, READY, STATE_CHOICES, TimedTextTrack, Vid
 from .utils import cloudfront_utils, time_utils
 
 
-UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+UUID_REGEX = (
+    "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
+)
 # This regex matches keys in AWS for videos or timed text tracks
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
@@ -284,3 +287,40 @@ class UpdateStateSerializer(serializers.Serializer):
         elements = KEY_REGEX.match(self.validated_data["key"]).groupdict()
         elements["uploaded_on"] = time_utils.to_datetime(elements["stamp"])
         return elements
+
+
+class VerbSerializer(serializers.Serializer):
+    """Validate the verb in a xAPI statement."""
+
+    id = serializers.URLField()
+
+    display = serializers.DictField()
+
+
+class ExtensionSerializer(serializers.Serializer):
+    """Validate the context in a xAPI statement."""
+
+    extensions = serializers.DictField()
+
+
+class XAPIStatementSerializer(serializers.Serializer):
+    """A serializer to validate a xAPI statement."""
+
+    verb = VerbSerializer()
+    context = ExtensionSerializer()
+    result = ExtensionSerializer(required=False)
+
+    id = serializers.RegexField(
+        re.compile("^{uuid}$".format(uuid=UUID_REGEX)),
+        required=False,
+        default=str(uuid.uuid4()),
+    )
+    timestamp = serializers.DateTimeField()
+
+    # pylint: disable=missing-param-doc,missing-type-doc
+    def validate(self, attrs):
+        """Check if there is no extra arguments in the submitted payload."""
+        unknown_keys = set(self.initial_data.keys()) - set(self.fields.keys())
+        if unknown_keys:
+            raise ValidationError("Got unknown fields: {}".format(unknown_keys))
+        return attrs
