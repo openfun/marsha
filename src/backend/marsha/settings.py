@@ -190,6 +190,10 @@ class Base(Configuration):
 
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
+    LRS_AUTH_TOKEN = values.Value(None)
+    LRS_URL = values.Value(None)
+    LRS_XAPI_VERSION = values.Value("1.0.3")
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):

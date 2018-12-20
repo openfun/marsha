@@ -26,7 +26,11 @@ DJANGO_AWS_SOURCE_BUCKET_NAME=dev-marsha-source
 DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE=False
 DJANGO_CLOUDFRONT_URL=https://yourCloudfrontUrl
 # variable below should be uncommented if DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE is set to True
-# DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key 
+# DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key
 # DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudfrontAccessKeyId
 
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
+
+# Learning Locker
+DJANGO_LRS_AUTH_TOKEN=Basic ThisIsABasicAuth
+DJANGO_LRS_URL=https://lrs.tld
