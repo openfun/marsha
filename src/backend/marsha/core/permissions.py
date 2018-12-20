@@ -117,3 +117,36 @@ class IsRelatedVideoTokenOrAdminUser(IsVideoTokenOrAdminUser):
 
         """
         return obj.video.id
+
+
+class IsVideoToken(permissions.IsAuthenticated):
+    """A custom permission class for JWT Tokens related to a video object.
+
+    These permissions build on the `IsAuthenticated` class but grants additional specific accesses
+    to users authenticated with a JWT token built from a video ie related to a TokenUser as
+    defined in `rest_framework_simplejwt`.
+
+    """
+
+    message = "Only connected users can access this resource."
+
+    def has_permission(self, request, view):
+        """Allow TokenUser and postpone further check to the object permission check.
+
+        Parameters
+        ----------
+        request : Type[rest_framework.request]
+            The request that holds the authenticated user
+        view : Type[restframework.viewsets or restframework.views]
+            The API view for which permissions are being checked
+
+        Returns
+        -------
+        boolean
+            True if the request is authorized, False otherwise
+
+        """
+        if isinstance(request.user, TokenUser):
+            return True
+
+        return super().has_permission(request, view)

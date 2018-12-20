@@ -1,26 +1,39 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 import hashlib
 import hmac
+import logging
 
 from django.apps import apps
 from django.conf import settings
 from django.utils import timezone
 
+import requests
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
+from .lti import LTIUser
 from .models import PENDING, TimedTextTrack, Video
-from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
+from .permissions import (
+    IsRelatedVideoTokenOrAdminUser,
+    IsVideoToken,
+    IsVideoTokenOrAdminUser,
+)
 from .serializers import (
     TimedTextTrackSerializer,
     UpdateStateSerializer,
     VideoSerializer,
+    XAPIStatementSerializer,
 )
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
+from .xapi import XAPI, MissingUserIdError
+
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -195,3 +208,69 @@ class TimedTextTrackViewSet(
         TimedTextTrack.objects.filter(pk=pk).update(upload_state=PENDING)
 
         return Response(policy)
+
+
+class XAPIStatementView(APIView):
+    """Viewset managing xAPI requests."""
+
+    permission_classes = [IsVideoToken]
+    http_method_names = ["post"]
+
+    def post(self, request):
+        """Send a xAPI statement to a defined LRS.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint.
+            It contains a JSON representing part of the xAPI statement
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse to reflect if the XAPI request failed or is successful
+
+        """
+        if settings.LRS_URL is None:
+            return Response(
+                {"reason": "LRS is not configured. This endpoint is not usable."},
+                status=501,
+            )
+
+        xapi_statement = XAPIStatementSerializer(data=request.data)
+
+        if not xapi_statement.is_valid():
+            return Response(xapi_statement.errors, status=400)
+
+        lti_user = LTIUser(request.user)
+        try:
+            video = Video.objects.get(pk=lti_user.video_id)
+        except Video.DoesNotExist:
+            return Response(
+                {
+                    "reason": "video with id {id} does not exists".format(
+                        id=lti_user.video_id
+                    )
+                },
+                status=404,
+            )
+
+        xapi = XAPI(
+            settings.LRS_URL, settings.LRS_AUTH_TOKEN, settings.LRS_XAPI_VERSION
+        )
+
+        try:
+            xapi.send(video, xapi_statement.validated_data, lti_user)
+        # pylint: disable=invalid-name
+        except requests.exceptions.HTTPError as e:
+            message = "Impossible to send xAPI request to LRS."
+            logger.critical(
+                message,
+                extra={"response": e.response.text, "status": e.response.status_code},
+            )
+            return Response({"status": message}, status=501)
+        # pylint: disable=invalid-name
+        except MissingUserIdError as e:
+            return Response({"status": "Impossible to idenitfy the actor."}, status=400)
+
+        return Response(status=204)
