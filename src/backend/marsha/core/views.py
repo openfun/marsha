@@ -67,6 +67,7 @@ class VideoLTIView(TemplateResponseMixin, View):
             jwt_token = AccessToken()
             jwt_token.payload.update(
                 {
+                    "session_id": str(uuid.uuid4()),
                     "video_id": str(video.id),
                     "context_id": lti.context_id,
                     "roles": lti.roles,

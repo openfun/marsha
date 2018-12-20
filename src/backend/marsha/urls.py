@@ -7,7 +7,12 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
 from marsha.core.admin import admin_site
-from marsha.core.api import TimedTextTrackViewSet, VideoViewSet, update_state
+from marsha.core.api import (
+    TimedTextTrackViewSet,
+    VideoViewSet,
+    XAPIStatementView,
+    update_state,
+)
 from marsha.core.views import LTIDevelopmentView, OpenEdxVideoLTIView, VideoLTIView
 
 
@@ -28,6 +33,7 @@ urlpatterns = [
     path("api/update-state", update_state, name="update_state"),
     path("api/schema", get_schema_view(title="Marsha API"), name="schema"),
     path("api/", include(router.urls)),
+    path("xapi/", XAPIStatementView.as_view(), name="xapi"),
 ]
 
 if settings.DEBUG:
