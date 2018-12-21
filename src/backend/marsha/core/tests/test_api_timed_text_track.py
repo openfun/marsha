@@ -22,6 +22,43 @@ from .test_api_video import RSA_KEY_MOCK
 class TimedTextTrackAPITest(TestCase):
     """Test the API of the timed text track object."""
 
+    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
+    def test_api_timed_text_track_options(self):
+        """The details of choices fields should be available via http options."""
+        timed_text_track = TimedTextTrackFactory(language="af")
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+
+        response = self.client.options(
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        content = json.loads(response.content)
+        self.assertEqual(
+            content["actions"]["POST"]["mode"]["choices"],
+            [
+                {"value": "st", "display_name": "Subtitle"},
+                {"value": "ts", "display_name": "Transcript"},
+                {"value": "cc", "display_name": "Closed captioning"},
+            ],
+        )
+        self.assertEqual(
+            content["actions"]["POST"]["language"]["choices"],
+            [
+                {"value": "af", "display_name": "Afrikaans"},
+                {"value": "ast", "display_name": "Asturian"},
+            ],
+        )
+        self.assertEqual(
+            content["actions"]["POST"]["state"]["choices"],
+            [
+                {"value": "pending", "display_name": "pending"},
+                {"value": "processing", "display_name": "processing"},
+                {"value": "error", "display_name": "error"},
+                {"value": "ready", "display_name": "ready"},
+            ],
+        )
+
     def test_api_timed_text_track_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()

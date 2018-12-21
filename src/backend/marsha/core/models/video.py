@@ -3,6 +3,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE
@@ -253,7 +254,7 @@ class BaseTrack(BaseModel):
     )
     language = models.CharField(
         max_length=10,
-        choices=settings.ALL_LANGUAGES,
+        choices=lazy(lambda: settings.ALL_LANGUAGES, tuple)(),
         verbose_name=_("language"),
         help_text=_("language of this track"),
     )
