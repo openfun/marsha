@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { modelName } from '../../types/models';
+import { Video } from '../../types/tracks';
 import { colors } from '../../utils/theme/theme';
+import { Nullable } from '../../utils/types';
 import { Button } from '../Button/Button';
+import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
 import { withLink } from '../withLink/withLink';
 
@@ -40,16 +45,27 @@ export const InstructorControls = styled.div`
 
 const BtnWithLink = withLink(Button);
 
-export const InstructorView = (props: { children: React.ReactNode }) => (
-  <React.Fragment>
-    <PreviewWrapper>
-      <Preview>{props.children}</Preview>
-    </PreviewWrapper>
-    <InstructorControls>
-      <FormattedMessage {...messages.title} />
-      <BtnWithLink to={FORM_ROUTE()} variant="primary">
-        <FormattedMessage {...messages.btnUpdateVideo} />
-      </BtnWithLink>
-    </InstructorControls>
-  </React.Fragment>
-);
+interface InstructorViewProps {
+  children: React.ReactNode;
+  videoId: Nullable<Video['id']>;
+}
+
+export const InstructorView = ({ children, videoId }: InstructorViewProps) =>
+  videoId ? (
+    <React.Fragment>
+      <PreviewWrapper>
+        <Preview>{children}</Preview>
+      </PreviewWrapper>
+      <InstructorControls>
+        <FormattedMessage {...messages.title} />
+        <BtnWithLink
+          to={FORM_ROUTE(modelName.VIDEOS, videoId)}
+          variant="primary"
+        >
+          <FormattedMessage {...messages.btnUpdateVideo} />
+        </BtnWithLink>
+      </InstructorControls>
+    </React.Fragment>
+  ) : (
+    <Redirect push to={ERROR_ROUTE('lti')} />
+  );
