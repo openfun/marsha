@@ -252,8 +252,8 @@ class BaseTrack(BaseModel):
         on_delete=models.CASCADE,
     )
     language = models.CharField(
-        max_length=5,
-        choices=settings.LANGUAGES,
+        max_length=10,
+        choices=settings.ALL_LANGUAGES,
         verbose_name=_("language"),
         help_text=_("language of this track"),
     )
