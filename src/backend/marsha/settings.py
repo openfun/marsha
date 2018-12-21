@@ -139,6 +139,13 @@ class Base(Configuration):
     # Internationalization
     # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
+    # Django sets `LANGUAGES` by default with all supported languages. Let's save it to a
+    # different setting before overriding it with the languages active in Marsha. We can use it
+    # for example for the choice of time text tracks languages which should not be limited to
+    # the few languages active in Marsha.
+    # pylint: disable=no-member
+    ALL_LANGUAGES = Configuration.LANGUAGES
+
     LANGUAGE_CODE = "en-us"
 
     LANGUAGES = [("en", _("english")), ("fr", _("french"))]
