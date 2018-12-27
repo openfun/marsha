@@ -78,9 +78,10 @@ describe('VideoPlayer', () => {
   });
 
   describe('in an environment without EME', () => {
-    beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(true));
+    beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(false));
 
     it('never instantiates shaka', () => {
+      mount(<VideoPlayer video={video} />); // Mount so videojs is called with an element
       expect(mockShakaPlayer.prototype.constructor).not.toHaveBeenCalled();
       expect(mockShakaPlayer.prototype.load).not.toHaveBeenCalled();
     });
