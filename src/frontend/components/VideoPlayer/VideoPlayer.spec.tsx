@@ -1,7 +1,6 @@
 import '../../testSetup';
 
 import { mount, shallow } from 'enzyme';
-import Plyr from 'plyr';
 import * as React from 'react';
 import shaka from 'shaka-player';
 
@@ -12,6 +11,10 @@ const mockShakaPlayer: jest.Mocked<typeof shaka.Player> = shaka.Player as any;
 const mockShakaPolyfill: jest.Mocked<
   typeof shaka.polyfill
 > = shaka.polyfill as any;
+
+const createPlayer = jest.fn(() => ({
+  destroy: jest.fn(),
+}));
 
 describe('VideoPlayer', () => {
   const video = {
@@ -32,10 +35,16 @@ describe('VideoPlayer', () => {
     },
   } as Video;
 
+  const props = {
+    createPlayer,
+    jwt: 'foo',
+    video,
+  };
+
   beforeEach(() => jest.clearAllMocks());
 
   it('renders the video element with all the relevant sources', () => {
-    const wrapper = shallow(<VideoPlayer video={video} />);
+    const wrapper = shallow(<VideoPlayer {...props} />);
 
     expect(wrapper.html()).toContain(
       '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL"/>',
@@ -49,13 +58,18 @@ describe('VideoPlayer', () => {
   });
 
   it('starts up the player when it mounts', () => {
-    mount(<VideoPlayer video={video} />); // Mount so videojs is called with an element
-    expect(Plyr).toHaveBeenCalledWith(expect.any(Element));
+    // Mount so videojs is called with an element
+    mount(<VideoPlayer {...props} />);
+    expect(createPlayer).toHaveBeenCalledWith(
+      'plyr',
+      expect.any(Element),
+      'foo',
+    );
   });
 
   it('cleans up the player when it unmounts', () => {
     const instance = shallow(
-      <VideoPlayer video={video} />,
+      <VideoPlayer {...props} />,
     ).instance() as VideoPlayer;
     instance.componentWillUnmount();
     expect(instance.state.player!.destroy).toHaveBeenCalled();
@@ -65,7 +79,7 @@ describe('VideoPlayer', () => {
     beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(true));
 
     it('instantiates shaka Player and loads our dash manifest', () => {
-      mount(<VideoPlayer video={video} />);
+      mount(<VideoPlayer {...props} />);
 
       expect(mockShakaPlayer.prototype.constructor).toHaveBeenCalledWith(
         expect.any(HTMLMediaElement),
@@ -82,7 +96,7 @@ describe('VideoPlayer', () => {
     beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(false));
 
     it('never instantiates shaka', () => {
-      mount(<VideoPlayer video={video} />); // Mount so videojs is called with an element
+      mount(<VideoPlayer {...props} />); // Mount so videojs is called with an element
       expect(mockShakaPlayer.prototype.constructor).not.toHaveBeenCalled();
       expect(mockShakaPlayer.prototype.load).not.toHaveBeenCalled();
     });
