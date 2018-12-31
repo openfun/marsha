@@ -1,21 +1,23 @@
 import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
 import { DecodedJwt } from 'types/jwt';
-import * as xapi from '../XAPI';
+import { InitializedContextExtensions } from '../types/XAPI';
+import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
   const player = new Plyr(ref, { debug: true });
   const decodedToken: DecodedJwt = jwt_decode(jwt);
 
+  const xapiStatement = new XAPIStatement(jwt, decodedToken.session_id);
+
   // canplay is the event when the video is really initialized and
   // information can be found in plyr object. Don't use ready event
   player.on('canplay', event => {
     const plyr = event.detail.plyr;
-    const contextExtensions: xapi.InitializedContextExtensions = {
+    const contextExtensions: InitializedContextExtensions = {
       ccSubtitleEnabled: plyr.currentTrack === -1 ? false : true,
       fullScreen: plyr.fullscreen.active,
       length: plyr.duration,
-      sessionId: decodedToken.session_id,
       speed: `${plyr.speed || 1}x`,
       volume: plyr.volume,
     };
@@ -27,10 +29,14 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
         contextExtensions.ccSubtitleLanguage = track.srcLang;
       }
     }
-    xapi.initialized(jwt, contextExtensions);
+    xapiStatement.initialized(contextExtensions);
   });
 
-  player.on('playing', event => {});
+  player.on('playing', event => {
+    xapiStatement.played({
+      time: event.detail.plyr.currentTime,
+    });
+  });
 
   return player;
 };
