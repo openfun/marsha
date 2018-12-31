@@ -3,8 +3,8 @@ import Plyr from 'plyr';
 import { DecodedJwt } from 'types/jwt';
 import * as xapi from '../XAPI';
 
-export function createPlyrPlayer(ref: HTMLVideoElement, jwt: string): Plyr {
-  const player = new Plyr(ref);
+export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
+  const player = new Plyr(ref, { debug: true });
   const decodedToken: DecodedJwt = jwt_decode(jwt);
 
   // canplay is the event when the video is really initialized and

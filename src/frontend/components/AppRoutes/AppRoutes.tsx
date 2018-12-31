@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { RootState } from '../../data/rootReducer';
+import { createPlayer } from '../../Player/createPlayer';
 import { appState } from '../../types/AppData';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { DashboardConnected } from '../DashboardConnected/DashboardConnected';
@@ -28,7 +29,10 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
           path={VIDEO_PLAYER_ROUTE()}
           render={() => (
             <InstructorWrapperConnected>
-              <VideoPlayerConnected video={context.ltiResourceVideo} />
+              <VideoPlayerConnected
+                video={context.ltiResourceVideo}
+                createPlayer={createPlayer}
+              />
             </InstructorWrapperConnected>
           )}
         />
