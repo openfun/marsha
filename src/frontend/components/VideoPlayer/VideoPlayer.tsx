@@ -1,20 +1,23 @@
-import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import shaka from 'shaka-player';
 
+import { createPlayer } from '../../Player/createPlayer';
 import { Video, videoSize } from '../../types/tracks';
+import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
 import { Maybe, Nullable } from '../../utils/types';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import './VideoPlayer.css'; // Improve some plyr styles
 
 export interface VideoPlayerProps {
+  jwt: Nullable<string>;
   video: Nullable<Video>;
+  createPlayer: typeof createPlayer;
 }
 
 interface VideoPlayerState {
-  player: Maybe<Plyr>;
+  player: Maybe<VideoPlayerInterface>;
 }
 
 export class VideoPlayer extends React.Component<
@@ -31,14 +34,16 @@ export class VideoPlayer extends React.Component<
 
   /**
    * Initialize the `Plyr` video player and our adaptive bitrate library if applicable.
-   * Noop out if the video is missing, render will redirect to an error page.
+   * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
   componentDidMount() {
-    const { video } = this.props;
+    const { video, jwt } = this.props;
 
-    if (video) {
+    if (video && jwt) {
       // Instantiate Plyr and keep the instance in state
-      this.setState({ player: new Plyr(this.videoNodeRef!) });
+      this.setState({
+        player: this.props.createPlayer('plyr', this.videoNodeRef!, jwt),
+      });
 
       // Use Shaka Player to stream using DASH ISO if the browser supports it
       // Otherwise we'll fall back to HLS/MP4 as described in the <sources> of the <video> element
@@ -70,10 +75,10 @@ export class VideoPlayer extends React.Component<
   }
 
   render() {
-    const { video } = this.props;
+    const { video, jwt } = this.props;
 
-    // The video is somehow missing
-    if (!video) {
+    // The video is somehow missing and jwt must be set
+    if (!video || !jwt) {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
