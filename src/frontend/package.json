@@ -26,6 +26,7 @@
     "@types/fetch-mock": "7.2.1",
     "@types/iframe-resizer": "3.5.7",
     "@types/jest": "23.3.13",
+    "@types/jwt-decode": "2.2.1",
     "@types/react": "16.7.20",
     "@types/react-dom": "16.0.11",
     "@types/react-dropzone": "4.2.1",
@@ -57,6 +58,7 @@
   },
   "dependencies": {
     "grommet": "2.3.1",
+    "jwt-decode": "2.2.0",
     "iframe-resizer": "3.6.4",
     "plyr": "3.4.8",
     "polished": "2.3.3",
