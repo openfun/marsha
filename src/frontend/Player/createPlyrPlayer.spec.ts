@@ -5,7 +5,11 @@ jest.mock('plyr', () => {
     on: jest.fn(),
   }));
 });
-jest.mock('jwt-decode');
+jest.mock('jwt-decode', () => {
+  return jest.fn().mockImplementation(() => ({
+    session_id: 'abcd',
+  }));
+});
 
 describe('createPlyrPlayer', () => {
   beforeEach(() => {
