@@ -4,7 +4,10 @@ import {
   contextExtensionsKey,
   DataPayload,
   InitializedContextExtensions,
+  PausedContextExtensions,
+  PausedResultExtensions,
   PlayedResultExtensions,
+  SeekedResultExtensions,
 } from 'types/XAPI';
 import uuid from 'uuid';
 import { XAPI_ENDPOINT } from '../settings';
@@ -77,7 +80,41 @@ export const verbDefinition: {
 };
 
 export class XAPIStatement {
+  static toFixed(rawNumber: number, length: number = 3): number {
+    return parseFloat(rawNumber.toFixed(length));
+  }
+
+  private startSegments: number[] = [];
+  private endSegments: number[] = [];
+  // tslint:disable-next-line:variable-name
+  private _duration: number = 0;
+
   constructor(private jwt: string, private sessionId: string) {}
+
+  set duration(duration: number) {
+    if (this._duration > 0) {
+      throw new Error('duration is already set. You can not modify it anymore');
+    }
+
+    if (duration <= 0) {
+      throw new Error('duration must be strictly positive');
+    }
+
+    this._duration = duration;
+  }
+
+  get playedSegment(): string {
+    const playedSegment: string[] = [];
+    for (const i in this.startSegments) {
+      if (this.endSegments[i]) {
+        playedSegment.push(`${this.startSegments[i]}[.]${this.endSegments[i]}`);
+      } else {
+        playedSegment.push(`${this.startSegments[i]}`);
+      }
+    }
+
+    return playedSegment.join('[,]');
+  }
 
   initialized(contextExtensions: InitializedContextExtensions): void {
     const extensions: {
@@ -92,7 +129,9 @@ export class XAPIStatement {
 
     extensions[ContextExtensionsDefintion.sessionId] = this.sessionId;
 
-    const data = {
+    this.duration = contextExtensions.length;
+
+    const data: DataPayload = {
       context: {
         extensions,
       },
@@ -108,7 +147,9 @@ export class XAPIStatement {
   }
 
   played(resultExtensions: PlayedResultExtensions): void {
-    const data = {
+    const time: number = XAPIStatement.toFixed(resultExtensions.time);
+    this.startSegments.push(time);
+    const data: DataPayload = {
       context: {
         extensions: {
           [ContextExtensionsDefintion.sessionId]: this.sessionId,
@@ -116,7 +157,7 @@ export class XAPIStatement {
       },
       result: {
         extensions: {
-          [ResultExtensionsDefinition.time]: resultExtensions.time,
+          [ResultExtensionsDefinition.time]: time,
         },
       },
       verb: {
@@ -126,6 +167,46 @@ export class XAPIStatement {
         id: verbDefinition.played,
       },
     };
+
+    this.send(data);
+  }
+
+  paused(
+    contextExtensions: PausedContextExtensions,
+    resultExtensions: PausedResultExtensions,
+  ): void {
+    const time: number = XAPIStatement.toFixed(resultExtensions.time);
+    this.endSegments.push(time);
+    const data: DataPayload = {
+      context: {
+        extensions: {
+          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+        },
+      },
+      result: {
+        extensions: {
+          [ResultExtensionsDefinition.time]: time,
+        },
+      },
+      verb: {
+        display: {
+          'en-US': 'paused',
+        },
+        id: verbDefinition.paused,
+      },
+    };
+
+    data.result!.extensions[
+      ResultExtensionsDefinition.playedSegment
+    ] = this.playedSegment;
+    data.result!.extensions[
+      ResultExtensionsDefinition.progress
+    ] = XAPIStatement.toFixed(resultExtensions.time / this._duration);
+
+    if (contextExtensions.completionTreshold) {
+      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
+        contextExtensions.completionTreshold;
+    }
 
     this.send(data);
   }
