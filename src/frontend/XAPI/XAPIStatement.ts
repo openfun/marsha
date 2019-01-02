@@ -10,6 +10,8 @@ import {
   PausedResultExtensions,
   PlayedResultExtensions,
   SeekedResultExtensions,
+  TerminatedContextExtensions,
+  TerminatedResultExtensions,
 } from 'types/XAPI';
 import { Nullable } from 'utils/types';
 import uuid from 'uuid';
@@ -277,6 +279,44 @@ export class XAPIStatement {
           'en-US': 'completed',
         },
         id: verbDefinition.completed,
+      },
+    };
+
+    if (contextExtensions.completionTreshold) {
+      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
+        contextExtensions.completionTreshold;
+    }
+
+    this.send(data);
+  }
+
+  terminated(
+    contextExtensions: TerminatedContextExtensions,
+    resultExtensions: TerminatedResultExtensions,
+  ): void {
+    const time = XAPIStatement.toFixed(resultExtensions.time);
+    this.endSegments.push(time);
+
+    const data: DataPayload = {
+      context: {
+        extensions: {
+          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+        },
+      },
+      result: {
+        extensions: {
+          [ResultExtensionsDefinition.time]: time,
+          [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
+            resultExtensions.time / this._duration,
+          ),
+          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+        },
+      },
+      verb: {
+        display: {
+          'en-US': 'terminated',
+        },
+        id: verbDefinition.terminated,
       },
     };
 
