@@ -55,7 +55,7 @@ const ResultExtensionsDefinition: {
   timeTo: string;
 } = {
   playedSegment: 'https://w3id.org/xapi/video/extensions/played-segments',
-  progress: 'https://w3id.og/xapi/video/extensions/progress',
+  progress: 'https://w3id.org/xapi/video/extensions/progress',
   time: 'https://w3id.org/xapi/video/extensions/time',
   timeFrom: 'https://w3id.org/xapi/video/extensions/time-from',
   timeTo: 'https://w3id.org/xapi/video/extensions/time-to',
@@ -207,6 +207,41 @@ export class XAPIStatement {
       data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
         contextExtensions.completionTreshold;
     }
+
+    this.send(data);
+  }
+
+  seeked(resultExtensions: SeekedResultExtensions): void {
+    const timeFrom: number = XAPIStatement.toFixed(resultExtensions.timeFrom);
+    const timeTo: number = XAPIStatement.toFixed(resultExtensions.timeTo);
+    this.startSegments.push(timeFrom);
+    this.endSegments.push(timeTo);
+    const data: DataPayload = {
+      context: {
+        extensions: {
+          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+        },
+      },
+      result: {
+        extensions: {
+          [ResultExtensionsDefinition.timeFrom]: timeFrom,
+          [ResultExtensionsDefinition.timeTo]: timeTo,
+          [ContextExtensionsDefintion.length]: XAPIStatement.toFixed(
+            this._duration,
+          ),
+          [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
+            resultExtensions.timeTo / this._duration,
+          ),
+          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+        },
+      },
+      verb: {
+        display: {
+          'en-US': 'seeked',
+        },
+        id: verbDefinition.seeked,
+      },
+    };
 
     this.send(data);
   }

@@ -10,9 +10,19 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
 
   const xapiStatement = new XAPIStatement(jwt, decodedToken.session_id);
 
+  let currentTime: number = 0;
+  let seekingAt: number = 0;
+  let hasSeeked: boolean = false;
+  let isInitialized = false;
+
   // canplay is the event when the video is really initialized and
   // information can be found in plyr object. Don't use ready event
   player.on('canplay', event => {
+    if (true === isInitialized) {
+      return;
+    }
+    isInitialized = true;
+
     const plyr = event.detail.plyr;
     const contextExtensions: InitializedContextExtensions = {
       ccSubtitleEnabled: plyr.currentTrack === -1 ? false : true,
@@ -45,6 +55,30 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
         time: event.detail.plyr.currentTime,
       },
     );
+  });
+
+  player.on('timeupdate', event => {
+    if (true === isInitialized && false === event.detail.plyr.seeking) {
+      currentTime = event.detail.plyr.currentTime;
+    }
+  });
+  player.on('seeking', event => {
+    if (true === isInitialized) {
+      return;
+    }
+
+    seekingAt = currentTime;
+    hasSeeked = true;
+  });
+  player.on('seeked', event => {
+    if (false === hasSeeked || false === isInitialized) {
+      return;
+    }
+    hasSeeked = false;
+    xapiStatement.seeked({
+      timeFrom: seekingAt,
+      timeTo: event.detail.plyr.currentTime,
+    });
   });
 
   return player;
