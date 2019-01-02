@@ -331,7 +331,7 @@ describe('XAPIStatement', () => {
       xapiStatement.played({ time: 0 });
       // completed is delayed to have a realistic duration
       setTimeout(() => {
-        xapiStatement.completed({completionTreshold: 0.5});
+        xapiStatement.completed({ completionTreshold: 0.5 });
 
         const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
@@ -362,6 +362,91 @@ describe('XAPIStatement', () => {
         expect(body).toHaveProperty('id');
         expect(body).toHaveProperty('timestamp');
       }, 500);
+    });
+  });
+
+  describe('XAPIStatement.terminated', () => {
+    it('sends terminated statement without completion threshold', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.duration = 100;
+      xapiStatement.terminated(
+        {},
+        {
+          time: 50,
+        },
+      );
+
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+      const requestParameters = lastCall[1];
+
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(verbDefinition.terminated);
+      expect(body.verb.display).toEqual({
+        'en-US': 'terminated',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/played-segments': '',
+        'https://w3id.org/xapi/video/extensions/progress': 0.5,
+        'https://w3id.org/xapi/video/extensions/time': 50,
+      });
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
+    });
+
+    it('sends terminated statement with completion threshold', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.duration = 100;
+      xapiStatement.terminated(
+        {
+          completionTreshold: 0.2,
+        },
+        {
+          time: 50,
+        },
+      );
+
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+      const requestParameters = lastCall[1];
+
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(verbDefinition.terminated);
+      expect(body.verb.display).toEqual({
+        'en-US': 'terminated',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/completion-threshold': 0.2,
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/played-segments': '',
+        'https://w3id.org/xapi/video/extensions/progress': 0.5,
+        'https://w3id.org/xapi/video/extensions/time': 50,
+      });
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
     });
   });
 });
