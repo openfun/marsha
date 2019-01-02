@@ -65,3 +65,10 @@ export interface PausedContextExtensions {
 export interface PausedResultExtensions {
   time: number;
 }
+
+/************* Seeked event  ***************/
+
+export interface SeekedResultExtensions {
+  timeFrom: number;
+  timeTo: number;
+}
