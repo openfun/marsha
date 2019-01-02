@@ -88,3 +88,13 @@ export interface SeekedResultExtensions {
 export interface CompletedContextExtensions {
   completionTreshold?: number;
 }
+
+/************* Terminated event  *************/
+
+export interface TerminatedContextExtensions {
+  completionTreshold?: number;
+}
+
+export interface TerminatedResultExtensions {
+  time: number;
+}
