@@ -38,5 +38,14 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
     });
   });
 
+  player.on('pause', event => {
+    xapiStatement.paused(
+      {},
+      {
+        time: event.detail.plyr.currentTime,
+      },
+    );
+  });
+
   return player;
 };
