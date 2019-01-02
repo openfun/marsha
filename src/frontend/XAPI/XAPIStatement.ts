@@ -1,6 +1,8 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
-
+import { DateTime, Interval } from 'luxon';
 import {
+  CompletedContextExtensions,
+  CompletedDataPlayload,
   contextExtensionsKey,
   DataPayload,
   InitializedContextExtensions,
@@ -9,6 +11,7 @@ import {
   PlayedResultExtensions,
   SeekedResultExtensions,
 } from 'types/XAPI';
+import { Nullable } from 'utils/types';
 import uuid from 'uuid';
 import { XAPI_ENDPOINT } from '../settings';
 
@@ -88,6 +91,7 @@ export class XAPIStatement {
   private endSegments: number[] = [];
   // tslint:disable-next-line:variable-name
   private _duration: number = 0;
+  private startedAt: Nullable<DateTime> = null;
 
   constructor(private jwt: string, private sessionId: string) {}
 
@@ -130,6 +134,7 @@ export class XAPIStatement {
     extensions[ContextExtensionsDefintion.sessionId] = this.sessionId;
 
     this.duration = contextExtensions.length;
+    this.startedAt = DateTime.utc();
 
     const data: DataPayload = {
       context: {
@@ -242,6 +247,43 @@ export class XAPIStatement {
         id: verbDefinition.seeked,
       },
     };
+
+    this.send(data);
+  }
+
+  completed(contextExtensions: CompletedContextExtensions): void {
+    const time = XAPIStatement.toFixed(this._duration);
+    this.endSegments.push(time);
+
+    const data: CompletedDataPlayload = {
+      context: {
+        extensions: {
+          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+        },
+      },
+      result: {
+        completion: true,
+        duration: Interval.fromDateTimes(this.startedAt!, DateTime.utc())
+          .toDuration('milliseconds')
+          .toISO(),
+        extensions: {
+          [ResultExtensionsDefinition.time]: time,
+          [ResultExtensionsDefinition.progress]: 1,
+          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+        },
+      },
+      verb: {
+        display: {
+          'en-US': 'completed',
+        },
+        id: verbDefinition.completed,
+      },
+    };
+
+    if (contextExtensions.completionTreshold) {
+      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
+        contextExtensions.completionTreshold;
+    }
 
     this.send(data);
   }

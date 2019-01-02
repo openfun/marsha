@@ -81,5 +81,9 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
     });
   });
 
+  player.on('ended', event => {
+    xapiStatement.completed({});
+  });
+
   return player;
 };
