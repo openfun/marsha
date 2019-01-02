@@ -192,8 +192,8 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
-        'https://w3id.og/xapi/video/extensions/progress': 0.1,
         'https://w3id.org/xapi/video/extensions/played-segments': '0[.]10',
+        'https://w3id.org/xapi/video/extensions/progress': 0.1,
         'https://w3id.org/xapi/video/extensions/time': 10,
       });
       expect(body).toHaveProperty('id');
@@ -229,9 +229,51 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
-        'https://w3id.og/xapi/video/extensions/progress': 0.1,
         'https://w3id.org/xapi/video/extensions/played-segments': '0[.]10',
+        'https://w3id.org/xapi/video/extensions/progress': 0.1,
         'https://w3id.org/xapi/video/extensions/time': 10,
+      });
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
+    });
+  });
+
+  describe('XAPIStatement.seeked', () => {
+    it('sends a seeked statement', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.duration = 100;
+      xapiStatement.seeked({
+        timeFrom: 0,
+        timeTo: 10,
+      });
+
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+      const requestParameters = lastCall[1];
+
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(verbDefinition.seeked);
+      expect(body.verb.display).toEqual({
+        'en-US': 'seeked',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/length': 100,
+        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]10',
+        'https://w3id.org/xapi/video/extensions/progress': 0.1,
+        'https://w3id.org/xapi/video/extensions/time-from': 0,
+        'https://w3id.org/xapi/video/extensions/time-to': 10,
       });
       expect(body).toHaveProperty('id');
       expect(body).toHaveProperty('timestamp');
