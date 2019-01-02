@@ -9,7 +9,7 @@ describe('XAPIStatement', () => {
       expect(XAPIStatement.toFixed(1.123456789)).toBe(1.123);
     });
 
-    it('should keep indicated digits number', () => {
+    it('should keeps indicated digits number', () => {
       expect(XAPIStatement.toFixed(1.123456789, 1)).toBe(1.1);
     });
 
@@ -170,7 +170,7 @@ describe('XAPIStatement', () => {
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
       xapiStatement.duration = 100;
-      xapiStatement.played({time: 0});
+      xapiStatement.played({ time: 0 });
       xapiStatement.paused({}, { time: 10 });
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
@@ -206,7 +206,7 @@ describe('XAPIStatement', () => {
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
       xapiStatement.duration = 100;
-      xapiStatement.played({time: 0});
+      xapiStatement.played({ time: 0 });
       xapiStatement.paused({ completionTreshold: 0.5 }, { time: 10 });
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
@@ -277,6 +277,91 @@ describe('XAPIStatement', () => {
       });
       expect(body).toHaveProperty('id');
       expect(body).toHaveProperty('timestamp');
+    });
+  });
+
+  describe('XAPIStatement.completed', () => {
+    it('sends a completed statement without completion threshold', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({ length: 100 });
+      xapiStatement.played({ time: 0 });
+      // completed is delayed to have a realistic duration
+      setTimeout(() => {
+        xapiStatement.completed({});
+
+        const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+        const requestParameters = lastCall[1];
+
+        expect(requestParameters.headers).toEqual({
+          Authorization: 'Bearer jwt',
+          'Content-Type': 'application/json',
+        });
+
+        const body = JSON.parse(requestParameters.body as string);
+
+        expect(body.verb.id).toEqual(verbDefinition.completed);
+        expect(body.verb.display).toEqual({
+          'en-US': 'completed',
+        });
+        expect(body.context.extensions).toEqual({
+          'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+        });
+        expect(body.result.extensions).toEqual({
+          'https://w3id.org/xapi/video/extensions/played-segments': '0[.]100',
+          'https://w3id.org/xapi/video/extensions/progress': 1,
+          'https://w3id.org/xapi/video/extensions/time': 100,
+        });
+        expect(body.result.completion).toBe(true);
+        expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
+        expect(body).toHaveProperty('id');
+        expect(body).toHaveProperty('timestamp');
+      }, 500);
+    });
+
+    it('sends a completed statement with completion threshold', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({ length: 100 });
+      xapiStatement.played({ time: 0 });
+      // completed is delayed to have a realistic duration
+      setTimeout(() => {
+        xapiStatement.completed({completionTreshold: 0.5});
+
+        const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+        const requestParameters = lastCall[1];
+
+        expect(requestParameters.headers).toEqual({
+          Authorization: 'Bearer jwt',
+          'Content-Type': 'application/json',
+        });
+
+        const body = JSON.parse(requestParameters.body as string);
+
+        expect(body.verb.id).toEqual(verbDefinition.completed);
+        expect(body.verb.display).toEqual({
+          'en-US': 'completed',
+        });
+        expect(body.context.extensions).toEqual({
+          'https://w3id.org/xapi/video/extensions/completion-threshold': 0.5,
+          'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+        });
+        expect(body.result.extensions).toEqual({
+          'https://w3id.org/xapi/video/extensions/played-segments': '0[.]100',
+          'https://w3id.org/xapi/video/extensions/progress': 1,
+          'https://w3id.org/xapi/video/extensions/time': 100,
+        });
+        expect(body.result.completion).toBe(true);
+        expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
+        expect(body).toHaveProperty('id');
+        expect(body).toHaveProperty('timestamp');
+      }, 500);
     });
   });
 });

@@ -34,6 +34,16 @@ export interface DataPayload {
   };
 }
 
+export interface CompletedDataPlayload extends DataPayload {
+  result?: {
+    extensions: {
+      [key: string]: string | boolean | number | undefined;
+    };
+    completion: boolean;
+    duration: string;
+  };
+}
+
 /************* Played event  *************/
 export interface PlayedResultExtensions {
   time: number;
@@ -71,4 +81,10 @@ export interface PausedResultExtensions {
 export interface SeekedResultExtensions {
   timeFrom: number;
   timeTo: number;
+}
+
+/************* Completed event  *************/
+
+export interface CompletedContextExtensions {
+  completionTreshold?: number;
 }
