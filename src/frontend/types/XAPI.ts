@@ -86,21 +86,6 @@ export interface InitializedContextExtensions {
   volume?: number;
 }
 
-export type InitializedContextExtensionsKey =
-  | 'length'
-  | 'ccSubtitleEnabled'
-  | 'ccSubtitleLanguage'
-  | 'completionTreshold'
-  | 'frameRate'
-  | 'fullScreen'
-  | 'quality'
-  | 'screenSize'
-  | 'videoPlaybackSize'
-  | 'speed'
-  | 'track'
-  | 'userAgent'
-  | 'volume';
-
 /************* Paused event  **************/
 
 export interface PausedContextExtensions {
@@ -148,15 +133,3 @@ export interface InteractedContextExtensions {
   track?: string;
   volume?: number;
 }
-
-export type InteractedContextExtensionsKey =
-  | 'ccSubtitleEnabled'
-  | 'ccSubtitleLanguage'
-  | 'completionTreshold'
-  | 'frameRate'
-  | 'fullScreen'
-  | 'quality'
-  | 'videoPlaybackSize'
-  | 'speed'
-  | 'track'
-  | 'volume';
