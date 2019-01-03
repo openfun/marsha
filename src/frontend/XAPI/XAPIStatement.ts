@@ -3,9 +3,11 @@ import { DateTime, Interval } from 'luxon';
 import {
   CompletedContextExtensions,
   CompletedDataPlayload,
-  contextExtensionsKey,
   DataPayload,
   InitializedContextExtensions,
+  InitializedContextExtensionsKey,
+  InteractedContextExtensions,
+  InteractedContextExtensionsKey,
   PausedContextExtensions,
   PausedResultExtensions,
   PlayedResultExtensions,
@@ -129,8 +131,10 @@ export class XAPIStatement {
       [ContextExtensionsDefintion.sessionId]: this.sessionId,
     };
     for (const key of Object.keys(contextExtensions)) {
-      extensions[ContextExtensionsDefintion[key as contextExtensionsKey]] =
-        contextExtensions[key as contextExtensionsKey];
+      extensions[
+        ContextExtensionsDefintion[key as InitializedContextExtensionsKey]
+      ] =
+        contextExtensions[key as InitializedContextExtensionsKey];
     }
 
     extensions[ContextExtensionsDefintion.sessionId] = this.sessionId;
@@ -328,9 +332,38 @@ export class XAPIStatement {
     this.send(data);
   }
 
+  interacted(contextExtensions: InteractedContextExtensions): void {
+    // find a way to remove this undefined type. There is no undefined value
+    const extensions: {
+      [key: string]: string | boolean | number | undefined;
+    } = {
+      [ContextExtensionsDefintion.sessionId]: this.sessionId,
+    };
+    for (const key of Object.keys(contextExtensions)) {
+      extensions[
+        ContextExtensionsDefintion[key as InteractedContextExtensionsKey]
+      ] =
+        contextExtensions[key as InteractedContextExtensionsKey];
+    }
+
+    const data: DataPayload = {
+      context: {
+        extensions,
+      },
+      verb: {
+        display: {
+          'en-US': 'interacted',
+        },
+        id: verbDefinition.interacted,
+      },
+    };
+
+    this.send(data);
+  }
+
   private send(data: DataPayload) {
     data.id = uuid();
-    data.timestamp = new Date().toISOString();
+    data.timestamp = DateTime.utc().toISO();
     fetch(`${XAPI_ENDPOINT}/`, {
       body: JSON.stringify(data),
       headers: {
