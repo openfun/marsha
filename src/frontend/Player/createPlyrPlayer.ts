@@ -1,7 +1,10 @@
 import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
 import { DecodedJwt } from 'types/jwt';
-import { InitializedContextExtensions } from '../types/XAPI';
+import {
+  InitializedContextExtensions,
+  InteractedContextExtensions,
+} from '../types/XAPI';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
@@ -57,13 +60,14 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
     );
   });
 
+  /**************** Seeked statement ***********************/
   player.on('timeupdate', event => {
     if (true === isInitialized && false === event.detail.plyr.seeking) {
       currentTime = event.detail.plyr.currentTime;
     }
   });
   player.on('seeking', event => {
-    if (true === isInitialized) {
+    if (false === isInitialized) {
       return;
     }
 
@@ -80,10 +84,46 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
       timeTo: event.detail.plyr.currentTime,
     });
   });
+  /**************** End seeked statement *********************/
 
   player.on('ended', event => {
     xapiStatement.completed({});
   });
+
+  /**************** Interacted event *************************/
+  const interacted = (event: Plyr.PlyrEvent): void => {
+    if (false === isInitialized) {
+      return;
+    }
+
+    const plyr = event.detail.plyr;
+    const contextExtensions: InteractedContextExtensions = {
+      ccSubtitleEnabled: plyr.currentTrack === -1 ? false : true,
+      fullScreen: plyr.fullscreen.active,
+      quality: plyr.quality,
+      speed: `${plyr.speed || 1}x`,
+      volume: plyr.volume,
+    };
+
+    if (plyr.currentTrack > -1 && plyr.source.tracks) {
+      const track = plyr.source.tracks[plyr.currentTrack];
+
+      if (track.srcLang) {
+        contextExtensions.ccSubtitleLanguage = track.srcLang;
+      }
+    }
+    xapiStatement.interacted(contextExtensions);
+  };
+
+  player.on('captionsdisabled', event => interacted(event));
+  player.on('captionsenabled', event => interacted(event));
+  player.on('enterfullscreen', event => interacted(event));
+  player.on('exitfullscreen', event => interacted(event));
+  player.on('languagechange', event => interacted(event));
+  player.on('qualitychange', event => interacted(event));
+  player.on('ratechange', event => interacted(event));
+  player.on('volumechange', event => interacted(event));
+  /**************** End interacted event *************************/
 
   return player;
 };
