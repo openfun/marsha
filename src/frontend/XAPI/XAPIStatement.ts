@@ -1,6 +1,7 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { DateTime, Interval } from 'luxon';
 import uuid from 'uuid';
+
 import { XAPI_ENDPOINT } from '../settings';
 import {
   CompletedContextExtensions,
