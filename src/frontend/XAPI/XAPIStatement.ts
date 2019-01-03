@@ -300,10 +300,12 @@ export class XAPIStatement {
   }
 
   private send(data: DataPayload) {
-    data.id = uuid();
-    data.timestamp = DateTime.utc().toISO();
     fetch(`${XAPI_ENDPOINT}/`, {
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        id: uuid(),
+        timestamp: DateTime.utc().toISO(),
+      }),
       headers: {
         Authorization: `Bearer ${this.jwt}`,
         'Content-Type': 'application/json',
