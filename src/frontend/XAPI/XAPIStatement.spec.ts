@@ -1,6 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { XAPI_ENDPOINT } from '../settings';
-import { verbDefinition, XAPIStatement } from './XAPIStatement';
+import { VerbDefinition } from '../types/XAPI';
+import { XAPIStatement } from './XAPIStatement';
 
 describe('XAPIStatement', () => {
   afterEach(() => fetchMock.reset());
@@ -59,7 +60,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.initialized);
+      expect(body.verb.id).toEqual(VerbDefinition.initialized);
       expect(body.verb.display).toEqual({
         'en-US': 'initialized',
       });
@@ -102,7 +103,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.initialized);
+      expect(body.verb.id).toEqual(VerbDefinition.initialized);
       expect(body.verb.display).toEqual({
         'en-US': 'initialized',
       });
@@ -148,7 +149,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.played);
+      expect(body.verb.id).toEqual(VerbDefinition.played);
       expect(body.verb.display).toEqual({
         'en-US': 'played',
       });
@@ -184,7 +185,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.paused);
+      expect(body.verb.id).toEqual(VerbDefinition.paused);
       expect(body.verb.display).toEqual({
         'en-US': 'paused',
       });
@@ -220,7 +221,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.paused);
+      expect(body.verb.id).toEqual(VerbDefinition.paused);
       expect(body.verb.display).toEqual({
         'en-US': 'paused',
       });
@@ -261,7 +262,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.seeked);
+      expect(body.verb.id).toEqual(VerbDefinition.seeked);
       expect(body.verb.display).toEqual({
         'en-US': 'seeked',
       });
@@ -303,7 +304,7 @@ describe('XAPIStatement', () => {
 
         const body = JSON.parse(requestParameters.body as string);
 
-        expect(body.verb.id).toEqual(verbDefinition.completed);
+        expect(body.verb.id).toEqual(VerbDefinition.completed);
         expect(body.verb.display).toEqual({
           'en-US': 'completed',
         });
@@ -344,7 +345,7 @@ describe('XAPIStatement', () => {
 
         const body = JSON.parse(requestParameters.body as string);
 
-        expect(body.verb.id).toEqual(verbDefinition.completed);
+        expect(body.verb.id).toEqual(VerbDefinition.completed);
         expect(body.verb.display).toEqual({
           'en-US': 'completed',
         });
@@ -390,7 +391,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.terminated);
+      expect(body.verb.id).toEqual(VerbDefinition.terminated);
       expect(body.verb.display).toEqual({
         'en-US': 'terminated',
       });
@@ -432,7 +433,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.terminated);
+      expect(body.verb.id).toEqual(VerbDefinition.terminated);
       expect(body.verb.display).toEqual({
         'en-US': 'terminated',
       });
@@ -479,7 +480,7 @@ describe('XAPIStatement', () => {
 
       const body = JSON.parse(requestParameters.body as string);
 
-      expect(body.verb.id).toEqual(verbDefinition.interacted);
+      expect(body.verb.id).toEqual(VerbDefinition.interacted);
       expect(body.verb.display).toEqual({
         'en-US': 'interacted',
       });

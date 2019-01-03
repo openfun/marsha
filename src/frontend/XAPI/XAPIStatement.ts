@@ -1,8 +1,11 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { DateTime, Interval } from 'luxon';
+import uuid from 'uuid';
+import { XAPI_ENDPOINT } from '../settings';
 import {
   CompletedContextExtensions,
   CompletedDataPlayload,
+  ContextExtensionsDefintion,
   DataPayload,
   InitializedContextExtensions,
   InitializedContextExtensionsKey,
@@ -11,80 +14,13 @@ import {
   PausedContextExtensions,
   PausedResultExtensions,
   PlayedResultExtensions,
+  ResultExtensionsDefinition,
   SeekedResultExtensions,
   TerminatedContextExtensions,
   TerminatedResultExtensions,
-} from 'types/XAPI';
-import { Nullable } from 'utils/types';
-import uuid from 'uuid';
-import { XAPI_ENDPOINT } from '../settings';
-
-const ContextExtensionsDefintion: {
-  ccSubtitleEnabled: string;
-  ccSubtitleLanguage: string;
-  completionTreshold: string;
-  frameRate: string;
-  fullScreen: string;
-  length: string;
-  quality: string;
-  screenSize: string;
-  sessionId: string;
-  speed: string;
-  track: string;
-  userAgent: string;
-  videoPlaybackSize: string;
-  volume: string;
-} = {
-  ccSubtitleEnabled:
-    'https://w3id.org/xapi/video/extensions/cc-subtitle-enabled',
-  ccSubtitleLanguage: 'https://w3id.org/xapi/video/extensions/cc-subtitle-lang',
-  completionTreshold:
-    'https://w3id.org/xapi/video/extensions/completion-threshold',
-  frameRate: 'https://w3id.org/xapi/video/extensions/frame-rate',
-  fullScreen: 'https://w3id.org/xapi/video/extensions/full-screen',
-  length: 'https://w3id.org/xapi/video/extensions/length',
-  quality: 'https://w3id.org/xapi/video/extensions/quality',
-  screenSize: 'https://w3id.org/xapi/video/extensions/screen-size',
-  sessionId: 'https://w3id.org/xapi/video/extensions/session-id',
-  speed: 'https://w3id.org/xapi/video/extensions/speed',
-  track: 'https://w3id.org/xapi/video/extensions/track',
-  userAgent: 'https://w3id.org/xapi/video/extensions/user-agent',
-  videoPlaybackSize:
-    'https://w3id.org/xapi/video/extensions/video-playback-size',
-  volume: 'https://w3id.org/xapi/video/extensions/volume',
-};
-
-const ResultExtensionsDefinition: {
-  playedSegment: string;
-  progress: string;
-  time: string;
-  timeFrom: string;
-  timeTo: string;
-} = {
-  playedSegment: 'https://w3id.org/xapi/video/extensions/played-segments',
-  progress: 'https://w3id.org/xapi/video/extensions/progress',
-  time: 'https://w3id.org/xapi/video/extensions/time',
-  timeFrom: 'https://w3id.org/xapi/video/extensions/time-from',
-  timeTo: 'https://w3id.org/xapi/video/extensions/time-to',
-};
-
-export const verbDefinition: {
-  completed: string;
-  initialized: string;
-  interacted: string;
-  paused: string;
-  played: string;
-  seeked: string;
-  terminated: string;
-} = {
-  completed: 'http://adlnet.gov/expapi/verbs/completed',
-  initialized: 'http://adlnet.gov/expapi/verbs/initialized',
-  interacted: 'http://adlnet.gov/expapi/verbs/interacted',
-  paused: 'https://w3id.org/xapi/video/verbs/paused',
-  played: 'https://w3id.org/xapi/video/verbs/played',
-  seeked: 'https://w3id.org/xapi/video/verbs/seeked',
-  terminated: 'http://adlnet.gov/expapi/verbs/terminated',
-};
+  VerbDefinition,
+} from '../types/XAPI';
+import { Nullable } from '../utils/types';
 
 export class XAPIStatement {
   static toFixed(rawNumber: number, length: number = 3): number {
@@ -153,7 +89,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'initialized',
         },
-        id: verbDefinition.initialized,
+        id: VerbDefinition.initialized,
       },
     };
 
@@ -178,7 +114,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'played',
         },
-        id: verbDefinition.played,
+        id: VerbDefinition.played,
       },
     };
 
@@ -206,7 +142,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'paused',
         },
-        id: verbDefinition.paused,
+        id: VerbDefinition.paused,
       },
     };
 
@@ -253,7 +189,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'seeked',
         },
-        id: verbDefinition.seeked,
+        id: VerbDefinition.seeked,
       },
     };
 
@@ -285,7 +221,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'completed',
         },
-        id: verbDefinition.completed,
+        id: VerbDefinition.completed,
       },
     };
 
@@ -323,7 +259,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'terminated',
         },
-        id: verbDefinition.terminated,
+        id: VerbDefinition.terminated,
       },
     };
 
@@ -357,7 +293,7 @@ export class XAPIStatement {
         display: {
           'en-US': 'interacted',
         },
-        id: verbDefinition.interacted,
+        id: VerbDefinition.interacted,
       },
     };
 
