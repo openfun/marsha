@@ -8,9 +8,7 @@ import {
   ContextExtensionsDefintion,
   DataPayload,
   InitializedContextExtensions,
-  InitializedContextExtensionsKey,
   InteractedContextExtensions,
-  InteractedContextExtensionsKey,
   PausedContextExtensions,
   PausedResultExtensions,
   PlayedResultExtensions,
@@ -71,9 +69,9 @@ export class XAPIStatement {
     };
     for (const key of Object.keys(contextExtensions)) {
       extensions[
-        ContextExtensionsDefintion[key as InitializedContextExtensionsKey]
+        ContextExtensionsDefintion[key as keyof InitializedContextExtensions]
       ] =
-        contextExtensions[key as InitializedContextExtensionsKey];
+        contextExtensions[key as keyof InitializedContextExtensions];
     }
 
     extensions[ContextExtensionsDefintion.sessionId] = this.sessionId;
@@ -280,9 +278,9 @@ export class XAPIStatement {
     };
     for (const key of Object.keys(contextExtensions)) {
       extensions[
-        ContextExtensionsDefintion[key as InteractedContextExtensionsKey]
+        ContextExtensionsDefintion[key as keyof InteractedContextExtensions]
       ] =
-        contextExtensions[key as InteractedContextExtensionsKey];
+        contextExtensions[key as keyof InteractedContextExtensions];
     }
 
     const data: DataPayload = {
