@@ -4,8 +4,6 @@ export interface DataPayload {
       [key: string]: string | boolean | number | undefined;
     };
   };
-  id?: string;
-  timestamp?: string;
   result?: {
     extensions: {
       [key: string]: string | boolean | number | undefined;
