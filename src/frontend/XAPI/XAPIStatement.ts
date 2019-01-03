@@ -91,6 +91,9 @@ export class XAPIStatement {
     return parseFloat(rawNumber.toFixed(length));
   }
 
+  // segments are saved in two different arrays
+  // we need to save to follow each segments played by the user.
+  // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html#2545-played-segments
   private startSegments: number[] = [];
   private endSegments: number[] = [];
   // tslint:disable-next-line:variable-name
@@ -159,7 +162,7 @@ export class XAPIStatement {
 
   played(resultExtensions: PlayedResultExtensions): void {
     const time: number = XAPIStatement.toFixed(resultExtensions.time);
-    this.startSegments.push(time);
+    this.addStartSegment(time);
     const data: DataPayload = {
       context: {
         extensions: {
@@ -187,7 +190,7 @@ export class XAPIStatement {
     resultExtensions: PausedResultExtensions,
   ): void {
     const time: number = XAPIStatement.toFixed(resultExtensions.time);
-    this.endSegments.push(time);
+    this.addEndSegment(time);
     const data: DataPayload = {
       context: {
         extensions: {
@@ -225,8 +228,8 @@ export class XAPIStatement {
   seeked(resultExtensions: SeekedResultExtensions): void {
     const timeFrom: number = XAPIStatement.toFixed(resultExtensions.timeFrom);
     const timeTo: number = XAPIStatement.toFixed(resultExtensions.timeTo);
-    this.startSegments.push(timeFrom);
-    this.endSegments.push(timeTo);
+    this.addStartSegment(timeFrom);
+    this.addEndSegment(timeTo);
     const data: DataPayload = {
       context: {
         extensions: {
@@ -259,7 +262,7 @@ export class XAPIStatement {
 
   completed(contextExtensions: CompletedContextExtensions): void {
     const time = XAPIStatement.toFixed(this._duration);
-    this.endSegments.push(time);
+    this.addEndSegment(time);
 
     const data: CompletedDataPlayload = {
       context: {
@@ -299,7 +302,7 @@ export class XAPIStatement {
     resultExtensions: TerminatedResultExtensions,
   ): void {
     const time = XAPIStatement.toFixed(resultExtensions.time);
-    this.endSegments.push(time);
+    this.addEndSegment(time);
 
     const data: DataPayload = {
       context: {
@@ -372,5 +375,21 @@ export class XAPIStatement {
       },
       method: 'POST',
     });
+  }
+
+  private addStartSegment(time: number) {
+    if (this.startSegments.length > this.endSegments.length) {
+      this.endSegments.push(time);
+    }
+    this.startSegments.push(time);
+  }
+
+  private addEndSegment(time: number) {
+    if (this.endSegments.length === this.startSegments.length) {
+      this.startSegments.push(
+        this.endSegments[this.endSegments.length - 1] || 0,
+      );
+    }
+    this.endSegments.push(time);
   }
 }
