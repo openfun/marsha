@@ -1,5 +1,6 @@
 import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
+
 import { DecodedJwt } from 'types/jwt';
 import {
   InitializedContextExtensions,
