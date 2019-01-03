@@ -12,6 +12,7 @@ export const bootstrapStore = (appData: AppData) =>
       ltiState: appData.state,
     },
     resources: {
+      [modelName.TIMEDTEXTTRACKS]: {},
       [modelName.VIDEOS]: {
         ...(appData.video
           ? { byId: { [appData.video.id]: appData.video } }

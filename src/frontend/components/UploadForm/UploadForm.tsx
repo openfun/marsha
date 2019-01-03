@@ -24,10 +24,15 @@ const messages = defineMessages({
 });
 
 const titleMessages = defineMessages({
+  [modelName.TIMEDTEXTTRACKS]: {
+    defaultMessage: 'Upload a new subtitles/captions/transcript file',
+    description: 'Title for the timed text file upload form',
+    id: 'components.UploadForm.title-timedtexttracks',
+  },
   [modelName.VIDEOS]: {
     defaultMessage: 'Create a new video',
     description: 'Title for the video upload form',
-    id: 'components.UploadForm.title',
+    id: 'components.UploadForm.title-videos',
   },
 });
 

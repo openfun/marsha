@@ -22,6 +22,27 @@ export enum trackState {
   UPLOADING = 'uploading',
 }
 
+/** Possible modes for a timed text track.
+ *
+ * We're using modes instead of different objects to represent subtitles, transcripts and closed captions
+ * as they're both the same types of files that go through the same pipelines, and have the same kinds
+ * of relations to video tracks.
+ */
+export enum timedTextMode {
+  SUBTITLE = 'st',
+  TRANSCRIPT = 'ts',
+  CLOSED_CAPTIONING = 'cc',
+}
+
+/** A timed text track record as it exists on the backend. */
+export interface TimedText extends Resource {
+  language: string;
+  mode: timedTextMode;
+  state: trackState;
+  uploaded_on: string;
+  video: Video;
+}
+
 /** Possible sizes for a video file or stream. Used as keys in lists of files. */
 export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
@@ -41,4 +62,4 @@ export interface Video extends Resource {
   };
 }
 
-export type UploadableObject = Video;
+export type UploadableObject = TimedText | Video;
