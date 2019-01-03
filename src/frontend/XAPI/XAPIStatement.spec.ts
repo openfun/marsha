@@ -449,4 +449,55 @@ describe('XAPIStatement', () => {
       expect(body).toHaveProperty('timestamp');
     });
   });
+  describe('XAPIStatement.interacted', () => {
+    it('sends an interacted event with all context entensions', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.interacted({
+        ccSubtitleEnabled: true,
+        ccSubtitleLanguage: 'en',
+        completionTreshold: 0.2,
+        frameRate: 29.97,
+        fullScreen: true,
+        quality: '480',
+        speed: '1x',
+        track: 'foo',
+        videoPlaybackSize: '640x480',
+        volume: 1,
+      });
+
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+      const requestParameters = lastCall[1];
+
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(verbDefinition.interacted);
+      expect(body.verb.display).toEqual({
+        'en-US': 'interacted',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/cc-subtitle-enabled': true,
+        'https://w3id.org/xapi/video/extensions/cc-subtitle-lang': 'en',
+        'https://w3id.org/xapi/video/extensions/completion-threshold': 0.2,
+        'https://w3id.org/xapi/video/extensions/frame-rate': 29.97,
+        'https://w3id.org/xapi/video/extensions/full-screen': true,
+        'https://w3id.org/xapi/video/extensions/quality': '480',
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+        'https://w3id.org/xapi/video/extensions/speed': '1x',
+        'https://w3id.org/xapi/video/extensions/track': 'foo',
+        'https://w3id.org/xapi/video/extensions/video-playback-size': '640x480',
+        'https://w3id.org/xapi/video/extensions/volume': 1,
+      });
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
+    });
+  });
 });

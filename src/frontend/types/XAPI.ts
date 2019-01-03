@@ -1,18 +1,3 @@
-export type contextExtensionsKey =
-  | 'length'
-  | 'ccSubtitleEnabled'
-  | 'ccSubtitleLanguage'
-  | 'completionTreshold'
-  | 'frameRate'
-  | 'fullScreen'
-  | 'quality'
-  | 'screenSize'
-  | 'videoPlaybackSize'
-  | 'speed'
-  | 'track'
-  | 'userAgent'
-  | 'volume';
-
 export interface DataPayload {
   context?: {
     extensions: {
@@ -66,6 +51,21 @@ export interface InitializedContextExtensions {
   volume?: number;
 }
 
+export type InitializedContextExtensionsKey =
+  | 'length'
+  | 'ccSubtitleEnabled'
+  | 'ccSubtitleLanguage'
+  | 'completionTreshold'
+  | 'frameRate'
+  | 'fullScreen'
+  | 'quality'
+  | 'screenSize'
+  | 'videoPlaybackSize'
+  | 'speed'
+  | 'track'
+  | 'userAgent'
+  | 'volume';
+
 /************* Paused event  **************/
 
 export interface PausedContextExtensions {
@@ -98,3 +98,30 @@ export interface TerminatedContextExtensions {
 export interface TerminatedResultExtensions {
   time: number;
 }
+
+/************* Interacted event  *************/
+
+export interface InteractedContextExtensions {
+  ccSubtitleEnabled?: boolean;
+  ccSubtitleLanguage?: string;
+  completionTreshold?: number;
+  frameRate?: number;
+  fullScreen?: boolean;
+  quality?: string;
+  videoPlaybackSize?: string;
+  speed?: string;
+  track?: string;
+  volume?: number;
+}
+
+export type InteractedContextExtensionsKey =
+  | 'ccSubtitleEnabled'
+  | 'ccSubtitleLanguage'
+  | 'completionTreshold'
+  | 'frameRate'
+  | 'fullScreen'
+  | 'quality'
+  | 'videoPlaybackSize'
+  | 'speed'
+  | 'track'
+  | 'volume';
