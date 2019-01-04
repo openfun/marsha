@@ -19,13 +19,10 @@ import {
   TerminatedResultExtensions,
   VerbDefinition,
 } from '../types/XAPI';
+import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { Nullable } from '../utils/types';
 
 export class XAPIStatement {
-  static toFixed(rawNumber: number, length: number = 3): number {
-    return parseFloat(rawNumber.toFixed(length));
-  }
-
   // segments are saved in two different arrays
   // we need to save to follow each segments played by the user.
   // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html#2545-played-segments
@@ -94,7 +91,7 @@ export class XAPIStatement {
   }
 
   played(resultExtensions: PlayedResultExtensions): void {
-    const time: number = XAPIStatement.toFixed(resultExtensions.time);
+    const time: number = truncateDecimalDigits(resultExtensions.time);
     this.addStartSegment(time);
     const data: DataPayload = {
       context: {
@@ -122,7 +119,7 @@ export class XAPIStatement {
     contextExtensions: PausedContextExtensions,
     resultExtensions: PausedResultExtensions,
   ): void {
-    const time: number = XAPIStatement.toFixed(resultExtensions.time);
+    const time: number = truncateDecimalDigits(resultExtensions.time);
     this.addEndSegment(time);
     const data: DataPayload = {
       context: {
@@ -148,7 +145,7 @@ export class XAPIStatement {
     ] = this.getPlayedSegment();
     data.result!.extensions[
       ResultExtensionsDefinition.progress
-    ] = XAPIStatement.toFixed(resultExtensions.time / this.duration);
+    ] = truncateDecimalDigits(resultExtensions.time / this.duration);
 
     if (contextExtensions.completionTreshold) {
       data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
@@ -159,8 +156,8 @@ export class XAPIStatement {
   }
 
   seeked(resultExtensions: SeekedResultExtensions): void {
-    const timeFrom: number = XAPIStatement.toFixed(resultExtensions.timeFrom);
-    const timeTo: number = XAPIStatement.toFixed(resultExtensions.timeTo);
+    const timeFrom: number = truncateDecimalDigits(resultExtensions.timeFrom);
+    const timeTo: number = truncateDecimalDigits(resultExtensions.timeTo);
     this.addStartSegment(timeFrom);
     this.addEndSegment(timeTo);
     const data: DataPayload = {
@@ -173,10 +170,10 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.timeFrom]: timeFrom,
           [ResultExtensionsDefinition.timeTo]: timeTo,
-          [ContextExtensionsDefintion.length]: XAPIStatement.toFixed(
+          [ContextExtensionsDefintion.length]: truncateDecimalDigits(
             this.duration,
           ),
-          [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
+          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
             resultExtensions.timeTo / this.duration,
           ),
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
@@ -194,7 +191,7 @@ export class XAPIStatement {
   }
 
   completed(contextExtensions: CompletedContextExtensions): void {
-    const time = XAPIStatement.toFixed(this.duration);
+    const time = truncateDecimalDigits(this.duration);
     this.addEndSegment(time);
 
     const data: CompletedDataPlayload = {
@@ -234,7 +231,7 @@ export class XAPIStatement {
     contextExtensions: TerminatedContextExtensions,
     resultExtensions: TerminatedResultExtensions,
   ): void {
-    const time = XAPIStatement.toFixed(resultExtensions.time);
+    const time = truncateDecimalDigits(resultExtensions.time);
     this.addEndSegment(time);
 
     const data: DataPayload = {
@@ -246,7 +243,7 @@ export class XAPIStatement {
       result: {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
-          [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
+          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
             resultExtensions.time / this.duration,
           ),
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
