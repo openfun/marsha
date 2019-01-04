@@ -20,25 +20,25 @@ describe('XAPIStatement', () => {
     });
   });
 
-  describe('XAPIStatement.duration', () => {
+  describe('XAPIStatement.setDuration', () => {
     it('does not accept negative or 0 value', () => {
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
 
       expect(() => {
-        xapiStatement.duration = -1;
+        xapiStatement.setDuration(-1);
       }).toThrowError('duration must be strictly positive');
 
       expect(() => {
-        xapiStatement.duration = 0;
+        xapiStatement.setDuration(0);
       }).toThrowError('duration must be strictly positive');
     });
 
     it('accept only one modification', () => {
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 20;
+      xapiStatement.setDuration(20);
 
       expect(() => {
-        xapiStatement.duration = 10;
+        xapiStatement.setDuration(10);
       }).toThrowError('duration is already set. You can not modify it anymore');
     });
   });
@@ -171,7 +171,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 100;
+      xapiStatement.setDuration(100);
       xapiStatement.played({ time: 0 });
       xapiStatement.paused({}, { time: 10 });
 
@@ -207,7 +207,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 100;
+      xapiStatement.setDuration(100);
       xapiStatement.played({ time: 0 });
       xapiStatement.paused({ completionTreshold: 0.5 }, { time: 10 });
 
@@ -246,7 +246,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 100;
+      xapiStatement.setDuration(100);
       xapiStatement.seeked({
         timeFrom: 0,
         timeTo: 10,
@@ -373,7 +373,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 100;
+      xapiStatement.setDuration(100);
       xapiStatement.terminated(
         {},
         {
@@ -413,7 +413,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.duration = 100;
+      xapiStatement.setDuration(100);
       xapiStatement.terminated(
         {
           completionTreshold: 0.2,
@@ -511,41 +511,41 @@ describe('XAPIStatement', () => {
       xapiStatement.initialized({
         length: 100,
       });
-      expect(xapiStatement.playedSegment).toBe('');
+      expect(xapiStatement.getPlayedSegment()).toBe('');
       xapiStatement.played({ time: 0 });
-      expect(xapiStatement.playedSegment).toBe('0');
+      expect(xapiStatement.getPlayedSegment()).toBe('0');
       xapiStatement.seeked({
         timeFrom: 5,
         timeTo: 12,
       });
-      expect(xapiStatement.playedSegment).toBe('0[.]5[,]5[.]12');
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]5[.]12');
       xapiStatement.paused({}, { time: 22 });
-      expect(xapiStatement.playedSegment).toBe('0[.]5[,]5[.]12[,]12[.]22');
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]5[.]12[,]12[.]22');
       xapiStatement.seeked({
         timeFrom: 22,
         timeTo: 15,
       });
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15',
       );
       xapiStatement.played({ time: 15 });
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15',
       );
       xapiStatement.paused({}, { time: 55 });
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55',
       );
       xapiStatement.played({ time: 55 });
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55',
       );
       xapiStatement.paused({}, { time: 99.33 });
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55[.]99.33',
       );
       xapiStatement.completed({});
-      expect(xapiStatement.playedSegment).toBe(
+      expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55[.]99.33[,]99.33[.]100',
       );
     });

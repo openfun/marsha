@@ -32,13 +32,13 @@ export class XAPIStatement {
   private startSegments: number[] = [];
   private endSegments: number[] = [];
   // tslint:disable-next-line:variable-name
-  private _duration: number = 0;
+  private duration: number = 0;
   private startedAt: Nullable<DateTime> = null;
 
   constructor(private jwt: string, private sessionId: string) {}
 
-  set duration(duration: number) {
-    if (this._duration > 0) {
+  setDuration(duration: number) {
+    if (this.duration > 0) {
       throw new Error('duration is already set. You can not modify it anymore');
     }
 
@@ -46,10 +46,10 @@ export class XAPIStatement {
       throw new Error('duration must be strictly positive');
     }
 
-    this._duration = duration;
+    this.duration = duration;
   }
 
-  get playedSegment(): string {
+  getPlayedSegment(): string {
     const playedSegment: string[] = [];
     for (const i in this.startSegments) {
       if (this.endSegments[i]) {
@@ -75,9 +75,7 @@ export class XAPIStatement {
         contextExtensions[key as keyof InitializedContextExtensions];
     }
 
-    extensions[ContextExtensionsDefintion.sessionId] = this.sessionId;
-
-    this.duration = contextExtensions.length;
+    this.setDuration(contextExtensions.length);
     this.startedAt = DateTime.utc();
 
     const data: DataPayload = {
@@ -147,10 +145,10 @@ export class XAPIStatement {
 
     data.result!.extensions[
       ResultExtensionsDefinition.playedSegment
-    ] = this.playedSegment;
+    ] = this.getPlayedSegment();
     data.result!.extensions[
       ResultExtensionsDefinition.progress
-    ] = XAPIStatement.toFixed(resultExtensions.time / this._duration);
+    ] = XAPIStatement.toFixed(resultExtensions.time / this.duration);
 
     if (contextExtensions.completionTreshold) {
       data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
@@ -176,12 +174,12 @@ export class XAPIStatement {
           [ResultExtensionsDefinition.timeFrom]: timeFrom,
           [ResultExtensionsDefinition.timeTo]: timeTo,
           [ContextExtensionsDefintion.length]: XAPIStatement.toFixed(
-            this._duration,
+            this.duration,
           ),
           [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
-            resultExtensions.timeTo / this._duration,
+            resultExtensions.timeTo / this.duration,
           ),
-          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+          [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },
       },
       verb: {
@@ -196,7 +194,7 @@ export class XAPIStatement {
   }
 
   completed(contextExtensions: CompletedContextExtensions): void {
-    const time = XAPIStatement.toFixed(this._duration);
+    const time = XAPIStatement.toFixed(this.duration);
     this.addEndSegment(time);
 
     const data: CompletedDataPlayload = {
@@ -213,7 +211,7 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
           [ResultExtensionsDefinition.progress]: 1,
-          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+          [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },
       },
       verb: {
@@ -249,9 +247,9 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
           [ResultExtensionsDefinition.progress]: XAPIStatement.toFixed(
-            resultExtensions.time / this._duration,
+            resultExtensions.time / this.duration,
           ),
-          [ResultExtensionsDefinition.playedSegment]: this.playedSegment,
+          [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },
       },
       verb: {
