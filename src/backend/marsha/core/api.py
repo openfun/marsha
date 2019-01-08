@@ -9,6 +9,7 @@ from django.utils import timezone
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
 from .models import TimedTextTrack, Video
@@ -138,9 +139,15 @@ class TimedTextTrackViewSet(
 ):
     """Viewset for the API of the TimedTextTrack object."""
 
-    queryset = TimedTextTrack.objects.all()
     serializer_class = TimedTextTrackSerializer
     permission_classes = [IsRelatedVideoTokenOrAdminUser]
+
+    def get_queryset(self):
+        """Restrict list access to timed text tracks related to the video in the JWT token."""
+        user = self.request.user
+        if isinstance(user, TokenUser):
+            return TimedTextTrack.objects.filter(video__id=user.id)
+        return TimedTextTrack.objects.none()
 
     @action(methods=["get"], detail=True, url_path="upload-policy")
     # pylint: disable=unused-argument
