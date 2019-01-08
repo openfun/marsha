@@ -133,11 +133,9 @@ class TimedTextTrackAPITest(TestCase):
             "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
         content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
-        )
+        self.assertEqual(content, {"detail": "Not found."})
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_token_user_no_active_stamp(self):
@@ -254,6 +252,9 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track_two = TimedTextTrackFactory(
             mode="cc", video=timed_text_track_one.video
         )
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track_one.video.id)
         jwt_token.payload["roles"] = ["instructor"]
@@ -493,7 +494,7 @@ class TimedTextTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
         timed_text_track_update.refresh_from_db()
         self.assertEqual(timed_text_track_update.language, "en")
 
@@ -709,11 +710,9 @@ class TimedTextTrackAPITest(TestCase):
             ),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
         content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
-        )
+        self.assertEqual(content, {"detail": "Not found."})
 
     def test_api_timed_text_track_upload_policy_staff_or_user(self):
         """Users authenticated via a session should not be able to retrieve an upload policy."""
