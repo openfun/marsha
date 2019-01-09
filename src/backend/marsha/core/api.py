@@ -277,7 +277,7 @@ class XAPIStatementView(APIView):
             )
             return Response({"status": message}, status=501)
         # pylint: disable=invalid-name
-        except MissingUserIdError as e:
+        except MissingUserIdError:
             return Response({"status": "Impossible to idenitfy the actor."}, status=400)
 
         return Response(status=204)
