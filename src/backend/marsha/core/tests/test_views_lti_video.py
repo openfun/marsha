@@ -74,6 +74,7 @@ class ViewsTestCase(TestCase):
             json.loads(unescape(data_video)),
             {
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -131,6 +132,7 @@ class ViewsTestCase(TestCase):
             json.loads(unescape(data_video)),
             {
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -317,6 +319,7 @@ class DevelopmentViewsTestCase(TestCase):
             json.loads(unescape(data_video)),
             {
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -371,6 +374,7 @@ class DevelopmentViewsTestCase(TestCase):
             json.loads(unescape(data_video)),
             {
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -420,6 +424,7 @@ class DevelopmentViewsTestCase(TestCase):
             json.loads(unescape(data_video)),
             {
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",

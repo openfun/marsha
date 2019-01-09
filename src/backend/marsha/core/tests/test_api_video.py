@@ -128,10 +128,12 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
+                "is_ready_to_play": True,
                 "upload_state": "ready",
                 "timed_text_tracks": [
                     {
                         "active_stamp": "1533686400",
+                        "is_ready_to_play": True,
                         "mode": "cc",
                         "id": str(timed_text_track.id),
                         "language": "fr",
@@ -200,6 +202,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "upload_state": "pending",
                 "timed_text_tracks": [],
                 "urls": None,
@@ -230,6 +233,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_ready_to_play": False,
                 "upload_state": state,
                 "timed_text_tracks": [],
                 "urls": None,
