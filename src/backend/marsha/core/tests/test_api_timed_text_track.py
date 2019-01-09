@@ -603,12 +603,12 @@ class TimedTextTrackAPITest(TestCase):
 
         self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
 
-    def test_api_timed_text_track_upload_policy_anonymous_user(self):
-        """Anonymous users should not be allowed to retrieve an upload policy."""
+    def test_api_timed_text_track_initiate_upload_anonymous_user(self):
+        """Anonymous users should not be allowed to initiate an upload."""
         timed_text_track = TimedTextTrackFactory()
 
-        response = self.client.get(
-            "/api/timedtexttracks/{!s}/upload-policy/".format(timed_text_track.id)
+        response = self.client.post(
+            "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id)
         )
 
         self.assertEqual(response.status_code, 401)
@@ -617,12 +617,13 @@ class TimedTextTrackAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    def test_api_timed_text_track_upload_policy_token_user(self):
-        """A token user should be able to retrieve an upload policy."""
+    def test_api_timed_text_track_initiate_upload_token_user(self):
+        """A token user should be able to initiate an upload."""
         timed_text_track = TimedTextTrackFactory(
             id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
             video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             language="fr",
+            upload_state=random.choice(["ready", "error"]),
             mode="cc",
         )
         jwt_token = AccessToken()
@@ -633,8 +634,10 @@ class TimedTextTrackAPITest(TestCase):
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
-            response = self.client.get(
-                "/api/timedtexttracks/{!s}/upload-policy/".format(timed_text_track.id),
+            response = self.client.post(
+                "/api/timedtexttracks/{!s}/initiate-upload/".format(
+                    timed_text_track.id
+                ),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
         self.assertEqual(response.status_code, 200)
@@ -685,10 +688,14 @@ class TimedTextTrackAPITest(TestCase):
             },
         )
 
-        # Try getting the upload policy for another timed_text_track
+        # The upload state of the timed text track should should have been reset
+        timed_text_track.refresh_from_db()
+        self.assertEqual(timed_text_track.upload_state, "pending")
+
+        # Try initiating an upload for another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
-        response = self.client.get(
-            "/api/timedtexttracks/{!s}/upload-policy/".format(
+        response = self.client.post(
+            "/api/timedtexttracks/{!s}/initiate-upload/".format(
                 other_timed_text_track.id
             ),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
@@ -697,8 +704,8 @@ class TimedTextTrackAPITest(TestCase):
         content = json.loads(response.content)
         self.assertEqual(content, {"detail": "Not found."})
 
-    def test_api_timed_text_track_upload_policy_staff_or_user(self):
-        """Users authenticated via a session should not be able to retrieve an upload policy."""
+    def test_api_timed_text_track_initiate_upload_staff_or_user(self):
+        """Users authenticated via a session should not be able to initiate an upload."""
         timed_text_track = TimedTextTrackFactory()
         for user in [
             UserFactory(),
@@ -706,8 +713,8 @@ class TimedTextTrackAPITest(TestCase):
             UserFactory(is_superuser=True),
         ]:
             self.client.login(username=user.username, password="test")
-            response = self.client.get(
-                "/api/timedtexttracks/{!s}/upload-policy/".format(timed_text_track.id)
+            response = self.client.post(
+                "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id)
             )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)

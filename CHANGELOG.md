@@ -10,6 +10,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
+  state and returns the AWS S3 upload policy in a single POST query
 - Add field `is_ready_to_play` to compensate removing field `state`
 - Rename `state` field to `upload_state` as it does not represent the state of the object
   anymore but the state of the latest upload attempted on this object
