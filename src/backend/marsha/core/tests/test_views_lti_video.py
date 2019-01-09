@@ -143,6 +143,43 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
+    def test_views_video_lti_without_user_id_parameter(self):
+        """Ensure JWT is created if user_id is missing in the LTI request."""
+        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        video = VideoFactory(
+            lti_id="123",
+            playlist__lti_id="abc",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": "123",
+            "roles": "student",
+            "context_id": "abc",
+            "oauth_consumer_key": "ABC123",
+        }
+        with mock.patch.object(
+            LTI, "verify", return_value=passport.consumer_site
+        ) as mock_verify:
+            response = self.client.post("/lti-video/", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
     def test_views_video_lti_post_student_no_video(self):
         """Validate the response returned for a student request when there is no video."""
         passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
