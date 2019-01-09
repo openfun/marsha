@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove usage of lis_person_contact_email_primary in the LTI request
+- Make user_id optional in JWT
+
 ## [1.1.0] - 2019-01-08
 
 ### Added
