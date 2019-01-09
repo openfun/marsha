@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
-from .models import TimedTextTrack, Video
+from .models import PENDING, TimedTextTrack, Video
 from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
 from .serializers import (
     TimedTextTrackSerializer,
@@ -90,10 +90,13 @@ class VideoViewSet(
     serializer_class = VideoSerializer
     permission_classes = [IsVideoTokenOrAdminUser]
 
-    @action(methods=["get"], detail=True, url_path="upload-policy")
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def upload_policy(self, request, pk=None):
-        """Get a policy for direct upload of a video to our AWS S3 source bucket.
+    def initate_upload(self, request, pk=None):
+        """Get an upload policy for a video.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
 
         Parameters
         ----------
@@ -105,7 +108,7 @@ class VideoViewSet(
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the policy as a JSON object.
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
         now = timezone.now()
@@ -126,6 +129,9 @@ class VideoViewSet(
         policy.update(
             {"key": key, "max_file_size": VIDEO_SOURCE_MAX_SIZE, "stamp": stamp}
         )
+
+        # Reset the upload state of the video
+        Video.objects.update(upload_state=PENDING)
 
         return Response(policy)
 
@@ -150,10 +156,13 @@ class TimedTextTrackViewSet(
             return TimedTextTrack.objects.filter(video__id=user.id)
         return TimedTextTrack.objects.none()
 
-    @action(methods=["get"], detail=True, url_path="upload-policy")
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def upload_policy(self, request, pk=None):
-        """Get a policy for direct upload of a timed text track to our AWS S3 source bucket.
+    def initiate_upload(self, request, pk=None):
+        """Get an upload policy for a timed text track.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
 
         Parameters
         ----------
@@ -165,7 +174,7 @@ class TimedTextTrackViewSet(
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the policy as a JSON object.
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
         now = timezone.now()
@@ -181,5 +190,8 @@ class TimedTextTrackViewSet(
         policy.update(
             {"key": key, "max_file_size": SUBTITLE_SOURCE_MAX_SIZE, "stamp": stamp}
         )
+
+        # Reset the upload state of the video
+        TimedTextTrack.objects.update(upload_state=PENDING)
 
         return Response(policy)

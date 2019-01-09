@@ -618,11 +618,13 @@ class VideoAPITest(TestCase):
             self.assertEqual(response.status_code, 404)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
-    def test_api_video_upload_policy_anonymous_user(self):
-        """Anonymous users are not allowed to retrieve an upload policy."""
+    def test_api_video_initiate_upload_anonymous_user(self):
+        """Anonymous users are not allowed to initiate an upload."""
         video = VideoFactory()
 
-        response = self.client.get("/api/videos/{!s}/upload-policy/".format(video.id))
+        response = self.client.post(
+            "/api/videos/{!s}/initiate-upload/".format(video.id)
+        )
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -630,11 +632,12 @@ class VideoAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    def test_api_video_upload_policy_token_user(self):
+    def test_api_video_initiate_upload_token_user(self):
         """A token user associated to a video should be able to retrieve an upload policy."""
         video = VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            upload_state=random.choice(["ready", "error"]),
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -644,8 +647,8 @@ class VideoAPITest(TestCase):
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
-            response = self.client.get(
-                "/api/videos/{!s}/upload-policy/".format(video.id),
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
         self.assertEqual(response.status_code, 200)
@@ -694,10 +697,14 @@ class VideoAPITest(TestCase):
             },
         )
 
-        # Try getting the upload policy for another video
+        # The upload state of the timed text track should should have been reset
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, "pending")
+
+        # Try initiating an upload for another video
         other_video = VideoFactory()
-        response = self.client.get(
-            "/api/videos/{!s}/upload-policy/".format(other_video.id),
+        response = self.client.post(
+            "/api/videos/{!s}/initiate-upload/".format(other_video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 403)
@@ -706,14 +713,14 @@ class VideoAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    def test_api_video_upload_policy_staff_or_user(self):
+    def test_api_video_initiate_upload_staff_or_user(self):
         """Users authenticated via a session should not be able to retrieve an upload policy."""
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             video = VideoFactory()
 
-            response = self.client.get(
-                "/api/videos/{!s}/upload-policy/".format(video.id)
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id)
             )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
