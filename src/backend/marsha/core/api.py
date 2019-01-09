@@ -132,6 +132,7 @@ class VideoViewSet(
 
 class TimedTextTrackViewSet(
     mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,

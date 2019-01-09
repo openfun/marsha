@@ -545,22 +545,20 @@ class TimedTextTrackAPITest(TestCase):
         self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
 
     def test_api_timed_text_track_delete_detail_token_user(self):
-        """A token user linked to a video shouldn't be allowed to delete its timed text tracks."""
+        """A token user linked to a video should be allowed to delete its timed text tracks."""
         timed_text_tracks = TimedTextTrackFactory.create_batch(2)
-        jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_tracks[0].video.id)
-        jwt_token.payload["roles"] = ["instructor"]
 
-        # Try deleting the timed text tracks using the JWT token
+        # Delete the timed text tracks using the JWT token
         for timed_text_track in timed_text_tracks:
+            jwt_token = AccessToken()
+            jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+            jwt_token.payload["roles"] = ["instructor"]
             response = self.client.delete(
                 "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
-            self.assertEqual(response.status_code, 405)
-            content = json.loads(response.content)
-            self.assertEqual(content, {"detail": 'Method "DELETE" not allowed.'})
-            self.assertTrue(
+            self.assertEqual(response.status_code, 204)
+            self.assertFalse(
                 TimedTextTrack.objects.filter(id=timed_text_track.id).exists()
             )
 
