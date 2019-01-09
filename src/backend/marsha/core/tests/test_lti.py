@@ -255,6 +255,129 @@ class VideoLTITestCase(TestCase):
             mock_verify.call_args[0][0].url, "https://testserver/lti/videos/"
         )
 
+    def test_lti_is_edx_format(self):
+        """Check if the LTI request comes from an edx instance."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post(
+            "/lti-video/",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request)
+        self.assertTrue(lti.is_edx_format)
+
+    def test_lti_is_not_edx_format(self):
+        """Check if the LTI request doesn't come from an edx instance."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "115",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post(
+            "/lti-video/",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request)
+        self.assertFalse(lti.is_edx_format)
+
+    def test_lti_get_edx_course_info(self):
+        """Retrieve course info in a edx lti request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+00001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post(
+            "/lti-video/",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request)
+        self.assertDictEqual(
+            lti.get_course_info(),
+            {
+                "school_name": "ufr",
+                "course_name": "mathematics",
+                "course_section": "00001",
+            },
+        )
+
+    def test_lti_get_partial_edx_course_info(self):
+        """Retrieve course info in a edx lti request partially set."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post(
+            "/lti-video/",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request)
+        self.assertDictEqual(
+            lti.get_course_info(),
+            {
+                "school_name": "ufr",
+                "course_name": "mathematics",
+                "course_section": None,
+            },
+        )
+
+    def test_lti_get_course_info(self):
+        """Retrieve course info in other consumer than edx."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "resource_link_title": "mathematics",
+        }
+        request = self.factory.post(
+            "/lti-video/",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request)
+        self.assertDictEqual(
+            lti.get_course_info(),
+            {
+                "school_name": "ufr",
+                "course_name": "mathematics",
+                "course_section": "df7",
+            },
+        )
+
 
 class PortabilityVideoLTITestCase(TestCase):
     """Test the portability of videos beween playlists and consumer sites.
