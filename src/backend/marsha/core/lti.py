@@ -149,6 +149,32 @@ class LTI:
                 )
             )
 
+    def get_course_info(self):
+        """Retrieve course info in the LTI request.
+
+        Returns
+        -------
+        dict
+            school_name: the school name
+            course_name: the course name
+            course_section: the course section
+
+        """
+        if self.is_edx_format:
+            part = re.match(r"^course-v[0-9]:(.*)", self.context_id).group(1).split("+")
+            length = len(part)
+            return {
+                "school_name": part[0] if length >= 1 else None,
+                "course_name": part[1] if length >= 2 else None,
+                "course_section": part[2] if length >= 3 else None,
+            }
+
+        return {
+            "school_name": self.request.POST.get("tool_consumer_instance_name", None),
+            "course_name": self.resource_link_title,
+            "course_section": self.resource_link_id,
+        }
+
     @property
     def resource_link_title(self):
         """Return the resource link id as default for its title."""
@@ -218,6 +244,18 @@ class LTI:
 
         """
         return bool(LTI_ROLES[STUDENT] & set(self.roles))
+
+    @property
+    def is_edx_format(self):
+        """Check if the LTI if provided by edx.
+
+        Returns
+        -------
+        boolean
+            True if the LTI request is sent by edx
+
+        """
+        return re.search(r"^course-v[0-9]:.*$", self.context_id)
 
     def get_or_create_video(self):
         """Get or create the video targeted by the LTI launch request.
