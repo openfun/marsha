@@ -35,7 +35,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
-        self.assertEqual(video.state, "ready")
+        self.assertEqual(video.upload_state, "ready")
 
     @override_settings(
         UPDATE_STATE_SHARED_SECRETS=["previous secret", "current secret"]
@@ -59,7 +59,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
-        self.assertEqual(video.state, "error")
+        self.assertEqual(video.upload_state, "error")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_timed_text_track(self):
@@ -84,7 +84,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(
             timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
         )
-        self.assertEqual(timed_text_track.state, "ready")
+        self.assertEqual(timed_text_track.upload_state, "ready")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_unknown_video(self):
@@ -120,7 +120,7 @@ class UpdateStateAPITest(TestCase):
             json.loads(response.content), {"state": ['"reedo" is not a valid choice.']}
         )
         self.assertIsNone(video.uploaded_on)
-        self.assertEqual(video.state, "pending")
+        self.assertEqual(video.upload_state, "pending")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_invalid_signature(self):
@@ -141,4 +141,4 @@ class UpdateStateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertIsNone(video.uploaded_on)
-        self.assertEqual(video.state, "pending")
+        self.assertEqual(video.upload_state, "pending")

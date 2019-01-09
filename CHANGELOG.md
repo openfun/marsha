@@ -8,6 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Rename `state` field to `upload_state` as it does not represent the state of the object
+  anymore but the state of the latest upload attempted on this object
+- Enforce read-only on `upload_state` and `active_stamp` fields as they should only be
+  updated by AWS via the `update-state` API endpoint.
+
 ## [1.1.2] - 2019-01-11
 
 ### Fixed

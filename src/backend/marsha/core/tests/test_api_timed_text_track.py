@@ -2,6 +2,7 @@
 from base64 import b64decode
 from datetime import datetime
 import json
+import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
 from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
-from ..models import STATE_CHOICES, TimedTextTrack
+from ..models import TimedTextTrack
 from .test_api_video import RSA_KEY_MOCK
 
 
@@ -47,15 +48,6 @@ class TimedTextTrackAPITest(TestCase):
             [
                 {"value": "af", "display_name": "Afrikaans"},
                 {"value": "ast", "display_name": "Asturian"},
-            ],
-        )
-        self.assertEqual(
-            content["actions"]["POST"]["state"]["choices"],
-            [
-                {"value": "pending", "display_name": "pending"},
-                {"value": "processing", "display_name": "processing"},
-                {"value": "error", "display_name": "error"},
-                {"value": "ready", "display_name": "ready"},
             ],
         )
 
@@ -96,7 +88,7 @@ class TimedTextTrackAPITest(TestCase):
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
-            state="ready",
+            upload_state="ready",
         )
 
         jwt_token = AccessToken()
@@ -118,7 +110,7 @@ class TimedTextTrackAPITest(TestCase):
                 "id": str(timed_text_track.id),
                 "mode": "cc",
                 "language": "fr",
-                "state": "ready",
+                "upload_state": "ready",
                 "url": (
                     "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
                     "timedtext/1533686400_fr_cc.vtt"
@@ -160,27 +152,23 @@ class TimedTextTrackAPITest(TestCase):
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_token_user_not_ready(self):
-        """A timed_text_track that is not ready should have its "url" field set to `None`."""
-        for state, _ in STATE_CHOICES:
-            if state == "ready":
-                continue
+        """A timed_text_track that has never been uploaded successfully should have no url."""
+        timed_text_track = TimedTextTrackFactory(
+            uploaded_on=None, upload_state=random.choice(["pending", "error", "ready"])
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
-            timed_text_track = TimedTextTrackFactory(
-                uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), state=state
-            )
-            jwt_token = AccessToken()
-            jwt_token.payload["video_id"] = str(timed_text_track.video.id)
-            jwt_token.payload["roles"] = ["instructor"]
-
-            # Get the timed_text_track linked to the JWT token
-            response = self.client.get(
-                "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('"url":null', response.content.decode("utf-8"))
-            content = json.loads(response.content)
-            self.assertIsNone(content["url"])
+        # Get the timed_text_track linked to the JWT token
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('"url":null', response.content.decode("utf-8"))
+        content = json.loads(response.content)
+        self.assertIsNone(content["url"])
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -194,7 +182,7 @@ class TimedTextTrackAPITest(TestCase):
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
-            state="ready",
+            upload_state="ready",
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
@@ -310,7 +298,7 @@ class TimedTextTrackAPITest(TestCase):
                 "active_stamp": None,
                 "mode": "st",
                 "language": "fr",
-                "state": "pending",
+                "upload_state": "pending",
                 "url": None,
                 "video": "f8c30d0d-2bb4-440d-9e8d-f4b231511f1f",
             },
@@ -379,8 +367,8 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.mode, "ts")
 
-    def test_api_timed_text_track_update_detail_token_user_uploaded_on(self):
-        """Token users should be able to confirm the datetime of upload through the API."""
+    def test_api_timed_text_track_update_detail_token_user_active_stamp(self):
+        """Token users trying to update "active_stamp" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
@@ -391,6 +379,7 @@ class TimedTextTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         data = json.loads(response.content)
+        self.assertIsNone(data["active_stamp"])
         data["active_stamp"] = "1533686400"
 
         response = self.client.put(
@@ -401,13 +390,11 @@ class TimedTextTrackAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         timed_text_track.refresh_from_db()
-        self.assertEqual(
-            timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
-        )
+        self.assertIsNone(timed_text_track.uploaded_on)
 
-    def test_api_timed_text_track_update_detail_token_user_state(self):
-        """Token users should be able to update the state through the API."""
-        timed_text_track = TimedTextTrackFactory(state="pending")
+    def test_api_timed_text_track_update_detail_token_user_upload_state(self):
+        """Token users trying to update "upload_state" through the API should be ignored."""
+        timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
@@ -417,7 +404,8 @@ class TimedTextTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         data = json.loads(response.content)
-        data["state"] = "ready"
+        self.assertEqual(data["upload_state"], "pending")
+        data["upload_state"] = "ready"
 
         response = self.client.put(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -427,7 +415,33 @@ class TimedTextTrackAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         timed_text_track.refresh_from_db()
-        self.assertEqual(timed_text_track.state, "ready")
+        self.assertEqual(timed_text_track.upload_state, "pending")
+
+    def test_api_timed_text_track_patch_detail_token_user_stamp_and_state(self):
+        """Token users should not be able to patch upload state and active stamp.
+
+        These 2 fields can only be updated by AWS via the separate update-state API endpoint.
+        """
+        timed_text_track = TimedTextTrackFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        self.assertEqual(timed_text_track.upload_state, "pending")
+        self.assertIsNone(timed_text_track.uploaded_on)
+
+        data = {"active_stamp": "1533686400", "upload_state": "ready"}
+
+        response = self.client.patch(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        timed_text_track.refresh_from_db()
+        self.assertIsNone(timed_text_track.uploaded_on)
+        self.assertEqual(timed_text_track.upload_state, "pending")
 
     def test_api_timed_text_track_update_detail_token_id(self):
         """Token users trying to update the ID of a timed text track they own should be ignored."""
@@ -497,37 +511,6 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 404)
         timed_text_track_update.refresh_from_db()
         self.assertEqual(timed_text_track_update.language, "en")
-
-    def test_api_timed_text_track_patch_detail_token_user_uploaded_on_and_state(self):
-        """Token users should be able to patch the state and active stamp of their timed text track.
-
-        Upon successful upload of the timed text track, AWS will patch just these 2 fields to avoid
-        interfering with the user modifying its title for example. In opposition, an update
-        requires posting all the required fields and is therefore performed in 2 steps (a GET
-        followed by a PUT) which is dangerous.
-        """
-        timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
-        self.assertEqual(timed_text_track.state, "pending")
-        self.assertIsNone(timed_text_track.uploaded_on)
-
-        data = {"active_stamp": "1533686400", "state": "ready"}
-
-        response = self.client.patch(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        timed_text_track.refresh_from_db()
-        self.assertEqual(
-            timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
-        )
-        self.assertEqual(timed_text_track.state, "ready")
 
     def test_api_timed_text_track_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a timed text track."""
