@@ -396,7 +396,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": video.lti_id,
@@ -409,7 +409,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.state, "ready")
+        self.assertEqual(new_video.upload_state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertEqual(new_video.resource_id, video.resource_id)
@@ -433,7 +433,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
             uploaded_on=timezone.now(),
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": "df7",
@@ -462,7 +462,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -475,7 +475,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertIsNone(new_video.duplicated_from)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -496,7 +496,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -525,7 +525,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=False,
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -538,7 +538,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -558,7 +558,7 @@ class PortabilityVideoLTITestCase(TestCase):
         VideoFactory(
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -587,7 +587,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="wrong",
             playlist__consumer_site=passport.consumer_site,
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": "df7",
@@ -600,7 +600,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.state, "ready")
+        self.assertEqual(new_video.upload_state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertEqual(new_video.resource_id, video.resource_id)
@@ -622,7 +622,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__consumer_site=passport.consumer_site,
             uploaded_on=timezone.now(),
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": "df7",
@@ -651,7 +651,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -664,7 +664,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -684,7 +684,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__lti_id="wrong",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -714,7 +714,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__lti_id="wrong",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=False,
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -727,7 +727,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -747,7 +747,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__lti_id="wrong",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=False,
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -778,7 +778,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__lti_id="wrong",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": "df7",
@@ -791,7 +791,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.state, "ready")
+        self.assertEqual(new_video.upload_state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertEqual(new_video.resource_id, video.resource_id)
@@ -814,7 +814,7 @@ class PortabilityVideoLTITestCase(TestCase):
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
             uploaded_on=timezone.now(),
-            state="ready",
+            upload_state="ready",
         )
         data = {
             "resource_link_id": "df7",
@@ -846,7 +846,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -859,7 +859,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -879,7 +879,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            state=random.choice(["pending", "error"]),
+            upload_state=random.choice(["pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -910,7 +910,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__is_portable_to_playlist=one_not_portable,
             playlist__is_portable_to_consumer_site=not one_not_portable,
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -923,7 +923,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, video.lti_id)
         self.assertNotEqual(new_video.resource_id, video.resource_id)
@@ -944,7 +944,7 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__is_portable_to_playlist=one_not_portable,
             playlist__is_portable_to_consumer_site=not one_not_portable,
-            state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice(["ready", "pending", "error"]),
         )
         data = {
             "resource_link_id": "df7",
@@ -985,7 +985,7 @@ class PortabilityVideoLTITestCase(TestCase):
         new_video = lti.get_or_create_video()
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.state, "pending")
+        self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
         self.assertEqual(new_video.lti_id, "df7")
         self.assertNotEqual(new_video.resource_id, video.resource_id)

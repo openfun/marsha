@@ -75,10 +75,20 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = TimedTextTrack
-        fields = ("active_stamp", "id", "mode", "language", "state", "url", "video")
-        read_only_fields = ("id", "url", "video")
+        fields = (
+            "active_stamp",
+            "id",
+            "mode",
+            "language",
+            "upload_state",
+            "url",
+            "video",
+        )
+        read_only_fields = ("id", "active_stamps", "upload_state", "url", "video")
 
-    active_stamp = TimestampField(source="uploaded_on", required=False, allow_null=True)
+    active_stamp = TimestampField(
+        source="uploaded_on", required=False, allow_null=True, read_only=True
+    )
     url = serializers.SerializerMethodField()
     # Make sure video UUID is converted to a string during serialization
     video = serializers.PrimaryKeyRelatedField(
@@ -121,7 +131,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             None if the timed text track is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on and obj.state == READY:
+        if obj.uploaded_on:
 
             base = "{cloudfront:s}/{resource!s}".format(
                 cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
@@ -158,11 +168,11 @@ class VideoSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "active_stamp",
-            "state",
+            "upload_state",
             "timed_text_tracks",
             "urls",
         )
-        read_only_fields = ("id", "active_stamp", "state", "urls")
+        read_only_fields = ("id", "active_stamp", "upload_state", "urls")
 
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
@@ -191,7 +201,7 @@ class VideoSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if obj.uploaded_on is None or obj.state != READY:
+        if obj.uploaded_on is None:
             return None
 
         urls = {"mp4": {}, "thumbnails": {}}

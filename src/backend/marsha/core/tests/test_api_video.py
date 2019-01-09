@@ -2,6 +2,7 @@
 from base64 import b64decode
 from datetime import datetime
 import json
+import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
 from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
-from ..models import STATE_CHOICES, Video
+from ..models import Video
 
 
 RSA_KEY_MOCK = b"""
@@ -84,14 +85,14 @@ class VideoAPITest(TestCase):
         video = VideoFactory(
             resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
-            state="ready",
+            upload_state="ready",
         )
         timed_text_track = TimedTextTrackFactory(
             video=video,
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
-            state="ready",
+            upload_state="ready",
         )
 
         jwt_token = AccessToken()
@@ -127,14 +128,14 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
-                "state": "ready",
+                "upload_state": "ready",
                 "timed_text_tracks": [
                     {
                         "active_stamp": "1533686400",
                         "mode": "cc",
                         "id": str(timed_text_track.id),
                         "language": "fr",
-                        "state": "ready",
+                        "upload_state": "ready",
                         "url": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                             "timedtext/1533686400_fr_cc.vtt"
@@ -199,46 +200,41 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "state": "pending",
+                "upload_state": "pending",
                 "timed_text_tracks": [],
                 "urls": None,
             },
         )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
-    def test_api_video_read_detail_token_user_not_ready(self):
-        """A video that is not ready should have its "urls" set to `None`."""
-        for state, _ in STATE_CHOICES:
-            if state == "ready":
-                continue
+    def test_api_video_read_detail_token_user_not_sucessfully_uploaded(self):
+        """A video that has never been uploaded successfully should have no url."""
+        state = random.choice(["pending", "error", "ready"])
+        video = VideoFactory(uploaded_on=None, upload_state=state)
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
 
-            video = VideoFactory(
-                uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), state=state
-            )
-            jwt_token = AccessToken()
-            jwt_token.payload["video_id"] = str(video.id)
-            jwt_token.payload["roles"] = ["instructor"]
-
-            # Get the video linked to the JWT token
-            response = self.client.get(
-                "/api/videos/{!s}/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('"urls":null', response.content.decode("utf-8"))
-            content = json.loads(response.content)
-            self.assertEqual(
-                content,
-                {
-                    "description": video.description,
-                    "id": str(video.id),
-                    "title": video.title,
-                    "active_stamp": "1533686400",
-                    "state": state,
-                    "timed_text_tracks": [],
-                    "urls": None,
-                },
-            )
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('"urls":null', response.content.decode("utf-8"))
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "upload_state": state,
+                "timed_text_tracks": [],
+                "urls": None,
+            },
+        )
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -250,7 +246,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(
             resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
-            state="ready",
+            upload_state="ready",
         )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -426,9 +422,9 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.uploaded_on, None)
 
-    def test_api_video_update_detail_token_user_state(self):
-        """Token users trying to update the state through the API should be ignored."""
-        video = VideoFactory(state="pending")
+    def test_api_video_update_detail_token_user_upload_state(self):
+        """Token users trying to update "upload_state" through the API should be ignored."""
+        video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
@@ -438,7 +434,8 @@ class VideoAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         data = json.loads(response.content)
-        data["state"] = "ready"
+        self.assertEqual(data["upload_state"], "pending")
+        data["upload_state"] = "ready"
 
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
@@ -448,7 +445,33 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.state, "pending")
+        self.assertEqual(video.upload_state, "pending")
+
+    def test_api_video_patch_detail_token_user_stamp_and_state(self):
+        """Token users should not be able to patch upload state and active stamp.
+
+        These 2 fields can only be updated by AWS via the separate update-state API endpoint.
+        """
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        self.assertEqual(video.upload_state, "pending")
+        self.assertIsNone(video.uploaded_on)
+
+        data = {"active_stamp": "1533686400", "upload_state": "ready"}
+
+        response = self.client.patch(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertIsNone(video.uploaded_on)
+        self.assertEqual(video.upload_state, "pending")
 
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
