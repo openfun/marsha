@@ -1,5 +1,4 @@
 """Test the LTI interconnection with Open edX."""
-import hashlib
 from html import unescape
 import json
 import random
@@ -42,7 +41,6 @@ class ViewsTestCase(TestCase):
             "context_id": "abc",
             "oauth_consumer_key": "ABC123",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
@@ -60,15 +58,9 @@ class ViewsTestCase(TestCase):
         data_jwt = match.group(1)
         jwt_token = AccessToken(data_jwt)
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], str(data.get("user_id")))
-        self.assertEqual(jwt_token.payload["context_id"], str(data.get("context_id")))
-        self.assertEqual(jwt_token.payload["roles"], [data.get("roles")])
-        self.assertEqual(
-            jwt_token.payload["email"],
-            hashlib.sha256(
-                data.get("lis_person_contact_email_primary").encode("utf8")
-            ).hexdigest(),
-        )
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
 
         data_state = match.group(2)
         self.assertEqual(data_state, "instructor")
@@ -108,7 +100,6 @@ class ViewsTestCase(TestCase):
             "context_id": "abc",
             "oauth_consumer_key": "ABC123",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
@@ -126,15 +117,9 @@ class ViewsTestCase(TestCase):
         data_jwt = match.group(1)
         jwt_token = AccessToken(data_jwt)
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], str(data.get("user_id")))
-        self.assertEqual(jwt_token.payload["context_id"], str(data.get("context_id")))
-        self.assertEqual(jwt_token.payload["roles"], [data.get("roles")])
-        self.assertEqual(
-            jwt_token.payload["email"],
-            hashlib.sha256(
-                data.get("lis_person_contact_email_primary").encode("utf8")
-            ).hexdigest(),
-        )
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
 
         data_state = match.group(2)
         self.assertEqual(data_state, "student")
@@ -167,7 +152,6 @@ class ViewsTestCase(TestCase):
             "context_id": "abc",
             "oauth_consumer_key": "ABC123",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
@@ -233,7 +217,6 @@ class ViewsTestCase(TestCase):
             "context_id": "abc",
             "oauth_consumer_key": "ABC123",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
             response = self.client.post("/lti-video/", data)
@@ -268,7 +251,6 @@ class DevelopmentViewsTestCase(TestCase):
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -283,15 +265,9 @@ class DevelopmentViewsTestCase(TestCase):
         data_jwt = match.group(1)
         jwt_token = AccessToken(data_jwt)
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], str(data.get("user_id")))
-        self.assertEqual(jwt_token.payload["context_id"], str(data.get("context_id")))
-        self.assertEqual(jwt_token.payload["roles"], [data.get("roles")])
-        self.assertEqual(
-            jwt_token.payload["email"],
-            hashlib.sha256(
-                data.get("lis_person_contact_email_primary").encode("utf8")
-            ).hexdigest(),
-        )
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
 
         data_state = match.group(2)
         self.assertEqual(data_state, "student")
@@ -328,7 +304,6 @@ class DevelopmentViewsTestCase(TestCase):
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -343,15 +318,9 @@ class DevelopmentViewsTestCase(TestCase):
         data_jwt = match.group(1)
         jwt_token = AccessToken(data_jwt)
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], str(data.get("user_id")))
-        self.assertEqual(jwt_token.payload["context_id"], str(data.get("context_id")))
-        self.assertEqual(jwt_token.payload["roles"], [data.get("roles")])
-        self.assertEqual(
-            jwt_token.payload["email"],
-            hashlib.sha256(
-                data.get("lis_person_contact_email_primary").encode("utf8")
-            ).hexdigest(),
-        )
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
 
         data_state = match.group(2)
         self.assertEqual(data_state, "instructor")
@@ -384,7 +353,6 @@ class DevelopmentViewsTestCase(TestCase):
             "context_id": "abc",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
         response = self.client.post("/lti-video/", data)
         self.assertEqual(response.status_code, 200)
@@ -399,15 +367,9 @@ class DevelopmentViewsTestCase(TestCase):
         jwt_token = AccessToken(data_jwt)
         video = Video.objects.get()
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], str(data.get("user_id")))
-        self.assertEqual(jwt_token.payload["context_id"], str(data.get("context_id")))
-        self.assertEqual(jwt_token.payload["roles"], [data.get("roles")])
-        self.assertEqual(
-            jwt_token.payload["email"],
-            hashlib.sha256(
-                data.get("lis_person_contact_email_primary").encode("utf8")
-            ).hexdigest(),
-        )
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
 
         data_state = match.group(2)
         self.assertEqual(data_state, "instructor")
@@ -446,7 +408,6 @@ class DevelopmentViewsTestCase(TestCase):
             "roles": role,
             "context_id": "abc",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_contact_email_primary": "contact@openfun.fr",
         }
 
         with self.assertRaises(ImproperlyConfigured):
