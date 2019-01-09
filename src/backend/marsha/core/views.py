@@ -64,10 +64,14 @@ class VideoLTIView(TemplateResponseMixin, View):
                 {
                     "video_id": str(video.id),
                     "context_id": lti.context_id,
-                    "user_id": lti.user_id,
                     "roles": lti.roles,
                 }
             )
+            try:
+                jwt_token.payload["user_id"] = lti.user_id
+            except AttributeError:
+                pass
+
             context["jwt_token"] = str(jwt_token)
 
         context["video_data"] = json.dumps(
