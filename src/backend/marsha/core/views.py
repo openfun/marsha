@@ -1,5 +1,4 @@
 """Views of the ``core`` app of the Marsha project."""
-import hashlib
 import json
 
 from django.utils.decorators import method_decorator
@@ -64,12 +63,9 @@ class VideoLTIView(TemplateResponseMixin, View):
             jwt_token.payload.update(
                 {
                     "video_id": str(video.id),
-                    "context_id": str(lti.context_id),
-                    "user_id": str(lti.user_id),
+                    "context_id": lti.context_id,
+                    "user_id": lti.user_id,
                     "roles": lti.roles,
-                    "email": hashlib.sha256(
-                        lti.lis_person_contact_email_primary.encode("utf8")
-                    ).hexdigest(),
                 }
             )
             context["jwt_token"] = str(jwt_token)
