@@ -78,13 +78,21 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         fields = (
             "active_stamp",
             "id",
+            "is_ready_to_play",
             "mode",
             "language",
             "upload_state",
             "url",
             "video",
         )
-        read_only_fields = ("id", "active_stamps", "upload_state", "url", "video")
+        read_only_fields = (
+            "id",
+            "active_stamp",
+            "is_ready_to_play",
+            "upload_state",
+            "url",
+            "video",
+        )
 
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
@@ -94,6 +102,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
     video = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
+    is_ready_to_play = serializers.BooleanField(read_only=True)
 
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
@@ -164,15 +173,22 @@ class VideoSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Video
         fields = (
-            "id",
-            "title",
-            "description",
             "active_stamp",
-            "upload_state",
+            "description",
+            "id",
+            "is_ready_to_play",
             "timed_text_tracks",
+            "title",
+            "upload_state",
             "urls",
         )
-        read_only_fields = ("id", "active_stamp", "upload_state", "urls")
+        read_only_fields = (
+            "id",
+            "active_stamp",
+            "is_ready_to_play",
+            "upload_state",
+            "urls",
+        )
 
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
@@ -181,6 +197,7 @@ class VideoSerializer(serializers.ModelSerializer):
         source="timedtexttracks", many=True, read_only=True
     )
     urls = serializers.SerializerMethodField()
+    is_ready_to_play = serializers.BooleanField(read_only=True)
 
     def get_urls(self, obj):
         """Urls of the video for each type of encoding.
