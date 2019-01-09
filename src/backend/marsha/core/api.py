@@ -72,7 +72,7 @@ def update_state(request):
 
     updated = model.objects.filter(id=key_elements["object_id"]).update(
         uploaded_on=key_elements["uploaded_on"],
-        state=serializer.validated_data["state"],
+        upload_state=serializer.validated_data["state"],
     )
 
     if updated:

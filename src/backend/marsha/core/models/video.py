@@ -193,9 +193,9 @@ class Video(BaseModel):
         null=True,
         blank=True,
     )
-    state = models.CharField(
+    upload_state = models.CharField(
         max_length=20,
-        verbose_name=_("state"),
+        verbose_name=_("upload state"),
         help_text=_("state of the upload and transcoding pipeline in AWS."),
         choices=STATE_CHOICES,
         default=PENDING,
@@ -264,9 +264,9 @@ class BaseTrack(BaseModel):
         null=True,
         blank=True,
     )
-    state = models.CharField(
+    upload_state = models.CharField(
         max_length=20,
-        verbose_name=_("state"),
+        verbose_name=_("upload state"),
         help_text=_("state of the upload and transcoding pipeline in AWS."),
         choices=STATE_CHOICES,
         default=PENDING,

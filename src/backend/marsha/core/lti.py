@@ -266,7 +266,7 @@ class LTI:
                     lti_id=self.resource_link_id,
                     playlist__consumer_site=consumer_site,
                     playlist__is_portable_to_playlist=True,
-                    state=READY,
+                    upload_state=READY,
                 )
                 .order_by("-uploaded_on")
                 .first()
@@ -279,7 +279,7 @@ class LTI:
                         lti_id=self.resource_link_id,
                         playlist__lti_id=self.context_id,
                         playlist__is_portable_to_consumer_site=True,
-                        state=READY,
+                        upload_state=READY,
                     )
                     .order_by("-uploaded_on")
                     .first()
@@ -290,7 +290,7 @@ class LTI:
                 origin_video = (
                     Video.objects.filter(
                         lti_id=self.resource_link_id,
-                        state=READY,
+                        upload_state=READY,
                         playlist__is_portable_to_playlist=True,
                         playlist__is_portable_to_consumer_site=True,
                     )
@@ -327,7 +327,7 @@ class LTI:
         kwargs = {
             "lti_id": self.resource_link_id,
             "playlist": playlist,
-            "state": PENDING,
+            "upload_state": PENDING,
             "title": self.resource_link_title,
         }
         if origin_video:
@@ -335,7 +335,7 @@ class LTI:
                 {
                     "duplicated_from": origin_video,
                     "resource_id": origin_video.resource_id,
-                    "state": READY,
+                    "upload_state": READY,
                     "uploaded_on": origin_video.uploaded_on,
                 }
             )
