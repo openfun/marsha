@@ -102,6 +102,25 @@ class XAPI:
             "objectType": "Activity",
         }
 
+        object_extensions = {}
+        if lti_user.course["school_name"] is not None:
+            object_extensions[
+                "https://w3id.org/xapi/acrossx/extensions/school"
+            ] = lti_user.course["school_name"]
+
+        if lti_user.course["course_name"] is not None:
+            object_extensions[
+                "http://adlnet.gov/expapi/activities/course"
+            ] = lti_user.course["course_name"]
+
+        if lti_user.course["course_section"] is not None:
+            object_extensions[
+                "http://adlnet.gov/expapi/activities/module"
+            ] = lti_user.course["course_section"]
+
+        if object_extensions:
+            statement["object"]["definition"]["extensions"] = object_extensions
+
         return statement
 
 

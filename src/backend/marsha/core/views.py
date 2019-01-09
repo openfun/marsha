@@ -71,6 +71,7 @@ class VideoLTIView(TemplateResponseMixin, View):
                     "video_id": str(video.id),
                     "context_id": lti.context_id,
                     "roles": lti.roles,
+                    "course": lti.get_course_info(),
                 }
             )
             try:

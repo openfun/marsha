@@ -182,10 +182,8 @@ class XAPIStatementApiTest(TestCase):
 
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_with_missing_user_id(
-        self, xapi_mock, video_model_mock
-    ):
-        """Missing user_id parameter in JWT will fail request to LRS"""
+    def test_xapi_statement_with_missing_user_id(self, xapi_mock, video_model_mock):
+        """Missing user_id parameter in JWT will fail request to LRS."""
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
@@ -214,5 +212,6 @@ class XAPIStatementApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json().get("status"), "Impossible to idenitfy the actor.")
-
+        self.assertEqual(
+            response.json().get("status"), "Impossible to idenitfy the actor."
+        )
