@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Add field `is_ready_to_play` to compensate removing field `state`
 - Rename `state` field to `upload_state` as it does not represent the state of the object
   anymore but the state of the latest upload attempted on this object
 - Enforce read-only on `upload_state` and `active_stamp` fields as they should only be
