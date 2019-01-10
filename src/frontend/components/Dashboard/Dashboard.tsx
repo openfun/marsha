@@ -16,8 +16,6 @@ const messages = defineMessages({
   },
 });
 
-export const ROUTE = () => '/dashboard';
-
 const IframeHeadingWithLayout = styled(IframeHeading)`
   flex-grow: 0;
   margin: 0;

@@ -5,12 +5,10 @@ import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
-import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
-import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
-import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
-
-export const ROUTE = () => '/';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 interface RedirectOnLoadProps {
   ltiState: appState;
@@ -22,16 +20,18 @@ interface RedirectOnLoadProps {
 export const RedirectOnLoad = ({ ltiState, video }: RedirectOnLoadProps) => {
   // Get LTI errors out of the way
   if (ltiState === appState.ERROR) {
-    return <Redirect push to={ERROR_ROUTE('lti')} />;
+    return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
   }
   // Everyone gets the video when it exists (so that instructors see the iframes like a student would by default)
   else if (video && video.is_ready_to_play) {
-    return <Redirect push to={PLAYER_ROUTE()} />;
+    return <Redirect push to={VIDEO_PLAYER_ROUTE()} />;
   }
   // Only instructors are allowed to interact with a non-ready video
   else if (ltiState === appState.INSTRUCTOR) {
     if (video!.upload_state === uploadState.PENDING) {
-      return <Redirect push to={FORM_ROUTE(modelName.VIDEOS, video!.id)} />;
+      return (
+        <Redirect push to={UPLOAD_FORM_ROUTE(modelName.VIDEOS, video!.id)} />
+      );
     } else {
       return <Redirect push to={DASHBOARD_ROUTE()} />;
     }
@@ -39,6 +39,6 @@ export const RedirectOnLoad = ({ ltiState, video }: RedirectOnLoadProps) => {
   // For safety default to the 404 view: this is for students, and any other role we add later on and don't add
   // a special clause for, when the video is not ready.
   else {
-    return <Redirect push to={ERROR_ROUTE('notFound')} />;
+    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
   }
 };

@@ -2,18 +2,16 @@ import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { RootState } from '../../data/rootReducer';
-import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { DashboardConnected } from '../DashboardConnected/DashboardConnected';
-import {
-  ErrorComponent,
-  ROUTE as ERROR_ROUTE,
-} from '../ErrorComponent/ErrorComponent';
+import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapperConnected } from '../InstructorWrapperConnected/InstructorWrapperConnected';
-import { ROUTE as HOME_ROUTE } from '../RedirectOnLoad/RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
-import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
+import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { UploadFormConnected } from '../UploadFormConnected/UploadFormConnected';
-import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 import { VideoPlayerConnected } from '../VideoPlayerConnected/VideoPlayerConnected';
 
 interface AppRoutesProps {
@@ -26,7 +24,7 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
       <Switch>
         <Route
           exact
-          path={PLAYER_ROUTE()}
+          path={VIDEO_PLAYER_ROUTE()}
           render={() => (
             <InstructorWrapperConnected>
               <VideoPlayerConnected video={context.ltiResourceVideo} />
@@ -35,7 +33,7 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
         />
         <Route
           exact
-          path={FORM_ROUTE()}
+          path={UPLOAD_FORM_ROUTE()}
           render={({ match }) => (
             <UploadFormConnected
               objectId={match.params.objectId}
@@ -45,7 +43,7 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
         />
         <Route
           exact
-          path={ERROR_ROUTE()}
+          path={ERROR_COMPONENT_ROUTE()}
           render={({ match }) => <ErrorComponent code={match.params.code} />}
         />
         <Route
@@ -53,7 +51,10 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
           path={DASHBOARD_ROUTE()}
           render={() => <DashboardConnected video={context.ltiResourceVideo} />}
         />
-        <Route path={HOME_ROUTE()} component={RedirectOnLoadConnected} />
+        <Route
+          path={REDIRECT_ON_LOAD_ROUTE()}
+          component={RedirectOnLoadConnected}
+        />
       </Switch>
     </MemoryRouter>
   );

@@ -6,10 +6,10 @@ import * as React from 'react';
 import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
-import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
-import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
-import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 
 describe('<RedirectOnLoad />', () => {
@@ -20,7 +20,7 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('lti'));
+    expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('lti'));
   });
 
   it('redirects instructors to the player when the video is ready', () => {
@@ -35,7 +35,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
 
     // The video is `is_ready_to_play` with a pending upload
     wrapper = shallow(
@@ -48,7 +48,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
 
     // The video is `is_ready_to_play` with an upload error
     wrapper = shallow(
@@ -61,7 +61,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
   });
 
   it('redirects students to /player when the video is ready', () => {
@@ -76,7 +76,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
 
     // The video is `is_ready_to_play` with a pending upload
     wrapper = shallow(
@@ -89,7 +89,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
 
     // The video is `is_ready_to_play` with an upload error
     wrapper = shallow(
@@ -102,7 +102,7 @@ describe('<RedirectOnLoad />', () => {
     );
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(PLAYER_ROUTE());
+    expect(wrapper.prop('to')).toEqual(VIDEO_PLAYER_ROUTE());
   });
 
   it('redirects instructors to /form when there is no video yet', () => {
@@ -121,7 +121,9 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(FORM_ROUTE(modelName.VIDEOS, '42'));
+    expect(wrapper.prop('to')).toEqual(
+      UPLOAD_FORM_ROUTE(modelName.VIDEOS, '42'),
+    );
   });
 
   it('redirects instructors to /dashboard when there is a video undergoing processing', () => {
@@ -157,7 +159,7 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('notFound'));
+    expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('notFound'));
   });
 
   it('redirects students to the error view when the video is null', () => {
@@ -167,6 +169,6 @@ describe('<RedirectOnLoad />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('notFound'));
+    expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('notFound'));
   });
 });

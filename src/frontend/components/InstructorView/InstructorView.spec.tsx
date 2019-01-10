@@ -3,7 +3,7 @@ import '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorControls, InstructorView, Preview } from './InstructorView';
 
 describe('<InstructorView />', () => {
@@ -41,6 +41,6 @@ describe('<InstructorView />', () => {
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('lti'));
+    expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('lti'));
   });
 });

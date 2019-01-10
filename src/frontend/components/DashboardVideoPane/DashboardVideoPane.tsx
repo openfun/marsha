@@ -9,7 +9,7 @@ import { Nullable } from '../../utils/types';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
 
 const messages = defineMessages({
@@ -97,11 +97,11 @@ export class DashboardVideoPane extends React.Component<
     const { video } = this.props;
 
     if (this.state.error) {
-      return <Redirect push to={ERROR_ROUTE('notFound')} />;
+      return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
     if (!video.is_ready_to_play && video.upload_state === uploadState.ERROR) {
-      return <Redirect push to={ERROR_ROUTE('upload')} />;
+      return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
     }
 
     return (
