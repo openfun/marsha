@@ -21,8 +21,8 @@ jest.doMock('react-router-dom', () => ({
 
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
-import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadForm } from './UploadForm';
 
 const mockUpdateObject = jest.fn();
@@ -160,7 +160,7 @@ describe('UploadForm', () => {
 
       expect(wrapper.name()).toEqual('Redirect');
       expect(wrapper.prop('push')).toBeTruthy();
-      expect(wrapper.prop('to')).toEqual(ERROR_ROUTE('policy'));
+      expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('policy'));
 
       expect(fetchMock.lastCall()).toBeUndefined();
       expect(mockMakeFormData).not.toHaveBeenCalled();

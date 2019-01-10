@@ -8,8 +8,8 @@ import { Video } from '../../types/tracks';
 import { colors } from '../../utils/theme/theme';
 import { Nullable } from '../../utils/types';
 import { Button } from '../Button/Button';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
-import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({
@@ -59,7 +59,7 @@ export const InstructorView = ({ children, videoId }: InstructorViewProps) =>
       <InstructorControls>
         <FormattedMessage {...messages.title} />
         <BtnWithLink
-          to={FORM_ROUTE(modelName.VIDEOS, videoId)}
+          to={UPLOAD_FORM_ROUTE(modelName.VIDEOS, videoId)}
           variant="primary"
         >
           <FormattedMessage {...messages.btnUpdateVideo} />
@@ -67,5 +67,5 @@ export const InstructorView = ({ children, videoId }: InstructorViewProps) =>
       </InstructorControls>
     </React.Fragment>
   ) : (
-    <Redirect push to={ERROR_ROUTE('lti')} />
+    <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />
   );

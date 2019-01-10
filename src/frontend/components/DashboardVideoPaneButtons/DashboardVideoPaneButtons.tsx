@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { uploadState } from '../../types/tracks';
 import { Button } from '../Button/Button';
-import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
-import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
+import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 import { withLink } from '../withLink/withLink';
 
 const { PENDING, READY } = uploadState;
@@ -54,7 +54,7 @@ export const DashboardVideoPaneButtons = (
   props: DashboardVideoPaneButtonsProps,
 ) => (
   <DashboardVideoPaneButtonsStyled>
-    <DashboardButtonStyled variant="primary" to={FORM_ROUTE()}>
+    <DashboardButtonStyled variant="primary" to={UPLOAD_FORM_ROUTE()}>
       <FormattedMessage
         {...(props.state === PENDING
           ? messages.btnUploadFirstVideo
@@ -64,7 +64,7 @@ export const DashboardVideoPaneButtons = (
     <DashboardButtonStyled
       variant="primary"
       disabled={props.state !== READY}
-      to={PLAYER_ROUTE()}
+      to={VIDEO_PLAYER_ROUTE()}
     >
       <FormattedMessage {...messages.btnPlayVideo} />
     </DashboardButtonStyled>

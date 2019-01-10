@@ -9,8 +9,8 @@ import { modelName } from '../../types/models';
 import { UploadableObject, uploadState } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
-import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { IframeHeading } from '../Headings/Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 import { UploadField } from '../UploadField/UploadField';
@@ -57,22 +57,6 @@ const UploadFormBack = styled.div`
   line-height: 2rem;
   padding: 0.5rem 1rem;
 `;
-
-/**
- * Route for the `<UploadForm />` component.
- * @param objectType The model name for the object for which we're uploading a file.
- * @param objectId The ID of said object.
- */
-export const ROUTE = (
-  objectType?: modelName,
-  objectId?: UploadableObject['id'],
-) => {
-  if (objectType) {
-    return `/form/${objectType}/${objectId}`;
-  } else {
-    return `/form/:objectType(${Object.values(modelName).join('|')})/:objectId`;
-  }
-};
 
 /** Props shape for the UploadForm component. */
 interface UploadFormProps {
@@ -176,10 +160,10 @@ export class UploadForm extends React.Component<
         return <Redirect push to={DASHBOARD_ROUTE()} />;
 
       case 'not_found_error':
-        return <Redirect push to={ERROR_ROUTE('notFound')} />;
+        return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
 
       case 'policy_error':
-        return <Redirect push to={ERROR_ROUTE('policy')} />;
+        return <Redirect push to={ERROR_COMPONENT_ROUTE('policy')} />;
 
       default:
         return (

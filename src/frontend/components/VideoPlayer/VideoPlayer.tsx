@@ -6,7 +6,7 @@ import shaka from 'shaka-player';
 
 import { Video, videoSize } from '../../types/tracks';
 import { Maybe, Nullable } from '../../utils/types';
-import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import './VideoPlayer.css'; // Improve some plyr styles
 
 export interface VideoPlayerProps {
@@ -16,8 +16,6 @@ export interface VideoPlayerProps {
 interface VideoPlayerState {
   player: Maybe<Plyr>;
 }
-
-export const ROUTE = () => '/player';
 
 export class VideoPlayer extends React.Component<
   VideoPlayerProps,
@@ -76,7 +74,7 @@ export class VideoPlayer extends React.Component<
 
     // The video is somehow missing
     if (!video) {
-      return <Redirect push to={ERROR_ROUTE('notFound')} />;
+      return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
     return (
