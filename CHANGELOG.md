@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.1] - 2019-01-10
+
+### Added
+
+- Allow video token holders to delete related timedtexttracks
+
 ### Fixed
 
 - Remove usage of lis_person_contact_email_primary in the LTI request
@@ -31,5 +37,6 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v1.1.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v1.1.1...master
+[1.1.1]: https://github.com/openfun/marsha/compare/v1.0.0...v1.1.1
 [1.1.0]: https://github.com/openfun/marsha/compare/v1.0.0...v1.1.0
