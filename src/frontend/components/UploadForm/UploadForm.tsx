@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { API_ENDPOINT } from '../../settings';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { modelName } from '../../types/models';
-import { trackState, UploadableObject } from '../../types/tracks';
+import { UploadableObject, uploadState } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
@@ -159,7 +159,7 @@ export class UploadForm extends React.Component<
       // Useful for the Dashboard loader and help text.
       updateObject({
         ...object,
-        state: trackState.UPLOADING,
+        upload_state: uploadState.UPLOADING,
       });
 
       const response = await fetch(
@@ -173,7 +173,7 @@ export class UploadForm extends React.Component<
       if (response.ok) {
         updateObject({
           ...object,
-          state: trackState.PROCESSING,
+          upload_state: uploadState.PROCESSING,
         });
       } else {
         throw new Error(`Failed to upload ${objectType}.`);
@@ -181,7 +181,7 @@ export class UploadForm extends React.Component<
     } catch (error) {
       updateObject({
         ...object,
-        state: trackState.ERROR,
+        upload_state: uploadState.ERROR,
       });
     }
   }

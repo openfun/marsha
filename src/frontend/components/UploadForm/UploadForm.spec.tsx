@@ -15,7 +15,7 @@ jest.doMock('react-router-dom', () => ({
 }));
 
 import { modelName } from '../../types/models';
-import { trackState, Video } from '../../types/tracks';
+import { uploadState, Video } from '../../types/tracks';
 import { ROUTE as DASHBOARD_ROUTE } from '../Dashboard/Dashboard';
 import { ROUTE as ERROR_ROUTE } from '../ErrorComponent/ErrorComponent';
 import { UploadForm } from './UploadForm';
@@ -26,8 +26,8 @@ describe('UploadForm', () => {
   const object = {
     description: '',
     id: 'ab42',
-    state: 'pending',
     title: '',
+    upload_state: 'pending',
   } as Video;
 
   beforeEach(jest.resetAllMocks);
@@ -94,8 +94,8 @@ describe('UploadForm', () => {
     expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: trackState.UPLOADING,
       title: '',
+      upload_state: uploadState.UPLOADING,
     });
     expect(mockMakeFormData).toHaveBeenCalledWith(
       ['key', 'policy##key'],
@@ -118,8 +118,8 @@ describe('UploadForm', () => {
     expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: trackState.PROCESSING,
       title: '',
+      upload_state: uploadState.PROCESSING,
     });
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
@@ -184,8 +184,8 @@ describe('UploadForm', () => {
     expect(mockUpdateObject).toHaveBeenCalledWith({
       description: '',
       id: 'ab42',
-      state: trackState.ERROR,
       title: '',
+      upload_state: uploadState.ERROR,
     });
   });
 });
