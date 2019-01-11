@@ -182,6 +182,7 @@ describe('lambda', () => {
     };
 
     it('delegates to encodeVideo and calls updateState & callback when it succeeds', async () => {
+      mockEncodeVideo.mockReturnValue(Promise.resolve({ Job: { Id: '42' } }));
       await lambda(event, null, callback);
 
       expect(mockEncodeVideo).toHaveBeenCalledWith(
