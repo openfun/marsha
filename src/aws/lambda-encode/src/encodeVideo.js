@@ -125,7 +125,7 @@ module.exports = async (objectKey, sourceBucket) => {
     },
   };
 
-  await new AWS.MediaConvert({
+  return await new AWS.MediaConvert({
     endpoint: process.env.MEDIA_CONVERT_END_POINT,
   })
     .createJob(params)

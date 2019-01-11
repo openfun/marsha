@@ -27,24 +27,29 @@ exports.handler = async (event, context, callback) => {
     return;
   }
 
-  try {
-    switch (kind) {
-      case 'timedtexttrack':
+  switch (kind) {
+    case 'timedtexttrack':
+      try {
         await encodeTimedTextTrack(objectKey, sourceBucket);
         await updateState(objectKey, 'ready');
-        console.log(
-          `Successfully received and encoded timedtexttrack ${objectKey} from ${sourceBucket}.`,
-        );
-        break;
+      } catch (error) {
+        return callback(error);
+      }
+      console.log(
+        `Successfully received and encoded timedtexttrack ${objectKey} from ${sourceBucket}.`,
+      );
+      break;
 
-      case 'video':
-        await encodeVideo(objectKey, sourceBucket);
+    case 'video':
+      let jobData;
+      try {
+        jobData = await encodeVideo(objectKey, sourceBucket);
         await updateState(objectKey, 'processing');
-        console.log(JSON.stringify(jobData, null, 2));
-        callback(null, { Job: jobData.Job.Id });
-        break;
-    }
-  } catch (error) {
-    callback(error);
+      } catch (error) {
+        return callback(error);
+      }
+      console.log(JSON.stringify(jobData, null, 2));
+      callback(null, { Job: jobData.Job.Id });
+      break;
   }
 };
