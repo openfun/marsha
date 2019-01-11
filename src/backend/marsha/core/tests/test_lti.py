@@ -411,6 +411,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(new_video.duplicated_from, video)
         self.assertEqual(new_video.state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertEqual(new_video.resource_id, video.resource_id)
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
 
@@ -475,6 +477,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertIsNone(new_video.duplicated_from)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
 
@@ -536,6 +540,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
 
@@ -596,6 +602,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(new_video.duplicated_from, video)
         self.assertEqual(new_video.state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertEqual(new_video.resource_id, video.resource_id)
         self.assertNotEqual(new_video.playlist, video.playlist)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -658,6 +666,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_portable_not_ready_student(self, mock_verify):
@@ -719,6 +729,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_not_portable_student(self, mock_verify):
@@ -781,6 +793,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(new_video.duplicated_from, video)
         self.assertEqual(new_video.state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertEqual(new_video.resource_id, video.resource_id)
         self.assertNotEqual(new_video.playlist, video.playlist)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -847,6 +861,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_portable_not_ready_student(self, mock_verify):
@@ -909,6 +925,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertNotEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, video.lti_id)
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_not_portable_student(self, mock_verify):
@@ -969,6 +987,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.state, "pending")
         self.assertIsNone(new_video.uploaded_on)
+        self.assertEqual(new_video.lti_id, "df7")
+        self.assertNotEqual(new_video.resource_id, video.resource_id)
         # No new playlist is created
         self.assertEqual(Playlist.objects.count(), 1)
 
