@@ -8,6 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.2] - 2019-01-11
+
+### Fixed
+
+- Fix logging in the lambda-encode after submitting job to MediaConvert
+- Fix duplicating videos for playlist/site portability (`resource_id` field
+  was not set from the origin video as it should)
+
 ## [1.1.1] - 2019-01-10
 
 ### Added
@@ -37,6 +45,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v1.1.1...master
-[1.1.1]: https://github.com/openfun/marsha/compare/v1.0.0...v1.1.1
+[unreleased]: https://github.com/openfun/marsha/compare/v1.1.2...master
+[1.1.2]: https://github.com/openfun/marsha/compare/v1.1.1...v1.1.2
+[1.1.1]: https://github.com/openfun/marsha/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/openfun/marsha/compare/v1.0.0...v1.1.0
