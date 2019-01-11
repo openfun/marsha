@@ -17,8 +17,9 @@ describe('VideoPlayer', () => {
   const video = {
     description: 'Some description',
     id: 'video-id',
-    state: 'ready',
+    is_ready_to_play: true,
     title: 'Some title',
+    upload_state: 'ready',
     urls: {
       manifests: {
         dash: 'https://example.com/dash.mpd',

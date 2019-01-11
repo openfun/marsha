@@ -1,6 +1,6 @@
 import { Resource } from './Resource';
 
-/** Possible states for a track, whether video or other such as timed text.
+/** Possible states for a track upload, whether video or other such as timed text.
  *
  * NB: PENDING, PROCESSING, READY and ERROR are the actual possible values
  * for the state field on a video record.
@@ -14,7 +14,7 @@ import { Resource } from './Resource';
  * applied on any Video or other track record but will be used as a stand-in in our local
  * track representations and whenever we might need to pass such state information around.
  */
-export enum trackState {
+export enum uploadState {
   ERROR = 'error',
   PENDING = 'pending',
   PROCESSING = 'processing',
@@ -38,8 +38,8 @@ export enum timedTextMode {
 export interface TimedText extends Resource {
   language: string;
   mode: timedTextMode;
-  state: trackState;
   uploaded_on: string;
+  upload_state: uploadState;
   video: Video;
 }
 
@@ -50,8 +50,9 @@ export type videoSize = '144' | '240' | '480' | '720' | '1080';
 export interface Video extends Resource {
   description: string;
   id: string;
-  state: trackState;
+  is_ready_to_play: boolean;
   title: string;
+  upload_state: uploadState;
   urls: {
     manifests: {
       dash: string;

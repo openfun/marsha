@@ -2,13 +2,13 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { trackState } from '../../types/tracks';
+import { uploadState } from '../../types/tracks';
 import { Button } from '../Button/Button';
 import { ROUTE as FORM_ROUTE } from '../UploadForm/UploadForm';
 import { ROUTE as PLAYER_ROUTE } from '../VideoPlayer/VideoPlayer';
 import { withLink } from '../withLink/withLink';
 
-const { PENDING, READY } = trackState;
+const { PENDING, READY } = uploadState;
 
 const messages = defineMessages({
   btnPlayVideo: {
@@ -43,7 +43,7 @@ const DashboardButtonStyled = withLink(styled(Button)`
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardVideoPaneButtonsProps {
-  state: trackState;
+  state: uploadState;
 }
 
 /** Component. Displays buttons with links to the Player & the Form, adapting their state and

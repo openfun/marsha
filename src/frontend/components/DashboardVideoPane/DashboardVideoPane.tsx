@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
-import { trackState, Video } from '../../types/tracks';
+import { uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
@@ -74,18 +74,18 @@ export class DashboardVideoPane extends React.Component<
         },
       });
 
-      const incomingVideo = await response.json();
+      const incomingVideo: Video = await response.json();
       // If the video is PENDING on the backend and PROCESSING on our end, we're probably experiencing a race
       // condition where the backend is not yet aware of the end of the upload.
       if (
-        incomingVideo.state === trackState.PENDING &&
-        video.state === trackState.PROCESSING
+        incomingVideo.upload_state === uploadState.PENDING &&
+        video.upload_state === uploadState.PROCESSING
       ) {
         // Disregard the server-provided video.
         return;
       }
       // When the video is ready, we need to update the App state so VideoForm has access to the URLs when it loads
-      else if (incomingVideo.state === trackState.READY) {
+      else if (incomingVideo.upload_state === uploadState.READY) {
         updateVideo(incomingVideo);
       }
     } catch (error) {
@@ -100,7 +100,7 @@ export class DashboardVideoPane extends React.Component<
       return <Redirect push to={ERROR_ROUTE('notFound')} />;
     }
 
-    if (video.state === trackState.ERROR) {
+    if (!video.is_ready_to_play && video.upload_state === uploadState.ERROR) {
       return <Redirect push to={ERROR_ROUTE('upload')} />;
     }
 
@@ -109,9 +109,9 @@ export class DashboardVideoPane extends React.Component<
         <DashboardInternalHeading>
           <FormattedMessage {...messages.title} />
         </DashboardInternalHeading>
-        <UploadStatusList state={video.state} />
-        <DashboardVideoPaneHelptext state={video.state} />
-        <DashboardVideoPaneButtons state={video.state} />
+        <UploadStatusList state={video.upload_state} />
+        <DashboardVideoPaneHelptext state={video.upload_state} />
+        <DashboardVideoPaneButtons state={video.upload_state} />
       </DashboardInnerContainer>
     );
   }
