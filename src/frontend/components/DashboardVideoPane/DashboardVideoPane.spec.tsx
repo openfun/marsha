@@ -8,7 +8,7 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
   DashboardVideoPaneButtons: () => {},
 }));
 
-import { trackState } from '../../types/tracks';
+import { uploadState } from '../../types/tracks';
 import { UploadStatusList } from '../UploadStatusList/UploadStatusList';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
@@ -23,7 +23,7 @@ describe('<DashboardVideoPane />', () => {
 
   it('renders & starts polling for the video', async () => {
     // Create a mock video with the initial state (PROCESSING)
-    const mockVideo: any = { id: 'dd44', state: trackState.PROCESSING };
+    const mockVideo: any = { id: 'dd44', upload_state: uploadState.PROCESSING };
     fetchMock.mock('/api/videos/dd44/', mockVideo);
 
     let wrapper = shallow(
@@ -36,7 +36,7 @@ describe('<DashboardVideoPane />', () => {
 
     // DashboardVideoPane shows the video as PROCESSING
     expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
-      trackState.PROCESSING,
+      uploadState.PROCESSING,
     );
     expect(fetchMock.called()).not.toBeTruthy();
 
@@ -50,7 +50,7 @@ describe('<DashboardVideoPane />', () => {
 
     // The video will be ready in further responses
     fetchMock.reset();
-    mockVideo.state = trackState.READY;
+    mockVideo.upload_state = uploadState.READY;
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 60 + 200);
@@ -62,7 +62,7 @@ describe('<DashboardVideoPane />', () => {
     ]);
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       id: 'dd44',
-      state: 'ready',
+      upload_state: 'ready',
     });
 
     wrapper.unmount();
@@ -75,7 +75,7 @@ describe('<DashboardVideoPane />', () => {
     );
     // DashboardVideoPane shows the video as READY
     expect(wrapper.find(UploadStatusList).prop('state')).toEqual(
-      trackState.READY,
+      uploadState.READY,
     );
 
     // Unmount DashboardVideoPane to get rid of its interval
@@ -90,7 +90,13 @@ describe('<DashboardVideoPane />', () => {
       <DashboardVideoPane
         jwt={'cool_token_m8'}
         updateVideo={mockUpdateVideo}
-        video={{ id: 'ee55', state: trackState.PROCESSING } as any}
+        video={
+          {
+            id: 'ee55',
+            is_ready_to_play: false,
+            upload_state: uploadState.PROCESSING,
+          } as any
+        }
       />,
     );
 
@@ -105,18 +111,51 @@ describe('<DashboardVideoPane />', () => {
     wrapper.unmount();
   });
 
-  it('redirects to error when the video is in the error state', async () => {
+  it('redirects to error when the video is in the error state and not `is_ready_to_play`', async () => {
     const wrapper = shallow(
       <DashboardVideoPane
         jwt={'cool_token_m8'}
         updateVideo={mockUpdateVideo}
-        video={{ id: 'ff66', state: trackState.ERROR } as any}
+        video={
+          {
+            id: 'ff66',
+            is_ready_to_play: false,
+            upload_state: uploadState.ERROR,
+          } as any
+        }
       />,
     );
 
     expect(wrapper.name()).toEqual('Redirect');
     expect(wrapper.prop('push')).toBeTruthy();
     expect(wrapper.prop('to')).toEqual('/errors/upload');
+
+    // Unmount DashboardVideoPane to get rid of its interval
+    wrapper.unmount();
+  });
+
+  it('shows the dashboard when the video is in the error state but `is_ready_to_play`', async () => {
+    const wrapper = shallow(
+      <DashboardVideoPane
+        jwt={'cool_token_m8'}
+        updateVideo={mockUpdateVideo}
+        video={
+          {
+            id: 'ff66',
+            is_ready_to_play: true,
+            upload_state: uploadState.ERROR,
+          } as any
+        }
+      />,
+    );
+
+    expect(wrapper.name()).not.toEqual('Redirect');
+    expect(
+      wrapper
+        .dive()
+        .childAt(0)
+        .html(),
+    ).toContain('Video preparation');
 
     // Unmount DashboardVideoPane to get rid of its interval
     wrapper.unmount();
