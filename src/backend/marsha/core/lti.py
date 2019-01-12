@@ -324,19 +324,12 @@ class LTI:
         )
 
         # Create the video, pointing to the file from the origin video if any
-        kwargs = {
-            "lti_id": self.resource_link_id,
-            "playlist": playlist,
-            "upload_state": PENDING,
-            "title": self.resource_link_title,
-        }
         if origin_video:
-            kwargs.update(
-                {
-                    "duplicated_from": origin_video,
-                    "resource_id": origin_video.resource_id,
-                    "upload_state": READY,
-                    "uploaded_on": origin_video.uploaded_on,
-                }
-            )
-        return Video.objects.create(**kwargs)
+            return origin_video.duplicate(playlist)
+
+        return Video.objects.create(
+            lti_id=self.resource_link_id,
+            playlist=playlist,
+            upload_state=PENDING,
+            title=self.resource_link_title,
+        )

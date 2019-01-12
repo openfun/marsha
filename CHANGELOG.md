@@ -16,6 +16,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Add unicity test timed text tracks to confirm soft deleted records are ignored
+- Copy related tracks correctly when duplicating a video
 - Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
   state and returns the AWS S3 upload policy in a single POST query
 - Add field `is_ready_to_play` to compensate removing field `state`

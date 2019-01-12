@@ -261,6 +261,59 @@ class Video(BaseModel):
             resource=self.resource_id, video=self.id, stamp=stamp
         )
 
+    def duplicate(self, playlist):
+        """Duplicate a video to another playlist.
+
+        Parameters
+        ----------
+        playlist: Type[models.Playlist]
+            The playlist to which the duplicated video should be attached. It should pre-exist.
+
+        Returns
+        -------
+        models.Video
+            The duplicated video with all its related tracks.
+
+        """
+        # Duplicate the video
+        new_video = Video.objects.create(
+            duplicated_from=self,
+            lti_id=self.lti_id,
+            playlist=playlist,
+            resource_id=self.resource_id,
+            upload_state=READY,
+            title=self.title,
+            uploaded_on=self.uploaded_on,
+        )
+
+        def copy_track(obj):
+            """Copy a track from the current video to the new duplicated video.
+
+            Parameters
+            ----------
+            obj: Type[models.BaseTrack]
+                A track instance to be copied to the new video.
+
+            Returns
+            -------
+            models.BaseTrack
+                The track linked to the new video and with a null primary key which will cause
+                it to duplicate when it will be saved.
+
+            """
+            obj.pk = None
+            obj.video = new_video
+            return obj
+
+        # Duplicate the related track objects to the new video using a bulk create for performance
+        for _class in [TimedTextTrack, AudioTrack, SignTrack]:
+            tracks = map(
+                copy_track, _class.objects.filter(video=self, upload_state=READY)
+            )
+            _class.objects.bulk_create(tracks)
+
+        return new_video
+
 
 class BaseTrack(BaseModel):
     """Base model for different kinds of tracks tied to a video."""
