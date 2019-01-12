@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { API_ENDPOINT } from '../../settings';
+import { initiateUpload } from '../../data/sideEffects/initiateUpload';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { modelName } from '../../types/models';
 import { UploadableObject, uploadState } from '../../types/tracks';
@@ -84,8 +84,6 @@ interface UploadFormProps {
 
 /** State shape for the UploadForm component. */
 interface UploadFormState {
-  file: Maybe<File>;
-  policy: AWSPolicy;
   status: Maybe<'not_found_error' | 'policy_error' | 'uploading' | 'success'>;
 }
 
@@ -101,40 +99,22 @@ export class UploadForm extends React.Component<
   UploadFormProps,
   UploadFormState
 > {
-  async componentDidMount() {
-    const { jwt, object, objectType } = this.props;
+  async upload(file: Maybe<File>) {
+    const { jwt, object, objectType, updateObject } = this.props;
+    // Do not trigger an upload if we did not receive a file object.
+    if (!file) {
+      return;
+    }
 
     if (!object) {
       return this.setState({ status: 'not_found_error' });
     }
 
+    let policy: AWSPolicy;
     try {
-      const response = await fetch(
-        `${API_ENDPOINT}/${objectType}/${object.id}/upload-policy/`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      const policy = await response.json();
-      this.setState({ policy });
+      policy = await initiateUpload(jwt, objectType, object.id);
     } catch (error) {
-      this.setState({ status: 'policy_error' });
-    }
-  }
-
-  onUploadFieldContentUpdated(file: Maybe<File>) {
-    this.setState({ file });
-    this.upload();
-  }
-
-  async upload() {
-    const { file, policy } = this.state;
-    const { object, objectType, updateObject } = this.props;
-
-    if (!object) {
-      return this.setState({ status: 'not_found_error' });
+      return this.setState({ status: 'policy_error' });
     }
 
     this.setState({ status: 'uploading' });
@@ -209,9 +189,7 @@ export class UploadForm extends React.Component<
                 <FormattedMessage {...titleMessages[objectType]} />
               </IframeHeadingWithLayout>
               <UploadFieldContainer>
-                <UploadField
-                  onContentUpdated={this.onUploadFieldContentUpdated.bind(this)}
-                />
+                <UploadField onContentUpdated={this.upload.bind(this)} />
               </UploadFieldContainer>
             </UploadFormContainer>
             <UploadFormBack>
