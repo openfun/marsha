@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add unicity constraints on the playlist model
 - Improve string representation for the a playlist model
 
 ### Fixed
