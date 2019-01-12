@@ -63,7 +63,7 @@ class Playlist(BaseModel):
     duplicated_from = models.ForeignKey(
         to="self",
         related_name="duplicates",
-        verbose_name=_("duplicate from"),
+        verbose_name=_("duplicated from"),
         help_text=_("original playlist this one was duplicated from"),
         # don't delete a playlist if the one it was duplicated from is hard deleted
         on_delete=models.SET_NULL,

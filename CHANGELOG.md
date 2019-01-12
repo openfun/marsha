@@ -10,7 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Improve admin pages for the video model
+- Improve admin pages for the playlist and video models
 - Add unicity constraints on the playlist and video models
 - Improve string representation for the a playlist model
 
