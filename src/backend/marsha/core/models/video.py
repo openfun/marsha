@@ -87,6 +87,13 @@ class Playlist(BaseModel):
         verbose_name = _("playlist")
         verbose_name_plural = _("playlists")
 
+    def __str__(self):
+        """Get the string representation of an instance."""
+        result = f"{self.title}"
+        if self.deleted:
+            result = _("{:s} [deleted]").format(result)
+        return result
+
 
 class PlaylistAccess(BaseModel):
     """

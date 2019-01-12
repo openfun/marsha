@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Improve string representation for the a playlist model
+
 ### Fixed
 
 - Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
