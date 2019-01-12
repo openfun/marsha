@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add unicity test for timed text tracks to confirm that soft deleted records are ignored
 - Add unicity constraints on the playlist and video models
 - Improve string representation for the a playlist model
 

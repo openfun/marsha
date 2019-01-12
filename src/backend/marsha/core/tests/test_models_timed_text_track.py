@@ -4,6 +4,8 @@ import random
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
+from safedelete.models import SOFT_DELETE_CASCADE
+
 from ..factories import TimedTextTrackFactory, VideoFactory
 from ..models import TimedTextTrack
 
@@ -45,7 +47,7 @@ class TimedTextTrackModelsTestCase(TestCase):
             video=VideoFactory(), language="fr", mode=timed_text_track.mode
         )
 
-        # Trying to create a timed text track with all three fields identitcal should raise a
+        # Trying to create a timed text track with all three fields identical should raise a
         # database error
         with self.assertRaises(ValidationError) as context:
             TimedTextTrack.objects.create(
@@ -54,4 +56,10 @@ class TimedTextTrackModelsTestCase(TestCase):
         self.assertEqual(
             context.exception.messages,
             ["Timed text track with this Video, Language and Mode already exists."],
+        )
+
+        # Soft deleted timed text tracks should not count for unicity
+        timed_text_track.delete(force_policy=SOFT_DELETE_CASCADE)
+        TimedTextTrackFactory(
+            video=timed_text_track.video, language="fr", mode=timed_text_track.mode
         )
