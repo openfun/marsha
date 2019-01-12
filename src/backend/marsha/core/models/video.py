@@ -86,6 +86,7 @@ class Playlist(BaseModel):
         db_table = "playlist"
         verbose_name = _("playlist")
         verbose_name_plural = _("playlists")
+        indexes = [NonDeletedUniqueIndex(["lti_id", "consumer_site"])]
 
     def __str__(self):
         """Get the string representation of an instance."""
