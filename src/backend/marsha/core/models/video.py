@@ -216,6 +216,10 @@ class Video(BaseModel):
         ordering = ["position", "id"]
         verbose_name = _("video")
         verbose_name_plural = _("videos")
+        indexes = [
+            NonDeletedUniqueIndex(["lti_id", "playlist"]),
+            NonDeletedUniqueIndex(["resource_id", "playlist"]),
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
