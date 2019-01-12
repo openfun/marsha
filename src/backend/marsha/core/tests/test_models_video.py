@@ -1,10 +1,20 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+import random
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import VideoFactory
+from ..factories import (
+    AudioTrackFactory,
+    PlaylistFactory,
+    SignTrackFactory,
+    TimedTextTrackFactory,
+    VideoFactory,
+)
+from ..models import STATE_CHOICES, AudioTrack, SignTrack, TimedTextTrack
+from ..utils.time_utils import to_datetime
 
 
 # We don't enforce arguments documentation in tests
@@ -67,3 +77,55 @@ class VideoModelsTestCase(TestCase):
         # Soft deleted videos should not count for unicity
         video.delete(force_policy=SOFT_DELETE_CASCADE)
         VideoFactory(resource_id=video.resource_id, playlist=video.playlist)
+
+    def test_models_video_duplicate(self):
+        """Duplicating a video should duplicate its related tracks as well."""
+        video = VideoFactory()
+
+        # Create all sorts of tracks for this video
+        for track_factory in [
+            AudioTrackFactory,
+            SignTrackFactory,
+            TimedTextTrackFactory,
+        ]:
+            # Create a track in ready state that should be duplicated
+            track_factory(
+                video=video,
+                language="fr",
+                uploaded_on=to_datetime(random.randint(0, 1533686400)),
+                upload_state="ready",
+            )
+            # Create another track in another state to check that it is not duplicated
+            # Make sure the language is different from the ready track already created
+            # as there is a unicity constraint
+            track_factory(
+                video=video,
+                language="en",
+                upload_state=random.choice(
+                    [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+                ),
+            )
+
+        track_models = [
+            (AudioTrack, ["language", "uploaded_on"]),
+            (SignTrack, ["language", "uploaded_on"]),
+            (TimedTextTrack, ["language", "mode", "uploaded_on"]),
+        ]
+        original_tracks = [
+            _class.objects.filter(video=video, upload_state="ready").values_list(
+                *fields
+            )
+            for _class, fields in track_models
+        ]
+
+        # Now duplicate the video
+        new_playlist = PlaylistFactory()
+        new_video = video.duplicate(new_playlist)
+
+        # Check that everything was duplicated as expected
+        duplicated_tracks = [
+            _class.objects.filter(video=new_video).values_list(*fields)
+            for _class, fields in track_models
+        ]
+        for original, duplicated in zip(original_tracks, duplicated_tracks):
+            self.assertEqual(list(original), list(duplicated))
