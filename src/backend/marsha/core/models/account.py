@@ -4,6 +4,7 @@ import string
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sites.models import _simple_domain_name_validator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -137,6 +138,19 @@ class LTIPassport(BaseModel):
             result = _("{:s}[deleted]").format(result)
         return result
 
+    def clean(self):
+        """Clean instance fields before saving."""
+        if self.consumer_site and self.playlist:
+            message = _(
+                "You should set either a Consumer Site or a Playlist, but not both."
+            )
+            raise ValidationError({"__all__": [message]})
+        if not (self.consumer_site or self.playlist):
+            raise ValidationError(
+                {"__all__": [_("You must set either a Consumer Site or a Playlist.")]}
+            )
+        return super().clean()
+
     # pylint: disable=arguments-differ
     def save(self, *args, **kwargs):
         """Generate the oauth consumer key and shared secret randomly upon creation.
@@ -149,6 +163,7 @@ class LTIPassport(BaseModel):
             Passed onto parent's `save` method
 
         """
+        self.full_clean()
         if not self.oauth_consumer_key:
             self.oauth_consumer_key = "".join(
                 random.choice(OAUTH_CONSUMER_KEY_CHARS)
