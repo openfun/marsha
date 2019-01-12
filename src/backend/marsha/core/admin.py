@@ -225,6 +225,25 @@ class VideosInline(admin.TabularInline):
     verbose_name = _("video")
     verbose_name_plural = _("videos")
 
+    fields = (
+        "title",
+        "playlist",
+        "lti_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    readonly_fields = [
+        "created_by",
+        "created_on",
+        "duplicated_from",
+        "resource_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+    ]
+
 
 class PlaylistAccessesInline(admin.TabularInline):
     """Inline for with right to write access to a playlist."""
@@ -268,7 +287,7 @@ class PlaylistAdmin(admin.ModelAdmin):
     )
     readonly_fields = ["created_by", "created_on", "duplicated_from", "updated_on"]
     list_filter = (
-        "playlist__consumer_site__domain",
+        "consumer_site__domain",
         "is_public",
         "is_portable_to_playlist",
         "is_portable_to_consumer_site",
