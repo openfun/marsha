@@ -148,18 +148,21 @@ class AudioTrackInline(admin.TabularInline):
     """Inline for audio tracks of a video."""
 
     model = AudioTrack
+    readonly_fields = ["upload_state", "uploaded_on"]
 
 
 class TimedTextTrackInline(admin.TabularInline):
     """Inline for timed text tracks of a video."""
 
     model = TimedTextTrack
+    readonly_fields = ["upload_state", "uploaded_on"]
 
 
 class SignTrackInline(admin.TabularInline):
     """Inline for sign tracks of a video."""
 
     model = SignTrack
+    readonly_fields = ["upload_state", "uploaded_on"]
 
 
 @admin.register(Video, site=admin_site)
@@ -169,6 +172,50 @@ class VideoAdmin(admin.ModelAdmin):
     list_display = ("title", "created_by")
     exclude = ("duplicated_from",)
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
+
+    list_display = (
+        "title",
+        link_field("playlist"),
+        "lti_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    fields = (
+        "title",
+        "description",
+        "playlist",
+        "lti_id",
+        "resource_id",
+        "upload_state",
+        "created_by",
+        "duplicated_from",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    readonly_fields = [
+        "created_by",
+        "created_on",
+        "duplicated_from",
+        "resource_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+    ]
+    list_filter = ("upload_state", "playlist__consumer_site__domain")
+    search_fields = (
+        "lti_id",
+        "resource_id",
+        "playlist__consumer_site__domain",
+        "playlist__consumer_site__name",
+        "playlist__lti_id",
+        "playlist__title",
+        "playlist__organization__name",
+        "title",
+    )
+    verbose_name = _("Video")
 
 
 class VideosInline(admin.TabularInline):
@@ -195,6 +242,46 @@ class PlaylistAdmin(admin.ModelAdmin):
     exclude = ("duplicated_from",)
     inlines = [VideosInline, PlaylistAccessesInline]
 
+    list_display = (
+        "title",
+        link_field("organization"),
+        link_field("consumer_site"),
+        "lti_id",
+        "is_public",
+        "is_portable_to_playlist",
+        "is_portable_to_consumer_site",
+        "updated_on",
+        "created_on",
+    )
+    fields = (
+        "title",
+        "organization",
+        "consumer_site",
+        "lti_id",
+        "is_public",
+        "is_portable_to_playlist",
+        "is_portable_to_consumer_site",
+        "created_by",
+        "duplicated_from",
+        "updated_on",
+        "created_on",
+    )
+    readonly_fields = ["created_by", "created_on", "duplicated_from", "updated_on"]
+    list_filter = (
+        "playlist__consumer_site__domain",
+        "is_public",
+        "is_portable_to_playlist",
+        "is_portable_to_consumer_site",
+    )
+    search_fields = (
+        "consumer_site__domain",
+        "consumer_site__name",
+        "organization__name",
+        "lti_id",
+        "title",
+    )
+    verbose_name = _("Video")
+
 
 @admin.register(LTIPassport, site=admin_site)
 class LTIPassportAdmin(admin.ModelAdmin):
@@ -205,8 +292,8 @@ class LTIPassportAdmin(admin.ModelAdmin):
         link_field("consumer_site"),
         link_field("playlist"),
         "is_enabled",
-        "created_on",
         "updated_on",
+        "created_on",
     )
     fields = (
         "oauth_consumer_key",
@@ -214,8 +301,8 @@ class LTIPassportAdmin(admin.ModelAdmin):
         "consumer_site",
         "playlist",
         "is_enabled",
-        "created_on",
         "updated_on",
+        "created_on",
     )
     readonly_fields = [
         "created_on",
