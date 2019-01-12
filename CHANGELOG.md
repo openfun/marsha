@@ -10,6 +10,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Enforce either the `consumer site` or the `playlist` field is set on a LTI
+  passport, and not both
 - Improve admin pages for the playlist and video models
 - Add unicity constraints on the playlist and video models
 - Improve string representation for the a playlist model
