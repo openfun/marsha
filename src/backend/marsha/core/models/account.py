@@ -182,7 +182,7 @@ class ConsumerSite(BaseModel):
     name = models.CharField(
         max_length=50,
         verbose_name=_("display name"),
-        help_text=_("name of the consumer site"),
+        help_text=_("name of the consumer site."),
     )
     domain = models.CharField(
         max_length=100,
@@ -190,12 +190,20 @@ class ConsumerSite(BaseModel):
         help_text=_("base domain allowed for consumer site."),
         validators=[_simple_domain_name_validator],
     )
-
+    portable_to = models.ManyToManyField(
+        to="self",
+        through="ConsumerSitePortability",
+        verbose_name=_("portable to"),
+        help_text=_("consumer sites to which this site is automatically portable."),
+        symmetrical=False,
+        related_name="reachable_from",
+        blank=True,
+    )
     users = models.ManyToManyField(
         to=User,
         through="ConsumerSiteAccess",
         verbose_name=_("users"),
-        help_text=_("users who have been granted access to this consumer site"),
+        help_text=_("users who have been granted access to this consumer site."),
     )
 
     class Meta:
@@ -211,6 +219,49 @@ class ConsumerSite(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
+
+
+class ConsumerSitePortability(BaseModel):
+    """Model representing portability between consumer sites.
+
+    ``through`` model between ``ConsumerSite.portable_to`` and ``ConsumerSite.reachable_from``.
+
+    """
+
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
+    source_site = models.ForeignKey(
+        to=ConsumerSite,
+        related_name="portable_to_links",
+        verbose_name=_("source site"),
+        help_text=_("consumer site that is portable."),
+        # link is (soft-)deleted if source site is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+    target_site = models.ForeignKey(
+        to=ConsumerSite,
+        related_name="reachable_from_links",
+        verbose_name=_("target site"),
+        help_text=_("consumer site to which portability is automatic."),
+        # link is (soft-)deleted if target site is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``ConsumerSitePortability`` model."""
+
+        db_table = "consumersite_portability"
+        verbose_name = _("consumer site portability")
+        verbose_name_plural = _("consumer site portabilities")
+        indexes = [NonDeletedUniqueIndex(["source_site", "target_site"])]
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        kwargs = {"source": self.source_site, "target": self.target_site}
+        if self.deleted:
+            return _("{source} was portable to {target}").format(**kwargs)
+        return _("{source} is portable to {target}").format(**kwargs)
 
 
 class ConsumerSiteAccess(BaseModel):
