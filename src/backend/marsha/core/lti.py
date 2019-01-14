@@ -137,7 +137,7 @@ class LTI:
         # find a passport related to the oauth consumer key
         try:
             return LTIPassport.objects.get(
-                Q(oauth_consumer_key=consumer_key, is_enabled=True)
+                oauth_consumer_key=consumer_key, is_enabled=True
             )
         except LTIPassport.DoesNotExist:
             raise LTIException(
@@ -260,7 +260,8 @@ class LTI:
                 playlist__consumer_site=consumer_site,
             )
         except Video.DoesNotExist:
-            # Look for the same resource id from another playlist on the same consumer site
+            # Look for a video with the same lti id from another playlist on the same
+            # consumer site
             origin_video = (
                 Video.objects.filter(
                     lti_id=self.resource_link_id,
@@ -273,12 +274,16 @@ class LTI:
             )
 
             if origin_video is None:
-                # Look for the same resource id from the same playlist on another consumer site
+                # Look for a video with the same lti id from the same playlist on another
+                # consumer site that is portable to the current consumer site of the LTI request
                 origin_video = (
                     Video.objects.filter(
-                        lti_id=self.resource_link_id,
+                        Q(playlist__is_portable_to_consumer_site=True)
+                        | Q(
+                            playlist__consumer_site__in=consumer_site.reachable_from.all()
+                        ),
                         playlist__lti_id=self.context_id,
-                        playlist__is_portable_to_consumer_site=True,
+                        lti_id=self.resource_link_id,
                         upload_state=READY,
                     )
                     .order_by("-uploaded_on")
@@ -286,13 +291,17 @@ class LTI:
                 )
 
             if origin_video is None:
-                # Look for the same resource id from another playlist on another consumer site
+                # Look for a video with the same lti id from another playlist on another consumer
+                # site that is portable to the current consumer site of the LTI request
                 origin_video = (
                     Video.objects.filter(
+                        Q(playlist__is_portable_to_consumer_site=True)
+                        | Q(
+                            playlist__consumer_site__in=consumer_site.reachable_from.all()
+                        ),
+                        playlist__is_portable_to_playlist=True,
                         lti_id=self.resource_link_id,
                         upload_state=READY,
-                        playlist__is_portable_to_playlist=True,
-                        playlist__is_portable_to_consumer_site=True,
                     )
                     .order_by("-uploaded_on")
                     .first()
