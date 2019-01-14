@@ -10,6 +10,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add automatic portability between consumer sites for friend websites or different environments
+  of the same website.
 - Enforce either the `consumer site` or the `playlist` field is set on a LTI
   passport, and not both
 - Improve admin pages for the playlist and video models
@@ -18,6 +20,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Improve test to secure portability of a video to the same playlist on another site, making sure
+  it has precedence over a video linked to another playlist on the other site.
 - Add unicity test timed text tracks to confirm soft deleted records are ignored
 - Copy related tracks correctly when duplicating a video
 - Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
