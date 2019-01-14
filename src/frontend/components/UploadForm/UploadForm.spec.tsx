@@ -10,7 +10,7 @@ jest.doMock('../../utils/makeFormData/makeFormData', () => ({
 }));
 
 const mockInitiateUpload = jest.fn();
-jest.doMock('../../data/sideEffects/initiateUpload', () => ({
+jest.doMock('../../data/sideEffects/initiateUpload/initiateUpload', () => ({
   initiateUpload: mockInitiateUpload,
 }));
 

@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { modelName } from '../../types/models';
+import { modelName } from '../../../types/models';
 import { initiateUpload } from './initiateUpload';
 
 describe('sideEffects/initiateUpload', () => {
