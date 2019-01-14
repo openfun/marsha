@@ -396,8 +396,20 @@ class PortabilityVideoLTITestCase(TestCase):
             lti_id="df7",
             playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
+            uploaded_on=timezone.now(),
             upload_state="ready",
         )
+
+        # Add a video with the same lti_id but linked to another playlist and uploaded after the
+        # first one to make sure that the video from the same playlist still has precedence
+        VideoFactory(
+            lti_id="df7",
+            playlist__lti_id="course-v1:ufr+mathematics+0002",  # Session 2 is another playlist
+            playlist__is_portable_to_consumer_site=True,
+            uploaded_on=timezone.now(),
+            upload_state="ready",
+        )
+
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
@@ -405,9 +417,10 @@ class PortabilityVideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+
         lti = LTI(request)
         new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
+        self.assertEqual(new_video, Video.objects.order_by("-created_on").first())
         self.assertEqual(new_video.duplicated_from, video)
         self.assertEqual(new_video.upload_state, "ready")
         self.assertEqual(new_video.uploaded_on, video.uploaded_on)
