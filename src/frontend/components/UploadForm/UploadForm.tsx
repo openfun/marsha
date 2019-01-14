@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { initiateUpload } from '../../data/sideEffects/initiateUpload';
+import { initiateUpload } from '../../data/sideEffects/initiateUpload/initiateUpload';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { modelName } from '../../types/models';
 import { UploadableObject, uploadState } from '../../types/tracks';
