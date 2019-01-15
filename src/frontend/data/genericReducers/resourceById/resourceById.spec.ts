@@ -31,7 +31,7 @@ describe('Reducer: resourceById()', () => {
   });
 
   describe('RESOURCE_ADD', () => {
-    it('adds the subject to the state when called with RESOURCE', () => {
+    it('adds the resource to the state when called with RESOURCE', () => {
       const previousState = {
         byId: { 43: video43 },
       };
@@ -45,8 +45,23 @@ describe('Reducer: resourceById()', () => {
     });
   });
 
+  describe('RESOURCE_DELETE', () => {
+    it('replaces the record with undefined in the state', () => {
+      const previousState = {
+        byId: { 43: video43, 44: video44, 45: video45 },
+      };
+      expect(
+        byId(previousState, {
+          resource: video44,
+          resourceName: modelName.VIDEOS,
+          type: 'RESOURCE_DELETE',
+        }),
+      ).toEqual({ byId: { 43: video43, 45: video45 } });
+    });
+  });
+
   describe('RESOURCE_MULTIPLE_ADD', () => {
-    it('adds several subjects at once', () => {
+    it('adds several records at once', () => {
       const previousState = {
         byId: { 43: video43 },
       };

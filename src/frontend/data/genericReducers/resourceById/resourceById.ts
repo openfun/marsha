@@ -1,6 +1,6 @@
 import { Resource } from '../../../types/Resource';
 import { Maybe } from '../../../utils/types';
-import { ResourceAdd, ResourceMultipleAdd } from './actions';
+import { ResourceAdd, ResourceDelete, ResourceMultipleAdd } from './actions';
 
 export const initialState = {
   byId: {},
@@ -14,7 +14,11 @@ export interface ResourceByIdState<R extends Resource> {
 
 export function byId<R extends Resource>(
   state: ResourceByIdState<R>,
-  action: ResourceAdd<R> | ResourceMultipleAdd<R> | { type: '' },
+  action:
+    | ResourceAdd<R>
+    | ResourceDelete<R>
+    | ResourceMultipleAdd<R>
+    | { type: '' },
 ): ResourceByIdState<R> {
   // Initialize the state to an empty version of itself
   if (!state) {
@@ -35,6 +39,16 @@ export function byId<R extends Resource>(
         },
       };
 
+    case 'RESOURCE_DELETE':
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.resource.id]: undefined,
+        },
+      };
+
+    // Add many records at once (for better performance than many RESOURCE_ADD)
     case 'RESOURCE_MULTIPLE_ADD':
       return {
         ...state,
