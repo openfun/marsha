@@ -8,10 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.2.0] - 2019-01-15
+
 ### Added
 
 - Add automatic portability between consumer sites for friend websites or different environments
-  of the same website.
+  of the same website
 - Enforce either the `consumer site` or the `playlist` field is set on a LTI
   passport, and not both
 - Improve admin pages for the playlist and video models
@@ -21,7 +23,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Improve test to secure portability of a video to the same playlist on another site, making sure
-  it has precedence over a video linked to another playlist on the other site.
+  it has precedence over a video linked to another playlist on the other site
+- Isolate route definitions to avoid circular dependencies in the frontend
 - Add unicity test timed text tracks to confirm soft deleted records are ignored
 - Copy related tracks correctly when duplicating a video
 - Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
@@ -30,7 +33,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rename `state` field to `upload_state` as it does not represent the state of the object
   anymore but the state of the latest upload attempted on this object
 - Enforce read-only on `upload_state` and `active_stamp` fields as they should only be
-  updated by AWS via the `update-state` API endpoint.
+  updated by AWS via the `update-state` API endpoint
 
 ## [1.1.2] - 2019-01-11
 
@@ -69,7 +72,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v1.1.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v1.2.0...master
+[1.2.0]: https://github.com/openfun/marsha/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/openfun/marsha/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/openfun/marsha/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/openfun/marsha/compare/v1.0.0...v1.1.0
