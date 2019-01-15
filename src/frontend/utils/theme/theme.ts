@@ -1,4 +1,5 @@
 export type colorName =
+  | 'danger'
   | 'darkGray'
   | 'lightGray'
   | 'mediumGray'
@@ -11,6 +12,10 @@ export interface Color {
 }
 
 export const colors: { [clr in colorName]: Color } = {
+  danger: {
+    contrast: '#ca1111',
+    main: '#e41313',
+  },
   darkGray: {
     contrast: '#495057',
     main: '#343a40',

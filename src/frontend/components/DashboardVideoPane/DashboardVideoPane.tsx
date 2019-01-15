@@ -123,7 +123,7 @@ export class DashboardVideoPane extends React.Component<
           <UploadStatusPicker state={video.upload_state} />
         </DashboardVideoPaneStatusLine>
         <DashboardVideoPaneHelptext state={video.upload_state} />
-        <DashboardVideoPaneButtons state={video.upload_state} />
+        <DashboardVideoPaneButtons video={video} />
       </DashboardVideoPaneInnerContainer>
     );
   }

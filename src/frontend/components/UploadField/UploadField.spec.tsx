@@ -7,7 +7,7 @@ import { UploadField } from './UploadField';
 
 test('UploadField renders a Dropzone with the relevant messages', () => {
   const wrapper = mount(<UploadField onContentUpdated={jest.fn()} />);
-  expect(wrapper.text()).toContain('Select a video to upload');
+  expect(wrapper.text()).toContain('Select a file to upload');
 });
 
 test('UploadField.onDrop() passes the file to the callback', () => {

@@ -3,6 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Video } from '../../types/tracks';
+import { DashboardTimedTextPaneConnected } from '../DashboardTimedTextPaneConnected/DashboardTimedTextPaneConnected';
 import { DashboardVideoPaneConnected } from '../DashboardVideoPaneConnected/DashboardVideoPaneConnected';
 import { IframeHeading } from '../Headings/Headings';
 
@@ -47,6 +48,7 @@ export class Dashboard extends React.Component<DashboardProps> {
           <FormattedMessage {...messages.title} />
         </IframeHeadingWithLayout>
         <DashboardVideoPaneConnected video={this.props.video} />
+        <DashboardTimedTextPaneConnected video={this.props.video} />
       </DashboardContainer>
     );
   }

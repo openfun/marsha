@@ -6,7 +6,12 @@ import styled from 'styled-components';
 import { initiateUpload } from '../../data/sideEffects/initiateUpload/initiateUpload';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { modelName } from '../../types/models';
-import { UploadableObject, uploadState } from '../../types/tracks';
+import {
+  TimedText,
+  timedTextMode,
+  UploadableObject,
+  uploadState,
+} from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { Maybe, Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -24,15 +29,28 @@ const messages = defineMessages({
 });
 
 const titleMessages = defineMessages({
-  [modelName.TIMEDTEXTTRACKS]: {
-    defaultMessage: 'Upload a new subtitles/captions/transcript file',
-    description: 'Title for the timed text file upload form',
-    id: 'components.UploadForm.title-timedtexttracks',
-  },
   [modelName.VIDEOS]: {
     defaultMessage: 'Create a new video',
     description: 'Title for the video upload form',
     id: 'components.UploadForm.title-videos',
+  },
+});
+
+const timedtexttrackTitleMessages = defineMessages({
+  [timedTextMode.CLOSED_CAPTIONING]: {
+    defaultMessage: 'Upload a new closed captions file',
+    description: 'Title for the timed text file upload form',
+    id: 'components.UploadForm.title-timedtexttracks-cc',
+  },
+  [timedTextMode.SUBTITLE]: {
+    defaultMessage: 'Upload a new subtitles file',
+    description: 'Title for the timed text file upload form',
+    id: 'components.UploadForm.title-timedtexttracks-st',
+  },
+  [timedTextMode.TRANSCRIPT]: {
+    defaultMessage: 'Upload a new transcript file',
+    description: 'Title for the timed text file upload form',
+    id: 'components.UploadForm.title-timedtexttracks-ts',
   },
 });
 
@@ -105,10 +123,12 @@ export class UploadForm extends React.Component<
 
     // Use FormData to meet the requirement of a multi-part POST request for s3
     // NB: order of keys is important here, which is why we do not iterate over an object
-    const formData = makeFormData(
+    const formData = makeFormData.apply(null, [
       ['key', policy.key],
       ['acl', policy.acl],
-      ['Content-Type', file!.type],
+      ...((objectType === modelName.VIDEOS
+        ? [['Content-Type', file!.type]]
+        : []) as any),
       ['X-Amz-Credential', policy.x_amz_credential],
       ['X-Amz-Algorithm', policy.x_amz_algorithm],
       ['X-Amz-Date', policy.x_amz_date],
@@ -116,7 +136,7 @@ export class UploadForm extends React.Component<
       ['X-Amz-Signature', policy.x_amz_signature],
       // Add the file after all of the text fields
       ['file', file!],
-    );
+    ]);
 
     try {
       // Update the state to reflect the in-progress upload (for the dashboard)
@@ -151,7 +171,7 @@ export class UploadForm extends React.Component<
   }
 
   render() {
-    const { objectType } = this.props;
+    const { object, objectType } = this.props;
     const { status } = this.state || { status: '' };
 
     switch (status) {
@@ -170,7 +190,11 @@ export class UploadForm extends React.Component<
           <div>
             <UploadFormContainer>
               <IframeHeadingWithLayout>
-                <FormattedMessage {...titleMessages[objectType]} />
+                <FormattedMessage
+                  {...(objectType === modelName.TIMEDTEXTTRACKS
+                    ? timedtexttrackTitleMessages[(object as TimedText).mode]
+                    : titleMessages[objectType])}
+                />
               </IframeHeadingWithLayout>
               <UploadFieldContainer>
                 <UploadField onContentUpdated={this.upload.bind(this)} />
