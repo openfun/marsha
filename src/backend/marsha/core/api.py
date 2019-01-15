@@ -131,7 +131,7 @@ class VideoViewSet(
         )
 
         # Reset the upload state of the video
-        Video.objects.update(upload_state=PENDING)
+        Video.objects.filter(pk=pk).update(upload_state=PENDING)
 
         return Response(policy)
 
@@ -191,7 +191,7 @@ class TimedTextTrackViewSet(
             {"key": key, "max_file_size": SUBTITLE_SOURCE_MAX_SIZE, "stamp": stamp}
         )
 
-        # Reset the upload state of the video
-        TimedTextTrack.objects.update(upload_state=PENDING)
+        # Reset the upload state of the timed text track
+        TimedTextTrack.objects.filter(pk=pk).update(upload_state=PENDING)
 
         return Response(policy)

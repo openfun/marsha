@@ -630,6 +630,14 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
 
+        # Create other timed text tracks to check that their upload state are unaffected
+        other_ttt_for_same_video = TimedTextTrackFactory(
+            video=timed_text_track.video, upload_state=random.choice(["ready", "error"])
+        )
+        other_ttt_for_other_video = TimedTextTrackFactory(
+            upload_state=random.choice(["ready", "error"])
+        )
+
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
@@ -688,15 +696,19 @@ class TimedTextTrackAPITest(TestCase):
             },
         )
 
-        # The upload state of the timed text track should should have been reset
+        # The upload state of the timed text track should have been reset
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, "pending")
 
-        # Try initiating an upload for another timed_text_track
-        other_timed_text_track = TimedTextTrackFactory()
+        # Check that the other timed text tracks are not reset
+        for ttt in [other_ttt_for_same_video, other_ttt_for_other_video]:
+            ttt.refresh_from_db()
+            self.assertNotEqual(ttt.upload_state, "pending")
+
+        # Try initiating an upload for a timed_text_track linked to another video
         response = self.client.post(
             "/api/timedtexttracks/{!s}/initiate-upload/".format(
-                other_timed_text_track.id
+                other_ttt_for_other_video.id
             ),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
