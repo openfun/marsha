@@ -5,6 +5,7 @@
   "rules": {
     "arrow-parens": false,
     "interface-name": [true, "never-prefix"],
+    "max-line-length": false,
     "member-access": [true, "no-public"],
     "no-console": [true, "log", "error"],
     "no-empty": false,
