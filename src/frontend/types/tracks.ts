@@ -1,3 +1,4 @@
+import { Nullable } from '../utils/types';
 import { Resource } from './Resource';
 
 /** Possible states for a track upload, whether video or other such as timed text.
@@ -36,10 +37,13 @@ export enum timedTextMode {
 
 /** A timed text track record as it exists on the backend. */
 export interface TimedText extends Resource {
+  active_stamp: Nullable<number>;
+  is_ready_to_play: boolean;
   language: string;
   mode: timedTextMode;
   uploaded_on: string;
   upload_state: uploadState;
+  url: string;
   video: Video;
 }
 
