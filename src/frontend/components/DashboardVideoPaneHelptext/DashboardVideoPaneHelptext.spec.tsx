@@ -12,7 +12,9 @@ describe('<DashboardHelptext />', () => {
       shallow(<DashboardVideoPaneHelptext state={uploadState.ERROR} />).html(),
     ).toContain('There was an error with your video');
     expect(
-      shallow(<DashboardVideoPaneHelptext state={uploadState.PENDING} />).html(),
+      shallow(
+        <DashboardVideoPaneHelptext state={uploadState.PENDING} />,
+      ).html(),
     ).toContain('There is currently no video to display.');
     expect(
       shallow(

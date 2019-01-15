@@ -8,16 +8,16 @@ import { DropzoneIcon } from './DropzoneIcon';
 
 const messages = defineMessages({
   dropzoneButtonPick: {
-    defaultMessage: 'Select a video to upload',
-    description: `Video upload file dropzone: button to choose a video to upload,
-      has the drag text next to it (components.VideoForm.dropzoneDragText)`,
-    id: 'components.VideoForm.dropzoneButtonPick',
+    defaultMessage: 'Select a file to upload',
+    description: `File upload dropzone: button to choose a file to upload,
+      has the drag text next to it (components.UploadForm.dropzoneDragText)`,
+    id: 'components.UploadForm.dropzoneButtonPick',
   },
   dropzoneDragText: {
     defaultMessage: 'or drop it here',
-    description: `Video upload file dropzone: helptext on the dropzone,
-      goes along with the button (components.VideoForm.dropzoneButtonPick)`,
-    id: 'components.VideoForm.dropzoneDragText',
+    description: `File upload dropzone: helptext on the dropzone,
+      goes along with the button (components.UploadForm.dropzoneButtonPick)`,
+    id: 'components.UploadForm.dropzoneDragText',
   },
 });
 

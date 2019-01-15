@@ -2,7 +2,8 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { uploadState } from '../../types/tracks';
+import { modelName } from '../../types/models';
+import { uploadState, Video } from '../../types/tracks';
 import { Button } from '../Button/Button';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
@@ -51,27 +52,30 @@ const DashboardButtonWithLink = withLink(DashboardButtonStyled);
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardVideoPaneButtonsProps {
-  state: uploadState;
+  video: Video;
 }
 
 /** Component. Displays buttons with links to the Player & the Form, adapting their state and
  * look to the video's current state.
- * @param state The current state of the video/track upload.
+ * @param video The video for which the VideoPane is displaying information & buttons.
  */
 export const DashboardVideoPaneButtons = (
   props: DashboardVideoPaneButtonsProps,
 ) => (
   <DashboardVideoPaneButtonsStyled>
-    <DashboardButtonWithLink variant="primary" to={UPLOAD_FORM_ROUTE()}>
+    <DashboardButtonWithLink
+      variant="primary"
+      to={UPLOAD_FORM_ROUTE(modelName.VIDEOS, props.video.id)}
+    >
       <FormattedMessage
-        {...(props.state === PENDING
+        {...(props.video.upload_state === PENDING
           ? messages.btnUploadFirstVideo
           : messages.btnReplaceVideo)}
       />
     </DashboardButtonWithLink>
     <DashboardButtonWithLink
       variant="primary"
-      disabled={props.state !== READY}
+      disabled={props.video.upload_state !== READY}
       to={VIDEO_PLAYER_ROUTE()}
     >
       <FormattedMessage {...messages.btnPlayVideo} />

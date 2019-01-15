@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import styled from 'styled-components';
 
 import { uploadState } from '../../types/tracks';
 
