@@ -643,6 +643,9 @@ class VideoAPITest(TestCase):
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
 
+        # Create another video to check that its upload state is unaffected
+        other_video = VideoFactory(upload_state=random.choice(["ready", "error"]))
+
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
@@ -701,8 +704,11 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
 
-        # Try initiating an upload for another video
-        other_video = VideoFactory()
+        # Check that the other timed text tracks are not reset
+        other_video.refresh_from_db()
+        self.assertNotEqual(other_video.upload_state, "pending")
+
+        # Try initiating an upload for the other video
         response = self.client.post(
             "/api/videos/{!s}/initiate-upload/".format(other_video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
