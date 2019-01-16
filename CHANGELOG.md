@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.2.1] - 2019-01-16
+
+### Fixed
+
+- Fix initiate upload to update only the targeted object and not the whole database table
+
 ## [1.2.0] - 2019-01-15
 
 ### Added
@@ -72,7 +78,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v1.2.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v1.2.1...master
+[1.2.1]: https://github.com/openfun/marsha/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/openfun/marsha/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/openfun/marsha/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/openfun/marsha/compare/v1.1.0...v1.1.1
