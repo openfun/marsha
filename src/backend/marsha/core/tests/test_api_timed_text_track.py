@@ -631,8 +631,11 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = ["instructor"]
 
         # Create other timed text tracks to check that their upload state are unaffected
+        # Make sure we avoid unicty constraints by setting a different language
         other_ttt_for_same_video = TimedTextTrackFactory(
-            video=timed_text_track.video, upload_state=random.choice(["ready", "error"])
+            video=timed_text_track.video,
+            language="en",
+            upload_state=random.choice(["ready", "error"]),
         )
         other_ttt_for_other_video = TimedTextTrackFactory(
             upload_state=random.choice(["ready", "error"])
