@@ -29,7 +29,7 @@ describe('<InstructorView />', () => {
     ).find(InstructorControls);
 
     expect(controlsWrapper.html()).toContain('Instructor Preview 👆');
-    expect(controlsWrapper.html()).toContain('Replace the video');
+    expect(controlsWrapper.html()).toContain('Go to Dashboard');
   });
 
   it('redirects to the error component when it is missing the video ID', () => {
