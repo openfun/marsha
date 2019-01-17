@@ -314,7 +314,7 @@ jobs:
             - v3-front-dependencies-{{ checksum "package.json" }}
       - run:
           name: Run tests
-          command: yarn test
+          command: yarn test -w 1
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
