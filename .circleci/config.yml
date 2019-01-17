@@ -252,7 +252,7 @@ jobs:
   # ---- Front-end jobs ----
   build-front:
     docker:
-      - image: circleci/node:9-browsers
+      - image: circleci/node:10
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -276,7 +276,7 @@ jobs:
 
   lint-front-tslint:
     docker:
-      - image: circleci/node:9-browsers
+      - image: circleci/node:10
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -290,7 +290,7 @@ jobs:
 
   lint-front-prettier:
     docker:
-      - image: circleci/node:9-browsers
+      - image: circleci/node:10
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -304,7 +304,7 @@ jobs:
 
   test-front:
     docker:
-      - image: circleci/node:9-browsers
+      - image: circleci/node:10
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -319,7 +319,9 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: circleci/node:8.11.3
+      - image: circleci/node:8.10
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-configure
     steps:
       - checkout:
@@ -341,7 +343,9 @@ jobs:
 
   test-lambda-encode:
     docker:
-      - image: circleci/node:8.11.3
+      - image: circleci/node:8.10
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-encode
     steps:
       - checkout:
@@ -363,7 +367,9 @@ jobs:
 
   test-lambda-update-state:
     docker:
-      - image: circleci/node:8.11.3
+      - image: circleci/node:8.10
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-update-state
     steps:
       - checkout:

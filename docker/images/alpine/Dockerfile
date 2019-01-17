@@ -37,7 +37,7 @@ RUN python -c "import configparser; c = configparser.ConfigParser(); c.read('/se
     print(c['options']['install_requires'])" | xargs pip install --prefix=/install
 
 # ---- front-end builder image ----
-FROM node:9 as front-builder
+FROM node:10 as front-builder
 
 WORKDIR /app
 

@@ -4,6 +4,8 @@
 resource "aws_lambda_function" "marsha_configure_lambda" {
   function_name    = "${terraform.workspace}-marsha-configure"
   handler          = "index.handler"
+  # Run on the highest version of node available on AWS lambda
+  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   runtime          = "nodejs8.10"
   filename         = "dist/marsha_configure.zip"
   source_code_hash = "${base64sha256(file("dist/marsha_configure.zip"))}"
@@ -50,6 +52,8 @@ EOF
 resource "aws_lambda_function" "marsha_encode_lambda" {
   function_name    = "${terraform.workspace}-marsha-encode"
   handler          = "index.handler"
+  # Run on the highest version of node available on AWS lambda
+  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   runtime          = "nodejs8.10"
   filename         = "dist/marsha_encode.zip"
   source_code_hash = "${base64sha256(file("dist/marsha_encode.zip"))}"
@@ -82,6 +86,8 @@ resource "aws_lambda_permission" "allow_bucket" {
 resource "aws_lambda_function" "marsha_update_state_lambda" {
   function_name    = "${terraform.workspace}-marsha-update-state"
   handler          = "index.handler"
+  # Run on the highest version of node available on AWS lambda
+  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   runtime          = "nodejs8.10"
   filename         = "dist/marsha_update-state.zip"
   source_code_hash = "${base64sha256(file("dist/marsha_update-state.zip"))}"

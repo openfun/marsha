@@ -3,7 +3,7 @@
   "name": "aws-marsha-update-state",
   "version": "0.0.1",
   "engines": {
-    "node": "^8.10"
+    "node": ">8.10"
   },
   "description": "Confirm to the server when encoding for a video is complete",
   "repository": {
