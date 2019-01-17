@@ -3,21 +3,19 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { colors } from '../../utils/theme/theme';
 import { Nullable } from '../../utils/types';
 import { Button } from '../Button/Button';
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({
-  btnUpdateVideo: {
-    defaultMessage: 'Replace the video',
-    description: `Text for the button in the instructor view that allows the instructor to upload another
-      video to replace the one currently being shown.`,
-    id: 'components.InstructorView.btnUpdateVideo',
+  btnDashboard: {
+    defaultMessage: 'Go to Dashboard',
+    description: `Text for the button in the instructor view that allows the instructor to go to the dashboard.`,
+    id: 'components.InstructorView.btnDashboard',
   },
   title: {
     defaultMessage: 'Instructor Preview 👆',
@@ -58,11 +56,8 @@ export const InstructorView = ({ children, videoId }: InstructorViewProps) =>
       </PreviewWrapper>
       <InstructorControls>
         <FormattedMessage {...messages.title} />
-        <BtnWithLink
-          to={UPLOAD_FORM_ROUTE(modelName.VIDEOS, videoId)}
-          variant="primary"
-        >
-          <FormattedMessage {...messages.btnUpdateVideo} />
+        <BtnWithLink to={DASHBOARD_ROUTE()} variant="primary">
+          <FormattedMessage {...messages.btnDashboard} />
         </BtnWithLink>
       </InstructorControls>
     </React.Fragment>
