@@ -7,3 +7,5 @@
 - [Richard Moch](https://github.com/rmoch) <richard.moch@gmail.com>
 - [Samuel Paccoud](https://github.com/sampaccoud) <samuel.paccoud@fun-mooc.fr>
 - [Manuel Raynaud](https://github.com/lunika) <manu@raynaud.io>
+
+- [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
