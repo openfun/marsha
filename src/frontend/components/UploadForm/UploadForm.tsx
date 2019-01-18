@@ -13,7 +13,7 @@ import {
   uploadState,
 } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
-import { Maybe, Nullable } from '../../utils/types';
+import { Maybe } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { IframeHeading } from '../Headings/Headings';
@@ -78,7 +78,7 @@ const UploadFormBack = styled.div`
 
 /** Props shape for the UploadForm component. */
 interface UploadFormProps {
-  jwt: Nullable<string>;
+  jwt: string;
   object: Maybe<UploadableObject>;
   objectType: modelName;
   updateObject: (object: UploadableObject) => void;

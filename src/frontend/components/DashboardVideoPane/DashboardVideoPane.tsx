@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { API_ENDPOINT } from '../../settings';
 import { uploadState, Video } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
@@ -40,7 +39,7 @@ const DashboardVideoPaneInternalHeading = styled(DashboardInternalHeading)`
 
 /** Props shape for the DashboardVideoPane component. */
 export interface DashboardVideoPaneProps {
-  jwt: Nullable<string>;
+  jwt: string;
   updateVideo: (video: Video) => void;
   video: Video;
 }

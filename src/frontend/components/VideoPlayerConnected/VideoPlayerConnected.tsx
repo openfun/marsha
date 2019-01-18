@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { VideoPlayer, VideoPlayerProps } from '../VideoPlayer/VideoPlayer';
 
@@ -9,12 +10,11 @@ import { VideoPlayer, VideoPlayerProps } from '../VideoPlayer/VideoPlayer';
  * state if available as it will hold the most recent version.
  */
 export const mapStateToProps = (
-  state: RootState,
+  state: RootState<appStateSuccess>,
   { video }: VideoPlayerProps,
 ) => ({
   video:
-    (state &&
-      state.resources[modelName.VIDEOS]!.byId &&
+    (state.resources[modelName.VIDEOS]!.byId &&
       state.resources[modelName.VIDEOS]!.byId[(video && video.id) || '']) ||
     video,
 });

@@ -1,8 +1,7 @@
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
-import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { Dashboard } from '../Dashboard/Dashboard';
@@ -18,13 +17,12 @@ interface DashboardConnectedProps {
  * Also, just pass the jwt along.
  */
 export const mapStateToProps = (
-  state: RootState,
+  state: RootState<appStateSuccess>,
   { video }: DashboardConnectedProps,
 ) => ({
   video:
-    (state &&
-      state.resources[modelName.VIDEOS]!.byId &&
-      state.resources[modelName.VIDEOS]!.byId[(video && video.id) || '']) ||
+    (state.resources[modelName.VIDEOS]!.byId &&
+      state.resources[modelName.VIDEOS]!.byId[video.id]) ||
     video,
 });
 

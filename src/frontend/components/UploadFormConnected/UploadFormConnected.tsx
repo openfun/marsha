@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
 import { UploadForm } from '../UploadForm/UploadForm';
@@ -18,12 +19,11 @@ interface UploadFormConnectedProps {
  * Also, just pass the jwt and objectType along.
  */
 export const mapStateToProps = (
-  state: RootState,
+  state: RootState<appStateSuccess>,
   { objectId, objectType }: UploadFormConnectedProps,
 ) => ({
-  jwt: state && state.context && state.context.jwt,
+  jwt: state.context.jwt,
   object:
-    state &&
     state.resources[objectType]!.byId &&
     state.resources[objectType]!.byId[objectId],
   objectType,

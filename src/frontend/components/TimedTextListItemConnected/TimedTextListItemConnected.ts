@@ -3,11 +3,12 @@ import { Dispatch } from 'redux';
 
 import { deleteResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
 import { TimedTextListItem } from '../TimedTextListItem/TimedTextListItem';
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
 });
 

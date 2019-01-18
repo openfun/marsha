@@ -1,4 +1,5 @@
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { mapStateToProps } from './InstructorViewConnected';
 
 describe('<InstructorViewConnected />', () => {
@@ -10,13 +11,8 @@ describe('<InstructorViewConnected />', () => {
             id: '42',
           },
         },
-      } as RootState;
+      } as RootState<appStateSuccess>;
       expect(mapStateToProps(state)).toEqual({ videoId: '42' });
-    });
-
-    it('defaults to null', () => {
-      const state = { context: {} } as RootState;
-      expect(mapStateToProps(state)).toEqual({ videoId: null });
     });
   });
 });

@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { InstructorWrapper } from '../InstructorWrapper/InstructorWrapper';
 
 /**
  * Simply pick the ltiState statically from the context.
  */
-export const mapStateToProps = (state: RootState) => ({
+export const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   ltiState: state.context.ltiState,
 });
 
