@@ -45,11 +45,6 @@ describe('<VideoPlayerConnected />', () => {
       expect(mapStateToProps(state, props)).toEqual({
         video: { id: 42 },
       });
-
-      state = undefined;
-      expect(mapStateToProps(state, props)).toEqual({
-        video: { id: 42 },
-      });
     });
   });
 });

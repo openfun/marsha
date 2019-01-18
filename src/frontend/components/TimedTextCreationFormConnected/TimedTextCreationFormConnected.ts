@@ -3,18 +3,12 @@ import { Dispatch } from 'redux';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
-import {
-  TimedTextCreationForm,
-  TimedTextCreationFormProps,
-} from '../TimedTextCreationForm/TimedTextCreationForm';
+import { TimedTextCreationForm } from '../TimedTextCreationForm/TimedTextCreationForm';
 
-const mapStateToProps = (
-  state: RootState,
-  ownProps: TimedTextCreationFormProps,
-) => ({
-  ...ownProps,
+const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
 });
 

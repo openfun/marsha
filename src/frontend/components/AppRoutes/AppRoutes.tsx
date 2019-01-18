@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { RootState } from '../../data/rootReducer';
+import { appState } from '../../types/AppData';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { DashboardConnected } from '../DashboardConnected/DashboardConnected';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
@@ -15,7 +16,7 @@ import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 import { VideoPlayerConnected } from '../VideoPlayerConnected/VideoPlayerConnected';
 
 interface AppRoutesProps {
-  context: RootState['context'];
+  context: RootState<appState>['context'];
 }
 
 export const AppRoutes = ({ context }: AppRoutesProps) => {

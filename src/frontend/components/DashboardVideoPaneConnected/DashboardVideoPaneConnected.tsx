@@ -3,18 +3,12 @@ import { Dispatch } from 'redux';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
-import {
-  DashboardVideoPane,
-  DashboardVideoPaneProps,
-} from '../DashboardVideoPane/DashboardVideoPane';
+import { DashboardVideoPane } from '../DashboardVideoPane/DashboardVideoPane';
 
-export const mapStateToProps = (
-  state: RootState,
-  ownProps: DashboardVideoPaneProps,
-) => ({
-  ...ownProps,
+const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
 });
 
