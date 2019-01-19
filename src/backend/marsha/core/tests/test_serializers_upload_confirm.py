@@ -114,7 +114,6 @@ class UpdateStateSerializerTest(TestCase):
             {
                 "model_name": "video",
                 "object_id": str(object_id),
-                "resource_id": str(resource_id),
                 "stamp": "1533686400",
                 "uploaded_on": datetime(2018, 8, 8, tzinfo=pytz.utc),
             },

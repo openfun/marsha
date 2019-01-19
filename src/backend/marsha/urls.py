@@ -8,7 +8,7 @@ from rest_framework.schemas import get_schema_view
 
 from marsha.core.admin import admin_site
 from marsha.core.api import TimedTextTrackViewSet, VideoViewSet, update_state
-from marsha.core.views import LTIDevelopmentView, VideoLTIView
+from marsha.core.views import LTIDevelopmentView, OpenEdxVideoLTIView, VideoLTIView
 
 
 router = DefaultRouter()
@@ -19,7 +19,9 @@ router.register(
 
 urlpatterns = [
     path(f"{admin_site.name}/", admin_site.urls),
-    path("lti-video/", VideoLTIView.as_view(), name="lti_video"),
+    path("lti-video/<uuid:uuid>", VideoLTIView.as_view(), name="lti_video"),
+    # This view is deprecated and will be removed in a future release:
+    path("lti-video/", OpenEdxVideoLTIView.as_view(), name="lti_video"),
     path("api/update-state", update_state, name="update_state"),
     path("api/schema", get_schema_view(title="Marsha API"), name="schema"),
     path("api/", include(router.urls)),

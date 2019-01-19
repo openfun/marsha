@@ -1,6 +1,4 @@
 """This module holds the models for the marsha project."""
-import uuid
-
 from django.conf import settings
 from django.db import models
 from django.utils.functional import lazy
@@ -151,12 +149,6 @@ class Video(BaseModel):
         null=True,
         blank=True,
     )
-    resource_id = models.UUIDField(
-        verbose_name=_("Resource UUID"),
-        help_text=_("UUID to identify the resource in the backend"),
-        default=uuid.uuid4,
-        editable=False,
-    )
     lti_id = models.CharField(
         max_length=255,
         verbose_name=_("lti id"),
@@ -216,10 +208,7 @@ class Video(BaseModel):
         ordering = ["position", "id"]
         verbose_name = _("video")
         verbose_name_plural = _("videos")
-        indexes = [
-            NonDeletedUniqueIndex(["lti_id", "playlist"]),
-            NonDeletedUniqueIndex(["resource_id", "playlist"]),
-        ]
+        indexes = [NonDeletedUniqueIndex(["lti_id", "playlist"])]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -238,7 +227,7 @@ class Video(BaseModel):
         return self.uploaded_on is not None
 
     def get_source_s3_key(self, stamp=None):
-        """Compute the S3 key in the source bucket (resource ID + ID of the video + version stamp).
+        """Compute the S3 key in the source bucket (ID of the video + version stamp).
 
         Parameters
         ----------
@@ -257,62 +246,7 @@ class Video(BaseModel):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/video/{video!s}/{stamp:s}".format(
-            resource=self.resource_id, video=self.id, stamp=stamp
-        )
-
-    def duplicate(self, playlist):
-        """Duplicate a video to another playlist.
-
-        Parameters
-        ----------
-        playlist: Type[models.Playlist]
-            The playlist to which the duplicated video should be attached. It should pre-exist.
-
-        Returns
-        -------
-        models.Video
-            The duplicated video with all its related tracks.
-
-        """
-        # Duplicate the video
-        new_video = Video.objects.create(
-            duplicated_from=self,
-            lti_id=self.lti_id,
-            playlist=playlist,
-            resource_id=self.resource_id,
-            upload_state=READY,
-            title=self.title,
-            uploaded_on=self.uploaded_on,
-        )
-
-        def copy_track(obj):
-            """Copy a track from the current video to the new duplicated video.
-
-            Parameters
-            ----------
-            obj: Type[models.BaseTrack]
-                A track instance to be copied to the new video.
-
-            Returns
-            -------
-            models.BaseTrack
-                The track linked to the new video and with a null primary key which will cause
-                it to duplicate when it will be saved.
-
-            """
-            obj.pk = None
-            obj.video = new_video
-            return obj
-
-        # Duplicate the related track objects to the new video using a bulk create for performance
-        for _class in [TimedTextTrack, AudioTrack, SignTrack]:
-            tracks = map(
-                copy_track, _class.objects.filter(video=self, upload_state=READY)
-            )
-            _class.objects.bulk_create(tracks)
-
-        return new_video
+        return "{pk!s}/video/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
 
 
 class BaseTrack(BaseModel):
@@ -409,7 +343,7 @@ class TimedTextTrack(BaseTrack):
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket.
 
-        It is built from the resource ID + ID of the timed text track + version stamp + language +
+        It is built from the video ID + ID of the timed text track + version stamp + language +
         closed captioning flag.
 
         Parameters
@@ -429,9 +363,9 @@ class TimedTextTrack(BaseTrack):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{resource!s}/timedtexttrack/{id!s}/{stamp:s}_{language:s}{mode:s}".format(
-            resource=self.video.resource_id,
-            id=self.id,
+        return "{video!s}/timedtexttrack/{pk!s}/{stamp:s}_{language:s}{mode:s}".format(
+            video=self.video.pk,
+            pk=self.pk,
             stamp=stamp,
             language=self.language,
             mode="_{:s}".format(self.mode) if self.mode else "",

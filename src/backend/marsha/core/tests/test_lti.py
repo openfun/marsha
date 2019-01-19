@@ -2,6 +2,7 @@
 import random
 from unittest import mock
 from urllib.parse import unquote
+import uuid
 
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
@@ -17,7 +18,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
-from ..models import ConsumerSitePortability, Playlist, Video
+from ..models import STATE_CHOICES, ConsumerSitePortability, Playlist, Video
 
 
 # We don't enforce arguments documentation in tests
@@ -44,7 +45,8 @@ class VideoLTITestCase(TestCase):
             "context_id": "course-v1:ufr+mathematics+0001",
             "roles": "Instructor",
         }
-        url = "http://testserver/lti-video/"
+        resource_id = uuid.uuid4()
+        url = "http://testserver/lti-video/{!s}".format(resource_id)
         client = oauth1.Client(
             client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
         )
@@ -75,7 +77,7 @@ class VideoLTITestCase(TestCase):
         request = self.factory.post(
             url, lti_parameters, HTTP_REFERER="https://testserver"
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertEqual(lti.verify(), passport.consumer_site)
 
         # If we alter the signature (e.g. add "a" to it), the verification should fail
@@ -83,7 +85,7 @@ class VideoLTITestCase(TestCase):
 
         lti_parameters.update(oauth_dict)
         request = self.factory.post(url, lti_parameters)
-        lti = LTI(request)
+        lti = LTI(request, resource_id)
         with self.assertRaises(LTIException):
             lti.verify()
 
@@ -98,12 +100,12 @@ class VideoLTITestCase(TestCase):
             "staff,",  # a trailing comma should be ignored
         ]:
             request = self.factory.post("/", {"roles": roles_string})
-            lti = LTI(request)
+            lti = LTI(request, uuid.uuid4())
             self.assertTrue(lti.is_instructor)
 
         for roles_string in ["", "instructori", "student", "administrator,student"]:
             request = self.factory.post("/", {"roles": roles_string})
-            lti = LTI(request)
+            lti = LTI(request, uuid.uuid4())
             self.assertFalse(lti.is_instructor)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -119,7 +121,7 @@ class VideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data)
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         with self.assertRaises(LTIException):
             lti.verify()
         self.assertFalse(mock_verify.called)
@@ -141,7 +143,7 @@ class VideoLTITestCase(TestCase):
         request = self.factory.post(
             "/", data, HTTP_REFERER="https://not-example.com/route"
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         with self.assertRaises(LTIException) as context:
             lti.verify()
         self.assertEqual(
@@ -165,7 +167,7 @@ class VideoLTITestCase(TestCase):
         request = self.factory.post(
             "/", data, HTTP_REFERER="https://subdomain.example.com/route"
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         # We just have to make sure verification does not raise an exception
         lti.verify()
 
@@ -184,7 +186,7 @@ class VideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertEqual(lti.verify(), passport.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
@@ -203,7 +205,7 @@ class VideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertEqual(lti.verify(), passport.playlist.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
@@ -223,14 +225,14 @@ class VideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post("/", data)
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         with self.assertRaises(LTIException):
             lti.verify()
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_behind_tls_termination_proxy(self, mock_verify):
-        """Then url should be corrected when place behind a tls termination proxy."""
+        """The launch url should be corrected when placed behind a tls termination proxy."""
         ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123", consumer_site__domain="testserver"
         )
@@ -247,7 +249,7 @@ class VideoLTITestCase(TestCase):
             HTTP_REFERER="http://testserver/lti-video/",
         )
         self.assertEqual(request.build_absolute_uri(), "http://testserver/lti-video/")
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         lti.verify()
         self.assertEqual(
             mock_verify.call_args[0][0].url, "https://testserver/lti-video/"
@@ -260,7 +262,9 @@ class PortabilityVideoLTITestCase(TestCase):
     We need to test the portability behavior of videos in all the following cases:
 
         1) video with same lti_id exists
-            **1-1) video exists in same playlist, same site**
+            1-1) video exists in same playlist, same site**
+                **1-1-1) instructor**
+                **1-1-2) student**
             1-2) video exists in same playlist, other site
                 1-2-1) video playlist is portable to consumer site
                     **1-2-1-1) video is ready**
@@ -318,158 +322,115 @@ class PortabilityVideoLTITestCase(TestCase):
         self.factory = RequestFactory()
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_same_playlist_same_site_openedx_lms(self, mock_verify):
-        """Above case 1-1 applied to Open edX.
+    def test_lti_get_video_same_playlist_same_site_instructor(self, mock_verify):
+        """Above case 1-1-1.
 
-        The video should be retrieved by the LTI object when available (launch request by
-        Open edX LMS).
+        A video that exists for the requested playlist and consumer site should be returned
+        to an instructor whatever its upload state.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__consumer_site=passport.consumer_site,
-        )
-        data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": "Student",
-            "oauth_consumer_key": "ABC123",
-        }
-        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        self.assertEqual(lti.get_or_create_video(), video)
-
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_same_playlist_same_site_openedx_cms(self, mock_verify):
-        """Above case 1-1 applied to Open edX.
-
-        The video should be retrieved by the LTI object when available (launch request by
-        Open edX CMS).
-        """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            playlist__consumer_site=passport.consumer_site,
-        )
-        data = {
-            "resource_link_id": "-df7",  # the hostname is mistakenly left blank by Open edX CMS
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
-        }
-        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        self.assertEqual(lti.get_or_create_video(), video)
-
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_same_playlist_same_site_moodle(self, mock_verify):
-        """Above case 1-1 applied to Moodle.
-
-        The video should be retrieved by the LTI object when available (launch request by Moodle).
-        """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
-            "roles": random.choice(["Student", "Instructor"]),
+            "roles": "Instructor",
             "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertEqual(lti.get_or_create_video(), video)
+
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_same_playlist_same_site_student_ready(self, mock_verify):
+        """Above case 1-1-2 upload state ready.
+
+        A video that exists for the requested playlist and consumer site should be returned
+        to a student if it is ready.
+        """
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
+            playlist__consumer_site=passport.consumer_site, upload_state="ready"
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
+
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_same_playlist_same_site_student_not_ready(self, mock_verify):
+        """Above case 1-1-2 upload state not ready.
+
+        A video that exists for the requested playlist and consumer site should not be returned
+        to a student if it is not ready.
+        """
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
+            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, video.pk)
+        self.assertIsNone(lti.get_or_create_video())
+
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_ready(self, mock_verify):
         """Above case 1-2-1-1.
 
-        The existing video should be duplicated if a student or instructor tries to retrieve a
+        The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but on another consumer site if it is marked as portable to another
-        consumer site. A new playlist should be created for the other consumer site.
+        consumer site.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
             uploaded_on=timezone.now(),
             upload_state="ready",
         )
-
-        # Add a video with the same lti_id but linked to another playlist and uploaded after the
-        # first one to make sure that the video from the same playlist still has precedence
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0002",  # Session 2 is another playlist
-            playlist__is_portable_to_consumer_site=True,
-            uploaded_on=timezone.now(),
-            upload_state="ready",
-        )
-
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
 
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.order_by("-created_on").first())
-        self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.upload_state, "ready")
-        self.assertEqual(new_video.uploaded_on, video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_several_get_latest(self, mock_verify):
-        """Above case 1-2-1-1 in case of several videos.
-
-        In case several videos exist with the same lti_id, it should duplicate the latest.
-        """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        # Create a random number of duplicate videos on this consumer site
-        nb_videos = random.randint(1, 4)
-        videos = VideoFactory.create_batch(
-            nb_videos,
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            playlist__is_portable_to_consumer_site=True,
-            uploaded_on=timezone.now(),
-            upload_state="ready",
-        )
-        data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
-        }
-        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(Video.objects.count(), nb_videos + 1)
-        self.assertEqual(new_video.uploaded_on, videos[-1].uploaded_on)
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_not_ready_instructor(
@@ -477,36 +438,37 @@ class PortabilityVideoLTITestCase(TestCase):
     ):
         """Above case 1-2-1-2-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
+        An LTI Exception should be raised if an instructor tries to retrieve a video that is
         existing for another consumer site but not ready, even if it is portable to another
-        consumer site. A new playlist should be created for the other consumer site.
+        consumer site.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertIsNone(new_video.duplicated_from)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_not_ready_student(
@@ -517,26 +479,26 @@ class PortabilityVideoLTITestCase(TestCase):
         No video is returned to a student trying to access a video that is existing for another
         consumer site but not ready, even if it is portable to another consumer site.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
             playlist__is_portable_to_consumer_site=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_auto_portable_ready(self, mock_verify):
@@ -546,23 +508,9 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site=consumer_site
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=False,
-            uploaded_on=timezone.now(),
-            upload_state="ready",
-        )
-
-        # Add a video with the same lti_id but linked to another playlist and uploaded after the
-        # first one to make sure that the video from the same playlist still has precedence
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0002",  # Session 2 is another playlist
-            playlist__is_portable_to_consumer_site=True,
             uploaded_on=timezone.now(),
             upload_state="ready",
         )
@@ -576,20 +524,15 @@ class PortabilityVideoLTITestCase(TestCase):
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
 
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.order_by("-created_on").first())
-        self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.upload_state, "ready")
-        self.assertEqual(new_video.uploaded_on, video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_auto_portable_not_ready_instructor(
@@ -601,37 +544,37 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site=consumer_site
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=False,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         # Add automatic portability from the site of the video to the site of the passport
         ConsumerSitePortability.objects.create(
             source_site=video.playlist.consumer_site, target_site=consumer_site
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertIsNone(new_video.duplicated_from)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_auto_portable_not_ready_student(
@@ -643,14 +586,12 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site=consumer_site
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
             playlist__is_portable_to_consumer_site=False,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
 
         # Add automatic portability from the site of the video to the site of the passport
@@ -659,52 +600,53 @@ class PortabilityVideoLTITestCase(TestCase):
         )
 
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
 
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-3-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
+        An LTIException should be raised if an instructor tries to retrieve a video that is
         existing for another consumer site but not portable to another consumer site, even if it
-        is ready. A new playlist should be created for the other consumer site.
+        is ready.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = video = VideoFactory(
             playlist__is_portable_to_consumer_site=False,
-            upload_state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.playlist.consumer_site, passport.consumer_site)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_site_not_portable_student(self, mock_verify):
@@ -713,185 +655,144 @@ class PortabilityVideoLTITestCase(TestCase):
         No video is returned to a student trying to access a video that is existing for a
         consumer site but not portable to another consumer site.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            upload_state=random.choice(["ready", "pending", "error"]),
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(upload_state=random.choice([s[0] for s in STATE_CHOICES]))
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_portable_ready(self, mock_verify):
         """Above case 1-3-1-1.
 
-        The existing video should be duplicated if a student or instructor tries to retrieve a
+        The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but linked to another playlist if it is marked as portable to another
-        playlist. A new playlist should be created if it does not exist.
+        playlist.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="wrong",
-            playlist__consumer_site=passport.consumer_site,
-            upload_state="ready",
+            playlist__consumer_site=passport.consumer_site, upload_state="ready"
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.upload_state, "ready")
-        self.assertEqual(new_video.uploaded_on, video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_playlist_several_get_latest(self, mock_verify):
-        """Above case 1-3-1-1 in case of several videos.
-
-        In case several videos exist with the same lti_id, it should duplicate the latest.
-        """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        # Create a random number of duplicate videos on this consumer site
-        nb_videos = random.randint(1, 4)
-        videos = VideoFactory.create_batch(
-            nb_videos,
-            lti_id="df7",
-            playlist__consumer_site=passport.consumer_site,
-            uploaded_on=timezone.now(),
-            upload_state="ready",
-        )
-        data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
-        }
-        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(Video.objects.count(), nb_videos + 1)
-        self.assertEqual(new_video.uploaded_on, videos[-1].uploaded_on)
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_portable_not_ready_instructor(self, mock_verify):
         """Above case 1-3-1-2-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
+        An LTIException should be raised if an instructor tries to retrieve a video that is
         existing in another playlist but not ready, even if it is portable to another
-        playlist. A new playlist should be created if it does not exist.
+        playlist.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_portable_not_ready_student(self, mock_verify):
         """Above case 1-3-1-2-2.
 
         No video is returned to a student trying to access a video that is existing in another
-        playlist but not ready, even if it is portable to another consumer site.
+        playlist but not ready, even if it is portable to another playlist.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="wrong",
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
+        An LTIException should be raises if an instructor tries to retrieve a video that is
         existing in another playlist but not portable to another playlist, even if it
-        is ready. A new playlist should be created if it does not exist.
+        is ready.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
             lti_id="df7",
             playlist__lti_id="wrong",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=False,
-            upload_state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_playlist_not_portable_student(self, mock_verify):
@@ -900,94 +801,53 @@ class PortabilityVideoLTITestCase(TestCase):
         No video is returned to a student trying to access a video that is existing in another
         playlist but not portable to another playlist, even if it is ready.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="wrong",
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=False,
-            upload_state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_portable_ready(self, mock_verify):
         """Above case 1-4-1-1-1.
 
-        The existing video should be duplicated if a student or instructor tries to retrieve a
+        The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but in another playlist on another consumer site if it is marked as
-        portable to another playlist AND to another consumer site. A new playlist should be
-        created for the other consumer site.
+        portable to another playlist AND to another consumer site.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="wrong",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
             upload_state="ready",
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.upload_state, "ready")
-        self.assertEqual(new_video.uploaded_on, video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_several_get_latest(self, mock_verify):
-        """Above case 1-4-1-1-1 in case of several videos.
-
-        In case several videos exist with the same lti_id, it should duplicate the latest.
-        """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        # Create a random number of duplicate videos on this consumer site
-        nb_videos = random.randint(1, 4)
-        videos = VideoFactory.create_batch(
-            nb_videos,
-            lti_id="df7",
-            playlist__is_portable_to_playlist=True,
-            playlist__is_portable_to_consumer_site=True,
-            uploaded_on=timezone.now(),
-            upload_state="ready",
-        )
-        data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
-        }
-        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(Video.objects.count(), nb_videos + 1)
-        self.assertEqual(new_video.uploaded_on, videos[-1].uploaded_on)
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_portable_not_ready_instructor(
@@ -995,35 +855,38 @@ class PortabilityVideoLTITestCase(TestCase):
     ):
         """Above case 1-4-1-1-2-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
+        An LTIException should be raised if an instructor tries to retrieve a video that is
         existing in another playlist on another consumer site but not ready, even if it is
-        portable to another playlist AND to another consumer site. A new playlist should be
-        created for the other consumer site.
+        portable to another playlist AND to another consumer site.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="df7",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_portable_not_ready_student(self, mock_verify):
@@ -1033,26 +896,27 @@ class PortabilityVideoLTITestCase(TestCase):
         playlist for another consumer site but not ready, even if it is portable to another
         playlist AND to another consumer site.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="df7",
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_ready(self, mock_verify):
@@ -1062,12 +926,8 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site=consumer_site
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
-            lti_id="df7",
-            playlist__lti_id="wrong",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=False,
             upload_state="ready",
@@ -1078,22 +938,18 @@ class PortabilityVideoLTITestCase(TestCase):
         )
 
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": random.choice(["Student", "Instructor"]),
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
+        self.assertEqual(lti.get_or_create_video(), video)
 
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertEqual(new_video.duplicated_from, video)
-        self.assertEqual(new_video.upload_state, "ready")
-        self.assertEqual(new_video.uploaded_on, video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertEqual(new_video.resource_id, video.resource_id)
-        self.assertNotEqual(new_video.playlist, video.playlist)
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_not_ready_instructor(
@@ -1105,36 +961,41 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        ConsumerSiteLTIPassportFactory(
+        passport = ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123", consumer_site=consumer_site
         )
         video = VideoFactory(
             lti_id="df7",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=False,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         # Add automatic portability from the site of the video to the site of the passport
         ConsumerSitePortability.objects.create(
             source_site=video.playlist.consumer_site, target_site=consumer_site
         )
-
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_not_ready_student(
@@ -1146,67 +1007,67 @@ class PortabilityVideoLTITestCase(TestCase):
         of the passport.
         """
         consumer_site = ConsumerSiteFactory(domain="example.com")
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site=consumer_site
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
-            lti_id="df7",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=False,
-            upload_state=random.choice(["pending", "error"]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+            ),
         )
         # Add automatic portability from the site of the video to the site of the passport
         ConsumerSitePortability.objects.create(
             source_site=video.playlist.consumer_site, target_site=consumer_site
         )
-
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        A new video should be created if an instructor tries to retrieve a video that is
-        existing in another playlist on another consumer site but not portable either to another
-        playlist or to another consumer site, even if it is ready. A new playlist should be
-        created for the other consumer site.
+        An LTIException should be raised if an instructor tries to retrieve a video existing
+        on another playlist and another consumer site but not portable either to another playlist
+        or to another consumer site, even if it is ready.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         one_not_portable = random.choice([True, False])
         video = VideoFactory(
-            lti_id="df7",
             playlist__is_portable_to_playlist=one_not_portable,
             playlist__is_portable_to_consumer_site=not one_not_portable,
-            upload_state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
-        new_video = lti.get_or_create_video()
-        self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
-        self.assertNotEqual(new_video.playlist, video.playlist)
-        self.assertEqual(new_video.upload_state, "pending")
-        self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, video.lti_id)
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        lti = LTI(request, video.pk)
+        with self.assertRaises(LTIException) as context:
+            lti.get_or_create_video()
+        self.assertEqual(
+            context.exception.args[0],
+            (
+                "A video with this ID already exists but is not portable "
+                "to your playlist and/or consumer site."
+            ),
+        )
+        # No new playlist or video are created
+        self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_other_pl_site_not_portable_student(self, mock_verify):
@@ -1216,27 +1077,26 @@ class PortabilityVideoLTITestCase(TestCase):
         playlist on another consumer site but not portable either to another playlist or to
         another consumer site, even if it is ready.
         """
-        ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         one_not_portable = random.choice([True, False])
-        VideoFactory(
-            lti_id="df7",
+        video = VideoFactory(
             playlist__is_portable_to_playlist=one_not_portable,
             playlist__is_portable_to_consumer_site=not one_not_portable,
-            upload_state=random.choice(["ready", "pending", "error"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, video.pk)
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_video_wrong_lti_id_intructor(self, mock_verify):
@@ -1245,30 +1105,28 @@ class PortabilityVideoLTITestCase(TestCase):
         A new video should be created and returned if an instructor tries to access an unknown
         video for an existing playlist.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
-            lti_id="wrong",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            playlist__consumer_site=passport.consumer_site,
-            uploaded_on=timezone.now(),
+            playlist__consumer_site=passport.consumer_site, uploaded_on=timezone.now()
         )
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": "new_lti_id",
+            "context_id": video.playlist.lti_id,
             "roles": "Instructor",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         new_video = lti.get_or_create_video()
+
+        # A new video is created
+        self.assertEqual(Video.objects.count(), 2)
         self.assertEqual(new_video, Video.objects.exclude(id=video.id).get())
         self.assertEqual(new_video.playlist, video.playlist)
         self.assertEqual(new_video.upload_state, "pending")
         self.assertIsNone(new_video.uploaded_on)
-        self.assertEqual(new_video.lti_id, "df7")
-        self.assertNotEqual(new_video.resource_id, video.resource_id)
+        self.assertEqual(new_video.lti_id, "new_lti_id")
+
         # No new playlist is created
         self.assertEqual(Playlist.objects.count(), 1)
 
@@ -1278,22 +1136,19 @@ class PortabilityVideoLTITestCase(TestCase):
 
         The video should not be retrieved if a student tries to access an unknown video.
         """
-        passport = ConsumerSiteLTIPassportFactory(
-            oauth_consumer_key="ABC123", consumer_site__domain="example.com"
-        )
-        VideoFactory(
-            lti_id="wrong",
-            playlist__lti_id="course-v1:ufr+mathematics+0001",
-            playlist__consumer_site=passport.consumer_site,
-        )
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         data = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
             "roles": "Student",
-            "oauth_consumer_key": "ABC123",
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
+
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertIsNone(lti.get_or_create_video())
-        # No new playlist is created
+
+        # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 1)

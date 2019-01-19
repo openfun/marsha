@@ -19,15 +19,18 @@ class LTI:
     It provides properties and methods to inspect the launch request.
     """
 
-    def __init__(self, request):
+    def __init__(self, request, resource_id):
         """Initialize the LTI system.
 
         Parameters
         ----------
         request : django.http.request.HttpRequest
             The request that holds the LTI parameters
+        resource_id : uuid.uuid4
+            The primary key of the video targetted by the LTI query as a UUID.
 
         """
+        self.resource_id = resource_id
         self.request = request
 
     def verify(self):
@@ -157,17 +160,6 @@ class LTI:
         return self.request.POST.get("context_title", self.context_id)
 
     @property
-    def resource_link_id(self):
-        """Handle Open edX specific resource_link_id."""
-        # The Open edX launch request is recognizable by the absence of consumer instance guid
-        # It's consumer instance guid is concatenated in the resource link id which is wrong so
-        # let's strip it...
-        if self.request.POST.get("tool_consumer_instance_guid"):
-            return self.request.POST["resource_link_id"]
-
-        return self.request.POST["resource_link_id"].rsplit("-", 1)[-1]
-
-    @property
     def consumer_site_domain(self):
         """Get consumer site domain from the LTI launch request.
 
@@ -241,7 +233,7 @@ class LTI:
         Returns
         -------
         core.models.video.Video
-            The video instance targeted by the `resource_link_id` or None.
+            The video instance targeted by the launch url or None.
 
         """
         # Make sure LTI verification has run successfully. It raises an LTIException otherwise.
@@ -252,93 +244,101 @@ class LTI:
         except AssertionError:
             raise LTIException("A context ID is required.")
 
-        # If the video already exist, retrieve it from database
+        # If the video already exists, retrieve it from database
+        filter_kwargs = {"upload_state": READY} if not self.is_instructor else {}
         try:
             return Video.objects.get(
-                lti_id=self.resource_link_id,
-                playlist__lti_id=self.context_id,
-                playlist__consumer_site=consumer_site,
+                Q(playlist__lti_id=self.context_id)
+                | Q(playlist__is_portable_to_playlist=True, upload_state=READY),
+                Q(playlist__consumer_site=consumer_site)
+                | Q(playlist__is_portable_to_consumer_site=True, upload_state=READY)
+                | Q(
+                    playlist__consumer_site__in=consumer_site.reachable_from.all(),
+                    upload_state=READY,
+                ),
+                pk=self.resource_id,
+                **filter_kwargs,
             )
         except Video.DoesNotExist:
-            # Look for a video with the same lti id from another playlist on the same
-            # consumer site
-            origin_video = (
-                Video.objects.filter(
-                    lti_id=self.resource_link_id,
-                    playlist__consumer_site=consumer_site,
-                    playlist__is_portable_to_playlist=True,
-                    upload_state=READY,
-                )
-                .order_by("-uploaded_on")
-                .first()
+            pass
+
+        # If we didn't find any existing video, we will only create a new video if the
+        # request comes from an instructor
+        if not self.is_instructor:
+            return None
+
+        # Check that the video does not already exist (possible in another playlist and/or
+        # on another consumer site if it is not portable or not ready).
+        if Video.objects.filter(pk=self.resource_id).exists():
+            raise LTIException(
+                "A video with this ID already exists but is not portable to your playlist "
+                "and/or consumer site."
             )
-
-            if origin_video is None:
-                # Look for a video with the same lti id from the same playlist on another
-                # consumer site that is portable to the current consumer site of the LTI request
-                origin_video = (
-                    Video.objects.filter(
-                        Q(playlist__is_portable_to_consumer_site=True)
-                        | Q(
-                            playlist__consumer_site__in=consumer_site.reachable_from.all()
-                        ),
-                        playlist__lti_id=self.context_id,
-                        lti_id=self.resource_link_id,
-                        upload_state=READY,
-                    )
-                    .order_by("-uploaded_on")
-                    .first()
-                )
-
-            if origin_video is None:
-                # Look for a video with the same lti id from another playlist on another consumer
-                # site that is portable to the current consumer site of the LTI request
-                origin_video = (
-                    Video.objects.filter(
-                        Q(playlist__is_portable_to_consumer_site=True)
-                        | Q(
-                            playlist__consumer_site__in=consumer_site.reachable_from.all()
-                        ),
-                        playlist__is_portable_to_playlist=True,
-                        lti_id=self.resource_link_id,
-                        upload_state=READY,
-                    )
-                    .order_by("-uploaded_on")
-                    .first()
-                )
-
-            # If we still didn't find any existing video, we will only create a new video if the
-            # request comes from an instructor
-            if origin_video is None and not self.is_instructor:
-                return None
 
         # Creating the video...
         # - Get the playlist if it exists or create it
         playlist, _ = Playlist.objects.get_or_create(
             lti_id=self.context_id,
             consumer_site=consumer_site,
-            defaults={
-                "title": self.context_title,
-                "is_portable_to_playlist": (
-                    origin_video.playlist.is_portable_to_playlist
-                    if origin_video
-                    else True
-                ),
-                "is_portable_to_consumer_site": (
-                    origin_video.playlist.is_portable_to_consumer_site
-                    if origin_video
-                    else False
-                ),
-            },
+            defaults={"title": self.context_title},
         )
 
         # Create the video, pointing to the file from the origin video if any
-        if origin_video:
-            return origin_video.duplicate(playlist)
-
         return Video.objects.create(
+            pk=self.resource_id,
             lti_id=self.resource_link_id,
             playlist=playlist,
             upload_state=PENDING,
             title=self.resource_link_title,
         )
+
+
+class OpenEdxLTI(LTI):
+    """Deprecated pseudo-LTI for backward compatibility with early version Open edX.
+
+    [DEPRECATED] This LTI class does not comply with the LTI specification.
+    It is kept for backward compatibility, only works with the Open edX XBlock consumer and
+    will be removed in a future release.
+
+    """
+
+    # pylint: disable=super-init-not-called
+    def __init__(self, request):
+        """Initialize the LTI system.
+
+        Parameters
+        ----------
+        request : django.http.request.HttpRequest
+            The request that holds the LTI parameters
+
+        """
+        self.request = request
+
+    @property
+    def resource_link_id(self):
+        """Accept only Open edX specific resource_link_id."""
+        resource_link_id = self.request.POST["resource_link_id"].rsplit("-", 1)
+        if len(resource_link_id) == 2:
+            return resource_link_id[1]
+        raise LTIException("This launch request only works with Open edX.")
+
+    def get_or_create_video(self):
+        """Get or create the video targeted by the LTI launch request.
+
+        Create the playlist if it does not pre-exist (it can only happen with consumer site scope
+        passports).
+
+        Returns
+        -------
+        core.models.video.Video
+            The video instance targeted by the `resource_link_id` or None.
+
+        """
+        # Make sure LTI verification has run successfully. It raises an LTIException otherwise.
+        self.verify()
+
+        # If the video already exists, retrieve it from database
+        try:
+            return Video.objects.get(lti_id=self.resource_link_id, upload_state=READY)
+        except Video.DoesNotExist:
+            return None

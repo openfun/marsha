@@ -19,16 +19,12 @@ class UpdateStateAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video(self):
         """Confirming the successful upload of a video using the sole existing secret."""
-        video = VideoFactory(
-            id="f87b5f26-da60-49f2-9d71-a816e68a207f",
-            resource_id="831b1188-98f6-42a1-95e8-a7a76d259cdb",
-        )
+        video = VideoFactory(id="f87b5f26-da60-49f2-9d71-a816e68a207f")
         data = {
-            "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
-            "signature": "f0e4e0db808d413e3df727e293e55001208264a6d4a7f246d0b06bde7baa94ec",
+            "signature": "a5b2027808061d1ed558be62bc8626c7af0aa516b0fd7852595d61e810a0b118",
         }
-
         response = self.client.post("/api/update-state", data)
         video.refresh_from_db()
 
@@ -42,15 +38,12 @@ class UpdateStateAPITest(TestCase):
     )
     def test_api_update_state_video_multiple_secrets(self):
         """Confirming the successful upload of a video using the any of the existing secrets."""
-        video = VideoFactory(
-            id="c804e019-c622-4b76-aa43-33f2317bdc7e",
-            resource_id="761029ca-bc45-4f7f-b9ca-d5ea8e22b3ea",
-        )
+        video = VideoFactory(id="c804e019-c622-4b76-aa43-33f2317bdc7e")
         data = {
-            "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "error",
             # Signature generated using "current secret"
-            "signature": "39fe862afcaa1388a31277e3ace2d4aac84440b60f7426bb2c6d4e34046417a8",
+            "signature": "8ade282229856ef892e757b51e5644916812053682c8e7354cd6b90e81af8ada",
         }
 
         response = self.client.post("/api/update-state", data)
@@ -66,11 +59,11 @@ class UpdateStateAPITest(TestCase):
         """Confirming the successful upload of a timed text track."""
         timed_text_track = TimedTextTrackFactory(
             id="673d4400-acab-454b-99eb-f7ef422af2cb",
-            video__resource_id="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
+            video__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
         )
         data = {
             "key": "{!s}/timedtexttrack/{!s}/1533686400_fr_cc".format(
-                timed_text_track.video.resource_id, timed_text_track.id
+                timed_text_track.video.pk, timed_text_track.id
             ),
             "state": "ready",
             "signature": "7d3701b28d3bc7bcec1c846e1c932b9e79b4aff053ea9168898e2504e53ca03d",
@@ -107,7 +100,7 @@ class UpdateStateAPITest(TestCase):
         """Trying to update the state of an upload with invalid data should return a 400."""
         video = VideoFactory()
         data = {
-            "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "reedo",
             "signature": "123abc",
         }
@@ -125,14 +118,11 @@ class UpdateStateAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_invalid_signature(self):
         """Trying to update the state of an upload with an unexpected signature."""
-        video = VideoFactory(
-            id="4b8cb66c-4de4-4112-8be4-470db992a19e",
-            resource_id="8a94d39a-4730-4473-950c-1a3f21b35d0b",
-        )
+        video = VideoFactory(id="4b8cb66c-4de4-4112-8be4-470db992a19e")
         data = {
-            "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
-            # Expected signature: 5eda713bca2c51c25d2771da725e481317cfd54c53c7fbd90049a000dacab627
+            # Expected signature: cecaea9d8aed12e927f5c6861b0132375b96ff4e907fdc12e5f6629b719300e4
             "signature": "invalid signature",
         }
 
