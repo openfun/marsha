@@ -84,7 +84,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_read_detail_token_user(self):
         """A token user associated to a video can read a timed text track related to this video."""
         timed_text_track = TimedTextTrackFactory(
-            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -179,7 +179,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_read_detail_token_user_signed_urls(self, mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         timed_text_track = TimedTextTrackFactory(
-            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -621,7 +621,7 @@ class TimedTextTrackAPITest(TestCase):
         """A token user should be able to initiate an upload."""
         timed_text_track = TimedTextTrackFactory(
             id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
-            video__resource_id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
             language="fr",
             upload_state=random.choice(["ready", "error"]),
             mode="cc",
@@ -685,7 +685,7 @@ class TimedTextTrackAPITest(TestCase):
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
                 "key": "{!s}/timedtexttrack/{!s}/1533686400_fr_cc".format(
-                    timed_text_track.video.resource_id, timed_text_track.id
+                    timed_text_track.video.pk, timed_text_track.id
                 ),
                 "max_file_size": 1048576,
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",

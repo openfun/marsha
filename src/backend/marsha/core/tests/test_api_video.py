@@ -83,7 +83,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user(self):
         """Instructors should be able to read the detail of their video."""
         video = VideoFactory(
-            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
         )
@@ -111,13 +111,13 @@ class VideoAPITest(TestCase):
             "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
-            str(rate): thumbnails_template.format(video.resource_id, rate)
+            str(rate): thumbnails_template.format(video.pk, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
 
         mp4_template = "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
         mp4_dict = {
-            str(rate): mp4_template.format(video.resource_id, rate)
+            str(rate): mp4_template.format(video.pk, rate)
             for rate in [144, 240, 480, 720, 1080]
         }
 
@@ -248,7 +248,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user_signed_urls(self, mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         video = VideoFactory(
-            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
         )
@@ -636,7 +636,6 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should be able to retrieve an upload policy."""
         video = VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
-            resource_id="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             upload_state=random.choice(["ready", "error"]),
         )
         jwt_token = AccessToken()
@@ -672,7 +671,7 @@ class VideoAPITest(TestCase):
                     {"x-amz-date": "20180808T000000Z"},
                     {
                         "key": (
-                            "a2f27fde-973a-4e89-8dca-cc59e01d255c/video/"
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/"
                             "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                         )
                     },
@@ -687,7 +686,7 @@ class VideoAPITest(TestCase):
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{!s}/video/{!s}/1533686400".format(video.resource_id, video.id),
+                "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
                 "max_file_size": 1073741824,
                 "s3_endpoint": "s3.eu-west-1.amazonaws.com",
                 "x_amz_algorithm": "AWS4-HMAC-SHA256",
@@ -695,7 +694,7 @@ class VideoAPITest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "7b4bb2a1d0620d1bcf5adeec87173cdfa048cdc45705f77370af017dd7772a6f"
+                    "53e506006dd818478ccbe3d9ec87d968782c3ccdd4594d294809d5e06a8010c5"
                 ),
             },
         )

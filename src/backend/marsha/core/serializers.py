@@ -18,7 +18,7 @@ UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 # This regex matches keys in AWS for videos or timed text tracks
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
-    "^(?P<resource_id>{uuid:s})/(?P<model_name>video|timedtexttrack)/(?P<object_id>"
+    "^{uuid:s}/(?P<model_name>video|timedtexttrack)/(?P<object_id>"
     "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}_({tt_ex}))?$"
 ).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS)
 KEY_REGEX = re.compile(KEY_PATTERN)
@@ -142,8 +142,8 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         """
         if obj.uploaded_on:
 
-            base = "{cloudfront:s}/{resource!s}".format(
-                cloudfront=settings.CLOUDFRONT_URL, resource=obj.video.resource_id
+            base = "{cloudfront:s}/{video!s}".format(
+                cloudfront=settings.CLOUDFRONT_URL, video=obj.video.pk
             )
             url = "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt".format(
                 base=base,
@@ -222,8 +222,8 @@ class VideoSerializer(serializers.ModelSerializer):
             return None
 
         urls = {"mp4": {}, "thumbnails": {}}
-        base = "{cloudfront:s}/{resource!s}".format(
-            cloudfront=settings.CLOUDFRONT_URL, resource=obj.resource_id
+        base = "{cloudfront:s}/{pk!s}".format(
+            cloudfront=settings.CLOUDFRONT_URL, pk=obj.pk
         )
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
