@@ -187,7 +187,6 @@ class VideoAdmin(admin.ModelAdmin):
         "description",
         "playlist",
         "lti_id",
-        "resource_id",
         "upload_state",
         "created_by",
         "duplicated_from",
@@ -199,7 +198,6 @@ class VideoAdmin(admin.ModelAdmin):
         "created_by",
         "created_on",
         "duplicated_from",
-        "resource_id",
         "upload_state",
         "uploaded_on",
         "updated_on",
@@ -207,7 +205,6 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("upload_state", "playlist__consumer_site__domain")
     search_fields = (
         "lti_id",
-        "resource_id",
         "playlist__consumer_site__domain",
         "playlist__consumer_site__name",
         "playlist__lti_id",
@@ -238,7 +235,6 @@ class VideosInline(admin.TabularInline):
         "created_by",
         "created_on",
         "duplicated_from",
-        "resource_id",
         "upload_state",
         "uploaded_on",
         "updated_on",
