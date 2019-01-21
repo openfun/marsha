@@ -3,27 +3,34 @@ import { flushAllPromises } from '../../testSetup';
 import { shallow, ShallowWrapper } from 'enzyme';
 import * as React from 'react';
 
-const mockCreateTimedTextTrack = jest.fn();
-jest.doMock(
+jest.mock(
   '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack',
   () => ({
-    createTimedTextTrack: mockCreateTimedTextTrack,
+    createTimedTextTrack: jest.fn(),
   }),
 );
 
-const mockGetTimedTextTrackLanguageChoices = jest.fn();
-jest.doMock(
+jest.mock(
   '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices',
   () => ({
-    getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
+    getTimedTextTrackLanguageChoices: jest.fn(),
   }),
 );
 
+import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack';
+import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
 import { modelName } from '../../types/models';
 import { timedTextMode } from '../../types/tracks';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { TimedTextCreationForm } from './TimedTextCreationForm';
+
+const mockCreateTimedTextTrack: jest.Mock<
+  typeof createTimedTextTrack
+> = createTimedTextTrack as any;
+const mockGetTimedTextTrackLanguageChoices: jest.Mock<
+  typeof getTimedTextTrackLanguageChoices
+> = getTimedTextTrackLanguageChoices as any;
 
 const mockCreateTimedTextTrackRecord = jest.fn();
 

@@ -3,17 +3,21 @@ import { flushAllPromises } from '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-const mockGetTimedTextTrackList = jest.fn();
-jest.doMock(
+jest.mock(
   '../../data/sideEffects/getTimedTextTrackList/getTimedTextTrackList',
   () => ({
-    getTimedTextTrackList: mockGetTimedTextTrackList,
+    getTimedTextTrackList: jest.fn(),
   }),
 );
 
+import { getTimedTextTrackList } from '../../data/sideEffects/getTimedTextTrackList/getTimedTextTrackList';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager/DashboardTimedTextManager';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { DashboardTimedTextPane } from './DashboardTimedTextPane';
+
+const mockGetTimedTextTrackList: jest.Mock<
+  typeof getTimedTextTrackList
+> = getTimedTextTrackList as any;
 
 describe('<DashboardTimedTextPane />', () => {
   const mockAddAllTimedTextTracks = jest.fn();
