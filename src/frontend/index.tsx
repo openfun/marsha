@@ -8,7 +8,8 @@ import { Provider } from 'react-redux';
 import { AppRoutesConnected } from './components/AppRoutesConnected/AppRoutesConnected';
 import { bootstrapStore } from './data/bootstrapStore';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
-import { baseStyles } from './utils/theme/baseStyles';
+// Load our style reboot into the DOM
+import { GlobalStyles } from './utils/theme/baseStyles';
 
 export const appData = {
   ...parseDataElements(
@@ -21,13 +22,12 @@ const store = bootstrapStore(appData);
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', event => {
-  // Load our style reboot into the DOM
-  baseStyles();
   // Render our actual component tree
   ReactDOM.render(
     <IntlProvider>
       <Provider store={store}>
         <AppRoutesConnected />
+        <GlobalStyles />
       </Provider>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
