@@ -1,5 +1,6 @@
 """Views of the ``core`` app of the Marsha project."""
 import json
+import uuid
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -131,3 +132,19 @@ class LTIDevelopmentView(TemplateView):
     """
 
     template_name = "core/lti_development.html"
+
+    def get_context_data(self, **kwargs):
+        """Generate a UUID to pre-populate the `uuid` fields in the LTI request form.
+
+        Parameters
+        ----------
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        dictionary
+            context for template rendering
+
+        """
+        return {"uuid": uuid.uuid4()}
