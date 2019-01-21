@@ -14,12 +14,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.292.0",
+    "aws-sdk": "2.391.0",
     "request": "2.88.0",
     "request-promise-native": "1.0.5"
   },
   "devDependencies": {
-    "@types/jest": "23.3.2",
+    "@types/jest": "23.3.13",
     "@types/request-promise-native": "1.0.15",
     "jest": "23.6.0"
   }
