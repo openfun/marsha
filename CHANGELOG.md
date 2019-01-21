@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Rework `Jest` config to use babel
+
 ## [2.0.1] - 2019-01-22
 
 ### Fixed

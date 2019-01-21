@@ -4,27 +4,31 @@ import { shallow } from 'enzyme';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
-const mockMakeFormData = jest.fn();
-jest.doMock('../../utils/makeFormData/makeFormData', () => ({
-  makeFormData: mockMakeFormData,
+jest.mock('../../utils/makeFormData/makeFormData', () => ({
+  makeFormData: jest.fn(),
 }));
 
-const mockInitiateUpload = jest.fn();
-jest.doMock('../../data/sideEffects/initiateUpload/initiateUpload', () => ({
-  initiateUpload: mockInitiateUpload,
+jest.mock('../../data/sideEffects/initiateUpload/initiateUpload', () => ({
+  initiateUpload: jest.fn(),
 }));
 
-jest.doMock('react-router-dom', () => ({
+jest.mock('react-router-dom', () => ({
   Link: () => null,
   Redirect: () => {},
 }));
 
+import { initiateUpload } from '../../data/sideEffects/initiateUpload/initiateUpload';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
+import { makeFormData } from '../../utils/makeFormData/makeFormData';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadForm } from './UploadForm';
 
+const mockInitiateUpload: jest.Mock<
+  typeof initiateUpload
+> = initiateUpload as any;
+const mockMakeFormData: jest.Mock<typeof makeFormData> = makeFormData as any;
 const mockUpdateObject = jest.fn();
 
 describe('UploadForm', () => {

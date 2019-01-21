@@ -3,26 +3,33 @@ import { flushAllPromises } from '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-const mockDeleteTimedTextTrack = jest.fn();
-jest.doMock(
+jest.mock(
   '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack',
-  () => ({ deleteTimedTextTrack: mockDeleteTimedTextTrack }),
+  () => ({ deleteTimedTextTrack: jest.fn() }),
 );
 
-const mockGetTimedTextTrackLanguageChoices = jest.fn();
-jest.doMock(
+jest.mock(
   '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices',
   () => ({
-    getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
+    getTimedTextTrackLanguageChoices: jest.fn(),
   }),
 );
 
-jest.doMock('react-router-dom', () => ({
+jest.mock('react-router-dom', () => ({
   Link: () => null,
 }));
 
+import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
+import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
 import { TimedText, uploadState } from '../../types/tracks';
 import { TimedTextListItem } from './TimedTextListItem';
+
+const mockDeleteTimedTextTrack: jest.Mock<
+  typeof deleteTimedTextTrack
+> = deleteTimedTextTrack as any;
+const mockGetTimedTextTrackLanguageChoices: jest.Mock<
+  typeof getTimedTextTrackLanguageChoices
+> = getTimedTextTrackLanguageChoices as any;
 
 describe('<TimedTextListItem />', () => {
   const mockDeleteTimedTextTrackRecord = jest.fn();

@@ -1,7 +1,7 @@
 module.exports = {
   globals: {
     'ts-jest': {
-      useBabelrc: true,
+      babelConfig: require('./babel.config.js'),
     },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
@@ -11,6 +11,7 @@ module.exports = {
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
   testURL: 'https://localhost',
   transform: {
+    '^.+\\.(js|jsx)$': 'babel-jest',
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
 };
