@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Remove the `styledComponentWithProps` we used to type styled components thanks to a newer version of the library
 - Rework `Jest` config to use babel
 
 ## [2.0.1] - 2019-01-22
