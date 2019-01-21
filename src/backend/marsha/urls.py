@@ -18,10 +18,13 @@ router.register(
 )
 
 urlpatterns = [
+    # Admin
     path(f"{admin_site.name}/", admin_site.urls),
-    path("lti-video/<uuid:uuid>", VideoLTIView.as_view(), name="lti_video"),
+    # LTI
+    path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="lti_video"),
     # This view is deprecated and will be removed in a future release:
     path("lti-video/", OpenEdxVideoLTIView.as_view(), name="lti_video"),
+    # API
     path("api/update-state", update_state, name="update_state"),
     path("api/schema", get_schema_view(title="Marsha API"), name="schema"),
     path("api/", include(router.urls)),

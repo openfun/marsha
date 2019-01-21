@@ -44,11 +44,11 @@
     <section>
       <h2>Iframe LTI setup</h2>
       <p>
-        Open the `/lti-video/` view in the iframe below, with a POST request.
+        Open the `/lti/videos/` view in the iframe below, with a POST request.
         Simulates execution in real conditions, except this is not a
         cross-origin call.
       </p>
-      <form action="http://localhost:8060/lti-video/" method="post" target="lti_iframe">
+      <form action="http://localhost:8060/lti/videos/" method="post" target="lti_iframe">
         <input type="text" name="resource_link_id" value="example.com-df7" />
         <input
           type="text"
@@ -84,10 +84,10 @@
     <section>
       <h2>New page LTI setup</h2>
       <p style="margin-top: 0;">
-        Open the `/lti-video/` view in a regular full-screen page, with a POST
+        Open the `/lti/videos/` view in a regular full-screen page, with a POST
         request.
       </p>
-      <form action="/lti-video/" method="post">
+      <form action="/lti/videos/" method="post">
         <input type="text" name="resource_link_id" value="example.com-df7" />
         <input
           type="text"
