@@ -8,6 +8,23 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.0] - 2019-01-21
+
+### Added
+
+- Refactor LTI to include video UUID in the launch url. The new endpoint
+  is of the form /lti/videos/<uuid>
+- Write an actual README.md file
+- Add renovate.json to follow frontend dependencies
+- Add a link to the dashboard on the instructor view
+- Add a TimedText pane to let users manage tracks in Dashboard
+- Allow resource deletion in the `resourceById` reducer
+
+### Fixed
+
+- Rework the video dashboard to make it more compact
+- Fix and improve Typescript types
+
 ## [1.2.1] - 2019-01-16
 
 ### Fixed
@@ -78,7 +95,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v1.2.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.0.0...master
+[2.0.0]: https://github.com/openfun/marsha/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/openfun/marsha/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/openfun/marsha/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/openfun/marsha/compare/v1.1.1...v1.1.2
