@@ -42,7 +42,7 @@ class ViewsTestCase(TestCase):
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
         ) as mock_verify:
-            response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -100,7 +100,7 @@ class ViewsTestCase(TestCase):
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
         ) as mock_verify:
-            response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -155,7 +155,7 @@ class ViewsTestCase(TestCase):
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
         ) as mock_verify:
-            response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -187,7 +187,7 @@ class ViewsTestCase(TestCase):
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
         ) as mock_verify:
-            response = self.client.post("/lti-video/{!s}".format(uuid.uuid4()), data)
+            response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -211,7 +211,7 @@ class ViewsTestCase(TestCase):
         """Validate the response returned in case of an LTI exception."""
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
-        response = self.client.post("/lti-video/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -246,7 +246,7 @@ class ViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
-            response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -289,7 +289,7 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -339,7 +339,7 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        response = self.client.post("/lti-video/{!s}".format(video.pk), data)
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -389,7 +389,7 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        response = self.client.post("/lti-video/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -443,4 +443,4 @@ class DevelopmentViewsTestCase(TestCase):
         }
 
         with self.assertRaises(ImproperlyConfigured):
-            self.client.post("/lti-video/{!s}".format(video.pk), data)
+            self.client.post("/lti/videos/{!s}".format(video.pk), data)
