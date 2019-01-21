@@ -46,7 +46,7 @@ class VideoLTITestCase(TestCase):
             "roles": "Instructor",
         }
         resource_id = uuid.uuid4()
-        url = "http://testserver/lti-video/{!s}".format(resource_id)
+        url = "http://testserver/lti/videos/{!s}".format(resource_id)
         client = oauth1.Client(
             client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
         )
@@ -243,16 +243,16 @@ class VideoLTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
         }
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/",
             data,
             HTTP_X_FORWARDED_PROTO="https",
-            HTTP_REFERER="http://testserver/lti-video/",
+            HTTP_REFERER="http://testserver/lti/videos/",
         )
-        self.assertEqual(request.build_absolute_uri(), "http://testserver/lti-video/")
+        self.assertEqual(request.build_absolute_uri(), "http://testserver/lti/videos/")
         lti = LTI(request, uuid.uuid4())
         lti.verify()
         self.assertEqual(
-            mock_verify.call_args[0][0].url, "https://testserver/lti-video/"
+            mock_verify.call_args[0][0].url, "https://testserver/lti/videos/"
         )
 
 
