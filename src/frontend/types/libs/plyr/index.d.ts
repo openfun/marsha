@@ -30,6 +30,4 @@ declare class Plyr {
 }
 
 // Additional types from our Plyr typings
-declare namespace Plyr {
-
-}
+declare namespace Plyr {}

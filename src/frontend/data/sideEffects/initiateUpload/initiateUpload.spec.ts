@@ -15,7 +15,7 @@ describe('sideEffects/initiateUpload', () => {
     const policy = await initiateUpload('some token', modelName.VIDEOS, '42');
 
     expect(policy).toEqual({ some: 'policy' });
-    expect(fetchMock.lastCall()[1].headers).toEqual({
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
     });
   });

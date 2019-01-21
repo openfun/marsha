@@ -1,6 +1,6 @@
-const Plyr = jest.fn();
+const Plyr = jest.fn() as typeof Plyr;
 
-Plyr.mockImplementation(() => ({
+(Plyr as any).mockImplementation(() => ({
   destroy: jest.fn(),
   pause: jest.fn(),
   play: jest.fn(),

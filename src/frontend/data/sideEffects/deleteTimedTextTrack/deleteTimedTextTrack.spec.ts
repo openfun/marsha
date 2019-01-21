@@ -12,7 +12,7 @@ describe('sideEffects/deleteTimedTextTrack', () => {
       id: '42',
     } as TimedText);
 
-    expect(fetchMock.lastCall()[1].headers).toEqual({
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
     });
     expect(response).toBe(true);

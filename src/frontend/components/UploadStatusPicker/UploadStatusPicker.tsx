@@ -49,8 +49,8 @@ export const UploadStatusPicker = ({ state }: UploadStatusPickerProps) => (
       [PROCESSING, UPLOADING].includes(state)
         ? statusIconKey.LOADER
         : [ERROR, PENDING].includes(state)
-          ? statusIconKey.X
-          : statusIconKey.TICK
+        ? statusIconKey.X
+        : statusIconKey.TICK
     }
   >
     <FormattedMessage {...messages[state]} />

@@ -35,7 +35,7 @@ describe('sideEffects/getTimedTextTrackLanguageOptions', () => {
       { label: 'English', value: 'en' },
       { label: 'French', value: 'fr' },
     ]);
-    expect(fetchMock.lastCall()[1].headers).toEqual({
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
     });
   });
