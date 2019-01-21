@@ -18,7 +18,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
       'en',
       timedTextMode.SUBTITLE,
     );
-    const fetchArgs = fetchMock.lastCall()[1];
+    const fetchArgs = fetchMock.lastCall()![1]!;
 
     expect(track).toEqual({ id: '42', language: 'en', mode: 'st' });
     expect(fetchArgs.body).toEqual(

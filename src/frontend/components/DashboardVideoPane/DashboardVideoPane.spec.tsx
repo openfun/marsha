@@ -8,7 +8,7 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
   DashboardVideoPaneButtons: () => {},
 }));
 
-import { uploadState } from '../../types/tracks';
+import { uploadState, Video } from '../../types/tracks';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
@@ -23,8 +23,11 @@ describe('<DashboardVideoPane />', () => {
 
   it('renders & starts polling for the video', async () => {
     // Create a mock video with the initial state (PROCESSING)
-    const mockVideo: any = { id: 'dd44', upload_state: uploadState.PROCESSING };
-    fetchMock.mock('/api/videos/dd44/', mockVideo);
+    const mockVideo = {
+      id: 'dd44',
+      upload_state: uploadState.PROCESSING,
+    } as Video;
+    fetchMock.mock('/api/videos/dd44/', JSON.stringify(mockVideo));
 
     let wrapper = shallow(
       <DashboardVideoPane
@@ -43,23 +46,26 @@ describe('<DashboardVideoPane />', () => {
     // First backend call: the video is still processing
     jest.advanceTimersByTime(1000 * 60 + 200);
     await flushAllPromises();
-    expect(fetchMock.lastCall()).toEqual([
-      '/api/videos/dd44/',
-      { headers: { Authorization: 'Bearer cool_token_m8' } },
-    ]);
+
+    expect(fetchMock.lastCall()![0]).toEqual('/api/videos/dd44/');
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
 
     // The video will be ready in further responses
-    fetchMock.reset();
+    fetchMock.restore();
     mockVideo.upload_state = uploadState.READY;
+    fetchMock.mock('/api/videos/dd44/', JSON.stringify(mockVideo));
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 60 + 200);
     await flushAllPromises();
 
-    expect(fetchMock.lastCall()).toEqual([
-      '/api/videos/dd44/',
-      { headers: { Authorization: 'Bearer cool_token_m8' } },
-    ]);
+    expect(fetchMock.lastCall()![0]).toEqual('/api/videos/dd44/');
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
+
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       id: 'dd44',
       upload_state: 'ready',

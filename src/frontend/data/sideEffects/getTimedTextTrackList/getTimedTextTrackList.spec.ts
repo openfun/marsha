@@ -13,7 +13,7 @@ describe('sideEffects/getTimedTextTrackList', () => {
     const timedtexttracks = await getTimedTextTrackList('some token');
 
     expect(timedtexttracks).toEqual([{ id: '42' }, { id: '43' }, { id: '44' }]);
-    expect(fetchMock.lastCall()[1].headers).toEqual({
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
     });
   });

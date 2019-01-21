@@ -8,10 +8,9 @@ export const keyFromAttr = (attribute: string) => {
       // Drop 'data-'
       .substr(5)
       .split('-')
-      .map(
-        (part, index) =>
-          // Capitalize all but the first part to get a camelCased name
-          index === 0 ? part : part[0].toUpperCase() + part.substr(1),
+      .map((part, index) =>
+        // Capitalize all but the first part to get a camelCased name
+        index === 0 ? part : part[0].toUpperCase() + part.substr(1),
       )
       .join('')
   );
@@ -51,5 +50,5 @@ export const parseDataElements: (
           }
         }, rootAcc),
     {},
-  );
+  ) as AppData;
 };

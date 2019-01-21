@@ -1,19 +1,23 @@
 import '../../testSetup';
 
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import * as React from 'react';
 
 import { UploadField } from './UploadField';
 
-test('UploadField renders a Dropzone with the relevant messages', () => {
-  const wrapper = mount(<UploadField onContentUpdated={jest.fn()} />);
-  expect(wrapper.text()).toContain('Select a file to upload');
-});
+describe('<UploadField />', () => {
+  it('renders a Dropzone with the relevant messages', () => {
+    const wrapper = shallow(<UploadField onContentUpdated={jest.fn()} />);
+    expect(wrapper.childAt(0).html()).toContain('Select a file to upload');
+  });
 
-test('UploadField.onDrop() passes the file to the callback', () => {
-  const callback = jest.fn();
-  const wrapper = mount(<UploadField onContentUpdated={callback} />);
-  const componentInstance = wrapper.instance() as UploadField;
-  componentInstance.onDrop(['file_1']);
-  expect(callback).toHaveBeenCalledWith('file_1');
+  describe('onDrop()', () => {
+    it('passes the file to the callback', () => {
+      const callback = jest.fn();
+      const wrapper = shallow(<UploadField onContentUpdated={callback} />);
+      const componentInstance = wrapper.instance() as UploadField;
+      componentInstance.onDrop(['file_1']);
+      expect(callback).toHaveBeenCalledWith('file_1');
+    });
+  });
 });

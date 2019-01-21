@@ -50,7 +50,9 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
         <Route
           exact
           path={DASHBOARD_ROUTE()}
-          render={() => <DashboardConnected video={context.ltiResourceVideo} />}
+          render={() => (
+            <DashboardConnected video={context.ltiResourceVideo!} />
+          )}
         />
         <Route
           path={REDIRECT_ON_LOAD_ROUTE()}

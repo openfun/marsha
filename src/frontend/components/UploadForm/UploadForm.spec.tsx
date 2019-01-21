@@ -53,7 +53,12 @@ describe('UploadForm', () => {
       />,
     );
 
-    expect(wrapper.html()).toContain('Create a new video');
+    expect(
+      wrapper
+        .childAt(0)
+        .childAt(0)
+        .html(),
+    ).toContain('Create a new video');
   });
 
   describe('upload()', () => {
@@ -121,10 +126,13 @@ describe('UploadForm', () => {
         title: '',
         upload_state: uploadState.UPLOADING,
       });
-      expect(fetchMock.lastCall()).toEqual([
+      expect(fetchMock.lastCall()![0]).toEqual(
         'https://s3.aws.example.com/good-ol-bucket',
-        { body: 'form data body', method: 'POST' },
-      ]);
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        body: 'form data body',
+        method: 'POST',
+      });
 
       // Wait until the S3 upload request has finished
       await flushAllPromises();
@@ -227,10 +235,13 @@ describe('UploadForm', () => {
         title: '',
         upload_state: uploadState.UPLOADING,
       });
-      expect(fetchMock.lastCall()).toEqual([
+      expect(fetchMock.lastCall()![0]).toEqual(
         'https://s3.aws.example.com/good-ol-bucket',
-        { body: 'form data body', method: 'POST' },
-      ]);
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        body: 'form data body',
+        method: 'POST',
+      });
 
       // Wait until the S3 upload request has finished (and failed)
       await flushAllPromises();
