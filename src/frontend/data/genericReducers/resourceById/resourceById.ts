@@ -1,4 +1,4 @@
-import { Resource } from '../../../types/Resource';
+import { Resource } from '../../../types/tracks';
 import { Maybe } from '../../../utils/types';
 import { ResourceAdd, ResourceDelete, ResourceMultipleAdd } from './actions';
 

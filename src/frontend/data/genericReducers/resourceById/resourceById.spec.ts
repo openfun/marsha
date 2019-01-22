@@ -3,17 +3,17 @@ import { byId } from './resourceById';
 
 describe('Reducer: resourceById()', () => {
   const video43 = {
-    id: 43,
+    id: '43',
     title: 'Video 43',
   };
 
   const video44 = {
-    id: 44,
+    id: '44',
     title: 'Video 44',
   };
 
   const video45 = {
-    id: 45,
+    id: '45',
     title: 'Video 45',
   };
 
