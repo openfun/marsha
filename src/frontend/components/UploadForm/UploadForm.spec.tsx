@@ -1,7 +1,6 @@
 import { flushAllPromises } from '../../testSetup';
 
 import { shallow } from 'enzyme';
-import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 jest.mock('../../utils/makeFormData/makeFormData', () => ({
@@ -12,12 +11,17 @@ jest.mock('../../data/sideEffects/initiateUpload/initiateUpload', () => ({
   initiateUpload: jest.fn(),
 }));
 
+jest.mock('../../data/sideEffects/uploadFile/uploadFile', () => ({
+  uploadFile: jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   Link: () => null,
   Redirect: () => {},
 }));
 
 import { initiateUpload } from '../../data/sideEffects/initiateUpload/initiateUpload';
+import { uploadFile } from '../../data/sideEffects/uploadFile/uploadFile';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
@@ -29,7 +33,10 @@ const mockInitiateUpload: jest.Mock<
   typeof initiateUpload
 > = initiateUpload as any;
 const mockMakeFormData: jest.Mock<typeof makeFormData> = makeFormData as any;
+const mockUploadFile: jest.Mock<typeof uploadFile> = uploadFile as any;
+
 const mockUpdateObject = jest.fn();
+const mockNotifyUploadProgress = jest.fn();
 
 describe('UploadForm', () => {
   const object = {
@@ -41,12 +48,11 @@ describe('UploadForm', () => {
 
   beforeEach(jest.resetAllMocks);
 
-  afterEach(fetchMock.restore);
-
   it('renders the form by default', () => {
     const wrapper = shallow(
       <UploadForm
         jwt={'some_token'}
+        notifyObjectUploadProgress={mockNotifyUploadProgress}
         object={object}
         objectType={modelName.VIDEOS}
         updateObject={mockUpdateObject}
@@ -68,27 +74,26 @@ describe('UploadForm', () => {
     });
 
     it('gets the policy from the API and uses it to upload the file', async () => {
-      // 1st call: home API call to get the AWS upload policy
-      mockInitiateUpload.mockReturnValue(
-        Promise.resolve({
-          acl: 'policy##acl',
-          bucket: 'good-ol-bucket',
-          key: 'policy##key',
-          policy: 'policy##policy',
-          s3_endpoint: 's3.aws.example.com',
-          x_amz_algorithm: 'policy##x_amz_algorithm',
-          x_amz_credential: 'policy##x_amz_credential',
-          x_amz_date: 'policy##x_amz_date',
-          x_amz_signature: 'policy##x_amz_signature',
-        }),
-      );
+      // Home API call to get the AWS upload policy
+      mockInitiateUpload.mockResolvedValue({
+        acl: 'policy##acl',
+        bucket: 'good-ol-bucket',
+        key: 'policy##key',
+        policy: 'policy##policy',
+        s3_endpoint: 's3.aws.example.com',
+        x_amz_algorithm: 'policy##x_amz_algorithm',
+        x_amz_credential: 'policy##x_amz_credential',
+        x_amz_date: 'policy##x_amz_date',
+        x_amz_signature: 'policy##x_amz_signature',
+      });
 
-      // 2nd call: AWS bucket multipart POST to upload the file
-      fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', {});
+      // AWS bucket multipart POST to upload the file
+      mockUploadFile.mockResolvedValue(true);
 
       const wrapper = shallow(
         <UploadForm
           jwt={'some token'}
+          notifyObjectUploadProgress={mockNotifyUploadProgress}
           object={object}
           objectType={modelName.VIDEOS}
           updateObject={mockUpdateObject}
@@ -126,13 +131,11 @@ describe('UploadForm', () => {
         title: '',
         upload_state: uploadState.UPLOADING,
       });
-      expect(fetchMock.lastCall()![0]).toEqual(
+      expect(mockUploadFile).toHaveBeenCalledWith(
         'https://s3.aws.example.com/good-ol-bucket',
+        'form data body',
+        mockNotifyUploadProgress,
       );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        body: 'form data body',
-        method: 'POST',
-      });
 
       // Wait until the S3 upload request has finished
       await flushAllPromises();
@@ -149,13 +152,14 @@ describe('UploadForm', () => {
     });
 
     it('redirects to /errors/policy when it fails to trigger initiate-upload', async () => {
-      mockInitiateUpload.mockReturnValue(
-        Promise.reject(new Error('Failed to initate upload.')),
+      mockInitiateUpload.mockRejectedValue(
+        new Error('Failed to initate upload.'),
       );
 
       const wrapper = shallow(
         <UploadForm
           jwt={'some token'}
+          notifyObjectUploadProgress={mockNotifyUploadProgress}
           object={object}
           objectType={modelName.VIDEOS}
           updateObject={mockUpdateObject}
@@ -174,35 +178,32 @@ describe('UploadForm', () => {
       expect(wrapper.prop('push')).toBeTruthy();
       expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('policy'));
 
-      expect(fetchMock.lastCall()).toBeUndefined();
       expect(mockMakeFormData).not.toHaveBeenCalled();
       expect(mockUpdateObject).not.toHaveBeenCalled();
+      expect(mockUploadFile).not.toHaveBeenCalled();
     });
 
     it('marks the object with an error state when it fails to upload the file', async () => {
-      // 1st call succeeds: home API call to get the AWS upload policy
-      mockInitiateUpload.mockReturnValue(
-        Promise.resolve({
-          acl: 'policy##acl',
-          bucket: 'good-ol-bucket',
-          key: 'policy##key',
-          policy: 'policy##policy',
-          s3_endpoint: 's3.aws.example.com',
-          x_amz_algorithm: 'policy##x_amz_algorithm',
-          x_amz_credential: 'policy##x_amz_credential',
-          x_amz_date: 'policy##x_amz_date',
-          x_amz_signature: 'policy##x_amz_signature',
-        }),
-      );
-
-      // 2nd call fails: AWS bucket multipart POST to upload the file
-      fetchMock.mock('https://s3.aws.example.com/good-ol-bucket', {
-        throws: 'Failed to upload file.',
+      // Succeeds: home API call to get the AWS upload policy
+      mockInitiateUpload.mockResolvedValue({
+        acl: 'policy##acl',
+        bucket: 'good-ol-bucket',
+        key: 'policy##key',
+        policy: 'policy##policy',
+        s3_endpoint: 's3.aws.example.com',
+        x_amz_algorithm: 'policy##x_amz_algorithm',
+        x_amz_credential: 'policy##x_amz_credential',
+        x_amz_date: 'policy##x_amz_date',
+        x_amz_signature: 'policy##x_amz_signature',
       });
+
+      // Fails: AWS bucket multipart POST to upload the file
+      mockUploadFile.mockRejectedValue(new Error('Failed to upload file.'));
 
       const wrapper = shallow(
         <UploadForm
           jwt={'some_token'}
+          notifyObjectUploadProgress={mockNotifyUploadProgress}
           object={object}
           objectType={modelName.VIDEOS}
           updateObject={mockUpdateObject}
@@ -235,13 +236,11 @@ describe('UploadForm', () => {
         title: '',
         upload_state: uploadState.UPLOADING,
       });
-      expect(fetchMock.lastCall()![0]).toEqual(
+      expect(mockUploadFile).toHaveBeenCalledWith(
         'https://s3.aws.example.com/good-ol-bucket',
+        'form data body',
+        mockNotifyUploadProgress,
       );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        body: 'form data body',
-        method: 'POST',
-      });
 
       // Wait until the S3 upload request has finished (and failed)
       await flushAllPromises();
