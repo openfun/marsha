@@ -8,6 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.1] - 2019-01-22
+
+### Fixed
+
+- Fix database migration that was removing the `resource_id` field a bit too fast and replace
+  it by just a data migration ensuring backward compatibility
+- Hide the timed text track pane from the dashboard
+
 ## [2.0.0] - 2019-01-21
 
 ### Added
@@ -95,7 +103,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.0.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.0.1...master
+[2.0.1]: https://github.com/openfun/marsha/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/openfun/marsha/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/openfun/marsha/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/openfun/marsha/compare/v1.1.2...v1.2.0
