@@ -2,7 +2,7 @@ import { Reducer } from 'redux';
 
 import { appState } from '../types/AppData';
 import { modelName } from '../types/models';
-import { Video } from '../types/tracks';
+import { context, ContextState } from './context/reducer';
 import {
   timedtexttracks,
   TimedTextTracksState,
@@ -10,11 +10,7 @@ import {
 import { videos, VideosState } from './videos/reducer';
 
 export interface RootState<state extends appState> {
-  context: {
-    jwt: state extends appState.ERROR ? null : string;
-    ltiResourceVideo: state extends appState.ERROR ? null : Video;
-    ltiState: state;
-  };
+  context: ContextState<state>;
   resources: {
     [modelName.TIMEDTEXTTRACKS]: TimedTextTracksState;
     [modelName.VIDEOS]: VideosState;
@@ -22,7 +18,7 @@ export interface RootState<state extends appState> {
 }
 
 export const rootReducer: Reducer<RootState<appState>> = (state, action) => ({
-  context: state!.context,
+  context: context(state!.context, action),
   resources: {
     [modelName.TIMEDTEXTTRACKS]: timedtexttracks(
       (state && state.resources[modelName.TIMEDTEXTTRACKS]) || undefined,
