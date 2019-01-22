@@ -1,7 +1,6 @@
 import { AnyAction, Reducer } from 'redux';
 
 import { modelName } from '../../types/models';
-import { ResourceByIdState } from '../../types/Resource';
 import { TimedText } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import {
@@ -11,6 +10,7 @@ import {
 import {
   byId,
   initialState as resourceByIdInit,
+  ResourceByIdState,
 } from '../genericReducers/resourceById/resourceById';
 
 const initialState = { ...resourceByIdInit };

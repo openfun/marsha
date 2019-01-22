@@ -1,5 +1,9 @@
 import { Nullable } from '../utils/types';
-import { Resource } from './Resource';
+
+/** Base shape for all resources to extend. */
+export interface Resource {
+  id: string;
+}
 
 /** Possible states for a track upload, whether video or other such as timed text.
  *

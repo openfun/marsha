@@ -1,5 +1,5 @@
 import { modelName } from '../../../types/models';
-import { Resource } from '../../../types/Resource';
+import { Resource } from '../../../types/tracks';
 
 export interface ResourceAdd<R extends Resource> {
   type: 'RESOURCE_ADD';
