@@ -1,8 +1,9 @@
+import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { colors } from '../../utils/theme/theme';
+import { theme } from '../../utils/theme/theme';
 import { Button } from '../Button/Button';
 import { DropzoneIcon } from './DropzoneIcon';
 
@@ -28,7 +29,7 @@ const DropzonePlaceholderStyled = styled.div`
   justify-content: space-evenly;
   flex-grow: 1;
   align-items: center;
-  background-color: ${colors.lightGray.main};
+  background-color: ${normalizeColor('light-1', theme)};
   padding-top: 2rem;
   padding-bottom: 1rem;
 `;
@@ -52,7 +53,7 @@ const DropzoneDashBox = styled.div`
   right: 0.5rem;
   bottom: 0.5rem;
   left: 0.5rem;
-  border: 3px dashed ${colors.mediumGray.main};
+  border: 3px dashed ${normalizeColor('light-5', theme)};
   border-radius: 0.375rem;
 `;
 

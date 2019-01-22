@@ -1,12 +1,13 @@
+import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { colors } from '../../utils/theme/theme';
+import { theme } from '../../utils/theme/theme';
 
 const LoaderStyled = styled.div`
   border: 0.125rem solid transparent;
-  border-left-color: ${colors.primary.main};
-  border-top-color: ${colors.primary.main};
+  border-left-color: ${normalizeColor('brand', theme)};
+  border-top-color: ${normalizeColor('brand', theme)};
   border-radius: 50%;
   width: 1rem;
   height: 1rem;
