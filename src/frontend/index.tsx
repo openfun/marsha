@@ -11,6 +11,7 @@ import { bootstrapStore } from './data/bootstrapStore';
 import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
+import { theme } from './utils/theme/theme';
 
 export const appData = {
   ...parseDataElements(
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', event => {
   // Render our actual component tree
   ReactDOM.render(
     <IntlProvider>
-      <Grommet plain>
+      <Grommet theme={theme}>
         <Provider store={store}>
           <AppRoutesConnected />
           <GlobalStyles />

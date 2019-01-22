@@ -1,10 +1,11 @@
+import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Video } from '../../types/tracks';
-import { colors } from '../../utils/theme/theme';
+import { theme } from '../../utils/theme/theme';
 import { Nullable } from '../../utils/types';
 import { Button } from '../Button/Button';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -30,7 +31,7 @@ export const Preview = styled.div`
 `;
 
 const PreviewWrapper = styled.div`
-  background: ${colors.mediumGray.main};
+  background: ${normalizeColor('light-5', theme)};
 `;
 
 export const InstructorControls = styled.div`

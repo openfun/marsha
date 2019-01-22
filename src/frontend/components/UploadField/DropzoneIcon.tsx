@@ -1,7 +1,8 @@
+import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { colors } from '../../utils/theme/theme';
+import { theme } from '../../utils/theme/theme';
 
 // Use a large "download" icon to make the dropzone stand out visually
 //
@@ -21,7 +22,7 @@ export const DropzoneIcon = () => (
   </DropzoneIconStyled>
 );
 const DropzoneIconStyled = styled.svg`
-  fill: ${colors.mediumGray.main};
+  fill: ${normalizeColor('light-5', theme)};
   width: 4rem;
   height: 4rem;
 `;
