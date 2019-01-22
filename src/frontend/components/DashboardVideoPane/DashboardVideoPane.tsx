@@ -8,8 +8,11 @@ import { uploadState, Video } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
+import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
+
+const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages = defineMessages({
   title: {
@@ -87,14 +90,14 @@ export class DashboardVideoPane extends React.Component<
       // If the video is PENDING on the backend and PROCESSING on our end, we're probably experiencing a race
       // condition where the backend is not yet aware of the end of the upload.
       if (
-        incomingVideo.upload_state === uploadState.PENDING &&
-        video.upload_state === uploadState.PROCESSING
+        incomingVideo.upload_state === PENDING &&
+        video.upload_state === PROCESSING
       ) {
         // Disregard the server-provided video.
         return;
       }
       // When the video is ready, we need to update the App state so VideoForm has access to the URLs when it loads
-      else if (incomingVideo.upload_state === uploadState.READY) {
+      else if (incomingVideo.upload_state === READY) {
         updateVideo(incomingVideo);
       }
     } catch (error) {
@@ -109,7 +112,7 @@ export class DashboardVideoPane extends React.Component<
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
-    if (!video.is_ready_to_play && video.upload_state === uploadState.ERROR) {
+    if (!video.is_ready_to_play && video.upload_state === ERROR) {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
     }
 
@@ -121,8 +124,13 @@ export class DashboardVideoPane extends React.Component<
           </DashboardVideoPaneInternalHeading>
           <UploadStatusPicker state={video.upload_state} />
         </DashboardVideoPaneStatusLine>
+        {video.upload_state === UPLOADING ? (
+          <DashboardVideoPaneProgressConnected videoId={video.id} />
+        ) : null}
         <DashboardVideoPaneHelptext state={video.upload_state} />
-        <DashboardVideoPaneButtons video={video} />
+        {video.upload_state === READY ? (
+          <DashboardVideoPaneButtons video={video} />
+        ) : null}
       </DashboardVideoPaneInnerContainer>
     );
   }

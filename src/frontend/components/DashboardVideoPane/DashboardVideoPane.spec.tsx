@@ -9,8 +9,12 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
 }));
 
 import { uploadState, Video } from '../../types/tracks';
+import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
+import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
+
+const { ERROR, PROCESSING, UPLOADING, READY } = uploadState;
 
 const mockUpdateVideo = jest.fn();
 
@@ -25,7 +29,7 @@ describe('<DashboardVideoPane />', () => {
     // Create a mock video with the initial state (PROCESSING)
     const mockVideo = {
       id: 'dd44',
-      upload_state: uploadState.PROCESSING,
+      upload_state: PROCESSING,
     } as Video;
     fetchMock.mock('/api/videos/dd44/', JSON.stringify(mockVideo));
 
@@ -38,9 +42,7 @@ describe('<DashboardVideoPane />', () => {
     );
 
     // DashboardVideoPane shows the video as PROCESSING
-    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(
-      uploadState.PROCESSING,
-    );
+    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(PROCESSING);
     expect(fetchMock.called()).not.toBeTruthy();
 
     // First backend call: the video is still processing
@@ -54,7 +56,7 @@ describe('<DashboardVideoPane />', () => {
 
     // The video will be ready in further responses
     fetchMock.restore();
-    mockVideo.upload_state = uploadState.READY;
+    mockVideo.upload_state = READY;
     fetchMock.mock('/api/videos/dd44/', JSON.stringify(mockVideo));
 
     // Second backend call
@@ -80,9 +82,7 @@ describe('<DashboardVideoPane />', () => {
       />,
     );
     // DashboardVideoPane shows the video as READY
-    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(
-      uploadState.READY,
-    );
+    expect(wrapper.find(UploadStatusPicker).prop('state')).toEqual(READY);
 
     // Unmount DashboardVideoPane to get rid of its interval
     wrapper.unmount();
@@ -100,7 +100,7 @@ describe('<DashboardVideoPane />', () => {
           {
             id: 'ee55',
             is_ready_to_play: false,
-            upload_state: uploadState.PROCESSING,
+            upload_state: PROCESSING,
           } as any
         }
       />,
@@ -126,7 +126,7 @@ describe('<DashboardVideoPane />', () => {
           {
             id: 'ff66',
             is_ready_to_play: false,
-            upload_state: uploadState.ERROR,
+            upload_state: ERROR,
           } as any
         }
       />,
@@ -149,7 +149,7 @@ describe('<DashboardVideoPane />', () => {
           {
             id: 'ff66',
             is_ready_to_play: true,
-            upload_state: uploadState.ERROR,
+            upload_state: ERROR,
           } as any
         }
       />,
@@ -165,5 +165,47 @@ describe('<DashboardVideoPane />', () => {
 
     // Unmount DashboardVideoPane to get rid of its interval
     wrapper.unmount();
+  });
+
+  it('shows the buttons only when the video is ready', () => {
+    for (const state of Object.values(uploadState)) {
+      expect(
+        shallow(
+          <DashboardVideoPane
+            jwt={'cool token m8'}
+            updateVideo={mockUpdateVideo}
+            video={
+              {
+                id: 'dd44',
+                upload_state: state,
+              } as Video
+            }
+          />,
+        )
+          .find(DashboardVideoPaneButtons)
+          .exists(),
+      ).toBe(state === READY);
+    }
+  });
+
+  it('shows the upload progress only when the video is uploading', () => {
+    for (const state of Object.values(uploadState)) {
+      expect(
+        shallow(
+          <DashboardVideoPane
+            jwt={'cool token m8'}
+            updateVideo={mockUpdateVideo}
+            video={
+              {
+                id: 'ee55',
+                upload_state: state,
+              } as Video
+            }
+          />,
+        )
+          .find(DashboardVideoPaneProgressConnected)
+          .exists(),
+      ).toBe(state === UPLOADING);
+    }
   });
 });
