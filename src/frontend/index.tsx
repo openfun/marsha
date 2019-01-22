@@ -7,18 +7,11 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
 import { AppRoutesConnected } from './components/AppRoutesConnected/AppRoutesConnected';
+import { appData } from './data/appData';
 import { bootstrapStore } from './data/bootstrapStore';
-import { parseDataElements } from './utils/parseDataElements/parseDataElements';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
-
-export const appData = {
-  ...parseDataElements(
-    // Spread to pass an array instead of a NodeList
-    [...document.querySelectorAll('.marsha-frontend-data')],
-  ),
-};
 
 const store = bootstrapStore(appData);
 
