@@ -1,5 +1,6 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
 
+import { Grommet } from 'grommet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
@@ -25,10 +26,12 @@ document.addEventListener('DOMContentLoaded', event => {
   // Render our actual component tree
   ReactDOM.render(
     <IntlProvider>
-      <Provider store={store}>
-        <AppRoutesConnected />
-        <GlobalStyles />
-      </Provider>
+      <Grommet plain>
+        <Provider store={store}>
+          <AppRoutesConnected />
+          <GlobalStyles />
+        </Provider>
+      </Grommet>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );

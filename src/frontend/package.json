@@ -55,8 +55,10 @@
     "webpack-cli": "3.2.1"
   },
   "dependencies": {
+    "grommet": "2.3.1",
     "iframe-resizer": "3.6.4",
     "plyr": "3.4.8",
+    "polished": "2.3.3",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-dropzone": "4.3.0",
