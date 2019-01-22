@@ -3,7 +3,9 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { UploadProgressNotification } from '../../data/context/actions';
 import { initiateUpload } from '../../data/sideEffects/initiateUpload/initiateUpload';
+import { uploadFile } from '../../data/sideEffects/uploadFile/uploadFile';
 import { AWSPolicy } from '../../types/AWSPolicy';
 import { modelName } from '../../types/models';
 import {
@@ -79,6 +81,9 @@ const UploadFormBack = styled.div`
 /** Props shape for the UploadForm component. */
 interface UploadFormProps {
   jwt: string;
+  notifyObjectUploadProgress: (
+    progress: UploadProgressNotification<UploadableObject>['progress'],
+  ) => void;
   object: Maybe<UploadableObject>;
   objectType: modelName;
   updateObject: (object: UploadableObject) => void;
@@ -93,6 +98,7 @@ interface UploadFormState {
  * Component. Displays a form with a dropzone and a file upload button to add a file to the
  * object passed in the props.
  * @param jwt The token that will be used to fetch the object record from the server to update it.
+ * @param notifyObjectUploadProgress Action creator that takes the object's upload progress to update it in the store.
  * @param object The object for which we want to add a file.
  * @param objectType The model name for the object.
  * @param updateObject Action creator that takes an object to update it in the store.
@@ -102,7 +108,14 @@ export class UploadForm extends React.Component<
   UploadFormState
 > {
   async upload(file: Maybe<File>) {
-    const { jwt, object, objectType, updateObject } = this.props;
+    const {
+      jwt,
+      notifyObjectUploadProgress,
+      object,
+      objectType,
+      updateObject,
+    } = this.props;
+
     // Do not trigger an upload if we did not receive a file object.
     if (!file) {
       return;
@@ -146,22 +159,16 @@ export class UploadForm extends React.Component<
         upload_state: uploadState.UPLOADING,
       });
 
-      const response = await fetch(
+      await uploadFile(
         `https://${policy.s3_endpoint}/${policy.bucket}`,
-        {
-          body: formData,
-          method: 'POST',
-        },
+        formData,
+        notifyObjectUploadProgress,
       );
 
-      if (response.ok) {
-        updateObject({
-          ...object,
-          upload_state: uploadState.PROCESSING,
-        });
-      } else {
-        throw new Error(`Failed to upload ${objectType}.`);
-      }
+      updateObject({
+        ...object,
+        upload_state: uploadState.PROCESSING,
+      });
     } catch (error) {
       updateObject({
         ...object,

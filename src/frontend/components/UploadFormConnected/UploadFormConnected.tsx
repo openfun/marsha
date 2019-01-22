@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
+import { notifyUploadProgress } from '../../data/context/actions';
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { appStateSuccess } from '../../types/AppData';
@@ -32,8 +33,10 @@ export const mapStateToProps = (
 /** Create a function that updates a single object record in the store. */
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { objectType }: UploadFormConnectedProps,
+  { objectId, objectType }: UploadFormConnectedProps,
 ) => ({
+  notifyObjectUploadProgress: (progress: number) =>
+    dispatch(notifyUploadProgress(objectId, progress)),
   updateObject: (object: UploadableObject) =>
     dispatch(addResource(objectType, object)),
 });
