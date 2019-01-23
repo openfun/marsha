@@ -14,7 +14,7 @@ import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgre
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
-const { ERROR, PROCESSING, UPLOADING, READY } = uploadState;
+const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
 
 const mockUpdateVideo = jest.fn();
 
@@ -167,7 +167,7 @@ describe('<DashboardVideoPane />', () => {
     wrapper.unmount();
   });
 
-  it('shows the buttons only when the video is ready', () => {
+  it('shows the buttons only when the video is pending or ready', () => {
     for (const state of Object.values(uploadState)) {
       expect(
         shallow(
@@ -184,7 +184,7 @@ describe('<DashboardVideoPane />', () => {
         )
           .find(DashboardVideoPaneButtons)
           .exists(),
-      ).toBe(state === READY);
+      ).toBe([PENDING, READY].includes(state));
     }
   });
 

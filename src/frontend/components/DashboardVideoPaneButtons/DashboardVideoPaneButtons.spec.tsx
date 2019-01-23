@@ -9,15 +9,15 @@ import { DashboardVideoPaneButtons } from './DashboardVideoPaneButtons';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 describe('<DashboardVideoPaneButtons />', () => {
-  it('disables the "Watch" button unless the video is ready', () => {
+  it('only renders the "Watch" button if the video is ready', () => {
     // We're testing the "Watch" button
     expect(
       shallow(
         <DashboardVideoPaneButtons video={{ upload_state: READY } as Video} />,
       )
         .childAt(1)
-        .html(),
-    ).toContain('Watch');
+        .exists(),
+    ).toBe(true);
 
     // Can't watch the video before it's ready and uploaded
     for (const state of [ERROR, PENDING, PROCESSING, UPLOADING]) {
@@ -28,40 +28,46 @@ describe('<DashboardVideoPaneButtons />', () => {
           />,
         )
           .childAt(1)
-          .prop('disabled'),
-      ).toBeTruthy();
+          .exists(),
+      ).not.toBe(true);
     }
-
-    expect(
-      shallow(
-        <DashboardVideoPaneButtons video={{ upload_state: READY } as Video} />,
-      )
-        .childAt(1)
-        .prop('disabled'),
-    ).not.toBeTruthy();
   });
 
-  it('adapts the text of the "Upload" button to the video state', () => {
-    for (const state of [ERROR, PROCESSING, READY, UPLOADING]) {
-      expect(
-        shallow(
-          <DashboardVideoPaneButtons
-            video={{ upload_state: state } as Video}
-          />,
-        )
-          .childAt(0)
-          .html(),
-      ).toContain('Replace the video');
-    }
+  it('adapts the text & color of the "Upload" button to the video state', () => {
+    let uploadButton;
 
-    expect(
-      shallow(
-        <DashboardVideoPaneButtons
-          video={{ upload_state: PENDING } as Video}
-        />,
-      )
-        .childAt(0)
-        .html(),
-    ).toContain('Upload a video');
+    uploadButton = shallow(
+      <DashboardVideoPaneButtons video={{ upload_state: PENDING } as Video} />,
+    ).childAt(0);
+    expect(uploadButton.html()).toContain('Upload a video');
+    expect(uploadButton.prop('primary')).toBe(true);
+
+    uploadButton = shallow(
+      <DashboardVideoPaneButtons
+        video={{ upload_state: UPLOADING } as Video}
+      />,
+    ).childAt(0);
+    expect(uploadButton.html()).toContain('Replace the video');
+    expect(uploadButton.prop('primary')).toBe(true);
+
+    uploadButton = shallow(
+      <DashboardVideoPaneButtons
+        video={{ upload_state: PROCESSING } as Video}
+      />,
+    ).childAt(0);
+    expect(uploadButton.html()).toContain('Replace the video');
+    expect(uploadButton.prop('primary')).toBe(true);
+
+    uploadButton = shallow(
+      <DashboardVideoPaneButtons video={{ upload_state: READY } as Video} />,
+    ).childAt(0);
+    expect(uploadButton.html()).toContain('Replace the video');
+    expect(uploadButton.prop('primary')).not.toBe(true);
+
+    uploadButton = shallow(
+      <DashboardVideoPaneButtons video={{ upload_state: ERROR } as Video} />,
+    ).childAt(0);
+    expect(uploadButton.html()).toContain('Replace the video');
+    expect(uploadButton.prop('primary')).toBe(true);
   });
 });

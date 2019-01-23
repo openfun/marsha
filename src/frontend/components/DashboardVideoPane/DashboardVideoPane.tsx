@@ -128,7 +128,7 @@ export class DashboardVideoPane extends React.Component<
           <DashboardVideoPaneProgressConnected videoId={video.id} />
         ) : null}
         <DashboardVideoPaneHelptext state={video.upload_state} />
-        {video.upload_state === READY ? (
+        {[PENDING, READY].includes(video.upload_state) ? (
           <DashboardVideoPaneButtons video={video} />
         ) : null}
       </DashboardVideoPaneInnerContainer>

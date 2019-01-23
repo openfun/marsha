@@ -1,20 +1,26 @@
+import { Button, ButtonProps } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
+import React from 'react';
 import styled from 'styled-components';
 
-import { colorName, colors } from '../../utils/theme/theme';
+import { theme } from '../../utils/theme/theme';
 
 interface Props {
-  variant: colorName;
+  color: keyof typeof theme.global.colors;
 }
 
-export const ActionLink = styled.span`
-  cursor: pointer;
+const ActionLinkStyled = styled(Button)`
+  color: ${({ color }: Props) => normalizeColor(color, theme)};
 
-  ${(props: Props) => `
-    color: ${colors[props.variant].main};
-
-    :hover {
-      color: ${colors[props.variant].contrast};
-      text-decoration: underline;
-    }
-  `}
+  :hover {
+    text-decoration: underline;
+  }
 `;
+
+/**
+ * Component. Personalize the color on a plain buttons to make them more useful.
+ * @param color Font color for the plain button as defined in the theme globals.
+ */
+export const ActionLink = (props: ButtonProps) => (
+  <ActionLinkStyled plain={true} {...props as any} />
+);

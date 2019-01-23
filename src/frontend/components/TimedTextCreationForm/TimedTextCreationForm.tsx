@@ -1,3 +1,4 @@
+import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -12,7 +13,6 @@ import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
 import { Maybe, Nullable } from '../../utils/types';
-import { Button } from '../Button/Button';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
@@ -145,12 +145,11 @@ export class TimedTextCreationForm extends React.Component<
           styles={{ input: styles => ({ ...styles, width: '8rem' }) }}
         />
         <Button
-          variant="primary"
+          color={'brand'}
           disabled={!newTTLanguage}
+          label={<FormattedMessage {...messages.addTrackBtn} />}
           onClick={() => this.createAndGoToUpload()}
-        >
-          <FormattedMessage {...messages.addTrackBtn} />
-        </Button>
+        />
         {error === 'creation' ? (
           <ErrorMessage>
             <FormattedMessage {...messages.error} />
