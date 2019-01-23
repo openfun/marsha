@@ -246,6 +246,13 @@ class Production(Base):
     ALLOWED_HOSTS = values.ListValue(None)
     AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
 
+    # For static files in production, we want to use a backend that includes a hash in
+    # the filename, that is calculated from the file content, so that browsers always
+    # get the updated version of each file.
+    STATICFILES_STORAGE = (
+        "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+    )
+
 
 class Staging(Production):
     """Staging environment settings."""
