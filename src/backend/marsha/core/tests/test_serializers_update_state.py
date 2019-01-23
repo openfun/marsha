@@ -23,9 +23,10 @@ class UpdateStateSerializerTest(TestCase):
         valid_keys = [
             "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
             *[
-                "{!s}/timedtexttrack/{!s}/0123456789_fr_{!s}".format(
-                    uuid4(), uuid4(), mode
+                "{!s}/timedtexttrack/{!s}/0123456789_{:s}_{:s}".format(
+                    uuid4(), uuid4(), language, mode
                 )
+                for language in ["fr", "ast", "zh-hans"]
                 for mode, _ in TimedTextTrack.MODE_CHOICES
             ],
         ]

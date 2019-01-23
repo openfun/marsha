@@ -19,7 +19,7 @@ UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
     "^{uuid:s}/(?P<model_name>video|timedtexttrack)/(?P<object_id>"
-    "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z]{{2}}_({tt_ex}))?$"
+    "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?$"
 ).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS)
 KEY_REGEX = re.compile(KEY_PATTERN)
 
