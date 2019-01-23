@@ -104,11 +104,10 @@ export class TimedTextListItem extends React.Component<
         <UploadStatusPickerStyled state={track.upload_state} />
         <TimedTextListItemActions>
           <ActionLink
-            variant="danger"
+            color={'status-critical'}
+            label={<FormattedMessage {...messages.delete} />}
             onClick={() => this.deleteTimedTextTrack()}
-          >
-            <FormattedMessage {...messages.delete} />
-          </ActionLink>
+          />
           &nbsp;/&nbsp;
           <Link to={UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, track.id)}>
             <FormattedMessage {...messages.replace} />

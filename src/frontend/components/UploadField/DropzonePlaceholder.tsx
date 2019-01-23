@@ -1,10 +1,10 @@
+import { Box, Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
-import { Button } from '../Button/Button';
 import { DropzoneIcon } from './DropzoneIcon';
 
 const messages = defineMessages({
@@ -43,7 +43,7 @@ const DropzoneHelpText = styled.span`
 `;
 
 // Make sure the dashbox background does not overlay the interactive UI
-const DropzoneTextBox = styled.div`
+const DropzoneTextBox = styled(Box)`
   z-index: 1;
 `;
 
@@ -61,10 +61,13 @@ export const DropzonePlaceholder = () => (
   <DropzonePlaceholderStyled>
     <DropzoneDashBox />
     <DropzoneIcon />
-    <DropzoneTextBox>
-      <Button variant="primary">
-        <FormattedMessage {...messages.dropzoneButtonPick} />
-      </Button>
+    <DropzoneTextBox direction={'row'}>
+      <Button
+        alignSelf={'center'}
+        color={'brand'}
+        label={<FormattedMessage {...messages.dropzoneButtonPick} />}
+        primary={true}
+      />
       <DropzoneHelpText>
         <FormattedMessage {...messages.dropzoneDragText} />
       </DropzoneHelpText>

@@ -1,3 +1,4 @@
+import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -7,7 +8,6 @@ import styled from 'styled-components';
 import { Video } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
 import { Nullable } from '../../utils/types';
-import { Button } from '../Button/Button';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { withLink } from '../withLink/withLink';
@@ -57,9 +57,11 @@ export const InstructorView = ({ children, videoId }: InstructorViewProps) =>
       </PreviewWrapper>
       <InstructorControls>
         <FormattedMessage {...messages.title} />
-        <BtnWithLink to={DASHBOARD_ROUTE()} variant="primary">
-          <FormattedMessage {...messages.btnDashboard} />
-        </BtnWithLink>
+        <BtnWithLink
+          color={'brand'}
+          label={<FormattedMessage {...messages.btnDashboard} />}
+          to={DASHBOARD_ROUTE()}
+        />
       </InstructorControls>
     </React.Fragment>
   ) : (

@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import { colors } from '../../utils/theme/theme';
-
 const headingsStyle = `
   margin-bottom: 0.5rem;
   font-family: inherit;
