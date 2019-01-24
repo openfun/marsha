@@ -39,7 +39,7 @@ describe('XAPIStatement', () => {
       });
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -82,7 +82,7 @@ describe('XAPIStatement', () => {
       });
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -128,7 +128,7 @@ describe('XAPIStatement', () => {
       });
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -164,7 +164,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -200,7 +200,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -241,7 +241,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -283,7 +283,7 @@ describe('XAPIStatement', () => {
 
         const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-        const requestParameters = lastCall[1];
+        const requestParameters = lastCall![1]!;
 
         expect(requestParameters.headers).toEqual({
           Authorization: 'Bearer jwt',
@@ -324,7 +324,7 @@ describe('XAPIStatement', () => {
 
         const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-        const requestParameters = lastCall[1];
+        const requestParameters = lastCall![1]!;
 
         expect(requestParameters.headers).toEqual({
           Authorization: 'Bearer jwt',
@@ -370,7 +370,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -412,7 +412,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
@@ -459,7 +459,7 @@ describe('XAPIStatement', () => {
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-      const requestParameters = lastCall[1];
+      const requestParameters = lastCall![1]!;
 
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
