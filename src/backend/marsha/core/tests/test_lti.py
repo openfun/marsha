@@ -272,7 +272,7 @@ class VideoLTITestCase(TestCase):
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertTrue(lti.is_edx_format)
 
     def test_lti_is_not_edx_format(self):
@@ -292,7 +292,7 @@ class VideoLTITestCase(TestCase):
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertFalse(lti.is_edx_format)
 
     def test_lti_get_edx_course_info(self):
@@ -312,7 +312,7 @@ class VideoLTITestCase(TestCase):
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertDictEqual(
             lti.get_course_info(),
             {
@@ -339,7 +339,7 @@ class VideoLTITestCase(TestCase):
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertDictEqual(
             lti.get_course_info(),
             {
@@ -368,7 +368,7 @@ class VideoLTITestCase(TestCase):
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request)
+        lti = LTI(request, uuid.uuid4())
         self.assertDictEqual(
             lti.get_course_info(),
             {

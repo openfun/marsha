@@ -41,7 +41,6 @@ class ViewsTestCase(TestCase):
             "context_id": video.playlist.lti_id,
             "roles": "instructor",
             "oauth_consumer_key": passport.oauth_consumer_key,
-            "context_id": "course-v1:ufr+mathematics+00001",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         with mock.patch.object(
@@ -104,14 +103,13 @@ class ViewsTestCase(TestCase):
             lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
-            upload_state="ready"
+            upload_state="ready",
         )
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
-            "context_id": "course-v1:ufr+mathematics+00001",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         with mock.patch.object(
@@ -172,14 +170,13 @@ class ViewsTestCase(TestCase):
             lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
-            upload_state="ready"
+            upload_state="ready",
         )
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
-            "context_id": "course-v1:ufr+mathematics+00001",
         }
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
@@ -284,7 +281,6 @@ class ViewsTestCase(TestCase):
             "context_id": video.playlist.lti_id,
             "roles": "instructor",
             "oauth_consumer_key": passport.oauth_consumer_key,
-            "context_id": "course-v1:ufr+mathematics+00001",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
@@ -324,7 +320,7 @@ class DevelopmentViewsTestCase(TestCase):
             lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site__domain="example.com",
-            upload_state="ready"
+            upload_state="ready",
         )
         # There is no need to provide an "oauth_consumer_key"
         data = {
@@ -506,7 +502,7 @@ class DevelopmentViewsTestCase(TestCase):
     @override_settings(BYPASS_LTI_VERIFICATION=True)
     def test_views_video_lti_post_bypass_lti_no_debug_mode(self):
         """Bypassing LTI verification is only allowed in debug mode."""
-        VideoFactory(
+        video = VideoFactory(
             lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site__domain="example.com",
