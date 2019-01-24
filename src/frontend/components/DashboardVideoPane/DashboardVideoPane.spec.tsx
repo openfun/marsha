@@ -11,6 +11,7 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
 import { uploadState, Video } from '../../types/tracks';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
+import { ImageIntlAlt } from '../ImageIntlAlt/ImageIntlAlt';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
@@ -30,6 +31,7 @@ describe('<DashboardVideoPane />', () => {
     const mockVideo = {
       id: 'dd44',
       upload_state: PROCESSING,
+      urls: { thumbnails: {} },
     } as Video;
     fetchMock.mock('/api/videos/dd44/', JSON.stringify(mockVideo));
 
@@ -71,6 +73,7 @@ describe('<DashboardVideoPane />', () => {
     expect(mockUpdateVideo).toHaveBeenCalledWith({
       id: 'dd44',
       upload_state: 'ready',
+      urls: { thumbnails: {} },
     });
 
     wrapper.unmount();
@@ -101,6 +104,7 @@ describe('<DashboardVideoPane />', () => {
             id: 'ee55',
             is_ready_to_play: false,
             upload_state: PROCESSING,
+            urls: { thumbnails: {} },
           } as any
         }
       />,
@@ -127,6 +131,7 @@ describe('<DashboardVideoPane />', () => {
             id: 'ff66',
             is_ready_to_play: false,
             upload_state: ERROR,
+            urls: { thumbnails: {} },
           } as any
         }
       />,
@@ -150,6 +155,7 @@ describe('<DashboardVideoPane />', () => {
             id: 'ff66',
             is_ready_to_play: true,
             upload_state: ERROR,
+            urls: { thumbnails: {} },
           } as any
         }
       />,
@@ -178,6 +184,7 @@ describe('<DashboardVideoPane />', () => {
               {
                 id: 'dd44',
                 upload_state: state,
+                urls: { thumbnails: {} },
               } as Video
             }
           />,
@@ -185,6 +192,28 @@ describe('<DashboardVideoPane />', () => {
           .find(DashboardVideoPaneButtons)
           .exists(),
       ).toBe([PENDING, READY].includes(state));
+    }
+  });
+
+  it('shows the thumbnail only when the video is ready', () => {
+    for (const state of Object.values(uploadState)) {
+      expect(
+        shallow(
+          <DashboardVideoPane
+            jwt={'cool token m8'}
+            updateVideo={mockUpdateVideo}
+            video={
+              {
+                id: 'dd44',
+                upload_state: state,
+                urls: { thumbnails: {} },
+              } as Video
+            }
+          />,
+        )
+          .find(ImageIntlAlt)
+          .exists(),
+      ).toBe(READY === state);
     }
   });
 
@@ -199,6 +228,7 @@ describe('<DashboardVideoPane />', () => {
               {
                 id: 'ee55',
                 upload_state: state,
+                urls: { thumbnails: {} },
               } as Video
             }
           />,

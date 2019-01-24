@@ -70,4 +70,7 @@ export const theme = {
       ...colorsMain,
     },
   },
+  image: {
+    extend: 'max-width: 100%;',
+  },
 };
