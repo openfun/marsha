@@ -68,8 +68,7 @@ export class XAPIStatement {
     for (const key of Object.keys(contextExtensions)) {
       extensions[
         ContextExtensionsDefintion[key as keyof InitializedContextExtensions]
-      ] =
-        contextExtensions[key as keyof InitializedContextExtensions];
+      ] = contextExtensions[key as keyof InitializedContextExtensions];
     }
 
     this.setDuration(contextExtensions.length);
@@ -275,8 +274,7 @@ export class XAPIStatement {
     for (const key of Object.keys(contextExtensions)) {
       extensions[
         ContextExtensionsDefintion[key as keyof InteractedContextExtensions]
-      ] =
-        contextExtensions[key as keyof InteractedContextExtensions];
+      ] = contextExtensions[key as keyof InteractedContextExtensions];
     }
 
     const data: DataPayload = {
