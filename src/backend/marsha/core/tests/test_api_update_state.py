@@ -33,11 +33,28 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
         self.assertEqual(video.upload_state, "ready")
 
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_video_processing(self):
+        """Setting a video's `upload_state` to processing should not affect its `uploaded_on`."""
+        video = VideoFactory(id="9eeef843-bc43-4e01-825d-658aa5bca49f")
+        data = {
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "state": "processing",
+            "signature": "581add41c12fb39d6144d90e9051b6d600df074effcb0fa33e15b97152d2aaba",
+        }
+        response = self.client.post("/api/update-state", data)
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        self.assertEqual(video.uploaded_on, None)
+        self.assertEqual(video.upload_state, "processing")
+
     @override_settings(
         UPDATE_STATE_SHARED_SECRETS=["previous secret", "current secret"]
     )
     def test_api_update_state_video_multiple_secrets(self):
-        """Confirming the successful upload of a video using the any of the existing secrets."""
+        """Confirming the failed upload of a video using the any of the existing secrets."""
         video = VideoFactory(id="c804e019-c622-4b76-aa43-33f2317bdc7e")
         data = {
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
@@ -51,7 +68,7 @@ class UpdateStateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "error")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
