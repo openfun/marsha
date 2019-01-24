@@ -1,3 +1,4 @@
+import { Box } from 'grommet';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router';
@@ -10,16 +11,22 @@ import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/Dashboar
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { ImageIntlAlt } from '../ImageIntlAlt/ImageIntlAlt';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages = defineMessages({
+  thumbnailAlt: {
+    defaultMessage: 'Video thumbnail preview image.',
+    description: 'Accessibility text for the video thumbnail in the Dashboard.',
+    id: 'components.DashboardVideoPane.thumbnailAlt',
+  },
   title: {
     defaultMessage: 'Video status',
     description:
       'Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).',
-    id: 'components.Dashboard.title',
+    id: 'components.DashboardVideoPane.title',
   },
 });
 
@@ -29,11 +36,6 @@ const DashboardVideoPaneInnerContainer = styled.div`
   flex-direction: column;
   justify-content: space-around;
   padding: 1rem;
-`;
-
-const DashboardVideoPaneStatusLine = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const DashboardVideoPaneInternalHeading = styled(DashboardInternalHeading)`
@@ -116,22 +118,62 @@ export class DashboardVideoPane extends React.Component<
       return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
     }
 
-    return (
-      <DashboardVideoPaneInnerContainer>
-        <DashboardVideoPaneStatusLine>
-          <DashboardVideoPaneInternalHeading>
-            <FormattedMessage {...messages.title} />
-          </DashboardVideoPaneInternalHeading>
-          <UploadStatusPicker state={video.upload_state} />
-        </DashboardVideoPaneStatusLine>
-        {video.upload_state === UPLOADING ? (
-          <DashboardVideoPaneProgressConnected videoId={video.id} />
-        ) : null}
-        <DashboardVideoPaneHelptext state={video.upload_state} />
-        {[PENDING, READY].includes(video.upload_state) ? (
-          <DashboardVideoPaneButtons video={video} />
-        ) : null}
-      </DashboardVideoPaneInnerContainer>
+    const commonStatusLine = (
+      <Box align={'center'} direction={'row'}>
+        <DashboardVideoPaneInternalHeading>
+          <FormattedMessage {...messages.title} />
+        </DashboardVideoPaneInternalHeading>
+        <UploadStatusPicker state={video.upload_state} />
+      </Box>
     );
+
+    switch (video.upload_state) {
+      case PENDING:
+        return (
+          <DashboardVideoPaneInnerContainer>
+            {commonStatusLine}
+            <DashboardVideoPaneHelptext state={video.upload_state} />
+            <DashboardVideoPaneButtons video={video} />
+          </DashboardVideoPaneInnerContainer>
+        );
+
+      case UPLOADING:
+        return (
+          <DashboardVideoPaneInnerContainer>
+            {commonStatusLine}
+            <DashboardVideoPaneProgressConnected videoId={video.id} />
+            <DashboardVideoPaneHelptext state={video.upload_state} />
+          </DashboardVideoPaneInnerContainer>
+        );
+
+      case PROCESSING:
+      case ERROR:
+        return (
+          <DashboardVideoPaneInnerContainer>
+            {commonStatusLine}
+            <DashboardVideoPaneHelptext state={video.upload_state} />
+          </DashboardVideoPaneInnerContainer>
+        );
+
+      case READY:
+        return (
+          <DashboardVideoPaneInnerContainer>
+            <Box direction={'row'}>
+              <Box basis={'1/2'} margin={'small'}>
+                {commonStatusLine}
+                <DashboardVideoPaneHelptext state={video.upload_state} />
+              </Box>
+              <Box basis={'1/2'} margin={'small'}>
+                <ImageIntlAlt
+                  alt={messages.thumbnailAlt}
+                  fit={'cover'}
+                  src={video.urls.thumbnails[720]}
+                />
+              </Box>
+            </Box>
+            <DashboardVideoPaneButtons video={video} />
+          </DashboardVideoPaneInnerContainer>
+        );
+    }
   }
 }
