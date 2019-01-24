@@ -381,6 +381,7 @@ class OpenEdxLTI(LTI):
         except Video.DoesNotExist:
             return None
 
+
 class LTIUser:
     """
     LTIUser represents the information stored in the JWT Token once authenticated.
