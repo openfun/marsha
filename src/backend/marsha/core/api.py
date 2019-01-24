@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
-from .models import PENDING, TimedTextTrack, Video
+from .models import PENDING, READY, TimedTextTrack, Video
 from .permissions import IsRelatedVideoTokenOrAdminUser, IsVideoTokenOrAdminUser
 from .serializers import (
     TimedTextTrackSerializer,
@@ -71,8 +71,15 @@ def update_state(request):
     model = apps.get_model(app_label="core", model_name=key_elements["model_name"])
 
     updated = model.objects.filter(id=key_elements["object_id"]).update(
-        uploaded_on=key_elements["uploaded_on"],
-        upload_state=serializer.validated_data["state"],
+        **{
+            # Only update `uploaded_on` if the upload was actually successful
+            **(
+                {"uploaded_on": key_elements["uploaded_on"]}
+                if serializer.validated_data["state"] == READY
+                else {}
+            ),
+            "upload_state": serializer.validated_data["state"],
+        }
     )
 
     if updated:
