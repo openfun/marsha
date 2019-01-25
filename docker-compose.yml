@@ -68,8 +68,7 @@ services:
       - marsha
 
   xapi:
-    image: learninglocker/xapi-service:2.2.14
-    restart: unless-stopped
+    image: fundocker/xapi-service:v2.2.15
     environment:
       - MONGO_URL=mongodb://mongodb:27017/learninglocker_v2
       - REDIS_URL=redis://redis:6379/0

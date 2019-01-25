@@ -150,5 +150,5 @@ down: ## Stop and remove containers, networks, images, and volumes
 
 .PHONY: xapi-superuser
 xapi-superuser: ## create a superuser in learninglocker application
-	@$(COMPOSE_RUN_LRS) node cli/dist/server createSiteAdmin "admin@openfun.fr" "openfun" "password"
+	@$(COMPOSE_RUN_LRS) node cli/dist/server createSiteAdmin "admin@openfun.fr" "openfun" "password1"
 
