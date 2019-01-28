@@ -266,13 +266,14 @@ class VideoLTITestCase(TestCase):
             "roles": "Student",
             "oauth_consumer_key": "ABC123",
         }
+        resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/{!s}".format(resource_id),
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request, uuid.uuid4())
+        lti = LTI(request, resource_id)
         self.assertTrue(lti.is_edx_format)
 
     def test_lti_is_not_edx_format(self):
@@ -286,13 +287,14 @@ class VideoLTITestCase(TestCase):
             "roles": "Student",
             "oauth_consumer_key": "ABC123",
         }
+        resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/{!s}".format(resource_id),
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request, uuid.uuid4())
+        lti = LTI(request, resource_id)
         self.assertFalse(lti.is_edx_format)
 
     def test_lti_get_edx_course_info(self):
@@ -306,13 +308,14 @@ class VideoLTITestCase(TestCase):
             "roles": "Student",
             "oauth_consumer_key": "ABC123",
         }
+        resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/{!s}".format(resource_id),
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request, uuid.uuid4())
+        lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
             {
@@ -333,13 +336,14 @@ class VideoLTITestCase(TestCase):
             "roles": "Student",
             "oauth_consumer_key": "ABC123",
         }
+        resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/{!s}".format(resource_id),
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request, uuid.uuid4())
+        lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
             {
@@ -360,15 +364,16 @@ class VideoLTITestCase(TestCase):
             "roles": "Student",
             "oauth_consumer_key": "ABC123",
             "tool_consumer_instance_name": "ufr",
-            "resource_link_title": "mathematics",
+            "context_title": "mathematics",
         }
+        resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti-video/",
+            "/lti/videos/{!s}".format(resource_id),
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
         )
-        lti = LTI(request, uuid.uuid4())
+        lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
             {

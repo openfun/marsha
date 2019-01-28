@@ -30,9 +30,8 @@ class ViewsTestCase(TestCase):
 
     def test_views_video_lti_post_instructor(self):
         """Validate the format of the response returned by the view for an instructor request."""
-        passport = ConsumerSiteLTIPassportFactory(oauth_consumer_key="ABC123")
+        passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
-            lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
         )
@@ -100,7 +99,6 @@ class ViewsTestCase(TestCase):
         """Validate the format of the response returned by the view for a student request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
-            lti_id="123",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
             upload_state="ready",
@@ -167,14 +165,13 @@ class ViewsTestCase(TestCase):
         """Ensure JWT is created if user_id is missing in the LTI request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            playlist__consumer_site=passport.consumer_site,
-            upload_state="ready",
+            playlist__consumer_site=passport.consumer_site, upload_state="ready"
         )
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
+            "context_title": "mathematics",
+            "tool_consumer_instance_name": "ufr",
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
         }
@@ -200,7 +197,7 @@ class ViewsTestCase(TestCase):
             {
                 "school_name": "ufr",
                 "course_name": "mathematics",
-                "course_section": "00001",
+                "course_section": video.lti_id,
             },
         )
 
@@ -268,11 +265,7 @@ class ViewsTestCase(TestCase):
         and therefore falls in another case when it comes to handling of video ids.
         """
         passport = ConsumerSiteLTIPassportFactory()
-        video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            playlist__consumer_site=passport.consumer_site,
-        )
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         # Create a TimedTextTrack associated with the video to trigger the error
         TimedTextTrackFactory(video=video)
 
@@ -317,16 +310,15 @@ class DevelopmentViewsTestCase(TestCase):
     def test_views_video_lti_post_bypass_lti_student(self):
         """In development, passport creation and LTI verification can be bypassed for a student."""
         video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            playlist__consumer_site__domain="example.com",
-            upload_state="ready",
+            playlist__consumer_site__domain="example.com", upload_state="ready"
         )
         # There is no need to provide an "oauth_consumer_key"
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": "student",
+            "context_title": "mathematics",
+            "tool_consumer_instance_name": "ufr",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
@@ -351,7 +343,7 @@ class DevelopmentViewsTestCase(TestCase):
             {
                 "school_name": "ufr",
                 "course_name": "mathematics",
-                "course_section": "00001",
+                "course_section": video.lti_id,
             },
         )
 
@@ -380,16 +372,14 @@ class DevelopmentViewsTestCase(TestCase):
     @override_settings(BYPASS_LTI_VERIFICATION=True)
     def test_views_video_lti_post_bypass_lti_instructor(self):
         """In development, passport creation and LTI verif can be bypassed for a instructor."""
-        video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            playlist__consumer_site__domain="example.com",
-        )
+        video = VideoFactory(playlist__consumer_site__domain="example.com")
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
             "roles": "instructor",
             "tool_consumer_instance_guid": "example.com",
+            "context_title": "mathematics",
+            "tool_consumer_instance_name": "ufr",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
@@ -413,7 +403,7 @@ class DevelopmentViewsTestCase(TestCase):
             {
                 "school_name": "ufr",
                 "course_name": "mathematics",
-                "course_section": "00001",
+                "course_section": video.lti_id,
             },
         )
 
@@ -502,11 +492,7 @@ class DevelopmentViewsTestCase(TestCase):
     @override_settings(BYPASS_LTI_VERIFICATION=True)
     def test_views_video_lti_post_bypass_lti_no_debug_mode(self):
         """Bypassing LTI verification is only allowed in debug mode."""
-        video = VideoFactory(
-            lti_id="123",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            playlist__consumer_site__domain="example.com",
-        )
+        video = VideoFactory(playlist__consumer_site__domain="example.com")
         role = random.choice(["instructor", "student"])
         data = {
             "resource_link_id": video.lti_id,

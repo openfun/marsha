@@ -171,7 +171,7 @@ class LTI:
 
         return {
             "school_name": self.request.POST.get("tool_consumer_instance_name", None),
-            "course_name": self.resource_link_title,
+            "course_name": self.context_title,
             "course_section": self.resource_link_id,
         }
 
@@ -247,12 +247,12 @@ class LTI:
 
     @property
     def is_edx_format(self):
-        """Check if the LTI if provided by edx.
+        """Check if the LTI request comes from Open edX.
 
         Returns
         -------
         boolean
-            True if the LTI request is sent by edx
+            True if the LTI request is sent by Open edX
 
         """
         return re.search(r"^course-v[0-9]:.*$", self.context_id)

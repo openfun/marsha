@@ -4,9 +4,11 @@ import uuid
 
 import requests
 
+from .exceptions import MissingUserIdError
+
 
 class XAPI:
-    """The LTI object abstracts an LTI launch request."""
+    """The XAPI object compute statements and send them to a LRS."""
 
     def __init__(self, url, auth_token, xapi_version):
         """Initialize the XAPI module.
@@ -122,9 +124,3 @@ class XAPI:
             statement["object"]["definition"]["extensions"] = object_extensions
 
         return statement
-
-
-class MissingUserIdError(Exception):
-    """Error raised if the user_id is missing when enriching xAPI statement."""
-
-    pass
