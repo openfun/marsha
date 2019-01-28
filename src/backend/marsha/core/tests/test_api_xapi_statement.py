@@ -47,6 +47,8 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 501)
 
+    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
+    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     def test_xapi_statement_api_with_invalid_payload(self):
         """Payload should follow a given pattern."""
         video = VideoFactory()
@@ -74,6 +76,8 @@ class XAPIStatementApiTest(TestCase):
             },
         )
 
+    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
+    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get", side_effect=Video.DoesNotExist)
     def test_xapi_statement_with_invalid_video(self, video_model_mock):
         """The video in the JWT Token does not exist in our database."""
@@ -102,6 +106,8 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
+    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_request_error_to_lrs(
@@ -145,6 +151,8 @@ class XAPIStatementApiTest(TestCase):
             response.json().get("status"), "Impossible to send xAPI request to LRS."
         )
 
+    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
+    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_request_to_lrs_successful(
@@ -180,6 +188,8 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 204)
 
+    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
+    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_missing_user_id(self, xapi_mock, video_model_mock):
