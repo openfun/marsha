@@ -7,9 +7,9 @@ from django.test import TestCase, override_settings
 import requests
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..exceptions import MissingUserIdError
 from ..factories import VideoFactory
 from ..models import Video
-from ..xapi import MissingUserIdError
 
 
 # We don't enforce arguments documentation in tests
@@ -213,5 +213,5 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            response.json().get("status"), "Impossible to idenitfy the actor."
+            response.json().get("status"), "Impossible to identify the actor."
         )

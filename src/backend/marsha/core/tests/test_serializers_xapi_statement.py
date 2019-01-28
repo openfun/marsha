@@ -98,7 +98,7 @@ class XAPIStatementSerializersTest(TestCase):
     """Test the serializer validating a xAPI statement."""
 
     def test_xapi_statement_serializer_without_result_and_id(self):
-        """The XAPIStatementSerializer should be valid with valid data."""
+        """The XAPIStatementSerializer should be valid with only required data."""
         data = {
             "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
             "context": {"extensions": {"foo": "bar"}},
@@ -113,7 +113,7 @@ class XAPIStatementSerializersTest(TestCase):
         self.assertFalse("result" in serializer.validated_data)
 
     def test_xapi_statement_serializer_with_result_and_id(self):
-        """The XAPIStatementSerializer should be valid with valid data."""
+        """The XAPIStatementSerializer should be valid with all possible data."""
         data = {
             "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
             "context": {"extensions": {"foo": "bar"}},
