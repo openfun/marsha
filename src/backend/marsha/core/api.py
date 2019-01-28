@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
+from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import PENDING, READY, TimedTextTrack, Video
 from .permissions import (
@@ -30,7 +31,7 @@ from .serializers import (
 )
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
-from .xapi import XAPI, MissingUserIdError
+from .xapi import XAPI
 
 
 logger = logging.getLogger(__name__)
@@ -255,7 +256,7 @@ class XAPIStatementView(APIView):
         except Video.DoesNotExist:
             return Response(
                 {
-                    "reason": "video with id {id} does not exists".format(
+                    "reason": "video with id {id} does not exist".format(
                         id=lti_user.video_id
                     )
                 },
@@ -278,6 +279,6 @@ class XAPIStatementView(APIView):
             return Response({"status": message}, status=501)
         # pylint: disable=invalid-name
         except MissingUserIdError:
-            return Response({"status": "Impossible to idenitfy the actor."}, status=400)
+            return Response({"status": "Impossible to identify the actor."}, status=400)
 
         return Response(status=204)
