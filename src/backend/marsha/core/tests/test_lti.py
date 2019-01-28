@@ -318,11 +318,7 @@ class VideoLTITestCase(TestCase):
         lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": "00001",
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
     def test_lti_get_partial_edx_course_info(self):
@@ -346,11 +342,7 @@ class VideoLTITestCase(TestCase):
         lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": None,
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
     def test_lti_get_course_info(self):
@@ -376,11 +368,7 @@ class VideoLTITestCase(TestCase):
         lti = LTI(request, resource_id)
         self.assertDictEqual(
             lti.get_course_info(),
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": "df7",
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
 

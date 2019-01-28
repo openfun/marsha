@@ -63,11 +63,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": "00001",
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         data_state = match.group(2)
@@ -131,11 +127,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": "00001",
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         data_state = match.group(2)
@@ -194,11 +186,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": video.lti_id,
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
@@ -340,11 +328,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": video.lti_id,
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
         data_state = match.group(2)
@@ -400,11 +384,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": video.lti_id,
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
         data_state = match.group(2)
@@ -458,11 +438,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {
-                "school_name": "ufr",
-                "course_name": "mathematics",
-                "course_section": "00001",
-            },
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         data_state = match.group(2)

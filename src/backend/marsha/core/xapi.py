@@ -115,10 +115,10 @@ class XAPI:
                 "http://adlnet.gov/expapi/activities/course"
             ] = lti_user.course["course_name"]
 
-        if lti_user.course["course_section"] is not None:
+        if lti_user.course["course_run"] is not None:
             object_extensions[
                 "http://adlnet.gov/expapi/activities/module"
-            ] = lti_user.course["course_section"]
+            ] = lti_user.course["course_run"]
 
         if object_extensions:
             statement["object"]["definition"]["extensions"] = object_extensions
