@@ -166,13 +166,13 @@ class LTI:
             return {
                 "school_name": part[0] if length >= 1 else None,
                 "course_name": part[1] if length >= 2 else None,
-                "course_section": part[2] if length >= 3 else None,
+                "course_run": part[2] if length >= 3 else None,
             }
 
         return {
             "school_name": self.request.POST.get("tool_consumer_instance_name", None),
             "course_name": self.context_title,
-            "course_section": self.resource_link_id,
+            "course_run": None,
         }
 
     @property
