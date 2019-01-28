@@ -1,5 +1,6 @@
 import { Resource } from '../../../types/tracks';
 import { Maybe } from '../../../utils/types';
+import { actionTypes } from '../../rootReducer';
 import { ResourceAdd, ResourceDelete, ResourceMultipleAdd } from './actions';
 
 export const initialState = {
@@ -12,22 +13,15 @@ export interface ResourceByIdState<R extends Resource> {
   };
 }
 
-export function byId<R extends Resource>(
-  state: ResourceByIdState<R>,
-  action:
-    | ResourceAdd<R>
-    | ResourceDelete<R>
-    | ResourceMultipleAdd<R>
-    | { type: '' },
-): ResourceByIdState<R> {
-  // Initialize the state to an empty version of itself
-  if (!state) {
-    state = initialState;
-  }
-  if (!action) {
-    return state;
-  } // Compiler needs help
+export type byIdActions<R extends Resource> =
+  | ResourceAdd<R>
+  | ResourceDelete<R>
+  | ResourceMultipleAdd<R>;
 
+export function byId<R extends Resource, S extends ResourceByIdState<R>>(
+  state: S,
+  action: actionTypes<R>,
+): S {
   switch (action.type) {
     // Add a single record to our state
     case 'RESOURCE_ADD':

@@ -1,25 +1,19 @@
-import { AnyAction, Reducer } from 'redux';
-
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
-import { Maybe } from '../../utils/types';
-import {
-  ResourceAdd,
-  ResourceMultipleAdd,
-} from '../genericReducers/resourceById/actions';
 import {
   byId,
   initialState as resourceByIdInit,
   ResourceByIdState,
 } from '../genericReducers/resourceById/resourceById';
+import { actionTypes } from '../rootReducer';
 
 const initialState = { ...resourceByIdInit };
 
-export type VideosState = Maybe<ResourceByIdState<Video>>;
+export type VideosState = ResourceByIdState<Video>;
 
-export const videos: Reducer<VideosState> = (
+export const videos = (
   state: VideosState = initialState,
-  action?: ResourceAdd<Video> | ResourceMultipleAdd<Video> | AnyAction,
+  action?: actionTypes,
 ) => {
   if (!action) {
     return state;
