@@ -17,19 +17,6 @@ describe('Reducer: resourceById()', () => {
     title: 'Video 45',
   };
 
-  it('returns an empty state for initialization', () => {
-    expect(byId({ byId: {} }, { type: '' })).toEqual({
-      byId: {},
-    });
-  });
-
-  it('returns the state as is when called with an unknown action', () => {
-    const previousState = {
-      byId: { 43: video43 },
-    };
-    expect(byId(previousState, { type: '' })).toEqual(previousState);
-  });
-
   describe('RESOURCE_ADD', () => {
     it('adds the resource to the state when called with RESOURCE', () => {
       const previousState = {

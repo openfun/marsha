@@ -1,25 +1,24 @@
-import { AnyAction, Reducer } from 'redux';
-
 import { modelName } from '../../types/models';
-import { TimedText } from '../../types/tracks';
-import { Maybe } from '../../utils/types';
-import {
-  ResourceAdd,
-  ResourceMultipleAdd,
-} from '../genericReducers/resourceById/actions';
+import { Resource, TimedText } from '../../types/tracks';
 import {
   byId,
   initialState as resourceByIdInit,
   ResourceByIdState,
 } from '../genericReducers/resourceById/resourceById';
+import {
+  currentQuery,
+  ResourceListState,
+} from '../genericReducers/resourceList/resourceList';
+import { actionTypes } from '../rootReducer';
 
 const initialState = { ...resourceByIdInit };
 
-export type TimedTextTracksState = Maybe<ResourceByIdState<TimedText>>;
+export type TimedTextTracksState = ResourceByIdState<TimedText> &
+  ResourceListState<TimedText>;
 
-export const timedtexttracks: Reducer<TimedTextTracksState> = (
+export const timedtexttracks = (
   state: TimedTextTracksState = initialState,
-  action?: ResourceAdd<TimedText> | ResourceMultipleAdd<TimedText> | AnyAction,
+  action?: actionTypes<Resource>,
 ) => {
   if (!action) {
     return state;
@@ -32,5 +31,5 @@ export const timedtexttracks: Reducer<TimedTextTracksState> = (
     return state;
   }
 
-  return byId(state, action);
+  return currentQuery(byId(state, action), action);
 };
