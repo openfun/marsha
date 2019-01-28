@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Manage xAPI statements in backend application.
+- Listen to plyr player events and send xAPI statements to the backend application.
+
 ### Fixed
 
 - Remove the `styledComponentWithProps` we used to type styled components thanks to a newer version of the library
