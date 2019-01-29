@@ -1,21 +1,46 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { addMultipleResources } from '../../data/genericReducers/resourceById/actions';
+import { getResourceList } from '../../data/genericReducers/resourceList/actions';
 import { RootState } from '../../data/rootReducer';
+import { ConsumableQuery } from '../../types/api';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
 import { DashboardTimedTextPane } from '../DashboardTimedTextPane/DashboardTimedTextPane';
 
-const mapStateToProps = (state: RootState<appStateSuccess>) => ({
+/**
+ * Build props for `<DashboardTimedTextPaneConnected />` from `RootState`.
+ * Intended for internal use, exported for testing purposes only.
+ */
+export const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
+  timedtexttracks: state.resources[modelName.TIMEDTEXTTRACKS].currentQuery
+    ? {
+        objects: Object.values(
+          state.resources[modelName.TIMEDTEXTTRACKS].currentQuery!.items,
+        )
+          .map(key => state.resources[modelName.TIMEDTEXTTRACKS].byId[key])
+          .filter(item => !!item) as TimedText[],
+        status: state.resources[modelName.TIMEDTEXTTRACKS].currentQuery!.status,
+      }
+    : {
+        objects: [],
+        status: null,
+      },
 });
 
 /** Create a function that adds a bunch of timedtexttracks in the store. */
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  addAllTimedTextTracks: (timedtexttracks: TimedText[]) =>
-    dispatch(addMultipleResources(modelName.TIMEDTEXTTRACKS, timedtexttracks)),
+const mergeProps = (
+  {
+    jwt,
+    timedtexttracks,
+  }: { jwt: string; timedtexttracks: ConsumableQuery<TimedText> },
+  { dispatch }: { dispatch: Dispatch },
+) => ({
+  getTimedTextTrackList: () =>
+    dispatch(getResourceList(jwt, modelName.TIMEDTEXTTRACKS)),
+  timedtexttracks,
 });
 
 /**
@@ -24,5 +49,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
  */
 export const DashboardTimedTextPaneConnected = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null!,
+  mergeProps,
 )(DashboardTimedTextPane);
