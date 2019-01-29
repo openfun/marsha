@@ -81,6 +81,7 @@ class Base(Configuration):
         "django.contrib.sites",
         "django.contrib.staticfiles",
         "django_extensions",
+        "dockerflow.django",
         "rest_framework",
         "marsha.core.apps.CoreConfig",
     ]
@@ -93,6 +94,7 @@ class Base(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "dockerflow.django.middleware.DockerflowMiddleware",
     ]
 
     ROOT_URLCONF = "marsha.urls"
