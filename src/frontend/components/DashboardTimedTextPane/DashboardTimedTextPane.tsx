@@ -3,9 +3,8 @@ import { defineMessages } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { getTimedTextTrackList } from '../../data/sideEffects/getTimedTextTrackList/getTimedTextTrackList';
+import { ConsumableQuery, requestStatus } from '../../types/api';
 import { TimedText, timedTextMode } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager/DashboardTimedTextManager';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
@@ -33,46 +32,27 @@ const DashboardTimedTextPaneStyled = styled.div`
 
 /** Props shape for the DashboardTimedTextPane component. */
 export interface DashboardTimedTextPaneProps {
-  addAllTimedTextTracks: (timedtexttracks: TimedText[]) => void;
-  jwt: Nullable<string>;
-}
-
-/** State shape for the DashboardTimedTextPane component. */
-interface DashboardTimedTextPaneState {
-  error?: 'notFound';
-  timedtexttracks: TimedText[];
+  getTimedTextTrackList: () => void;
+  timedtexttracks: ConsumableQuery<TimedText>;
 }
 
 /**
  * Component. Displays the complete timedtexttrack management area in the dashboard, that lets the user
  * create, delete and modify timedtexttracks related to their video.
- * @param addAllTimedTextTracks An action creator that will add the passed timedtexttracks to the store.
- * @param jwt The token that will be used to interact with the API.
+ * @param getTimedTextTrackList An action creator that requests the list of timed text tracks.
+ * @param timedtexttracks The list of timed text tracks and status of the request.
  */
 export class DashboardTimedTextPane extends React.Component<
-  DashboardTimedTextPaneProps,
-  DashboardTimedTextPaneState
+  DashboardTimedTextPaneProps
 > {
-  constructor(props: DashboardTimedTextPaneProps) {
-    super(props);
-    this.state = { timedtexttracks: [] };
-  }
-
-  async componentDidMount() {
-    const { addAllTimedTextTracks, jwt } = this.props;
-    try {
-      const timedtexttracks = await getTimedTextTrackList(jwt);
-      addAllTimedTextTracks(timedtexttracks);
-      this.setState({ timedtexttracks });
-    } catch (error) {
-      this.setState({ error: 'notFound' });
-    }
+  componentDidMount() {
+    this.props.getTimedTextTrackList();
   }
 
   render() {
-    const { error, timedtexttracks } = this.state;
+    const { objects: timedtexttracks, status } = this.props.timedtexttracks;
 
-    if (error === 'notFound') {
+    if (status === requestStatus.FAILURE) {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
