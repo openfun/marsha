@@ -93,17 +93,17 @@ test:  ## Run django tests for the marsha project.
 ##############################################
 # Targets specific to Virtualenv installations
 
-.PHONY: install
+.PHONY: venv-install
 venv-install:  ## Install the project in the current environment, with its dependencies
 	@echo "$(BOLD)Installing $(PROJECT_NAME) $(PROJECT_VERSION)$(RESET)"
 	@pip install .
 
-.PHONY: dev
+.PHONY: venv-install-dev
 venv-install-dev:  ## Install the project in the current environment, with its dependencies, including the ones needed in a development environment
 	@echo "$(BOLD)Installing $(PROJECT_NAME) $(PROJECT_VERSION) in dev mode$(RESET)"
 	@pip install -e .[dev]
 
-.PHONY: dev-upgrade
+.PHONY: venv-upgrade-dev
 venv-upgrade-dev:  ## Upgrade all default+dev dependencies defined in setup.cfg
 	@pip install --upgrade `python -c 'import setuptools; o = setuptools.config.read_configuration("setup.cfg")["options"]; print(" ".join(o["install_requires"] + o["extras_require"]["dev"]))'`
 	@pip install -e .
