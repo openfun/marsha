@@ -8,6 +8,19 @@ export enum requestStatus {
   SUCCESS = 'success',
 }
 
+interface RespFailure {
+  error: string;
+  status: requestStatus.FAILURE;
+}
+
+interface RespSuccess {
+  objects: Resource[];
+  status: requestStatus.SUCCESS;
+}
+
+/** Intermediate response types to pass around in internal interfaces. */
+export type Resp = RespFailure | RespSuccess;
+
 /** Common implicit parameters (with defaults) for all API List requests. */
 export interface APIListCommonRequestParams {
   limit: number;
