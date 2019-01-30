@@ -8,15 +8,22 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] - 2019-01-30
+
 ### Added
 
 - Manage xAPI statements in backend application.
 - Listen to plyr player events and send xAPI statements to the backend application.
+- Installation of Grommet in the front application. Will be used to theme our application.
+- Display upload progress when a resource is uploaded.
+- Configure application healthcheck.
+- Show a thumbnail of the video on the Dashboard when it is ready to play.
 
 ### Fixed
 
 - Remove the `styledComponentWithProps` we used to type styled components thanks to a newer version of the library
 - Rework `Jest` config to use babel
+- Replace our button with Grommet's.
 
 ## [2.0.1] - 2019-01-22
 
