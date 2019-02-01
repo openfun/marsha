@@ -25,7 +25,6 @@ module.exports = {
   module: {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
         use: [
@@ -35,7 +34,6 @@ module.exports = {
               babelrc: true,
             },
           },
-          { loader: 'ts-loader' },
         ],
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
