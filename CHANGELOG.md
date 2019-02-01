@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- enable redux devtools
+
 ## [2.2.0] - 2019-02-05
 
 ### Added
