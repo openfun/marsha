@@ -6,6 +6,7 @@ module.exports = {
         messagesDir: './i18n',
       },
     ],
+    '@babel/proposal-class-properties',
   ],
   presets: [
     [
@@ -15,6 +16,7 @@ module.exports = {
         useBuiltIns: 'usage',
       },
     ],
+    '@babel/preset-typescript',
     'react',
   ],
 };
