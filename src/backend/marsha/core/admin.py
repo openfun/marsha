@@ -193,6 +193,7 @@ class VideoAdmin(admin.ModelAdmin):
         "id",
         "title",
         link_field("playlist"),
+        link_field("consumer_site"),
         "lti_id",
         "upload_state",
         "uploaded_on",
