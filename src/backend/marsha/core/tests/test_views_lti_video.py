@@ -1,6 +1,7 @@
 """Test the LTI interconnection with Open edX."""
 from html import unescape
 import json
+from logging import Logger
 import random
 import re
 from unittest import mock
@@ -225,8 +226,9 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(LTI, "verify", side_effect=LTIException)
-    def test_views_video_lti_post_error(self, mock_verify):
+    @mock.patch.object(Logger, "warning")
+    @mock.patch.object(LTI, "verify", side_effect=LTIException("lti error"))
+    def test_views_video_lti_post_error(self, mock_verify, mock_logger):
         """Validate the response returned in case of an LTI exception."""
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
@@ -234,6 +236,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
+
+        mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
 
         data_state = re.search(
             '<div class="marsha-frontend-data" data-state="(.*)">', content
