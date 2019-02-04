@@ -11,6 +11,7 @@ from marsha.core.models import (
     ConsumerSite,
     ConsumerSiteAccess,
     ConsumerSiteOrganization,
+    ConsumerSitePortability,
     LTIPassport,
     Organization,
     OrganizationAccess,
@@ -111,13 +112,29 @@ class ConsumerSiteOrganizationsInline(admin.TabularInline):
     verbose_name_plural = _("organizations")
 
 
+class ConsumerSitePortabilityInline(admin.TabularInline):
+    """Inline to display consumer sites to which a consumer site is automatically portable."""
+
+    model = ConsumerSitePortability
+    fk_name = "source_site"
+    verbose_name = _("portable to")
+    verbose_name_plural = _("portable to")
+
+
 @admin.register(ConsumerSite, site=admin_site)
 class ConsumerSiteAdmin(admin.ModelAdmin):
     """Admin class for the ConsumerSite model."""
 
     list_display = ("id", "name", "domain", "created_on", "updated_on")
     search_fields = ("id", "name", "domain")
-    inlines = [ConsumerSiteUsersInline, ConsumerSiteOrganizationsInline]
+    inlines = [
+        ConsumerSitePortabilityInline,
+        ConsumerSiteUsersInline,
+        ConsumerSiteOrganizationsInline,
+    ]
+
+    fields = ("id", "name", "domain", "created_on", "updated_on")
+    readonly_fields = ["id", "created_on", "updated_on"]
 
 
 class OrganizationUsersInline(admin.TabularInline):
