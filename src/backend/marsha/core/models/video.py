@@ -218,6 +218,11 @@ class Video(BaseModel):
         return result
 
     @property
+    def consumer_site(self):
+        """Return the consumer site linked to this video via the playlist."""
+        return self.playlist.consumer_site
+
+    @property
     def is_ready_to_play(self):
         """Whether the video is ready to play (ie) has been sucessfully uploaded.
 
