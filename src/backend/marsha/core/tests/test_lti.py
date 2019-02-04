@@ -147,7 +147,8 @@ class VideoLTITestCase(TestCase):
         with self.assertRaises(LTIException) as context:
             lti.verify()
         self.assertEqual(
-            context.exception.args[0], "Host domain does not match registered passport."
+            context.exception.args[0],
+            "Host domain (not-example.com) does not match registered passport (example.com).",
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -555,11 +556,13 @@ class PortabilityVideoLTITestCase(TestCase):
         """Above case 1-2-1-2-1.
 
         An LTI Exception should be raised if an instructor tries to retrieve a video that is
-        existing for another consumer site but not ready, even if it is portable to another
+        already existing for a consumer site but not ready, even if it is portable to another
         consumer site.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_consumer_site=True,
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] != "ready"]
@@ -578,8 +581,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (a-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created
@@ -662,6 +665,8 @@ class PortabilityVideoLTITestCase(TestCase):
         consumer_site = ConsumerSiteFactory(domain="example.com")
         passport = ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_consumer_site=False,
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] != "ready"]
@@ -684,8 +689,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (a-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created
@@ -735,11 +740,13 @@ class PortabilityVideoLTITestCase(TestCase):
         """Above case 1-2-3-1.
 
         An LTIException should be raised if an instructor tries to retrieve a video that is
-        existing for another consumer site but not portable to another consumer site, even if it
+        already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_consumer_site=False,
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
@@ -756,8 +763,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (a-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created
@@ -818,11 +825,13 @@ class PortabilityVideoLTITestCase(TestCase):
         """Above case 1-3-1-2-1.
 
         An LTIException should be raised if an instructor tries to retrieve a video that is
-        existing in another playlist but not ready, even if it is portable to another
+        already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
             upload_state=random.choice(
@@ -842,8 +851,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (another-playlist) and/or consumer site (example.com)."
             ),
         )
 
@@ -880,14 +889,15 @@ class PortabilityVideoLTITestCase(TestCase):
     def test_lti_get_video_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1.
 
-        An LTIException should be raises if an instructor tries to retrieve a video that is
-        existing in another playlist but not portable to another playlist, even if it
+        An LTIException should be raised if an instructor tries to retrieve a video that is
+        existing in a playlist but not portable to another playlist, even if it
         is ready.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
             lti_id="df7",
-            playlist__lti_id="wrong",
+            playlist__lti_id="a-playlist",
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=False,
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
@@ -905,8 +915,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (another-playlist) and/or consumer site (example.com)."
             ),
         )
 
@@ -972,11 +982,13 @@ class PortabilityVideoLTITestCase(TestCase):
         """Above case 1-4-1-1-2-1.
 
         An LTIException should be raised if an instructor tries to retrieve a video that is
-        existing in another playlist on another consumer site but not ready, even if it is
+        already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
             upload_state=random.choice(
@@ -996,8 +1008,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (another-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created
@@ -1081,7 +1093,9 @@ class PortabilityVideoLTITestCase(TestCase):
             oauth_consumer_key="ABC123", consumer_site=consumer_site
         )
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
             lti_id="df7",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=False,
             upload_state=random.choice(
@@ -1105,8 +1119,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (another-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created
@@ -1153,13 +1167,15 @@ class PortabilityVideoLTITestCase(TestCase):
     def test_lti_get_video_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video existing
-        on another playlist and another consumer site but not portable either to another playlist
-        or to another consumer site, even if it is ready.
+        An LTIException should be raised if an instructor tries to retrieve a video already
+        existing in a playlist and another consumer site but not portable either to another
+        playlist or to another consumer site, even if it is ready.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         one_not_portable = random.choice([True, False])
         video = VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
             playlist__is_portable_to_playlist=one_not_portable,
             playlist__is_portable_to_consumer_site=not one_not_portable,
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
@@ -1177,8 +1193,8 @@ class PortabilityVideoLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "A video with this ID already exists but is not portable "
-                "to your playlist and/or consumer site."
+                "The video ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
+                "portable to your playlist (another-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or video are created

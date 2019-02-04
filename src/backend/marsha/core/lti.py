@@ -89,7 +89,7 @@ class LTI:
             )
             is not True
         ):
-            raise LTIException()
+            raise LTIException("LTI verification failed.")
 
         consumer_site = passport.consumer_site or passport.playlist.consumer_site
 
@@ -100,7 +100,11 @@ class LTI:
         if domain_check != consumer_site.domain and not domain_check.endswith(
             ".{:s}".format(consumer_site.domain)
         ):
-            raise LTIException("Host domain does not match registered passport.")
+            raise LTIException(
+                "Host domain ({:s}) does not match registered passport ({:s}).".format(
+                    domain_check, consumer_site.domain
+                )
+            )
 
         return consumer_site
 
@@ -307,10 +311,16 @@ class LTI:
 
         # Check that the video does not already exist (possible in another playlist and/or
         # on another consumer site if it is not portable or not ready).
-        if Video.objects.filter(pk=self.resource_id).exists():
+        try:
+            video = Video.objects.get(pk=self.resource_id)
+        except Video.DoesNotExist:
+            pass
+        else:
             raise LTIException(
-                "A video with this ID already exists but is not portable to your playlist "
-                "and/or consumer site."
+                "The video ID {!s} already exists but is not portable to your playlist ({!s}) "
+                "and/or consumer site ({!s}).".format(
+                    video.id, self.context_id, consumer_site.domain
+                )
             )
 
         # Creating the video...

@@ -1,5 +1,6 @@
 """Views of the ``core`` app of the Marsha project."""
 import json
+from logging import getLogger
 import uuid
 
 from django.utils.decorators import method_decorator
@@ -14,6 +15,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .lti import LTI, OpenEdxLTI
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
+
+
+logger = getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -57,7 +61,8 @@ class VideoLTIView(TemplateResponseMixin, View):
         lti = self.get_lti()
         try:
             video = lti.get_or_create_video()
-        except LTIException:
+        except LTIException as error:
+            logger.warning("LTI Exception: %s", str(error))
             return {"state": "error", "video_data": "null"}
 
         context = {"state": INSTRUCTOR if lti.is_instructor else STUDENT}
