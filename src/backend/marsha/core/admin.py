@@ -115,8 +115,8 @@ class ConsumerSiteOrganizationsInline(admin.TabularInline):
 class ConsumerSiteAdmin(admin.ModelAdmin):
     """Admin class for the ConsumerSite model."""
 
-    list_display = ("name", "domain", "created_on", "updated_on")
-    search_fields = ("name", "domain")
+    list_display = ("id", "name", "domain", "created_on", "updated_on")
+    search_fields = ("id", "name", "domain")
     inlines = [ConsumerSiteUsersInline, ConsumerSiteOrganizationsInline]
 
 
@@ -169,11 +169,11 @@ class SignTrackInline(admin.TabularInline):
 class VideoAdmin(admin.ModelAdmin):
     """Admin class for the Video model."""
 
-    list_display = ("title", "created_by")
     exclude = ("duplicated_from",)
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
 
     list_display = (
+        "id",
         "title",
         link_field("playlist"),
         "lti_id",
@@ -183,6 +183,7 @@ class VideoAdmin(admin.ModelAdmin):
         "created_on",
     )
     fields = (
+        "id",
         "title",
         "description",
         "playlist",
@@ -195,6 +196,7 @@ class VideoAdmin(admin.ModelAdmin):
         "created_on",
     )
     readonly_fields = [
+        "id",
         "created_by",
         "created_on",
         "duplicated_from",
@@ -204,9 +206,11 @@ class VideoAdmin(admin.ModelAdmin):
     ]
     list_filter = ("upload_state", "playlist__consumer_site__domain")
     search_fields = (
+        "id",
         "lti_id",
         "playlist__consumer_site__domain",
         "playlist__consumer_site__name",
+        "playlist__id",
         "playlist__lti_id",
         "playlist__title",
         "playlist__organization__name",
@@ -223,6 +227,7 @@ class VideosInline(admin.TabularInline):
     verbose_name_plural = _("videos")
 
     fields = (
+        "id",
         "title",
         "playlist",
         "lti_id",
@@ -232,6 +237,7 @@ class VideosInline(admin.TabularInline):
         "created_on",
     )
     readonly_fields = [
+        "id",
         "created_by",
         "created_on",
         "duplicated_from",
@@ -253,11 +259,11 @@ class PlaylistAccessesInline(admin.TabularInline):
 class PlaylistAdmin(admin.ModelAdmin):
     """Admin class for the Playlist model."""
 
-    list_display = ("title", "organization", "created_by", "is_public")
     exclude = ("duplicated_from",)
     inlines = [VideosInline, PlaylistAccessesInline]
 
     list_display = (
+        "id",
         "title",
         link_field("organization"),
         link_field("consumer_site"),
@@ -269,6 +275,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "created_on",
     )
     fields = (
+        "id",
         "title",
         "organization",
         "consumer_site",
@@ -281,7 +288,13 @@ class PlaylistAdmin(admin.ModelAdmin):
         "updated_on",
         "created_on",
     )
-    readonly_fields = ["created_by", "created_on", "duplicated_from", "updated_on"]
+    readonly_fields = [
+        "id",
+        "created_by",
+        "created_on",
+        "duplicated_from",
+        "updated_on",
+    ]
     list_filter = (
         "consumer_site__domain",
         "is_public",
@@ -289,6 +302,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "is_portable_to_consumer_site",
     )
     search_fields = (
+        "id",
         "consumer_site__domain",
         "consumer_site__name",
         "organization__name",
