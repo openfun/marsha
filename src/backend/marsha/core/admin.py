@@ -200,6 +200,7 @@ class VideoAdmin(admin.ModelAdmin):
         "updated_on",
         "created_on",
     )
+    list_select_related = ("playlist__consumer_site",)
     fields = (
         "id",
         "title",
@@ -292,6 +293,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "updated_on",
         "created_on",
     )
+    list_select_related = ("consumer_site", "organization")
     fields = (
         "id",
         "title",
@@ -342,6 +344,7 @@ class LTIPassportAdmin(admin.ModelAdmin):
         "updated_on",
         "created_on",
     )
+    list_select_related = ("consumer_site", "playlist")
     fields = (
         "oauth_consumer_key",
         "shared_secret",
