@@ -498,15 +498,22 @@ jobs:
           name: Tag images
           command: |
             docker images fundocker/marsha
-            DOCKER_TAG=$(echo ${CIRCLE_TAG} | sed 's/^v//')
-            echo "DOCKER_TAG: ${DOCKER_TAG} (from Git tag: ${CIRCLE_TAG})"
-            docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:latest
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:${DOCKER_TAG}
             docker tag marsha:${CIRCLE_SHA1}-dev fundocker/marsha:${DOCKER_TAG}-dev
-            docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:alpine
             docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:${DOCKER_TAG}-alpine
             docker tag marsha:${CIRCLE_SHA1}-alpine-dev fundocker/marsha:${DOCKER_TAG}-alpine-dev
-            docker images "fundocker/marsha:${DOCKER_TAG}*"
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:latest
+              docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:alpine
+            fi
+            docker images | grep -E "^fundocker/marsha\s*(${DOCKER_TAG}.*|latest|alpine|master|master-alpine)"
 
       # Publish images to DockerHub
       #
@@ -516,14 +523,21 @@ jobs:
       - run:
           name: Publish images
           command: |
-            DOCKER_TAG=$(echo ${CIRCLE_TAG} | sed 's/^v//')
-            echo "DOCKER_TAG: ${DOCKER_TAG} (from Git tag: ${CIRCLE_TAG})"
-            docker push fundocker/marsha:latest
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker push fundocker/marsha:${DOCKER_TAG}
             docker push fundocker/marsha:${DOCKER_TAG}-dev
-            docker push fundocker/marsha:alpine
             docker push fundocker/marsha:${DOCKER_TAG}-alpine
             docker push fundocker/marsha:${DOCKER_TAG}-alpine-dev
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              docker push fundocker/marsha:latest
+              docker push fundocker/marsha:alpine
+            fi
 
 workflows:
   version: 2
@@ -647,6 +661,6 @@ workflows:
             - test-alpine
           filters:
             branches:
-              ignore: /.*/
+              only: master
             tags:
               only: /^v.*/
