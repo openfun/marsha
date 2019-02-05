@@ -506,9 +506,7 @@ jobs:
             # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
             echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:${DOCKER_TAG}
-            docker tag marsha:${CIRCLE_SHA1}-dev fundocker/marsha:${DOCKER_TAG}-dev
             docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:${DOCKER_TAG}-alpine
-            docker tag marsha:${CIRCLE_SHA1}-alpine-dev fundocker/marsha:${DOCKER_TAG}-alpine-dev
             if [[ -n "$CIRCLE_TAG" ]]; then
               docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:latest
               docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:alpine
@@ -531,9 +529,7 @@ jobs:
             # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
             echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker push fundocker/marsha:${DOCKER_TAG}
-            docker push fundocker/marsha:${DOCKER_TAG}-dev
             docker push fundocker/marsha:${DOCKER_TAG}-alpine
-            docker push fundocker/marsha:${DOCKER_TAG}-alpine-dev
             if [[ -n "$CIRCLE_TAG" ]]; then
               docker push fundocker/marsha:latest
               docker push fundocker/marsha:alpine
