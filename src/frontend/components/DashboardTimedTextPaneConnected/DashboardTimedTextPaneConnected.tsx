@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 
 import { getResourceList } from '../../data/genericReducers/resourceList/actions';
 import { RootState } from '../../data/rootReducer';
+import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { ConsumableQuery } from '../../types/api';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
@@ -15,19 +16,7 @@ import { DashboardTimedTextPane } from '../DashboardTimedTextPane/DashboardTimed
  */
 export const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
-  timedtexttracks: state.resources[modelName.TIMEDTEXTTRACKS].currentQuery
-    ? {
-        objects: Object.values(
-          state.resources[modelName.TIMEDTEXTTRACKS].currentQuery!.items,
-        )
-          .map(key => state.resources[modelName.TIMEDTEXTTRACKS].byId[key])
-          .filter(item => !!item) as TimedText[],
-        status: state.resources[modelName.TIMEDTEXTTRACKS].currentQuery!.status,
-      }
-    : {
-        objects: [],
-        status: null,
-      },
+  timedtexttracks: getTimedTextTracks(state),
 });
 
 /** Create a function that adds a bunch of timedtexttracks in the store. */
