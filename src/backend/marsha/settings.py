@@ -125,17 +125,6 @@ class Base(Configuration):
         )
     }
 
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "handlers": {
-            "console": {"class": "logging.StreamHandler", "stream": "ext://sys.stdout"}
-        },
-        "loggers": {
-            "marsha": {"handlers": ["console"], "level": "INFO", "propagate": True}
-        },
-    }
-
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
     AUTH_PASSWORD_VALIDATORS = [
@@ -172,7 +161,21 @@ class Base(Configuration):
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
     # Logging
-    LOGGING = values.DictValue({"version": 1})
+    LOGGING = values.DictValue(
+        {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                }
+            },
+            "loggers": {
+                "marsha": {"handlers": ["console"], "level": "INFO", "propagate": True}
+            },
+        }
+    )
 
     # AWS
     AWS_ACCESS_KEY_ID = values.SecretValue()
@@ -243,16 +246,21 @@ class Development(Base):
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
 
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "handlers": {
-            "console": {"class": "logging.StreamHandler", "stream": "ext://sys.stdout"}
-        },
-        "loggers": {
-            "marsha": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
-        },
-    }
+    LOGGING = values.DictValue(
+        {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                }
+            },
+            "loggers": {
+                "marsha": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+            },
+        }
+    )
 
 
 class Test(Base):
