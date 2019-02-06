@@ -9,7 +9,12 @@ import {
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
-  const player = new Plyr(ref, { debug: true });
+  const player = new Plyr(ref, {
+    captions: {
+      active: true,
+      update: true,
+    },
+  });
   const decodedToken: DecodedJwt = jwt_decode(jwt);
 
   const xapiStatement = new XAPIStatement(jwt, decodedToken.session_id);
