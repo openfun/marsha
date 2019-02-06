@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.1] - 2019-02-06
+
 ### Added
 
 - Enable redux devtools
@@ -140,7 +142,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.2.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.2.1...master
+[2.2.1]: https://github.com/openfun/marsha/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/openfun/marsha/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/openfun/marsha/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/openfun/marsha/compare/v2.0.0...v2.0.1
