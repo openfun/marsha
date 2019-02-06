@@ -37,8 +37,8 @@ WORKDIR /app
 
 COPY ./src/frontend /app/
 
-RUN yarn install && \
-    yarn build -o marsha/static/js/index.js
+RUN yarn install --frozen-lockfile && \
+    yarn build --mode=production -o marsha/static/js/index.js
 
 # ---- final application image ----
 FROM base
