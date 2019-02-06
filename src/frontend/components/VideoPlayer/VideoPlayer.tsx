@@ -1,19 +1,27 @@
+import { MediaPlayer } from 'dashjs';
 import 'plyr/dist/plyr.css';
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import shaka from 'shaka-player';
 
 import { createPlayer } from '../../Player/createPlayer';
-import { Video, videoSize } from '../../types/tracks';
+import { ConsumableQuery } from '../../types/api';
+import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
 import { Maybe, Nullable } from '../../utils/types';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import './VideoPlayer.css'; // Improve some plyr styles
 
+const trackTextKind: { [key in timedTextMode]?: string } = {
+  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
+  [timedTextMode.SUBTITLE]: 'subtitles',
+};
+
 export interface VideoPlayerProps {
-  jwt: Nullable<string>;
+  getTimedTextTrackList: () => void;
+  jwt: string;
   video: Nullable<Video>;
   createPlayer: typeof createPlayer;
+  timedtexttracks: ConsumableQuery<TimedText>;
 }
 
 interface VideoPlayerState {
@@ -37,31 +45,20 @@ export class VideoPlayer extends React.Component<
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
   componentDidMount() {
-    const { video, jwt } = this.props;
+    const { video, jwt, getTimedTextTrackList } = this.props;
 
-    if (video && jwt) {
+    if (video) {
+      getTimedTextTrackList();
       // Instantiate Plyr and keep the instance in state
       this.setState({
         player: this.props.createPlayer('plyr', this.videoNodeRef!, jwt),
       });
 
-      // Use Shaka Player to stream using DASH ISO if the browser supports it
-      // Otherwise we'll fall back to HLS/MP4 as described in the <sources> of the <video> element
-      if (shaka.Player.isBrowserSupported()) {
-        // Install any necessary polyfills from the shaka package
-        shaka.polyfill.installAll();
-        // Instantiate the player, passing our <video> element
-        const shakaInstance = new shaka.Player(this.videoNodeRef!);
-        shakaInstance.configure({
-          abr: {
-            // Set a more sensible default bandwidth
-            // This lets us start with 480p instead of 144p with the default value
-            defaultBandwidthEstimate: 1600000,
-          },
-        });
-        // Pass our DASH manifest to Shaka
-        shakaInstance.load(video.urls.manifests.dash);
-      }
+      // defaultBandwidthEstimate: 1600000,
+
+      const dash = MediaPlayer().create();
+      dash.initialize(this.videoNodeRef!, video.urls.manifests.dash, false);
+      dash.setInitialBitrateFor('video', 1600000);
     }
   }
 
@@ -75,10 +72,10 @@ export class VideoPlayer extends React.Component<
   }
 
   render() {
-    const { video, jwt } = this.props;
+    const { video, timedtexttracks } = this.props;
 
     // The video is somehow missing and jwt must be set
-    if (!video || !jwt) {
+    if (!video) {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
@@ -97,6 +94,23 @@ export class VideoPlayer extends React.Component<
             type="video/mp4"
           />
         ))}
+
+        {timedtexttracks.objects
+          .filter(track => track.is_ready_to_play)
+          .filter(track =>
+            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+              track.mode,
+            ),
+          )
+          .map(track => (
+            <track
+              key={track.id}
+              src={track.url}
+              srcLang={track.language}
+              kind={trackTextKind[track.mode]}
+              label={track.language}
+            />
+          ))}
       </video>
     );
   }
