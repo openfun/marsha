@@ -44,7 +44,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: 'output timed text',
       Bucket: 'destination bucket',
-      Key: 'some key',
+      Key: 'some key.vtt',
     });
     expect(mockSubsrt.convert).toHaveBeenCalledWith('input timed text', {
       format: 'vtt',
