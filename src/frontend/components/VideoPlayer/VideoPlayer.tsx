@@ -1,19 +1,29 @@
+import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import shaka from 'shaka-player';
 
 import { createPlayer } from '../../Player/createPlayer';
-import { Video, videoSize } from '../../types/tracks';
+import { ConsumableQuery, requestStatus } from '../../types/api';
+import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
 import { Maybe, Nullable } from '../../utils/types';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { Spinner } from '../Spinner/Spinner';
 import './VideoPlayer.css'; // Improve some plyr styles
 
+const trackTextKind: { [key in timedTextMode]?: string } = {
+  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
+  [timedTextMode.SUBTITLE]: 'subtitles',
+};
+
 export interface VideoPlayerProps {
-  jwt: Nullable<string>;
+  getTimedTextTrackList: () => void;
+  jwt: string;
   video: Nullable<Video>;
   createPlayer: typeof createPlayer;
+  timedtexttracks: ConsumableQuery<TimedText>;
 }
 
 interface VideoPlayerState {
@@ -37,9 +47,17 @@ export class VideoPlayer extends React.Component<
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
   componentDidMount() {
-    const { video, jwt } = this.props;
+    this.props.getTimedTextTrackList();
+  }
 
-    if (video && jwt) {
+  componentDidUpdate() {
+    const { video, jwt, timedtexttracks } = this.props;
+
+    if (
+      video &&
+      timedtexttracks.status === requestStatus.SUCCESS &&
+      undefined === this.state.player
+    ) {
       // Instantiate Plyr and keep the instance in state
       this.setState({
         player: this.props.createPlayer('plyr', this.videoNodeRef!, jwt),
@@ -75,11 +93,19 @@ export class VideoPlayer extends React.Component<
   }
 
   render() {
-    const { video, jwt } = this.props;
+    const { video, timedtexttracks } = this.props;
 
     // The video is somehow missing and jwt must be set
-    if (!video || !jwt) {
+    if (!video) {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    }
+
+    if (timedtexttracks.status === requestStatus.PENDING) {
+      return (
+        <Box align="center">
+          <Spinner />
+        </Box>
+      );
     }
 
     return (
@@ -97,6 +123,23 @@ export class VideoPlayer extends React.Component<
             type="video/mp4"
           />
         ))}
+
+        {timedtexttracks.objects
+          .filter(track => track.is_ready_to_play)
+          .filter(track =>
+            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+              track.mode,
+            ),
+          )
+          .map(track => (
+            <track
+              key={track.id}
+              src={track.url}
+              srcLang={track.language}
+              kind={trackTextKind[track.mode]}
+              label={track.language}
+            />
+          ))}
       </video>
     );
   }
