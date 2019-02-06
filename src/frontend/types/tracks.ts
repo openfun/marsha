@@ -45,7 +45,6 @@ export interface TimedText extends Resource {
   is_ready_to_play: boolean;
   language: string;
   mode: timedTextMode;
-  uploaded_on: string;
   upload_state: uploadState;
   url: string;
   video: Video;
