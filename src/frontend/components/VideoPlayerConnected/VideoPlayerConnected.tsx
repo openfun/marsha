@@ -1,8 +1,14 @@
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
+import { getResourceList } from '../../data/genericReducers/resourceList/actions';
 import { RootState } from '../../data/rootReducer';
+import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
+import { ConsumableQuery } from '../../types/api';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
+import { TimedText, Video } from '../../types/tracks';
+import { Nullable } from '../../utils/types';
 import { VideoPlayer, VideoPlayerProps } from '../VideoPlayer/VideoPlayer';
 
 type VideoPlayerConnectedProps = Pick<
@@ -19,14 +25,41 @@ export const mapStateToProps = (
   { video }: VideoPlayerConnectedProps,
 ) => ({
   jwt: state.context.jwt,
+  timedtexttracks: getTimedTextTracks(state),
   video:
     (state.resources[modelName.VIDEOS]!.byId &&
       state.resources[modelName.VIDEOS]!.byId[(video && video.id) || '']) ||
     video,
 });
 
+/** Create a function that triggers a get to the API for the timedtexttracks. */
+const mergeProps = (
+  {
+    jwt,
+    timedtexttracks,
+    video,
+  }: {
+    jwt: string;
+    timedtexttracks: ConsumableQuery<TimedText>;
+    video: Nullable<Video>;
+  },
+  { dispatch }: { dispatch: Dispatch },
+  { createPlayer }: VideoPlayerConnectedProps,
+) => ({
+  createPlayer,
+  getTimedTextTrackList: () =>
+    dispatch(getResourceList(jwt, modelName.TIMEDTEXTTRACKS)),
+  jwt,
+  timedtexttracks,
+  video,
+});
+
 /**
  * Component. Displays a player to show the video from context.
  * @param video The video to show.
  */
-export const VideoPlayerConnected = connect(mapStateToProps)(VideoPlayer);
+export const VideoPlayerConnected = connect(
+  mapStateToProps,
+  null!,
+  mergeProps,
+)(VideoPlayer);
