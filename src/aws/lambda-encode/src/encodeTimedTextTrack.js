@@ -35,7 +35,7 @@ module.exports = async (objectKey, sourceBucket) => {
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr
       // 👆 becomes 👇
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtext/1542967735_fr
-      Key: objectKey.replace(/\/timedtexttrack\/.*\//, '/timedtext/'),
+      Key: `${objectKey.replace(/\/timedtexttrack\/.*\//, '/timedtext/')}.vtt`,
     })
     .promise();
 };
