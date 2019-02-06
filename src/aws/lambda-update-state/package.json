@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-update-state",
-  "version": "0.0.1",
+  "version": "2.2.1",
   "engines": {
     "node": ">8.10"
   },
