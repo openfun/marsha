@@ -259,7 +259,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "yarn.lock" }}
             - v3-front-dependencies-
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
@@ -272,7 +272,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-front-dependencies-{{ checksum "package.json" }}
+          key: v3-front-dependencies-{{ checksum "yarn.lock" }}
 
   lint-front-tslint:
     docker:
@@ -283,7 +283,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -297,7 +297,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with prettier
           command: yarn prettier
@@ -311,7 +311,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "package.json" }}
+            - v3-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Run tests
           command: yarn test -w 1
@@ -328,7 +328,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
+            - v3-lambdas-configure-dependencies-{{ checksum "yarn.lock" }}
             - v3-lambdas-configure-dependencies-
       - run:
           name: Install configure lambda dependencies
@@ -339,7 +339,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-configure-dependencies-{{ checksum "package.json" }}
+          key: v3-lambdas-configure-dependencies-{{ checksum "yarn.lock" }}
 
   test-lambda-encode:
     docker:
@@ -352,7 +352,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-encode-dependencies-{{ checksum "package.json" }}
+            - v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
             - v3-lambdas-encode-dependencies-
       - run:
           name: Install encode lambda dependencies
@@ -363,7 +363,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-encode-dependencies-{{ checksum "package.json" }}
+          key: v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
 
   test-lambda-update-state:
     docker:
@@ -376,7 +376,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-update-state-dependencies-{{ checksum "package.json" }}
+            - v3-lambdas-update-state-dependencies-{{ checksum "yarn.lock" }}
             - v3-lambdas-update-state-dependencies-
       - run:
           name: Install update-state lambda dependencies
@@ -387,7 +387,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-update-state-dependencies-{{ checksum "package.json" }}
+          key: v3-lambdas-update-state-dependencies-{{ checksum "yarn.lock" }}
 
   # ---- Alpine jobs ----
   build-alpine:
