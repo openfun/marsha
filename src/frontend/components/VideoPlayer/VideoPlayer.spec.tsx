@@ -2,18 +2,25 @@ import '../../testSetup';
 
 import { mount, shallow } from 'enzyme';
 import * as React from 'react';
-import shaka from 'shaka-player';
 
-import { Video } from '../../types/tracks';
+import { requestStatus } from '../../types/api';
+import { timedTextMode, uploadState, Video } from '../../types/tracks';
 import { VideoPlayer } from './VideoPlayer';
-
-const mockShakaPlayer: jest.Mocked<typeof shaka.Player> = shaka.Player as any;
-const mockShakaPolyfill: jest.Mocked<
-  typeof shaka.polyfill
-> = shaka.polyfill as any;
 
 const createPlayer = jest.fn(() => ({
   destroy: jest.fn(),
+}));
+
+const mockInitialize = jest.fn();
+const mockSetInitialBitrateFor = jest.fn();
+
+jest.mock('dashjs', () => ({
+  MediaPlayer: () => ({
+    create: () => ({
+      initialize: mockInitialize,
+      setInitialBitrateFor: mockSetInitialBitrateFor,
+    }),
+  }),
 }));
 
 describe('VideoPlayer', () => {
@@ -37,23 +44,77 @@ describe('VideoPlayer', () => {
 
   const props = {
     createPlayer,
+    getTimedTextTrackList: jest.fn(),
     jwt: 'foo',
+    timedtexttracks: {
+      objects: [
+        {
+          active_stamp: 1549385921,
+          id: 'ttt-1',
+          is_ready_to_play: true,
+          language: 'fr',
+          mode: timedTextMode.SUBTITLE,
+          upload_state: uploadState.READY,
+          url: 'https://example.com//timedtext/ttt-1.vtt',
+          video,
+        },
+        {
+          active_stamp: 1549385922,
+          id: 'ttt-2',
+          is_ready_to_play: false,
+          language: 'fr',
+          mode: timedTextMode.SUBTITLE,
+          upload_state: uploadState.READY,
+          url: 'https://example.com//timedtext/ttt-2.vtt',
+          video,
+        },
+        {
+          active_stamp: 1549385923,
+          id: 'ttt-3',
+          is_ready_to_play: true,
+          language: 'fr',
+          mode: timedTextMode.CLOSED_CAPTIONING,
+          upload_state: uploadState.READY,
+          url: 'https://example.com//timedtext/ttt-3.vtt',
+          video,
+        },
+        {
+          active_stamp: 1549385924,
+          id: 'ttt-4',
+          is_ready_to_play: true,
+          language: 'fr',
+          mode: timedTextMode.TRANSCRIPT,
+          upload_state: uploadState.READY,
+          url: 'https://example.com//timedtext/ttt-4.vtt',
+          video,
+        },
+      ],
+      status: requestStatus.SUCCESS,
+    },
     video,
   };
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(jest.clearAllMocks);
 
   it('renders the video element with all the relevant sources', () => {
     const wrapper = shallow(<VideoPlayer {...props} />);
+    const content = wrapper.html();
 
-    expect(wrapper.html()).toContain(
+    expect(content).toContain(
       '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL"/>',
     );
-    expect(wrapper.html()).toContain(
+    expect(content).toContain(
       '<source size="144" src="https://example.com/144p.mp4" type="video/mp4"/>',
     );
-    expect(wrapper.html()).toContain(
+    expect(content).toContain(
       '<source size="1080" src="https://example.com/1080p.mp4" type="video/mp4"/>',
+    );
+
+    expect(content).toContain(
+      '<track src="https://example.com//timedtext/ttt-1.vtt" srcLang="fr" kind="subtitles" label="fr"/>',
+    );
+    expect(content).toContain(
+      '<track src="https://example.com//timedtext/ttt-3.vtt" srcLang="fr" kind="captions" label="fr"/>',
     );
   });
 
@@ -65,6 +126,13 @@ describe('VideoPlayer', () => {
       expect.any(Element),
       'foo',
     );
+    expect(props.getTimedTextTrackList).toHaveBeenCalledTimes(1);
+    expect(mockInitialize).toHaveBeenCalledWith(
+      expect.any(Element),
+      'https://example.com/dash.mpd',
+      false,
+    );
+    expect(mockSetInitialBitrateFor).toHaveBeenCalledWith('video', 1600000);
   });
 
   it('cleans up the player when it unmounts', () => {
@@ -73,32 +141,5 @@ describe('VideoPlayer', () => {
     ).instance() as VideoPlayer;
     instance.componentWillUnmount();
     expect(instance.state.player!.destroy).toHaveBeenCalled();
-  });
-
-  describe('in an EME enabled environment', () => {
-    beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(true));
-
-    it('instantiates shaka Player and loads our dash manifest', () => {
-      mount(<VideoPlayer {...props} />);
-
-      expect(mockShakaPlayer.prototype.constructor).toHaveBeenCalledWith(
-        expect.any(HTMLMediaElement),
-      );
-      expect(mockShakaPolyfill.installAll).toHaveBeenCalled();
-      expect(mockShakaPlayer.prototype.configure).toHaveBeenCalled();
-      expect(mockShakaPlayer.prototype.load).toHaveBeenCalledWith(
-        'https://example.com/dash.mpd',
-      );
-    });
-  });
-
-  describe('in an environment without EME', () => {
-    beforeEach(() => mockShakaPlayer.isBrowserSupported.mockReturnValue(false));
-
-    it('never instantiates shaka', () => {
-      mount(<VideoPlayer {...props} />); // Mount so videojs is called with an element
-      expect(mockShakaPlayer.prototype.constructor).not.toHaveBeenCalled();
-      expect(mockShakaPlayer.prototype.load).not.toHaveBeenCalled();
-    });
   });
 });
