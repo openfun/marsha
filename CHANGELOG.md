@@ -10,7 +10,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- enable redux devtools
+- Enable redux devtools
+
+### Fixed
+
+- Run `webpack` in production mode for builds that will be deployed; shaves 75+% on the bundle size
 
 ## [2.2.0] - 2019-02-05
 
