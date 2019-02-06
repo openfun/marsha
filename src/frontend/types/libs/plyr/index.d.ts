@@ -537,7 +537,9 @@ declare namespace Plyr {
   }
 
   export interface CaptionOptions {
-    defaultActive?: boolean;
+    active?: boolean;
+    update?: boolean;
+    language?: string;
   }
 
   export interface StorageOptions {
