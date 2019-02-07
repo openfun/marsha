@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "baseUrl": ".",
     "jsx": "preserve",
@@ -16,8 +17,7 @@
     "module": "es6",
     "moduleResolution": "node",
     "paths": {
-      "plyr": ["types/libs/plyr"],
-      "shaka-player": ["types/libs/shaka-player"]
+      "plyr": ["types/libs/plyr"]
     },
     "strict": true,
     "sourceMap": true,

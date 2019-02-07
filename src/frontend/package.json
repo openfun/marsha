@@ -58,6 +58,7 @@
     "webpack-cli": "3.2.1"
   },
   "dependencies": {
+    "dashjs": "2.9.2",
     "grommet": "2.3.1",
     "iframe-resizer": "3.6.4",
     "jwt-decode": "2.2.0",
