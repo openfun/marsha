@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Replace shaka-player by dashjs.
+- Play timed text tracks in player.
+
 ## [2.2.1] - 2019-02-06
 
 ### Added
