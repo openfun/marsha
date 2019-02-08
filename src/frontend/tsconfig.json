@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
     "esModuleInterop": true,
     "baseUrl": ".",
     "jsx": "preserve",
@@ -17,7 +16,8 @@
     "module": "es6",
     "moduleResolution": "node",
     "paths": {
-      "plyr": ["types/libs/plyr"]
+      "plyr": ["types/libs/plyr"],
+      "dashjs": ["types/libs/dashjs"]
     },
     "strict": true,
     "sourceMap": true,
