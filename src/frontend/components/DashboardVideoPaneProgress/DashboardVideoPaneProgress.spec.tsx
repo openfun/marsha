@@ -1,10 +1,12 @@
 import '../../testSetup';
 
 import { shallow } from 'enzyme';
-import { Meter } from 'grommet';
 import React from 'react';
 
-import { DashboardVideoPaneProgress } from './DashboardVideoPaneProgress';
+import {
+  DashboardVideoPaneProgress,
+  StyledMeter,
+} from './DashboardVideoPaneProgress';
 
 describe('<DashboardVideoPaneProgress />', () => {
   it('renders and displays the current progress', () => {
@@ -12,7 +14,7 @@ describe('<DashboardVideoPaneProgress />', () => {
     expect(
       wrapper
         .dive()
-        .find(Meter)
+        .find(StyledMeter)
         .prop('values'),
     ).toEqual([{ color: 'brand', label: '51%', value: 51 }]);
     expect(

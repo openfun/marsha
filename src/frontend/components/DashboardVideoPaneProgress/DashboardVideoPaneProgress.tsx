@@ -1,6 +1,7 @@
 import { Box, Meter, MeterProps, Text } from 'grommet';
 import React from 'react';
 import { defineMessages, InjectedIntlProps, injectIntl } from 'react-intl';
+import styled from 'styled-components';
 
 const messages = defineMessages({
   progressLabel: {
@@ -9,6 +10,10 @@ const messages = defineMessages({
     id: 'components.DashboardVideoPaneProgress.progressLabel',
   },
 });
+
+export const StyledMeter = styled(Meter)`
+  width: 80%;
+`;
 
 interface DashboardVideoPaneProgressProps {
   progress: number;
@@ -30,10 +35,9 @@ export const DashboardVideoPaneProgress = injectIntl(
         justify={'between'}
         margin={{ bottom: 'small', top: 'small' }}
       >
-        <Meter
+        <StyledMeter
           a11yTitle={intl.formatMessage(messages.progressLabel)}
           values={values as any}
-          width={'80%'}
         />
         <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
       </Box>
