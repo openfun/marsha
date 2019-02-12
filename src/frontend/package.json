@@ -77,7 +77,8 @@
     "reselect": "4.0.0",
     "styled-components": "4.0.3",
     "styled-reboot": "3.0.2",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "vtt.js": "0.13.0"
   },
   "resolutions": {
     "@types/react": "16.8.2",
