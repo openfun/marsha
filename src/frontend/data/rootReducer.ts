@@ -4,6 +4,7 @@ import { Resource } from '../types/tracks';
 import { context, ContextState } from './context/reducer';
 import { byIdActions } from './genericReducers/resourceById/resourceById';
 import { currentQueryActions } from './genericReducers/resourceList/resourceList';
+import { player, PlayerState } from './player/reducer';
 import {
   timedTextTrackLanguageChoices,
   TimedTextTrackLanguageChoicesState,
@@ -21,6 +22,7 @@ export type actionTypes<R extends Resource = Resource> =
 export interface RootState<state extends appState> {
   context: ContextState<state>;
   languageChoices: TimedTextTrackLanguageChoicesState;
+  player: PlayerState;
   resources: {
     [modelName.TIMEDTEXTTRACKS]: TimedTextTracksState;
     [modelName.VIDEOS]: VideosState;
@@ -36,6 +38,7 @@ export const rootReducer = (
     (state && state.languageChoices) || undefined,
     action,
   ),
+  player: player(state!.player, action),
   resources: {
     [modelName.TIMEDTEXTTRACKS]: timedtexttracks(
       (state && state.resources[modelName.TIMEDTEXTTRACKS]) || undefined,
