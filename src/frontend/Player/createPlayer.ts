@@ -1,3 +1,5 @@
+import { Dispatch } from 'redux';
+
 import {
   VideoPlayerInterface,
   VideoPlayerType,
@@ -8,9 +10,10 @@ export const createPlayer = (
   type: VideoPlayerType,
   ref: HTMLVideoElement,
   jwt: string,
+  dispatch: Dispatch,
 ): VideoPlayerInterface => {
   switch (type) {
     case 'plyr':
-      return createPlyrPlayer(ref, jwt);
+      return createPlyrPlayer(ref, jwt, dispatch);
   }
 };

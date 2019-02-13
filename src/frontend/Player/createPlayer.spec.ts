@@ -7,9 +7,10 @@ describe('createPlayer', () => {
   it('creates a plyr instance when type player is plyr', () => {
     const jwt = 'foo';
     const ref = 'ref' as any;
+    const dispatch = jest.fn();
 
-    createPlayer('plyr', ref, jwt);
+    createPlayer('plyr', ref, jwt, dispatch);
 
-    expect(createPlyrPlayer).toHaveBeenCalledWith(ref, jwt);
+    expect(createPlyrPlayer).toHaveBeenCalledWith(ref, jwt, dispatch);
   });
 });

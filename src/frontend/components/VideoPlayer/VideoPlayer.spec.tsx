@@ -24,6 +24,10 @@ jest.mock('dashjs', () => ({
   }),
 }));
 
+jest.mock('../TranscriptsConnected/TranscriptsConnected', () => ({
+  TranscriptsConnected: () => <div>TranscriptsConnected</div>,
+}));
+
 describe('VideoPlayer', () => {
   const video = {
     description: 'Some description',
@@ -46,8 +50,11 @@ describe('VideoPlayer', () => {
     },
   } as Video;
 
+  const dispatch = jest.fn();
+
   const props = {
     createPlayer,
+    dispatch,
     getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
     jwt: 'foo',
     languageChoices: [{ label: 'French', value: 'fr' }],
@@ -132,6 +139,7 @@ describe('VideoPlayer', () => {
       'plyr',
       expect.any(Element),
       'foo',
+      dispatch,
     );
 
     expect(mockInitialize).toHaveBeenCalledWith(
