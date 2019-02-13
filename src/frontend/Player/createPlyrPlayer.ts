@@ -1,14 +1,20 @@
 import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
+import { Dispatch } from 'redux';
 
-import { DecodedJwt } from 'types/jwt';
+import { notifyPlayerTimeUpdate } from '../data/player/actions';
+import { DecodedJwt } from '../types/jwt';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from '../types/XAPI';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
-export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
+export const createPlyrPlayer = (
+  ref: HTMLVideoElement,
+  jwt: string,
+  dispatch: Dispatch,
+): Plyr => {
   const player = new Plyr(ref, {
     captions: {
       active: true,
@@ -130,6 +136,12 @@ export const createPlyrPlayer = (ref: HTMLVideoElement, jwt: string): Plyr => {
   player.on('ratechange', event => interacted(event));
   player.on('volumechange', event => interacted(event));
   /**************** End interacted event *************************/
+
+  /**************** Dispatch time updated ************************/
+  player.on('timeupdate', event => {
+    dispatch(notifyPlayerTimeUpdate(event.detail.plyr.currentTime));
+  });
+  /**************** End dispatch time updated *********************/
 
   return player;
 };

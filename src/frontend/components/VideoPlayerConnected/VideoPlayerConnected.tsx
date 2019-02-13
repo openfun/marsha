@@ -31,6 +31,7 @@ export const mapStateToProps = (
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch,
   getTimedTextTrackLanguageChoices: (jwt: string) =>
     dispatch(getTimedTextTrackLanguageChoices(jwt)),
 });
