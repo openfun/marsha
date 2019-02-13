@@ -50,6 +50,10 @@ export interface TimedText extends Resource {
   video: Video;
 }
 
+export interface TimedTextTranscript extends TimedText {
+  mode: timedTextMode.TRANSCRIPT;
+}
+
 /** Possible sizes for a video file or stream. Used as keys in lists of files. */
 export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
