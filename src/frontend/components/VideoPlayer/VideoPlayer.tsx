@@ -17,7 +17,6 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 };
 
 export interface VideoPlayerProps {
-  getTimedTextTrackList: () => void;
   jwt: string;
   video: Nullable<Video>;
   createPlayer: typeof createPlayer;
@@ -45,16 +44,13 @@ export class VideoPlayer extends React.Component<
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
   componentDidMount() {
-    const { video, jwt, getTimedTextTrackList } = this.props;
+    const { video, jwt } = this.props;
 
     if (video) {
-      getTimedTextTrackList();
       // Instantiate Plyr and keep the instance in state
       this.setState({
         player: this.props.createPlayer('plyr', this.videoNodeRef!, jwt),
       });
-
-      // defaultBandwidthEstimate: 1600000,
 
       const dash = MediaPlayer().create();
       dash.initialize(this.videoNodeRef!, video.urls.manifests.dash, false);
@@ -95,22 +91,27 @@ export class VideoPlayer extends React.Component<
           />
         ))}
 
-        {timedtexttracks.objects
-          .filter(track => track.is_ready_to_play)
-          .filter(track =>
-            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
-              track.mode,
-            ),
-          )
-          .map(track => (
-            <track
-              key={track.id}
-              src={track.url}
-              srcLang={track.language}
-              kind={trackTextKind[track.mode]}
-              label={track.language}
-            />
-          ))}
+        {/* This is a workaround to force plyr to load its tracks list once
+        instantiated. Without this, captions are not loaded correctly, at least, on firefox.
+        */}
+        {this.state.player &&
+          timedtexttracks.objects
+            .filter(track => track.is_ready_to_play)
+            .filter(track =>
+              [
+                timedTextMode.CLOSED_CAPTIONING,
+                timedTextMode.SUBTITLE,
+              ].includes(track.mode),
+            )
+            .map(track => (
+              <track
+                key={track.id}
+                src={track.url}
+                srcLang={track.language}
+                kind={trackTextKind[track.mode]}
+                label={track.language}
+              />
+            ))}
       </video>
     );
   }

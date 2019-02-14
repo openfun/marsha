@@ -44,7 +44,6 @@ describe('VideoPlayer', () => {
 
   const props = {
     createPlayer,
-    getTimedTextTrackList: jest.fn(),
     jwt: 'foo',
     timedtexttracks: {
       objects: [
@@ -126,7 +125,7 @@ describe('VideoPlayer', () => {
       expect.any(Element),
       'foo',
     );
-    expect(props.getTimedTextTrackList).toHaveBeenCalledTimes(1);
+
     expect(mockInitialize).toHaveBeenCalledWith(
       expect.any(Element),
       'https://example.com/dash.mpd',
