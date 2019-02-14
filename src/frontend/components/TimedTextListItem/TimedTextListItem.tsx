@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
 import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
+import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
-import { TimedText } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
+import { TimedText, uploadState } from '../../types/tracks';
 import { ActionLink } from '../ActionLink/ActionLink';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
@@ -49,13 +50,15 @@ const UploadStatusPickerStyled = styled(UploadStatusPicker)`
 /** Props shape for the TimedTextListItem component. */
 interface TimedTextListItemProps {
   deleteTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
-  jwt: Nullable<string>;
+  updateTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
+  jwt: string;
   track: TimedText;
 }
 
 /** State shape for the TimedTextListItem component. */
 interface TimedTextListItemState {
   languageMap: { [key: string]: string };
+  error?: boolean;
 }
 
 /**
@@ -85,6 +88,36 @@ export class TimedTextListItem extends React.Component<
         {},
       ),
     });
+
+    if (this.props.track.is_ready_to_play === false) {
+      window.setTimeout(() => this.pollForTTT(), 1000 * 10);
+    }
+  }
+
+  async pollForTTT(timer: number = 15, counter: number = 1) {
+    try {
+      const { track, jwt, updateTimedTextTrackRecord } = this.props;
+      const response = await fetch(
+        `${API_ENDPOINT}/timedtexttracks/${track.id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        },
+      );
+
+      const incomingTrack: TimedText = await response.json();
+
+      if (incomingTrack.is_ready_to_play) {
+        updateTimedTextTrackRecord(incomingTrack);
+      } else if (counter < 20) {
+        counter++;
+        timer = timer * counter;
+        window.setTimeout(() => this.pollForTTT(timer, counter), 1000 * timer);
+      }
+    } catch (error) {
+      this.setState({ error: true });
+    }
   }
 
   async deleteTimedTextTrack() {
@@ -93,6 +126,10 @@ export class TimedTextListItem extends React.Component<
   }
 
   render() {
+    if (this.state.error) {
+      return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    }
+
     const { track } = this.props;
     const { languageMap } = this.state;
 
