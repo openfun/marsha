@@ -1,7 +1,10 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { deleteResource } from '../../data/genericReducers/resourceById/actions';
+import {
+  addResource,
+  deleteResource,
+} from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
@@ -15,6 +18,8 @@ const mapStateToProps = (state: RootState<appStateSuccess>) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
     dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
+  updateTimedTextTrackRecord: (timedtexttrack: TimedText) =>
+    dispatch(addResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
 });
 
 /**
