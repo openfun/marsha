@@ -58,6 +58,7 @@ export interface Video extends Resource {
   description: string;
   id: string;
   is_ready_to_play: boolean;
+  timed_text_tracks: TimedText[];
   title: string;
   upload_state: uploadState;
   urls: {
