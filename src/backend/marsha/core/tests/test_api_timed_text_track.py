@@ -24,8 +24,8 @@ class TimedTextTrackAPITest(TestCase):
     """Test the API of the timed text track object."""
 
     @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
-    def test_api_timed_text_track_options(self):
-        """The details of choices fields should be available via http options."""
+    def test_api_timed_text_track_options_as_instructor(self):
+        """The details of choices fields should be available via http options for an instructor."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
@@ -50,6 +50,39 @@ class TimedTextTrackAPITest(TestCase):
                 {"value": "ast", "display_name": "Asturian"},
             ],
         )
+
+    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
+    def test_api_timed_text_track_options_as_student(self):
+        """The details of choices fields should be available via http options for a student."""
+        timed_text_track = TimedTextTrackFactory(language="af")
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        response = self.client.options(
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        content = json.loads(response.content)
+        self.assertEqual(
+            content["actions"]["POST"]["mode"]["choices"],
+            [
+                {"value": "st", "display_name": "Subtitle"},
+                {"value": "ts", "display_name": "Transcript"},
+                {"value": "cc", "display_name": "Closed captioning"},
+            ],
+        )
+        self.assertEqual(
+            content["actions"]["POST"]["language"]["choices"],
+            [
+                {"value": "af", "display_name": "Afrikaans"},
+                {"value": "ast", "display_name": "Asturian"},
+            ],
+        )
+
+    def test_api_timed_text_track_options_anonymous(self):
+        """The details of choices fields should be available via http options for a student."""
+        response = self.client.options("/api/timedtexttracks/")
+        self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a timed text track detail."""
