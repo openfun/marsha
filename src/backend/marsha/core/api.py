@@ -168,7 +168,14 @@ class TimedTextTrackViewSet(
     """Viewset for the API of the TimedTextTrack object."""
 
     serializer_class = TimedTextTrackSerializer
-    permission_classes = [IsRelatedVideoTokenOrAdminUser]
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action == "metadata":
+            permission_classes = [IsVideoToken]
+        else:
+            permission_classes = [IsRelatedVideoTokenOrAdminUser]
+        return [permission() for permission in permission_classes]
 
     def get_queryset(self):
         """Restrict list access to timed text tracks related to the video in the JWT token."""
