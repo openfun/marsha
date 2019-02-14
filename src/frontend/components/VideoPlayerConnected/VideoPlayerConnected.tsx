@@ -32,34 +32,8 @@ export const mapStateToProps = (
     video,
 });
 
-/** Create a function that triggers a get to the API for the timedtexttracks. */
-const mergeProps = (
-  {
-    jwt,
-    timedtexttracks,
-    video,
-  }: {
-    jwt: string;
-    timedtexttracks: ConsumableQuery<TimedText>;
-    video: Nullable<Video>;
-  },
-  { dispatch }: { dispatch: Dispatch },
-  { createPlayer }: VideoPlayerConnectedProps,
-) => ({
-  createPlayer,
-  getTimedTextTrackList: () =>
-    dispatch(getResourceList(jwt, modelName.TIMEDTEXTTRACKS)),
-  jwt,
-  timedtexttracks,
-  video,
-});
-
 /**
  * Component. Displays a player to show the video from context.
  * @param video The video to show.
  */
-export const VideoPlayerConnected = connect(
-  mapStateToProps,
-  null!,
-  mergeProps,
-)(VideoPlayer);
+export const VideoPlayerConnected = connect(mapStateToProps)(VideoPlayer);
