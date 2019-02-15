@@ -48,6 +48,7 @@ export class Dashboard extends React.Component<DashboardProps> {
           <FormattedMessage {...messages.title} />
         </IframeHeadingWithLayout>
         <DashboardVideoPaneConnected video={this.props.video} />
+        <DashboardTimedTextPaneConnected />
       </DashboardContainer>
     );
   }
