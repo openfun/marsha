@@ -25,6 +25,12 @@ const messages = defineMessages({
       'Link text to replace a subtitle/transcript/captions item with a new file (for the same language).',
     id: 'components.TimedTextListItem.replace',
   },
+  upload: {
+    defaultMessage: 'Upload',
+    description:
+      'Link text to upload a missing subtitle/transcript/captions item file.',
+    id: 'components.TimedTextListItem.upload',
+  },
 });
 
 const TimedTextListItemStyled = styled.div`
@@ -147,7 +153,11 @@ export class TimedTextListItem extends React.Component<
           />
           &nbsp;/&nbsp;
           <Link to={UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, track.id)}>
-            <FormattedMessage {...messages.replace} />
+            <FormattedMessage
+              {...(track.upload_state === uploadState.PENDING
+                ? messages.upload
+                : messages.replace)}
+            />
           </Link>
         </TimedTextListItemActions>
       </TimedTextListItemStyled>
