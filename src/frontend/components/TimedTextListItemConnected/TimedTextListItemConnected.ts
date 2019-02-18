@@ -6,6 +6,7 @@ import {
   deleteResource,
 } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { getTimedTextTrackLanguageChoices } from '../../data/timedTextTrackLanguageChoices/action';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
@@ -13,11 +14,14 @@ import { TimedTextListItem } from '../TimedTextListItem/TimedTextListItem';
 
 const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
+  languageChoices: state.languageChoices.items,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
     dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
+  getTimedTextTrackLanguageChoices: (jwt: string) =>
+    dispatch(getTimedTextTrackLanguageChoices(jwt)),
   updateTimedTextTrackRecord: (timedtexttrack: TimedText) =>
     dispatch(addResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
 });

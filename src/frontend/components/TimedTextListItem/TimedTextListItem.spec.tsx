@@ -9,29 +9,17 @@ jest.mock(
   () => ({ deleteTimedTextTrack: jest.fn() }),
 );
 
-jest.mock(
-  '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices',
-  () => ({
-    getTimedTextTrackLanguageChoices: jest.fn(),
-  }),
-);
-
 jest.mock('react-router-dom', () => ({
   Link: () => null,
 }));
 
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
-import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
 import { TimedText, uploadState } from '../../types/tracks';
 import { TimedTextListItem } from './TimedTextListItem';
 
 const mockDeleteTimedTextTrack: jest.Mock<
   typeof deleteTimedTextTrack
 > = deleteTimedTextTrack as any;
-const mockGetTimedTextTrackLanguageChoices: jest.Mock<
-  typeof getTimedTextTrackLanguageChoices
-> = getTimedTextTrackLanguageChoices as any;
-
 const mockUpdateTimedTextTrackRecord = jest.fn();
 
 describe('<TimedTextListItem />', () => {
@@ -40,16 +28,22 @@ describe('<TimedTextListItem />', () => {
   afterEach(fetchMock.restore);
 
   const mockDeleteTimedTextTrackRecord = jest.fn();
+  const mockGetTimedTextTrackLanguageChoices = jest.fn();
+
+  const languageChoices = [
+    {
+      label: 'French',
+      value: 'fr',
+    },
+  ];
 
   it('renders a track, showing its language and status', async () => {
-    mockGetTimedTextTrackLanguageChoices.mockReturnValue(
-      Promise.resolve([{ label: 'French', value: 'fr' }]),
-    );
-
     const wrapper = shallow(
       <TimedTextListItem
+        getTimedTextTrackLanguageChoices={mockGetTimedTextTrackLanguageChoices}
         deleteTimedTextTrackRecord={mockDeleteTimedTextTrackRecord}
         updateTimedTextTrackRecord={jest.fn()}
+        languageChoices={languageChoices}
         jwt={'some token'}
         track={
           {
@@ -61,21 +55,17 @@ describe('<TimedTextListItem />', () => {
       />,
     );
 
-    await flushAllPromises();
-
     expect(wrapper.html()).toContain('French');
     expect(wrapper.html()).toContain('Ready');
   });
 
   it('renders & fail to poll a ready timed text track', async () => {
-    mockGetTimedTextTrackLanguageChoices.mockReturnValue(
-      Promise.resolve([{ label: 'French', value: 'fr' }]),
-    );
-
     shallow(
       <TimedTextListItem
+        getTimedTextTrackLanguageChoices={mockGetTimedTextTrackLanguageChoices}
         deleteTimedTextTrackRecord={mockDeleteTimedTextTrackRecord}
         updateTimedTextTrackRecord={mockUpdateTimedTextTrackRecord}
+        languageChoices={languageChoices}
         jwt={'some token'}
         track={
           {
@@ -87,7 +77,6 @@ describe('<TimedTextListItem />', () => {
         }
       />,
     );
-    await flushAllPromises();
 
     fetchMock.mock(
       '/api/timedtexttracks/1/',
@@ -129,14 +118,12 @@ describe('<TimedTextListItem />', () => {
   });
 
   it('renders & fail to poll a ready timed text track', async () => {
-    mockGetTimedTextTrackLanguageChoices.mockReturnValue(
-      Promise.resolve([{ label: 'French', value: 'fr' }]),
-    );
-
     shallow(
       <TimedTextListItem
+        getTimedTextTrackLanguageChoices={mockGetTimedTextTrackLanguageChoices}
         deleteTimedTextTrackRecord={mockDeleteTimedTextTrackRecord}
         updateTimedTextTrackRecord={mockUpdateTimedTextTrackRecord}
+        languageChoices={languageChoices}
         jwt={'some token'}
         track={
           {
@@ -148,7 +135,6 @@ describe('<TimedTextListItem />', () => {
         }
       />,
     );
-    await flushAllPromises();
 
     fetchMock.mock(
       '/api/timedtexttracks/1/',
@@ -202,8 +188,12 @@ describe('<TimedTextListItem />', () => {
 
       const wrapper = shallow(
         <TimedTextListItem
+          getTimedTextTrackLanguageChoices={
+            mockGetTimedTextTrackLanguageChoices
+          }
           deleteTimedTextTrackRecord={mockDeleteTimedTextTrackRecord}
           updateTimedTextTrackRecord={jest.fn()}
+          languageChoices={languageChoices}
           jwt={'some token'}
           track={timedtexttrack}
         />,

@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
+import { getTimedTextTrackLanguageChoices } from '../../data/timedTextTrackLanguageChoices/action';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
@@ -10,11 +11,14 @@ import { TimedTextCreationForm } from '../TimedTextCreationForm/TimedTextCreatio
 
 const mapStateToProps = (state: RootState<appStateSuccess>) => ({
   jwt: state.context.jwt,
+  languageChoices: state.languageChoices.items,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   createTimedTextTrack: (timedtexttrack: TimedText) =>
     dispatch(addResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
+  getTimedTextTrackLanguageChoices: (jwt: string) =>
+    dispatch(getTimedTextTrackLanguageChoices(jwt)),
 });
 
 /**

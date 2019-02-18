@@ -8,7 +8,7 @@ import { ActionMeta, ValueType } from 'react-select/lib/types';
 import styled from 'styled-components';
 
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack';
-import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
+import { LanguageChoice } from '../../types/LanguageChoice';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
@@ -56,14 +56,15 @@ interface SelectOption {
 /** Props shape for the TimedTextCreationForm component. */
 export interface TimedTextCreationFormProps {
   createTimedTextTrack: (timedtexttrack: TimedText) => void;
-  jwt: Nullable<string>;
+  getTimedTextTrackLanguageChoices: (jwt: string) => void;
+  jwt: string;
+  languageChoices: LanguageChoice[];
   mode: timedTextMode;
 }
 
 /** State shape for the TimedTextCreationForm component. */
 interface TimedTextCreationFormState {
   error?: 'creation' | 'schema';
-  languageChoices: SelectOption[];
   newTTLanguage?: string;
   newTTUploadId?: TimedText['id'];
 }
@@ -78,22 +79,12 @@ export class TimedTextCreationForm extends React.Component<
   TimedTextCreationFormProps,
   TimedTextCreationFormState
 > {
-  constructor(props: TimedTextCreationFormProps) {
-    super(props);
-    this.state = { languageChoices: [] };
-  }
+  state: TimedTextCreationFormState = {};
 
-  async componentDidMount() {
-    try {
-      const languageChoices = await getTimedTextTrackLanguageChoices(
-        this.props.jwt,
-      );
-      this.setState({
-        languageChoices,
-      });
-    } catch (error) {
-      this.setState({ error: 'schema' });
-    }
+  componentDidMount() {
+    const { jwt, getTimedTextTrackLanguageChoices } = this.props;
+
+    getTimedTextTrackLanguageChoices(jwt);
   }
 
   async createAndGoToUpload() {
@@ -121,7 +112,8 @@ export class TimedTextCreationForm extends React.Component<
   }
 
   render() {
-    const { error, languageChoices, newTTLanguage, newTTUploadId } = this.state;
+    const { error, newTTLanguage, newTTUploadId } = this.state;
+    const { languageChoices } = this.props;
 
     if (error === 'schema') {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
