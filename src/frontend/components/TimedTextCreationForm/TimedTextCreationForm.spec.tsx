@@ -10,27 +10,15 @@ jest.mock(
   }),
 );
 
-jest.mock(
-  '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices',
-  () => ({
-    getTimedTextTrackLanguageChoices: jest.fn(),
-  }),
-);
-
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack';
-import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
 import { modelName } from '../../types/models';
 import { timedTextMode } from '../../types/tracks';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { TimedTextCreationForm } from './TimedTextCreationForm';
 
 const mockCreateTimedTextTrack: jest.Mock<
   typeof createTimedTextTrack
 > = createTimedTextTrack as any;
-const mockGetTimedTextTrackLanguageChoices: jest.Mock<
-  typeof getTimedTextTrackLanguageChoices
-> = getTimedTextTrackLanguageChoices as any;
 
 const mockCreateTimedTextTrackRecord = jest.fn();
 
@@ -38,12 +26,13 @@ describe('<TimedTextCreationForm />', () => {
   afterEach(jest.resetAllMocks);
 
   it('renders and loads the language choices', async () => {
-    mockGetTimedTextTrackLanguageChoices.mockResolvedValue([
-      { label: 'English', value: 'en' },
-      { label: 'French', value: 'fr' },
-    ]);
     const wrapper = shallow(
       <TimedTextCreationForm
+        getTimedTextTrackLanguageChoices={jest.fn()}
+        languageChoices={[
+          { label: 'English', value: 'en' },
+          { label: 'French', value: 'fr' },
+        ]}
         createTimedTextTrack={mockCreateTimedTextTrackRecord}
         jwt={'some token'}
         mode={timedTextMode.SUBTITLE}
@@ -53,32 +42,6 @@ describe('<TimedTextCreationForm />', () => {
     await flushAllPromises();
 
     expect(wrapper.html()).toContain('Add a language');
-    expect(mockGetTimedTextTrackLanguageChoices).toHaveBeenCalled();
-    expect(wrapper.instance().state).toEqual({
-      languageChoices: [
-        { label: 'English', value: 'en' },
-        { label: 'French', value: 'fr' },
-      ],
-    });
-  });
-
-  it('redirects to <ErrorComponent /> when it fails to get the language choices', async () => {
-    mockGetTimedTextTrackLanguageChoices.mockRejectedValue(
-      new Error('Failed to get language choices.'),
-    );
-    const wrapper = shallow(
-      <TimedTextCreationForm
-        createTimedTextTrack={jest.fn()}
-        jwt={'some token'}
-        mode={timedTextMode.SUBTITLE}
-      />,
-    );
-
-    await flushAllPromises();
-
-    expect(wrapper.name()).toEqual('Redirect');
-    expect(wrapper.prop('push')).toBeTruthy();
-    expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('notFound'));
   });
 
   describe('createAndGoToUpload()', () => {
@@ -88,6 +51,11 @@ describe('<TimedTextCreationForm />', () => {
     beforeEach(() => {
       wrapper = shallow(
         <TimedTextCreationForm
+          getTimedTextTrackLanguageChoices={jest.fn()}
+          languageChoices={[
+            { label: 'English', value: 'en' },
+            { label: 'French', value: 'fr' },
+          ]}
           createTimedTextTrack={mockCreateTimedTextTrackRecord}
           jwt={'some token'}
           mode={timedTextMode.SUBTITLE}

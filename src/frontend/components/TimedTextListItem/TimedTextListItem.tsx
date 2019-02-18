@@ -4,10 +4,11 @@ import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
-import { getTimedTextTrackLanguageChoices } from '../../data/sideEffects/getTimedTextTrackLanguageChoices/getTimedTextTrackLanguageChoices';
 import { API_ENDPOINT } from '../../settings';
+import { LanguageChoice } from '../../types/LanguageChoice';
 import { modelName } from '../../types/models';
 import { TimedText, uploadState } from '../../types/tracks';
+import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -56,14 +57,15 @@ const UploadStatusPickerStyled = styled(UploadStatusPicker)`
 /** Props shape for the TimedTextListItem component. */
 interface TimedTextListItemProps {
   deleteTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
+  getTimedTextTrackLanguageChoices: (jwt: string) => void;
   updateTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
   jwt: string;
+  languageChoices: LanguageChoice[];
   track: TimedText;
 }
 
 /** State shape for the TimedTextListItem component. */
 interface TimedTextListItemState {
-  languageMap: { [key: string]: string };
   error?: boolean;
 }
 
@@ -80,20 +82,13 @@ export class TimedTextListItem extends React.Component<
 > {
   constructor(props: TimedTextListItemProps) {
     super(props);
-    this.state = { languageMap: {} };
+    this.state = {};
   }
 
   async componentDidMount() {
-    const languageChoices = await getTimedTextTrackLanguageChoices(
-      this.props.jwt,
-    );
+    const { jwt, getTimedTextTrackLanguageChoices } = this.props;
 
-    this.setState({
-      languageMap: languageChoices.reduce(
-        (acc, choice) => ({ ...acc, [choice.value]: choice.label }),
-        {},
-      ),
-    });
+    getTimedTextTrackLanguageChoices(jwt);
 
     if (this.props.track.is_ready_to_play === false) {
       window.setTimeout(() => this.pollForTTT(), 1000 * 10);
@@ -136,13 +131,16 @@ export class TimedTextListItem extends React.Component<
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
     }
 
-    const { track } = this.props;
-    const { languageMap } = this.state;
+    const { track, languageChoices } = this.props;
+
+    const language: Maybe<LanguageChoice> = languageChoices.find(
+      languageChoice => track.language === languageChoice.value,
+    );
 
     return (
       <TimedTextListItemStyled>
         <TimedTextListItemLanguage>
-          {languageMap[track.language]}
+          {language ? language.label : track.language}
         </TimedTextListItemLanguage>
         <UploadStatusPickerStyled state={track.upload_state} />
         <TimedTextListItemActions>
