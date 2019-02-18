@@ -7,6 +7,7 @@ import { modelName } from '../types/models';
 import { initialState } from './context/reducer';
 import { rootReducer } from './rootReducer';
 import { rootSaga } from './rootSaga';
+import { initialState as timedTextTrackLanguageChoicesInitialState } from './timedTextTrackLanguageChoices/reducer';
 import { TimedTextTracksState } from './timedtexttracks/reducer';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -45,6 +46,7 @@ export const bootstrapStore = (appData: AppData) => {
     rootReducer,
     {
       context: initialState,
+      languageChoices: timedTextTrackLanguageChoicesInitialState,
       resources: {
         [modelName.TIMEDTEXTTRACKS]: timeTextTracksState || {},
         [modelName.VIDEOS]: {
