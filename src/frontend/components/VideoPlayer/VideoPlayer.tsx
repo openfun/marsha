@@ -76,7 +76,11 @@ export class VideoPlayer extends React.Component<
     }
 
     return (
-      <video ref={node => (this.videoNodeRef = node)} crossOrigin="anonymous">
+      <video
+        ref={node => (this.videoNodeRef = node)}
+        crossOrigin="anonymous"
+        poster={video.urls.thumbnails[720]}
+      >
         <source
           src={video.urls.manifests.hls}
           size="auto"
