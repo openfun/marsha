@@ -1,14 +1,11 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { getResourceList } from '../../data/genericReducers/resourceList/actions';
 import { RootState } from '../../data/rootReducer';
+import { getTimedTextTrackLanguageChoices } from '../../data/timedTextTrackLanguageChoices/action';
 import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
-import { ConsumableQuery } from '../../types/api';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
-import { TimedText, Video } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { VideoPlayer, VideoPlayerProps } from '../VideoPlayer/VideoPlayer';
 
 type VideoPlayerConnectedProps = Pick<
@@ -25,6 +22,7 @@ export const mapStateToProps = (
   { video }: VideoPlayerConnectedProps,
 ) => ({
   jwt: state.context.jwt,
+  languageChoices: state.languageChoices.items,
   timedtexttracks: getTimedTextTracks(state),
   video:
     (state.resources[modelName.VIDEOS]!.byId &&
@@ -32,8 +30,16 @@ export const mapStateToProps = (
     video,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  getTimedTextTrackLanguageChoices: (jwt: string) =>
+    dispatch(getTimedTextTrackLanguageChoices(jwt)),
+});
+
 /**
  * Component. Displays a player to show the video from context.
  * @param video The video to show.
  */
-export const VideoPlayerConnected = connect(mapStateToProps)(VideoPlayer);
+export const VideoPlayerConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(VideoPlayer);

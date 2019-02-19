@@ -5,6 +5,7 @@ import { Redirect } from 'react-router';
 
 import { createPlayer } from '../../Player/createPlayer';
 import { ConsumableQuery } from '../../types/api';
+import { LanguageChoice } from '../../types/LanguageChoice';
 import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
 import { Maybe, Nullable } from '../../utils/types';
@@ -18,6 +19,8 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 
 export interface VideoPlayerProps {
   jwt: string;
+  getTimedTextTrackLanguageChoices: (jwt: string) => void;
+  languageChoices: LanguageChoice[];
   video: Nullable<Video>;
   createPlayer: typeof createPlayer;
   timedtexttracks: ConsumableQuery<TimedText>;
@@ -44,7 +47,9 @@ export class VideoPlayer extends React.Component<
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
   componentDidMount() {
-    const { video, jwt } = this.props;
+    const { video, jwt, getTimedTextTrackLanguageChoices } = this.props;
+
+    getTimedTextTrackLanguageChoices(jwt);
 
     if (video) {
       // Instantiate Plyr and keep the instance in state
@@ -68,7 +73,15 @@ export class VideoPlayer extends React.Component<
   }
 
   render() {
-    const { video, timedtexttracks } = this.props;
+    const { video, timedtexttracks, languageChoices } = this.props;
+
+    const languages: { [key: string]: string } = languageChoices.reduce(
+      (acc, current) => ({
+        ...acc,
+        [current.value]: current.label,
+      }),
+      {},
+    );
 
     // The video is somehow missing and jwt must be set
     if (!video) {
@@ -107,15 +120,17 @@ export class VideoPlayer extends React.Component<
                 timedTextMode.SUBTITLE,
               ].includes(track.mode),
             )
-            .map(track => (
-              <track
-                key={track.id}
-                src={track.url}
-                srcLang={track.language}
-                kind={trackTextKind[track.mode]}
-                label={track.language}
-              />
-            ))}
+            .map(track => {
+              return (
+                <track
+                  key={track.id}
+                  src={track.url}
+                  srcLang={track.language}
+                  kind={trackTextKind[track.mode]}
+                  label={languages[track.language] || track.language}
+                />
+              );
+            })}
       </video>
     );
   }

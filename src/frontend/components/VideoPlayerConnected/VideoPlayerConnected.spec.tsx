@@ -11,10 +11,20 @@ describe('<VideoPlayerConnected />', () => {
       video: { id: 42 } as any,
     };
 
+    const languageChoices = [{ label: 'French', value: 'fr' }];
+
     it('picks video from the store if available', () => {
       const state = {
         context: {
           jwt: 'foo',
+        },
+        languageChoices: {
+          items: [
+            {
+              label: 'French',
+              value: 'fr',
+            },
+          ],
         },
         resources: {
           [modelName.VIDEOS]: { byId: { 42: 'some video' as any } },
@@ -23,6 +33,7 @@ describe('<VideoPlayerConnected />', () => {
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
         jwt: 'foo',
+        languageChoices,
         timedtexttracks: {
           objects: [],
           status: null,
@@ -36,6 +47,10 @@ describe('<VideoPlayerConnected />', () => {
         context: {
           jwt: 'foo',
         },
+        languageChoices: {
+          items: languageChoices,
+          status: requestStatus.SUCCESS,
+        },
         resources: {
           [modelName.VIDEOS]: { byId: { 43: 'some video' as any } },
           [modelName.TIMEDTEXTTRACKS]: {},
@@ -43,6 +58,7 @@ describe('<VideoPlayerConnected />', () => {
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
         jwt: 'foo',
+        languageChoices,
         timedtexttracks: {
           objects: [],
           status: null,
@@ -53,6 +69,10 @@ describe('<VideoPlayerConnected />', () => {
       state = {
         context: {
           jwt: 'foo',
+        },
+        languageChoices: {
+          items: languageChoices,
+          status: requestStatus.SUCCESS,
         },
         resources: {
           [modelName.VIDEOS]: { byId: {} },
@@ -61,6 +81,7 @@ describe('<VideoPlayerConnected />', () => {
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
         jwt: 'foo',
+        languageChoices,
         timedtexttracks: {
           objects: [],
           status: null,
@@ -72,6 +93,10 @@ describe('<VideoPlayerConnected />', () => {
         context: {
           jwt: 'foo',
         },
+        languageChoices: {
+          items: languageChoices,
+          status: requestStatus.SUCCESS,
+        },
         resources: {
           [modelName.VIDEOS]: {},
           [modelName.TIMEDTEXTTRACKS]: {},
@@ -79,6 +104,7 @@ describe('<VideoPlayerConnected />', () => {
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
         jwt: 'foo',
+        languageChoices,
         timedtexttracks: {
           objects: [],
           status: null,
@@ -91,6 +117,10 @@ describe('<VideoPlayerConnected />', () => {
       const state = {
         context: {
           jwt: 'foo',
+        },
+        languageChoices: {
+          items: languageChoices,
+          status: requestStatus.SUCCESS,
         },
         resources: {
           [modelName.VIDEOS]: {},
@@ -109,6 +139,7 @@ describe('<VideoPlayerConnected />', () => {
       } as any;
       expect(mapStateToProps(state, props)).toEqual({
         jwt: 'foo',
+        languageChoices,
         timedtexttracks: {
           objects: [{ id: '42' }, { id: '84' }, { id: '168' }],
           status: requestStatus.SUCCESS,
