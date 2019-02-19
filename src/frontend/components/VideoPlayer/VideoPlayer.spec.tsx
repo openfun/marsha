@@ -13,6 +13,7 @@ const createPlayer = jest.fn(() => ({
 
 const mockInitialize = jest.fn();
 const mockSetInitialBitrateFor = jest.fn();
+const mockGetTimedTextTrackLanguageChoices = jest.fn();
 
 jest.mock('dashjs', () => ({
   MediaPlayer: () => ({
@@ -47,7 +48,9 @@ describe('VideoPlayer', () => {
 
   const props = {
     createPlayer,
+    getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
     jwt: 'foo',
+    languageChoices: [{ label: 'French', value: 'fr' }],
     timedtexttracks: {
       objects: [
         {
@@ -74,7 +77,7 @@ describe('VideoPlayer', () => {
           active_stamp: 1549385923,
           id: 'ttt-3',
           is_ready_to_play: true,
-          language: 'fr',
+          language: 'en',
           mode: timedTextMode.CLOSED_CAPTIONING,
           upload_state: uploadState.READY,
           url: 'https://example.com//timedtext/ttt-3.vtt',
@@ -113,11 +116,13 @@ describe('VideoPlayer', () => {
     );
 
     expect(content).toContain(
-      '<track src="https://example.com//timedtext/ttt-1.vtt" srcLang="fr" kind="subtitles" label="fr"/>',
+      '<track src="https://example.com//timedtext/ttt-1.vtt" srcLang="fr" kind="subtitles" label="French"/>',
     );
     expect(content).toContain(
-      '<track src="https://example.com//timedtext/ttt-3.vtt" srcLang="fr" kind="captions" label="fr"/>',
+      '<track src="https://example.com//timedtext/ttt-3.vtt" srcLang="en" kind="captions" label="en"/>',
     );
+
+    expect(mockGetTimedTextTrackLanguageChoices).toHaveBeenCalledWith('foo');
   });
 
   it('starts up the player when it mounts', () => {
