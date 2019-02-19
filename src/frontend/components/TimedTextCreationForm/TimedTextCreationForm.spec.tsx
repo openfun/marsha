@@ -2,6 +2,7 @@ import { flushAllPromises } from '../../testSetup';
 
 import { shallow, ShallowWrapper } from 'enzyme';
 import * as React from 'react';
+import Select from 'react-select';
 
 jest.mock(
   '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack',
@@ -29,6 +30,7 @@ describe('<TimedTextCreationForm />', () => {
     const wrapper = shallow(
       <TimedTextCreationForm
         getTimedTextTrackLanguageChoices={jest.fn()}
+        excludedLanguages={['en']}
         languageChoices={[
           { label: 'English', value: 'en' },
           { label: 'French', value: 'fr' },
@@ -42,6 +44,9 @@ describe('<TimedTextCreationForm />', () => {
     await flushAllPromises();
 
     expect(wrapper.html()).toContain('Add a language');
+    expect(wrapper.find(Select).prop('options')).toEqual([
+      { label: 'French', value: 'fr' },
+    ]);
   });
 
   describe('createAndGoToUpload()', () => {
@@ -52,6 +57,7 @@ describe('<TimedTextCreationForm />', () => {
       wrapper = shallow(
         <TimedTextCreationForm
           getTimedTextTrackLanguageChoices={jest.fn()}
+          excludedLanguages={[]}
           languageChoices={[
             { label: 'English', value: 'en' },
             { label: 'French', value: 'fr' },
