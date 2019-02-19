@@ -58,6 +58,7 @@ export interface TimedTextCreationFormProps {
   createTimedTextTrack: (timedtexttrack: TimedText) => void;
   getTimedTextTrackLanguageChoices: (jwt: string) => void;
   jwt: string;
+  excludedLanguages: string[];
   languageChoices: LanguageChoice[];
   mode: timedTextMode;
 }
@@ -113,7 +114,11 @@ export class TimedTextCreationForm extends React.Component<
 
   render() {
     const { error, newTTLanguage, newTTUploadId } = this.state;
-    const { languageChoices } = this.props;
+    const { languageChoices, excludedLanguages } = this.props;
+
+    const availableLanguages = languageChoices.filter(
+      language => !excludedLanguages.includes(language.value),
+    );
 
     if (error === 'schema') {
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
@@ -133,7 +138,7 @@ export class TimedTextCreationForm extends React.Component<
         <FormattedMessage {...messages.addTrackLabel} />
         <Select
           onChange={this.onSelectChange.bind(this)}
-          options={languageChoices}
+          options={availableLanguages}
           styles={{ input: styles => ({ ...styles, width: '8rem' }) }}
         />
         <Button

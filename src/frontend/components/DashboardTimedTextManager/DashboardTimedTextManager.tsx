@@ -36,10 +36,13 @@ export class DashboardTimedTextManager extends React.Component<
         <DashboardInternalHeading>
           <FormattedMessage {...message} />
         </DashboardInternalHeading>
-        {tracks.map(track => (
-          <TimedTextListItemConnected key={track.id} track={track} />
-        ))}
-        <TimedTextCreationFormConnected mode={mode} />
+        {tracks.map(track => {
+          return <TimedTextListItemConnected key={track.id} track={track} />;
+        })}
+        <TimedTextCreationFormConnected
+          mode={mode}
+          excludedLanguages={tracks.map(track => track.language)}
+        />
       </DashboardTimedTextManagerStyled>
     );
   }
