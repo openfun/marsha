@@ -39,6 +39,9 @@ describe('VideoPlayer', () => {
         144: 'https://example.com/144p.mp4',
         1080: 'https://example.com/1080p.mp4',
       },
+      thumbnails: {
+        720: 'https://example.com/144p.jpg',
+      },
     },
   } as Video;
 
