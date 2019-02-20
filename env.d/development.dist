@@ -19,7 +19,7 @@ PYTHONUNBUFFERED=1
 # AWS Admin role for development purposes
 DJANGO_AWS_ACCESS_KEY_ID=yourAwsAccesKey
 DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKeyId
-DJANGO_AWS_DEFAULT_REGION=eu-west-1
+DJANGO_AWS_S3_REGION_NAME=eu-west-1
 DJANGO_AWS_SOURCE_BUCKET_NAME=dev-marsha-source
 
 # Cloudfront Signed URLs for mp4 files

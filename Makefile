@@ -76,15 +76,20 @@ check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
 	@$(COMPOSE_TEST_RUN_APP) python manage.py makemigrations --check --dry-run
 
+.PHONY: collectstatic
+collectstatic:  ## Collect and deploy static files for the marsha project.
+	@echo "$(BOLD)Collecting static files$(RESET)"
+	@$(COMPOSE_RUN_APP) python manage.py collectstatic
+
 .PHONY: migrate
 migrate:  ## Run django migration for the marsha project.
 	@echo "$(BOLD)Running migrations$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py migrate
 
+.PHONY: superuser
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
-.PHONY: superuser
 
 .PHONY: test
 test:  ## Run django tests for the marsha project.
