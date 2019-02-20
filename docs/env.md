@@ -172,7 +172,7 @@ A key ID + secret pair for an AWS IAM account with administrative access to the 
 - Required: Yes
 - Default: None
 
-#### DJANGO_AWS_DEFAULT_REGION
+#### DJANGO_AWS_S3_REGION_NAME
 
 The Amazon Web Services region where we deployed or want to deploy our serverless stack.
 
@@ -191,8 +191,47 @@ The source AWS S3 bucket where files will be uploaded by end users. This should 
   - `"development-marsha-source"` in development;
   - `"test-marsha-source"` in test;
   - `"staging-marsha-source"` in staging;
-  - `"preprod-marsha-source"` in preproduction;
+  - `"preprod-marsha-source"` in preprod;
   - `"production-marsha-source"` in production.
+
+### DJANGO_AWS_STATIC_BUCKET_NAME
+
+The AWS S3 bucket where static files will be uploaded by collectstatic. The development and test
+environments do not store their static files to S3 but on the filesystem. This should match the
+name of the bucket created by the relevant AWS deployment.
+
+- Type: string
+- Required: No
+- Default: Varies depending on the environment:
+  - `"staging-marsha-static"` in staging;
+  - `"preprod-marsha-static"` in preprod;
+  - `"production-marsha-static"` in production.
+
+### DJANGO_STATICFILES_STORAGE
+
+The static files storage backend that Django should use to serve static files. For more
+information, see [documentation](https://docs.djangoproject.com/en/2.1/ref/contrib/staticfiles/#storages).
+
+- Type: string
+- Required: No
+- Default: Varies depending on the environment:
+  - `"django.contrib.staticfiles.storage.ManifestStaticFilesStorage"` in development and test
+  - `"marsha.core.storage.ConfigurableManifestS3Boto3Storage"` in staging, preprod and
+    production.
+
+### DJANGO_STATICFILES_MANIFEST_NAME
+
+The mapping between the names of the original static files and the names of the static files
+distributed by the backend is stored in a file called the manifest.
+
+This setting makes the manifest file name configurable so that it can be versioned with a deployment stamp in our CI/CD.
+
+Indeed, we need to change the name of this manifest file for each deployment so that several
+versions of the app can run in parallel without interfering with each other.
+
+- Type: string
+- Required: No
+- Default: `staticfiles.json`
 
 #### DJANGO_CLOUDFRONT_ACCESS_KEY_ID
 

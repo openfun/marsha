@@ -36,7 +36,27 @@ resource "aws_s3_bucket" "marsha_destination" {
   }
 }
 
-# Defines a user that should be able to write to the videos bucket
+# Create S3 Bucket for static files
+resource "aws_s3_bucket" "marsha_static" {
+  bucket = "${terraform.workspace}-marsha-static"
+  acl    = "private"
+  region = "${var.aws_region}"
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3600
+  }
+
+  tags {
+    Name        = "marsha-static"
+    Environment = "${terraform.workspace}"
+  }
+}
+
+
+# Defines a user that should be able to write to the S3 bucket
 resource "aws_iam_user" "marsha_user" {
   name = "${terraform.workspace}-marsha"
 }
@@ -98,6 +118,40 @@ resource "aws_s3_bucket_policy" "marsha_destination_bucket_policy" {
       },
       "Action": "s3:GetObject",
       "Resource": "${aws_s3_bucket.marsha_destination.arn}/*"
+    }
+  ]
+}
+EOF
+}
+
+# Grant user access to the static bucket
+resource "aws_s3_bucket_policy" "marsha_static_bucket_policy" {
+  bucket = "${aws_s3_bucket.marsha_static.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "User access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_iam_user.marsha_user.arn}"
+      },
+      "Action": [ "s3:*" ],
+      "Resource": [
+        "${aws_s3_bucket.marsha_static.arn}",
+        "${aws_s3_bucket.marsha_static.arn}/*"
+      ]
+    },
+    {
+      "Sid": "Cloudfront",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${aws_cloudfront_origin_access_identity.marsha_oai.iam_arn}"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "${aws_s3_bucket.marsha_static.arn}/*"
     }
   ]
 }
