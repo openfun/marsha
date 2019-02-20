@@ -84,7 +84,7 @@ def get_s3_upload_policy_signature(now, conditions):
     expires_at = now + timedelta(seconds=AWS_UPLOAD_EXPIRATION_DELAY)
     x_amz_algorithm = "AWS4-HMAC-SHA256"
     x_amz_credential = "{key:s}/{date:%Y%m%d}/{region:s}/s3/aws4_request".format(
-        date=now, key=settings.AWS_ACCESS_KEY_ID, region=settings.AWS_DEFAULT_REGION
+        date=now, key=settings.AWS_ACCESS_KEY_ID, region=settings.AWS_S3_REGION_NAME
     )
     x_amz_date = now.strftime("%Y%m%dT%H%M%SZ")
 
@@ -107,7 +107,7 @@ def get_s3_upload_policy_signature(now, conditions):
     signature_key = get_signature_key(
         settings.AWS_SECRET_ACCESS_KEY,
         now.strftime("%Y%m%d"),
-        settings.AWS_DEFAULT_REGION,
+        settings.AWS_S3_REGION_NAME,
         "s3",
     )
 
@@ -117,7 +117,7 @@ def get_s3_upload_policy_signature(now, conditions):
         "acl": acl,
         "bucket": settings.AWS_SOURCE_BUCKET_NAME,
         "policy": policy_b64,
-        "s3_endpoint": get_s3_endpoint(settings.AWS_DEFAULT_REGION),
+        "s3_endpoint": get_s3_endpoint(settings.AWS_S3_REGION_NAME),
         "x_amz_algorithm": x_amz_algorithm,
         "x_amz_credential": x_amz_credential,
         "x_amz_date": x_amz_date,
