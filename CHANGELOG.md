@@ -8,10 +8,19 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.3.0] - 2019-02-22
+
 ### Added
 
 - Replace shaka-player by dashjs.
 - Play timed text tracks in player.
+- Enable timed text tracks in dashboard.
+- Display transcripts alongside the video.
+
+### Changed
+
+- Real languages display in the player (captions section).
+- Language choices are fetch once and then cached in the redux store.
 
 ## [2.2.1] - 2019-02-06
 
@@ -147,7 +156,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.2.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.3.0...master
+[2.3.0]: https://github.com/openfun/marsha/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/openfun/marsha/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/openfun/marsha/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/openfun/marsha/compare/v2.0.1...v2.1.0
