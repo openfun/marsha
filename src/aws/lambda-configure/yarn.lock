@@ -154,10 +154,17 @@
     array-from "^2.1.1"
     lodash.get "^4.4.2"
 
-"@types/jest@24.0.0":
-  version "24.0.0"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.0.tgz#848492026c327b3548d92be0352a545c36a21e8a"
-  integrity sha512-kOafJnUTnMd7/OfEO/x3I47EHswNjn+dbz9qk3mtonr1RvKT+1FGVxnxAx08I9K8Tl7j9hpoJRE7OCf+t10fng==
+"@types/jest-diff@*":
+  version "20.0.1"
+  resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
+  integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
+
+"@types/jest@24.0.9":
+  version "24.0.9"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.9.tgz#74ce9cf337f25e189aa18f76ab3d65e8669b55f2"
+  integrity sha512-k3OOeevcBYLR5pdsOv5g3OP94h3mrJmLPHFEPWgbbVy2tGv0TZ/TlygiC848ogXhK8NL0I5up7YYtwpCp8xCJA==
+  dependencies:
+    "@types/jest-diff" "*"
 
 abab@^2.0.0:
   version "2.0.0"
@@ -343,19 +350,19 @@ atob@^2.1.1:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk-mock@4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk-mock/-/aws-sdk-mock-4.3.0.tgz#f5f6c51f7e96ae05a8923601422471bef50f2458"
-  integrity sha512-YzLDUv4KnCiCFtuLN6lyir9Xoqticg7nJCyW8krqob6UO2xLWZWE0gkEhoVZyOZSB+g0YIGSeDKmBLJTAYOblw==
+aws-sdk-mock@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk-mock/-/aws-sdk-mock-4.3.1.tgz#b405697945afe7c34cb178ac501a6f26978257f0"
+  integrity sha512-uOaf7/Tq9kSoRc2/EQfAn24AAwU6UwvR8xSFSg0vTRxK0xHHEZ5UB/KF6ibF2gj0I4977lM35237E5sbzhRxKA==
   dependencies:
     aws-sdk "^2.369.0"
     sinon "^7.1.1"
     traverse "^0.6.6"
 
-aws-sdk@2.400.0:
-  version "2.400.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.400.0.tgz#21041439ceeba8e6339b7bed54f2f3703243bbef"
-  integrity sha512-FJjRXajLnI52F0C1E4nFARk/907x4ZuffwFd6jiBQfaepT03wsY1PcJNEQ5CNHYA2qxAx4HezL2pKySEX+g87g==
+aws-sdk@2.413.0:
+  version "2.413.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.413.0.tgz#65c2dbe53ecb3f964fd9f18a850f8f1adc55f598"
+  integrity sha512-0KwDyjEwyXkItCy8kk9k2nBLGvhB1LzgTglsP80P+/6P6LdH0I47OG9wTXBsOGWqziG2Hp3gs1TxNrISf851Vw==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"

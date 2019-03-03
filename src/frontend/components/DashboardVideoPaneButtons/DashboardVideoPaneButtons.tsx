@@ -30,7 +30,8 @@ const messages = defineMessages({
   },
 });
 
-const DashboardButtonStyled = styled(Button)`
+const BtnWithLink = withLink(Button);
+const DashboardButtonStyled = styled(BtnWithLink)`
   flex-grow: 1;
   flex-basis: 8rem;
   max-width: 50%;
@@ -43,7 +44,6 @@ const DashboardButtonStyled = styled(Button)`
     margin-left: 1rem;
   }
 `;
-const DashboardButtonWithLink = withLink(DashboardButtonStyled);
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardVideoPaneButtonsProps {
@@ -65,7 +65,7 @@ export const DashboardVideoPaneButtons = ({
       justify={displayWatchBtn ? 'center' : 'end'}
       margin={'small'}
     >
-      <DashboardButtonWithLink
+      <DashboardButtonStyled
         label={
           <FormattedMessage
             {...(video.upload_state === uploadState.PENDING
@@ -77,7 +77,7 @@ export const DashboardVideoPaneButtons = ({
         to={UPLOAD_FORM_ROUTE(modelName.VIDEOS, video.id)}
       />
       {displayWatchBtn ? (
-        <DashboardButtonWithLink
+        <DashboardButtonStyled
           label={<FormattedMessage {...messages.btnPlayVideo} />}
           primary={displayWatchBtn}
           to={VIDEO_PLAYER_ROUTE()}
