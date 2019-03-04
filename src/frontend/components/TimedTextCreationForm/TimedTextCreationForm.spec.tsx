@@ -13,11 +13,12 @@ jest.mock(
 
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack';
 import { modelName } from '../../types/models';
-import { timedTextMode } from '../../types/tracks';
+import { timedTextMode, uploadState } from '../../types/tracks';
+import { jestMockOf } from '../../utils/types';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { TimedTextCreationForm } from './TimedTextCreationForm';
 
-const mockCreateTimedTextTrack: jest.Mock<
+const mockCreateTimedTextTrack: jestMockOf<
   typeof createTimedTextTrack
 > = createTimedTextTrack as any;
 
@@ -71,7 +72,16 @@ describe('<TimedTextCreationForm />', () => {
     });
 
     it('creates a timedtexttrack, adds it to store and retirects to the upload form', async () => {
-      mockCreateTimedTextTrack.mockResolvedValue({ id: '42' });
+      mockCreateTimedTextTrack.mockResolvedValue({
+        active_stamp: null,
+        id: '42',
+        is_ready_to_play: false,
+        language: 'en',
+        mode: timedTextMode.SUBTITLE,
+        upload_state: uploadState.PENDING,
+        url: '',
+        video: {} as any,
+      });
 
       instance.setState({ newTTLanguage: 'fr' });
       await instance.createAndGoToUpload();
@@ -81,7 +91,16 @@ describe('<TimedTextCreationForm />', () => {
         'fr',
         timedTextMode.SUBTITLE,
       );
-      expect(mockCreateTimedTextTrackRecord).toHaveBeenCalledWith({ id: '42' });
+      expect(mockCreateTimedTextTrackRecord).toHaveBeenCalledWith({
+        active_stamp: null,
+        id: '42',
+        is_ready_to_play: false,
+        language: 'en',
+        mode: timedTextMode.SUBTITLE,
+        upload_state: uploadState.PENDING,
+        url: '',
+        video: {} as any,
+      });
       expect(wrapper.name()).toEqual('Redirect');
       expect(wrapper.prop('push')).toBeTruthy();
       expect(wrapper.prop('to')).toEqual(

@@ -25,15 +25,16 @@ import { uploadFile } from '../../data/sideEffects/uploadFile/uploadFile';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { makeFormData } from '../../utils/makeFormData/makeFormData';
+import { jestMockOf } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadForm } from './UploadForm';
 
-const mockInitiateUpload: jest.Mock<
+const mockInitiateUpload: jestMockOf<
   typeof initiateUpload
 > = initiateUpload as any;
-const mockMakeFormData: jest.Mock<typeof makeFormData> = makeFormData as any;
-const mockUploadFile: jest.Mock<typeof uploadFile> = uploadFile as any;
+const mockMakeFormData: jestMockOf<typeof makeFormData> = makeFormData as any;
+const mockUploadFile: jestMockOf<typeof uploadFile> = uploadFile as any;
 
 const mockUpdateObject = jest.fn();
 const mockNotifyUploadProgress = jest.fn();
@@ -70,7 +71,7 @@ describe('UploadForm', () => {
   describe('upload()', () => {
     beforeEach(() => {
       // Mock formData building for easier testing
-      mockMakeFormData.mockReturnValue('form data body');
+      mockMakeFormData.mockReturnValue('form data body' as any);
     });
 
     it('gets the policy from the API and uses it to upload the file', async () => {
