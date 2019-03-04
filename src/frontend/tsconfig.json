@@ -22,7 +22,8 @@
     },
     "strict": true,
     "sourceMap": true,
-    "target": "es6"
+    "target": "es6",
+    "types": ["jest"]
   },
   "include": ["./**/*"]
 }
