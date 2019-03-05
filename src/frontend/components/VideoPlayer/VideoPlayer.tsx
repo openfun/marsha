@@ -17,6 +17,7 @@ import {
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
 import { Maybe, Nullable } from '../../utils/types';
+import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { TranscriptsConnected } from '../TranscriptsConnected/TranscriptsConnected';
 import './VideoPlayer.css'; // Improve some plyr styles
@@ -155,6 +156,7 @@ export class VideoPlayer extends React.Component<
                 />
               ))}
         </video>
+        {video.show_download && <DownloadVideo video={video} />}
         {transcripts.length > 0 && (
           <TranscriptsConnected
             transcripts={transcripts as TimedTextTranscript[]}
