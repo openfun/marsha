@@ -129,6 +129,7 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": "1533686400",
                 "is_ready_to_play": True,
+                "show_download": True,
                 "upload_state": "ready",
                 "timed_text_tracks": [
                     {
@@ -203,6 +204,7 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "upload_state": "pending",
                 "timed_text_tracks": [],
                 "urls": None,
@@ -234,6 +236,7 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "upload_state": state,
                 "timed_text_tracks": [],
                 "urls": None,

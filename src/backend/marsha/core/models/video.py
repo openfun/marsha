@@ -200,6 +200,7 @@ class Video(BaseModel):
         choices=STATE_CHOICES,
         default=PENDING,
     )
+    show_download = models.BooleanField(default=True)
 
     class Meta:
         """Options for the ``Video`` model."""
