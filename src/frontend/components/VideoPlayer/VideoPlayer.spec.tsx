@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { requestStatus } from '../../types/api';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
+import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { VideoPlayer } from './VideoPlayer';
 
 const createPlayer = jest.fn(() => ({
@@ -33,6 +34,7 @@ describe('VideoPlayer', () => {
     description: 'Some description',
     id: 'video-id',
     is_ready_to_play: true,
+    show_download: false,
     title: 'Some title',
     upload_state: 'ready',
     urls: {
@@ -129,7 +131,21 @@ describe('VideoPlayer', () => {
       '<track src="https://example.com//timedtext/ttt-3.vtt" srcLang="en" kind="captions" label="en"/>',
     );
 
+    expect(wrapper.find(DownloadVideo).exists()).toBe(false);
+
     expect(mockGetTimedTextTrackLanguageChoices).toHaveBeenCalledWith('foo');
+  });
+
+  it('renders with a downloadable video', () => {
+    const videoDownloableProps = {
+      ...props,
+      video: {
+        ...props.video,
+        show_download: true,
+      },
+    };
+    const wrapper = shallow(<VideoPlayer {...videoDownloableProps} />);
+    expect(wrapper.find(DownloadVideo).exists()).toBe(true);
   });
 
   it('starts up the player when it mounts', () => {
