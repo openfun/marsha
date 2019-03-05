@@ -184,6 +184,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "title",
             "upload_state",
             "urls",
+            "show_download",
         )
         read_only_fields = (
             "id",
