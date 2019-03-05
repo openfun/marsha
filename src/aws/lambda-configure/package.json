@@ -20,5 +20,8 @@
     "@types/jest": "24.0.9",
     "aws-sdk-mock": "4.3.1",
     "jest": "24.1.0"
+  },
+  "resolutions": {
+    "merge": "^1.2.1"
   }
 }
