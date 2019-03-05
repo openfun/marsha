@@ -8,6 +8,7 @@ import { API_ENDPOINT } from '../../settings';
 import { uploadState, Video } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
+import { DashboardVideoPaneDownloadOptionConnected } from '../DashboardVideoPaneDownloadOptionConnected/DashboardVideoPaneDownloadOptionConnected';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -162,6 +163,7 @@ export class DashboardVideoPane extends React.Component<
               <Box basis={'1/2'} margin={'small'}>
                 {commonStatusLine}
                 <DashboardVideoPaneHelptext state={video.upload_state} />
+                <DashboardVideoPaneDownloadOptionConnected video={video} />
               </Box>
               <Box basis={'1/2'} margin={'small'}>
                 <ImageIntlAlt

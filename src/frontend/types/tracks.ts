@@ -73,6 +73,7 @@ export interface Video extends Resource {
     mp4: { [key in videoSize]: string };
     thumbnails: { [key in videoSize]: string };
   };
+  show_download: boolean;
 }
 
 export type UploadableObject = TimedText | Video;
