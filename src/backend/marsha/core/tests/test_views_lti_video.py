@@ -80,6 +80,7 @@ class ViewsTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -142,6 +143,7 @@ class ViewsTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "ready",
@@ -347,6 +349,7 @@ class DevelopmentViewsTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "ready",
@@ -404,6 +407,7 @@ class DevelopmentViewsTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -458,6 +462,7 @@ class DevelopmentViewsTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
+                "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
