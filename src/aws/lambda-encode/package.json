@@ -23,5 +23,8 @@
     "@types/jest": "24.0.9",
     "@types/request-promise-native": "1.0.15",
     "jest": "24.1.0"
+  },
+  "resolutions": {
+    "merge": "^1.2.1"
   }
 }
