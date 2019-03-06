@@ -114,6 +114,20 @@ jobs:
               -f docker/images/dev/Dockerfile \
               --build-arg BASE_TAG=${CIRCLE_SHA1} \
               .
+      # Generate and persist the translations base file
+      - run:
+          name: Generate a POT file from strings extracted from the project
+          command: |
+            docker run --rm \
+              --volume "$PWD:/app" \
+              --workdir /app/src/backend \
+              --env-file env.d/ci \
+              "marsha:${CIRCLE_SHA1}-dev" \
+                  python manage.py makemessages --keep-pot
+      - persist_to_workspace:
+          root: ~/marsha
+          paths:
+            - src/backend/locale/django.pot
       - run:
           name: Check built image availability
           command: docker images "marsha:${CIRCLE_SHA1}*"
@@ -269,6 +283,13 @@ jobs:
       - run:
           name: Build front-end application
           command: yarn build
+      - run:
+          name: Use react-intl-po to generate our frontend.pot file
+          command: yarn generate-l10n-template
+      - persist_to_workspace:
+          root: ~/marsha
+          paths:
+            - src/frontend/i18n/frontend.pot
       - save_cache:
           paths:
             - ./node_modules
@@ -460,6 +481,27 @@ jobs:
                   -timeout 60s \
                     python manage.py test
 
+  # Restore django and front POT files containing strings to translate and upload them to our
+  # translation management tool
+  upload-i18n-strings:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/marsha/scripts
+    steps:
+      - checkout:
+          path: ~/marsha
+      - run:
+          name: Install scripts dependencies
+          command: yarn install --frozen-lockfile
+      - attach_workspace:
+          at: ~/marsha
+      - run:
+          name: Use our node script to upload i18n backend strings file
+          command: node i18n/upload.js 'backend.pot' '/../../src/backend/locale/django.pot'
+      - run:
+          name: Use our node script to upload i18n frontend strings file
+          command: node i18n/upload.js 'frontend.pot' '/../../src/frontend/i18n/frontend.pot'
+
   # ---- DockerHub publication job ----
   hub:
     machine: true
@@ -646,6 +688,18 @@ workflows:
           filters:
             tags:
               only: /.*/
+
+
+      # i18n jobs
+      #
+      # Extract strings and upload them to our translation management SaaS
+      - upload-i18n-strings:
+          requires:
+            - build-front
+            - build-dev
+          filters:
+            branches:
+              only: master
 
       # DockerHub publication.
       #

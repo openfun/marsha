@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn build",
+    "generate-l10n-template": "rip json2pot 'i18n/**/*.json' -o i18n/frontend.pot",
     "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
     "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "lint-fix": "tslint --fix -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
