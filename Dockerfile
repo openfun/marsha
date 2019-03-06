@@ -43,6 +43,12 @@ RUN yarn install --frozen-lockfile && \
 # ---- final application image ----
 FROM base
 
+# Install gettext
+RUN apt-get update && \
+    apt-get install -y \
+    gettext && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy installed python dependencies
 COPY --from=back-builder /install /usr/local
 
