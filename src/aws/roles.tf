@@ -117,7 +117,7 @@ resource "aws_iam_policy" "lambda_s3_access_policy" {
       "Resource": "arn:aws:s3:::${aws_s3_bucket.marsha_source.bucket}/*"
     },
     {
-      "Action": ["s3:PutObject"],
+      "Action": ["s3:GetObject", "s3:PutObject"],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::${aws_s3_bucket.marsha_destination.bucket}/*"
     }
