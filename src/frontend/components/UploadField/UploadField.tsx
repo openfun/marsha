@@ -13,7 +13,7 @@ interface UploadFieldState {
   file: Maybe<File>;
 }
 
-const DropzoneStyled = styled(Dropzone)`
+const DropzoneStyled = styled.div`
   display: flex; /* For the dropzone contents */
   flex-grow: 1;
 `;
@@ -29,12 +29,17 @@ export class UploadField extends React.Component<
 
   render() {
     return (
-      <DropzoneStyled
+      <Dropzone
         onDrop={this.onDrop.bind(this)}
         disabled={!!(this.state && this.state.file)}
       >
-        <DropzonePlaceholder />
-      </DropzoneStyled>
+        {({ getRootProps, getInputProps }) => (
+          <DropzoneStyled {...getRootProps()}>
+            <DropzonePlaceholder />
+            <input {...getInputProps()} />
+          </DropzoneStyled>
+        )}
+      </Dropzone>
     );
   }
 }
