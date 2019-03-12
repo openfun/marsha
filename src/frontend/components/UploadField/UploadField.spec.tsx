@@ -1,14 +1,14 @@
 import '../../testSetup';
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import * as React from 'react';
 
 import { UploadField } from './UploadField';
 
 describe('<UploadField />', () => {
   it('renders a Dropzone with the relevant messages', () => {
-    const wrapper = shallow(<UploadField onContentUpdated={jest.fn()} />);
-    expect(wrapper.childAt(0).html()).toContain('Select a file to upload');
+    const wrapper = mount(<UploadField onContentUpdated={jest.fn()} />);
+    expect(wrapper.html()).toContain('Select a file to upload');
   });
 
   describe('onDrop()', () => {
