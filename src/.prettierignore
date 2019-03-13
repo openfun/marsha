@@ -1,2 +1,4 @@
 i18n/**/*.json
 node_modules
+translations/translation.json
+
