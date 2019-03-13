@@ -16,6 +16,7 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
+import { isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -28,16 +29,17 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 };
 
 export interface VideoPlayerProps {
-  jwt: string;
-  getTimedTextTrackLanguageChoices: (jwt: string) => void;
-  languageChoices: LanguageChoice[];
-  video: Nullable<Video>;
   createPlayer: typeof createPlayer;
-  timedtexttracks: ConsumableQuery<TimedText>;
   dispatch: Dispatch;
+  getTimedTextTrackLanguageChoices: (jwt: string) => void;
+  jwt: string;
+  languageChoices: LanguageChoice[];
+  timedtexttracks: ConsumableQuery<TimedText>;
+  video: Nullable<Video>;
 }
 
 interface VideoPlayerState {
+  isDashSupported: boolean;
   player: Maybe<VideoPlayerInterface>;
 }
 
@@ -49,8 +51,10 @@ export class VideoPlayer extends React.Component<
 
   constructor(props: VideoPlayerProps) {
     super(props);
-
-    this.state = { player: undefined };
+    this.state = {
+      isDashSupported: isMSESupported(),
+      player: undefined,
+    };
   }
 
   /**
@@ -78,9 +82,11 @@ export class VideoPlayer extends React.Component<
         ),
       });
 
-      const dash = MediaPlayer().create();
-      dash.initialize(this.videoNodeRef!, video.urls.manifests.dash, false);
-      dash.setInitialBitrateFor('video', 1600000);
+      if (this.state.isDashSupported) {
+        const dash = MediaPlayer().create();
+        dash.initialize(this.videoNodeRef!, video.urls.manifests.dash, false);
+        dash.setInitialBitrateFor('video', 1600000);
+      }
     }
   }
 
@@ -125,14 +131,15 @@ export class VideoPlayer extends React.Component<
             size="auto"
             type="application/vnd.apple.mpegURL"
           />
-          {(Object.keys(video.urls.mp4) as videoSize[]).map(size => (
-            <source
-              key={video.urls.mp4[size]}
-              size={size}
-              src={video.urls.mp4[size]}
-              type="video/mp4"
-            />
-          ))}
+          {!this.state.isDashSupported &&
+            (Object.keys(video.urls.mp4) as videoSize[]).map(size => (
+              <source
+                key={video.urls.mp4[size]}
+                size={size}
+                src={video.urls.mp4[size]}
+                type="video/mp4"
+              />
+            ))}
 
           {/* This is a workaround to force plyr to load its tracks list once
           instantiated. Without this, captions are not loaded correctly, at least, on firefox.
