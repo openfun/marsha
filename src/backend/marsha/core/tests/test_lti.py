@@ -372,6 +372,53 @@ class VideoLTITestCase(TestCase):
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
 
+    def test_lti_launch_presentation_locale_fallback(self):
+        """Fallback on "en" locale if property is missing."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.launch_presentation_locale, "en")
+
+    def test_lti_launch_presentation_locale(self):
+        """Return value from launch_presentation_locale property when present."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "launch_presentation_locale": "fr",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.launch_presentation_locale, "fr")
+
 
 class PortabilityVideoLTITestCase(TestCase):
     """Test the portability of videos beween playlists and consumer sites.
