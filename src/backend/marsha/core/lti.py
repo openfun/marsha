@@ -261,6 +261,18 @@ class LTI:
         """
         return re.search(r"^course-v[0-9]:.*$", self.context_id)
 
+    @property
+    def launch_presentation_locale(self):
+        """LTI launch_presentation_locale.
+
+        Returns
+        -------
+        string
+            The locale present in launch_presentation_locale or fallback to en
+
+        """
+        return self.request.POST.get("launch_presentation_locale", "en")
+
     def get_or_create_video(self):
         """Get or create the video targeted by the LTI launch request.
 

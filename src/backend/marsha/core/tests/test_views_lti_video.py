@@ -42,6 +42,7 @@ class ViewsTestCase(TestCase):
             "roles": "instructor",
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
         }
         with mock.patch.object(
             LTI, "verify", return_value=passport.consumer_site
@@ -62,6 +63,9 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(
+            jwt_token.payload["locale"], data["launch_presentation_locale"]
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -127,6 +131,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -187,6 +192,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -285,6 +291,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en")
 
 
 class DevelopmentViewsTestCase(TestCase):
@@ -315,6 +322,7 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_name": "ufr",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
         }
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
@@ -332,6 +340,9 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(
+            jwt_token.payload["locale"], data["launch_presentation_locale"]
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -389,6 +400,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -444,6 +456,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
