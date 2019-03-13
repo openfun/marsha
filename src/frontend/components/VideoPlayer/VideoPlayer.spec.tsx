@@ -1,21 +1,16 @@
 import '../../testSetup';
 
 import { mount, shallow } from 'enzyme';
-import * as React from 'react';
+import React from 'react';
 
 import { requestStatus } from '../../types/api';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
-import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
+import { isMSESupported } from '../../utils/isAbrSupported';
+import { jestMockOf } from '../../utils/types';
 import { VideoPlayer } from './VideoPlayer';
-
-const createPlayer = jest.fn(() => ({
-  destroy: jest.fn(),
-}));
 
 const mockInitialize = jest.fn();
 const mockSetInitialBitrateFor = jest.fn();
-const mockGetTimedTextTrackLanguageChoices = jest.fn();
-
 jest.mock('dashjs', () => ({
   MediaPlayer: () => ({
     create: () => ({
@@ -24,6 +19,11 @@ jest.mock('dashjs', () => ({
     }),
   }),
 }));
+
+jest.mock('../../utils/isAbrSupported', () => ({
+  isMSESupported: jest.fn(),
+}));
+const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 
 jest.mock('../TranscriptsConnected/TranscriptsConnected', () => ({
   TranscriptsConnected: () => <div>TranscriptsConnected</div>,
@@ -52,11 +52,13 @@ describe('VideoPlayer', () => {
     },
   } as Video;
 
-  const dispatch = jest.fn();
-
+  const createPlayer = jest.fn(() => ({
+    destroy: jest.fn(),
+  }));
+  const mockGetTimedTextTrackLanguageChoices = jest.fn();
   const props = {
     createPlayer,
-    dispatch,
+    dispatch: jest.fn(),
     getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
     jwt: 'foo',
     languageChoices: [{ label: 'French', value: 'fr' }],
@@ -110,33 +112,51 @@ describe('VideoPlayer', () => {
 
   beforeEach(jest.clearAllMocks);
 
-  it('renders the video element with all the relevant sources', () => {
-    const wrapper = shallow(<VideoPlayer {...props} />);
-    const content = wrapper.html();
+  it('starts up the player with DashJS and renders all the relevant sources', () => {
+    // Simulate a browser that supports MSE and will use DashJS
+    mockIsMSESupported.mockReturnValue(true);
+    const wrapper = mount(<VideoPlayer {...props} />);
 
-    expect(content).toContain(
-      '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL"/>',
+    // Source for HLS is always rendered (as non iOS browsers will not load it)
+    expect(wrapper.html()).toContain(
+      '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL">',
     );
-    expect(content).toContain(
-      '<source size="144" src="https://example.com/144p.mp4" type="video/mp4"/>',
+    // Sources for basic MP4 are not rendered as they are not useful when DashJS is active
+    expect(wrapper.html()).not.toContain(
+      '<source size="144" src="https://example.com/144p.mp4" type="video/mp4">',
     );
-    expect(content).toContain(
-      '<source size="1080" src="https://example.com/1080p.mp4" type="video/mp4"/>',
-    );
-
-    expect(content).toContain(
-      '<track src="https://example.com//timedtext/ttt-1.vtt" srcLang="fr" kind="subtitles" label="French"/>',
-    );
-    expect(content).toContain(
-      '<track src="https://example.com//timedtext/ttt-3.vtt" srcLang="en" kind="captions" label="en"/>',
+    expect(wrapper.html()).not.toContain(
+      '<source size="1080" src="https://example.com/1080p.mp4" type="video/mp4">',
     );
 
-    expect(wrapper.find(DownloadVideo).exists()).toBe(false);
-
+    // Timed text tracks are rendered
     expect(mockGetTimedTextTrackLanguageChoices).toHaveBeenCalledWith('foo');
+    expect(wrapper.html()).toContain(
+      '<track src="https://example.com//timedtext/ttt-1.vtt" srclang="fr" kind="subtitles" label="French">',
+    );
+    expect(wrapper.html()).toContain(
+      '<track src="https://example.com//timedtext/ttt-3.vtt" srclang="en" kind="captions" label="en">',
+    );
+
+    // The player is created and initialized with DashJS for adaptive bitrate
+    expect(createPlayer).toHaveBeenCalledWith(
+      'plyr',
+      expect.any(Element),
+      'foo',
+      props.dispatch,
+    );
+    expect(mockInitialize).toHaveBeenCalledWith(
+      expect.any(Element),
+      'https://example.com/dash.mpd',
+      false,
+    );
+    expect(mockSetInitialBitrateFor).toHaveBeenCalledWith('video', 1600000);
+
+    // `video.show_download` is `false`, so we do not offer downloads
+    expect(wrapper.html()).not.toContain('Download this video');
   });
 
-  it('renders with a downloadable video', () => {
+  it('allows video download when the video object specifies it', () => {
     const videoDownloableProps = {
       ...props,
       video: {
@@ -144,26 +164,46 @@ describe('VideoPlayer', () => {
         show_download: true,
       },
     };
-    const wrapper = shallow(<VideoPlayer {...videoDownloableProps} />);
-    expect(wrapper.find(DownloadVideo).exists()).toBe(true);
+    const wrapper = mount(<VideoPlayer {...videoDownloableProps} />);
+    expect(wrapper.html()).toContain('Download this video');
   });
 
-  it('starts up the player when it mounts', () => {
-    // Mount so videojs is called with an element
-    mount(<VideoPlayer {...props} />);
+  it('does not use DashJS when MSE are not supported', () => {
+    // Simulate a browser that does not support MSE
+    mockIsMSESupported.mockReturnValue(false);
+    const wrapper = mount(<VideoPlayer {...props} />);
+
+    // Source for HLS is always rendered (as non iOS browsers will not load it)
+    expect(wrapper.html()).toContain(
+      '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL">',
+    );
+    // Sources for basic MP4 are rendered
+    expect(wrapper.html()).toContain(
+      '<source size="144" src="https://example.com/144p.mp4" type="video/mp4">',
+    );
+    expect(wrapper.html()).toContain(
+      '<source size="1080" src="https://example.com/1080p.mp4" type="video/mp4">',
+    );
+
+    // Timed text tracks are rendered
+    expect(mockGetTimedTextTrackLanguageChoices).toHaveBeenCalledWith('foo');
+    expect(wrapper.html()).toContain(
+      '<track src="https://example.com//timedtext/ttt-1.vtt" srclang="fr" kind="subtitles" label="French">',
+    );
+    expect(wrapper.html()).toContain(
+      '<track src="https://example.com//timedtext/ttt-3.vtt" srclang="en" kind="captions" label="en">',
+    );
+
+    // The video player is created ...
     expect(createPlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
       'foo',
-      dispatch,
+      props.dispatch,
     );
-
-    expect(mockInitialize).toHaveBeenCalledWith(
-      expect.any(Element),
-      'https://example.com/dash.mpd',
-      false,
-    );
-    expect(mockSetInitialBitrateFor).toHaveBeenCalledWith('video', 1600000);
+    /// ... but the DashJS player is not initialized
+    expect(mockInitialize).not.toHaveBeenCalled();
+    expect(mockSetInitialBitrateFor).not.toHaveBeenCalled();
   });
 
   it('cleans up the player when it unmounts', () => {
