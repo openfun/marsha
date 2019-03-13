@@ -77,6 +77,7 @@ class VideoLTIView(TemplateResponseMixin, View):
                     "context_id": lti.context_id,
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
+                    "locale": lti.launch_presentation_locale,
                 }
             )
             try:
