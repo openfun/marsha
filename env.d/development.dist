@@ -36,3 +36,9 @@ DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondShar
 # DJANGO_LRS_AUTH_TOKEN=Basic ThisIsABasicAuth
 # DJANGO_LRS_URL is the endpoint used to send xAPI statement.
 # DJANGO_LRS_URL=https://lrs.tld
+
+# CROWDIN API Credentials
+
+CROWDIN_API_KEY=Your-Api-Key
+CROWDIN_PROJECT_ID=Your-Project-Id
+CROWDIN_BASE_PATH=/app/src
