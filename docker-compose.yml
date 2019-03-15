@@ -38,3 +38,17 @@ services:
     depends_on:
       - "base"
       - "db"
+
+  crowdin:
+    image: alconost/crowdin
+    volumes:
+      - ".:/app"
+    env_file:
+      - env.d/development
+    working_dir: /app
+
+  node:
+    image: node:10
+    volumes:
+      - ".:/app"
+    working_dir: /app/src/frontend

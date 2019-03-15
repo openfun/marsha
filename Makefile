@@ -13,9 +13,12 @@ ifndef NO_DOCKER
 	COMPOSE_RUN          = $(COMPOSE) run --rm
 	COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 	COMPOSE_RUN_LRS	     = $(COMPOSE_RUN) api
+	COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
+	COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 	COMPOSE_TEST         = $(COMPOSE) -p marsha-test -f docker/compose/test/docker-compose.yml --project-directory .
 	COMPOSE_TEST_RUN     = $(COMPOSE_TEST) run --rm
 	COMPOSE_TEST_RUN_APP = $(COMPOSE_TEST_RUN) app
+	YARN 								 = $(COMPOSE_RUN_NODE) yarn
 endif
 
 default: help
@@ -89,6 +92,15 @@ test:  ## Run django tests for the marsha project.
 	# we use a test-runner that does not run the django check command as its done in another job
 	@$(COMPOSE_TEST_RUN_APP) python manage.py test --testrunner marsha.test_runner.NoCheckDiscoverRunner
 
+.PHONY: build-front
+build-front: ## Build front application
+	@$(YARN) build
+
+.PHONY: watch-front
+watch-front: ## Build front application and activate watch mode
+	@$(YARN) build --watch
+
+
 
 ##############################################
 # Targets specific to Virtualenv installations
@@ -119,9 +131,11 @@ env.d/development:
 bootstrap: env.d/development ## Prepare Docker images for the project
 	@$(COMPOSE) build base;
 	@$(COMPOSE) build app;
+	@$(YARN) build-dev
 	@echo 'Waiting until database is up…';
 	$(COMPOSE_RUN_APP) dockerize -wait tcp://db:5432 -timeout 60s
 	${MAKE} migrate;
+	${MAKE} i18n-compile-back
 
 .PHONY: run
 run: ## start the development server using Docker
@@ -134,3 +148,51 @@ stop: ## stop the development server using Docker
 .PHONY: down
 down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
+
+###########################################
+# Translations tasks
+
+.PHONY: i18n-generate
+i18n-generate: ## Generate source translations files for all applications
+	${MAKE} i18n-generate-back;
+	${MAKE} i18n-generate-front;
+
+.PHONY: i18n-compile
+i18n-compile: ## Compile translated messages to be used by all applications
+	${MAKE} i18n-compile-back
+	${MAKE} i18n-compile-front
+
+.PHONY: i18n-generate-front
+i18n-generate-front:
+	@$(YARN) build
+	@$(YARN) generate-l10n-template
+
+.PHONY: i18n-compile-front
+i18n-compile-front:
+	@$(YARN) generate-translations
+
+.PHONY: i18n-generate-back
+i18n-generate-back:
+	@$(COMPOSE_RUN_APP) python manage.py makemessages --ignore "venv/**/*" --keep-pot
+
+.PHONY: i18n-compile-back
+i18n-compile-back:
+	@$(COMPOSE_RUN_APP) python manage.py compilemessages
+
+.PHONY: crowdin-upload
+crowdin-upload: ## Upload source translations to crowdin
+	@$(COMPOSE_RUN_CROWDIN) upload sources
+
+.PHONY: crowdin-download
+crowdin-download: ## Download translated message from crowdin
+	@$(COMPOSE_RUN_CROWDIN) download translations
+
+.PHONY: i18n-generate-and-upload
+i18n-generate-and-upload: ## Generate source translations for all applications and upload then to crowdin
+	${MAKE} i18n-generate
+	${MAKE} crowdin-upload
+
+.PHONY: i18n-download-and-compile
+i18n-download-and-compile: ## Download all translated messages and compile them to be used be all applications
+	${MAKE} crowdin-download
+	${MAKE} i18n-compile
