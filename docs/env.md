@@ -237,6 +237,34 @@ The URL for the AWS Cloudfront distribution for the relevant AWS deployment. Thi
 - Required: Yes
 - Default: None
 
+### Crowdin API access related settings
+
+#### CROWDIN_API_KEY
+
+The API access key provided by Crowdin. Only managers can have access to this key.
+
+- Type: string
+- Required: No
+- Default: None
+
+#### CROWDIN_PROJECT_ID
+
+The unique project identifier provided by Crowdin. Only managers can have access to this setting.
+
+- Type: string
+- Required: No
+- Default: None
+
+#### CROWDIN_BASE_PATH
+
+The path from where the `crowdin-cli` will work, this path should point to the `src` directory of marsha.
+
+By default its value is `/app/src` and while you are using the container configured in our `docker-compose` file you have no need to change it.
+
+- Type: string
+- Required: None
+- Default: /app/src
+
 
 ## 2. Environment to deploy Marsha to AWS
 
