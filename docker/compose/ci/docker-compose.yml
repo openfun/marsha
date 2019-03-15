@@ -12,3 +12,13 @@ services:
       - ./dist:/app/dist
     depends_on:
       - "db"
+
+  crowdin:
+    image: alconost/crowdin
+    volumes:
+      - ".:/app"
+    environment:
+      - CROWDIN_API_KEY
+      - CROWDIN_PROJECT_ID
+      - CROWDIN_BASE_PATH
+    working_dir: /app
