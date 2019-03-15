@@ -114,6 +114,16 @@ jobs:
               -f docker/images/dev/Dockerfile \
               --build-arg BASE_TAG=${CIRCLE_SHA1} \
               .
+      # Compile translation messages already present in the project
+      - run:
+          name: Compile translation messages
+          command: |
+            docker run --rm \
+              --volume "$PWD:/app" \
+              --workdir /app/src/backend \
+              --env-file env.d/ci \
+              "marsha:${CIRCLE_SHA1}-dev" \
+                  python manage.py compilemessages
       # Generate and persist the translations base file
       - run:
           name: Generate a POT file from strings extracted from the project
@@ -483,24 +493,24 @@ jobs:
 
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
-  upload-i18n-strings:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/marsha/scripts
+  i18n:
+    machine:
+      docker_layer_caching: true
+    working_directory: ~/marsha
     steps:
       - checkout:
           path: ~/marsha
-      - run:
-          name: Install scripts dependencies
-          command: yarn install --frozen-lockfile
       - attach_workspace:
           at: ~/marsha
       - run:
-          name: Use our node script to upload i18n backend strings file
-          command: node i18n/upload.js 'backend.pot' '/../../src/backend/locale/django.pot'
-      - run:
-          name: Use our node script to upload i18n frontend strings file
-          command: node i18n/upload.js 'frontend.pot' '/../../src/frontend/i18n/frontend.pot'
+          name: upload files to crowdin
+          command: |
+            docker-compose \
+              -p marsha-test \
+              -f docker/compose/ci/docker-compose.yml \
+              --project-directory . \
+              run --rm --no-deps crowdin \
+                -c crowdin/config.yml upload sources
 
   # ---- DockerHub publication job ----
   hub:
@@ -693,7 +703,7 @@ workflows:
       # i18n jobs
       #
       # Extract strings and upload them to our translation management SaaS
-      - upload-i18n-strings:
+      - i18n:
           requires:
             - build-front
             - build-dev
