@@ -1,12 +1,16 @@
 import '../../testSetup';
 
 import { shallow } from 'enzyme';
-import * as React from 'react';
+import React from 'react';
 
 import { uploadState, Video } from '../../types/tracks';
 import { DashboardVideoPaneButtons } from './DashboardVideoPaneButtons';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
+
+jest.mock('../withLink/withLink', () => ({
+  withLink: (component: React.Component) => component,
+}));
 
 describe('<DashboardVideoPaneButtons />', () => {
   it('only renders the "Watch" button if the video is ready', () => {
