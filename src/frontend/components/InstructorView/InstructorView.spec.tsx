@@ -1,10 +1,14 @@
 import '../../testSetup';
 
 import { shallow } from 'enzyme';
-import * as React from 'react';
+import React from 'react';
 
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorControls, InstructorView, Preview } from './InstructorView';
+
+jest.mock('../withLink/withLink', () => ({
+  withLink: (component: React.Component) => component,
+}));
 
 describe('<InstructorView />', () => {
   it('renders the children inside a <Preview />', () => {
