@@ -38,6 +38,7 @@ WORKDIR /app
 COPY ./src/frontend /app/
 
 RUN yarn install --frozen-lockfile && \
+    yarn generate-translations && \
     yarn build --mode=production -o marsha/static/js/index.js
 
 # ---- final application image ----
