@@ -94,6 +94,7 @@ test:  ## Run django tests for the marsha project.
 
 .PHONY: build-front
 build-front: ## Build front application
+	@$(YARN) generate-translations
 	@$(YARN) build
 
 .PHONY: watch-front
@@ -131,7 +132,6 @@ env.d/development:
 bootstrap: env.d/development ## Prepare Docker images for the project
 	@$(COMPOSE) build base;
 	@$(COMPOSE) build app;
-	@$(YARN) build-dev
 	@echo 'Waiting until database is up…';
 	$(COMPOSE_RUN_APP) dockerize -wait tcp://db:5432 -timeout 60s
 	${MAKE} migrate;
