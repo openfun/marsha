@@ -4,7 +4,7 @@
   "description": "🐠 a FUN LTI video provider",
   "main": "front/index.tsx",
   "scripts": {
-    "build": "yarn generate-translations; tsc --noEmit && webpack",
+    "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn build",
     "generate-l10n-template": "rip json2pot 'i18n/**/*.json' -o i18n/frontend.pot",
     "generate-translations": "rip po2json './translations/*.po' -o './translations/translation.json' -m './i18n/**/*.json'",
