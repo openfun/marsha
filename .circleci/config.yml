@@ -44,8 +44,8 @@ jobs:
   build:
     # We use the machine executor, i.e. a VM, not a container
     machine:
-      # Cache docker layers so that we strongly speed up this job execution
-      docker_layer_caching: true
+      # Avoid cache in the production build
+      docker_layer_caching: false
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -290,6 +290,9 @@ jobs:
       - run:
           name: Install front-end dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Compile translations
+          command: yarn generate-translations
       - run:
           name: Build front-end application
           command: yarn build

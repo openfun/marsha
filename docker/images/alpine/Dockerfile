@@ -44,6 +44,7 @@ WORKDIR /app
 COPY ./src/frontend /app/
 
 RUN yarn install && \
+    yarn generate-translations && \
     yarn build -o marsha/static/js/index.js
 
 # ---- final application image ----
