@@ -6,18 +6,10 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE
 
+from ..defaults import PENDING, STATE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .account import INSTRUCTOR, ROLE_CHOICES
-from .base import BaseModel, NonDeletedUniqueIndex
-
-
-PENDING, PROCESSING, ERROR, READY = "pending", "processing", "error", "ready"
-STATE_CHOICES = (
-    (PENDING, _("pending")),
-    (PROCESSING, _("processing")),
-    (ERROR, _("error")),
-    (READY, _("ready")),
-)
+from .base import AbstractImage, BaseModel, NonDeletedUniqueIndex
 
 
 class Playlist(BaseModel):
@@ -388,3 +380,49 @@ class SignTrack(BaseTrack):
         verbose_name = _("signs language track")
         verbose_name_plural = _("signs language tracks")
         indexes = [NonDeletedUniqueIndex(["video", "language"])]
+
+
+class Thumbnail(AbstractImage):
+    """Thumbnail model illustrating a video."""
+
+    video = models.OneToOneField(
+        to="Video",
+        related_name="thumbnail",
+        verbose_name=_("video"),
+        help_text=_("video for which this thumbnail is"),
+        # Thumbnails is (soft-)deleted if video is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``Thumbnail`` model."""
+
+        db_table = "video_thumbnail"
+        verbose_name = _("thumbnail")
+        ordering = ["-created_on", "id"]
+
+    def get_source_s3_key(self, stamp=None):
+        """Compute the S3 key in the source bucket.
+
+        It is built from the video ID + ID of the thumbnail + version stamp.
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the thumbnail
+            assuming its active stamp is set to this value. This is useful to create an
+            upload policy for this prospective version of the thumbnail, so that the client can
+            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
+            to this value only after the file upload and processing is successful.
+
+        Returns
+        -------
+        string
+            The S3 key for the thumbnail file in the source bucket, where uploaded files are
+            stored before they are converted and copied to the destination bucket.
+
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+        return "{video!s}/thumbnail/{pk!s}/{stamp:s}".format(
+            video=self.video.pk, pk=self.pk, stamp=stamp
+        )

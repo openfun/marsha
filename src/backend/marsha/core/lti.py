@@ -9,7 +9,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
 
-from .models import PENDING, READY, ConsumerSite, Playlist, Video
+from .defaults import PENDING, READY
+from .models import ConsumerSite, Playlist, Video
 from .models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
 
