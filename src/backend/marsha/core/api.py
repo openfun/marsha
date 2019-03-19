@@ -14,10 +14,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from .defaults import SUBTITLE_SOURCE_MAX_SIZE, VIDEO_SOURCE_MAX_SIZE
+from .defaults import (
+    PENDING,
+    READY,
+    SUBTITLE_SOURCE_MAX_SIZE,
+    THUMBNAIL_SOURCE_MAX_SIZE,
+    VIDEO_SOURCE_MAX_SIZE,
+)
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
-from .models import PENDING, READY, TimedTextTrack, Video
+from .models import Thumbnail, TimedTextTrack, Video
 from .permissions import (
     IsRelatedVideoTokenOrAdminUser,
     IsVideoToken,

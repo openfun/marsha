@@ -11,7 +11,8 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from .models import ERROR, PROCESSING, READY, STATE_CHOICES, TimedTextTrack, Video
+from .defaults import ERROR, PROCESSING, READY, STATE_CHOICES
+from .models import Thumbnail, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 

@@ -11,6 +11,7 @@ import oauth2
 from oauthlib import oauth1
 from pylti.common import LTIException, LTIOAuthServer
 
+from ..defaults import STATE_CHOICES
 from ..factories import (
     ConsumerSiteFactory,
     ConsumerSiteLTIPassportFactory,
@@ -18,7 +19,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
-from ..models import STATE_CHOICES, ConsumerSitePortability, Playlist, Video
+from ..models import ConsumerSitePortability, Playlist, Video
 
 
 # We don't enforce arguments documentation in tests
