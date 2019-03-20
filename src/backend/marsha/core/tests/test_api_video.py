@@ -11,7 +11,12 @@ import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
-from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
+from ..factories import (
+    ThumbnailFactory,
+    TimedTextTrackFactory,
+    UserFactory,
+    VideoFactory,
+)
 from ..models import Video
 
 
@@ -131,6 +136,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_play": True,
                 "show_download": True,
                 "upload_state": "ready",
+                "thumbnail": None,
                 "timed_text_tracks": [
                     {
                         "active_stamp": "1533686400",
@@ -207,6 +213,7 @@ class VideoAPITest(TestCase):
                 "show_download": True,
                 "upload_state": "pending",
                 "timed_text_tracks": [],
+                "thumbnail": None,
                 "urls": None,
             },
         )
@@ -239,6 +246,7 @@ class VideoAPITest(TestCase):
                 "show_download": True,
                 "upload_state": state,
                 "timed_text_tracks": [],
+                "thumbnail": None,
                 "urls": None,
             },
         )
@@ -319,6 +327,71 @@ class VideoAPITest(TestCase):
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
         self.assertEqual(response.status_code, 404)
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_video_with_a_thumbnail(self):
+        """A video with a custom thumbnail should have it in its payload."""
+        video = VideoFactory(
+            pk="38a91911-9aee-41e2-94dd-573abda6f48f",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+        )
+        thumbnail = ThumbnailFactory(
+            video=video,
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content["thumbnail"],
+            {
+                "active_stamp": "1533686400",
+                "id": str(thumbnail.id),
+                "is_ready_to_display": True,
+                "upload_state": "ready",
+                "urls": {
+                    "144": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_144.jpg",
+                    "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_240.jpg",
+                    "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_480.jpg",
+                    "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_720.jpg",
+                    "1080": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_1080.jpg",
+                },
+                "video": str(video.id),
+            },
+        )
+
+        self.assertEqual(
+            content["urls"]["thumbnails"],
+            {
+                "144": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_144.jpg",
+                "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_240.jpg",
+                "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_480.jpg",
+                "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_720.jpg",
+                "1080": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_1080.jpg",
+            },
+        )
 
     def test_api_video_read_list_staff_or_user(self):
         """Users authenticated via a session should not be able to read a list of videos."""

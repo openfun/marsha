@@ -8,6 +8,7 @@ from rest_framework.schemas import get_schema_view
 
 from marsha.core.admin import admin_site
 from marsha.core.api import (
+    ThumbnailViewSet,
     TimedTextTrackViewSet,
     VideoViewSet,
     XAPIStatementView,
@@ -21,6 +22,7 @@ router.register(r"videos", VideoViewSet, base_name="videos")
 router.register(
     r"timedtexttracks", TimedTextTrackViewSet, base_name="timed_text_tracks"
 )
+router.register(r"thumbnail", ThumbnailViewSet, base_name="thumbnail")
 
 urlpatterns = [
     # Admin

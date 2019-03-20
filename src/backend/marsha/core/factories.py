@@ -136,3 +136,12 @@ class SignTrackFactory(BaseTrackFactory):
 
     class Meta:  # noqa
         model = models.SignTrack
+
+
+class ThumbnailFactory(DjangoModelFactory):
+    """Factory for the Thumbnail model."""
+
+    video = factory.SubFactory(VideoFactory)
+
+    class Meta:  # noqa
+        model = models.Thumbnail
