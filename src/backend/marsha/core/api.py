@@ -30,6 +30,7 @@ from .permissions import (
     IsVideoTokenOrAdminUser,
 )
 from .serializers import (
+    ThumbnailSerializer,
     TimedTextTrackSerializer,
     UpdateStateSerializer,
     VideoSerializer,
@@ -227,6 +228,70 @@ class TimedTextTrackViewSet(
 
         # Reset the upload state of the timed text track
         TimedTextTrack.objects.filter(pk=pk).update(upload_state=PENDING)
+
+        return Response(policy)
+
+
+class ThumbnailViewSet(
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Viewset for the API of the Thumbnail object."""
+
+    permission_classes = [IsRelatedVideoTokenOrAdminUser]
+    serializer_class = ThumbnailSerializer
+
+    def get_queryset(self):
+        """Restrict list access to thumbnail related to the video in the JWT token."""
+        user = self.request.user
+        if isinstance(user, TokenUser):
+            return Thumbnail.objects.filter(video__id=user.id)
+        return Thumbnail.objects.none()
+
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
+    # pylint: disable=unused-argument
+    def initiate_upload(self, request, pk=None):
+        """Get an upload policy for a thumbnail.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the thumbnail
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+
+        """
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        thumbnail = self.get_object()
+        key = thumbnail.get_source_s3_key(stamp=stamp)
+
+        policy = get_s3_upload_policy_signature(
+            now,
+            [
+                {"key": key},
+                ["starts-with", "$Content-Type", "image/"],
+                ["content-length-range", 0, THUMBNAIL_SOURCE_MAX_SIZE],
+            ],
+        )
+
+        policy.update(
+            {"key": key, "max_file_size": THUMBNAIL_SOURCE_MAX_SIZE, "stamp": stamp}
+        )
+
+        # Reset the upload state of the thumbnail
+        Thumbnail.objects.filter(pk=pk).update(upload_state=PENDING)
 
         return Response(policy)
 

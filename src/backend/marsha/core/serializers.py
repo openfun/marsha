@@ -22,7 +22,7 @@ UUID_REGEX = (
 # This regex matches keys in AWS for videos or timed text tracks
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
-    "^{uuid:s}/(?P<model_name>video|timedtexttrack)/(?P<object_id>"
+    "^{uuid:s}/(?P<model_name>video|thumbnail|timedtexttrack)/(?P<object_id>"
     "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?$"
 ).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS)
 KEY_REGEX = re.compile(KEY_PATTERN)
@@ -171,6 +171,90 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         return None
 
 
+class ThumbnailSerializer(serializers.ModelSerializer):
+    """Serializer to display a thumbnail."""
+
+    class Meta:  # noqa
+        model = Thumbnail
+        fields = (
+            "active_stamp",
+            "id",
+            "is_ready_to_display",
+            "upload_state",
+            "urls",
+            "video",
+        )
+        read_only_fields = (
+            "active_stamp",
+            "id",
+            "is_ready_to_display",
+            "upload_state",
+            "urls",
+            "video",
+        )
+
+    active_stamp = TimestampField(
+        source="uploaded_on", required=False, allow_null=True, read_only=True
+    )
+    video = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
+    is_ready_to_display = serializers.BooleanField(read_only=True)
+    urls = serializers.SerializerMethodField()
+
+    def create(self, validated_data):
+        """Force the video field to the video of the JWT Token if any.
+
+        Parameters
+        ----------
+        validated_data : dictionary
+            Dictionary of the deserialized values of each field after validation.
+
+        Returns
+        -------
+        dictionary
+            The "validated_data" dictionary is returned after modification.
+
+        """
+        # user here is a video as it comes from the JWT
+        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
+        user = self.context["request"].user
+        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+            validated_data["video_id"] = user.id
+        return super().create(validated_data)
+
+    def get_urls(self, obj):
+        """Urls of the thumbnail.
+
+        Parameters
+        ----------
+        obj : Type[models.Thumbnail]
+            The thumbnail that we want to serialize
+
+        Returns
+        -------
+        Dict or None
+            The urls for the thumbnail.
+            None if the thumbnail is still not uploaded to S3 with success.
+
+        """
+        if obj.uploaded_on:
+            base = "{cloudfront:s}/{video!s}".format(
+                cloudfront=settings.CLOUDFRONT_URL, video=obj.video.pk
+            )
+            urls = {}
+            for resolution in settings.VIDEO_RESOLUTIONS:
+                urls[
+                    resolution
+                ] = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.jpg".format(
+                    base=base,
+                    stamp=time_utils.to_timestamp(obj.uploaded_on),
+                    resolution=resolution,
+                )
+            return urls
+        return None
+
+
 class VideoSerializer(serializers.ModelSerializer):
     """Serializer to display a video model with all its resolution options."""
 
@@ -182,6 +266,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "id",
             "is_ready_to_play",
             "timed_text_tracks",
+            "thumbnail",
             "title",
             "upload_state",
             "urls",
@@ -201,6 +286,7 @@ class VideoSerializer(serializers.ModelSerializer):
     timed_text_tracks = TimedTextTrackSerializer(
         source="timedtexttracks", many=True, read_only=True
     )
+    thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
     urls = serializers.SerializerMethodField()
     is_ready_to_play = serializers.BooleanField(read_only=True)
 
@@ -226,7 +312,18 @@ class VideoSerializer(serializers.ModelSerializer):
         if obj.uploaded_on is None:
             return None
 
+        thumbnail_urls = {}
+        try:
+            thumbnail = obj.thumbnail
+        except Thumbnail.DoesNotExist:
+            pass
+        else:
+            if thumbnail.uploaded_on is not None:
+                thumbnail_serialized = ThumbnailSerializer(thumbnail)
+                thumbnail_urls.update(thumbnail_serialized.data.get("urls"))
+
         urls = {"mp4": {}, "thumbnails": {}}
+
         base = "{cloudfront:s}/{pk!s}".format(
             cloudfront=settings.CLOUDFRONT_URL, pk=obj.pk
         )
@@ -244,10 +341,11 @@ class VideoSerializer(serializers.ModelSerializer):
             )
 
             # Thumbnails
-            urls["thumbnails"][
-                resolution
-            ] = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
-                base=base, stamp=stamp, resolution=resolution
+            urls["thumbnails"][resolution] = thumbnail_urls.get(
+                resolution,
+                "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
+                    base=base, stamp=stamp, resolution=resolution
+                ),
             )
 
             # Sign the urls of mp4 videos only if the functionality is activated
