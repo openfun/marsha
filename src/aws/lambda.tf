@@ -58,6 +58,9 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
   filename         = "dist/marsha_encode.zip"
   source_code_hash = "${base64sha256(file("dist/marsha_encode.zip"))}"
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
+  memory_size      = "1536"
+  timeout          = "90"
+
 
   environment {
     variables = {

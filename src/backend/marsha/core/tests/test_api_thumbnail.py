@@ -290,7 +290,7 @@ class ThumbnailApiTest(TestCase):
                     {"x-amz-date": "20180808T000000Z"},
                     {
                         "key": (
-                            "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/thumbnails/"
+                            "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/thumbnail/"
                             "4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400"
                         )
                     },
@@ -305,7 +305,7 @@ class ThumbnailApiTest(TestCase):
                 "acl": "private",
                 "bucket": "test-marsha-source",
                 "stamp": "1533686400",
-                "key": "{video!s}/thumbnails/{thumbnail!s}/1533686400".format(
+                "key": "{video!s}/thumbnail/{thumbnail!s}/1533686400".format(
                     video=video.pk, thumbnail=thumbnail.id
                 ),
                 "max_file_size": 10485760,
@@ -315,7 +315,7 @@ class ThumbnailApiTest(TestCase):
                 "x_amz_date": "20180808T000000Z",
                 "x_amz_expires": 86400,
                 "x_amz_signature": (
-                    "51dc14b1163c470aa94162e6b7779c1cce4214992813fcd60150e5bfc6e5b598"
+                    "c2d6de925194710b939abf80b7b1218a3af93123c1da16dd2c3f35aac145dbfc"
                 ),
             },
         )

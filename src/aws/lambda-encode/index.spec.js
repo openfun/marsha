@@ -13,6 +13,9 @@ jest.doMock('./src/encodeVideo', () => mockEncodeVideo);
 const mockUpdateState = jest.fn();
 jest.doMock('./src/updateState', () => mockUpdateState);
 
+const mockResizeThumbnails = jest.fn();
+jest.doMock('./src/resizeThumbnails', () => mockResizeThumbnails);
+
 const lambda = require('./index.js').handler;
 
 const callback = jest.fn();
@@ -118,6 +121,30 @@ describe('lambda', () => {
     );
   });
 
+  it('reports an error when a thumbnail has an unexpected format', () => {
+    lambda(
+      {
+        Records: [
+          {
+            s3: {
+              bucket: { name: 'source bucket' },
+              object: {
+                key:
+                  '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a',
+              },
+            },
+          },
+        ],
+      },
+      null,
+      callback,
+    );
+    expect(callback).toHaveBeenCalledWith(
+      'Source thumbnails should be uploaded in a folder of the form ' +
+        '"{playlist_id}/thumbnail/{thumbnail_id}/{stamp}".',
+    );
+  });
+
   describe('called with a timed text object', () => {
     const event = {
       Records: [
@@ -208,6 +235,37 @@ describe('lambda', () => {
       );
       expect(mockUpdateState).not.toHaveBeenCalled();
       expect(callback).toHaveBeenCalledWith('Failed!');
+    });
+  });
+
+  describe('called with a thumbnail object', () => {
+    it('delegates to resizeThumbnails and call updateState', async () => {
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: 'source bucket' },
+                object: {
+                  key:
+                    '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback,
+      );
+
+      expect(mockResizeThumbnails).toHaveBeenCalledWith(
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+        'source bucket',
+      );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+        'ready',
+      );
     });
   });
 });
