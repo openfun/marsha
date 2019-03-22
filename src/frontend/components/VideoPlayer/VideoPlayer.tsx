@@ -126,11 +126,6 @@ export class VideoPlayer extends React.Component<
           crossOrigin="anonymous"
           poster={video.urls.thumbnails[720]}
         >
-          <source
-            src={video.urls.manifests.hls}
-            size="auto"
-            type="application/vnd.apple.mpegURL"
-          />
           {!this.state.isDashSupported &&
             (Object.keys(video.urls.mp4) as videoSize[]).map(size => (
               <source

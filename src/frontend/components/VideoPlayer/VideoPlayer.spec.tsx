@@ -117,10 +117,6 @@ describe('VideoPlayer', () => {
     mockIsMSESupported.mockReturnValue(true);
     const wrapper = mount(<VideoPlayer {...props} />);
 
-    // Source for HLS is always rendered (as non iOS browsers will not load it)
-    expect(wrapper.html()).toContain(
-      '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL">',
-    );
     // Sources for basic MP4 are not rendered as they are not useful when DashJS is active
     expect(wrapper.html()).not.toContain(
       '<source size="144" src="https://example.com/144p.mp4" type="video/mp4">',
@@ -173,10 +169,6 @@ describe('VideoPlayer', () => {
     mockIsMSESupported.mockReturnValue(false);
     const wrapper = mount(<VideoPlayer {...props} />);
 
-    // Source for HLS is always rendered (as non iOS browsers will not load it)
-    expect(wrapper.html()).toContain(
-      '<source src="https://example.com/hls.m3u8" type="application/vnd.apple.mpegURL">',
-    );
     // Sources for basic MP4 are rendered
     expect(wrapper.html()).toContain(
       '<source size="144" src="https://example.com/144p.mp4" type="video/mp4">',
