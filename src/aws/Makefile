@@ -30,7 +30,6 @@ state-output: ## Display output of the terraform state bucket creation
 state-output:
 	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform output
 
-
 .PHONY: deploy
 deploy: ## Create or update the complete AWS infrastructure for Marsha
 deploy:
