@@ -8,6 +8,16 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.5.0] - 2019-03-25
+
+### Added
+
+- Manage translations with Crowdin and build them in the CI.
+
+### Fixed
+
+- Remove HLS video support for iOS platforms.
+
 ## [2.4.0] - 2019-03-14
 
 ### Added
@@ -172,7 +182,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.4.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.5.0...master
+[2.5.0]: https://github.com/openfun/marsha/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/openfun/marsha/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/openfun/marsha/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/openfun/marsha/compare/v2.2.1...v2.3.0
