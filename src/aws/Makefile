@@ -9,47 +9,21 @@ help:  ## Show this help
 env.d/development:
 	cp env.d/development.dist env.d/development
 
-.PHONY: apply
-apply: env.d/development ## Apply Terraform config
-apply:
-	docker-compose run --rm app /bin/terraform apply
-
-.PHONY: refresh
-refresh: ## Refresh Terraform config
-refresh:
-	docker-compose run --rm app /bin/terraform refresh
-
-.PHONY: state-create
-state-create: env.d/development ## Create bucket in AWS to store Terraform state files
-state-create:
-	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform init
-	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform apply
-
-.PHONY: state-output
-state-output: ## Display output of the terraform state bucket creation
-state-output:
-	docker-compose run --rm -w /app/create_state_bucket app /bin/terraform output
-
 .PHONY: deploy
 deploy: ## Create or update the complete AWS infrastructure for Marsha
 deploy:
 	@${MAKE} lambda
-	@${MAKE} apply
+	@bin/terraform apply
 
 .PHONY: output
 output: ## Display Terraform config output
 output:
-	docker-compose run --rm app /bin/terraform output
+	bin/terraform output
 
 .PHONY: init
 init: env.d/development ## Initialize Terraform
 init:
-	docker-compose run --rm app /bin/terraform init
-
-.PHONY: destroy
-destroy: ## Destroy Terraform config
-destroy:
-	docker-compose run --rm app /bin/terraform destroy
+	bin/terraform init
 
 .PHONY: lambda
 lambda: ## Zip and copy source files to dist/
