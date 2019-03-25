@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Run Terraform commands in the docker container passing our environment variables
+
+docker run --rm -it \
+    -u "$(id -u)" \
+    -v "${PWD}/:/app" \
+    -w "/app" \
+    --env-file ./env.d/development \
+    "hashicorp/terraform:light" \
+    "$@"
