@@ -37,7 +37,14 @@ WORKDIR /app
 
 COPY ./src/frontend /app/
 
-RUN yarn install --frozen-lockfile && \
+# We need to fake an empty translation file for the first front-end build that
+# will extract sources translation files in the `i18n` directory. Then
+# react-intl-po will use them to compile translated messages in
+# `translations/*.po` files. Finally, the second front-end build bundles
+# translations in the build that will be used in production.
+RUN echo "{}" > /app/translations/translation.json && \
+    yarn install --frozen-lockfile && \
+    yarn build -o /dev/null && \
     yarn generate-translations && \
     yarn build --mode=production -o marsha/static/js/index.js
 
