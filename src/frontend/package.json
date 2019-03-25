@@ -61,6 +61,7 @@
     "webpack-cli": "3.3.0"
   },
   "dependencies": {
+    "core-js": "3",
     "dashjs": "2.9.3",
     "grommet": "2.6.5",
     "iframe-resizer": "4.0.4",
