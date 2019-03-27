@@ -5,6 +5,7 @@ import { context, ContextState } from './context/reducer';
 import { byIdActions } from './genericReducers/resourceById/resourceById';
 import { currentQueryActions } from './genericReducers/resourceList/resourceList';
 import { player, PlayerState } from './player/reducer';
+import { thumbnail, ThumbnailState } from './thumbnail/reducer';
 import {
   timedTextTrackLanguageChoices,
   TimedTextTrackLanguageChoicesState,
@@ -25,6 +26,7 @@ export interface RootState<state extends appState> {
   player: PlayerState;
   resources: {
     [modelName.TIMEDTEXTTRACKS]: TimedTextTracksState;
+    [modelName.THUMBNAIL]: ThumbnailState;
     [modelName.VIDEOS]: VideosState;
   };
 }
@@ -46,6 +48,10 @@ export const rootReducer = (
     ),
     [modelName.VIDEOS]: videos(
       (state && state.resources[modelName.VIDEOS]) || undefined,
+      action,
+    ),
+    [modelName.THUMBNAIL]: thumbnail(
+      (state && state.resources[modelName.THUMBNAIL]) || undefined,
       action,
     ),
   },
