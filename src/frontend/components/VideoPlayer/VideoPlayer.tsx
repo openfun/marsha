@@ -9,9 +9,11 @@ import { createPlayer } from '../../Player/createPlayer';
 import { ConsumableQuery } from '../../types/api';
 import { LanguageChoice } from '../../types/LanguageChoice';
 import {
+  Thumbnail,
   TimedText,
   timedTextMode,
   TimedTextTranscript,
+  uploadState,
   Video,
   videoSize,
 } from '../../types/tracks';
@@ -35,6 +37,7 @@ export interface VideoPlayerProps {
   jwt: string;
   languageChoices: LanguageChoice[];
   timedtexttracks: ConsumableQuery<TimedText>;
+  thumbnail: Nullable<Thumbnail>;
   video: Nullable<Video>;
 }
 
@@ -100,7 +103,7 @@ export class VideoPlayer extends React.Component<
   }
 
   render() {
-    const { video, timedtexttracks, languageChoices } = this.props;
+    const { video, timedtexttracks, languageChoices, thumbnail } = this.props;
 
     const languages: { [key: string]: string } = languageChoices.reduce(
       (acc, current) => ({
@@ -119,12 +122,16 @@ export class VideoPlayer extends React.Component<
       .filter(track => track.is_ready_to_play)
       .filter(track => timedTextMode.TRANSCRIPT === track.mode);
 
+    const thumbnailUrls =
+      (thumbnail && thumbnail.is_ready_to_display && thumbnail.urls) ||
+      video.urls.thumbnails;
+
     return (
       <Box>
         <video
           ref={node => (this.videoNodeRef = node)}
           crossOrigin="anonymous"
-          poster={video.urls.thumbnails[720]}
+          poster={thumbnailUrls[720]}
         >
           {!this.state.isDashSupported &&
             (Object.keys(video.urls.mp4) as videoSize[]).map(size => (

@@ -9,9 +9,9 @@ jest.mock('../DashboardVideoPaneButtons/DashboardVideoPaneButtons', () => ({
 }));
 
 import { uploadState, Video } from '../../types/tracks';
+import { DashboardThumbnailConnected } from '../DashboardThumbnailConnected/DashboardThumbnailConnected';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
-import { ImageIntlAlt } from '../ImageIntlAlt/ImageIntlAlt';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 import { DashboardVideoPane } from './DashboardVideoPane';
 
@@ -211,7 +211,7 @@ describe('<DashboardVideoPane />', () => {
             }
           />,
         )
-          .find(ImageIntlAlt)
+          .find(DashboardThumbnailConnected)
           .exists(),
       ).toBe(READY === state);
     }

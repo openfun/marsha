@@ -36,6 +36,11 @@ const titleMessages = defineMessages({
     description: 'Title for the video upload form',
     id: 'components.UploadForm.title-videos',
   },
+  [modelName.THUMBNAIL]: {
+    defaultMessage: 'Upload a new thumbnail',
+    description: 'Title for the thumbnail upload form',
+    id: 'components.UploadForm.title-thumbnail',
+  },
 });
 
 const timedtexttrackTitleMessages = defineMessages({
@@ -139,7 +144,7 @@ export class UploadForm extends React.Component<
     const formData = makeFormData.apply(null, [
       ['key', policy.key],
       ['acl', policy.acl],
-      ...((objectType === modelName.VIDEOS
+      ...(([modelName.VIDEOS, modelName.THUMBNAIL].includes(objectType)
         ? [['Content-Type', file!.type]]
         : []) as any),
       ['X-Amz-Credential', policy.x_amz_credential],
