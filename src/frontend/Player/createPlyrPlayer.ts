@@ -87,7 +87,15 @@ export const createPlyrPlayer = (
     hasSeeked = true;
   });
   player.on('seeked', event => {
-    if (false === hasSeeked || false === isInitialized) {
+    if (false === isInitialized) {
+      // this is a workaround to force the player to stay on the first frame (time code 0)
+      // while the video is not played. Without this, the state seeks a little bit
+      // when loaded and the poster is not displayed.
+      // see: https://github.com/sampotts/plyr/issues/1397
+      event.detail.plyr.currentTime = 0;
+      return;
+    }
+    if (false === hasSeeked) {
       return;
     }
     hasSeeked = false;
