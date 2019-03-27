@@ -4,13 +4,13 @@ import { shallow } from 'enzyme';
 import React from 'react';
 
 import {
-  DashboardVideoPaneProgress,
+  DashboardObjectProgress,
   StyledMeter,
-} from './DashboardVideoPaneProgress';
+} from './DashboardObjectProgress';
 
 describe('<DashboardVideoPaneProgress />', () => {
   it('renders and displays the current progress', () => {
-    const wrapper = shallow(<DashboardVideoPaneProgress progress={51} />);
+    const wrapper = shallow(<DashboardObjectProgress progress={51} />);
     expect(
       wrapper
         .dive()
