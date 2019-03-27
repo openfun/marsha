@@ -35,6 +35,7 @@ describe('VideoPlayer', () => {
     id: 'video-id',
     is_ready_to_play: true,
     show_download: false,
+    thumbnail: null,
     title: 'Some title',
     upload_state: 'ready',
     urls: {
@@ -62,6 +63,7 @@ describe('VideoPlayer', () => {
     getTimedTextTrackLanguageChoices: mockGetTimedTextTrackLanguageChoices,
     jwt: 'foo',
     languageChoices: [{ label: 'French', value: 'fr' }],
+    thumbnail: null,
     timedtexttracks: {
       objects: [
         {

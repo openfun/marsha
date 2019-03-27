@@ -2,13 +2,14 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { RootState } from '../../data/rootReducer';
+import { getThumbnail } from '../../data/thumbnail/selector';
 import { getTimedTextTrackLanguageChoices } from '../../data/timedTextTrackLanguageChoices/action';
 import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { VideoPlayer, VideoPlayerProps } from '../VideoPlayer/VideoPlayer';
 
-type VideoPlayerConnectedProps = Pick<
+export type VideoPlayerConnectedProps = Pick<
   VideoPlayerProps,
   'createPlayer' | 'video'
 >;
@@ -23,6 +24,7 @@ export const mapStateToProps = (
 ) => ({
   jwt: state.context.jwt,
   languageChoices: state.languageChoices.items,
+  thumbnail: getThumbnail(state),
   timedtexttracks: getTimedTextTracks(state),
   video:
     (state.resources[modelName.VIDEOS]!.byId &&

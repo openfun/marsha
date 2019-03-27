@@ -7,22 +7,17 @@ import styled from 'styled-components';
 import { API_ENDPOINT } from '../../settings';
 import { uploadState, Video } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
+import { DashboardThumbnailConnected } from '../DashboardThumbnailConnected/DashboardThumbnailConnected';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOptionConnected } from '../DashboardVideoPaneDownloadOptionConnected/DashboardVideoPaneDownloadOptionConnected';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { ImageIntlAlt } from '../ImageIntlAlt/ImageIntlAlt';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages = defineMessages({
-  thumbnailAlt: {
-    defaultMessage: 'Video thumbnail preview image.',
-    description: 'Accessibility text for the video thumbnail in the Dashboard.',
-    id: 'components.DashboardVideoPane.thumbnailAlt',
-  },
   title: {
     defaultMessage: 'Video status',
     description:
@@ -166,11 +161,7 @@ export class DashboardVideoPane extends React.Component<
                 <DashboardVideoPaneDownloadOptionConnected video={video} />
               </Box>
               <Box basis={'1/2'} margin={'small'}>
-                <ImageIntlAlt
-                  alt={messages.thumbnailAlt}
-                  fit={'cover'}
-                  src={video.urls.thumbnails[720]}
-                />
+                <DashboardThumbnailConnected video={video} />
               </Box>
             </Box>
             <DashboardVideoPaneButtons video={video} />
