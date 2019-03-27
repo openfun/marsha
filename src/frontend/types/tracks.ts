@@ -54,13 +54,22 @@ export interface TimedTextTranscript extends TimedText {
   mode: timedTextMode.TRANSCRIPT;
 }
 
+export type urls = { [key in videoSize]: string };
+
+export interface Thumbnail extends Resource {
+  is_ready_to_display: boolean;
+  upload_state: uploadState;
+  urls: urls;
+  active_stamp: Nullable<number>;
+  video: Video;
+}
+
 /** Possible sizes for a video file or stream. Used as keys in lists of files. */
 export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   description: string;
-  id: string;
   is_ready_to_play: boolean;
   timed_text_tracks: TimedText[];
   title: string;
@@ -70,10 +79,11 @@ export interface Video extends Resource {
       dash: string;
       hls: string;
     };
-    mp4: { [key in videoSize]: string };
-    thumbnails: { [key in videoSize]: string };
+    mp4: urls;
+    thumbnails: urls;
   };
   show_download: boolean;
+  thumbnail: Nullable<Thumbnail>;
 }
 
-export type UploadableObject = TimedText | Video;
+export type UploadableObject = TimedText | Video | Thumbnail;
