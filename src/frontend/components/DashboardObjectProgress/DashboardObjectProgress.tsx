@@ -15,15 +15,15 @@ export const StyledMeter = styled(Meter)`
   width: 80%;
 `;
 
-interface DashboardVideoPaneProgressProps {
+interface DashboardObjectProgressProps {
   progress: number;
 }
 
-export const DashboardVideoPaneProgress = injectIntl(
+export const DashboardObjectProgress = injectIntl(
   ({
     intl,
     progress = 0,
-  }: DashboardVideoPaneProgressProps & InjectedIntlProps) => {
+  }: DashboardObjectProgressProps & InjectedIntlProps) => {
     // There is a conflict in the type of the `values` prop between `react` and `grommet`
     // Use the const type to ensure correctness and the `any` escape hatch for the actual value
     const values: MeterProps['values'] = [

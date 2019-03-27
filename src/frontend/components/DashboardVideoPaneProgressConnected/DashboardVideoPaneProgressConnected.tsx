@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../data/rootReducer';
 import { appStateSuccess } from '../../types/AppData';
 import { Video } from '../../types/tracks';
-import { DashboardVideoPaneProgress } from '../DashboardVideoPaneProgress/DashboardVideoPaneProgress';
+import { DashboardObjectProgress } from '../DashboardObjectProgress/DashboardObjectProgress';
 
 interface DashboardVideoPaneProgressConnectedProps {
   videoId: Video['id'];
@@ -17,5 +17,5 @@ const mapStateToProps = (
 });
 
 export const DashboardVideoPaneProgressConnected = connect(mapStateToProps)(
-  DashboardVideoPaneProgress,
+  DashboardObjectProgress,
 );
