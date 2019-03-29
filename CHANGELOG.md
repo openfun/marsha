@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Replace the `CLOUDFRONT_URL` setting by a `CLOUDFRONT_DOMAIN` setting to uniformize with what
+  django-storages is doing and share the same settings.
+
 ## [2.5.0] - 2019-03-25
 
 ### Added

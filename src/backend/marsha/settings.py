@@ -8,6 +8,7 @@ config from the environment
 from datetime import timedelta
 import json
 import os
+from urllib.parse import urlparse
 import warnings
 
 from django.utils.translation import gettext_lazy as _
@@ -184,11 +185,12 @@ class Base(Configuration):
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_DEFAULT_REGION = values.Value("eu-west-1")  # Deprecated
     AWS_S3_REGION_NAME = values.Value(AWS_DEFAULT_REGION)
+    AWS_S3_URL_PROTOCOL = values.Value("https")
     AWS_SOURCE_BUCKET_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
 
     # Cloud Front key pair for signed urls
-    CLOUDFRONT_URL = values.SecretValue()
+    CLOUDFRONT_URL = values.Value(None)  # Deprecated
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
     CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
         os.path.join(BASE_DIR, "..", ".ssh", "cloudfront_private_key")
@@ -216,6 +218,32 @@ class Base(Configuration):
             "USER_ID_CLAIM": "video_id",
             "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
         }
+
+    @property
+    def CLOUDFRONT_DOMAIN(self):
+        """Define CLOUDFRONT_DOMAIN with backward compatibility with deprecated CLOUDFRONT_URL."""
+        cloudfront_domain = values.Value(environ_name="CLOUDFRONT_DOMAIN")
+
+        if self.CLOUDFRONT_URL is None:
+            if cloudfront_domain is None:
+                raise ValueError(
+                    "CLOUDFRONT_DOMAIN is required to be set via the DJANGO_CLOUDFRONT_DOMAIN "
+                    "environment variables"
+                )
+        else:
+            warnings.warn(
+                (
+                    "The CLOUDFRONT_URL setting is deprecated in favor of CLOUDFRONT_DOMAIN"
+                    " and will be removed in the next major release."
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if cloudfront_domain is None:
+                cloudfront_url = urlparse(self.CLOUDFRONT_URL)
+                return cloudfront_url.netloc
+
+        return cloudfront_domain
 
     @classmethod
     def post_setup(cls):

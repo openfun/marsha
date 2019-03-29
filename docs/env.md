@@ -268,9 +268,10 @@ Note: Preview images are never signed as a matter of policy; adaptive streaming 
   - `True` in all other environments.
 - Choices: `True` or `False`
 
-#### DJANGO_CLOUDFRONT_URL
+#### DJANGO_CLOUDFRONT_DOMAIN
 
-The URL for the AWS Cloudfront distribution for the relevant AWS deployment. This is the domain that will be used to distribute processed files to end users.
+The domain for the AWS Cloudfront distribution for the relevant AWS deployment. This is the domain
+that will be used to distribute processed files to end users.
 
 - Type: string
 - Required: Yes
