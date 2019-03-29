@@ -33,4 +33,4 @@ class ConfigurableManifestS3Boto3Storage(
     """
 
     bucket_name = settings.AWS_STATIC_BUCKET_NAME
-    custom_domain = settings.CLOUDFRONT_URL
+    custom_domain = settings.CLOUDFRONT_DOMAIN

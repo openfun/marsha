@@ -146,8 +146,10 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         """
         if obj.uploaded_on:
 
-            base = "{cloudfront:s}/{video!s}".format(
-                cloudfront=settings.CLOUDFRONT_URL, video=obj.video.pk
+            base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
+                protocol=settings.AWS_S3_URL_PROTOCOL,
+                cloudfront=settings.CLOUDFRONT_DOMAIN,
+                video=obj.video.pk,
             )
             url = "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt".format(
                 base=base,
@@ -239,8 +241,10 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
         """
         if obj.uploaded_on:
-            base = "{cloudfront:s}/{video!s}".format(
-                cloudfront=settings.CLOUDFRONT_URL, video=obj.video.pk
+            base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
+                protocol=settings.AWS_S3_URL_PROTOCOL,
+                cloudfront=settings.CLOUDFRONT_DOMAIN,
+                video=obj.video.pk,
             )
             urls = {}
             for resolution in settings.VIDEO_RESOLUTIONS:
@@ -324,8 +328,10 @@ class VideoSerializer(serializers.ModelSerializer):
 
         urls = {"mp4": {}, "thumbnails": {}}
 
-        base = "{cloudfront:s}/{pk!s}".format(
-            cloudfront=settings.CLOUDFRONT_URL, pk=obj.pk
+        base = "{protocol:s}://{cloudfront:s}/{pk!s}".format(
+            protocol=settings.AWS_S3_URL_PROTOCOL,
+            cloudfront=settings.CLOUDFRONT_DOMAIN,
+            pk=obj.pk,
         )
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 

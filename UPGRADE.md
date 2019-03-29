@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * Create a new environment variable: `DJANGO_AWS_S3_REGION_NAME`
       (see [doc](./docs/env.md#django_aws_s3_region_name) for information about how
       to set this variable),
+    * Create a new environment variable: `DJANGO_CLOUDFRONT_DOMAIN`
+      (see [doc](./docs/env.md#django_cloudfront_domain) for information about how
+      to set this variable),
     * Update your AWS stack to create the necessary buckets, CloudFront distribution
       and bucket policy. To do so, checkout the new release code and run:
 
@@ -41,3 +44,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### After switching
 
 - Remove the `DJANGO_AWS_DEFAULT_REGION` environment variable.
+- Remove the `DJANGO_CLOUDFRONT_URL` environment variable.
