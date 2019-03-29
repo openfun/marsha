@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Replace the `CLOUDFRONT_URL` setting by a `CLOUDFRONT_DOMAIN` setting to uniformize with what
   django-storages is doing and share the same settings.
+- Downgrade django-storages to 1.6.3, the last version compatible with ManifestStaticFilesStorage
 
 ## [2.5.0] - 2019-03-25
 
