@@ -106,7 +106,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
 
   # Static bucket: allow public access
   ordered_cache_behavior {
-    path_pattern     = "*/static/*"
+    path_pattern     = "/static/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "${local.s3_static_origin_id}"
