@@ -352,6 +352,10 @@ class Production(Base):
     }
     AWS_STATIC_BUCKET_NAME = values.Value("production-marsha-static")
 
+    # folder where static will be stored. It matches the path_pattern used
+    # in the cloudfront configuration.
+    AWS_LOCATION = Base.STATIC_URL
+
 
 class Staging(Production):
     """Staging environment settings."""
