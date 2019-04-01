@@ -8,6 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.6.0] - 2019-04-01
+
+### Added
+
+- Upload a custom video thumbnail
+- use S3 to store and Cloudfront to distribute static files
+
 ### Fixed
 
 - Replace the `CLOUDFRONT_URL` setting by a `CLOUDFRONT_DOMAIN` setting to uniformize with what
