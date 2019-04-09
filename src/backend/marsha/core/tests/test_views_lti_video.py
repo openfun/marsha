@@ -63,9 +63,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(
-            jwt_token.payload["locale"], data["launch_presentation_locale"]
-        )
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -132,7 +130,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(jwt_token.payload["locale"], "en")
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -194,7 +192,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(jwt_token.payload["locale"], "en")
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -293,7 +291,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(jwt_token.payload["locale"], "en")
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
 
 
 class DevelopmentViewsTestCase(TestCase):
@@ -342,9 +340,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(
-            jwt_token.payload["locale"], data["launch_presentation_locale"]
-        )
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -403,7 +399,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(jwt_token.payload["locale"], "en")
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -460,7 +456,7 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
-        self.assertEqual(jwt_token.payload["locale"], "en")
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},

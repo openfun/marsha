@@ -3,6 +3,7 @@ import json
 from logging import getLogger
 import uuid
 
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
@@ -15,6 +16,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .lti import LTI, OpenEdxLTI
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
+from .utils.react_locales_utils import react_locale
 
 
 logger = getLogger(__name__)
@@ -67,6 +69,12 @@ class VideoLTIView(TemplateResponseMixin, View):
 
         context = {"state": INSTRUCTOR if lti.is_instructor else STUDENT}
 
+        locale = "en_US"
+        try:
+            locale = react_locale(lti.launch_presentation_locale)
+        except ImproperlyConfigured:
+            pass
+
         if video is not None:
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
@@ -77,7 +85,7 @@ class VideoLTIView(TemplateResponseMixin, View):
                     "context_id": lti.context_id,
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
-                    "locale": lti.launch_presentation_locale,
+                    "locale": locale,
                 }
             )
             try:

@@ -1,5 +1,3 @@
-import { locales } from './translation';
-
 export interface DecodedJwt {
   context_id: string;
   email: string;
@@ -7,5 +5,5 @@ export interface DecodedJwt {
   session_id: string;
   user_id: string;
   video_id: string;
-  locale: locales;
+  locale: string;
 }
