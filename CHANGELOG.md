@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Translations are loaded dynamically in frontend application.
+- Locale mapping is now made in the backend application.
+
 ## [2.6.0] - 2019-04-01
 
 ### Added

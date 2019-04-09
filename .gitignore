@@ -64,7 +64,7 @@ coverage.xml
 # Translations
 *.mo
 *.pot
-src/frontend/translations/translation.json
+src/frontend/translations/*.json
 
 # Django stuff:
 *.log
