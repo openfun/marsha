@@ -13,7 +13,7 @@
       "es2016",
       "es2017"
     ],
-    "module": "es6",
+    "module": "esnext",
     "moduleResolution": "node",
     "paths": {
       "plyr": ["types/libs/plyr"],

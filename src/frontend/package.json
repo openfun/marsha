@@ -7,7 +7,7 @@
     "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn build",
     "generate-l10n-template": "rip json2pot 'i18n/**/*.json' -o i18n/frontend.pot",
-    "generate-translations": "rip po2json './translations/*.po' -o './translations/translation.json' -m './i18n/**/*.json'",
+    "generate-translations": "rip po2json './translations/*.po' -o './translations' -m './i18n/**/*.json'",
     "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
     "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "lint-fix": "tslint --fix -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/core": "7.4.3",
     "@babel/plugin-proposal-class-properties": "7.4.0",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
     "@babel/polyfill": "7.4.3",
     "@babel/preset-env": "7.4.3",
     "@babel/preset-typescript": "7.3.3",

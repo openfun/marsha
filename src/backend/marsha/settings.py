@@ -153,13 +153,20 @@ class Base(Configuration):
 
     LANGUAGE_CODE = "en-us"
 
+    # Careful! Languages should be ordered by priority, as this tuple is used to get
+    # fallback/default languages throughout the app.
+    # Use "en" as default as it is the language that is most likely to be spoken by any visitor
+    # when their preferred language, whatever it is, is unavailable
     LANGUAGES = [("en", _("english")), ("fr", _("french"))]
+    LANGUAGES_DICT = dict(LANGUAGES)
 
     # Internationalization
     TIME_ZONE = "UTC"
     USE_I18N = True
     USE_L10N = True
     USE_TZ = True
+
+    REACT_LOCALES = values.ListValue(["en_US", "es_ES", "fr_FR", "fr_CA"])
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
 
