@@ -72,15 +72,18 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
     expect(wrapper.find(CheckBox).exists()).toBe(true);
     expect(wrapper.find(CheckBox).prop('checked')).toEqual(false);
     act(() => {
-      wrapper
-        .find(CheckBox)
-        .props()
-        .onChange({
+      const onChange = wrapper.find(CheckBox).prop('onChange');
+
+      if (onChange) {
+        onChange({
           currentTarget: {
             checked: true,
           },
           stopPropagation: () => jest.fn(),
         });
+      } else {
+        throw new Error('onChange prop does not exists');
+      }
     });
     await flushAllPromises();
     expect(mockAddResource).toBeCalledWith(newVideo);
