@@ -4,10 +4,10 @@
 
 First, there is our Django backend. We try to follow [12 factors app](https://12factor.net/) and so use environment variables for configuration. It looks for environment variables in `env.d/{environment}`.
 
-Then, there is our AWS deployment configurations in the `src/aws` folder:
+Then, there is our AWS deployment configurations in the `src/aws` folder. Terraform looks for environment variables in `src/aws/env.d/{environment}`:
 
-- The main Terraform project in charge of deploying Marsha looks for environment variables in `src/aws/env.d/{environment}`,
-- A small side Terraform project located in `src/aws/create_state_bucket` is responsible just for creating an S3 bucket in AWS that Terraform will use to record the state of the main Marsha project with encryption and versioning. This Terraform project looks for environment variables in `src/aws/env.d/state_bucket`.
+- A small side Terraform project located in `src/aws/create_state_bucket` is responsible just for creating an S3 bucket in AWS that Terraform will use to record the state of the main Marsha project with encryption and versioning.
+- The main Terraform project in charge of deploying Marsha,
 
 ## 1. Django backend environment
 
@@ -362,24 +362,3 @@ Whether SSL certificate validation in requests made by the AWS lambdas should be
 - Type: boolean
 - Required: No
 - Default: false
-
-## 3. Environment to create the state bucket in AWS
-
-Specified in `{REPO_ROOT}/src/aws/env.d/state_bucket`.
-
-#### AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-
-A key ID + secret pair for an AWS IAM account with administrative access to the resources we need to access to create the state bucket (see Terraform configuration files).
-
-- Type: string
-- Required: Yes
-- Default: None
-
-#### TF_VAR_aws_region
-
-The Amazon Web Services region where we deployed or want to deploy our state bucket.
-
-- Type: string
-- Required: No
-- Default: `"eu-west-1"`
-- Choices: Any valid AWS region name.
