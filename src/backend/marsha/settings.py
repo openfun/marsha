@@ -207,8 +207,8 @@ class Base(Configuration):
 
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
-    LRS_AUTH_TOKEN = values.Value(None)
-    LRS_URL = values.Value(None)
+    LRS_AUTH_TOKEN = values.Value("")
+    LRS_URL = values.Value("")
     LRS_XAPI_VERSION = values.Value("1.0.3")
 
     # pylint: disable=invalid-name
@@ -266,6 +266,36 @@ class Base(Configuration):
                 (
                     "The AWS_DEFAULT_REGION setting is deprecated in favor of AWS_S3_REGION_NAME"
                     " and will be removed in the next major release."
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if "DJANGO_LRS_URL" in os.environ:
+            warnings.warn(
+                (
+                    "The LRS_URL setting is deprecated, it is now part of the consumer_site"
+                    " configuration and will be removed in the next major release."
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if "DJANGO_LRS_AUTH_TOKEN" in os.environ:
+            warnings.warn(
+                (
+                    "The LRS_AUTH_TOKEN setting is deprecated, it is now part of the consumer_site"
+                    " configuration and will be removed in the next major release."
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if "DJANGO_LRS_XAPI_VERSION" in os.environ:
+            warnings.warn(
+                (
+                    "The LRS_XAPI_VERSION setting is deprecated, it is now part of the"
+                    " consumer_site configuration and will be removed in the next major release."
                 ),
                 DeprecationWarning,
                 stacklevel=2,

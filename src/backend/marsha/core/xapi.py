@@ -10,7 +10,7 @@ from .exceptions import MissingUserIdError
 class XAPI:
     """The XAPI object compute statements and send them to a LRS."""
 
-    def __init__(self, url, auth_token, xapi_version):
+    def __init__(self, url, auth_token, xapi_version="1.0.3"):
         """Initialize the XAPI module.
 
         Parameters
