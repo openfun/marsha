@@ -206,6 +206,26 @@ class ConsumerSite(BaseModel):
         help_text=_("users who have been granted access to this consumer site."),
     )
 
+    lrs_auth_token = models.TextField(
+        verbose_name=_("LRS authentication token"),
+        help_text=_("LRS authentication token used to communicate with a remote LRS"),
+        blank=True,
+    )
+
+    lrs_url = models.CharField(
+        max_length=150,
+        verbose_name=_("LRS url"),
+        help_text=_("LRS url used to communicate with a remote LRS"),
+        blank=True,
+    )
+
+    lrs_xapi_version = models.CharField(
+        max_length=10,
+        verbose_name=_("xAPI version"),
+        help_text=_("xAPI version used by the remote LRS server"),
+        blank=True,
+    )
+
     class Meta:
         """Options for the ``ConsumerSite`` model."""
 
