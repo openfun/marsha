@@ -28,7 +28,6 @@ class XAPIStatementApiTest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    @override_settings(LRS_URL=None)
     def test_xapi_statement_with_no_lrs_configured(self):
         """If no LRS configured a 501 status code should be returned."""
         video = VideoFactory()
@@ -47,11 +46,12 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 501)
 
-    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     def test_xapi_statement_api_with_invalid_payload(self):
         """Payload should follow a given pattern."""
-        video = VideoFactory()
+        video = VideoFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -76,12 +76,13 @@ class XAPIStatementApiTest(TestCase):
             },
         )
 
-    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get", side_effect=Video.DoesNotExist)
     def test_xapi_statement_with_invalid_video(self, video_model_mock):
         """The video in the JWT Token does not exist in our database."""
-        video = VideoFactory()
+        video = VideoFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -106,15 +107,16 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_request_error_to_lrs(
         self, xapi_mock, video_model_mock
     ):
         """Sending a request to the LRS fails. The response should reflect this failure."""
-        video = VideoFactory()
+        video = VideoFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -151,15 +153,16 @@ class XAPIStatementApiTest(TestCase):
             response.json().get("status"), "Impossible to send xAPI request to LRS."
         )
 
-    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_request_to_lrs_successful(
         self, xapi_mock, video_model_mock
     ):
         """Successful request should return a 204 status code."""
-        video = VideoFactory()
+        video = VideoFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -189,12 +192,48 @@ class XAPIStatementApiTest(TestCase):
         self.assertEqual(response.status_code, 204)
 
     @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(DJANGO_LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
+    @override_settings(LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
+    @mock.patch("marsha.core.api.Video.objects.get")
+    @mock.patch("marsha.core.api.XAPI")
+    def test_xapi_statement_fallbacking_on_settings(self, xapi_mock, video_model_mock):
+        """If LRS is not configured in consumer_site but in settings, settings should be used."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        data = {
+            "verb": {
+                "id": "http://adlnet.gov/expapi/verbs/initialized",
+                "display": {"en-US": "initialized"},
+            },
+            "context": {
+                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
+            },
+            "timestamp": "2018-12-31T16:17:35.717Z",
+        }
+
+        video_model_mock.return_value = video
+        xapi_instance = xapi_mock.return_value
+        xapi_instance.send.return_value = None
+
+        response = self.client.post(
+            "/xapi/",
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            data=json.dumps(data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204)
+
     @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
     def test_xapi_statement_with_missing_user_id(self, xapi_mock, video_model_mock):
         """Missing user_id parameter in JWT will fail request to LRS."""
-        video = VideoFactory()
+        video = VideoFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]

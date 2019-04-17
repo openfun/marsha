@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- LRS credentials can be configured at the consumer site level.
+
 ### Changed
 
 - Translations are loaded dynamically in frontend application.
