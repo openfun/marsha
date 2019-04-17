@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', async event => {
 
   let translatedMessages = null;
   try {
-    translatedMessages = await import(`./translations/${
-      decodedToken.locale
-    }.json`);
+    translatedMessages = await import(
+      `./translations/${decodedToken.locale}.json`
+    );
   } catch (e) {}
 
   // Render our actual component tree
