@@ -133,7 +133,16 @@ class ConsumerSiteAdmin(admin.ModelAdmin):
         ConsumerSiteOrganizationsInline,
     ]
 
-    fields = ("id", "name", "domain", "created_on", "updated_on")
+    fields = (
+        "id",
+        "name",
+        "domain",
+        "created_on",
+        "updated_on",
+        "lrs_url",
+        "lrs_auth_token",
+        "lrs_xapi_version",
+    )
     readonly_fields = ["id", "created_on", "updated_on"]
 
 
