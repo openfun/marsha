@@ -317,17 +317,6 @@ class XAPIStatementView(APIView):
             HttpResponse to reflect if the XAPI request failed or is successful
 
         """
-        if settings.LRS_URL is None:
-            return Response(
-                {"reason": "LRS is not configured. This endpoint is not usable."},
-                status=501,
-            )
-
-        xapi_statement = XAPIStatementSerializer(data=request.data)
-
-        if not xapi_statement.is_valid():
-            return Response(xapi_statement.errors, status=400)
-
         lti_user = LTIUser(request.user)
         try:
             video = Video.objects.get(pk=lti_user.video_id)
@@ -341,9 +330,28 @@ class XAPIStatementView(APIView):
                 status=404,
             )
 
-        xapi = XAPI(
-            settings.LRS_URL, settings.LRS_AUTH_TOKEN, settings.LRS_XAPI_VERSION
+        consumer_site = video.playlist.consumer_site
+
+        lrs_url = consumer_site.lrs_url or getattr(settings, "LRS_URL", "")
+        lrs_auth_token = consumer_site.lrs_auth_token or getattr(
+            settings, "LRS_AUTH_TOKEN", ""
         )
+        lrs_xapi_version = consumer_site.lrs_xapi_version or getattr(
+            settings, "LRS_XAPI_VERSION", ""
+        )
+
+        if not lrs_url or not lrs_auth_token:
+            return Response(
+                {"reason": "LRS is not configured. This endpoint is not usable."},
+                status=501,
+            )
+
+        xapi_statement = XAPIStatementSerializer(data=request.data)
+
+        if not xapi_statement.is_valid():
+            return Response(xapi_statement.errors, status=400)
+
+        xapi = XAPI(lrs_url, lrs_auth_token, lrs_xapi_version)
 
         try:
             xapi.send(video, xapi_statement.validated_data, lti_user)

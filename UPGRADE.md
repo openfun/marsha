@@ -7,6 +7,14 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.6.x to 2.7.x
+
+### After switching
+
+- LRS configuration is not made anymore in the settings. You should remove the environment
+  variables `DJANGO_LRS_URL`, `DJANGO_LRS_AUTH_TOKEN`, `DJANGO_LRS_XAPI_VERSION` and configure
+  your LRS credentials in the admin for each consumer_site you have.
+  These settings will be removed in the next major release.
 
 ## 2.5.x to 2.6.x
 
