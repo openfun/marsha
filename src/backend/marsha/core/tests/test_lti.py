@@ -193,6 +193,60 @@ class VideoLTITestCase(TestCase):
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_passport_consumer_site_video_show_download_default_False(
+        self, mock_verify
+    ):
+        """
+        Authenticating an LTI launch request with a passport related to a consumer site.
+
+        The consumer site used has video_show_download_default set to False and the video
+        created should also have its show_download value set to False
+        """
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123",
+            shared_secret="#Y5$",
+            consumer_site__domain="example.com",
+            consumer_site__video_show_download_default=False,
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Instructor",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, uuid.uuid4())
+        video = lti.get_or_create_video()
+        self.assertFalse(video.show_download)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_passport_consumer_site_video_show_download_default_True(
+        self, mock_verify
+    ):
+        """
+        Authenticating an LTI launch request with a passport related to a consumer site.
+
+        The consumer site used has video_show_download_default set to True and the video
+        created should also have its show_download value set to True
+        """
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123",
+            shared_secret="#Y5$",
+            consumer_site__domain="example.com",
+            consumer_site__video_show_download_default=True,
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Instructor",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, uuid.uuid4())
+        video = lti.get_or_create_video()
+        self.assertTrue(video.show_download)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_passport_playlist(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a playlist."""
         passport = PlaylistLTIPassportFactory(

@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - LRS credentials can be configured at the consumer site level.
+- Configure in the consumer site admin panel if by default videos can show a download link.
 
 ### Changed
 

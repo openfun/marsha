@@ -351,6 +351,7 @@ class LTI:
             playlist=playlist,
             upload_state=PENDING,
             title=self.resource_link_title,
+            show_download=consumer_site.video_show_download_default,
         )
 
 
