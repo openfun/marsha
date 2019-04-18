@@ -142,6 +142,7 @@ class ConsumerSiteAdmin(admin.ModelAdmin):
         "lrs_url",
         "lrs_auth_token",
         "lrs_xapi_version",
+        "video_show_download_default",
     )
     readonly_fields = ["id", "created_on", "updated_on"]
 
