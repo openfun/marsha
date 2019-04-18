@@ -226,6 +226,15 @@ class ConsumerSite(BaseModel):
         blank=True,
     )
 
+    video_show_download_default = models.BooleanField(
+        default=True,
+        verbose_name=_("show video download"),
+        help_text=_(
+            "default value used for every newly created video to determine"
+            " if the links to download a video are shown by default."
+        ),
+    )
+
     class Meta:
         """Options for the ``ConsumerSite`` model."""
 
