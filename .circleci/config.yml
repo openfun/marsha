@@ -17,7 +17,8 @@ jobs:
   # Git jobs
   # Check that the git history is clean and complies with our expectations
   lint-git:
-    machine: true
+    docker:
+      - image: circleci/python:3.6-stretch
     working_directory: ~/marsha
     steps:
       - checkout
@@ -32,26 +33,52 @@ jobs:
       - run:
           name: Install gitlint
           command: |
-            pip install requests gitlint
+            pip install --user gitlint
       - run:
           name: lint commit messages added to master
           command: |
-            gitlint --commits origin/master..HEAD
+              ~/.local/bin/gitlint --commits origin/master..HEAD
+
+  # Check that the CHANGELOG has been updated in the current branch
+  check-changelog:
+    docker:
+      - image: circleci/buildpack-deps:stretch-scm
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Check that the CHANGELOG has been modified in the current branch
+          command: |
+            git whatchanged --name-only --pretty="" origin..HEAD | grep CHANGELOG
+
+# Check that the CHANGELOG max line length does not exceed 80 characters
+  lint-changelog:
+    docker:
+      - image: debian:stretch
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Check CHANGELOG max line length
+          command: |
+            # Get the longuest line width (ignoring release links)
+            test $(cat CHANGELOG.md | grep -Ev "^\[.*\]: https://github.com/openfun" | wc -L) -le 80
 
   # Docker/back-end jobs
   # Build job
   # Build the Docker image ready for production
   build:
-    # We use the machine executor, i.e. a VM, not a container
-    machine:
-      # Avoid cache in the production build
-      docker_layer_caching: false
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
@@ -69,42 +96,26 @@ jobs:
       - run:
           name: Test statics location in production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}
-      # Since we cannot rely on CircleCI's Docker layers cache (for obscure
-      # reasons some subsequent jobs will benefit from a previous job cache and
-      # some others won't), we choose to save built docker images in cached
-      # directories. This ensures that we will be able to load built docker
-      # images in subsequent jobs.
-      - run:
-          name: Store docker image in cache
-          command: |
-            docker save \
-              -o docker/images/marsha.tar \
-              marsha:${CIRCLE_SHA1}
-      - save_cache:
-          paths:
-            - ~/marsha/docker/images/
-          key: docker-debian-images-{{ .Revision }}
 
   # Build dev job
   # Build the Docker image ready for development
   build-dev:
-    machine:
-      docker_layer_caching: true
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - docker-debian-images-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/marsha.tar
-      - run:
-          name: List available images
-          command: docker images "marsha:${CIRCLE_SHA1}*"
       # Generate a version.json file describing app release
       - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build production image (using cached layers)
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1} \
+              .
       # Development image build, it uses the dev Dockerfile file
       - run:
           name: Build development image
@@ -114,145 +125,126 @@ jobs:
               -f docker/images/dev/Dockerfile \
               --build-arg BASE_TAG=${CIRCLE_SHA1} \
               .
+      - run:
+          name: Check built image availability
+          command: docker images "marsha:${CIRCLE_SHA1}*"
+
+  # Build backend development environment
+  build-back:
+    docker:
+      - image: circleci/python:3.6-stretch
+    working_directory: ~/marsha/src/backend
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v3-back-dependencies-{{ .Revision }}
+            - v3-back-dependencies
+      - run:
+          name: Install development dependencies
+          command: pip install --user .[dev]
+      - save_cache:
+          paths:
+            - ~/.local
+          key: v3-back-dependencies-{{ .Revision }}
+
+  # Build backend translations
+  build-back-i18n:
+    docker:
+      - image: circleci/python:3.6-stretch
+        environment:
+          DJANGO_SETTINGS_MODULE: marsha.settings
+          PYTHONPATH: /home/circleci/marsha/src/backend
+          DJANGO_CONFIGURATION: Test
+          DJANGO_SECRET_KEY: ThisIsAnExampleKeyForTestPurposeOnly
+          DJANGO_JWT_SIGNING_KEY: ThisIsAnExampleKeyForDevPurposeOnly
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: marsha
+          POSTGRES_USER: fun
+          POSTGRES_PASSWORD: pass
+          POSTGRES_PORT: 5432
+          DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
+          DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
+          DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
+    working_directory: ~/marsha/src/backend
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v3-back-dependencies-{{ .Revision }}
+      - run:
+          name: Install gettext (required to make messages)
+          command: sudo apt-get install -y gettext
       # Compile translation messages already present in the project
       - run:
-          name: Compile translation messages
-          command: |
-            docker run --rm \
-              --volume "$PWD:/app" \
-              --workdir /app/src/backend \
-              --env-file env.d/ci \
-              "marsha:${CIRCLE_SHA1}-dev" \
-                  python manage.py compilemessages
+          name: Generate a POT file from strings extracted from the project
+          command: python manage.py compilemessages
       # Generate and persist the translations base file
       - run:
           name: Generate a POT file from strings extracted from the project
-          command: |
-            docker run --rm \
-              --volume "$PWD:/app" \
-              --workdir /app/src/backend \
-              --env-file env.d/ci \
-              "marsha:${CIRCLE_SHA1}-dev" \
-                  python manage.py makemessages --keep-pot
+          command: python manage.py makemessages --keep-pot
       - persist_to_workspace:
           root: ~/marsha
           paths:
             - src/backend/locale/django.pot
-      - run:
-          name: Check built image availability
-          command: docker images "marsha:${CIRCLE_SHA1}*"
-      - run:
-          name: Store docker image in cache
-          command: |
-            docker save \
-              -o docker/images/dev/marsha.tar \
-              marsha:${CIRCLE_SHA1} \
-              marsha:${CIRCLE_SHA1}-dev
-      - save_cache:
-          paths:
-            - ~/marsha/docker/images/dev/
-          key: docker-debian-images-dev-{{ .Revision }}
 
-  lint-isort:
-    machine: true
-    working_directory: ~/marsha
+  lint-back:
+    docker:
+      - image: circleci/python:3.6-stretch
+    working_directory: ~/marsha/src/backend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/dev/marsha.tar
+            - v3-back-dependencies-{{ .Revision }}
       - run:
           name: Lint code with isort
-          command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm --no-deps app \
-                isort --recursive --check-only marsha
-
-  lint-flake8:
-    machine: true
-    working_directory: ~/marsha
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/dev/marsha.tar
-      - run:
-          name: Lint code with flake8
-          command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm --no-deps app \
-                flake8 marsha
-
-  lint-pylint:
-    machine: true
-    working_directory: ~/marsha
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/dev/marsha.tar
-      - run:
-          name: Lint code with pylint
-          command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm --no-deps app \
-                pylint --rcfile=pylintrc marsha
-
-  lint-black:
-    machine: true
-    working_directory: ~/marsha
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/dev/marsha.tar
+          command: ~/.local/bin/isort --recursive --check-only marsha
       - run:
           name: Lint code with black
-          command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm --no-deps app \
-                black marsha/ --check
+          command: ~/.local/bin/black --check marsha
+      - run:
+          name: Lint code with flake8
+          command: ~/.local/bin/flake8 marsha
+      - run:
+          name: Lint code with pylint
+          command: ~/.local/bin/pylint --rcfile=pylintrc marsha
+
 
   test-back:
-    machine: true
-    working_directory: ~/marsha
+    docker:
+      - image: circleci/python:3.6-stretch
+        environment:
+          DJANGO_SETTINGS_MODULE: marsha.settings
+          PYTHONPATH: /home/circleci/marsha/src/backend
+          DJANGO_CONFIGURATION: Test
+          DJANGO_SECRET_KEY: ThisIsAnExampleKeyForTestPurposeOnly
+          DJANGO_JWT_SIGNING_KEY: ThisIsAnExampleKeyForDevPurposeOnly
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: marsha
+          POSTGRES_USER: marsha_user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_PORT: 5432
+          DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
+          DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
+          DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
+      - image: circleci/postgres:10.3-alpine-ram
+        environment:
+          POSTGRES_DB: marsha
+          POSTGRES_USER: marsha_user
+          POSTGRES_PASSWORD: pass
+    working_directory: ~/marsha/src/backend
     steps:
-      - checkout
+      - checkout:
+          path: ~/marsha
       - restore_cache:
           keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - run:
-          name: Load images to docker engine
-          command: |
-            docker load < docker/images/dev/marsha.tar
+            - v3-back-dependencies-{{ .Revision }}
       # Run back-end (Django) test suite
       #
       # Nota bene: to run the django test suite, we need to ensure that the
@@ -263,25 +255,10 @@ jobs:
       - run:
           name: Run tests
           command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm app \
                 dockerize \
-                  -wait tcp://db:5432 \
+                  -wait tcp://localhost:5432 \
                   -timeout 60s \
                     python manage.py test
-
-  check-changelog:
-    machine: true
-    working_directory: ~/marsha
-    steps:
-      - checkout
-      - run:
-          name: Check that the CHANGELOG has been modified in the current branch
-          command: |
-            git whatchanged --name-only --pretty="" origin..HEAD | grep CHANGELOG
 
   # ---- Front-end jobs ----
   build-front:
@@ -435,13 +412,17 @@ jobs:
 
   # ---- Alpine jobs ----
   build-alpine:
-    machine:
-      docker_layer_caching: true
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
     steps:
+      # Checkout repository sources
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Build alpine production image
           command: |
@@ -466,30 +447,34 @@ jobs:
       - run:
           name: Test statics location in alpine production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}-alpine
-      - run:
-          name: Store docker image in cache
-          command: |
-            docker save \
-              -o docker/images/alpine/marsha.tar \
-              marsha:${CIRCLE_SHA1}-alpine \
-              marsha:${CIRCLE_SHA1}-alpine-dev
-      - save_cache:
-          paths:
-            - ~/marsha/docker/images/
-          key: docker-alpine-images-dev-{{ .Revision }}
 
   test-alpine:
-    machine: true
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
     steps:
+      # Checkout repository sources
       - checkout
-      - restore_cache:
-          keys:
-            - docker-alpine-images-dev-{{ .Revision }}
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: Load images to docker engine
+          name: Build alpine production image (from cached layers)
           command: |
-            docker load < docker/images/alpine/marsha.tar
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-alpine \
+              -f docker/images/alpine/Dockerfile \
+              .
+      - run:
+          name: Build alpine development image (from cached layers)
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-alpine-dev \
+              -f docker/images/alpine/dev/Dockerfile \
+              --build-arg BASE_TAG=${CIRCLE_SHA1}-alpine \
+              .
       - run:
           name: Run tests
           command: |
@@ -507,8 +492,8 @@ jobs:
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
   i18n:
-    machine:
-      docker_layer_caching: true
+    docker:
+      - image: fundocker/crowdin:2.0.27
     working_directory: ~/marsha
     steps:
       - checkout:
@@ -517,33 +502,33 @@ jobs:
           at: ~/marsha
       - run:
           name: upload files to crowdin
-          command: |
-            docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm --no-deps crowdin \
-                -c crowdin/config.yml upload sources
+          command: crowdin -c crowdin/config.yml upload sources
 
   # ---- DockerHub publication job ----
   hub:
-    machine: true
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - docker-debian-images-dev-{{ .Revision }}
-      - restore_cache:
-          keys:
-            - docker-alpine-images-dev-{{ .Revision }}
-      # Load all built images in all flavors
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: Load images to docker engine
+          name: Build production image (using cached layers)
           command: |
-            docker load < docker/images/dev/marsha.tar
-            docker load < docker/images/alpine/marsha.tar
-
+            docker build \
+              -t marsha:${CIRCLE_SHA1} \
+              .
+      - run:
+          name: Build alpine production image (from cached layers)
+          command: |
+            docker build \
+              -t marsha:${CIRCLE_SHA1}-alpine \
+              -f docker/images/alpine/Dockerfile \
+              .
       # Login to DockerHub to Publish new images
       #
       # Nota bene: you'll need to define the following secrets environment vars
@@ -667,33 +652,19 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - lint-black:
-          requires:
-            - build-dev
+      - build-back:
           filters:
             tags:
               only: /.*/
-      - lint-isort:
+      - lint-back:
           requires:
-            - build-dev
-          filters:
-            tags:
-              only: /.*/
-      - lint-flake8:
-          requires:
-            - build-dev
-          filters:
-            tags:
-              only: /.*/
-      - lint-pylint:
-          requires:
-            - build-dev
+            - build-back
           filters:
             tags:
               only: /.*/
       - test-back:
           requires:
-            - build-dev
+            - build-back
           filters:
             tags:
               only: /.*/
@@ -722,10 +693,16 @@ workflows:
       # i18n jobs
       #
       # Extract strings and upload them to our translation management SaaS
+      - build-back-i18n:
+          requires:
+            - build-back
+          filters:
+            tags:
+              only: /.*/
       - i18n:
           requires:
             - build-front
-            - build-dev
+            - build-back-i18n
           filters:
             branches:
               only: master
