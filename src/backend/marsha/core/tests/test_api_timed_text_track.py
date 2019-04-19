@@ -127,6 +127,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -163,6 +164,21 @@ class TimedTextTrackAPITest(TestCase):
         content = json.loads(response.content)
         self.assertEqual(content, {"detail": "Not found."})
 
+    def test_api_timed_text_track_read_instructor_in_read_only(self):
+        """Instructor should not be able to read a timed text track in read_only mode."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
+
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_token_user_no_active_stamp(self):
         """A timed text track with no active stamp should not fail.
@@ -173,6 +189,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -193,6 +210,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the timed_text_track linked to the JWT token
         response = self.client.get(
@@ -221,6 +239,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the timed_text_track via the API using the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -280,6 +299,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track_one.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -314,6 +334,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         data = {"language": "fr"}
         response = self.client.post(
@@ -338,6 +359,20 @@ class TimedTextTrackAPITest(TestCase):
                 "video": "f8c30d0d-2bb4-440d-9e8d-f4b231511f1f",
             },
         )
+
+    def test_api_timed_text_track_create_instructor_in_read_only(self):
+        """Instructor should not be able to create a timed text track in read_only mode."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.post(
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_timed_text_track_create_staff_or_user(self):
         """Users authenticated via a session shouldn't be able to create new timed text tracks."""
@@ -366,6 +401,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         data = {"language": "en"}
         response = self.client.put(
@@ -384,6 +420,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -408,6 +445,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -433,6 +471,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -452,6 +491,21 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, "pending")
 
+    def test_api_timed_text_track_update_instructor_in_read_only(self):
+        """Instructor should not be able to update a timed text track in read_only mode."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.put(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_timed_text_track_patch_detail_token_user_stamp_and_state(self):
         """Token users should not be able to patch upload state and active stamp.
 
@@ -461,6 +515,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
         self.assertEqual(timed_text_track.upload_state, "pending")
         self.assertIsNone(timed_text_track.uploaded_on)
 
@@ -485,6 +540,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -510,6 +566,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -535,6 +592,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(other_video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         data = {"language": "fr"}
         response = self.client.put(
@@ -546,6 +604,21 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 404)
         timed_text_track_update.refresh_from_db()
         self.assertEqual(timed_text_track_update.language, "en")
+
+    def test_api_timed_text_track_patch_instructor_in_read_only(self):
+        """Instructor should not be able to patch a timed text track in read_only mode."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.patch(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_timed_text_track_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a timed text track."""
@@ -571,6 +644,7 @@ class TimedTextTrackAPITest(TestCase):
             jwt_token = AccessToken()
             jwt_token.payload["video_id"] = str(timed_text_track.video.id)
             jwt_token.payload["roles"] = ["instructor"]
+            jwt_token.payload["read_only"] = False
             response = self.client.delete(
                 "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
@@ -614,6 +688,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -635,6 +710,21 @@ class TimedTextTrackAPITest(TestCase):
             self.assertEqual(response.status_code, 401)
 
         self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
+
+    def test_api_timed_text_track_delete_instructor_in_read_only(self):
+        """Instructor should not be able to delete a timed text track in read_only mode."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.delete(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_timed_text_track_initiate_upload_anonymous_user(self):
         """Anonymous users should not be allowed to initiate an upload."""
@@ -662,6 +752,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Create other timed text tracks to check that their upload state are unaffected
         # Make sure we avoid unicty constraints by setting a different language
@@ -769,3 +860,18 @@ class TimedTextTrackAPITest(TestCase):
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
+
+    def test_api_timed_text_track_instructor_initiate_upload_in_read_only(self):
+        """Instructor should not be able to initiate a timed text track upload in read_only."""
+        timed_text_track = TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.post(
+            "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
