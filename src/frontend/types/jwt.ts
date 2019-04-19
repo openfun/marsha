@@ -6,4 +6,5 @@ export interface DecodedJwt {
   user_id: string;
   video_id: string;
   locale: string;
+  read_only: boolean;
 }
