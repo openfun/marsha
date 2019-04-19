@@ -73,6 +73,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["read_only"] = True
         # Get the video linked to the JWT token
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -103,6 +104,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -185,6 +187,22 @@ class VideoAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
+    def test_api_video_read_detail_as_instructor_in_read_only(self):
+        """An instructor with read_only set to True should not be able to read the video."""
+        video = VideoFactory(upload_state="ready")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
+
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
@@ -192,6 +210,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -226,6 +245,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -266,6 +286,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -345,6 +366,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -443,6 +465,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
         data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
@@ -460,6 +483,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -483,6 +507,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -508,6 +533,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -527,6 +553,42 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
 
+    def test_api_video_instructor_update_video_in_read_only(self):
+        """An instructor with read_only set to true should not be able to update the video."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        data = {"upload_state": "ready"}
+
+        response = self.client.put(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_instructor_patch_video_in_read_only(self):
+        """An instructor with read_only set to true should not be able to patch the video."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        data = {"upload_state": "ready"}
+
+        response = self.client.patch(
+            "/api/videos/{!s}/".format(video.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_video_patch_detail_token_user_stamp_and_state(self):
         """Token users should not be able to patch upload state and active stamp.
 
@@ -536,6 +598,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
         self.assertEqual(video.upload_state, "pending")
         self.assertIsNone(video.uploaded_on)
 
@@ -560,6 +623,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -604,6 +668,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         data = {"description": "my new description"}
 
@@ -634,6 +699,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(videos[0].id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -660,6 +726,20 @@ class VideoAPITest(TestCase):
                 content, {"detail": "Authentication credentials were not provided."}
             )
         self.assertTrue(Video.objects.filter(id=video.id).exists())
+
+    def test_api_video_instructor_delete_video_in_read_only(self):
+        """An instructor with read_only set to true should not be able to delete the video."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.delete(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_video_delete_list_anonymous(self):
         """Anonymous users should not be able to delete a list of videos."""
@@ -708,6 +788,20 @@ class VideoAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
+    def test_api_video_instructor_initiate_upload_in_read_only(self):
+        """An instructor with read_only set to true should not be able to initiate an upload."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.post(
+            "/api/videos/{!s}/initiate-upload/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_video_initiate_upload_token_user(self):
         """A token user associated to a video should be able to retrieve an upload policy."""
         video = VideoFactory(
@@ -717,6 +811,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Create another video to check that its upload state is unaffected
         other_video = VideoFactory(upload_state=random.choice(["ready", "error"]))

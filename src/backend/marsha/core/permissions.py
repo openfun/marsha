@@ -33,8 +33,10 @@ class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
 
         """
         user = request.user
-        if isinstance(user, TokenUser) and LTI_ROLES[INSTRUCTOR] & set(
-            user.token.payload.get("roles", [])
+        if (
+            isinstance(user, TokenUser)
+            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+            and user.token.payload.get("read_only", True) is False
         ):
             return True
 

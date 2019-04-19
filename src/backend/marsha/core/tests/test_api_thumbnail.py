@@ -48,6 +48,22 @@ class ThumbnailApiTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    def test_api_thumbnail_instructor_read_detail_in_read_only(self):
+        """Instructor should not be able to read thumbnails in a read_only mode."""
+        thumbnail = ThumbnailFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.get(
+            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_thumbnail_read_detail_token_user(self):
         """Instructors should be able to read details of thumbnail assotiated to their video."""
@@ -59,6 +75,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/thumbnail/{!s}/".format(thumbnail.id),
@@ -96,6 +113,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.get(
             "/api/thumbnail/{!s}/".format(thumbnail.id),
@@ -154,6 +172,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.post(
             "/api/thumbnail/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -174,6 +193,21 @@ class ThumbnailApiTest(TestCase):
                 "video": str(video.id),
             },
         )
+
+    def test_api_thumbnail_instructor_create_in_read_only(self):
+        """Instructor should not be able to create thumbnails in a read_only mode."""
+        thumbnail = ThumbnailFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.post(
+            "/api/thumbnail/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+
+        self.assertEqual(response.status_code, 403)
 
     def test_api_thumbnail_delete_anonymous(self):
         """Anonymous users should not be able to delete a thumbnail."""
@@ -206,6 +240,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
             "/api/thumbnail/{!s}/".format(thumbnail.id),
@@ -213,6 +248,22 @@ class ThumbnailApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Thumbnail.objects.filter(id=thumbnail.id).exists())
+
+    def test_api_thumbnail_delete_instructor_in_read_only(self):
+        """Instructor should not be able to delete thumbnails in a read_only mode."""
+        thumbnail = ThumbnailFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.delete(
+            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+
+        self.assertEqual(response.status_code, 403)
 
     def test_api_thumbnail_delete_instructor_other_video(self):
         """Instructor users should not be able to delete a thumbnail on another video."""
@@ -223,6 +274,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video_token.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
             "/api/thumbnail/{!s}/".format(thumbnail.id),
@@ -263,6 +315,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["video_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time
@@ -323,3 +376,19 @@ class ThumbnailApiTest(TestCase):
         # The upload_state of the thumbnail should have been reset
         thumbnail.refresh_from_db()
         self.assertEqual(thumbnail.upload_state, "pending")
+
+    def test_api_thumbnail_initiate_upload_instructor_read_only(self):
+        """Instructor should not be able to initiate thumbnails upload in a read_only mode."""
+        thumbnail = ThumbnailFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.post(
+            "/api/thumbnail/{!s}/initiate-upload/".format(thumbnail.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+
+        self.assertEqual(response.status_code, 403)
