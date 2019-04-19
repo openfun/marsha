@@ -7,12 +7,18 @@ describe('<InstructorViewConnected />', () => {
     it('passes the context videoId', () => {
       const state = {
         context: {
+          decodedJwt: {
+            read_only: false,
+          },
           ltiResourceVideo: {
             id: '42',
           },
         },
       } as RootState<appStateSuccess>;
-      expect(mapStateToProps(state)).toEqual({ videoId: '42' });
+      expect(mapStateToProps(state)).toEqual({
+        readOnly: false,
+        videoId: '42',
+      });
     });
   });
 });
