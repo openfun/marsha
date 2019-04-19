@@ -86,6 +86,8 @@ class VideoLTIView(TemplateResponseMixin, View):
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
                     "locale": locale,
+                    "read_only": lti.is_student
+                    or video.playlist.lti_id != lti.context_id,
                 }
             )
             try:
