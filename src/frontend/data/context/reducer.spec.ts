@@ -1,9 +1,11 @@
 import { appState } from '../../types/AppData';
+import { DecodedJwt } from '../../types/jwt';
 import { Video } from '../../types/tracks';
 import { context } from './reducer';
 
 describe('Reducer: context', () => {
   const previousState = {
+    decodedJwt: {} as DecodedJwt,
     jwt: 'some token',
     ltiResourceVideo: {} as Video,
     ltiState: appState.INSTRUCTOR,
@@ -23,6 +25,7 @@ describe('Reducer: context', () => {
       });
 
       expect(stateA).toEqual({
+        decodedJwt: {} as DecodedJwt,
         jwt: 'some token',
         ltiResourceVideo: {} as Video,
         ltiState: appState.INSTRUCTOR,
@@ -36,6 +39,7 @@ describe('Reducer: context', () => {
       });
 
       expect(stateB).toEqual({
+        decodedJwt: {} as DecodedJwt,
         jwt: 'some token',
         ltiResourceVideo: {} as Video,
         ltiState: appState.INSTRUCTOR,
@@ -49,6 +53,7 @@ describe('Reducer: context', () => {
           type: 'UPLOAD_PROGRESS_NOTIFY',
         }),
       ).toEqual({
+        decodedJwt: {} as DecodedJwt,
         jwt: 'some token',
         ltiResourceVideo: {} as Video,
         ltiState: appState.INSTRUCTOR,
