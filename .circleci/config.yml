@@ -263,7 +263,7 @@ jobs:
             - ./node_modules
           key: v3-front-dependencies-{{ checksum "yarn.lock" }}
 
-  lint-front-tslint:
+  lint-front:
     docker:
       - image: circleci/node:10
     working_directory: ~/marsha/src/frontend
@@ -276,17 +276,6 @@ jobs:
       - run:
           name: Lint code with tslint
           command: yarn lint
-
-  lint-front-prettier:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/marsha/src/frontend
-    steps:
-      - checkout:
-          path: ~/marsha
-      - restore_cache:
-          keys:
-            - v3-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with prettier
           command: yarn prettier
@@ -545,13 +534,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - lint-front-tslint:
-          requires:
-            - build-front
-          filters:
-            tags:
-              only: /.*/
-      - lint-front-prettier:
+      - lint-front:
           requires:
             - build-front
           filters:
