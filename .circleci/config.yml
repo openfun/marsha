@@ -97,38 +97,6 @@ jobs:
           name: Test statics location in production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}
 
-  # Build dev job
-  # Build the Docker image ready for development
-  build-dev:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    working_directory: ~/marsha
-    steps:
-      - checkout
-      # Generate a version.json file describing app release
-      - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build production image (using cached layers)
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1} \
-              .
-      # Development image build, it uses the dev Dockerfile file
-      - run:
-          name: Build development image
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-dev \
-              -f docker/images/dev/Dockerfile \
-              --build-arg BASE_TAG=${CIRCLE_SHA1} \
-              .
-      - run:
-          name: Check built image availability
-          command: docker images "marsha:${CIRCLE_SHA1}*"
-
   # Build backend development environment
   build-back:
     docker:
@@ -615,12 +583,6 @@ workflows:
       # Build, lint and test production and development Docker images
       # (debian-based)
       - build:
-          filters:
-            tags:
-              only: /.*/
-      - build-dev:
-          requires:
-            - build
           filters:
             tags:
               only: /.*/
