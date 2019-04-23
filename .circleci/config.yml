@@ -447,34 +447,6 @@ jobs:
       - run:
           name: Test statics location in alpine production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}-alpine
-
-  test-alpine:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    working_directory: ~/marsha
-    steps:
-      # Checkout repository sources
-      - checkout
-      # Generate a version.json file describing app release
-      - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build alpine production image (from cached layers)
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-alpine \
-              -f docker/images/alpine/Dockerfile \
-              .
-      - run:
-          name: Build alpine development image (from cached layers)
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-alpine-dev \
-              -f docker/images/alpine/dev/Dockerfile \
-              --build-arg BASE_TAG=${CIRCLE_SHA1}-alpine \
-              .
       - run:
           name: Run tests
           command: |
@@ -682,13 +654,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-alpine:
-          requires:
-            - build-alpine
-          filters:
-            tags:
-              only: /.*/
-
 
       # i18n jobs
       #
@@ -713,8 +678,9 @@ workflows:
       # it has been tagged with a tag starting with the letter v
       - hub:
           requires:
+            - build
+            - build-alpine
             - test-back
-            - test-alpine
           filters:
             branches:
               only: master
