@@ -67,7 +67,7 @@ jobs:
   # Docker/back-end jobs
   # Build job
   # Build the Docker image ready for production
-  build:
+  build-docker:
     docker:
       - image: circleci/buildpack-deps:stretch
     working_directory: ~/marsha
@@ -582,7 +582,7 @@ workflows:
       #
       # Build, lint and test production and development Docker images
       # (debian-based)
-      - build:
+      - build-docker:
           filters:
             tags:
               only: /.*/
@@ -640,7 +640,7 @@ workflows:
       # it has been tagged with a tag starting with the letter v
       - hub:
           requires:
-            - build
+            - build-docker
             - build-alpine
             - test-back
           filters:
