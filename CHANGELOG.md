@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.7.0] - 2019-04-24
+
 ### Added
 
 - LRS credentials can be configured at the consumer site level.
@@ -207,7 +209,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.5.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.7.0...master
+[2.7.0]: https://github.com/openfun/marsha/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/openfun/marsha/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/openfun/marsha/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/openfun/marsha/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/openfun/marsha/compare/v2.3.0...v2.3.1
