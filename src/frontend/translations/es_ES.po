@@ -5,14 +5,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "X-Generator: crowdin.com\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: marsha\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: frontend.pot\n"
 "Project-Id-Version: marsha\n"
 "Last-Translator: Manuel Raynaud (lunika)\n"
-"Language-Team: French\n"
-"Language: fr_FR\n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
 "PO-Revision-Date: 2019-04-24 09:49\n"
 
 #. [components.DownloadVideo.1080] - High quality video
@@ -20,63 +20,63 @@ msgstr ""
 #. 1080p: FullHD (high quality)
 #: i18n/components/DowloadVideo/DownloadVideo.json
 msgid "1080p: FullHD (high quality)"
-msgstr "1080p: FullHD (haute qualité)"
+msgstr "1080p: FullHD (alta calidad)"
 
 #. [components.DownloadVideo.480] - Mobile quality video
 #. defaultMessage is:
 #. 480p: SD (Mobile)
 #: i18n/components/DowloadVideo/DownloadVideo.json
 msgid "480p: SD (Mobile)"
-msgstr "480p: SD (mobile)"
+msgstr "480p: SD (Móvil)"
 
 #. [components.DownloadVideo.720] - Normal quality video
 #. defaultMessage is:
 #. 720p: HD (standard)
 #: i18n/components/DowloadVideo/DownloadVideo.json
 msgid "720p: HD (standard)"
-msgstr "720p: HD (normal)"
+msgstr "720p: HD (estándar)"
 
 #. [components.TimedTextCreationForm.addTrackLabel] - Label for the form that lets the instructor add a new timed text track.
 #. defaultMessage is:
 #. Add a language
 #: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
 msgid "Add a language"
-msgstr "Ajouter une langue"
+msgstr "Añadir un idioma"
 
 #. [component.DashboardVideoPaneDownloadOption.allowDownload]
 #. defaultMessage is:
 #. Allow video download
 #: i18n/components/DashboardVideoPaneDownloadOption/DashboardVideoPaneDownloadOption.json
 msgid "Allow video download"
-msgstr "Autoriser le téléchargement de la vidéo"
+msgstr "Permitir descarga de vídeos"
 
 #. [components.UploadForm.linkToDashboard] - Text for the link to the dashboard in the upload form.
 #. defaultMessage is:
 #. Back to dashboard
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Back to dashboard"
-msgstr "Revenir au tableau de bord"
+msgstr "Volver al panel de control"
 
 #. [components.Transcripts.transcriptSelect] - Placeholder for the transcript select box
 #. defaultMessage is:
 #. Choose a language
 #: i18n/components/Transcripts/Transcripts.json
 msgid "Choose a language"
-msgstr "Choisir une langue"
+msgstr "Elegir un idioma"
 
 #. [components.DashboardTimedTextPane.closedCaptions] - Title for the closed captions management in the dashboard.
 #. defaultMessage is:
 #. Closed captions
 #: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
 msgid "Closed captions"
-msgstr "Sous-titres"
+msgstr "Subtítulos"
 
 #. [components.UploadForm.title-videos] - Title for the video upload form
 #. defaultMessage is:
 #. Create a new video
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Create a new video"
-msgstr "Créer une nouvelle vidéo"
+msgstr "Crear un nuevo vídeo"
 
 #. [components.Dashboard.title] - Title for the dashboard, where the user can see the status of the video/audio/timed text upload
 #.       & processing, and will be able to manage them.
@@ -84,63 +84,63 @@ msgstr "Créer une nouvelle vidéo"
 #. Dashboard
 #: i18n/components/Dashboard/Dashboard.json
 msgid "Dashboard"
-msgstr "Tableau de bord"
+msgstr "Panel de control"
 
 #. [components.TimedTextListItem.delete] - Link text to delete a subtitle/transcript/captions item.
 #. defaultMessage is:
 #. Delete
 #: i18n/components/TimedTextListItem/TimedTextListItem.json
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Eliminar"
 
 #. [components.DownloadVideo.downloadVideo] - Text to download the video
 #. defaultMessage is:
 #. Download this video:
 #: i18n/components/DowloadVideo/DownloadVideo.json
 msgid "Download this video:"
-msgstr "Télécharger cette vidéo :"
+msgstr "Descargar este vídeo:"
 
 #. [components.UploadStatusPicker.ERROR] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Error
 #: i18n/components/UploadStatusPicker/UploadStatusPicker.json
 msgid "Error"
-msgstr "Erreur"
+msgstr "Error"
 
 #. [components.ErrorComponent.policy.title] - Helpful text for the upload permission error page
 #. defaultMessage is:
 #. Failed to authenticate your permission to upload
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "Failed to authenticate your permission to upload"
-msgstr "Impossible de vérifier vos droits pour téléverser le fichier"
+msgstr "Error al autenticar su permiso para subir vídeos"
 
 #. [component.DashboardVideoPaneDownloadOption.updateVideoFail] - Failed to update download permission on your video.
 #. defaultMessage is:
 #. Failed to update your video. Please try again later.
 #: i18n/components/DashboardVideoPaneDownloadOption/DashboardVideoPaneDownloadOption.json
 msgid "Failed to update your video. Please try again later."
-msgstr "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
+msgstr "Error al actualizar el vídeo. Por favor, inténtelo de nuevo más tarde."
 
 #. [components.ErrorComponent.upload.title] - Title for the video upload error page
 #. defaultMessage is:
 #. Failed to upload your video file
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "Failed to upload your video file"
-msgstr "Erreur lors du téléversement du fichier vidéo"
+msgstr "Error al subir el archivo de vídeo"
 
 #. [components.InstructorView.btnDashboard] - Text for the button in the instructor view that allows the instructor to go to the dashboard.
 #. defaultMessage is:
 #. Go to Dashboard
 #: i18n/components/InstructorView/InstructorView.json
 msgid "Go to Dashboard"
-msgstr "Aller au tableau de bord"
+msgstr "Ir al panel de control"
 
 #. [components.Transcripts.hideTranscript] - Text to hide a displayed transcript
 #. defaultMessage is:
 #. Hide transcript
 #: i18n/components/Transcripts/Transcripts.json
 msgid "Hide transcript"
-msgstr "Masquer le transcrit"
+msgstr "Ocultar transcripción"
 
 #. [components.InstructorView.title] - Title for the Instructor View. Describes the area appearing right above, which is a preview
 #.       of what the student will see there.
@@ -148,49 +148,49 @@ msgstr "Masquer le transcrit"
 #. Instructor Preview 👆
 #: i18n/components/InstructorView/InstructorView.json
 msgid "Instructor Preview 👆"
-msgstr "Aperçu instructeur 👆"
+msgstr "Vista previa del instructor"
 
 #. [components.UploadStatusPicker.PENDING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Missing
 #: i18n/components/UploadStatusPicker/UploadStatusPicker.json
 msgid "Missing"
-msgstr "Absent"
+msgstr "Desaparecido"
 
 #. [components.UploadStatusPicker.PROCESSING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Processing
 #: i18n/components/UploadStatusPicker/UploadStatusPicker.json
 msgid "Processing"
-msgstr "En cours de traitement"
+msgstr "Procesando"
 
 #. [components.UploadStatusPicker.READY] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Ready
 #: i18n/components/UploadStatusPicker/UploadStatusPicker.json
 msgid "Ready"
-msgstr "Disponible"
+msgstr "Listo"
 
 #. [components.TimedTextListItem.replace] - Link text to replace a subtitle/transcript/captions item with a new file (for the same language).
 #. defaultMessage is:
 #. Replace
 #: i18n/components/TimedTextListItem/TimedTextListItem.json
 msgid "Replace"
-msgstr "Remplacer"
+msgstr "Reemplazar"
 
 #. [components.Dashboard.DashboardVideoPaneButtons.btnReplaceVideo] - Dashboard button to upload a video to replace the existing one, when there *is* an existing video.
 #. defaultMessage is:
 #. Replace the video
 #: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
 msgid "Replace the video"
-msgstr "Remplacer la vidéo"
+msgstr "Reemplazar este vídeo"
 
 #. [components.dashboardThumbnail.replaceThumbnailButton]
 #. defaultMessage is:
 #. Replace this thumbnail
 #: i18n/components/DashboardThumbnail/DashboardThumbnail.json
 msgid "Replace this thumbnail"
-msgstr "Remplacer cette vignette"
+msgstr "Reemplazar esta miniatura"
 
 #. [components.UploadForm.dropzoneButtonPick] - File upload dropzone: button to choose a file to upload,
 #.       has the drag text next to it (components.UploadForm.dropzoneDragText)
@@ -198,63 +198,63 @@ msgstr "Remplacer cette vignette"
 #. Select a file to upload
 #: i18n/components/UploadField/DropzonePlaceholder.json
 msgid "Select a file to upload"
-msgstr "Sélectionner un fichier à téléverser"
+msgstr "Eligir un archivo para subir"
 
 #. [components.Transcripts.transcriptLabel] - Text indicated to choose an available transcript language
 #. defaultMessage is:
 #. Show a transcript
 #: i18n/components/Transcripts/Transcripts.json
 msgid "Show a transcript"
-msgstr "Choisir un transcrit"
+msgstr "Eligir una transcripción"
 
 #. [components.DashboardTimedTextPane.subtitles] - Title for the subtitles management in the dashboard.
 #. defaultMessage is:
 #. Subtitles
 #: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
 msgid "Subtitles"
-msgstr "Sous-titres"
+msgstr "Subtítulos"
 
 #. [components.ErrorComponent.notFound.title] - Title for the 404 Not Found error page
 #. defaultMessage is:
 #. The video you are looking for could not be found
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "The video you are looking for could not be found"
-msgstr "Cette vidéo n'est pas disponible"
+msgstr "El vídeo que está buscando no ha sido encontrado"
 
 #. [components.Dashboard.DashboardVideoPaneHelptext.helptextPending] - Dashboard helptext for the case when there is no existing video nor anything in progress.
 #. defaultMessage is:
 #. There is currently no video to display.
 #: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
 msgid "There is currently no video to display."
-msgstr "Il n'y a pas encore de vidéo à afficher."
+msgstr "Actualmente no hay ningún vídeo para mostrar."
 
 #. [components.DashboardThumbnail.error] - Generic error message when we fail to create a thumbnail.
 #. defaultMessage is:
 #. There was an error during thumbnail creation.
 #: i18n/components/DashboardThumbnail/DashboardThumbnail.json
 msgid "There was an error during thumbnail creation."
-msgstr "Une erreur s'est produite durant la création de la vignette."
+msgstr "Se produjo un error durante la creación de miniaturas."
 
 #. [components.TimedTextCreationForm.error] - Generic error message when we fail to create a subtitle/transcript/caption track.
 #. defaultMessage is:
 #. There was an error during track creation.
 #: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
 msgid "There was an error during track creation."
-msgstr "Une erreur s'est produite pendant la création de cette piste."
+msgstr "Se produjo un error durante la creación de pistas."
 
 #. [components.ErrorComponent.lti.title] - Title for the LTI error page
 #. defaultMessage is:
 #. There was an error loading this video
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "There was an error loading this video"
-msgstr "Une erreur s'est produite pendant le chargement de la vidéo"
+msgstr "Se produjo un error al cargar este video"
 
 #. [components.Dashboard.DashboardVideoPaneHelptext.helptextError] - Dashboard helptext for when the video failed to upload or get processed.
 #. defaultMessage is:
 #. There was an error with your video. Retry or upload another one.
 #: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
 msgid "There was an error with your video. Retry or upload another one."
-msgstr "Une erreur s'est produite avec cette vidéo. Réessayez ou choisissez une autre vidéo."
+msgstr "Se produjo un error con el vídeo. Vuelva a intentarlo o suba otro."
 
 #. [components.ErrorComponent.notFound.text] - Helpful text for the 404 Not Found error page
 #. defaultMessage is:
@@ -263,119 +263,120 @@ msgstr "Une erreur s'est produite avec cette vidéo. Réessayez ou choisissez un
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "This video does not exist or has not been published yet.\n"
 "      If you are an instructor, please make sure you are properly authenticated."
-msgstr "La vidéo n'existe pas ou n'a pas encore été publiée. Si vous êtes un instructeur assurez vous d'être correctement authentifié."
+msgstr "Este video no existe o no ha sido publicado todavía.\n"
+"      Si usted es un instructor, por favor asegúrese de que está autenticado correctamente."
 
 #. [components.InstructorView.disabledDashboard] - Text explaining that the ivdeo is in read_only mode and the dashboard is not available
 #. defaultMessage is:
 #. This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video.
 #: i18n/components/InstructorView/InstructorView.json
 msgid "This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video."
-msgstr "Cette vidéo a été importé depuis un autre cours. Pour la modifier vous devez le faire depuis le cours d'origine ou bien supprimer ce block et en recréer un nouveau avec cette vidéo."
+msgstr ""
 
 #. [components.DashboardTimedTextPane.transcripts] - Title for the transcripts management in the dashboard.
 #. defaultMessage is:
 #. Transcripts
 #: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
 msgid "Transcripts"
-msgstr "Transcrits"
+msgstr "Transcripción"
 
 #. [components.TimedTextListItem.upload] - Link text to upload a missing subtitle/transcript/captions item file.
 #. defaultMessage is:
 #. Upload
 #: i18n/components/TimedTextListItem/TimedTextListItem.json
 msgid "Upload"
-msgstr "Téléverser"
+msgstr "Subir"
 
 #. [components.UploadForm.title-timedtexttracks-cc] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new closed captions file
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Upload a new closed captions file"
-msgstr "Téléverser un nouveau fichier de sous-titres codés (sourds et malentendants)"
+msgstr "Subir un nuevo archivo de subtítulos"
 
 #. [components.UploadForm.title-timedtexttracks-st] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new subtitles file
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Upload a new subtitles file"
-msgstr "Téléverser un nouveau fichier de sous-titres"
+msgstr "Subir un nuevo archivo de subtítulos"
 
 #. [components.UploadForm.title-thumbnail] - Title for the thumbnail upload form
 #. defaultMessage is:
 #. Upload a new thumbnail
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Upload a new thumbnail"
-msgstr "Téléverser une nouvelle vignette"
+msgstr "Subir una nueva miniatura"
 
 #. [components.UploadForm.title-timedtexttracks-ts] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new transcript file
 #: i18n/components/UploadForm/UploadForm.json
 msgid "Upload a new transcript file"
-msgstr "Téléverser un nouveau transcrit"
+msgstr "Subir un nuevo archivo de transcripción"
 
 #. [components.Dashboard.DashboardVideoPaneButtons.btnUploadFirstVideo] - Dashboard button to upload a video, when there is no existing video.
 #. defaultMessage is:
 #. Upload a video
 #: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
 msgid "Upload a video"
-msgstr "Téléverser une vidéo"
+msgstr "Subir un vídeo"
 
 #. [components.Dashboard.DashboardVideoPaneHelptext.helptextUploading] - Dashboard helptext to warn user not to navigate away during video upload.
 #. defaultMessage is:
 #. Upload in progress... Please do not close or reload this page.
 #: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
 msgid "Upload in progress... Please do not close or reload this page."
-msgstr "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
+msgstr "Carga en curso... Por favor no cierre o vuelva a cargar esta página."
 
 #. [components.DashboardVideoPaneProgress.progressLabel] - Accessibility message for the upload progress bar.
 #. defaultMessage is:
 #. Upload progress
 #: i18n/components/DashboardObjectProgress/DashboardObjectProgress.json
 msgid "Upload progress"
-msgstr "Progression du téléversement"
+msgstr "Progreso de carga"
 
 #. [components.TimedTextCreationForm.addTrackBtn] - Text for the button in the dashboard to go upload a new timed text file.
 #. defaultMessage is:
 #. Upload the file
 #: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
 msgid "Upload the file"
-msgstr "Téléverser le fichier"
+msgstr "Subir el archivo"
 
 #. [components.UploadStatusPicker.UPLOADING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Uploading
 #: i18n/components/UploadStatusPicker/UploadStatusPicker.json
 msgid "Uploading"
-msgstr "Téléversement en cours"
+msgstr "Subiendo"
 
 #. [components.DashboardVideoPane.title] - Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).
 #. defaultMessage is:
 #. Video status
 #: i18n/components/DashboardVideoPane/DashboardVideoPane.json
 msgid "Video status"
-msgstr "Statut de la vidéo"
+msgstr "Estado del vídeo"
 
 #. [components.DashboardVideoPane.thumbnailAlt] - Accessibility text for the video thumbnail in the Dashboard.
 #. defaultMessage is:
 #. Video thumbnail preview image.
 #: i18n/components/DashboardThumbnailDisplay/DashboardThumbnailDisplay.json
 msgid "Video thumbnail preview image."
-msgstr "Vignette de prévisualisation de la vidéo."
+msgstr "Imagen previa de la miniatura del vídeo."
 
 #. [components.Dashboard.DashboardVideoPaneButtons.btnPlayVideo] - Dashboard button to play the existing video, if there is one.
 #. defaultMessage is:
 #. Watch
 #: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
 msgid "Watch"
-msgstr "Regarder"
+msgstr "Ver"
 
 #. [components.ErrorComponent.policy.text] - Title for the upload permission error page
 #. defaultMessage is:
 #. We could not make sure you are allowed to upload a video file. Please check your settings and/or try again.
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "We could not make sure you are allowed to upload a video file. Please check your settings and/or try again."
-msgstr "Nous ne pouvons vérifier si vous avez les droits nécessaires pour téléverser un fichier. Vérifiez vos paramètres et/ou réessayez."
+msgstr "No pudimos asegurarnos que usted está autorizado a subir un archivo de vídeo. Por favor, compruebe su configuración y/o vuelva a intentarlo."
 
 #. [components.ErrorComponent.lti.text] - Helpful text for the LTI error page
 #. defaultMessage is:
@@ -384,35 +385,36 @@ msgstr "Nous ne pouvons vérifier si vous avez les droits nécessaires pour tél
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "We could not validate your access to this video. Please contact your instructor.\n"
 "      If you are the instructor, please check your settings."
-msgstr "Nous ne pouvons vérifier vos droits pour accéder à cette vidéo. Merci de prendre contact avec votre instructeur. Si vous êtes l'instructeur, merci de vérifier vos paramètres."
+msgstr "No hemos podido validar su acceso a este vídeo. Por favor, póngase en contacto con su instructor.\n"
+"      Si usted es el instructor, por favor, revise su configuración."
 
 #. [components.ErrorComponent.upload.text] - Helpful text for the Upload error page
 #. defaultMessage is:
 #. You can try again later. You may want to check your Internet connection quality.
 #: i18n/components/ErrorComponent/ErrorComponent.json
 msgid "You can try again later. You may want to check your Internet connection quality."
-msgstr "Vous pouvez réessayer dans quelques instants. Vous devriez vérifier la qualité de votre connexion internet."
+msgstr "Puede intentarlo más tarde. Comprobe la calidad de su conexión a internet."
 
 #. [components.DashboardThumbnail.helptextProcessing] - Thumbnail help text informing that the thumbnail is processing and will be available soon.
 #. defaultMessage is:
 #. Your thumbnail is currently processing. This may take several minutes. It will appear here once done.
 #: i18n/components/DashboardThumbnail/DashboardThumbnail.json
 msgid "Your thumbnail is currently processing. This may take several minutes. It will appear here once done."
-msgstr "Votre vignette est en cours de traitement. Le traitement peut prendre quelques minutes. La vignette apparaîtra une fois le traitement terminé."
+msgstr "Su miniatura está siendo procesada. Esto puede tardar varios minutos. Aparecerá aquí una vez este proceso terminado."
 
 #. [components.Dashboard.DashboardVideoPaneHelptext.helptextProcessing] - Dashboard helptext to warn users not to wait for video processing in front of this page.
 #. defaultMessage is:
 #. Your video is currently processing. This may take up to an hour. Please come back later.
 #: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
 msgid "Your video is currently processing. This may take up to an hour. Please come back later."
-msgstr "Votre vidéo est en cours de traitement. Le traitement peut prendre jusqu'à une heure. Nous vous conseillons de revenir plus tard."
+msgstr "El vídeo está siendo procesado. Esto puede tomar hasta una hora. Por favor, vuelva más tarde."
 
 #. [components.Dashboard.DashboardVideoPaneHelptext.helptextReady] - Dashboard helptext for ready-to-play videos.
 #. defaultMessage is:
 #. Your video is ready to play.
 #: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
 msgid "Your video is ready to play."
-msgstr "Votre vidéo est prête à être visionnée."
+msgstr "El vídeo está listo para ser reproducido."
 
 #. [components.UploadForm.dropzoneDragText] - File upload dropzone: helptext on the dropzone,
 #.       goes along with the button (components.UploadForm.dropzoneButtonPick)
@@ -420,5 +422,5 @@ msgstr "Votre vidéo est prête à être visionnée."
 #. or drop it here
 #: i18n/components/UploadField/DropzonePlaceholder.json
 msgid "or drop it here"
-msgstr "ou le glisser ici"
+msgstr "o arrastrarlo aquí"
 
