@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    {% if environment in authorized_environment%}
+    {% if cloudfront_domain %}
     <meta name="public-path" value="{{ cloudfront_domain }}" />
     {% endif %}
   </head>
