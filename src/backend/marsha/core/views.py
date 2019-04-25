@@ -3,6 +3,7 @@ import json
 from logging import getLogger
 import uuid
 
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -100,6 +101,10 @@ class VideoLTIView(TemplateResponseMixin, View):
         context["video_data"] = json.dumps(
             VideoSerializer(video).data if video else None
         )
+
+        context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
+        context["environment"] = settings.CONFIGURATION
+        context["authorized_environment"] = ["production", "preproduction", "staging"]
 
         return context
 
