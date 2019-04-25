@@ -15,9 +15,14 @@ module.exports = {
     'core-js/modules/es.array.iterator',
     './index.tsx',
   ],
+
+  // chunkFilename must have a unique and different name on each build
+  // this will prevent to replace existing chunk if backend static storage
+  // is on AWS.
   output: {
     filename: 'index.js',
     path: __dirname + '/../backend/marsha/static/js',
+    chunkFilename: '[id].[hash].index.js',
   },
 
   // Enable sourcemaps for debugging webpack's output.
