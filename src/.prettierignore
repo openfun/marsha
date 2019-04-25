@@ -1,4 +1,4 @@
 i18n/**/*.json
 node_modules
 translations/*.json
-
+public-path.js

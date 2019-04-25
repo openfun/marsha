@@ -13,7 +13,7 @@
     "lint-fix": "tslint --fix -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
     "prettier-write": "prettier --write '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
-    "lint-all": "yarn lint-fix && yarn prettier-fix",
+    "lint-all": "yarn lint-fix && yarn prettier-write",
     "test": "jest"
   },
   "repository": "git@github.com:openfun/marsha.git",

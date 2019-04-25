@@ -10,13 +10,13 @@ module.exports = {
   // Environments which do not have builtin support for Promise, like Internet Explorer, will require both
   // the promise and iterator polyfills be added manually.
   entry: [
+    './public-path.js',
     'core-js/modules/es.promise',
     'core-js/modules/es.array.iterator',
     './index.tsx',
   ],
   output: {
     filename: 'index.js',
-    publicPath: '/static/js/',
     path: __dirname + '/../backend/marsha/static/js',
   },
 
