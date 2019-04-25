@@ -355,6 +355,50 @@ class ViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
 
+    @override_settings(STATICFILES_AWS_ENABLED=False)
+    @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
+    def test_views_video_staticfiles_aws_disabled(self):
+        """Meta tag public-path should'nt be in the response when staticfiles on AWS is diabled."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        self.assertNotContains(
+            response, '<meta name="public-path" value="abcd.cloudfront.net" />'
+        )
+
+    @override_settings(STATICFILES_AWS_ENABLED=True)
+    @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
+    def test_views_video_staticfiles_aws_enabled(self):
+        """Meta tag public-path should be in the response when staticfiles on AWS is enabled."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        self.assertContains(
+            response, '<meta name="public-path" value="abcd.cloudfront.net" />'
+        )
+
 
 class DevelopmentViewsTestCase(TestCase):
     """Test the views in the ``core`` app of the Marsha project for development use cases.

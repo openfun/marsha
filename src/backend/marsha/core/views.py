@@ -102,9 +102,8 @@ class VideoLTIView(TemplateResponseMixin, View):
             VideoSerializer(video).data if video else None
         )
 
-        context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
-        context["environment"] = settings.CONFIGURATION
-        context["authorized_environment"] = ["production", "preproduction", "staging"]
+        if getattr(settings, "STATICFILES_AWS_ENABLED", False):
+            context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
 
         return context
 

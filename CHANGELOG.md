@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Correctly load static js chunks from cloud-front CDN
+
 ## [2.7.0] - 2019-04-24
 
 ### Added

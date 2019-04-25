@@ -211,6 +211,9 @@ class Base(Configuration):
     LRS_URL = values.Value("")
     LRS_XAPI_VERSION = values.Value("1.0.3")
 
+    # Helper to easily know if static files in AWS is activated
+    STATICFILES_AWS_ENABLED = False
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):
@@ -369,6 +372,9 @@ class Production(Base):
     ALLOWED_HOSTS = values.ListValue(None)
     AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
 
+    # Helper to easily know if static files in AWS is activated
+    STATICFILES_AWS_ENABLED = True
+
     # For static files in production, we want to use a backend that includes a hash in
     # the filename, that is calculated from the file content, so that browsers always
     # get the updated version of each file.
@@ -392,6 +398,10 @@ class Production(Base):
     # folder where static will be stored. It matches the path_pattern used
     # in the cloudfront configuration.
     AWS_LOCATION = Base.STATIC_URL
+
+    # pattern matching files to ignore when hashing file names and exclude from the
+    # static files manifest
+    STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(r"^js\/[0-9]*\..*\.index\.js$")
 
 
 class Staging(Production):
