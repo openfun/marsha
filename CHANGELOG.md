@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Use pytest to run backend tests.
+- Rename lambda-update-state lambda in lambda-complete.
 
 ## [2.7.1] - 2019-04-29
 

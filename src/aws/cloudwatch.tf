@@ -8,7 +8,7 @@ resource "aws_cloudwatch_event_rule" "marsha_encode_complete_rule" {
   "detail": {
     "status": [ "COMPLETE" ],
     "userMetadata": {
-      "Bucket": [ "${aws_s3_bucket.marsha_source.id}" ] 
+      "Bucket": [ "${aws_s3_bucket.marsha_source.id}" ]
     }
   }
 }
@@ -18,5 +18,5 @@ PATTERN
 resource "aws_cloudwatch_event_target" "marsha_encode_complete_target" {
   rule      = "${aws_cloudwatch_event_rule.marsha_encode_complete_rule.name}"
   target_id = "check_foo"
-  arn       = "${aws_lambda_function.marsha_update_state_lambda.arn}"
+  arn       = "${aws_lambda_function.marsha_complete_lambda.arn}"
 }

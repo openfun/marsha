@@ -86,14 +86,14 @@ resource "aws_lambda_permission" "allow_bucket" {
 # Confirmation
 ################
 
-resource "aws_lambda_function" "marsha_update_state_lambda" {
-  function_name    = "${terraform.workspace}-marsha-update-state"
+resource "aws_lambda_function" "marsha_complete_lambda" {
+  function_name    = "${terraform.workspace}-marsha-complete"
   handler          = "index.handler"
   # Run on the highest version of node available on AWS lambda
   # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   runtime          = "nodejs8.10"
-  filename         = "dist/marsha_update-state.zip"
-  source_code_hash = "${base64sha256(file("dist/marsha_update-state.zip"))}"
+  filename         = "dist/marsha_complete.zip"
+  source_code_hash = "${base64sha256(file("dist/marsha_complete.zip"))}"
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
 
   environment {
@@ -109,7 +109,7 @@ resource "aws_lambda_function" "marsha_update_state_lambda" {
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.marsha_update_state_lambda.arn}"
+  function_name = "${aws_lambda_function.marsha_complete_lambda.arn}"
   principal     = "events.amazonaws.com"
   source_arn    = "${aws_cloudwatch_event_rule.marsha_encode_complete_rule.arn}"
 }
