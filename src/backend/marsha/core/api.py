@@ -25,9 +25,9 @@ from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Thumbnail, TimedTextTrack, Video
 from .permissions import (
-    IsRelatedVideoTokenOrAdminUser,
-    IsVideoToken,
     IsVideoInstructorTokenOrAdminUser,
+    IsVideoRelatedInstructorTokenOrAdminUser,
+    IsVideoToken,
 )
 from .serializers import (
     ThumbnailSerializer,
@@ -181,7 +181,7 @@ class TimedTextTrackViewSet(
         if self.action == "metadata":
             permission_classes = [IsVideoToken]
         else:
-            permission_classes = [IsRelatedVideoTokenOrAdminUser]
+            permission_classes = [IsVideoRelatedInstructorTokenOrAdminUser]
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
@@ -240,7 +240,7 @@ class ThumbnailViewSet(
 ):
     """Viewset for the API of the Thumbnail object."""
 
-    permission_classes = [IsRelatedVideoTokenOrAdminUser]
+    permission_classes = [IsVideoRelatedInstructorTokenOrAdminUser]
     serializer_class = ThumbnailSerializer
 
     def get_queryset(self):
