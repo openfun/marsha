@@ -343,29 +343,29 @@ jobs:
             - ./node_modules
           key: v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
 
-  test-lambda-update-state:
+  test-lambda-complete:
     docker:
       - image: circleci/node:8.10
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-    working_directory: ~/marsha/src/aws/lambda-update-state
+    working_directory: ~/marsha/src/aws/lambda-complete
     steps:
       - checkout:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-update-state-dependencies-{{ checksum "yarn.lock" }}
-            - v3-lambdas-update-state-dependencies-
+            - v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
+            - v3-lambdas-complete-dependencies-
       - run:
-          name: Install update-state lambda dependencies
+          name: Install complete lambda dependencies
           command: yarn install --ignore-engines --frozen-lockfile
       - run:
-          name: Run update-state lambda tests
+          name: Run complete lambda tests
           command: yarn test
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-update-state-dependencies-{{ checksum "yarn.lock" }}
+          key: v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
 
   # ---- Alpine jobs ----
   build-alpine:
@@ -556,7 +556,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-lambda-update-state:
+      - test-lambda-complete:
           filters:
             tags:
               only: /.*/
