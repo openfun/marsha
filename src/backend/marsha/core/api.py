@@ -27,7 +27,7 @@ from .models import Thumbnail, TimedTextTrack, Video
 from .permissions import (
     IsRelatedVideoTokenOrAdminUser,
     IsVideoToken,
-    IsVideoTokenOrAdminUser,
+    IsVideoInstructorTokenOrAdminUser,
 )
 from .serializers import (
     ThumbnailSerializer,
@@ -116,7 +116,7 @@ class VideoViewSet(
 
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    permission_classes = [IsVideoTokenOrAdminUser]
+    permission_classes = [IsVideoInstructorTokenOrAdminUser]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument

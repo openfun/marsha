@@ -5,7 +5,7 @@ from rest_framework_simplejwt.models import TokenUser
 from .models.account import INSTRUCTOR, LTI_ROLES
 
 
-class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
+class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
     """A custom permission class for JWT Tokens related to a video object.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
@@ -95,7 +95,7 @@ class IsVideoTokenOrAdminUser(permissions.IsAdminUser):
         return super().has_object_permission(request, view, obj)
 
 
-class IsRelatedVideoTokenOrAdminUser(IsVideoTokenOrAdminUser):
+class IsRelatedVideoTokenOrAdminUser(IsVideoInstructorTokenOrAdminUser):
     """A custom permission class for JWT Tokens related to objects linked to a video.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
