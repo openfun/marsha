@@ -30,7 +30,7 @@ lambda: ## Zip and copy source files to dist/
 lambda:
 	@echo "Zip and copy source files to dist/"
 	@rm -rf dist && mkdir dist
-	@for lambda_name in configure encode update-state ; do \
+	@for lambda_name in configure encode complete ; do \
 		cd ./lambda-$$lambda_name ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:8 bash -c "rm -rf node_modules; yarn install --frozen-lockfile --production=true" ; \
 		zip -q -r9 ../dist/marsha_$$lambda_name.zip *; \
@@ -41,7 +41,7 @@ lambda:
 test: ## test all lambda packages
 test:
 	@echo "Test all lambda packages"
-	@for lambda_name in configure encode update-state ; do \
+	@for lambda_name in configure encode complete ; do \
 		cd ./lambda-$$lambda_name ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:8 bash -c "rm -rf node_modules; yarn install --frozen-lockfile" ; \
 		yarn test; \
