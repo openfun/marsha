@@ -95,7 +95,7 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
         return super().has_object_permission(request, view, obj)
 
 
-class IsRelatedVideoTokenOrAdminUser(IsVideoInstructorTokenOrAdminUser):
+class IsVideoRelatedInstructorTokenOrAdminUser(IsVideoInstructorTokenOrAdminUser):
     """A custom permission class for JWT Tokens related to objects linked to a video.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
