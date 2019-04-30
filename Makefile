@@ -94,8 +94,7 @@ superuser: ## create a Django superuser
 .PHONY: test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	# we use a test-runner that does not run the django check command as its done in another job
-	@$(COMPOSE_TEST_RUN_APP) python -Wd manage.py test --testrunner marsha.test_runner.NoCheckDiscoverRunner
+	@$(COMPOSE_TEST_RUN_APP) pytest
 
 .PHONY: build-front
 build-front: ## Build front application
