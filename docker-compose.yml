@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:10.3
-    env_file: env.d/development
+    env_file: env.d/${ENV_FILE:-development}
     ports:
       - "5452:5432"
 
@@ -23,7 +23,7 @@ services:
       dockerfile: ./docker/images/dev/Dockerfile
     image: marsha:dev
     env_file:
-      - env.d/development
+      - env.d/${ENV_FILE:-development}
     # Override production container command that runs gunicorn in favor of the
     # django development server (wrapped by dockerize to ensure the db is ready
     # to accept connections before running the development server)
