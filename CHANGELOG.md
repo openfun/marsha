@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Use pytest to run backend tests.
+
 ## [2.7.1] - 2019-04-29
 
 ### Fixed
