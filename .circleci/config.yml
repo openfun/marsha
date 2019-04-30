@@ -226,7 +226,7 @@ jobs:
                 dockerize \
                   -wait tcp://localhost:5432 \
                   -timeout 60s \
-                    python manage.py test
+                    ~/.local/bin/pytest
 
   # ---- Front-end jobs ----
   build-front:
@@ -416,7 +416,7 @@ jobs:
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
-                    python manage.py test
+                    pytest
 
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
