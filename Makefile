@@ -15,9 +15,6 @@ ifndef NO_DOCKER
 	COMPOSE_RUN_LRS	     = $(COMPOSE_RUN) api
 	COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
 	COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
-	COMPOSE_TEST         = $(COMPOSE) -p marsha-test -f docker/compose/test/docker-compose.yml --project-directory .
-	COMPOSE_TEST_RUN     = $(COMPOSE_TEST) run --rm
-	COMPOSE_TEST_RUN_APP = $(COMPOSE_TEST_RUN) app
 	YARN 								 = $(COMPOSE_RUN_NODE) yarn
 endif
 
@@ -44,37 +41,37 @@ lint: lint-isort lint-black lint-flake8 lint-pylint
 .PHONY: check-black
 check-black:  ## Run the black tool in check mode only (won't modify files)
 	@echo "$(BOLD)Checking black$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) black --check marsha/ 2>&1
+	@$(COMPOSE_RUN_APP) black --check marsha/ 2>&1
 
 .PHONY: lint-black
 lint-black:  ## Run the black tool and update files that need to
 	@echo "$(BOLD)Running black$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) black marsha/
+	@$(COMPOSE_RUN_APP) black marsha/
 
 .PHONY: lint-flake8
 lint-flake8:  ## Run the flake8 tool
 	@echo "$(BOLD)Running flake8$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) flake8 marsha --format=abspath
+	@$(COMPOSE_RUN_APP) flake8 marsha --format=abspath
 
 .PHONY: lint-pylint
 lint-pylint:  ## Run the pylint tool
 	@echo "$(BOLD)Running pylint$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) pylint --rcfile=pylintrc marsha
+	@$(COMPOSE_RUN_APP) pylint --rcfile=pylintrc marsha
 
 .PHONY: lint-isort
 lint-isort:  ## automatically re-arrange python imports in code base
 	@echo "$(BOLD)Running isort$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) isort marsha --recursive --atomic
+	@$(COMPOSE_RUN_APP) isort marsha --recursive --atomic
 
 .PHONY: check-django
 check-django:  ## Run the Django "check" command
 	@echo "$(BOLD)Checking django$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) python manage.py check
+	@$(COMPOSE_RUN_APP) python manage.py check
 
 .PHONY: check-migrations
 check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) python manage.py makemigrations --check --dry-run
+	@$(COMPOSE_RUN_APP) python manage.py makemigrations --check --dry-run
 
 .PHONY: collectstatic
 collectstatic:  ## Collect and deploy static files for the marsha project.
@@ -92,9 +89,10 @@ superuser: ## create a Django superuser
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
 
 .PHONY: test
+test: export ENV_FILE=test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	@$(COMPOSE_TEST_RUN_APP) pytest
+	@$(COMPOSE_RUN_APP) pytest -x
 
 .PHONY: build-front
 build-front: ## Build front application
