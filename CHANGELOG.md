@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Use pytest to run backend tests.
 - Rename lambda-update-state lambda in lambda-complete.
+- Keep only one docker-compose file.
 
 ## [2.7.1] - 2019-04-29
 
