@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Automate python dependencies upgrade with pyup.
+
 ### Changed
 
 - Use pytest to run backend tests.
