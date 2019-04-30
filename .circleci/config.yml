@@ -374,7 +374,8 @@ jobs:
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
-      - checkout
+      - checkout:
+          path: ~/marsha
       # Generate a version.json file describing app release
       - <<: *generate-version-file
       # Activate docker-in-docker (with layers caching enabled)
@@ -404,15 +405,17 @@ jobs:
       - run:
           name: Test statics location in alpine production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}-alpine
+      # We first need to create the env.d/development file. We don't use it but other
+      # services in the docker-compose file need it. docker-compose command will fail
+      # if we don't create it.
       - run:
           name: Run tests
           command: |
+            cp env.d/development.dist env.d/development
             IMAGE_SUFFIX="-alpine" \
+            ENV_FILE=ci \
             docker-compose \
-              -p marsha-test \
-              -f docker/compose/ci/docker-compose.yml \
-              --project-directory . \
-              run --rm app \
+              run --rm app-ci \
                 dockerize \
                   -wait tcp://db:5432 \
                   -timeout 60s \
