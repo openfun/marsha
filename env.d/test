@@ -8,7 +8,7 @@ DJANGO_JWT_SIGNING_KEY=ThisIsAnExampleKeyForDevPurposeOnly
 # Database
 POSTGRES_HOST=db
 POSTGRES_DB=marsha
-POSTGRES_USER=fun
+POSTGRES_USER=marsha_user
 POSTGRES_PASSWORD=pass
 
 # AWS User
