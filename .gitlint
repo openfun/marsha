@@ -20,7 +20,7 @@
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
-extra-path=gitlint/
+extra-path=lib/gitlint/
 
 # [title-max-length]
 # line-length=80
