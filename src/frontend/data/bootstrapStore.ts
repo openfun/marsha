@@ -5,7 +5,7 @@ import { requestStatus } from '../types/api';
 import { AppData } from '../types/AppData';
 import { modelName } from '../types/models';
 import { Nullable } from '../utils/types';
-import { initialState } from './context/reducer';
+import { buildInitialState } from './context/reducer';
 import { rootReducer } from './rootReducer';
 import { rootSaga } from './rootSaga';
 import { ThumbnailState } from './thumbnail/reducer';
@@ -55,7 +55,7 @@ export const bootstrapStore = (appData: AppData) => {
   const store = createStore(
     rootReducer,
     {
-      context: initialState,
+      context: buildInitialState(appData),
       languageChoices: timedTextTrackLanguageChoicesInitialState,
       resources: {
         [modelName.TIMEDTEXTTRACKS]: timeTextTracksState || {},
