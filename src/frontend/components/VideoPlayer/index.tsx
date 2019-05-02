@@ -2,18 +2,24 @@ import { MediaPlayer } from 'dashjs';
 import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
 
+import { RootState } from '../../data/rootReducer';
+import { getThumbnail } from '../../data/thumbnail/selector';
+import { getTimedTextTrackLanguageChoices as getTimedTextTrackLanguageChoicesAction } from '../../data/timedTextTrackLanguageChoices/action';
+import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { createPlayer } from '../../Player/createPlayer';
 import { ConsumableQuery } from '../../types/api';
+import { appStateSuccess } from '../../types/AppData';
 import { LanguageChoice } from '../../types/LanguageChoice';
+import { modelName } from '../../types/models';
 import {
   Thumbnail,
   TimedText,
   timedTextMode,
   TimedTextTranscript,
-  uploadState,
   Video,
   videoSize,
 } from '../../types/tracks';
@@ -30,7 +36,7 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.SUBTITLE]: 'subtitles',
 };
 
-export interface VideoPlayerProps {
+interface BaseVideoPlayerProps {
   createPlayer: typeof createPlayer;
   dispatch: Dispatch;
   getTimedTextTrackLanguageChoices: (jwt: string) => void;
@@ -41,18 +47,18 @@ export interface VideoPlayerProps {
   video: Nullable<Video>;
 }
 
-interface VideoPlayerState {
+interface BaseVideoPlayerState {
   isDashSupported: boolean;
   player: Maybe<VideoPlayerInterface>;
 }
 
-export class VideoPlayer extends React.Component<
-  VideoPlayerProps,
-  VideoPlayerState
+class BaseVideoPlayer extends React.Component<
+  BaseVideoPlayerProps,
+  BaseVideoPlayerState
 > {
   videoNodeRef: Nullable<HTMLVideoElement> = null;
 
-  constructor(props: VideoPlayerProps) {
+  constructor(props: BaseVideoPlayerProps) {
     super(props);
     this.state = {
       isDashSupported: isMSESupported(),
@@ -175,3 +181,38 @@ export class VideoPlayer extends React.Component<
     );
   }
 }
+
+type VideoPlayerProps = Pick<BaseVideoPlayerProps, 'createPlayer' | 'video'>;
+
+/**
+ * Replace the (read-only) video from context with one from the resources part of the
+ * state if available as it will hold the most recent version.
+ */
+const mapStateToProps = (
+  state: RootState<appStateSuccess>,
+  { video }: VideoPlayerProps,
+) => ({
+  jwt: state.context.jwt,
+  languageChoices: state.languageChoices.items,
+  thumbnail: getThumbnail(state),
+  timedtexttracks: getTimedTextTracks(state),
+  video:
+    (state.resources[modelName.VIDEOS]!.byId &&
+      state.resources[modelName.VIDEOS]!.byId[(video && video.id) || '']) ||
+    video,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch,
+  getTimedTextTrackLanguageChoices: (jwt: string) =>
+    dispatch(getTimedTextTrackLanguageChoicesAction(jwt)),
+});
+
+/**
+ * Component. Displays a player to show the video from context.
+ * @param video The video to show.
+ */
+export const VideoPlayer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BaseVideoPlayer);

@@ -1,10 +1,10 @@
 import jwt_decode from 'jwt-decode';
 import { AnyAction, Reducer } from 'redux';
 
-import { appState } from '../../types/AppData';
+import { AppData, appState } from '../../types/AppData';
 import { DecodedJwt } from '../../types/jwt';
 import { UploadableObject, Video } from '../../types/tracks';
-import { appData } from '../appData';
+import { appData as initialState } from '../appData';
 import { UploadProgressNotification } from './actions';
 
 export interface ContextState<state> {
@@ -17,16 +17,16 @@ export interface ContextState<state> {
   };
 }
 
-export const initialState = {
+export const buildInitialState = (appData: AppData) => ({
   decodedJwt: appData.jwt ? (jwt_decode(appData.jwt) as DecodedJwt) : null,
   jwt: appData.jwt || null,
   ltiResourceVideo: appData.video || null,
   ltiState: appData.state,
   uploads_progress: {},
-};
+});
 
 export const context: Reducer<ContextState<appState>> = (
-  state: ContextState<appState> = initialState,
+  state: ContextState<appState> = buildInitialState(initialState),
   action?: UploadProgressNotification<UploadableObject> | AnyAction,
 ) => {
   if (!action) {
