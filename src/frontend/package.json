@@ -54,6 +54,7 @@
     "jest-styled-components": "6.3.1",
     "prettier": "1.17.0",
     "react-intl-po": "2.2.2",
+    "react-testing-library": "7.0.0",
     "source-map-loader": "0.2.4",
     "style-loader": "0.23.1",
     "tslint": "5.16.0",
