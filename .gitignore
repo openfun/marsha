@@ -29,6 +29,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!/lib/gitlint/
 lib64/
 parts/
 sdist/
