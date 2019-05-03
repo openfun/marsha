@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
-import { AppRoutesConnected } from './components/AppRoutesConnected/AppRoutesConnected';
+import { AppRoutes } from './components/AppRoutes';
 import { appData } from './data/appData';
 import { bootstrapStore } from './data/bootstrapStore';
 import { DecodedJwt } from './types/jwt';
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async event => {
     <IntlProvider locale={localeCode} messages={translatedMessages}>
       <Grommet theme={theme}>
         <Provider store={store}>
-          <AppRoutesConnected />
+          <AppRoutes />
           <GlobalStyles />
         </Provider>
       </Grommet>
