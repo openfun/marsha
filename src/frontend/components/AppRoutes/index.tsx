@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 import { RootState } from '../../data/rootReducer';
@@ -16,11 +17,11 @@ import { UploadFormConnected } from '../UploadFormConnected/UploadFormConnected'
 import { VideoPlayer } from '../VideoPlayer';
 import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
-interface AppRoutesProps {
+interface BaseAppRoutesProps {
   context: RootState<appState>['context'];
 }
 
-export const AppRoutes = ({ context }: AppRoutesProps) => {
+const BaseAppRoutes = ({ context }: BaseAppRoutesProps) => {
   return (
     <MemoryRouter>
       <Switch>
@@ -66,3 +67,16 @@ export const AppRoutes = ({ context }: AppRoutesProps) => {
     </MemoryRouter>
   );
 };
+
+/**
+ * Pick the state context so it can be used to render any route.
+ */
+const mapStateToProps = (state: RootState<appState>) => ({
+  context: state.context,
+});
+
+/**
+ * Dynamically render all the possible routes in the app with proper context already
+ * baked in.
+ */
+export const AppRoutes = connect(mapStateToProps)(BaseAppRoutes);
