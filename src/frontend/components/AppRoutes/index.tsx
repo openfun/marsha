@@ -5,8 +5,8 @@ import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import { RootState } from '../../data/rootReducer';
 import { createPlayer } from '../../Player/createPlayer';
 import { appState } from '../../types/AppData';
+import { Dashboard } from '../Dashboard';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DashboardConnected } from '../DashboardConnected/DashboardConnected';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapperConnected } from '../InstructorWrapperConnected/InstructorWrapperConnected';
@@ -55,9 +55,7 @@ const BaseAppRoutes = ({ context }: BaseAppRoutesProps) => {
         <Route
           exact
           path={DASHBOARD_ROUTE()}
-          render={() => (
-            <DashboardConnected video={context.ltiResourceVideo!} />
-          )}
+          render={() => <Dashboard video={context.ltiResourceVideo!} />}
         />
         <Route
           path={REDIRECT_ON_LOAD_ROUTE()}
