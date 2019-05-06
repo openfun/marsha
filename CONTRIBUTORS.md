@@ -9,3 +9,4 @@
 - [Manuel Raynaud](https://github.com/lunika) <manu@raynaud.io>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
+- [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
