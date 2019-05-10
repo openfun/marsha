@@ -12,7 +12,7 @@ from safedelete import HARD_DELETE
 
 from marsha.core.managers import UserManager
 
-from .base import BaseModel, NonDeletedUniqueIndex
+from .base import BaseModel
 
 
 OAUTH_CONSUMER_KEY_CHARS = string.ascii_uppercase + string.digits
@@ -283,7 +283,13 @@ class ConsumerSitePortability(BaseModel):
         db_table = "consumersite_portability"
         verbose_name = _("consumer site portability")
         verbose_name_plural = _("consumer site portabilities")
-        indexes = [NonDeletedUniqueIndex(["source_site", "target_site"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source_site", "target_site"],
+                condition=models.Q(deleted=None),
+                name="consumersite_portability_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -329,7 +335,13 @@ class ConsumerSiteAccess(BaseModel):
         db_table = "consumersite_access"
         verbose_name = _("consumer site access")
         verbose_name_plural = _("consumer site accesses")
-        indexes = [NonDeletedUniqueIndex(["user", "consumer_site"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "consumer_site"],
+                condition=models.Q(deleted=None),
+                name="consumersite_access_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -411,7 +423,13 @@ class ConsumerSiteOrganization(BaseModel):
         db_table = "consumersite_organization"
         verbose_name = _("organization in consumer site")
         verbose_name_plural = _("organizations in consumer sites")
-        indexes = [NonDeletedUniqueIndex(["consumer_site", "organization"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["consumer_site", "organization"],
+                condition=models.Q(deleted=None),
+                name="consumersite_organization_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -465,7 +483,13 @@ class OrganizationAccess(BaseModel):
         db_table = "organization_access"
         verbose_name = _("organization access")
         verbose_name_plural = _("organization accesses")
-        indexes = [NonDeletedUniqueIndex(["user", "organization"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "organization"],
+                condition=models.Q(deleted=None),
+                name="organization_access_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""

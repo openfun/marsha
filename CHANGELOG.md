@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rename lambda-update-state lambda in lambda-complete.
 - Keep only one docker-compose file.
 - Move gitlint directory into lib directory.
+- Upgrade to django 2.2
 - Remove docker alpine images
 
 ## [2.7.1] - 2019-04-29
