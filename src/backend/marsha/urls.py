@@ -19,11 +19,9 @@ from marsha.core.views import LTIDevelopmentView, OpenEdxVideoLTIView, VideoLTIV
 
 
 router = DefaultRouter()
-router.register(r"videos", VideoViewSet, base_name="videos")
-router.register(
-    r"timedtexttracks", TimedTextTrackViewSet, base_name="timed_text_tracks"
-)
-router.register(r"thumbnail", ThumbnailViewSet, base_name="thumbnail")
+router.register(r"videos", VideoViewSet, basename="videos")
+router.register(r"timedtexttracks", TimedTextTrackViewSet, basename="timed_text_tracks")
+router.register(r"thumbnail", ThumbnailViewSet, basename="thumbnail")
 
 urlpatterns = [
     # Admin
