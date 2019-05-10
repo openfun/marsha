@@ -55,7 +55,7 @@ class XAPI:
                 }
             }
 
-        lti_user : .lti.LTIUser
+        lti_user : Type[lti.LTIUser]
             Object representing data stored in the JWT Token and related to the user authenticated
             with LTI
 
