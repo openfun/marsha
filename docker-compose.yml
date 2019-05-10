@@ -39,12 +39,6 @@ services:
       - "base"
       - "db"
 
-  app-ci:
-    image: "marsha:${CIRCLE_SHA1}${IMAGE_SUFFIX}-dev"
-    env_file: env.d/ci
-    depends_on:
-      - "db"
-
   crowdin:
     image: fundocker/crowdin:2.0.27
     volumes:

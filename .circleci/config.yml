@@ -367,60 +367,6 @@ jobs:
             - ./node_modules
           key: v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
 
-  # ---- Alpine jobs ----
-  build-alpine:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    working_directory: ~/marsha
-    steps:
-      # Checkout repository sources
-      - checkout:
-          path: ~/marsha
-      # Generate a version.json file describing app release
-      - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build alpine production image
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-alpine \
-              -f docker/images/alpine/Dockerfile \
-              .
-      - run:
-          name: Build alpine development image
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-alpine-dev \
-              -f docker/images/alpine/dev/Dockerfile \
-              --build-arg BASE_TAG=${CIRCLE_SHA1}-alpine \
-              .
-      - run:
-          name: List available images
-          command: docker images marsha
-      - run:
-          name: Test running alpine production image
-          command: ./docker/tests/run.sh marsha ${CIRCLE_SHA1}-alpine
-      - run:
-          name: Test statics location in alpine production image
-          command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}-alpine
-      # We first need to create the env.d/development file. We don't use it but other
-      # services in the docker-compose file need it. docker-compose command will fail
-      # if we don't create it.
-      - run:
-          name: Run tests
-          command: |
-            cp env.d/development.dist env.d/development
-            IMAGE_SUFFIX="-alpine" \
-            ENV_FILE=ci \
-            docker-compose \
-              run --rm app-ci \
-                dockerize \
-                  -wait tcp://db:5432 \
-                  -timeout 60s \
-                    pytest
-
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
   i18n:
@@ -454,13 +400,7 @@ jobs:
             docker build \
               -t marsha:${CIRCLE_SHA1} \
               .
-      - run:
-          name: Build alpine production image (from cached layers)
-          command: |
-            docker build \
-              -t marsha:${CIRCLE_SHA1}-alpine \
-              -f docker/images/alpine/Dockerfile \
-              .
+
       # Login to DockerHub to Publish new images
       #
       # Nota bene: you'll need to define the following secrets environment vars
@@ -475,7 +415,7 @@ jobs:
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
       # Git tag: v1.0.1
-      # Docker tag: 1.0.1(-alpine)(-dev)
+      # Docker tag: 1.0.1(-dev)
       - run:
           name: Tag images
           command: |
@@ -488,12 +428,10 @@ jobs:
             # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
             echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:${DOCKER_TAG}
-            docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:${DOCKER_TAG}-alpine
             if [[ -n "$CIRCLE_TAG" ]]; then
               docker tag marsha:${CIRCLE_SHA1} fundocker/marsha:latest
-              docker tag marsha:${CIRCLE_SHA1}-alpine fundocker/marsha:alpine
             fi
-            docker images | grep -E "^fundocker/marsha\s*(${DOCKER_TAG}.*|latest|alpine|master|master-alpine)"
+            docker images | grep -E "^fundocker/marsha\s*(${DOCKER_TAG}.*|latest|master)"
 
       # Publish images to DockerHub
       #
@@ -511,10 +449,8 @@ jobs:
             # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
             echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
             docker push fundocker/marsha:${DOCKER_TAG}
-            docker push fundocker/marsha:${DOCKER_TAG}-alpine
             if [[ -n "$CIRCLE_TAG" ]]; then
               docker push fundocker/marsha:latest
-              docker push fundocker/marsha:alpine
             fi
 
 workflows:
@@ -595,14 +531,6 @@ workflows:
             tags:
               ignore: /.*/
 
-      # Docker alpine jobs
-      #
-      # Build and run tests in alpine based images
-      - build-alpine:
-          filters:
-            tags:
-              only: /.*/
-
       # i18n jobs
       #
       # Extract strings and upload them to our translation management SaaS
@@ -627,7 +555,6 @@ workflows:
       - hub:
           requires:
             - build-docker
-            - build-alpine
             - test-back
           filters:
             branches:
