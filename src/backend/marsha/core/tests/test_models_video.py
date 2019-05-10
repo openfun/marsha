@@ -1,5 +1,6 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
@@ -34,12 +35,9 @@ class VideoModelsTestCase(TestCase):
 
         # Trying to create a video with the same duo lti_id/playlist should raise a
         # database error
-        with self.assertRaises(ValidationError) as context:
-            VideoFactory(lti_id=video.lti_id, playlist=video.playlist)
-        self.assertEqual(
-            context.exception.messages,
-            ["Video with this Lti id and Playlist already exists."],
-        )
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                VideoFactory(lti_id=video.lti_id, playlist=video.playlist)
 
         # Soft deleted videos should not count for unicity
         video.delete(force_policy=SOFT_DELETE_CASCADE)

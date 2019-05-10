@@ -1,5 +1,6 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
@@ -34,14 +35,11 @@ class PlaylistModelsTestCase(TestCase):
 
         # Trying to create a playlist with the same duo lti_id/consumer site should raise a
         # database error
-        with self.assertRaises(ValidationError) as context:
-            PlaylistFactory(
-                lti_id=playlist.lti_id, consumer_site=playlist.consumer_site
-            )
-        self.assertEqual(
-            context.exception.messages,
-            ["Playlist with this Lti id and Consumer site already exists."],
-        )
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                PlaylistFactory(
+                    lti_id=playlist.lti_id, consumer_site=playlist.consumer_site
+                )
 
         # Soft deleted playlists should not count for unicity
         playlist.delete(force_policy=SOFT_DELETE_CASCADE)

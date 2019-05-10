@@ -9,7 +9,7 @@ from safedelete import HARD_DELETE
 from ..defaults import PENDING, STATE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .account import INSTRUCTOR, ROLE_CHOICES
-from .base import AbstractImage, BaseModel, NonDeletedUniqueIndex
+from .base import AbstractImage, BaseModel
 
 
 class Playlist(BaseModel):
@@ -76,7 +76,13 @@ class Playlist(BaseModel):
         db_table = "playlist"
         verbose_name = _("playlist")
         verbose_name_plural = _("playlists")
-        indexes = [NonDeletedUniqueIndex(["lti_id", "consumer_site"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["lti_id", "consumer_site"],
+                condition=models.Q(deleted=None),
+                name="playlist_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -126,7 +132,13 @@ class PlaylistAccess(BaseModel):
         db_table = "playlist_access"
         verbose_name = _("playlist access")
         verbose_name_plural = _("playlist accesses")
-        indexes = [NonDeletedUniqueIndex(["user", "playlist"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "playlist"],
+                condition=models.Q(deleted=None),
+                name="playlist_access_unique_idx",
+            )
+        ]
 
 
 class Video(BaseModel):
@@ -201,7 +213,13 @@ class Video(BaseModel):
         ordering = ["position", "id"]
         verbose_name = _("video")
         verbose_name_plural = _("videos")
-        indexes = [NonDeletedUniqueIndex(["lti_id", "playlist"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["lti_id", "playlist"],
+                condition=models.Q(deleted=None),
+                name="video_unique_idx",
+            )
+        ]
 
     def __str__(self):
         """Get the string representation of an instance."""
@@ -302,7 +320,13 @@ class AudioTrack(BaseTrack):
         db_table = "audio_track"
         verbose_name = _("audio track")
         verbose_name_plural = _("audio tracks")
-        indexes = [NonDeletedUniqueIndex(["video", "language"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "language"],
+                condition=models.Q(deleted=None),
+                name="audio_track_unique_idx",
+            )
+        ]
 
 
 class TimedTextTrack(BaseTrack):
@@ -336,7 +360,13 @@ class TimedTextTrack(BaseTrack):
         db_table = "timed_text_track"
         verbose_name = _("timed text track")
         verbose_name_plural = _("timed text tracks")
-        indexes = [NonDeletedUniqueIndex(["video", "language", "mode"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "language", "mode"],
+                condition=models.Q(deleted=None),
+                name="timed_text_track_unique_idx",
+            )
+        ]
 
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket.
@@ -379,7 +409,13 @@ class SignTrack(BaseTrack):
         db_table = "sign_track"
         verbose_name = _("signs language track")
         verbose_name_plural = _("signs language tracks")
-        indexes = [NonDeletedUniqueIndex(["video", "language"])]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "language"],
+                condition=models.Q(deleted=None),
+                name="sign_track_unique_idx",
+            )
+        ]
 
 
 class Thumbnail(AbstractImage):

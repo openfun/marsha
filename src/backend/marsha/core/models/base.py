@@ -7,11 +7,9 @@ checks and validation that go further than what Django is doing.
 import uuid
 
 from django.core import checks
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from psqlextra.indexes import ConditionalUniqueIndex
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
 from ..defaults import PENDING, STATE_CHOICES
@@ -52,24 +50,11 @@ def _get_fields_by_source_model(model):
     return fields
 
 
-class NonDeletedUniqueIndex(ConditionalUniqueIndex):
-    """A special ConditionalUniqueIndex for non  deleted objects."""
+class NonDeletedUniqueIndex(models.Index):
+    """This class is kept because used in migrations.
 
-    condition = '"deleted" IS NULL'
-
-    def __init__(self, fields, name=None):
-        """Override default init to pass our predefined condition.
-
-        For the parameters, see ``ConditionalUniqueIndex.__init__``.
-
-        """
-        super().__init__(condition=self.condition, fields=fields, name=name)
-
-    def deconstruct(self):
-        """Remove ``condition`` as an argument to be defined in migrations."""
-        path, args, kwargs = super().deconstruct()
-        del kwargs["condition"]
-        return path, args, kwargs
+    Do not remove it before version 3.0.0
+    """
 
 
 class BaseModel(SafeDeleteModel):
@@ -243,109 +228,6 @@ class BaseModel(SafeDeleteModel):
         errors.extend(cls._check_through_models())
 
         return errors
-
-    def validate_unique(self, exclude=None):
-        """Add validation for our ``NonDeletedUniqueIndex`` replacing ``unique_together``.
-
-        For the parameters, see ``django.db.models.base.Model.validate_unique``.
-
-        """
-        super().validate_unique(exclude)
-
-        if not self.deleted:
-            # these uniqueness checks only make sense for non deleted instances
-            # because it's the condition of these unique-together fields
-
-            unique_checks = self._get_conditional_non_deleted_unique_checks(exclude)
-
-            if unique_checks:
-                all_objects = self.__class__.all_objects
-                try:
-                    # we need to force ``_perform_unique_checks`` from ``SafeDeleteModel``
-                    # to use the default manager to ignore deleted instances
-                    self.__class__.all_objects = self.__class__.objects
-
-                    errors = self._perform_unique_checks(unique_checks)
-
-                finally:
-                    self.__class__.all_objects = all_objects
-
-                if errors:
-                    raise ValidationError(errors)
-
-    @classmethod
-    def _get_conditional_non_deleted_indexes_fields(cls):
-        """Get the tuples of fields for our conditional unique index for non deleted entries.
-
-        Returns
-        -------
-        List[List[str]]
-            A list with one entry for each matching index. Each entry is a tuple with
-            all the fields that compose the unique index.
-
-        """
-        tuples = []
-
-        if cls._meta.indexes:
-            tuples.extend(
-                [
-                    index.fields
-                    for index in cls._meta.indexes
-                    if isinstance(index, NonDeletedUniqueIndex)
-                ]
-            )
-
-        return tuples
-
-    def _get_conditional_non_deleted_unique_checks(self, exclude=None):
-        """Extract "unique checks" from our conditional unique for ``_perform_unique_checks``.
-
-        This is basically a copy of ``django.db.models.Model_get_unique_checks`` (only the
-        part for ``unique_together``), but using output from
-        ``_get_conditional_non_deleted_indexes_fields`` instead of ``_meta.unique_together``.
-
-        For the parameters, see ``django.db.models.base.Model._get_unique_checks``.
-
-        Returns
-        -------
-        List[Tuple[Type["BaseModel"], TupleOfStr]]
-            ``_perform_unique_checks`` expect a list with each entry being a tuple with:
-            - a model on which the uniqueness is defined
-            - a tuple of fields to be unique together for this model
-
-        """
-        if exclude is None:
-            exclude = []
-
-        unique_checks = []
-
-        unique_togethers = [
-            (self.__class__, self._get_conditional_non_deleted_indexes_fields())
-        ]
-
-        for parent_class in self._meta.get_parent_list():
-            if issubclass(parent_class, BaseModel):
-                unique_togethers.append(
-                    (
-                        parent_class,
-                        # pylint: disable=protected-access
-                        parent_class._get_conditional_non_deleted_indexes_fields(),
-                    )
-                )
-
-        for model_class, unique_together in unique_togethers:
-            if not unique_together:
-                continue
-
-            for check in unique_together:
-                for name in check:
-                    # If this is an excluded field, don't add this check.
-                    if name in exclude:
-                        break
-                else:
-                    unique_checks.append((model_class, tuple(check)))
-
-        return unique_checks
 
 
 class AbstractImage(BaseModel):
