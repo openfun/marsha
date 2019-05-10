@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.urls import include, path
 
+from rest_framework.renderers import CoreJSONRenderer
 from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
@@ -33,7 +34,11 @@ urlpatterns = [
     path("lti-video/", OpenEdxVideoLTIView.as_view(), name="lti_video"),
     # API
     path("api/update-state", update_state, name="update_state"),
-    path("api/schema", get_schema_view(title="Marsha API"), name="schema"),
+    path(
+        "api/schema",
+        get_schema_view(title="Marsha API", renderer_classes=[CoreJSONRenderer]),
+        name="schema",
+    ),
     path("api/", include(router.urls)),
     path("xapi/", XAPIStatementView.as_view(), name="xapi"),
 ]
