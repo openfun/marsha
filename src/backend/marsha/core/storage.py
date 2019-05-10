@@ -54,8 +54,6 @@ class ConfigurableManifestStaticFilesStorage(
     derived from their content. The name of the manifest file is configurable.
     """
 
-    pass
-
 
 class ConfigurableManifestS3Boto3Storage(
     ConfigurableManifestFilesMixin, S3Boto3Storage
