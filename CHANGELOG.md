@@ -21,6 +21,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Move gitlint directory into lib directory.
 - Upgrade to django 2.2
 - Remove docker alpine images
+- Standardize the project's `Makefile` to make it more easily maintainable by
+  our peers
 
 ## [2.7.1] - 2019-04-29
 
