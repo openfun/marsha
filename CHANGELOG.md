@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Automate python dependencies upgrade with pyup.
+- Create command bin/pytest.
 
 ### Changed
 

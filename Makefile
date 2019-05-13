@@ -12,7 +12,6 @@ ifndef NO_DOCKER
 	COMPOSE              = docker-compose
 	COMPOSE_RUN          = $(COMPOSE) run --rm
 	COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
-	COMPOSE_RUN_LRS	     = $(COMPOSE_RUN) api
 	COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
 	COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 	YARN 								 = $(COMPOSE_RUN_NODE) yarn
@@ -89,10 +88,9 @@ superuser: ## create a Django superuser
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
 
 .PHONY: test
-test: export ENV_FILE=test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	@$(COMPOSE_RUN_APP) pytest -x
+	bin/pytest
 
 .PHONY: build-front
 build-front: ## Build front application
