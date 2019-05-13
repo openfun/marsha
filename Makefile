@@ -1,198 +1,226 @@
+# Marsha's Makefile
+#
+# /!\ /!\ /!\ /!\ /!\ /!\ /!\ DISCLAIMER /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
+#
+# This Makefile is only meant to be used for DEVELOPMENT purpose.
+#
+# PLEASE DO NOT USE IT FOR YOUR CI/PRODUCTION/WHATEVER...
+#
+# /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
+#
+# Note to developpers:
+#
+# While editing this file, please respect the following statements:
+#
+# 1. Every variable should be defined in the ad hoc VARIABLES section with a
+#    relevant subsection
+# 2. Every new rule should be defined in the ad hoc RULES section with a
+#    relevant subsection depending on the targeted service
+# 3. Rules should be sorted alphabetically within their section
+# 4. When a rule has multiple dependencies, you should:
+#    - duplicate the rule name to add the help string (if required)
+#    - write one dependency per line to increase readability and diffs
+# 5. .PHONY rule statement should be written after the corresponding rule
+
+# ==============================================================================
+# VARIABLES
+
+# -- Project
 PROJECT_NAME := $(shell python src/backend/setup.py --name)
 PROJECT_VERSION := $(shell python src/backend/setup.py --version)
 
 BOLD := \033[1m
 RESET := \033[0m
 
-# If you want to use your own virtualenv instead of Docker, set the NO_DOCKER variable to
-# something not null. All commands are prepended or not by a "docker-compose" prefix depending on
-# the value of this environment variable, so that they work in both cases.
-ifndef NO_DOCKER
-	# Docker
-	COMPOSE              = docker-compose
-	COMPOSE_RUN          = $(COMPOSE) run --rm
-	COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
-	COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
-	COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
-	YARN 								 = $(COMPOSE_RUN_NODE) yarn
-endif
+# -- Docker
+COMPOSE              = docker-compose
+COMPOSE_RUN          = $(COMPOSE) run --rm
+COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
+COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
+COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
+YARN                 = $(COMPOSE_RUN_NODE) yarn
+
+# ==============================================================================
+# RULES
 
 default: help
 
-.PHONY : help
-help:  ## Show this help
-	@echo "$(BOLD)Marsha Makefile$(RESET)"
-	@echo "Please use 'make $(BOLD)target$(RESET)' where $(BOLD)target$(RESET) is one of:"
-	@grep -h ':\s\+##' Makefile | column -tn -s# | awk -F ":" '{ print "  $(BOLD)" $$1 "$(RESET)" $$2 }'
+# -- Project
 
-##########################################################
-# Targets that work for Docker or Virtualenv installations
-#  (see above USE_DOCKER environment variable)
+bootstrap: ## Prepare Docker images for the project
+bootstrap: \
+	env.d/development \
+	build \
+	migrate \
+	i18n-compile-back
+.PHONY: bootstrap
 
+# -- Docker/compose
+
+build: ## build the app container
+	@$(COMPOSE) build base;
+	@$(COMPOSE) build app;
+.PHONY: build
+
+down: ## Stop and remove containers, networks, images, and volumes
+	@$(COMPOSE) down
+.PHONY: down
+
+logs: ## display app logs (follow mode)
+	@$(COMPOSE) logs -f app
+.PHONY: logs
+
+run: ## start the development server using Docker
+	@$(COMPOSE) up -d
+.PHONY: run
+
+stop: ## stop the development server using Docker
+	@$(COMPOSE) stop
+.PHONY: stop
+
+# -- Back-end
+
+
+check: ## Run all linters and checking tools
+check: \
+	lint \
+	check-django \
+	check-migrations
 .PHONY: check
-check:  ## Run all linters and checking tools
-check: lint check-django check-migrations
 
-.PHONY: lint
-lint:  ## Run all linters (isort, black, flake8, pylint)
-lint: lint-isort lint-black lint-flake8 lint-pylint
-
-.PHONY: check-black
 check-black:  ## Run the black tool in check mode only (won't modify files)
 	@echo "$(BOLD)Checking black$(RESET)"
 	@$(COMPOSE_RUN_APP) black --check marsha/ 2>&1
+.PHONY: check-black
 
-.PHONY: lint-black
-lint-black:  ## Run the black tool and update files that need to
-	@echo "$(BOLD)Running black$(RESET)"
-	@$(COMPOSE_RUN_APP) black marsha/
-
-.PHONY: lint-flake8
-lint-flake8:  ## Run the flake8 tool
-	@echo "$(BOLD)Running flake8$(RESET)"
-	@$(COMPOSE_RUN_APP) flake8 marsha --format=abspath
-
-.PHONY: lint-pylint
-lint-pylint:  ## Run the pylint tool
-	@echo "$(BOLD)Running pylint$(RESET)"
-	@$(COMPOSE_RUN_APP) pylint --rcfile=pylintrc marsha
-
-.PHONY: lint-isort
-lint-isort:  ## automatically re-arrange python imports in code base
-	@echo "$(BOLD)Running isort$(RESET)"
-	@$(COMPOSE_RUN_APP) isort marsha --recursive --atomic
-
-.PHONY: check-django
 check-django:  ## Run the Django "check" command
 	@echo "$(BOLD)Checking django$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py check
+.PHONY: check-django
 
-.PHONY: check-migrations
 check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py makemigrations --check --dry-run
+.PHONY: check-migrations
 
-.PHONY: collectstatic
 collectstatic:  ## Collect and deploy static files for the marsha project.
 	@echo "$(BOLD)Collecting static files$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py collectstatic
+.PHONY: collectstatic
+
+lint:  ## Run all linters (isort, black, flake8, pylint)
+lint: \
+	lint-isort \
+	lint-black \
+	lint-flake8 \
+	lint-pylint
+.PHONY: lint
+
+lint-black:  ## Run the black tool and update files that need to
+	@echo "$(BOLD)Running black$(RESET)"
+	@$(COMPOSE_RUN_APP) black marsha/
+.PHONY: lint-black
+
+lint-flake8:  ## Run the flake8 tool
+	@echo "$(BOLD)Running flake8$(RESET)"
+	@$(COMPOSE_RUN_APP) flake8 marsha --format=abspath
+.PHONY: lint-flake8
+
+lint-isort:  ## automatically re-arrange python imports in code base
+	@echo "$(BOLD)Running isort$(RESET)"
+	@$(COMPOSE_RUN_APP) isort marsha --recursive --atomic
+.PHONY: lint-isort
+
+lint-pylint:  ## Run the pylint tool
+	@echo "$(BOLD)Running pylint$(RESET)"
+	@$(COMPOSE_RUN_APP) pylint --rcfile=pylintrc marsha
+.PHONY: lint-pylint
 
 .PHONY: migrate
 migrate:  ## Run django migration for the marsha project.
 	@echo "$(BOLD)Running migrations$(RESET)"
-	@$(COMPOSE_RUN_APP) python manage.py migrate
+	@$(COMPOSE_RUN_APP) dockerize -wait tcp://db:5432 -timeout 60s python manage.py migrate
 
-.PHONY: superuser
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
+.PHONY: superuser
 
 .PHONY: test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
 	bin/pytest
 
-.PHONY: build-front
+## -- Front-end
+
 build-front: ## Build front application
 	@$(YARN) generate-translations
 	@$(YARN) build
+.PHONY: build-front
 
-.PHONY: watch-front
 watch-front: ## Build front application and activate watch mode
 	@$(YARN) build --watch
+.PHONY: watch-front
+
+# -- Internationalization
+
+crowdin-download: ## Download translated message from crowdin
+	@$(COMPOSE_RUN_CROWDIN) download translations
+.PHONY: crowdin-download
+
+crowdin-upload: ## Upload source translations to crowdin
+	@$(COMPOSE_RUN_CROWDIN) upload sources
+.PHONY: crowdin-upload
+
+i18n-compile: ## Compile translated messages to be used by all applications
+i18n-compile: \
+	i18n-compile-back \
+	i18n-compile-front
+.PHONY: i18n-compile
+
+i18n-compile-back:
+	@$(COMPOSE_RUN_APP) python manage.py compilemessages
+.PHONY: i18n-compile-back
+
+i18n-compile-front:
+	@$(YARN) generate-translations
+.PHONY: i18n-compile-front
+
+i18n-generate: ## Generate source translations files for all applications
+i18n-generate: \
+	i18n-generate-back \
+	i18n-generate-front
+.PHONY: i18n-generate
+
+i18n-generate-back:
+	@$(COMPOSE_RUN_APP) python manage.py makemessages --ignore "venv/**/*" --keep-pot
+.PHONY: i18n-generate-back
+
+i18n-generate-front:
+	@$(YARN) build
+	@$(YARN) generate-l10n-template
+.PHONY: i18n-generate-front
 
 
+i18n-generate-and-upload: ## Generate source translations for all applications and upload then to crowdin
+i18n-generate-and-upload: \
+	i18n-generate \
+	crowdin-upload
+.PHONY: i18n-generate-and-upload
 
-##############################################
-# Targets specific to Virtualenv installations
+i18n-download-and-compile: ## Download all translated messages and compile them to be used be all applications
+i18n-download-and-compile: \
+	crowdin-download \
+	i18n-compile
+.PHONY: i18n-download-and-compile
 
-.PHONY: venv-install
-venv-install:  ## Install the project in the current environment, with its dependencies
-	@echo "$(BOLD)Installing $(PROJECT_NAME) $(PROJECT_VERSION)$(RESET)"
-	@pip install .
-
-.PHONY: venv-install-dev
-venv-install-dev:  ## Install the project in the current environment, with its dependencies, including the ones needed in a development environment
-	@echo "$(BOLD)Installing $(PROJECT_NAME) $(PROJECT_VERSION) in dev mode$(RESET)"
-	@pip install -e .[dev]
-
-.PHONY: venv-upgrade-dev
-venv-upgrade-dev:  ## Upgrade all default+dev dependencies defined in setup.cfg
-	@pip install --upgrade `python -c 'import setuptools; o = setuptools.config.read_configuration("setup.cfg")["options"]; print(" ".join(o["install_requires"] + o["extras_require"]["dev"]))'`
-	@pip install -e .
-
-
-##########################################
-# Targets specific to Docker installations
+# -- Misc
 
 env.d/development:
 	cp env.d/development.dist env.d/development
 
-.PHONY: bootstrap
-bootstrap: env.d/development ## Prepare Docker images for the project
-	@$(COMPOSE) build base;
-	@$(COMPOSE) build app;
-	@echo 'Waiting until database is up…';
-	$(COMPOSE_RUN_APP) dockerize -wait tcp://db:5432 -timeout 60s
-	${MAKE} migrate;
-	${MAKE} i18n-compile-back
-
-.PHONY: run
-run: ## start the development server using Docker
-	@$(COMPOSE) up -d
-
-.PHONY: stop
-stop: ## stop the development server using Docker
-	@$(COMPOSE) stop
-
-.PHONY: down
-down: ## Stop and remove containers, networks, images, and volumes
-	@$(COMPOSE) down
-
-###########################################
-# Translations tasks
-
-.PHONY: i18n-generate
-i18n-generate: ## Generate source translations files for all applications
-	${MAKE} i18n-generate-back;
-	${MAKE} i18n-generate-front;
-
-.PHONY: i18n-compile
-i18n-compile: ## Compile translated messages to be used by all applications
-	${MAKE} i18n-compile-back
-	${MAKE} i18n-compile-front
-
-.PHONY: i18n-generate-front
-i18n-generate-front:
-	@$(YARN) build
-	@$(YARN) generate-l10n-template
-
-.PHONY: i18n-compile-front
-i18n-compile-front:
-	@$(YARN) generate-translations
-
-.PHONY: i18n-generate-back
-i18n-generate-back:
-	@$(COMPOSE_RUN_APP) python manage.py makemessages --ignore "venv/**/*" --keep-pot
-
-.PHONY: i18n-compile-back
-i18n-compile-back:
-	@$(COMPOSE_RUN_APP) python manage.py compilemessages
-
-.PHONY: crowdin-upload
-crowdin-upload: ## Upload source translations to crowdin
-	@$(COMPOSE_RUN_CROWDIN) upload sources
-
-.PHONY: crowdin-download
-crowdin-download: ## Download translated message from crowdin
-	@$(COMPOSE_RUN_CROWDIN) download translations
-
-.PHONY: i18n-generate-and-upload
-i18n-generate-and-upload: ## Generate source translations for all applications and upload then to crowdin
-	${MAKE} i18n-generate
-	${MAKE} crowdin-upload
-
-.PHONY: i18n-download-and-compile
-i18n-download-and-compile: ## Download all translated messages and compile them to be used be all applications
-	${MAKE} crowdin-download
-	${MAKE} i18n-compile
+help:  ## Show this help
+	@echo "$(BOLD)Marsha Makefile$(RESET)"
+	@echo "Please use 'make $(BOLD)target$(RESET)' where $(BOLD)target$(RESET) is one of:"
+	@grep -h ':\s\+##' Makefile | column -tn -s# | awk -F ":" '{ print "  $(BOLD)" $$1 "$(RESET)" $$2 }'
+.PHONY: help
