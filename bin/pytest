@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export ENV_FILE=test
+
+docker-compose run --rm app pytest "$@"
+
