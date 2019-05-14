@@ -8,10 +8,6 @@ from safedelete.models import SOFT_DELETE_CASCADE
 from ..factories import VideoFactory
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
-
-
 class VideoModelsTestCase(TestCase):
     """Test our intentions about the Video model."""
 

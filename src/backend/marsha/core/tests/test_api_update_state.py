@@ -9,10 +9,6 @@ import pytz
 from ..factories import TimedTextTrackFactory, VideoFactory
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
-
-
 class UpdateStateAPITest(TestCase):
     """Test the API that allows to update video & timed text track objects' state."""
 

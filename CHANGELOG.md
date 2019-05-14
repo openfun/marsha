@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove docker alpine images
 - Standardize the project's `Makefile` to make it more easily maintainable by
   our peers
+- Copy pylint config from Richie project.
 
 ## [2.7.1] - 2019-04-29
 

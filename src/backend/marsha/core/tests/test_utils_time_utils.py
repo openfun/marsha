@@ -8,10 +8,6 @@ import pytz
 from ..utils import time_utils
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
-
-
 class TimeUtilsTestCase(TestCase):
     """Test our time utils."""
 
