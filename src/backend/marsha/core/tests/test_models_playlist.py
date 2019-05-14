@@ -8,10 +8,6 @@ from safedelete.models import SOFT_DELETE_CASCADE
 from ..factories import PlaylistFactory
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
-
-
 class PlaylistModelsTestCase(TestCase):
     """Test our intentions about the Playlist model."""
 

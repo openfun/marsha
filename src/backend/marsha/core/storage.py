@@ -18,7 +18,7 @@ class ConfigurableManifestFilesMixin(ManifestFilesMixin):
 
     manifest_name = settings.STATICFILES_MANIFEST_NAME
 
-    # pylint: disable=arguments-differ,unused-argument,missing-yield-doc,missing-yield-type-doc
+    # pylint: disable=arguments-differ,unused-argument
     def post_process(self, paths, dry_run=False, **options):
         """Remove paths from file to post process.
 

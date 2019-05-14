@@ -423,7 +423,6 @@ class XAPIStatementSerializer(serializers.Serializer):
     )
     timestamp = serializers.DateTimeField()
 
-    # pylint: disable=missing-param-doc,missing-type-doc
     def validate(self, attrs):
         """Check if there is no extra arguments in the submitted payload."""
         unknown_keys = set(self.initial_data.keys()) - set(self.fields.keys())

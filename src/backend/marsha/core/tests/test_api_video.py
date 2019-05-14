@@ -51,7 +51,7 @@ ASOu/Da3/eg8PI5Rsh6ubNVlEAMQdDFhL/TpfaHqSwim6mxbrQ==
 """
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
+# pylint: disable=unused-argument
 
 
 class VideoAPITest(TestCase):

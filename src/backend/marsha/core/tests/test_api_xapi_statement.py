@@ -13,7 +13,7 @@ from ..models import Video
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
+# pylint: disable=unused-argument
 
 
 class XAPIStatementApiTest(TestCase):

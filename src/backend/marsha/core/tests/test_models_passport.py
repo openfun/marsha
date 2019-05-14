@@ -13,10 +13,6 @@ from ..factories import (
 from ..models import LTIPassport
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
-
-
 class LTIPassportModelsTestCase(TestCase):
     """Test our intentions about the passport model."""
 

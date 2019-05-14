@@ -71,7 +71,6 @@ class XAPI:
 
         response.raise_for_status()
 
-    # pylint: disable=missing-param-doc,missing-type-doc
     def _enrich_statement(self, statement, video, lti_user):
         """Add additionnal information to the existing statement."""
         try:

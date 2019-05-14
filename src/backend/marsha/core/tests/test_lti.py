@@ -23,7 +23,7 @@ from ..models import ConsumerSitePortability, Playlist, Video
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
+# pylint: disable=too-many-lines,too-many-public-methods,unused-argument
 
 
 class VideoLTITestCase(TestCase):
