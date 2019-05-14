@@ -13,7 +13,7 @@ from ..models import TimedTextTrack
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
+# pylint: disable=unused-argument
 
 
 class TimedTextTrackModelsTestCase(TestCase):

@@ -17,7 +17,7 @@ from .test_api_video import RSA_KEY_MOCK
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=missing-param-doc,missing-type-doc,unused-argument
+# pylint: disable=unused-argument
 
 
 class TimedTextTrackAPITest(TestCase):
