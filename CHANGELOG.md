@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.8.0] - 2019-05-15
+
 ### Added
 
 - Automate python dependencies upgrade with pyup.
@@ -16,7 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Use pytest to run backend tests.
-- Rename lambda-update-state lambda in lambda-complete.
+- Rename lambda-update-state lambda to lambda-complete.
 - Keep only one docker-compose file.
 - Move gitlint directory into lib directory.
 - Upgrade to django 2.2
@@ -232,7 +234,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.7.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.8.0...master
+[2.8.0]: https://github.com/openfun/marsha/compare/v2.7.1...v2.8.0
 [2.7.1]: https://github.com/openfun/marsha/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/openfun/marsha/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/openfun/marsha/compare/v2.5.0...v2.6.0
