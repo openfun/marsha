@@ -127,6 +127,15 @@ describe('VideoPlayer', () => {
     expect(queryByText(/Download this video/i)).toEqual(null);
     getByText('Show a transcript');
     expect(container.querySelectorAll('track')).toHaveLength(2);
+    expect(
+      container.querySelector('source[src="https://example.com/144p.mp4"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('source[src="https://example.com/1080p.mp4"]'),
+    ).not.toBeNull();
+    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
+      2,
+    );
   });
 
   it('allows video download when the video object specifies it', () => {
