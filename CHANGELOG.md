@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Allow to use newer version of django-storages
+- Force to display captions on firefox.
 
 ## [2.8.0] - 2019-05-15
 

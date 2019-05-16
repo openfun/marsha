@@ -8,6 +8,7 @@ import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from '../types/XAPI';
+import { isMSESupported } from '../utils/isAbrSupported';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (
@@ -15,11 +16,16 @@ export const createPlyrPlayer = (
   jwt: string,
   dispatch: Dispatch,
 ): Plyr => {
+  const settings = ['captions', 'speed', 'loop'];
+  if (!isMSESupported()) {
+    settings.push('quality');
+  }
   const player = new Plyr(ref, {
     captions: {
       active: true,
       update: true,
     },
+    settings,
   });
   const decodedToken: DecodedJwt = jwt_decode(jwt);
 
