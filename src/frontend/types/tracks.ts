@@ -54,18 +54,20 @@ export interface TimedTextTranscript extends TimedText {
   mode: timedTextMode.TRANSCRIPT;
 }
 
+/** Possible sizes for an image, a video or stream. Used as keys in lists of files. */
+export type videoSize = '144' | '240' | '480' | '720' | '1080';
+
+/** An URLs property that includes URLs for each possible visual size */
 export type urls = { [key in videoSize]: string };
 
+/** A Thumbnail record as it exists on the backend. */
 export interface Thumbnail extends Resource {
   is_ready_to_display: boolean;
   upload_state: uploadState;
   urls: urls;
   active_stamp: Nullable<number>;
-  video: Video;
+  video: Video['id'];
 }
-
-/** Possible sizes for a video file or stream. Used as keys in lists of files. */
-export type videoSize = '144' | '240' | '480' | '720' | '1080';
 
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {

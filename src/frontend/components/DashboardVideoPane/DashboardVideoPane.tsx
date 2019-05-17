@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { API_ENDPOINT } from '../../settings';
 import { uploadState, Video } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
-import { DashboardThumbnailConnected } from '../DashboardThumbnailConnected/DashboardThumbnailConnected';
+import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOptionConnected } from '../DashboardVideoPaneDownloadOptionConnected/DashboardVideoPaneDownloadOptionConnected';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
@@ -161,7 +161,7 @@ export class DashboardVideoPane extends React.Component<
                 <DashboardVideoPaneDownloadOptionConnected video={video} />
               </Box>
               <Box basis={'1/2'} margin={'small'}>
-                <DashboardThumbnailConnected video={video} />
+                <DashboardThumbnail video={video} />
               </Box>
             </Box>
             <DashboardVideoPaneButtons video={video} />
