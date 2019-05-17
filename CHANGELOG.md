@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.8.1] - 2019-05-17
+
 ### Fixed
 
 - Allow to use newer version of django-storages
@@ -239,7 +241,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.8.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.8.1...master
+[2.8.1]: https://github.com/openfun/marsha/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/openfun/marsha/compare/v2.7.1...v2.8.0
 [2.7.1]: https://github.com/openfun/marsha/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/openfun/marsha/compare/v2.6.0...v2.7.0
