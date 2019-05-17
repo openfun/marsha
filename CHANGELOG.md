@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Allow to use newer version of django-storages
+
 ## [2.8.0] - 2019-05-15
 
 ### Added

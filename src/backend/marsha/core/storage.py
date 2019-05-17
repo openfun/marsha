@@ -1,11 +1,12 @@
 """Customizing Django storage backends to enable blue/green deployments."""
 from collections import OrderedDict
+import os
 import re
 
 from django.conf import settings
 from django.contrib.staticfiles.storage import ManifestFilesMixin, StaticFilesStorage
 
-from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.s3boto3 import S3Boto3Storage, SpooledTemporaryFile
 
 
 STATIC_POSTPROCESS_IGNORE_REGEX = re.compile(
@@ -66,3 +67,28 @@ class ConfigurableManifestS3Boto3Storage(
 
     bucket_name = settings.AWS_STATIC_BUCKET_NAME
     custom_domain = settings.CLOUDFRONT_DOMAIN
+
+    def _save_content(self, obj, content, parameters):
+        """
+        Workaround to use django-storages > 1.6.3.
+
+        We create a clone of the content file as when this is passed to boto3 it wrongly closes
+        the file upon upload where as the storage backend expects it to still be open
+        """
+        # Seek our content back to the start
+        content.seek(0, os.SEEK_SET)
+
+        # Create a temporary file that will write to disk after a specified size
+        content_autoclose = SpooledTemporaryFile()
+
+        # Write our original content into our copy that will be closed by boto3
+        content_autoclose.write(content.read())
+
+        # Upload the object which will auto close the content_autoclose instance
+        super(ConfigurableManifestS3Boto3Storage, self)._save_content(
+            obj, content_autoclose, parameters
+        )
+
+        # Cleanup if this is fixed upstream our duplicate should always close
+        if not content_autoclose.closed:
+            content_autoclose.close()

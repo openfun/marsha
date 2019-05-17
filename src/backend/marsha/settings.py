@@ -397,7 +397,7 @@ class Production(Base):
 
     # folder where static will be stored. It matches the path_pattern used
     # in the cloudfront configuration.
-    AWS_LOCATION = Base.STATIC_URL
+    AWS_LOCATION = Base.STATIC_URL.lstrip("/")
 
     # pattern matching files to ignore when hashing file names and exclude from the
     # static files manifest
