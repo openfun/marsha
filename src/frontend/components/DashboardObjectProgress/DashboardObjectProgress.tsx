@@ -39,7 +39,7 @@ export const DashboardObjectProgress = injectIntl(
           a11yTitle={intl.formatMessage(messages.progressLabel)}
           values={values as any}
         />
-        <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
+        <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
       </Box>
     );
   },

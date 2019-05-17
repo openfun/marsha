@@ -1,10 +1,16 @@
 import { Box, Button, Text } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
+import { addResource } from '../../data/genericReducers/resourceById/actions';
+import { RootState } from '../../data/rootReducer';
 import { createThumbnail } from '../../data/sideEffects/createThumbnail/createThumbnail';
+import { getThumbnail } from '../../data/thumbnail/selector';
 import { API_ENDPOINT } from '../../settings';
+import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
@@ -32,16 +38,16 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardThumbnailProps {
+interface BaseDashboardThumbnailProps {
   addThumbnail: (thumbnail: Thumbnail) => void;
   video: Video;
   thumbnail: Nullable<Thumbnail>;
   jwt: string;
 }
 
-export const DashboardThumbnail = (props: DashboardThumbnailProps) => {
-  const [disabled, setDisabled] = useState(false);
-  const [redirect, setRedirect] = useState(false);
+const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
+  const [disableUploadBtn, setDisableUploadBtn] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
   const [pollInterval, setPollInterval] = useState(-1);
 
@@ -87,18 +93,18 @@ export const DashboardThumbnail = (props: DashboardThumbnailProps) => {
 
   const prepareUpdate = async () => {
     try {
-      setDisabled(true);
+      setDisableUploadBtn(true);
       if (props.thumbnail === null) {
         props.addThumbnail(await createThumbnail(props.jwt));
       }
 
-      setRedirect(true);
+      setShouldRedirect(true);
     } catch (error) {
       setError(error);
     }
   };
 
-  if (redirect) {
+  if (shouldRedirect) {
     return (
       <Redirect
         push
@@ -150,7 +156,7 @@ export const DashboardThumbnail = (props: DashboardThumbnailProps) => {
             <Button
               fill={true}
               label={<FormattedMessage {...messages.uploadButton} />}
-              disabled={disabled}
+              disabled={disableUploadBtn}
               onClick={prepareUpdate}
             />
             {error && (
@@ -165,3 +171,26 @@ export const DashboardThumbnail = (props: DashboardThumbnailProps) => {
       );
   }
 };
+
+interface DashboardThumbnailProps {
+  video: Video;
+}
+
+const mapStateToProps = (
+  state: RootState<appStateSuccess>,
+  { video }: DashboardThumbnailProps,
+) => ({
+  jwt: state.context.jwt,
+  thumbnail: getThumbnail(state),
+  video,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  addThumbnail: (thumbnail: Thumbnail) =>
+    dispatch(addResource(modelName.THUMBNAIL, thumbnail)),
+});
+
+export const DashboardThumbnail = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BaseDashboardThumbnail);
