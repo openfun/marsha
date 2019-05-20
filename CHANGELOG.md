@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Configure django core settings to pass all heartbeat checks
+
 ## [2.8.1] - 2019-05-17
 
 ### Fixed

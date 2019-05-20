@@ -73,6 +73,14 @@ class Base(Configuration):
 
     SITE_ID = 1
 
+    SECURE_BROWSER_XSS_FILTER = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    CSRF_COOKIE_SECURE = True
+    SILENCED_SYSTEM_CHECKS = [
+        "security.W019"  # Disable because we want to use SAMEORIGIN as value for X_FRAME_OPTIONS
+    ]
+
     # Application definition
 
     INSTALLED_APPS = [
@@ -371,6 +379,12 @@ class Production(Base):
 
     ALLOWED_HOSTS = values.ListValue(None)
     AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
+    # Force to redirect traffic to HTTPS protocol
+    SECURE_SSL_REDIRECT = True
+
+    # Configure HSTS
+    # https://docs.djangoproject.com/en/2.2/ref/middleware/#http-strict-transport-security
+    SECURE_HSTS_SECONDS = 3600
 
     # Helper to easily know if static files in AWS is activated
     STATICFILES_AWS_ENABLED = True
