@@ -19,6 +19,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
+from ..lti.utils import get_or_create_video
 from ..models import ConsumerSitePortability, Playlist, Video
 
 
@@ -216,7 +217,7 @@ class VideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        video = lti.get_or_create_video()
+        video = get_or_create_video(lti)
         self.assertFalse(video.show_download)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -243,7 +244,7 @@ class VideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        video = lti.get_or_create_video()
+        video = get_or_create_video(lti)
         self.assertTrue(video.show_download)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -561,7 +562,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -587,7 +588,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -616,7 +617,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -645,7 +646,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
 
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -679,7 +680,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -715,7 +716,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -749,7 +750,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -787,7 +788,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -831,7 +832,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
 
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -861,7 +862,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -890,7 +891,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -916,7 +917,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -949,7 +950,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -981,7 +982,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1013,7 +1014,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1043,7 +1044,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1071,7 +1072,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1106,7 +1107,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1142,7 +1143,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1175,7 +1176,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertEqual(lti.get_or_create_video(), video)
+        self.assertEqual(get_or_create_video(lti), video)
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1217,7 +1218,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1259,7 +1260,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1291,7 +1292,7 @@ class PortabilityVideoLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
         with self.assertRaises(LTIException) as context:
-            lti.get_or_create_video()
+            get_or_create_video(lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1326,7 +1327,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, video.pk)
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1351,7 +1352,7 @@ class PortabilityVideoLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        new_video = lti.get_or_create_video()
+        new_video = get_or_create_video(lti)
 
         # A new video is created
         self.assertEqual(Video.objects.count(), 2)
@@ -1381,7 +1382,7 @@ class PortabilityVideoLTITestCase(TestCase):
 
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        self.assertIsNone(lti.get_or_create_video())
+        self.assertIsNone(get_or_create_video(lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
