@@ -77,6 +77,7 @@ class Base(Configuration):
     SESSION_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = "DENY"
     SILENCED_SYSTEM_CHECKS = values.ListValue([])
 
     # Application definition
