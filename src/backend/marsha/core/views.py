@@ -15,6 +15,7 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI, OpenEdxLTI
+from .lti.utils import get_or_create_video
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
 from .utils.react_locales_utils import react_locale
@@ -37,6 +38,10 @@ class VideoLTIView(TemplateResponseMixin, View):
     def get_lti(self):
         """Return the LTI abstraction class to verify the request and retrieve a video."""
         return LTI(self.request, self.kwargs["uuid"])
+
+    def get_video(self, lti):
+        """Return the video targeted by the LTI request."""
+        return get_or_create_video(lti)
 
     def get_context_data(self):
         """Build a context with data retrieved from the LTI launch request.
@@ -63,7 +68,7 @@ class VideoLTIView(TemplateResponseMixin, View):
         """
         lti = self.get_lti()
         try:
-            video = lti.get_or_create_video()
+            video = self.get_video(lti)
         except LTIException as error:
             logger.warning("LTI Exception: %s", str(error))
             return {"state": "error", "video_data": "null"}
@@ -144,6 +149,10 @@ class OpenEdxVideoLTIView(VideoLTIView):
     def get_lti(self):
         """Use the deprecated LTI class specific to Open edX and kept to its minimal."""
         return OpenEdxLTI(self.request)
+
+    def get_video(self, lti):
+        """User the deprecated get_or_create_video from OpenEdxLTI class."""
+        return lti.get_or_create_video()
 
 
 class LTIDevelopmentView(TemplateView):
