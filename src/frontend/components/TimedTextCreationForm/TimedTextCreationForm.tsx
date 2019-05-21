@@ -12,7 +12,6 @@ import { LanguageChoice } from '../../types/LanguageChoice';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
-import { Maybe, Nullable } from '../../utils/types';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
@@ -70,6 +69,10 @@ interface TimedTextCreationFormState {
   newTTUploadId?: TimedText['id'];
 }
 
+const isSelectOption = (
+  option: ValueType<SelectOption>,
+): option is SelectOption => (option as SelectOption).value !== undefined;
+
 /**
  * Component. Displays a form that allows the user to create a new timedtexttrack.
  * @param createTimedTextTrack Action creator that takes a timedtexttrack to insert into the store.
@@ -103,11 +106,8 @@ export class TimedTextCreationForm extends React.Component<
     }
   }
 
-  onSelectChange(
-    option: Maybe<Nullable<ValueType<SelectOption>>>,
-    { action }: ActionMeta,
-  ) {
-    if (action === 'select-option' && option && !(option instanceof Array)) {
+  onSelectChange(option: ValueType<SelectOption>, { action }: ActionMeta) {
+    if (action === 'select-option' && option && isSelectOption(option)) {
       this.setState({ newTTLanguage: option.value });
     }
   }
