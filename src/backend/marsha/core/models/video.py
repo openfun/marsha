@@ -7,73 +7,23 @@ from django.utils.translation import gettext_lazy as _
 from ..defaults import PENDING, STATE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .base import AbstractImage, BaseModel
-from .playlist import Playlist
+from .file import BaseFile
 
 
-class Video(BaseModel):
+class Video(BaseFile):
     """Model representing a video, created by an author."""
 
-    title = models.CharField(
-        max_length=255, verbose_name=_("title"), help_text=_("title of the video")
-    )
     description = models.TextField(
         verbose_name=_("description"),
         help_text=_("description of the video"),
         null=True,
         blank=True,
     )
-    lti_id = models.CharField(
-        max_length=255,
-        verbose_name=_("lti id"),
-        help_text=_("ID for synchronization with an external LTI tool"),
-    )
-    created_by = models.ForeignKey(
-        to="User",
-        related_name="created_videos",
-        verbose_name=_("author"),
-        help_text=_("author of the video"),
-        # video is (soft-)deleted if author is (soft-)deleted
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    playlist = models.ForeignKey(
-        to=Playlist,
-        related_name="videos",
-        verbose_name=_("playlist"),
-        help_text=_("playlist to which this video belongs"),
-        # don't allow hard deleting a playlist if it still contains videos
-        on_delete=models.PROTECT,
-    )
     position = models.PositiveIntegerField(
         verbose_name=_("position"),
         help_text=_("position of this video in the playlist"),
         default=0,
     )
-    duplicated_from = models.ForeignKey(
-        to="self",
-        related_name="duplicates",
-        verbose_name=_("duplicated from"),
-        help_text=_("original video this one was duplicated from"),
-        # don't delete a video if the one it was duplicated from is hard deleted
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    uploaded_on = models.DateTimeField(
-        verbose_name=_("uploaded on"),
-        help_text=_("datetime at which the active version of the video was uploaded."),
-        null=True,
-        blank=True,
-    )
-    upload_state = models.CharField(
-        max_length=20,
-        verbose_name=_("upload state"),
-        help_text=_("state of the upload and transcoding pipeline in AWS."),
-        choices=STATE_CHOICES,
-        default=PENDING,
-    )
-    show_download = models.BooleanField(default=True)
 
     class Meta:
         """Options for the ``Video`` model."""
@@ -89,18 +39,6 @@ class Video(BaseModel):
                 name="video_unique_idx",
             )
         ]
-
-    def __str__(self):
-        """Get the string representation of an instance."""
-        result = f"{self.title}"
-        if self.deleted:
-            result = _("{:s} [deleted]").format(result)
-        return result
-
-    @property
-    def consumer_site(self):
-        """Return the consumer site linked to this video via the playlist."""
-        return self.playlist.consumer_site
 
     @property
     def is_ready_to_play(self):
