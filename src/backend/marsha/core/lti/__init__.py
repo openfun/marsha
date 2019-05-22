@@ -32,6 +32,7 @@ class LTI:
         """
         self.resource_id = resource_id
         self.request = request
+        self._consumer_site = None
 
     def verify(self):
         """Verify the LTI request.
@@ -52,15 +53,19 @@ class LTI:
             consumer site with the consumer site domain passed in the LTI request.
 
         """
+        if self._consumer_site:
+            return True
+
         if settings.BYPASS_LTI_VERIFICATION:
             if not settings.DEBUG:
                 raise ImproperlyConfigured(
                     "Bypassing LTI verification only works in DEBUG mode."
                 )
-            return ConsumerSite.objects.get_or_create(
+            self._consumer_site = ConsumerSite.objects.get_or_create(
                 domain=self.consumer_site_domain,
                 defaults={"name": self.consumer_site_domain},
             )[0]
+            return True
 
         passport = self.get_passport()
         consumers = {
@@ -106,7 +111,28 @@ class LTI:
                 )
             )
 
-        return consumer_site
+        self._consumer_site = consumer_site
+        return True
+
+    def get_consumer_site(self):
+        """Return the consumer_site if the request is verified.
+
+        Returns
+        -------
+        consumer_site: Type[models.ConsumerSite]
+
+        Raises
+        ------
+        RuntimeError
+            Raised if the LTI request is not verified
+
+        """
+        if self._consumer_site:
+            return self._consumer_site
+
+        raise RuntimeError(
+            "Impossible to retrieve the consumer_site, verify the request first"
+        )
 
     def __getattr__(self, name):
         """Look for attributes in the request's POST parameters as a last resort.
