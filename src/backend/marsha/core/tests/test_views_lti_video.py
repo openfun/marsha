@@ -29,7 +29,9 @@ from ..models import ConsumerSite, Video
 class ViewsTestCase(TestCase):
     """Test the views in the ``core`` app of the Marsha project."""
 
-    def test_views_video_lti_post_instructor(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_lti_post_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
@@ -44,10 +46,9 @@ class ViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
         }
-        with mock.patch.object(
-            LTI, "verify", return_value=passport.consumer_site
-        ) as mock_verify:
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -97,7 +98,9 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    def test_views_lti_video_read_only_video(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_read_only_video(self, mock_get_consumer_site, mock_verify):
         """A video from another portable playlist should have read_only attribute set to True."""
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
@@ -113,10 +116,9 @@ class ViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
         }
-        with mock.patch.object(
-            LTI, "verify", return_value=passport.consumer_site
-        ) as mock_verify:
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -157,7 +159,9 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    def test_views_video_lti_post_student(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_lti_post_student(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for a student request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
@@ -172,10 +176,9 @@ class ViewsTestCase(TestCase):
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        with mock.patch.object(
-            LTI, "verify", return_value=passport.consumer_site
-        ) as mock_verify:
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -223,7 +226,11 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    def test_views_video_lti_without_user_id_parameter(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_lti_without_user_id_parameter(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Ensure JWT is created if user_id is missing in the LTI request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
@@ -237,10 +244,9 @@ class ViewsTestCase(TestCase):
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
         }
-        with mock.patch.object(
-            LTI, "verify", return_value=passport.consumer_site
-        ) as mock_verify:
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -264,7 +270,11 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    def test_views_video_lti_post_student_no_video(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_lti_post_student_no_video(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Validate the response returned for a student request when there is no video."""
         passport = ConsumerSiteLTIPassportFactory()
         data = {
@@ -274,10 +284,9 @@ class ViewsTestCase(TestCase):
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        with mock.patch.object(
-            LTI, "verify", return_value=passport.consumer_site
-        ) as mock_verify:
-            response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -319,7 +328,9 @@ class ViewsTestCase(TestCase):
         ).group(1)
         self.assertEqual(data_video, "null")
 
-    def test_views_video_lti_with_timed_text(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_lti_with_timed_text(self, mock_get_consumer_site, mock_verify):
         """Make sure the LTI Video view functions when the Video has associated TimedTextTracks.
 
         NB: This is a bug-reproducing test case.
@@ -338,8 +349,9 @@ class ViewsTestCase(TestCase):
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -357,7 +369,11 @@ class ViewsTestCase(TestCase):
 
     @override_settings(STATICFILES_AWS_ENABLED=False)
     @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
-    def test_views_video_staticfiles_aws_disabled(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_staticfiles_aws_disabled(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Meta tag public-path should'nt be in the response when staticfiles on AWS is diabled."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
@@ -369,8 +385,9 @@ class ViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
         }
-        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertNotContains(
@@ -379,7 +396,11 @@ class ViewsTestCase(TestCase):
 
     @override_settings(STATICFILES_AWS_ENABLED=True)
     @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
-    def test_views_video_staticfiles_aws_enabled(self):
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_video_staticfiles_aws_enabled(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Meta tag public-path should be in the response when staticfiles on AWS is enabled."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
@@ -391,8 +412,9 @@ class ViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
         }
-        with mock.patch.object(LTI, "verify", return_value=passport.consumer_site):
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(
@@ -491,6 +513,7 @@ class DevelopmentViewsTestCase(TestCase):
         }
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
+        print(response)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
