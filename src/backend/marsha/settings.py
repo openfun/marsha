@@ -230,7 +230,7 @@ class Base(Configuration):
             "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
             "ALGORITHM": "HS256",
             "SIGNING_KEY": str(self.JWT_SIGNING_KEY),
-            "USER_ID_CLAIM": "video_id",
+            "USER_ID_CLAIM": "resource_id",
             "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
         }
 

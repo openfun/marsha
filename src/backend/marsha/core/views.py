@@ -104,6 +104,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 {
                     "session_id": str(uuid.uuid4()),
                     "context_id": lti.context_id,
+                    "resource_id": str(resource.id),
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
                     "locale": locale,
