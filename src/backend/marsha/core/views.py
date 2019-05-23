@@ -14,7 +14,7 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .lti import LTI, OpenEdxLTI
+from .lti import LTI
 from .lti.utils import get_or_create_video
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
@@ -134,25 +134,6 @@ class VideoLTIView(TemplateResponseMixin, View):
 
         """
         return self.render_to_response(self.get_context_data())
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(xframe_options_exempt, name="dispatch")
-class OpenEdxVideoLTIView(VideoLTIView):
-    """View called by the deprecated LTI launch request.
-
-    [DEPRECATED] It is kept here for backward compatibility with the first versions of Marsha,
-    only works with Open edX and will be removed in future releases.
-
-    """
-
-    def get_lti(self):
-        """Use the deprecated LTI class specific to Open edX and kept to its minimal."""
-        return OpenEdxLTI(self.request)
-
-    def get_video(self, lti):
-        """User the deprecated get_or_create_video from OpenEdxLTI class."""
-        return lti.get_or_create_video()
 
 
 class LTIDevelopmentView(TemplateView):

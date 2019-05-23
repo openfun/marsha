@@ -8,8 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
 
-from ..defaults import READY
-from ..models import ConsumerSite, Video
+from ..models import ConsumerSite
 from ..models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
 
@@ -298,57 +297,6 @@ class LTI:
 
         """
         return self.request.POST.get("launch_presentation_locale", "en")
-
-
-class OpenEdxLTI(LTI):
-    """Deprecated pseudo-LTI for backward compatibility with early version Open edX.
-
-    [DEPRECATED] This LTI class does not comply with the LTI specification.
-    It is kept for backward compatibility, only works with the Open edX XBlock consumer and
-    will be removed in a future release.
-
-    """
-
-    # pylint: disable=super-init-not-called
-    def __init__(self, request):
-        """Initialize the LTI system.
-
-        Parameters
-        ----------
-        request : django.http.request.HttpRequest
-            The request that holds the LTI parameters
-
-        """
-        self.request = request
-
-    @property
-    def resource_link_id(self):
-        """Accept only Open edX specific resource_link_id."""
-        resource_link_id = self.request.POST["resource_link_id"].rsplit("-", 1)
-        if len(resource_link_id) == 2:
-            return resource_link_id[1]
-        raise LTIException("This launch request only works with Open edX.")
-
-    def get_or_create_video(self):
-        """Get or create the video targeted by the LTI launch request.
-
-        Create the playlist if it does not pre-exist (it can only happen with consumer site scope
-        passports).
-
-        Returns
-        -------
-        core.models.video.Video
-            The video instance targeted by the `resource_link_id` or None.
-
-        """
-        # Make sure LTI verification has run successfully. It raises an LTIException otherwise.
-        self.verify()
-
-        # If the video already exists, retrieve it from database
-        try:
-            return Video.objects.get(lti_id=self.resource_link_id, upload_state=READY)
-        except Video.DoesNotExist:
-            return None
 
 
 class LTIUser:
