@@ -25,7 +25,7 @@ from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Thumbnail, TimedTextTrack, Video
 from .permissions import (
-    IsVideoInstructorTokenOrAdminUser,
+    IsResourceInstructorOrAdminUser,
     IsVideoRelatedInstructorTokenOrAdminUser,
     IsVideoToken,
 )
@@ -116,7 +116,7 @@ class VideoViewSet(
 
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    permission_classes = [IsVideoInstructorTokenOrAdminUser]
+    permission_classes = [IsResourceInstructorOrAdminUser]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
@@ -159,7 +159,58 @@ class VideoViewSet(
         )
 
         # Reset the upload state of the video
-        Video.objects.filter(pk=pk).update(upload_state=PENDING)
+        Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
+
+        return Response(policy)
+
+
+class FileViewSet(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
+    """Viewset for the API of the File object."""
+
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    permission_classes = [IsResourceInstructorOrAdminUser]
+
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
+    # pylint: disable=unused-argument
+    def initate_upload(self, request, pk=None):
+        """Get an upload policy for a file.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the file
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+
+        """
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        file_to_upload = self.get_object()
+        key = file_to_upload.get_source_s3_key(stamp=stamp)
+
+        policy = get_s3_upload_policy_signature(
+            now,
+            [{"key": key}, ["content-length-range", 0, defaults.FILE_SOURCE_MAX_SIZE]],
+        )
+
+        policy.update(
+            {"key": key, "max_file_size": defaults.FILE_SOURCE_MAX_SIZE, "stamp": stamp}
+        )
+
+        # Reset the upload state of the video
+        File.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(policy)
 
@@ -317,16 +368,13 @@ class XAPIStatementView(APIView):
             HttpResponse to reflect if the XAPI request failed or is successful
 
         """
-        lti_user = LTIUser(request.user)
+        user = request.user
+        lti_user = LTIUser(user)
         try:
-            video = Video.objects.get(pk=lti_user.video_id)
+            video = Video.objects.get(pk=user.id)
         except Video.DoesNotExist:
             return Response(
-                {
-                    "reason": "video with id {id} does not exist".format(
-                        id=lti_user.video_id
-                    )
-                },
+                {"reason": "video with id {id} does not exist".format(id=user.id)},
                 status=404,
             )
 
