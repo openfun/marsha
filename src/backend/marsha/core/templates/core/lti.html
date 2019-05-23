@@ -9,7 +9,7 @@
   </head>
   <body>
     <div class="marsha-frontend-data"{% if jwt_token %} data-jwt="{{ jwt_token }}"{% endif %} data-state="{{ state }}"></div>
-    <div class="marsha-frontend-data" id="video" data-video="{{ video_data }}"></div>
+    <div class="marsha-frontend-data" id="{{ resource }}" data-{{ resource }}="{{ resource_data }}"></div>
 
     <div id="marsha-frontend-root"></div>
     <script src='{% static "js/index.js" %}'></script>
