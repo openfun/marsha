@@ -28,7 +28,7 @@ class TimedTextTrackAPITest(TestCase):
         """The details of choices fields should be available via http options for an instructor."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.options(
@@ -56,7 +56,7 @@ class TimedTextTrackAPITest(TestCase):
         """The details of choices fields should be available via http options for a student."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.options(
@@ -100,7 +100,7 @@ class TimedTextTrackAPITest(TestCase):
         """Student users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["student"]
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -125,7 +125,7 @@ class TimedTextTrackAPITest(TestCase):
         )
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -169,7 +169,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -187,7 +187,7 @@ class TimedTextTrackAPITest(TestCase):
         """
         timed_text_track = TimedTextTrackFactory(uploaded_on=None)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -208,7 +208,7 @@ class TimedTextTrackAPITest(TestCase):
             uploaded_on=None, upload_state=random.choice(["pending", "error", "ready"])
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -237,7 +237,7 @@ class TimedTextTrackAPITest(TestCase):
             upload_state="ready",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -297,7 +297,7 @@ class TimedTextTrackAPITest(TestCase):
         TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track_one.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track_one.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -332,7 +332,7 @@ class TimedTextTrackAPITest(TestCase):
         """A token user should be able to create a timed text track for an existing video."""
         video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -365,7 +365,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -399,7 +399,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users should be able to update the language of their timed_text_track."""
         timed_text_track = TimedTextTrackFactory(language="fr")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -418,7 +418,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users should be able to update the mode flag through the API."""
         timed_text_track = TimedTextTrackFactory(mode="cc")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -443,7 +443,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users trying to update "active_stamp" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -469,7 +469,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users trying to update "upload_state" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -496,7 +496,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -513,7 +513,7 @@ class TimedTextTrackAPITest(TestCase):
         """
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
         self.assertEqual(timed_text_track.upload_state, "pending")
@@ -538,7 +538,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         original_id = timed_text_track.id
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -564,7 +564,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         original_video = timed_text_track.video
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -590,7 +590,7 @@ class TimedTextTrackAPITest(TestCase):
         other_video = VideoFactory()
         timed_text_track_update = TimedTextTrackFactory(language="en")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(other_video.id)
+        jwt_token.payload["resource_id"] = str(other_video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -610,7 +610,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -642,7 +642,7 @@ class TimedTextTrackAPITest(TestCase):
         # Delete the timed text tracks using the JWT token
         for timed_text_track in timed_text_tracks:
             jwt_token = AccessToken()
-            jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+            jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
             jwt_token.payload["roles"] = ["instructor"]
             jwt_token.payload["read_only"] = False
             response = self.client.delete(
@@ -686,7 +686,7 @@ class TimedTextTrackAPITest(TestCase):
         """A token user should not be able to delete a list of their timed text tracks."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -716,7 +716,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -750,7 +750,7 @@ class TimedTextTrackAPITest(TestCase):
             mode="cc",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -866,7 +866,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 

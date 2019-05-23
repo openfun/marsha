@@ -32,7 +32,7 @@ class XAPIStatementApiTest(TestCase):
         """If no LRS configured a 501 status code should be returned."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {"foo": "bar"}
@@ -53,7 +53,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {"foo": "bar"}
@@ -84,7 +84,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {
@@ -118,7 +118,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {
@@ -164,7 +164,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {
@@ -199,7 +199,7 @@ class XAPIStatementApiTest(TestCase):
         """If LRS is not configured in consumer_site but in settings, settings should be used."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {
@@ -235,7 +235,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         data = {

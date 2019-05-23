@@ -71,7 +71,7 @@ class VideoAPITest(TestCase):
         """Student users should not be allowed to read a video detail."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
         jwt_token.payload["read_only"] = True
         # Get the video linked to the JWT token
@@ -102,7 +102,7 @@ class VideoAPITest(TestCase):
         )
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -192,7 +192,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory(upload_state="ready")
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -208,7 +208,7 @@ class VideoAPITest(TestCase):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
         video = VideoFactory(uploaded_on=None)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -243,7 +243,7 @@ class VideoAPITest(TestCase):
         state = random.choice(["pending", "error", "ready"])
         video = VideoFactory(uploaded_on=None, upload_state=state)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -284,7 +284,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -341,7 +341,7 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should not be able to read a list of videos."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.get(
@@ -364,7 +364,7 @@ class VideoAPITest(TestCase):
         )
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -463,7 +463,7 @@ class VideoAPITest(TestCase):
         """Token users should be able to update the title of their video through the API."""
         video = VideoFactory(title="my title")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
         data = {"title": "my new title"}
@@ -481,7 +481,7 @@ class VideoAPITest(TestCase):
         """Token users should be able to update the description of their video through the API."""
         video = VideoFactory(description="my description")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -505,7 +505,7 @@ class VideoAPITest(TestCase):
         """Token users trying to update "uploaded_on" through the API should be ignored."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -531,7 +531,7 @@ class VideoAPITest(TestCase):
         """Token users trying to update "upload_state" through the API should be ignored."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -557,7 +557,7 @@ class VideoAPITest(TestCase):
         """An instructor with read_only set to true should not be able to update the video."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -575,7 +575,7 @@ class VideoAPITest(TestCase):
         """An instructor with read_only set to true should not be able to patch the video."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -596,7 +596,7 @@ class VideoAPITest(TestCase):
         """
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
         self.assertEqual(video.upload_state, "pending")
@@ -621,7 +621,7 @@ class VideoAPITest(TestCase):
         video = VideoFactory()
         original_id = video.id
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -647,7 +647,7 @@ class VideoAPITest(TestCase):
         video_token = VideoFactory()
         video_update = VideoFactory(title="my title")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video_token.id)
+        jwt_token.payload["resource_id"] = str(video_token.id)
         jwt_token.payload["roles"] = ["instructor"]
 
         data = {"title": "my new title"}
@@ -666,7 +666,7 @@ class VideoAPITest(TestCase):
         """Token users should be able to patch fields on their video through the API."""
         video = VideoFactory(description="my description")
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -697,7 +697,7 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should not be able to delete it or any other."""
         videos = VideoFactory.create_batch(2)
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(videos[0].id)
+        jwt_token.payload["resource_id"] = str(videos[0].id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -731,7 +731,7 @@ class VideoAPITest(TestCase):
         """An instructor with read_only set to true should not be able to delete the video."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -754,7 +754,7 @@ class VideoAPITest(TestCase):
         """A token user associated to a video should not be able to delete a list of videos."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
 
         response = self.client.delete(
@@ -792,7 +792,7 @@ class VideoAPITest(TestCase):
         """An instructor with read_only set to true should not be able to initiate an upload."""
         video = VideoFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -809,7 +809,7 @@ class VideoAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
