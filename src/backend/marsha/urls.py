@@ -15,7 +15,7 @@ from marsha.core.api import (
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import LTIDevelopmentView, OpenEdxVideoLTIView, VideoLTIView
+from marsha.core.views import LTIDevelopmentView, VideoLTIView
 
 
 router = DefaultRouter()
@@ -28,8 +28,6 @@ urlpatterns = [
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI
     path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="lti_video"),
-    # This view is deprecated and will be removed in a future release:
-    path("lti-video/", OpenEdxVideoLTIView.as_view(), name="lti_video"),
     # API
     path("api/update-state", update_state, name="update_state"),
     path(
