@@ -8,6 +8,20 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## Added
+
+- Create a File model which will be the base model for all the resources
+  we will manage
+
+## Changed
+
+- Refactor the LTI view to be generic for all the resources we want to manage
+- Video model is a special File model
+
+### Removed
+
+- Everything related to the OpenEDX LTI view. This a BC break
+
 ## [2.10.1] - 2019-08-13
 
 ### Fixed
