@@ -15,7 +15,7 @@ from marsha.core.api import (
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import LTIDevelopmentView, LTIView
+from marsha.core.views import FileLTIView, LTIDevelopmentView, VideoLTIView
 
 
 router = DefaultRouter()
@@ -27,7 +27,8 @@ urlpatterns = [
     # Admin
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI
-    path("lti/videos/<uuid:uuid>", LTIView.as_view(), name="lti_view"),
+    path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="video_lti_view"),
+    path("lti/files/<uuid:uuid>", FileLTIView.as_view(), name="video_lti_view"),
     # API
     path("api/update-state", update_state, name="update_state"),
     path(

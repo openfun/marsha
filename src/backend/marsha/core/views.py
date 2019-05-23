@@ -1,4 +1,5 @@
 """Views of the ``core`` app of the Marsha project."""
+from abc import ABC, abstractmethod
 import json
 from logging import getLogger
 import uuid
@@ -15,7 +16,8 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI
-from .lti.utils import get_or_create_video
+from .lti.utils import get_or_create_file, get_or_create_video
+from .models import File, Video
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import VideoSerializer
 from .utils.react_locales_utils import react_locale
@@ -26,22 +28,32 @@ logger = getLogger(__name__)
 
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
-class LTIView(TemplateResponseMixin, View):
-    """View called by an LTI launch request.
+class BaseLTIView(ABC, TemplateResponseMixin, View):
+    """Base view called by an LTI launch request.
 
     It is designed to work as a React single page application.
 
     """
 
-    template_name = "core/lti_video.html"
+    template_name = "core/lti.html"
 
-    def get_lti(self):
-        """Return the LTI abstraction class to verify the request and retrieve a video."""
-        return LTI(self.request, self.kwargs["uuid"])
+    @property
+    @abstractmethod
+    def model(self):
+        """Model used by the view."""
 
-    def get_video(self, lti):
-        """Return the video targeted by the LTI request."""
-        return get_or_create_video(lti)
+    @property
+    @abstractmethod
+    def serializer_class(self):
+        """Serilizer used by the view."""
+
+    @abstractmethod
+    def _get_or_create_resource(self, lti):
+        """Return the resource targeted by the LTI request."""
+
+    @abstractmethod
+    def _enrich_jwt_token(self, token, resource):
+        """Enrich the base JWT Token with specific data from the targeted resource."""
 
     def get_context_data(self):
         """Build a context with data retrieved from the LTI launch request.
@@ -66,12 +78,16 @@ class LTIView(TemplateResponseMixin, View):
                 used as authentication.
 
         """
-        lti = self.get_lti()
+        lti = LTI(self.request, self.kwargs["uuid"])
         try:
-            video = self.get_video(lti)
+            resource = self._get_or_create_resource(lti)
         except LTIException as error:
             logger.warning("LTI Exception: %s", str(error))
-            return {"state": "error", "video_data": "null"}
+            return {
+                "state": "error",
+                "resource": self.model.__name__.lower(),
+                "resource_data": "null",
+            }
 
         context = {"state": INSTRUCTOR if lti.is_instructor else STUDENT}
 
@@ -81,19 +97,18 @@ class LTIView(TemplateResponseMixin, View):
         except ImproperlyConfigured:
             pass
 
-        if video is not None:
+        if resource is not None:
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
             jwt_token.payload.update(
                 {
                     "session_id": str(uuid.uuid4()),
-                    "video_id": str(video.id),
                     "context_id": lti.context_id,
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
                     "locale": locale,
                     "read_only": lti.is_student
-                    or video.playlist.lti_id != lti.context_id,
+                    or resource.playlist.lti_id != lti.context_id,
                 }
             )
             try:
@@ -101,11 +116,14 @@ class LTIView(TemplateResponseMixin, View):
             except AttributeError:
                 pass
 
+            self._enrich_jwt_token(jwt_token, resource)
+
             context["jwt_token"] = str(jwt_token)
 
-        context["video_data"] = json.dumps(
-            VideoSerializer(video).data if video else None
+        context["resource_data"] = json.dumps(
+            self.serializer_class(resource).data if resource else None
         )
+        context["resource"] = self.model.__name__.lower()
 
         if getattr(settings, "STATICFILES_AWS_ENABLED", False):
             context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
@@ -114,7 +132,7 @@ class LTIView(TemplateResponseMixin, View):
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
-        """Respond to POST requests with the LTI Video template.
+        """Respond to POST requests with the LTI template.
 
         Populated with context retrieved by get_context_data in the LTI launch request.
 
@@ -134,6 +152,33 @@ class LTIView(TemplateResponseMixin, View):
 
         """
         return self.render_to_response(self.get_context_data())
+
+
+class VideoLTIView(BaseLTIView):
+    """Video view called by an LTI launch request."""
+
+    model = Video
+    serializer_class = VideoSerializer
+
+    def _get_or_create_resource(self, lti):
+        return get_or_create_video(lti)
+
+    def _enrich_jwt_token(self, token, resource):
+        """Enrich the base JWT Token with specific data from the targeted resource."""
+        token.payload.update({"video_id": str(resource.id)})
+
+
+class FileLTIView(BaseLTIView):
+    """File view called by an LTI launch request."""
+
+    model = File
+    serializer_class = FileSerializer
+
+    def _get_or_create_resource(self, lti):
+        return get_or_create_file(lti)
+
+    def _enrich_jwt_token(self, token, resource):
+        pass
 
 
 class LTIDevelopmentView(TemplateView):
