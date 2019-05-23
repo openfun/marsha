@@ -26,7 +26,7 @@ logger = getLogger(__name__)
 
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
-class VideoLTIView(TemplateResponseMixin, View):
+class LTIView(TemplateResponseMixin, View):
     """View called by an LTI launch request.
 
     It is designed to work as a React single page application.
