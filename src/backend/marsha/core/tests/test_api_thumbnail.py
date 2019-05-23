@@ -38,7 +38,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video)
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.get(
@@ -53,7 +53,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -73,7 +73,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -111,7 +111,7 @@ class ThumbnailApiTest(TestCase):
         )
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -156,7 +156,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
@@ -170,7 +170,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -199,7 +199,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -223,7 +223,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video)
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.delete(
@@ -238,7 +238,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video)
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -254,7 +254,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 
@@ -272,7 +272,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video_other)
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video_token.id)
+        jwt_token.payload["resource_id"] = str(video_token.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -295,7 +295,7 @@ class ThumbnailApiTest(TestCase):
         """Student users should not be allowed to initiate an upload."""
         thumbnail = ThumbnailFactory()
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
@@ -313,7 +313,7 @@ class ThumbnailApiTest(TestCase):
             id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
         )
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = False
 
@@ -382,7 +382,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = AccessToken()
-        jwt_token.payload["video_id"] = str(thumbnail.video.id)
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["instructor"]
         jwt_token.payload["read_only"] = True
 

@@ -5,11 +5,11 @@ from rest_framework_simplejwt.models import TokenUser
 from .models.account import INSTRUCTOR, LTI_ROLES
 
 
-class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
-    """A custom permission class for JWT Tokens related to a video object.
+class IsResourceInstructorOrAdminUser(permissions.IsAdminUser):
+    """A custom permission class for JWT Tokens related to a resource object.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
-    to users authenticated with a JWT token built from a video ie related to a TokenUser as
+    to users authenticated with a JWT token built from a resource ie related to a TokenUser as
     defined in `rest_framework_simplejwt`.
 
     """
@@ -42,8 +42,8 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
 
         return super().has_permission(request, view)
 
-    def get_video_id(self, obj):
-        """Get the video id to check that it matches the JWT Token.
+    def get_resource_id(self, obj):
+        """Get the resource id to check that it matches the JWT Token.
 
         Parameters
         ----------
@@ -53,13 +53,13 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
         Returns
         -------
         string
-            The id of the video passed as obj
+            The id of the resource passed as obj
 
         """
         return obj.id
 
     def has_object_permission(self, request, view, obj):
-        """Add a check to allow users identified via a JWT token linked to a video.
+        """Add a check to allow users identified via a JWT token linked to a resource.
 
         Parameters
         ----------
@@ -88,14 +88,14 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
         if (
             isinstance(user, TokenUser)
             and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
-            and str(self.get_video_id(obj)) != user.id
+            and str(self.get_resource_id(obj)) != user.id
         ):
             raise exceptions.PermissionDenied()
 
         return super().has_object_permission(request, view, obj)
 
 
-class IsVideoRelatedInstructorTokenOrAdminUser(IsVideoInstructorTokenOrAdminUser):
+class IsVideoRelatedInstructorTokenOrAdminUser(IsResourceInstructorOrAdminUser):
     """A custom permission class for JWT Tokens related to objects linked to a video.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
@@ -104,7 +104,7 @@ class IsVideoRelatedInstructorTokenOrAdminUser(IsVideoInstructorTokenOrAdminUser
 
     """
 
-    def get_video_id(self, obj):
+    def get_resource_id(self, obj):
         """Get the video id to check that it matches the JWT Token.
 
         Parameters
