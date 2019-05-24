@@ -9,6 +9,7 @@ from rest_framework.schemas import get_schema_view
 
 from marsha.core.admin import admin_site
 from marsha.core.api import (
+    FileViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
     VideoViewSet,
@@ -20,6 +21,7 @@ from marsha.core.views import FileLTIView, LTIDevelopmentView, VideoLTIView
 
 router = DefaultRouter()
 router.register(r"videos", VideoViewSet, basename="videos")
+router.register(r"files", FileViewSet, basename="files")
 router.register(r"timedtexttracks", TimedTextTrackViewSet, basename="timed_text_tracks")
 router.register(r"thumbnail", ThumbnailViewSet, basename="thumbnail")
 
