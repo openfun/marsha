@@ -19,7 +19,7 @@ from .lti import LTI
 from .lti.utils import get_or_create_file, get_or_create_video
 from .models import File, Video
 from .models.account import INSTRUCTOR, STUDENT
-from .serializers import VideoSerializer
+from .serializers import FileSerializer, VideoSerializer
 from .utils.react_locales_utils import react_locale
 
 

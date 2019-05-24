@@ -1,4 +1,4 @@
-"""Test the LTI interconnection with Open edX."""
+"""Test the LTI video view."""
 from html import unescape
 import json
 from logging import Logger
@@ -26,8 +26,8 @@ from ..models import ConsumerSite, Video
 # pylint: disable=unused-argument
 
 
-class ViewsTestCase(TestCase):
-    """Test the views in the ``core`` app of the Marsha project."""
+class VideoViewTestCase(TestCase):
+    """Test the video view in the ``core`` app of the Marsha project."""
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
