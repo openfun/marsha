@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..defaults import PENDING, STATE_CHOICES
+from ..utils.time_utils import to_timestamp
 from .account import User
 from .base import BaseModel
 from .playlist import Playlist
@@ -116,3 +117,25 @@ class File(BaseFile):
                 name="file_unique_idx",
             )
         ]
+
+    def get_source_s3_key(self, stamp=None):
+        """Compute the S3 key in the source bucket (ID of the file + version stamp).
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the file assuming
+            its active stamp is set to this value. This is useful to create an upload policy for
+            this prospective version of the file, so that the client can upload the file to S3
+            and the confirmation lambda can set the `uploaded_on` field to this value only after
+            file upload is successful.
+
+        Returns
+        -------
+        string
+            The S3 key for the file in the source bucket, where uploaded files are stored before
+            they are moved to the destination bucket.
+
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+        return "{pk!s}/file/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)

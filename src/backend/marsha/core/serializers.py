@@ -12,7 +12,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import ERROR, PROCESSING, READY, STATE_CHOICES
-from .models import Thumbnail, TimedTextTrack, Video
+from .models import File, Thumbnail, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -429,3 +429,71 @@ class XAPIStatementSerializer(serializers.Serializer):
         if unknown_keys:
             raise ValidationError("Got unknown fields: {}".format(unknown_keys))
         return attrs
+
+
+class FileSerializer(serializers.ModelSerializer):
+    """A serializer to display a File resource."""
+
+    class Meta:  # noqa
+        model = File
+        fields = (
+            "active_stamp",
+            "id",
+            "is_ready_to_display",
+            "title",
+            "upload_state",
+            "url",
+            "show_download",
+        )
+        read_only_fields = (
+            "id",
+            "active_stamp",
+            "is_ready_to_display",
+            "upload_state",
+            "url",
+        )
+
+    active_stamp = TimestampField(
+        source="uploaded_on", required=False, allow_null=True, read_only=True
+    )
+    url = serializers.SerializerMethodField()
+    is_ready_to_display = serializers.BooleanField(read_only=True)
+
+    def get_url(self, obj):
+        """Urls of the File.
+
+        Parameters
+        ----------
+        obj : Type[models.File]
+            The file that we want to serialize
+
+        Returns
+        -------
+        String or None
+            String the url to fetch the file on cloudfront
+            None if the file is still not uploaded to S3 with success
+
+        """
+        if obj.uploaded_on is None:
+            return None
+
+        url = "{protocol:s}://{cloudfront:s}/{pk!s}/file/{stamp:s}".format(
+            protocol=settings.AWS_S3_URL_PROTOCOL,
+            cloudfront=settings.CLOUDFRONT_DOMAIN,
+            pk=obj.pk,
+            stamp=time_utils.to_timestamp(obj.uploaded_on),
+        )
+
+        # Sign the urls of mp4 videos only if the functionality is activated
+        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            date_less_than = timezone.now() + timedelta(
+                seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
+            )
+            cloudfront_signer = CloudFrontSigner(
+                settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+            )
+            url = cloudfront_signer.generate_presigned_url(
+                url, date_less_than=date_less_than
+            )
+
+        return url

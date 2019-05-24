@@ -14,22 +14,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from .defaults import (
-    PENDING,
-    READY,
-    SUBTITLE_SOURCE_MAX_SIZE,
-    THUMBNAIL_SOURCE_MAX_SIZE,
-    VIDEO_SOURCE_MAX_SIZE,
-)
+from . import defaults
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
-from .models import Thumbnail, TimedTextTrack, Video
+from .models import File, Thumbnail, TimedTextTrack, Video
 from .permissions import (
     IsResourceInstructorOrAdminUser,
     IsVideoRelatedInstructorTokenOrAdminUser,
     IsVideoToken,
 )
 from .serializers import (
+    FileSerializer,
     ThumbnailSerializer,
     TimedTextTrackSerializer,
     UpdateStateSerializer,
@@ -96,7 +91,7 @@ def update_state(request):
             # Only update `uploaded_on` if the upload was actually successful
             **(
                 {"uploaded_on": key_elements["uploaded_on"]}
-                if serializer.validated_data["state"] == READY
+                if serializer.validated_data["state"] == defaults.READY
                 else {}
             ),
             "upload_state": serializer.validated_data["state"],
@@ -150,12 +145,16 @@ class VideoViewSet(
             [
                 {"key": key},
                 ["starts-with", "$Content-Type", "video/"],
-                ["content-length-range", 0, VIDEO_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, defaults.VIDEO_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
-            {"key": key, "max_file_size": VIDEO_SOURCE_MAX_SIZE, "stamp": stamp}
+            {
+                "key": key,
+                "max_file_size": defaults.VIDEO_SOURCE_MAX_SIZE,
+                "stamp": stamp,
+            }
         )
 
         # Reset the upload state of the video
@@ -171,7 +170,7 @@ class FileViewSet(
 
     queryset = File.objects.all()
     serializer_class = FileSerializer
-    permission_classes = [IsResourceInstructorOrAdminUser]
+    permission_classes = [IsResourceInstructorTokenOrAdminUser]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
@@ -270,15 +269,23 @@ class TimedTextTrackViewSet(
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         policy = get_s3_upload_policy_signature(
-            now, [{"key": key}, ["content-length-range", 0, SUBTITLE_SOURCE_MAX_SIZE]]
+            now,
+            [
+                {"key": key},
+                ["content-length-range", 0, defaults.SUBTITLE_SOURCE_MAX_SIZE],
+            ],
         )
 
         policy.update(
-            {"key": key, "max_file_size": SUBTITLE_SOURCE_MAX_SIZE, "stamp": stamp}
+            {
+                "key": key,
+                "max_file_size": defaults.SUBTITLE_SOURCE_MAX_SIZE,
+                "stamp": stamp,
+            }
         )
 
         # Reset the upload state of the timed text track
-        TimedTextTrack.objects.filter(pk=pk).update(upload_state=PENDING)
+        TimedTextTrack.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(policy)
 
@@ -333,16 +340,20 @@ class ThumbnailViewSet(
             [
                 {"key": key},
                 ["starts-with", "$Content-Type", "image/"],
-                ["content-length-range", 0, THUMBNAIL_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, defaults.THUMBNAIL_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
-            {"key": key, "max_file_size": THUMBNAIL_SOURCE_MAX_SIZE, "stamp": stamp}
+            {
+                "key": key,
+                "max_file_size": defaults.THUMBNAIL_SOURCE_MAX_SIZE,
+                "stamp": stamp,
+            }
         )
 
         # Reset the upload state of the thumbnail
-        Thumbnail.objects.filter(pk=pk).update(upload_state=PENDING)
+        Thumbnail.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(policy)
 
