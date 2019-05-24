@@ -193,7 +193,6 @@ class FileViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
-        print(content)
 
         mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
 
