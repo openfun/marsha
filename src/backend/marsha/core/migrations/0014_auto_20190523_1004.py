@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.CreateModel(
-            name="File",
+            name="Document",
             fields=[
                 ("deleted", models.DateTimeField(editable=False, null=True)),
                 (
@@ -178,7 +178,7 @@ class Migration(migrations.Migration):
                         help_text="author of the file",
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="created_file",
+                        related_name="created_document",
                         to=settings.AUTH_USER_MODEL,
                         verbose_name="author",
                     ),
@@ -191,7 +191,7 @@ class Migration(migrations.Migration):
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         related_name="duplicates",
-                        to="core.File",
+                        to="core.Document",
                         verbose_name="duplicated from",
                     ),
                 ),
@@ -200,24 +200,24 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         help_text="playlist to which this file belongs",
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="files",
+                        related_name="documents",
                         to="core.Playlist",
                         verbose_name="playlist",
                     ),
                 ),
             ],
             options={
-                "verbose_name": "file",
-                "verbose_name_plural": "files",
-                "db_table": "file",
+                "verbose_name": "document",
+                "verbose_name_plural": "documents",
+                "db_table": "document",
             },
         ),
         migrations.AddConstraint(
-            model_name="file",
+            model_name="document",
             constraint=models.UniqueConstraint(
                 condition=models.Q(deleted=None),
                 fields=("lti_id", "playlist"),
-                name="file_unique_idx",
+                name="document_unique_idx",
             ),
         ),
     ]

@@ -4,7 +4,7 @@ from django.db.models import Q
 from pylti.common import LTIException
 
 from ..defaults import PENDING, READY
-from ..models import File, Playlist, Video
+from ..models import Document, Playlist, Video
 
 
 def _get_or_create_resource(model, lti):
@@ -115,8 +115,8 @@ def get_or_create_video(lti):
     return _get_or_create_resource(Video, lti)
 
 
-def get_or_create_file(lti):
-    """Get or create the file targeted by the LTI launch request.
+def get_or_create_document(lti):
+    """Get or create the document targeted by the LTI launch request.
 
     Create the playlist if it does not pre-exist (it can only happen with consumer site scope
     passports).
@@ -132,8 +132,8 @@ def get_or_create_file(lti):
 
     Returns
     -------
-    core.models.video.Video
-        The video instance targeted by the launch url or None.
+    core.models.video.Document
+        The document instance targeted by the launch url or None.
 
     """
-    return _get_or_create_resource(File, lti)
+    return _get_or_create_resource(Document, lti)
