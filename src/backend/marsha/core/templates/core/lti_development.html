@@ -40,7 +40,7 @@
     </style>
 
     <script>
-      const baseUrl = "http://localhost:8060/lti/videos/";
+      const baseUrl = "http://localhost:8060/lti";
 
       document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('form').forEach(form => {
@@ -49,8 +49,9 @@
 
             const form = event.target;
             const uuid = form.querySelector('input[name="uuid"]').value;
+            const resource = form.querySelector('select[name="resource"]').value;
 
-            form.action = `${baseUrl}${uuid}`;
+            form.action = `${baseUrl}/${resource}/${uuid}`;
             form.submit();
           });
         });
@@ -67,7 +68,6 @@
         cross-origin call.
       </p>
       <form
-        action="http://localhost:8060/lti/videos/"
         method="post"
         target="lti_iframe"
       >
@@ -79,6 +79,11 @@
           value="course-v1:ufr+mathematics+0001"
         />
         <input type="text" name="roles" value="Instructor" />
+        <select name="resource">
+          <option>Resource</option>
+          <option value="videos" selected>video</option>
+          <option value="documents">document</option>
+        </select>
         <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
         <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
         <select name="launch_presentation_locale">
@@ -123,7 +128,7 @@
         Open the `/lti/videos/` view in a regular full-screen page, with a POST
         request.
       </p>
-      <form action="/lti/videos/" method="post">
+      <form method="post">
         <input type="text" name="uuid" value="{{ uuid }}" />
         <input type="text" name="resource_link_id" value="example.com-df7" />
         <input
@@ -132,6 +137,11 @@
           value="course-v1:ufr+mathematics+0001"
         />
         <input type="text" name="roles" value="Instructor" />
+        <select name="resource">
+          <option>Resource</option>
+          <option value="videos" selected>video</option>
+          <option value="documents">document</option>
+        </select>
         <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
         <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
