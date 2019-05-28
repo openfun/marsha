@@ -12,12 +12,12 @@ from ..defaults import STATE_CHOICES
 from ..factories import (
     ConsumerSiteFactory,
     ConsumerSiteLTIPassportFactory,
-    FileFactory,
+    DocumentFactory,
     VideoFactory,
 )
 from ..lti import LTI
-from ..lti.utils import get_or_create_file, get_or_create_video
-from ..models import ConsumerSitePortability, File, Playlist, Video
+from ..lti.utils import get_or_create_document, get_or_create_video
+from ..models import ConsumerSitePortability, Document, Playlist, Video
 
 
 # We don't enforce arguments documentation in tests
@@ -131,14 +131,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_same_playlist_same_site_instructor(self, mock_verify):
+    def test_lti_get_document_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
-        A file that exists for the requested playlist and consumer site should be returned
+        A document that exists for the requested playlist and consumer site should be returned
         to an instructor whatever its upload state.
         """
         self._test_lti_get_resource_same_playlist_same_site_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_same_playlist_same_site_student_ready(
@@ -182,14 +182,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_same_playlist_same_site_student_ready(self, mock_verify):
+    def test_lti_get_document_same_playlist_same_site_student_ready(self, mock_verify):
         """Above case 1-1-2 upload state ready.
 
-        A File that exists for the requested playlist and consumer site should be returned
+        A Document that exists for the requested playlist and consumer site should be returned
         to a student if it is ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_same_playlist_same_site_student_not_ready(
@@ -234,14 +234,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_same_playlist_same_site_student_not_ready(self, mock_verify):
+    def test_lti_get_document_same_playlist_same_site_student_not_ready(
+        self, mock_verify
+    ):
         """Above case 1-1-2 upload state not ready.
 
-        A File that exists for the requested playlist and consumer site should not be returned
+        A Document that exists for the requested playlist and consumer site should not be returned
         to a student if it is not ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_not_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_playlist_portable_ready(
@@ -289,15 +291,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_site_playlist_portable_ready(self, mock_verify):
         """Above case 1-2-1-1.
 
-        The existing file should be returned if a student or instructor tries to retrieve a
-        file that is ready but on another consumer site if it is marked as portable to another
+        The existing document should be returned if a student or instructor tries to retrieve a
+        document that is ready but on another consumer site if it is marked as portable to another
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
@@ -355,17 +357,17 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_playlist_portable_not_ready_instructor(
+    def test_lti_get_document_other_site_playlist_portable_not_ready_instructor(
         self, mock_verify
     ):
         """Above case 1-2-1-2-1.
 
-        An LTI Exception should be raised if an instructor tries to retrieve a file that is
+        An LTI Exception should be raised if an instructor tries to retrieve a document that is
         already existing for a consumer site but not ready, even if it is portable to another
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_playlist_portable_not_ready_student(
@@ -412,16 +414,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_playlist_portable_not_ready_student(
+    def test_lti_get_document_other_site_playlist_portable_not_ready_student(
         self, mock_verify
     ):
         """Above case 1-2-1-2-2.
 
-        No file is returned to a student trying to access a resource that is existing for another
-        consumer site but not ready, even if it is portable to another consumer site.
+        No document is returned to a student trying to access a resource that is existing for
+        another consumer site but not ready, even if it is portable to another consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_auto_portable_ready(
@@ -473,14 +475,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_site_auto_portable_ready(self, mock_verify):
         """Above case 1-2-2-1.
 
-        Same as 1-2-1-1 but portability is automatic from the site of the file to the site
+        Same as 1-2-1-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
@@ -541,7 +543,7 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_auto_portable_not_ready_instructor(
+    def test_lti_get_document_other_site_auto_portable_not_ready_instructor(
         self, mock_verify
     ):
         """Above case 1-2-2-2-1.
@@ -550,7 +552,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_auto_portable_not_ready_student(
@@ -604,14 +606,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_auto_portable_not_ready_student(self, mock_verify):
+    def test_lti_get_document_other_site_auto_portable_not_ready_student(
+        self, mock_verify
+    ):
         """Above case 1-2-2-2-2.
 
         Same as 1-2-1-2-2 but portability is automatic from the site of the video to the site
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_not_portable_instructor(
@@ -665,7 +669,7 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_not_portable_instructor(self, mock_verify):
+    def test_lti_get_document_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-3-1.
 
         An LTIException should be raised if an instructor tries to retrieve a video that is
@@ -673,7 +677,7 @@ class PortabilityLTITestCase(TestCase):
         is ready.
         """
         self._test_lti_get_resource_other_site_not_portable_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_site_not_portable_student(
@@ -712,14 +716,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_site_not_portable_student(self, mock_verify):
+    def test_lti_get_document_other_site_not_portable_student(self, mock_verify):
         """Above case 1-2-3-2.
 
-        No file is returned to a student trying to access a file that is existing for a
+        No document is returned to a student trying to access a document that is existing for a
         consumer site but not portable to another consumer site.
         """
         self._test_lti_get_resource_other_site_not_portable_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_playlist_portable_ready(
@@ -764,15 +768,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_playlist_portable_ready(self, mock_verify):
         """Above case 1-3-1-1.
 
-        The existing file should be returned if a student or instructor tries to retrieve a
-        file that is ready but linked to another playlist if it is marked as portable to another
-        playlist.
+        The existing document should be returned if a student or instructor tries to retrieve a
+        document that is ready but linked to another playlist if it is marked as portable to
+        another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_portable_not_ready_instructor(
@@ -826,15 +830,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_portable_not_ready_instructor(self, mock_verify):
+    def test_lti_get_document_other_pl_portable_not_ready_instructor(self, mock_verify):
         """Above case 1-3-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a file that is
+        An LTIException should be raised if an instructor tries to retrieve a document that is
         already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
         self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_playlist_portable_not_ready_student(
@@ -879,14 +883,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_playlist_portable_not_ready_student(self, mock_verify):
+    def test_lti_get_document_other_playlist_portable_not_ready_student(
+        self, mock_verify
+    ):
         """Above case 1-3-1-2-2.
 
-        No file is returned to a student trying to access a file that is existing in another
-        playlist but not ready, even if it is portable to another playlist.
+        No document is returned to a student trying to access a document that is existing in
+        another playlist but not ready, even if it is portable to another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_not_ready_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_playlist_not_portable_instructor(
@@ -939,15 +945,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_playlist_not_portable_instructor(self, mock_verify):
+    def test_lti_get_document_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a file that is
+        An LTIException should be raised if an instructor tries to retrieve a document that is
         existing in a playlist but not portable to another playlist, even if it
         is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_playlist_not_portable_student(
@@ -990,14 +996,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_playlist_not_portable_student(self, mock_verify):
+    def test_lti_get_document_other_playlist_not_portable_student(self, mock_verify):
         """Above case 1-3-2-2.
 
-        No file is returned to a student trying to access a file that is existing in another
-        playlist but not portable to another playlist, even if it is ready.
+        No document is returned to a student trying to access a document that is existing in
+        another playlist but not portable to another playlist, even if it is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_portable_ready(
@@ -1044,15 +1050,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_pl_site_portable_ready(self, mock_verify):
         """Above case 1-4-1-1-1.
 
-        The existing file should be returned if a student or instructor tries to retrieve a
-        file that is ready but in another playlist on another consumer site if it is marked as
+        The existing document should be returned if a student or instructor tries to retrieve a
+        document that is ready but in another playlist on another consumer site if it is marked as
         portable to another playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
@@ -1111,17 +1117,17 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_portable_not_ready_instructor(
+    def test_lti_get_document_other_pl_site_portable_not_ready_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a file that is
+        An LTIException should be raised if an instructor tries to retrieve a document that is
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_portable_not_ready_student(
@@ -1168,15 +1174,17 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_portable_not_ready_student(self, mock_verify):
+    def test_lti_get_document_other_pl_site_portable_not_ready_student(
+        self, mock_verify
+    ):
         """Above case 1-4-1-1-2-2.
 
-        No file is returned to a student trying to access a file that is existing in another
-        playlist for another consumer site but not ready, even if it is portable to another
+        No document is returned to a student trying to access a document that is existing in
+        another playlist for another consumer site but not ready, even if it is portable to another
         playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_auto_portable_ready(
@@ -1227,14 +1235,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_pl_site_auto_portable_ready(self, mock_verify):
         """Above case 1-4-1-2-1.
 
-        Same as 1-4-1-1-1 but portability is automatic from the site of the file to the site
+        Same as 1-4-1-1-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_ready(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
@@ -1299,16 +1307,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_auto_portable_not_ready_instructor(
+    def test_lti_get_document_other_pl_site_auto_portable_not_ready_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-1.
 
-        Same as 1-4-1-1-2-1 but portability is automatic from the site of the file to the site
+        Same as 1-4-1-1-2-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
@@ -1360,16 +1368,16 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_auto_portable_not_ready_student(
+    def test_lti_get_document_other_pl_site_auto_portable_not_ready_student(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-2.
 
-        Same as 1-4-1-1-2-2 but portability is automatic from the site of the file to the site
+        Same as 1-4-1-1-2-2 but portability is automatic from the site of the document to the site
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_not_portable_instructor(
@@ -1425,15 +1433,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_not_portable_instructor(self, mock_verify):
+    def test_lti_get_document_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a file already
+        An LTIException should be raised if an instructor tries to retrieve a document already
         existing in a playlist and another consumer site but not portable either to another
         playlist or to another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_instructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_other_pl_site_not_portable_student(
@@ -1479,15 +1487,15 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_other_pl_site_not_portable_student(self, mock_verify):
+    def test_lti_get_document_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-3-2 and 1-4-2-2.
 
-        No file is returned to a student trying to access a file that is existing in another
-        playlist on another consumer site but not portable either to another playlist or to
+        No document is returned to a student trying to access a document that is existing in
+        another playlist on another consumer site but not portable either to another playlist or to
         another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_wrong_lti_id_intructor(
@@ -1536,14 +1544,14 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_document_wrong_lti_id_intructor(self, mock_verify):
         """Above case 2-1.
 
-        A new file should be created and returned if an instructor tries to access an unknown
-        file for an existing playlist.
+        A new document should be created and returned if an instructor tries to access an unknown
+        document for an existing playlist.
         """
         self._test_lti_get_resource_wrong_lti_id_intructor(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )
 
     def _test_lti_get_resource_wrong_lti_id_student(
@@ -1581,11 +1589,11 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_file_wrong_lti_id_student(self, mock_verify):
+    def test_lti_get_document_wrong_lti_id_student(self, mock_verify):
         """Above case 2-2.
 
-        The file should not be retrieved if a student tries to access an unknown file.
+        The document should not be retrieved if a student tries to access an unknown document.
         """
         self._test_lti_get_resource_wrong_lti_id_student(
-            FileFactory, File, get_or_create_file
+            DocumentFactory, Document, get_or_create_document
         )

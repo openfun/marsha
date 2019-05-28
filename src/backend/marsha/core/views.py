@@ -16,10 +16,10 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI
-from .lti.utils import get_or_create_file, get_or_create_video
-from .models import File, Video
+from .lti.utils import get_or_create_document, get_or_create_video
+from .models import Document, Video
 from .models.account import INSTRUCTOR, STUDENT
-from .serializers import FileSerializer, VideoSerializer
+from .serializers import DocumentSerializer, VideoSerializer
 from .utils.react_locales_utils import react_locale
 
 
@@ -169,14 +169,14 @@ class VideoLTIView(BaseLTIView):
         token.payload.update({"video_id": str(resource.id)})
 
 
-class FileLTIView(BaseLTIView):
-    """File view called by an LTI launch request."""
+class DocumentLTIView(BaseLTIView):
+    """Document view called by an LTI launch request."""
 
-    model = File
-    serializer_class = FileSerializer
+    model = Document
+    serializer_class = DocumentSerializer
 
     def _get_or_create_resource(self, lti):
-        return get_or_create_file(lti)
+        return get_or_create_document(lti)
 
     def _enrich_jwt_token(self, token, resource):
         pass

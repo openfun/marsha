@@ -17,14 +17,14 @@ from rest_framework_simplejwt.models import TokenUser
 from . import defaults
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
-from .models import File, Thumbnail, TimedTextTrack, Video
+from .models import Document, Thumbnail, TimedTextTrack, Video
 from .permissions import (
     IsResourceInstructorOrAdminUser,
     IsVideoRelatedInstructorTokenOrAdminUser,
     IsVideoToken,
 )
 from .serializers import (
-    FileSerializer,
+    DocumentSerializer,
     ThumbnailSerializer,
     TimedTextTrackSerializer,
     UpdateStateSerializer,
@@ -163,14 +163,14 @@ class VideoViewSet(
         return Response(policy)
 
 
-class FileViewSet(
+class DocumentViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
     """Viewset for the API of the File object."""
 
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    permission_classes = [IsResourceInstructorTokenOrAdminUser]
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
+    permission_classes = [IsResourceInstructorOrAdminUser]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
@@ -196,20 +196,27 @@ class FileViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        file_to_upload = self.get_object()
-        key = file_to_upload.get_source_s3_key(stamp=stamp)
+        document = self.get_object()
+        key = document.get_source_s3_key(stamp=stamp)
 
         policy = get_s3_upload_policy_signature(
             now,
-            [{"key": key}, ["content-length-range", 0, defaults.FILE_SOURCE_MAX_SIZE]],
+            [
+                {"key": key},
+                ["content-length-range", 0, defaults.DOCUMENT_SOURCE_MAX_SIZE],
+            ],
         )
 
         policy.update(
-            {"key": key, "max_file_size": defaults.FILE_SOURCE_MAX_SIZE, "stamp": stamp}
+            {
+                "key": key,
+                "max_file_size": defaults.DOCUMENT_SOURCE_MAX_SIZE,
+                "stamp": stamp,
+            }
         )
 
-        # Reset the upload state of the video
-        File.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
+        # Reset the upload state of the document
+        Document.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(policy)
 
