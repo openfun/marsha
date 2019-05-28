@@ -101,20 +101,20 @@ class BaseFile(BaseModel):
         return self.playlist.consumer_site
 
 
-class File(BaseFile):
-    """Model representing a file."""
+class Document(BaseFile):
+    """Model representing a document."""
 
     class Meta:
-        """Options for the ``File`` model."""
+        """Options for the ``Document`` model."""
 
-        db_table = "file"
-        verbose_name = _("file")
-        verbose_name_plural = _("files")
+        db_table = "document"
+        verbose_name = _("document")
+        verbose_name_plural = _("documents")
         constraints = [
             models.UniqueConstraint(
                 fields=["lti_id", "playlist"],
                 condition=models.Q(deleted=None),
-                name="file_unique_idx",
+                name="document_unique_idx",
             )
         ]
 
@@ -124,18 +124,18 @@ class File(BaseFile):
         Parameters
         ----------
         stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the file assuming
-            its active stamp is set to this value. This is useful to create an upload policy for
-            this prospective version of the file, so that the client can upload the file to S3
-            and the confirmation lambda can set the `uploaded_on` field to this value only after
-            file upload is successful.
+            Passing a value for this argument will return the source S3 key for the document
+            assuming its active stamp is set to this value. This is useful to create an upload
+            policy for this prospective version of the document, so that the client can upload the
+            file to S3 and the confirmation lambda can set the `uploaded_on` field to this value
+            only after file upload is successful.
 
         Returns
         -------
         string
-            The S3 key for the file in the source bucket, where uploaded files are stored before
-            they are moved to the destination bucket.
+            The S3 key for the document in the source bucket, where uploaded files are stored
+            before they are moved to the destination bucket.
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{pk!s}/file/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
+        return "{pk!s}/document/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)

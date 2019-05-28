@@ -12,7 +12,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import ERROR, PROCESSING, READY, STATE_CHOICES
-from .models import File, Thumbnail, TimedTextTrack, Video
+from .models import Document, Thumbnail, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -431,11 +431,11 @@ class XAPIStatementSerializer(serializers.Serializer):
         return attrs
 
 
-class FileSerializer(serializers.ModelSerializer):
-    """A serializer to display a File resource."""
+class DocumentSerializer(serializers.ModelSerializer):
+    """A serializer to display a Document resource."""
 
     class Meta:  # noqa
-        model = File
+        model = Document
         fields = (
             "active_stamp",
             "id",
@@ -460,11 +460,11 @@ class FileSerializer(serializers.ModelSerializer):
     is_ready_to_display = serializers.BooleanField(read_only=True)
 
     def get_url(self, obj):
-        """Urls of the File.
+        """Url of the Document.
 
         Parameters
         ----------
-        obj : Type[models.File]
+        obj : Type[models.Document]
             The file that we want to serialize
 
         Returns
@@ -477,7 +477,7 @@ class FileSerializer(serializers.ModelSerializer):
         if obj.uploaded_on is None:
             return None
 
-        url = "{protocol:s}://{cloudfront:s}/{pk!s}/file/{stamp:s}".format(
+        url = "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}".format(
             protocol=settings.AWS_S3_URL_PROTOCOL,
             cloudfront=settings.CLOUDFRONT_DOMAIN,
             pk=obj.pk,
