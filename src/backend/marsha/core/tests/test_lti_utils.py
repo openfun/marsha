@@ -16,7 +16,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
-from ..lti.utils import get_or_create_document, get_or_create_video
+from ..lti.utils import get_or_create_resource
 from ..models import ConsumerSitePortability, Document, Playlist, Video
 
 
@@ -89,9 +89,7 @@ class PortabilityLTITestCase(TestCase):
         super().setUp()
         self.factory = RequestFactory()
 
-    def _test_lti_get_resource_same_playlist_same_site_instructor(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_same_playlist_same_site_instructor(self, factory, model):
         """Above case 1-1-1.
 
         A resource that exists for the requested playlist and consumer site should be returned
@@ -111,7 +109,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -127,7 +125,7 @@ class PortabilityLTITestCase(TestCase):
         to an instructor whatever its upload state.
         """
         self._test_lti_get_resource_same_playlist_same_site_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -138,11 +136,11 @@ class PortabilityLTITestCase(TestCase):
         to an instructor whatever its upload state.
         """
         self._test_lti_get_resource_same_playlist_same_site_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_same_playlist_same_site_student_ready(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-1-2 upload state ready.
 
@@ -162,7 +160,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -178,7 +176,7 @@ class PortabilityLTITestCase(TestCase):
         to a student if it is ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_ready(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -189,11 +187,11 @@ class PortabilityLTITestCase(TestCase):
         to a student if it is ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_same_playlist_same_site_student_not_ready(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-1-2 upload state not ready.
 
@@ -216,7 +214,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -230,7 +228,7 @@ class PortabilityLTITestCase(TestCase):
         to a student if it is not ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_not_ready(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -243,12 +241,10 @@ class PortabilityLTITestCase(TestCase):
         to a student if it is not ready.
         """
         self._test_lti_get_resource_same_playlist_same_site_student_not_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_playlist_portable_ready(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_site_playlist_portable_ready(self, factory, model):
         """Above case 1-2-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -270,7 +266,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
 
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -287,7 +283,7 @@ class PortabilityLTITestCase(TestCase):
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_ready(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -299,11 +295,11 @@ class PortabilityLTITestCase(TestCase):
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-2-1-2-1.
 
@@ -329,7 +325,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -353,7 +349,7 @@ class PortabilityLTITestCase(TestCase):
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -367,11 +363,11 @@ class PortabilityLTITestCase(TestCase):
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_site_playlist_portable_not_ready_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-2-1-2-2.
 
@@ -394,7 +390,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or video are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -410,7 +406,7 @@ class PortabilityLTITestCase(TestCase):
         consumer site but not ready, even if it is portable to another consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -423,12 +419,10 @@ class PortabilityLTITestCase(TestCase):
         another consumer site but not ready, even if it is portable to another consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_auto_portable_ready(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_site_auto_portable_ready(self, factory, model):
         """Above case 1-2-2-1.
 
         Same as 1-2-1-1 but portability is automatic from the site of the resource to the site
@@ -455,7 +449,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -470,9 +464,7 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-2-1-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_ready(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_other_site_auto_portable_ready(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_auto_portable_ready(self, mock_verify):
@@ -482,11 +474,11 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-2-2-2-1.
 
@@ -516,7 +508,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -539,7 +531,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -552,11 +544,11 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_site_auto_portable_not_ready_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-2-2-2-2.
 
@@ -586,7 +578,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
 
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -602,7 +594,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -615,12 +607,10 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_site_auto_portable_not_ready_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_not_portable_instructor(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_site_not_portable_instructor(self, factory, model):
         """Above case 1-2-3-1.
 
         An LTIException should be raised if an instructor tries to retrieve a video that is
@@ -643,7 +633,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -665,7 +655,7 @@ class PortabilityLTITestCase(TestCase):
         is ready.
         """
         self._test_lti_get_resource_other_site_not_portable_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -677,12 +667,10 @@ class PortabilityLTITestCase(TestCase):
         is ready.
         """
         self._test_lti_get_resource_other_site_not_portable_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_not_portable_student(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_site_not_portable_student(self, factory, model):
         """Above case 1-2-3-2.
 
         No video is returned to a student trying to access a video that is existing for a
@@ -698,7 +686,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -711,9 +699,7 @@ class PortabilityLTITestCase(TestCase):
         No video is returned to a student trying to access a video that is existing for a
         consumer site but not portable to another consumer site.
         """
-        self._test_lti_get_resource_other_site_not_portable_student(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_other_site_not_portable_student(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_not_portable_student(self, mock_verify):
@@ -723,12 +709,10 @@ class PortabilityLTITestCase(TestCase):
         consumer site but not portable to another consumer site.
         """
         self._test_lti_get_resource_other_site_not_portable_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_playlist_portable_ready(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_playlist_portable_ready(self, factory, model):
         """Above case 1-3-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -747,7 +731,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -763,9 +747,7 @@ class PortabilityLTITestCase(TestCase):
         video that is ready but linked to another playlist if it is marked as portable to another
         playlist.
         """
-        self._test_lti_get_resource_other_playlist_portable_ready(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_other_playlist_portable_ready(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_portable_ready(self, mock_verify):
@@ -776,11 +758,11 @@ class PortabilityLTITestCase(TestCase):
         another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_portable_not_ready_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-3-1-2-1.
 
@@ -807,7 +789,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -826,7 +808,7 @@ class PortabilityLTITestCase(TestCase):
         playlist.
         """
         self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -838,11 +820,11 @@ class PortabilityLTITestCase(TestCase):
         playlist.
         """
         self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_playlist_portable_not_ready_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-3-1-2-2.
 
@@ -865,7 +847,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -879,7 +861,7 @@ class PortabilityLTITestCase(TestCase):
         playlist but not ready, even if it is portable to another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_not_ready_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -892,11 +874,11 @@ class PortabilityLTITestCase(TestCase):
         another playlist but not ready, even if it is portable to another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_not_ready_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_playlist_not_portable_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-3-2-1.
 
@@ -922,7 +904,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -941,7 +923,7 @@ class PortabilityLTITestCase(TestCase):
         is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -953,11 +935,11 @@ class PortabilityLTITestCase(TestCase):
         is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_playlist_not_portable_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-3-2-2.
 
@@ -978,7 +960,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -992,7 +974,7 @@ class PortabilityLTITestCase(TestCase):
         playlist but not portable to another playlist, even if it is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1003,12 +985,10 @@ class PortabilityLTITestCase(TestCase):
         another playlist but not portable to another playlist, even if it is ready.
         """
         self._test_lti_get_resource_other_playlist_not_portable_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_portable_ready(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_pl_site_portable_ready(self, factory, model):
         """Above case 1-4-1-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -1029,7 +1009,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -1045,9 +1025,7 @@ class PortabilityLTITestCase(TestCase):
         video that is ready but in another playlist on another consumer site if it is marked as
         portable to another playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_ready(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_other_pl_site_portable_ready(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_portable_ready(self, mock_verify):
@@ -1058,11 +1036,11 @@ class PortabilityLTITestCase(TestCase):
         portable to another playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-4-1-1-2-1.
 
@@ -1089,7 +1067,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1113,7 +1091,7 @@ class PortabilityLTITestCase(TestCase):
         portable to another playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1127,11 +1105,11 @@ class PortabilityLTITestCase(TestCase):
         portable to another playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_site_portable_not_ready_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-4-1-1-2-2.
 
@@ -1155,7 +1133,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1170,7 +1148,7 @@ class PortabilityLTITestCase(TestCase):
         playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1184,12 +1162,10 @@ class PortabilityLTITestCase(TestCase):
         playlist AND to another consumer site.
         """
         self._test_lti_get_resource_other_pl_site_portable_not_ready_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_auto_portable_ready(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_pl_site_auto_portable_ready(self, factory, model):
         """Above case 1-4-1-2-1.
 
         Same as 1-4-1-1-1 but portability is automatic from the site of the resource to the site
@@ -1215,7 +1191,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        retrieved_resource = get_or_create_resource(lti)
+        retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
@@ -1231,7 +1207,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_ready(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1242,11 +1218,11 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_ready(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-4-1-2-2-1.
 
@@ -1280,7 +1256,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1303,7 +1279,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1316,11 +1292,11 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above case 1-4-1-2-2-2.
 
@@ -1348,7 +1324,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1364,7 +1340,7 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1377,11 +1353,11 @@ class PortabilityLTITestCase(TestCase):
         of the passport.
         """
         self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
     def _test_lti_get_resource_other_pl_site_not_portable_instructor(
-        self, factory, model, get_or_create_resource
+        self, factory, model
     ):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
@@ -1407,7 +1383,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
         with self.assertRaises(LTIException) as context:
-            get_or_create_resource(lti)
+            get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
             (
@@ -1429,7 +1405,7 @@ class PortabilityLTITestCase(TestCase):
         playlist or to another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_instructor(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1441,12 +1417,10 @@ class PortabilityLTITestCase(TestCase):
         playlist or to another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_instructor(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_not_portable_student(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_other_pl_site_not_portable_student(self, factory, model):
         """Above case 1-4-1-3-2 and 1-4-2-2.
 
         No resource is returned to a student trying to access a resource that is existing
@@ -1468,7 +1442,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1483,7 +1457,7 @@ class PortabilityLTITestCase(TestCase):
         another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_student(
-            VideoFactory, Video, get_or_create_video
+            VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1495,12 +1469,10 @@ class PortabilityLTITestCase(TestCase):
         another consumer site, even if it is ready.
         """
         self._test_lti_get_resource_other_pl_site_not_portable_student(
-            DocumentFactory, Document, get_or_create_document
+            DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_wrong_lti_id_intructor(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_wrong_lti_id_intructor(self, factory, model):
         """Above case 2-1.
 
         A new resource should be created and returned if an instructor tries to access an unknown
@@ -1518,7 +1490,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        new_resource = get_or_create_resource(lti)
+        new_resource = get_or_create_resource(model, lti)
 
         # A new resource is created
         self.assertEqual(model.objects.count(), 2)
@@ -1539,9 +1511,7 @@ class PortabilityLTITestCase(TestCase):
         A new video should be created and returned if an instructor tries to access an unknown
         video for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_wrong_lti_id_intructor(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_wrong_lti_id_intructor(self, mock_verify):
@@ -1550,13 +1520,9 @@ class PortabilityLTITestCase(TestCase):
         A new document should be created and returned if an instructor tries to access an unknown
         document for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
-            DocumentFactory, Document, get_or_create_document
-        )
+        self._test_lti_get_resource_wrong_lti_id_intructor(DocumentFactory, Document)
 
-    def _test_lti_get_resource_wrong_lti_id_student(
-        self, factory, model, get_or_create_resource
-    ):
+    def _test_lti_get_resource_wrong_lti_id_student(self, factory, model):
         """Above case 2-2.
 
         The resource should not be retrieved if a student tries to access an unknown resource.
@@ -1572,7 +1538,7 @@ class PortabilityLTITestCase(TestCase):
 
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        self.assertIsNone(get_or_create_resource(lti))
+        self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
         self.assertEqual(Playlist.objects.count(), 1)
@@ -1584,9 +1550,7 @@ class PortabilityLTITestCase(TestCase):
 
         The video should not be retrieved if a student tries to access an unknown video.
         """
-        self._test_lti_get_resource_wrong_lti_id_student(
-            VideoFactory, Video, get_or_create_video
-        )
+        self._test_lti_get_resource_wrong_lti_id_student(VideoFactory, Video)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_wrong_lti_id_student(self, mock_verify):
@@ -1594,6 +1558,4 @@ class PortabilityLTITestCase(TestCase):
 
         The document should not be retrieved if a student tries to access an unknown document.
         """
-        self._test_lti_get_resource_wrong_lti_id_student(
-            DocumentFactory, Document, get_or_create_document
-        )
+        self._test_lti_get_resource_wrong_lti_id_student(DocumentFactory, Document)
