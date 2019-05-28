@@ -9,19 +9,19 @@ from rest_framework.schemas import get_schema_view
 
 from marsha.core.admin import admin_site
 from marsha.core.api import (
-    FileViewSet,
+    DocumentViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
     VideoViewSet,
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import FileLTIView, LTIDevelopmentView, VideoLTIView
+from marsha.core.views import DocumentLTIView, LTIDevelopmentView, VideoLTIView
 
 
 router = DefaultRouter()
 router.register(r"videos", VideoViewSet, basename="videos")
-router.register(r"files", FileViewSet, basename="files")
+router.register(r"documents", DocumentViewSet, basename="documents")
 router.register(r"timedtexttracks", TimedTextTrackViewSet, basename="timed_text_tracks")
 router.register(r"thumbnail", ThumbnailViewSet, basename="thumbnail")
 
@@ -30,7 +30,9 @@ urlpatterns = [
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI
     path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="video_lti_view"),
-    path("lti/files/<uuid:uuid>", FileLTIView.as_view(), name="video_lti_view"),
+    path(
+        "lti/documents/<uuid:uuid>", DocumentLTIView.as_view(), name="document_lti_view"
+    ),
     # API
     path("api/update-state", update_state, name="update_state"),
     path(
