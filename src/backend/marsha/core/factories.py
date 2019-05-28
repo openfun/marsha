@@ -147,12 +147,12 @@ class ThumbnailFactory(DjangoModelFactory):
         model = models.Thumbnail
 
 
-class FileFactory(DjangoModelFactory):
-    """Factory for the File model."""
+class DocumentFactory(DjangoModelFactory):
+    """Factory for the Document model."""
 
     class Meta:  # noqa
-        model = models.File
+        model = models.Document
 
-    title = factory.Sequence("File {:03d}".format)
+    title = factory.Sequence("Document {:03d}".format)
     playlist = factory.SubFactory(PlaylistFactory)
-    lti_id = factory.Sequence("file#{:d}".format)
+    lti_id = factory.Sequence("document#{:d}".format)
