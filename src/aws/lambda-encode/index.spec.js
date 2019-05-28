@@ -16,6 +16,9 @@ jest.doMock('./src/updateState', () => mockUpdateState);
 const mockResizeThumbnails = jest.fn();
 jest.doMock('./src/resizeThumbnails', () => mockResizeThumbnails);
 
+const mockCopyDocument = jest.fn();
+jest.doMock('./src/copyDocument', () => mockCopyDocument);
+
 const lambda = require('./index.js').handler;
 
 const callback = jest.fn();
@@ -46,7 +49,7 @@ describe('lambda', () => {
     );
     expect(mockUpdateState).not.toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith(
-      'Source videos should be uploaded in a folder of the form "{playlist_id}/videos/{video_id}/{stamp}".',
+      'Source videos should be uploaded in a folder of the form "{video_id}/video/{video_id}/{stamp}".',
     );
   });
 
@@ -264,6 +267,61 @@ describe('lambda', () => {
       );
       expect(mockUpdateState).toHaveBeenCalledWith(
         '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+        'ready',
+      );
+    });
+  });
+
+  describe('called with a document object', () => {
+    it('reports an error when a document has an unexpected format', () => {
+      lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: 'source bucket' },
+                object: {
+                  key:
+                    '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a',
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback,
+      );
+      expect(callback).toHaveBeenCalledWith(
+        'Source document should be uploaded to a folder of the form ' +
+        '"{document_id}/document/{document_id}/{stamp}".',
+      );
+    });
+
+    it('delegates to copyDocument and call updateState', async () => {
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: 'source bucket' },
+                object: {
+                  key:
+                    '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback,
+      );
+
+      expect(mockCopyDocument).toHaveBeenCalledWith(
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
+        'source bucket',
+      );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735',
         'ready',
       );
     });
