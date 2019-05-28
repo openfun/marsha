@@ -16,7 +16,7 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI
-from .lti.utils import get_or_create_document, get_or_create_video
+from .lti.utils import get_or_create_resource
 from .models import Document, Video
 from .models.account import INSTRUCTOR, STUDENT
 from .serializers import DocumentSerializer, VideoSerializer
@@ -48,10 +48,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         """Serilizer used by the view."""
 
     @abstractmethod
-    def _get_or_create_resource(self, lti):
-        """Return the resource targeted by the LTI request."""
-
-    @abstractmethod
     def _enrich_jwt_token(self, token, resource):
         """Enrich the base JWT Token with specific data from the targeted resource."""
 
@@ -80,7 +76,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         """
         lti = LTI(self.request, self.kwargs["uuid"])
         try:
-            resource = self._get_or_create_resource(lti)
+            resource = get_or_create_resource(self.model, lti)
         except LTIException as error:
             logger.warning("LTI Exception: %s", str(error))
             return {
@@ -161,9 +157,6 @@ class VideoLTIView(BaseLTIView):
     model = Video
     serializer_class = VideoSerializer
 
-    def _get_or_create_resource(self, lti):
-        return get_or_create_video(lti)
-
     def _enrich_jwt_token(self, token, resource):
         """Enrich the base JWT Token with specific data from the targeted resource."""
         token.payload.update({"video_id": str(resource.id)})
@@ -174,9 +167,6 @@ class DocumentLTIView(BaseLTIView):
 
     model = Document
     serializer_class = DocumentSerializer
-
-    def _get_or_create_resource(self, lti):
-        return get_or_create_document(lti)
 
     def _enrich_jwt_token(self, token, resource):
         pass

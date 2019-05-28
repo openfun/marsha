@@ -4,10 +4,10 @@ from django.db.models import Q
 from pylti.common import LTIException
 
 from ..defaults import PENDING, READY
-from ..models import Document, Playlist, Video
+from ..models import Playlist
 
 
-def _get_or_create_resource(model, lti):
+def get_or_create_resource(model, lti):
     """Get or Create a resource targeted by a LTI request.
 
     This function is generic and will use the `model` argument to create
@@ -89,51 +89,3 @@ def _get_or_create_resource(model, lti):
         title=lti.resource_link_title,
         show_download=lti.get_consumer_site().video_show_download_default,
     )
-
-
-def get_or_create_video(lti):
-    """Get or create the video targeted by the LTI launch request.
-
-    Create the playlist if it does not pre-exist (it can only happen with consumer site scope
-    passports).
-
-    Parameters
-    ----------
-    lti : Type[LTI]
-
-    Raises
-    ------
-    LTIException
-        Exception raised if the request does not contain a context id (playlist).
-
-    Returns
-    -------
-    core.models.video.Video
-        The video instance targeted by the launch url or None.
-
-    """
-    return _get_or_create_resource(Video, lti)
-
-
-def get_or_create_document(lti):
-    """Get or create the document targeted by the LTI launch request.
-
-    Create the playlist if it does not pre-exist (it can only happen with consumer site scope
-    passports).
-
-    Parameters
-    ----------
-    lti : Type[LTI]
-
-    Raises
-    ------
-    LTIException
-        Exception raised if the request does not contain a context id (playlist).
-
-    Returns
-    -------
-    core.models.video.Document
-        The document instance targeted by the launch url or None.
-
-    """
-    return _get_or_create_resource(Document, lti)

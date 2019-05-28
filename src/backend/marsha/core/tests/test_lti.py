@@ -11,7 +11,8 @@ from pylti.common import LTIException, LTIOAuthServer
 
 from ..factories import ConsumerSiteLTIPassportFactory, PlaylistLTIPassportFactory
 from ..lti import LTI
-from ..lti.utils import get_or_create_video
+from ..lti.utils import get_or_create_resource
+from ..models import Video
 
 
 # We don't enforce arguments documentation in tests
@@ -210,7 +211,7 @@ class LTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        video = get_or_create_video(lti)
+        video = get_or_create_resource(Video, lti)
         self.assertFalse(video.show_download)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -237,7 +238,7 @@ class LTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
-        video = get_or_create_video(lti)
+        video = get_or_create_resource(Video, lti)
         self.assertTrue(video.show_download)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
