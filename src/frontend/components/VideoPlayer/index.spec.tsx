@@ -27,6 +27,10 @@ jest.mock('../../utils/isAbrSupported', () => ({
 }));
 const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 
+jest.mock('../../data/appData', () => ({
+  appData: {},
+}));
+
 describe('VideoPlayer', () => {
   afterEach(cleanup);
   beforeEach(jest.clearAllMocks);

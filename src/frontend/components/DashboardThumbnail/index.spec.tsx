@@ -22,6 +22,10 @@ const mockCreateThumbnail: jestMockOf<
   typeof createThumbnail
 > = createThumbnail as any;
 
+jest.mock('../../data/appData', () => ({
+  appData: {},
+}));
+
 describe('<DashboardThumbnail />', () => {
   afterEach(jest.resetAllMocks);
   afterEach(cleanup);
@@ -81,10 +85,9 @@ describe('<DashboardThumbnail />', () => {
       <Provider
         store={bootstrapStore({
           jwt: '',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={video} />
       </Provider>,
@@ -116,10 +119,9 @@ describe('<DashboardThumbnail />', () => {
       <Provider
         store={bootstrapStore({
           jwt: '',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithoutThumbnail,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={videoWithoutThumbnail} />
       </Provider>,
@@ -154,10 +156,9 @@ describe('<DashboardThumbnail />', () => {
       <Provider
         store={bootstrapStore({
           jwt: '',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithLoadingThumbnail,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={videoWithLoadingThumbnail} />
       </Provider>,
@@ -190,10 +191,9 @@ describe('<DashboardThumbnail />', () => {
       <Provider
         store={bootstrapStore({
           jwt: '',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithProcessingThumbnail,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={videoWithProcessingThumbnail} />
       </Provider>,
@@ -224,10 +224,9 @@ describe('<DashboardThumbnail />', () => {
       <Provider
         store={bootstrapStore({
           jwt: '',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithErroredThumbnail,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={videoWithErroredThumbnail} />
       </Provider>,
@@ -258,10 +257,9 @@ describe('<DashboardThumbnail />', () => {
           jwt:
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2M' +
             'jM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-          resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithoutThumbnail,
-        })}
+        } as any)}
       >
         <DashboardThumbnail video={videoWithoutThumbnail} />
       </Provider>,

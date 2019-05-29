@@ -17,6 +17,9 @@ jest.mock(
     DashboardTimedTextPaneConnected: () => '',
   }),
 );
+jest.mock('../../data/appData', () => ({
+  appData: {},
+}));
 
 describe('<Dashboard />', () => {
   afterEach(cleanup);

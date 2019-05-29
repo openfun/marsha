@@ -1,3 +1,4 @@
+import { appState, ResourceType } from '../../types/AppData';
 import { keyFromAttr, parseDataElements } from './parseDataElements';
 
 describe.only('utils/parseDataElements', () => {
@@ -9,71 +10,22 @@ describe.only('utils/parseDataElements', () => {
   });
 
   describe('parseDataElements()', () => {
-    it('returns an object from the key/values of a data-element', () => {
-      // Build some bogus object with string values & lowecase string keys
-      const data: { [key: string]: string } = {
-        keyone: 'valueOne',
-        keytwo: 'valueTwo',
-      };
-      // Set up the element that contains our data as data-attributes
-      const dataElement = document.createElement('div');
-      Object.keys(data).forEach(key =>
-        dataElement.setAttribute(`data-${key}`, data[key]),
-      );
-      // The data is extracted from the data element
-      expect(parseDataElements([dataElement])).toEqual(data);
-    });
+    it('return a AppData object', () => {
+      const element = document.createElement('div');
+      element.setAttribute('data-jwt', 'jwt');
+      element.setAttribute('data-state', appState.INSTRUCTOR);
+      const otherElement = document.createElement('div');
+      otherElement.setAttribute('id', 'video');
+      otherElement.setAttribute('data-video', JSON.stringify({ id: 42 }));
 
-    it('merges data from two separate elements', () => {
-      // Build some bogus objects with string values & lowecase string keys
-      const dataX: { [key: string]: string } = {
-        keythree: 'valueThree',
-      };
-      const dataY: { [key: string]: string } = {
-        keyfour: 'valueFour',
-      };
-      // Set up the elements that contains our data as data-attributes
-      const dataElementX = document.createElement('div');
-      Object.keys(dataX).forEach(key =>
-        dataElementX.setAttribute(`data-${key}`, dataX[key]),
-      );
-      const dataElementY = document.createElement('div');
-      Object.keys(dataY).forEach(key =>
-        dataElementY.setAttribute(`data-${key}`, dataY[key]),
-      ); // The data is extracted from the data element
-      expect(parseDataElements([dataElementX, dataElementY])).toEqual({
-        ...dataX,
-        ...dataY,
-      });
-    });
-
-    it('creates a nested object when an element as an ID attribute', () => {
-      // Build some bogus objects with string values & lowecase string keys
-      const data: { [data: string]: string } = {
-        keyfive: 'valueFive',
-      };
-      // Make a standard AWS S3 policy for illustration purposes
-      const policy: { [key: string]: string } = {
-        acl: 'public-read',
-        awsaccesskeyid: 'MyAWSKey',
-        key: 'file_key_in_s3',
-        policy: 'base64_encoded_policy',
-        signature: 'the_policys_hmac_signature',
-        url: 'my_s3_buckets_url',
-      };
-      // Set up the element that contains our bogus data as data-attributes
-      const dataElement = document.createElement('div');
-      Object.keys(data).forEach(key =>
-        dataElement.setAttribute(`data-${key}`, data[key]),
-      );
-      // Set up the element that contains the policy as data-attributes
-      const policyElement = document.createElement('div');
-      policyElement.id = 'policy'; // triggers the creation of a nested object
-      policyElement.setAttribute('data-policy', JSON.stringify(policy));
-      // The bogus data and policy are extracted from the data elements
-      expect(parseDataElements([dataElement, policyElement])).toEqual({
-        ...data,
-        policy,
+      expect(
+        parseDataElements([element, otherElement], ResourceType.VIDEO),
+      ).toEqual({
+        document: undefined,
+        jwt: 'jwt',
+        resourceType: ResourceType.VIDEO,
+        state: appState.INSTRUCTOR,
+        video: { id: 42 },
       });
     });
   });

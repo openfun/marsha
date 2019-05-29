@@ -3,6 +3,10 @@ import { DecodedJwt } from '../../types/jwt';
 import { Video } from '../../types/tracks';
 import { context } from './reducer';
 
+jest.mock('../appData', () => ({
+  appData: {},
+}));
+
 describe('Reducer: context', () => {
   const previousState = {
     decodedJwt: {} as DecodedJwt,

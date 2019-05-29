@@ -1,21 +1,11 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
 
-import { Grommet } from 'grommet';
 import jwtDecode from 'jwt-decode';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { addLocaleData, IntlProvider } from 'react-intl';
-import { Provider } from 'react-redux';
+import { addLocaleData } from 'react-intl';
 
-import { AppRoutes } from './components/AppRoutes';
 import { appData } from './data/appData';
-import { bootstrapStore } from './data/bootstrapStore';
+import { AppData, ResourceType } from './types/AppData';
 import { DecodedJwt } from './types/jwt';
-// Load our style reboot into the DOM
-import { GlobalStyles } from './utils/theme/baseStyles';
-import { theme } from './utils/theme/theme';
-
-const store = bootstrapStore(appData);
 
 const decodedToken: DecodedJwt = jwtDecode(appData.jwt);
 
@@ -38,16 +28,14 @@ document.addEventListener('DOMContentLoaded', async event => {
     );
   } catch (e) {}
 
-  // Render our actual component tree
-  ReactDOM.render(
-    <IntlProvider locale={localeCode} messages={translatedMessages}>
-      <Grommet theme={theme}>
-        <Provider store={store}>
-          <AppRoutes />
-          <GlobalStyles />
-        </Provider>
-      </Grommet>
-    </IntlProvider>,
-    document.querySelector('#marsha-frontend-root'),
-  );
+  switch (appData.resourceType) {
+    case ResourceType.VIDEO:
+      const app = await import('./appVideo');
+      app.appVideo(
+        appData as AppData<ResourceType.VIDEO>,
+        localeCode,
+        translatedMessages,
+      );
+      break;
+  }
 });

@@ -2,7 +2,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import { requestStatus } from '../types/api';
-import { AppData } from '../types/AppData';
+import { AppData, ResourceType } from '../types/AppData';
 import { modelName } from '../types/models';
 import { Nullable } from '../utils/types';
 import { buildInitialState } from './context/reducer';
@@ -14,7 +14,7 @@ import { TimedTextTracksState } from './timedtexttracks/reducer';
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const bootstrapStore = (appData: AppData) => {
+export const bootstrapStore = (appData: AppData<ResourceType.VIDEO>) => {
   const composeEnhancers =
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

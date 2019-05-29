@@ -1,4 +1,4 @@
-import { AppData } from '../../types/AppData';
+import { AppData, appState, ResourceType } from '../../types/AppData';
 
 // Transform a data-attribute into a proper key: drop 'data-' & camel-case it
 // Exported for testing purposes
@@ -16,12 +16,11 @@ export const keyFromAttr = (attribute: string) => {
   );
 };
 
-// Extract all the necessary data the backend passed us through data-attributes on some elements
-export const parseDataElements: (
-  dataElements: Element[],
-) => AppData = dataElements => {
-  // Iterate over the data elements to add their data onto the root accumulator (starting with {})
-  return dataElements.reduce(
+export function parseDataElements<R extends ResourceType>(
+  elements: Element[],
+  resource: R,
+): AppData<R> {
+  const data: any = elements.reduce(
     (rootAcc, element) =>
       Object.keys(element.attributes)
         // Get the actual attribute names from the NamedNodeMap object
@@ -50,5 +49,15 @@ export const parseDataElements: (
           }
         }, rootAcc),
     {},
-  ) as AppData;
-};
+  );
+
+  const appData: AppData<R> = {
+    document: data.document,
+    jwt: data.jwt,
+    resourceType: resource,
+    state: data.state as appState,
+    video: data.video,
+  };
+
+  return appData;
+}
