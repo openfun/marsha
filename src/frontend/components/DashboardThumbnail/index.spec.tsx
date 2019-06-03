@@ -1,6 +1,6 @@
+import { cleanup, fireEvent, render, wait } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { cleanup, fireEvent, render, wait } from 'react-testing-library';
 
 jest.mock('../../data/sideEffects/createThumbnail/createThumbnail', () => ({
   createThumbnail: jest.fn(),
