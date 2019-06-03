@@ -12,6 +12,7 @@ from marsha.core.models import (
     ConsumerSiteAccess,
     ConsumerSiteOrganization,
     ConsumerSitePortability,
+    Document,
     LTIPassport,
     Organization,
     OrganizationAccess,
@@ -69,6 +70,83 @@ def link_field(field_name):
 
     _link_field.short_description = field_name
     return _link_field
+
+
+class BaseFileAdmin(admin.ModelAdmin):
+    """Base class for file model."""
+
+    exclude = ("duplicated_from",)
+
+    list_display = (
+        "id",
+        "title",
+        link_field("playlist"),
+        link_field("consumer_site"),
+        "lti_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    list_select_related = ("playlist__consumer_site",)
+    fields = (
+        "id",
+        "title",
+        "description",
+        "playlist",
+        "lti_id",
+        "upload_state",
+        "created_by",
+        "duplicated_from",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    readonly_fields = [
+        "id",
+        "created_by",
+        "created_on",
+        "duplicated_from",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+    ]
+    list_filter = ("upload_state", "playlist__consumer_site__domain")
+    search_fields = (
+        "id",
+        "lti_id",
+        "playlist__consumer_site__domain",
+        "playlist__consumer_site__name",
+        "playlist__id",
+        "playlist__lti_id",
+        "playlist__title",
+        "playlist__organization__name",
+        "title",
+    )
+
+
+class BaseFileInline(admin.TabularInline):
+    """Base tabular inline class used by file resources."""
+
+    fields = (
+        "id",
+        "title",
+        "playlist",
+        "lti_id",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+        "created_on",
+    )
+    readonly_fields = [
+        "id",
+        "created_by",
+        "created_on",
+        "duplicated_from",
+        "upload_state",
+        "uploaded_on",
+        "updated_on",
+    ]
 
 
 class MarshaAdminSite(admin.AdminSite):
@@ -193,90 +271,19 @@ class SignTrackInline(admin.TabularInline):
 
 
 @admin.register(Video, site=admin_site)
-class VideoAdmin(admin.ModelAdmin):
+class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
-    exclude = ("duplicated_from",)
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
-
-    list_display = (
-        "id",
-        "title",
-        link_field("playlist"),
-        link_field("consumer_site"),
-        "lti_id",
-        "upload_state",
-        "show_download",
-        "uploaded_on",
-        "updated_on",
-        "created_on",
-    )
-    list_select_related = ("playlist__consumer_site",)
-    fields = (
-        "id",
-        "title",
-        "description",
-        "playlist",
-        "lti_id",
-        "upload_state",
-        "show_download",
-        "created_by",
-        "duplicated_from",
-        "uploaded_on",
-        "updated_on",
-        "created_on",
-    )
-    readonly_fields = [
-        "id",
-        "created_by",
-        "created_on",
-        "duplicated_from",
-        "upload_state",
-        "uploaded_on",
-        "updated_on",
-    ]
-    list_filter = ("upload_state", "show_download", "playlist__consumer_site__domain")
-    search_fields = (
-        "id",
-        "lti_id",
-        "playlist__consumer_site__domain",
-        "playlist__consumer_site__name",
-        "playlist__id",
-        "playlist__lti_id",
-        "playlist__title",
-        "playlist__organization__name",
-        "title",
-    )
     verbose_name = _("Video")
 
 
-class VideosInline(admin.TabularInline):
+class VideosInline(BaseFileInline):
     """Inline for videos in a playlist."""
 
     model = Video
     verbose_name = _("video")
     verbose_name_plural = _("videos")
-
-    fields = (
-        "id",
-        "title",
-        "playlist",
-        "lti_id",
-        "upload_state",
-        "show_download",
-        "uploaded_on",
-        "updated_on",
-        "created_on",
-    )
-    readonly_fields = [
-        "id",
-        "created_by",
-        "created_on",
-        "duplicated_from",
-        "upload_state",
-        "uploaded_on",
-        "updated_on",
-    ]
 
 
 class PlaylistAccessesInline(admin.TabularInline):
@@ -287,12 +294,27 @@ class PlaylistAccessesInline(admin.TabularInline):
     verbose_name_plural = _("users accesses")
 
 
+@admin.register(Document, site=admin_site)
+class DocumentAdmin(BaseFileAdmin):
+    """Admin class for the Document model."""
+
+    verbose_name = _("Document")
+
+
+class DocumentsInline(BaseFileInline):
+    """Inline for documents in a playlist."""
+
+    model = Document
+    verbose_name = _("document")
+    verbose_name_plural = _("documents")
+
+
 @admin.register(Playlist, site=admin_site)
 class PlaylistAdmin(admin.ModelAdmin):
     """Admin class for the Playlist model."""
 
     exclude = ("duplicated_from",)
-    inlines = [VideosInline, PlaylistAccessesInline]
+    inlines = [DocumentsInline, VideosInline, PlaylistAccessesInline]
 
     list_display = (
         "id",
@@ -342,7 +364,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "lti_id",
         "title",
     )
-    verbose_name = _("Video")
+    verbose_name = _("Playlist")
 
 
 @admin.register(LTIPassport, site=admin_site)
