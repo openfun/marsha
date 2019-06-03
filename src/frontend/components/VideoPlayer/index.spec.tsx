@@ -1,6 +1,6 @@
+import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { cleanup, render } from 'react-testing-library';
 
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
