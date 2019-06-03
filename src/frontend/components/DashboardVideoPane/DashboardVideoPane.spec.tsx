@@ -93,7 +93,7 @@ describe('<DashboardVideoPane />', () => {
 
   it('redirects to error when it fails to fetch the video', async () => {
     fetchMock.mock('/api/videos/ee55/', {
-      throws: 'failed request',
+      throws: new Error('failed request'),
     });
     const wrapper = shallow(
       <DashboardVideoPane
