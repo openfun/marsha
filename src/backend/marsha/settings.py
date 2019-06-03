@@ -74,9 +74,7 @@ class Base(Configuration):
     SITE_ID = 1
 
     SECURE_BROWSER_XSS_FILTER = True
-    SESSION_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = "DENY"
     SILENCED_SYSTEM_CHECKS = values.ListValue([])
 
@@ -409,6 +407,9 @@ class Production(Base):
     # pattern matching files to ignore when hashing file names and exclude from the
     # static files manifest
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(r"^js\/[0-9]*\..*\.index\.js$")
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 class Staging(Production):

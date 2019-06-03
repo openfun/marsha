@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- use secure cookie only in production.
+
 ## [2.8.2] - 2019-05-21
 
 ### Changed
