@@ -7,7 +7,7 @@ import { RootState } from '../../data/rootReducer';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
-import { DashboardTimedTextPaneConnected } from '../DashboardTimedTextPaneConnected/DashboardTimedTextPaneConnected';
+import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
 import { DashboardVideoPaneConnected } from '../DashboardVideoPaneConnected/DashboardVideoPaneConnected';
 import { IframeHeading } from '../Headings/Headings';
 
@@ -52,7 +52,7 @@ class BaseDashboard extends React.Component<DashboardProps> {
           <FormattedMessage {...messages.title} />
         </IframeHeadingWithLayout>
         <DashboardVideoPaneConnected video={this.props.video} />
-        <DashboardTimedTextPaneConnected />
+        <DashboardTimedTextPane />
       </DashboardContainer>
     );
   }
