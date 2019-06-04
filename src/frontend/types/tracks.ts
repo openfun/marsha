@@ -47,7 +47,7 @@ export interface TimedText extends Resource {
   mode: timedTextMode;
   upload_state: uploadState;
   url: string;
-  video: Video;
+  video: Video['id'];
 }
 
 export interface TimedTextTranscript extends TimedText {
@@ -73,6 +73,8 @@ export interface Thumbnail extends Resource {
 export interface Video extends Resource {
   description: string;
   is_ready_to_play: boolean;
+  show_download: boolean;
+  thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];
   title: string;
   upload_state: uploadState;
@@ -84,8 +86,6 @@ export interface Video extends Resource {
     mp4: urls;
     thumbnails: urls;
   };
-  show_download: boolean;
-  thumbnail: Nullable<Thumbnail>;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail;
