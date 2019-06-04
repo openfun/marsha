@@ -11,12 +11,9 @@ jest.mock('../DashboardVideoPaneConnected/DashboardVideoPaneConnected', () => ({
     <span title={props.video.id} />
   ),
 }));
-jest.mock(
-  '../DashboardTimedTextPaneConnected/DashboardTimedTextPaneConnected',
-  () => ({
-    DashboardTimedTextPaneConnected: () => '',
-  }),
-);
+jest.mock('../DashboardTimedTextPane', () => ({
+  DashboardTimedTextPane: () => '',
+}));
 
 describe('<Dashboard />', () => {
   afterEach(cleanup);
