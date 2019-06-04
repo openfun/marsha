@@ -29,7 +29,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- use secure cookie only in production.
+- Use secure cookie only in production.
+- Refactor the `getResourceList` saga into a simple side-effect.
 
 ### Fixed
 

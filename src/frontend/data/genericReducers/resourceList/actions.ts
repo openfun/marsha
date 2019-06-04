@@ -4,7 +4,6 @@ import { Resource } from '../../../types/tracks';
 import { Maybe } from '../../../utils/types';
 
 export interface ResourceListGet {
-  jwt: string;
   params: Partial<APIListCommonRequestParams> & {
     [key: string]: Maybe<string | number | Array<string | number>>;
   };
@@ -13,11 +12,9 @@ export interface ResourceListGet {
 }
 
 export const getResourceList = (
-  jwt: string,
   resourceName: modelName,
   params: ResourceListGet['params'] = {},
 ): ResourceListGet => ({
-  jwt,
   params,
   resourceName,
   type: 'RESOURCE_LIST_GET',
