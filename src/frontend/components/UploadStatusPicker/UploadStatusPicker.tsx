@@ -36,6 +36,7 @@ const messages = defineMessages({
 
 /** Props shape for the UploadStatusPicker component. */
 export interface UploadStatusPickerProps {
+  className?: string;
   state: uploadState;
 }
 
@@ -43,8 +44,12 @@ export interface UploadStatusPickerProps {
  * the relevant one, along with relevant status icon(s).
  * @param state The current state of the video/track upload.
  */
-export const UploadStatusPicker = ({ state }: UploadStatusPickerProps) => (
+export const UploadStatusPicker = ({
+  className,
+  state,
+}: UploadStatusPickerProps) => (
   <UploadStatus
+    className={className || ''}
     statusIcon={
       [PROCESSING, UPLOADING].includes(state)
         ? statusIconKey.LOADER

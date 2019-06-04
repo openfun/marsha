@@ -11,6 +11,7 @@ export enum statusIconKey {
 
 /** Props shape for the UploadStatus component. */
 export interface UploadStatusProps {
+  className?: string;
   statusIcon?: statusIconKey;
 }
 
@@ -19,7 +20,7 @@ export interface UploadStatusProps {
  */
 export class UploadStatus extends React.Component<UploadStatusProps> {
   render() {
-    const { children, statusIcon } = this.props;
+    const { children, className, statusIcon } = this.props;
 
     let icon;
     switch (statusIcon) {
@@ -37,7 +38,7 @@ export class UploadStatus extends React.Component<UploadStatusProps> {
     }
 
     return (
-      <div>
+      <div className={className || ''}>
         {children}
         &nbsp;
         {icon}
