@@ -10,7 +10,6 @@ describe('Reducer: resourceList()', () => {
         currentQuery(
           {},
           {
-            jwt: 'some token',
             params: {},
             resourceName: modelName.TIMEDTEXTTRACKS,
             type: 'RESOURCE_LIST_GET',
@@ -41,7 +40,6 @@ describe('Reducer: resourceList()', () => {
             },
           },
           {
-            jwt: 'some token',
             params: {},
             resourceName: modelName.TIMEDTEXTTRACKS,
             type: 'RESOURCE_LIST_GET',
