@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import { XAPI_ENDPOINT } from '../settings';
 import {
   CompletedDataPlayload,
-  ContextExtensionsDefintion,
+  ContextExtensionsDefinition,
   DataPayload,
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -110,11 +110,11 @@ export class XAPIStatement {
     const extensions: {
       [key: string]: string | boolean | number | undefined;
     } = {
-      [ContextExtensionsDefintion.sessionId]: this.sessionId,
+      [ContextExtensionsDefinition.sessionId]: this.sessionId,
     };
     for (const key of Object.keys(contextExtensions)) {
       extensions[
-        ContextExtensionsDefintion[key as keyof InitializedContextExtensions]
+        ContextExtensionsDefinition[key as keyof InitializedContextExtensions]
       ] = contextExtensions[key as keyof InitializedContextExtensions];
     }
 
@@ -142,7 +142,7 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },
       },
       result: {
@@ -171,8 +171,8 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefintion.length]: this.duration,
-          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.length]: this.duration,
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },
       },
       result: {
@@ -193,7 +193,7 @@ export class XAPIStatement {
     };
 
     if (contextExtensions.completionTreshold) {
-      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
+      data.context!.extensions[ContextExtensionsDefinition.completionTreshold] =
         contextExtensions.completionTreshold;
     }
 
@@ -213,14 +213,14 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },
       },
       result: {
         extensions: {
           [ResultExtensionsDefinition.timeFrom]: timeFrom,
           [ResultExtensionsDefinition.timeTo]: timeTo,
-          [ContextExtensionsDefintion.length]: truncateDecimalDigits(
+          [ContextExtensionsDefinition.length]: truncateDecimalDigits(
             this.duration,
           ),
           [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
@@ -250,9 +250,9 @@ export class XAPIStatement {
     const data: CompletedDataPlayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefintion.length]: this.duration,
-          [ContextExtensionsDefintion.sessionId]: this.sessionId,
-          [ContextExtensionsDefintion.completionTreshold]: 1,
+          [ContextExtensionsDefinition.length]: this.duration,
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.completionTreshold]: 1,
         },
       },
       result: {
@@ -287,8 +287,8 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefintion.length]: this.duration,
-          [ContextExtensionsDefintion.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.length]: this.duration,
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },
       },
       result: {
@@ -309,7 +309,7 @@ export class XAPIStatement {
     };
 
     if (contextExtensions.completionTreshold) {
-      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
+      data.context!.extensions[ContextExtensionsDefinition.completionTreshold] =
         contextExtensions.completionTreshold;
     }
 
@@ -321,11 +321,11 @@ export class XAPIStatement {
     const extensions: {
       [key: string]: string | boolean | number | undefined;
     } = {
-      [ContextExtensionsDefintion.sessionId]: this.sessionId,
+      [ContextExtensionsDefinition.sessionId]: this.sessionId,
     };
     for (const key of Object.keys(contextExtensions)) {
       extensions[
-        ContextExtensionsDefintion[key as keyof InteractedContextExtensions]
+        ContextExtensionsDefinition[key as keyof InteractedContextExtensions]
       ] = contextExtensions[key as keyof InteractedContextExtensions];
     }
 
