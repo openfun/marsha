@@ -262,7 +262,7 @@ describe('XAPIStatement', () => {
       expect(body.result.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/played-segments': '10',
-        'https://w3id.org/xapi/video/extensions/progress': 0.1,
+        'https://w3id.org/xapi/video/extensions/progress': 0,
         'https://w3id.org/xapi/video/extensions/time-from': 0,
         'https://w3id.org/xapi/video/extensions/time-to': 10,
       });
@@ -349,7 +349,7 @@ describe('XAPIStatement', () => {
       });
       expect(body.result.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/played-segments': '',
-        'https://w3id.org/xapi/video/extensions/progress': 0.5,
+        'https://w3id.org/xapi/video/extensions/progress': 0,
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
@@ -393,7 +393,7 @@ describe('XAPIStatement', () => {
       });
       expect(body.result.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/played-segments': '',
-        'https://w3id.org/xapi/video/extensions/progress': 0.5,
+        'https://w3id.org/xapi/video/extensions/progress': 0,
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');

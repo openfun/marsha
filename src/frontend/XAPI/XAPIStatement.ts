@@ -167,6 +167,7 @@ export class XAPIStatement {
   ): void {
     const time: number = truncateDecimalDigits(resultExtensions.time);
     this.addEndSegment(time);
+    const progress = this.getProgress();
     const data: DataPayload = {
       context: {
         extensions: {
@@ -178,7 +179,9 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
-          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(resultExtensions.time / this.duration),
+          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
+            progress,
+          ),
         },
       },
       verb: {
@@ -196,7 +199,7 @@ export class XAPIStatement {
 
     this.send(data);
 
-    if (this.getProgress() >= 1) {
+    if (Math.abs(1.0 - progress) < Number.EPSILON) {
       this.completed();
     }
   }
@@ -221,7 +224,7 @@ export class XAPIStatement {
             this.duration,
           ),
           [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
-            resultExtensions.timeTo / this.duration,
+            this.getProgress(),
           ),
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },
@@ -292,7 +295,7 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
           [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
-            resultExtensions.time / this.duration,
+            this.getProgress(),
           ),
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },

@@ -12,6 +12,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - use secure cookie only in production.
 
+### Fixed
+
+- xapi: played segments list should not contain skipped segments (seek event)
+- xapi: completed event is sent when the progression reaches 100%
+
 ## [2.8.2] - 2019-05-21
 
 ### Changed
