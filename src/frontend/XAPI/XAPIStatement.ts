@@ -56,6 +56,56 @@ export class XAPIStatement {
     return this.playedSegments;
   }
 
+  getProgress(): number {
+    const segments = this.getPlayedSegment().split('[,]');
+
+    const progressLength = segments
+      // remove non complete segments
+      .filter(segment => segment.indexOf('[.]') >= 0)
+      // split segments to have begin and end segment in an array
+      .map(segment => segment.split('[.]'))
+      // cast segment from string to number
+      .reduce((acc: number[][], curr: string[]): number[][] => {
+        acc.push([Number(curr[0]), Number(curr[1])]);
+
+        return acc;
+      }, [])
+      // sort segments (numerically)
+      .sort(
+        (a: number[], b: number[]): number => {
+          return a[0] - b[0];
+        },
+      )
+      // once sorted, merge overlapped segments
+      .reduce((acc: number[][], curr: number[], i: number): number[][] => {
+        acc.push(curr);
+        if (i === 0) {
+          return acc;
+        }
+
+        if (acc[i][0] < acc[i - 1][1]) {
+          // overlapping segments: this segment's starting point is less than last segment's end point.
+          acc[i][0] = acc[i - 1][1];
+
+          if (acc[i][0] > acc[i][1]) {
+            acc[i][1] = acc[i][0];
+          }
+        }
+
+        return acc;
+      }, [])
+      // compute progression
+      .reduce((acc: number, curr: number[]): number => {
+        if (curr[1] > curr[0]) {
+          acc += curr[1] - curr[0];
+        }
+
+        return acc;
+      }, 0);
+
+    return progressLength / this.duration;
+  }
+
   initialized(contextExtensions: InitializedContextExtensions): void {
     const extensions: {
       [key: string]: string | boolean | number | undefined;
