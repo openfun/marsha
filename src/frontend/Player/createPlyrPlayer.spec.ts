@@ -44,44 +44,43 @@ describe('createPlyrPlayer', () => {
       'seeked',
       expect.any(Function),
     );
-    expect(player.on).toHaveBeenNthCalledWith(7, 'ended', expect.any(Function));
     expect(player.on).toHaveBeenNthCalledWith(
-      8,
+      7,
       'captionsdisabled',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      9,
+      8,
       'captionsenabled',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      10,
+      9,
       'enterfullscreen',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      11,
+      10,
       'exitfullscreen',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      12,
+      11,
       'languagechange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      13,
+      12,
       'qualitychange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      14,
+      13,
       'ratechange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      15,
+      14,
       'volumechange',
       expect.any(Function),
     );

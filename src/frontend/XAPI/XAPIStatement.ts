@@ -4,7 +4,6 @@ import uuid from 'uuid';
 
 import { XAPI_ENDPOINT } from '../settings';
 import {
-  CompletedContextExtensions,
   CompletedDataPlayload,
   ContextExtensionsDefintion,
   DataPayload,
@@ -30,6 +29,7 @@ export class XAPIStatement {
   private startSegment: Nullable<number> = null;
   private duration: number = 0;
   private startedAt: Nullable<DateTime> = null;
+  private isCompleted: boolean = false;
 
   constructor(private jwt: string, private sessionId: string) {}
 
@@ -170,12 +170,15 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
+          [ContextExtensionsDefintion.length]: this.duration,
           [ContextExtensionsDefintion.sessionId]: this.sessionId,
         },
       },
       result: {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
+          [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
+          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(resultExtensions.time / this.duration),
         },
       },
       verb: {
@@ -186,19 +189,16 @@ export class XAPIStatement {
       },
     };
 
-    data.result!.extensions[
-      ResultExtensionsDefinition.playedSegment
-    ] = this.getPlayedSegment();
-    data.result!.extensions[
-      ResultExtensionsDefinition.progress
-    ] = truncateDecimalDigits(resultExtensions.time / this.duration);
-
     if (contextExtensions.completionTreshold) {
       data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
         contextExtensions.completionTreshold;
     }
 
     this.send(data);
+
+    if (this.getProgress() >= 1) {
+      this.completed();
+    }
   }
 
   seeked(resultExtensions: SeekedResultExtensions): void {
@@ -237,13 +237,19 @@ export class XAPIStatement {
     this.send(data);
   }
 
-  completed(contextExtensions: CompletedContextExtensions): void {
+  completed(): void {
+    if (this.isCompleted === true) {
+      return;
+    }
+
     const time = truncateDecimalDigits(this.duration);
 
     const data: CompletedDataPlayload = {
       context: {
         extensions: {
+          [ContextExtensionsDefintion.length]: this.duration,
           [ContextExtensionsDefintion.sessionId]: this.sessionId,
+          [ContextExtensionsDefintion.completionTreshold]: 1,
         },
       },
       result: {
@@ -265,12 +271,8 @@ export class XAPIStatement {
       },
     };
 
-    if (contextExtensions.completionTreshold) {
-      data.context!.extensions[ContextExtensionsDefintion.completionTreshold] =
-        contextExtensions.completionTreshold;
-    }
-
     this.send(data);
+    this.isCompleted = true;
   }
 
   terminated(
@@ -282,6 +284,7 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
+          [ContextExtensionsDefintion.length]: this.duration,
           [ContextExtensionsDefintion.sessionId]: this.sessionId,
         },
       },
