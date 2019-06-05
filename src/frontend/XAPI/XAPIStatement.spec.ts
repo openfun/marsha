@@ -259,7 +259,7 @@ describe('XAPIStatement', () => {
       });
       expect(body.result.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/length': 100,
-        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]10',
+        'https://w3id.org/xapi/video/extensions/played-segments': '10',
         'https://w3id.org/xapi/video/extensions/progress': 0.1,
         'https://w3id.org/xapi/video/extensions/time-from': 0,
         'https://w3id.org/xapi/video/extensions/time-to': 10,
@@ -387,7 +387,7 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]50',
+        'https://w3id.org/xapi/video/extensions/played-segments': '',
         'https://w3id.org/xapi/video/extensions/progress': 0.5,
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
@@ -430,7 +430,7 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]50',
+        'https://w3id.org/xapi/video/extensions/played-segments': '',
         'https://w3id.org/xapi/video/extensions/progress': 0.5,
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
@@ -505,31 +505,33 @@ describe('XAPIStatement', () => {
         timeFrom: 5,
         timeTo: 12,
       });
-      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]5[.]12');
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12');
       xapiStatement.paused({}, { time: 22 });
-      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]5[.]12[,]12[.]22');
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22');
       xapiStatement.seeked({
         timeFrom: 22,
         timeTo: 15,
       });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15',
-      );
-      xapiStatement.played({ time: 15 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22[,]15');
       xapiStatement.paused({}, { time: 55 });
       expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55',
+        '0[.]5[,]12[.]22[,]15[.]55',
       );
       xapiStatement.played({ time: 55 });
       expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55',
+        '0[.]5[,]12[.]22[,]15[.]55[,]55',
       );
       xapiStatement.paused({}, { time: 99.33 });
       expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55[.]99.33',
+        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33',
+      );
+      xapiStatement.played({ time: 99.33 });
+      expect(xapiStatement.getPlayedSegment()).toBe(
+        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33[,]99.33',
+      );
+      xapiStatement.paused({}, { time: 100 });
+      expect(xapiStatement.getPlayedSegment()).toBe(
+        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33[,]99.33[.]100',
       );
       xapiStatement.completed({});
       expect(xapiStatement.getPlayedSegment()).toBe(
