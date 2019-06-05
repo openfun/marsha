@@ -26,9 +26,8 @@ export class XAPIStatement {
   // segments are saved in two different arrays
   // we need to save to follow each segments played by the user.
   // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html#2545-played-segments
-  private startSegments: number[] = [];
-  private endSegments: number[] = [];
-  // tslint:disable-next-line:variable-name
+  private playedSegments: string = '';
+  private startSegment: Nullable<number> = null;
   private duration: number = 0;
   private startedAt: Nullable<DateTime> = null;
 
@@ -47,16 +46,14 @@ export class XAPIStatement {
   }
 
   getPlayedSegment(): string {
-    const playedSegment: string[] = [];
-    for (const i in this.startSegments) {
-      if (this.endSegments[i]) {
-        playedSegment.push(`${this.startSegments[i]}[.]${this.endSegments[i]}`);
-      } else {
-        playedSegment.push(`${this.startSegments[i]}`);
+    if (this.startSegment !== null) {
+      if (this.playedSegments.length === 0) {
+        return `${this.startSegment}`;
       }
+      return `${this.playedSegments}[,]${this.startSegment}`;
     }
 
-    return playedSegment.join('[,]');
+    return this.playedSegments;
   }
 
   initialized(contextExtensions: InitializedContextExtensions): void {
@@ -157,8 +154,9 @@ export class XAPIStatement {
   seeked(resultExtensions: SeekedResultExtensions): void {
     const timeFrom: number = truncateDecimalDigits(resultExtensions.timeFrom);
     const timeTo: number = truncateDecimalDigits(resultExtensions.timeTo);
-    this.addStartSegment(timeFrom);
-    this.addEndSegment(timeTo);
+    this.addEndSegment(timeFrom);
+    this.addStartSegment(timeTo);
+
     const data: DataPayload = {
       context: {
         extensions: {
@@ -191,7 +189,6 @@ export class XAPIStatement {
 
   completed(contextExtensions: CompletedContextExtensions): void {
     const time = truncateDecimalDigits(this.duration);
-    this.addEndSegment(time);
 
     const data: CompletedDataPlayload = {
       context: {
@@ -231,7 +228,6 @@ export class XAPIStatement {
     resultExtensions: TerminatedResultExtensions,
   ): void {
     const time = truncateDecimalDigits(resultExtensions.time);
-    this.addEndSegment(time);
 
     const data: DataPayload = {
       context: {
@@ -308,18 +304,18 @@ export class XAPIStatement {
   }
 
   private addStartSegment(time: number) {
-    if (this.startSegments.length > this.endSegments.length) {
-      this.endSegments.push(time);
-    }
-    this.startSegments.push(time);
+    this.startSegment = time;
   }
 
   private addEndSegment(time: number) {
-    if (this.endSegments.length === this.startSegments.length) {
-      this.startSegments.push(
-        this.endSegments[this.endSegments.length - 1] || 0,
-      );
+    if (this.startSegment === null) {
+      return;
     }
-    this.endSegments.push(time);
+
+    const playedSegments =
+      this.playedSegments.length === 0 ? [] : this.playedSegments.split('[,]');
+    playedSegments.push(`${this.startSegment}[.]${time}`);
+    this.playedSegments = playedSegments.join('[,]');
+    this.startSegment = null;
   }
 }
