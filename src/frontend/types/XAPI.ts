@@ -101,12 +101,6 @@ export interface SeekedResultExtensions {
   timeTo: number;
 }
 
-/************* Completed event  *************/
-
-export interface CompletedContextExtensions {
-  completionTreshold?: number;
-}
-
 /************* Terminated event  *************/
 
 export interface TerminatedContextExtensions {

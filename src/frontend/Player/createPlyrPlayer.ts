@@ -110,11 +110,6 @@ export const createPlyrPlayer = (
       timeTo: event.detail.plyr.currentTime,
     });
   });
-  /**************** End seeked statement *********************/
-
-  player.on('ended', event => {
-    xapiStatement.completed({});
-  });
 
   /**************** Interacted event *************************/
   const interacted = (event: Plyr.PlyrEvent): void => {

@@ -178,6 +178,7 @@ describe('XAPIStatement', () => {
         'en-US': 'paused',
       });
       expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
@@ -215,6 +216,7 @@ describe('XAPIStatement', () => {
       });
       expect(body.context.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/completion-threshold': 0.5,
+        'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
@@ -279,7 +281,7 @@ describe('XAPIStatement', () => {
       xapiStatement.played({ time: 0 });
       // completed is delayed to have a realistic duration
       setTimeout(() => {
-        xapiStatement.completed({});
+        xapiStatement.completed();
 
         const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
@@ -297,48 +299,6 @@ describe('XAPIStatement', () => {
           'en-US': 'completed',
         });
         expect(body.context.extensions).toEqual({
-          'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
-        });
-        expect(body.result.extensions).toEqual({
-          'https://w3id.org/xapi/video/extensions/played-segments': '0[.]100',
-          'https://w3id.org/xapi/video/extensions/progress': 1,
-          'https://w3id.org/xapi/video/extensions/time': 100,
-        });
-        expect(body.result.completion).toBe(true);
-        expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
-        expect(body).toHaveProperty('id');
-        expect(body).toHaveProperty('timestamp');
-      }, 500);
-    });
-
-    it('sends a completed statement with completion threshold', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
-        overwriteRoutes: true,
-      });
-      const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.initialized({ length: 100 });
-      xapiStatement.played({ time: 0 });
-      // completed is delayed to have a realistic duration
-      setTimeout(() => {
-        xapiStatement.completed({ completionTreshold: 0.5 });
-
-        const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
-
-        const requestParameters = lastCall![1]!;
-
-        expect(requestParameters.headers).toEqual({
-          Authorization: 'Bearer jwt',
-          'Content-Type': 'application/json',
-        });
-
-        const body = JSON.parse(requestParameters.body as string);
-
-        expect(body.verb.id).toEqual(VerbDefinition.completed);
-        expect(body.verb.display).toEqual({
-          'en-US': 'completed',
-        });
-        expect(body.context.extensions).toEqual({
-          'https://w3id.org/xapi/video/extensions/completion-threshold': 0.5,
           'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
         });
         expect(body.result.extensions).toEqual({
@@ -384,6 +344,7 @@ describe('XAPIStatement', () => {
         'en-US': 'terminated',
       });
       expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
@@ -427,6 +388,7 @@ describe('XAPIStatement', () => {
       });
       expect(body.context.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/completion-threshold': 0.2,
+        'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body.result.extensions).toEqual({
