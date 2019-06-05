@@ -533,10 +533,74 @@ describe('XAPIStatement', () => {
       expect(xapiStatement.getPlayedSegment()).toBe(
         '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33[,]99.33[.]100',
       );
-      xapiStatement.completed({});
+    });
+  });
+
+  describe('getProgress', () => {
+    it('compute progress at random time', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({
+        length: 100,
+      });
+      expect(xapiStatement.getPlayedSegment()).toBe('');
+      xapiStatement.played({ time: 0 });
+      expect(xapiStatement.getPlayedSegment()).toBe('0');
+      xapiStatement.seeked({
+        timeFrom: 5,
+        timeTo: 12,
+      });
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12');
+      xapiStatement.paused({}, { time: 22 });
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22');
+      xapiStatement.seeked({
+        timeFrom: 22,
+        timeTo: 15,
+      });
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22[,]15');
+      xapiStatement.paused({}, { time: 55 });
       expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]5[.]12[,]12[.]22[,]22[.]15[,]15[.]55[,]55[.]99.33[,]99.33[.]100',
+        '0[.]5[,]12[.]22[,]15[.]55',
       );
+      xapiStatement.played({ time: 55 });
+      expect(xapiStatement.getPlayedSegment()).toBe(
+        '0[.]5[,]12[.]22[,]15[.]55[,]55',
+      );
+
+      expect(xapiStatement.getProgress()).toEqual(0.48);
+    });
+
+    it('compute progress when not started', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({
+        length: 100,
+      });
+      expect(xapiStatement.getProgress()).toEqual(0);
+    });
+
+    it('compute progress with everything watched', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({
+        length: 100,
+      });
+      expect(xapiStatement.getPlayedSegment()).toBe('');
+      xapiStatement.played({ time: 0 });
+      expect(xapiStatement.getPlayedSegment()).toBe('0');
+      xapiStatement.seeked({
+        timeFrom: 12,
+        timeTo: 5,
+      });
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]12[,]5');
+      xapiStatement.paused({}, { time: 100 });
+      expect(xapiStatement.getProgress()).toEqual(1);
     });
   });
 });
