@@ -27,7 +27,7 @@ export interface CompletedDataPlayload extends DataPayload {
   };
 }
 
-export enum ContextExtensionsDefintion {
+export enum ContextExtensionsDefinition {
   ccSubtitleEnabled = 'https://w3id.org/xapi/video/extensions/cc-subtitle-enabled',
   ccSubtitleLanguage = 'https://w3id.org/xapi/video/extensions/cc-subtitle-lang',
   completionTreshold = 'https://w3id.org/xapi/video/extensions/completion-threshold',
