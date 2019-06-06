@@ -11,6 +11,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - xapi: be sure to send completed event when progress has reached 100%
+- front: add a resolution for js-yaml package to avoid using a version
+  with a security risk
 
 ## [2.8.3] - 2019-06-05
 
