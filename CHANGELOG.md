@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.8.4] - 2019-06-06
+
 ### Fixed
 
 - xapi: be sure to send completed event when progress has reached 100%
@@ -269,7 +271,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.8.3...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.8.4...master
+[2.8.4]: https://github.com/openfun/marsha/compare/v2.8.3...v2.8.4
 [2.8.3]: https://github.com/openfun/marsha/compare/v2.8.2...v2.8.3
 [2.8.2]: https://github.com/openfun/marsha/compare/v2.8.1...v2.8.2
 [2.8.1]: https://github.com/openfun/marsha/compare/v2.8.0...v2.8.1
