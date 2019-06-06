@@ -272,45 +272,91 @@ describe('XAPIStatement', () => {
   });
 
   describe('XAPIStatement.completed', () => {
-    it('sends a completed statement without completion threshold', () => {
+    it('sends a completed statement when progress reaches 100%', () => {
       fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
       xapiStatement.initialized({ length: 100 });
       xapiStatement.played({ time: 0 });
+      xapiStatement.paused({}, { time: 100 });
       // completed is delayed to have a realistic duration
-      setTimeout(() => {
-        xapiStatement.completed();
 
-        const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
-        const requestParameters = lastCall![1]!;
+      const requestParameters = lastCall![1]!;
 
-        expect(requestParameters.headers).toEqual({
-          Authorization: 'Bearer jwt',
-          'Content-Type': 'application/json',
-        });
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
 
-        const body = JSON.parse(requestParameters.body as string);
+      const body = JSON.parse(requestParameters.body as string);
 
-        expect(body.verb.id).toEqual(VerbDefinition.completed);
-        expect(body.verb.display).toEqual({
-          'en-US': 'completed',
-        });
-        expect(body.context.extensions).toEqual({
-          'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
-        });
-        expect(body.result.extensions).toEqual({
-          'https://w3id.org/xapi/video/extensions/played-segments': '0[.]100',
-          'https://w3id.org/xapi/video/extensions/progress': 1,
-          'https://w3id.org/xapi/video/extensions/time': 100,
-        });
-        expect(body.result.completion).toBe(true);
-        expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
-        expect(body).toHaveProperty('id');
-        expect(body).toHaveProperty('timestamp');
-      }, 500);
+      expect(body.verb.id).toEqual(VerbDefinition.completed);
+      expect(body.verb.display).toEqual({
+        'en-US': 'completed',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/completion-threshold': 1,
+        'https://w3id.org/xapi/video/extensions/length': 100,
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]100',
+        'https://w3id.org/xapi/video/extensions/progress': 1,
+        'https://w3id.org/xapi/video/extensions/time': 100,
+      });
+      expect(body.result.completion).toBe(true);
+      expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
+    });
+
+    it('sends a completed statement even if progress is higher 100%', () => {
+      // This test is here to reproduce a scenario found in the plyr player.
+      // In some cases the time code sent in the last paused event, when the video
+      // ended, can be higher than the duration sent by plyr itself. In this case
+      // the progression is higher than 100% and if we return it the completed event
+      // is not sent because the progression is not strictly equal to 100%.
+
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.initialized({ length: 74.582 });
+      xapiStatement.played({ time: 0 });
+      xapiStatement.paused({}, { time: 74.608 });
+
+      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+
+      const requestParameters = lastCall![1]!;
+
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(VerbDefinition.completed);
+      expect(body.verb.display).toEqual({
+        'en-US': 'completed',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/completion-threshold': 1,
+        'https://w3id.org/xapi/video/extensions/length': 74.582,
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]74.608',
+        'https://w3id.org/xapi/video/extensions/progress': 1,
+        'https://w3id.org/xapi/video/extensions/time': 74.608,
+      });
+      expect(body.result.completion).toBe(true);
+      expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
     });
   });
 

@@ -103,7 +103,11 @@ export class XAPIStatement {
         return acc;
       }, 0);
 
-    return progressLength / this.duration;
+    const progress = progressLength / this.duration;
+
+    // Force to return no more than 1 to be sure to not have a progression higher than 100%.
+    // This case can be found when the last timecode os higher than the video duration.
+    return progress > 1.0 ? 1.0 : progress;
   }
 
   initialized(contextExtensions: InitializedContextExtensions): void {
@@ -198,9 +202,8 @@ export class XAPIStatement {
     }
 
     this.send(data);
-
     if (Math.abs(1.0 - progress) < Number.EPSILON) {
-      this.completed();
+      this.completed(resultExtensions.time);
     }
   }
 
@@ -240,12 +243,10 @@ export class XAPIStatement {
     this.send(data);
   }
 
-  completed(): void {
+  completed(time: number): void {
     if (this.isCompleted === true) {
       return;
     }
-
-    const time = truncateDecimalDigits(this.duration);
 
     const data: CompletedDataPlayload = {
       context: {
@@ -261,7 +262,7 @@ export class XAPIStatement {
           .toDuration('milliseconds')
           .toISO(),
         extensions: {
-          [ResultExtensionsDefinition.time]: time,
+          [ResultExtensionsDefinition.time]: truncateDecimalDigits(time),
           [ResultExtensionsDefinition.progress]: 1,
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
         },

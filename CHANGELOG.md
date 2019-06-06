@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- xapi: be sure to send completed event when progress has reached 100%
+
 ## [2.8.3] - 2019-06-05
 
 ### Changed
