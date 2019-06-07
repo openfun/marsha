@@ -70,12 +70,9 @@ export const createPlyrPlayer = (
   });
 
   player.on('pause', event => {
-    xapiStatement.paused(
-      {},
-      {
-        time: event.detail.plyr.currentTime,
-      },
-    );
+    xapiStatement.paused({
+      time: event.detail.plyr.currentTime,
+    });
   });
 
   /**************** Seeked statement ***********************/
