@@ -72,7 +72,6 @@ export interface InitializedContextExtensions {
   length: number;
   ccSubtitleEnabled?: boolean;
   ccSubtitleLanguage?: string;
-  completionTreshold?: number;
   frameRate?: number;
   fullScreen?: boolean;
   quality?: string;
@@ -85,10 +84,6 @@ export interface InitializedContextExtensions {
 }
 
 /************* Paused event  **************/
-
-export interface PausedContextExtensions {
-  completionTreshold?: number;
-}
 
 export interface PausedResultExtensions {
   time: number;
@@ -103,10 +98,6 @@ export interface SeekedResultExtensions {
 
 /************* Terminated event  *************/
 
-export interface TerminatedContextExtensions {
-  completionTreshold?: number;
-}
-
 export interface TerminatedResultExtensions {
   time: number;
 }
@@ -116,7 +107,6 @@ export interface TerminatedResultExtensions {
 export interface InteractedContextExtensions {
   ccSubtitleEnabled?: boolean;
   ccSubtitleLanguage?: string;
-  completionTreshold?: number;
   frameRate?: number;
   fullScreen?: boolean;
   quality?: string;

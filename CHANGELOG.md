@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Compute a completion threshold when xapi is initialized.
+
 ## [2.8.4] - 2019-06-06
 
 ### Fixed
