@@ -30,6 +30,8 @@ export class XAPIStatement {
   private duration: number = 0;
   private startedAt: Nullable<DateTime> = null;
   private isCompleted: boolean = false;
+  private completionThreshold: Nullable<number> = null;
+  private isInitialized: boolean = false;
 
   constructor(private jwt: string, private sessionId: string) {}
 
@@ -43,6 +45,7 @@ export class XAPIStatement {
     }
 
     this.duration = duration;
+    this.computeCompletionThreshold();
   }
 
   getPlayedSegment(): string {
@@ -108,6 +111,30 @@ export class XAPIStatement {
     // Force to return no more than 1 to be sure to not have a progression higher than 100%.
     // This case can be found when the last timecode os higher than the video duration.
     return progress > 1.0 ? 1.0 : progress;
+  }
+
+  /**
+   * compute the completion threshold to reach to consider a video
+   * as completed.
+   */
+  computeCompletionThreshold() {
+    // beyond durationThreshold we've reached the maximal completion threshold
+    const durationThreshold = 600;
+    let duration = this.duration;
+    if (duration > durationThreshold) {
+      duration = durationThreshold;
+    }
+    this.completionThreshold = 0.7 + (0.25 * duration) / durationThreshold;
+  }
+
+  getCompletionThreshold(): number {
+    if (this.completionThreshold === null) {
+      throw new Error(
+        'Completion threshold cannot be computed. You should call initialized first',
+      );
+    }
+
+    return this.completionThreshold;
   }
 
   initialized(contextExtensions: InitializedContextExtensions): void {
@@ -202,7 +229,7 @@ export class XAPIStatement {
     }
 
     this.send(data);
-    if (Math.abs(1.0 - progress) < Number.EPSILON) {
+    if (progress > this.getCompletionThreshold()) {
       this.completed(resultExtensions.time);
     }
   }

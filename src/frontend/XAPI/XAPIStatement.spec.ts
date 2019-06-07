@@ -544,7 +544,7 @@ describe('XAPIStatement', () => {
     });
   });
 
-  describe('getProgress', () => {
+  describe('XAPIStatement.getProgress', () => {
     it('compute progress at random time', () => {
       fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
         overwriteRoutes: true,
@@ -609,6 +609,27 @@ describe('XAPIStatement', () => {
       expect(xapiStatement.getPlayedSegment()).toBe('0[.]12[,]5');
       xapiStatement.paused({}, { time: 100 });
       expect(xapiStatement.getProgress()).toEqual(1);
+    });
+  });
+
+  describe('XAPIStatement.computeThreshold', () => {
+    it('return a completion thresold equal to 0.95 when time is 600', () => {
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(600);
+      xapiStatement.computeCompletionThreshold();
+      expect(xapiStatement.getCompletionThreshold()).toEqual(0.95);
+    });
+    it('return a completion threshold equal to 0.95 when duration is higher than 600', () => {
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(600 * (Math.random() + 1));
+      xapiStatement.computeCompletionThreshold();
+      expect(xapiStatement.getCompletionThreshold()).toEqual(0.95);
+    });
+    it('return a completion closed to 0.70 when duration is less than 1 minute', () => {
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(1);
+      xapiStatement.computeCompletionThreshold();
+      expect(xapiStatement.getCompletionThreshold()).toBeCloseTo(0.7, 3);
     });
   });
 });
