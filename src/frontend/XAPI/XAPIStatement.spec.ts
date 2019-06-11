@@ -335,7 +335,7 @@ describe('XAPIStatement', () => {
   });
 
   describe('XAPIStatement.terminated', () => {
-    it('sends terminated statement without completion threshold', () => {
+    it('sends terminated statement', () => {
       fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
         overwriteRoutes: true,
       });
@@ -370,6 +370,59 @@ describe('XAPIStatement', () => {
       expect(body.result.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/played-segments': '',
         'https://w3id.org/xapi/video/extensions/progress': 0,
+        'https://w3id.org/xapi/video/extensions/time': 50,
+      });
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('timestamp');
+    });
+
+    it('sends a terminated statement with a segment started and not closed', () => {
+      fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+        overwriteRoutes: true,
+      });
+      const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(100);
+      xapiStatement.played({ time: 0 });
+      xapiStatement.terminated({
+        time: 50,
+      });
+
+      const calls = fetchMock.calls(`${XAPI_ENDPOINT}/`);
+
+      const pausedCall = calls[1];
+
+      const pausedRequestParameters = pausedCall![1]!;
+
+      const pausedBody = JSON.parse(pausedRequestParameters.body as string);
+
+      expect(pausedBody.verb.id).toEqual(VerbDefinition.paused);
+      expect(pausedBody.verb.display).toEqual({
+        'en-US': 'paused',
+      });
+
+      const terminatedCall = calls[2];
+      const requestParameters = terminatedCall![1]!;
+      expect(requestParameters.headers).toEqual({
+        Authorization: 'Bearer jwt',
+        'Content-Type': 'application/json',
+      });
+
+      const body = JSON.parse(requestParameters.body as string);
+
+      expect(body.verb.id).toEqual(VerbDefinition.terminated);
+      expect(body.verb.display).toEqual({
+        'en-US': 'terminated',
+      });
+      expect(body.context.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
+          xapiStatement.getCompletionThreshold(),
+        ),
+        'https://w3id.org/xapi/video/extensions/length': 100,
+        'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/played-segments': '0[.]50',
+        'https://w3id.org/xapi/video/extensions/progress': 0.5,
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
