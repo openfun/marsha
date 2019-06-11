@@ -112,6 +112,28 @@ export class UploadForm extends React.Component<
   UploadFormProps,
   UploadFormState
 > {
+  constructor(props: UploadFormProps) {
+    super(props);
+    this.state = {
+      status: undefined,
+    };
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.beforeUnload);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.beforeUnload);
+  }
+
+  beforeUnload(event: BeforeUnloadEvent) {
+    if (this.state.status === 'uploading') {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
   async upload(file: Maybe<File>) {
     const {
       jwt,

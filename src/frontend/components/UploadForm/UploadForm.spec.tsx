@@ -253,5 +253,28 @@ describe('UploadForm', () => {
         upload_state: uploadState.ERROR,
       });
     });
+
+    it('should call beforeUnload if user leave the page', () => {
+      const wrapper = shallow(
+        <UploadForm
+          jwt={'some token'}
+          notifyObjectUploadProgress={mockNotifyUploadProgress}
+          object={object}
+          objectType={modelName.VIDEOS}
+          updateObject={mockUpdateObject}
+        />,
+      );
+      const event = {
+        preventDefault: jest.fn(),
+      };
+      (wrapper.instance() as UploadForm).beforeUnload(event as any);
+
+      expect(event.preventDefault).not.toHaveBeenCalled();
+
+      wrapper.setState({ status: 'uploading' });
+      (wrapper.instance() as UploadForm).beforeUnload(event as any);
+
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
   });
 });
