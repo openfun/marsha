@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Compute a completion threshold when xapi is initialized.
+- Detect when a user leaves the page to send terminated statement.
 
 ## [2.8.4] - 2019-06-06
 
