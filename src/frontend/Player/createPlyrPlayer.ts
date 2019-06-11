@@ -34,7 +34,7 @@ export const createPlyrPlayer = (
   let currentTime: number = 0;
   let seekingAt: number = 0;
   let hasSeeked: boolean = false;
-  let isInitialized = false;
+  let isInitialized: boolean = false;
 
   // canplay is the event when the video is really initialized and
   // information can be found in plyr object. Don't use ready event
@@ -148,6 +148,14 @@ export const createPlyrPlayer = (
     dispatch(notifyPlayerTimeUpdate(event.detail.plyr.currentTime));
   });
   /**************** End dispatch time updated *********************/
+
+  window.addEventListener('unload', () => {
+    if (false === isInitialized) {
+      return;
+    }
+
+    xapiStatement.terminated({ time: player.currentTime });
+  });
 
   return player;
 };

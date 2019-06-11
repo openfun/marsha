@@ -20,9 +20,6 @@ import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { Nullable } from '../utils/types';
 
 export class XAPIStatement {
-  // segments are saved in two different arrays
-  // we need to save to follow each segments played by the user.
-  // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html#2545-played-segments
   private playedSegments: string = '';
   private startSegment: Nullable<number> = null;
   private duration: number = 0;
@@ -304,6 +301,10 @@ export class XAPIStatement {
   }
 
   terminated(resultExtensions: TerminatedResultExtensions): void {
+    if (this.startSegment !== null) {
+      this.paused({ time: resultExtensions.time });
+    }
+
     const time = truncateDecimalDigits(resultExtensions.time);
 
     const data: DataPayload = {
