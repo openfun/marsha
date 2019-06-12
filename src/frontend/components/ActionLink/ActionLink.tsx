@@ -22,5 +22,5 @@ const ActionLinkStyled = styled(Button)`
  * @param color Font color for the plain button as defined in the theme globals.
  */
 export const ActionLink = (props: ButtonProps) => (
-  <ActionLinkStyled plain={true} {...props as any} />
+  <ActionLinkStyled plain={true} {...(props as any)} />
 );

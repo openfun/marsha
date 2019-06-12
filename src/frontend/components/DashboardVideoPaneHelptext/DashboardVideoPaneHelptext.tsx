@@ -6,7 +6,7 @@ import { uploadState } from '../../types/tracks';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages: {
-  [state in uploadState]: FormattedMessage.MessageDescriptor
+  [state in uploadState]: FormattedMessage.MessageDescriptor;
 } = defineMessages({
   [ERROR]: {
     defaultMessage:
