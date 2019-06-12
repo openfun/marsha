@@ -1,0 +1,48 @@
+import { Dispatch } from 'redux';
+
+import { API_ENDPOINT } from '../../../settings';
+import { requestStatus } from '../../../types/api';
+import { modelName } from '../../../types/models';
+import { TimedText, Video } from '../../../types/tracks';
+import { report } from '../../../utils/errors/report';
+import { addResource } from '../../genericReducers/resourceById/actions';
+
+export const pollForTrack = (dispatch: Dispatch, jwt: string) =>
+  async function doPollForTrack<
+    T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS
+  >(
+    resourceName: T,
+    resourceId: string,
+    timer: number = 15,
+    counter: number = 1,
+  ): Promise<requestStatus> {
+    try {
+      const response = await fetch(
+        `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        },
+      );
+
+      const incomingTrack: T extends modelName.TIMEDTEXTTRACKS
+        ? TimedText
+        : T extends modelName.VIDEOS
+        ? Video
+        : never = await response.json();
+
+      if (incomingTrack.is_ready_to_play) {
+        dispatch(addResource(resourceName, incomingTrack));
+        return requestStatus.SUCCESS;
+      } else {
+        counter++;
+        timer = timer * counter;
+        await new Promise(resolve => window.setTimeout(resolve, 1000 * timer));
+        return await doPollForTrack(resourceName, resourceId, timer, counter);
+      }
+    } catch (error) {
+      report(error);
+      return requestStatus.FAILURE;
+    }
+  };
