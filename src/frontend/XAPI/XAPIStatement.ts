@@ -68,11 +68,9 @@ export class XAPIStatement {
         return acc;
       }, [])
       // sort segments (numerically)
-      .sort(
-        (a: number[], b: number[]): number => {
-          return a[0] - b[0];
-        },
-      )
+      .sort((a: number[], b: number[]): number => {
+        return a[0] - b[0];
+      })
       // once sorted, merge overlapped segments
       .reduce((acc: number[][], curr: number[], i: number): number[][] => {
         acc.push(curr);

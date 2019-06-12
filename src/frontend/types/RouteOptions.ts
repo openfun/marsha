@@ -7,7 +7,7 @@ export interface RouteOptions<Resource> {
 }
 
 type RouteOptionAction<Resource> = {
-  [key in keyof Resource]: RouteOptionsActionField
+  [key in keyof Resource]: RouteOptionsActionField;
 };
 
 interface RouteOptionsActionField {
