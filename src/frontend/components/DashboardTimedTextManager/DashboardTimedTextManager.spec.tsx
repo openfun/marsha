@@ -1,11 +1,11 @@
 import '../../testSetup';
 
 import { shallow } from 'enzyme';
-import * as React from 'react';
+import React from 'react';
 import { defineMessages } from 'react-intl';
 
-import { TimedText, timedTextMode, uploadState } from '../../types/tracks';
-import { TimedTextListItemConnected } from '../TimedTextListItemConnected/TimedTextListItemConnected';
+import { TimedText, timedTextMode } from '../../types/tracks';
+import { TimedTextListItem } from '../TimedTextListItem';
 import { DashboardTimedTextManager } from './DashboardTimedTextManager';
 
 describe('<DashboardTimedTextManager />', () => {
@@ -45,6 +45,6 @@ describe('<DashboardTimedTextManager />', () => {
         .childAt(0)
         .html(),
     ).toContain('Our title');
-    expect(wrapper.find(TimedTextListItemConnected).length).toEqual(2);
+    expect(wrapper.find(TimedTextListItem).length).toEqual(2);
   });
 });
