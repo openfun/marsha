@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add the `show_download` flag to the video admin view.
+
 ### Changed
 
 - Hide dashboard button in instructor view when a video is in read only.
