@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Add time in interacted xapi payload.
+
 ## [2.9.0] - 2019-06-11
 
 ### Added
