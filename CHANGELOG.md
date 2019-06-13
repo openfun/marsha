@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Hide dashboard button in instructor view when a video is in read only.
+
 ### Fixed
 
 - Add time in interacted xapi payload.

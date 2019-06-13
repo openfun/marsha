@@ -70,12 +70,13 @@ export const InstructorView = ({
       </PreviewWrapper>
       <InstructorControls>
         <FormattedMessage {...message} />
-        <BtnWithLink
-          color={'brand'}
-          label={<FormattedMessage {...messages.btnDashboard} />}
-          to={DASHBOARD_ROUTE()}
-          disabled={readOnly}
-        />
+        {!readOnly && (
+          <BtnWithLink
+            color={'brand'}
+            label={<FormattedMessage {...messages.btnDashboard} />}
+            to={DASHBOARD_ROUTE()}
+          />
+        )}
       </InstructorControls>
     </React.Fragment>
   ) : (

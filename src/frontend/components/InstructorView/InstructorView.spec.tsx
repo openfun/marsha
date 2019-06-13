@@ -49,7 +49,7 @@ describe('<InstructorView />', () => {
     expect(wrapper.prop('to')).toEqual(ERROR_COMPONENT_ROUTE('lti'));
   });
 
-  it('disable the button when read_only is true', () => {
+  it('remove the button when read_only is true', () => {
     const wrapper = shallow(
       <InstructorView videoId={'42'} readOnly={true}>
         <div />
@@ -59,6 +59,6 @@ describe('<InstructorView />', () => {
     expect(wrapper.html()).toContain(
       'This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video.',
     );
-    expect(wrapper.find(Button).prop('disabled')).toEqual(true);
+    expect(wrapper.exists(Button)).toEqual(false);
   });
 });
