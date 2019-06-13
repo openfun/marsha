@@ -206,6 +206,7 @@ class VideoAdmin(admin.ModelAdmin):
         link_field("consumer_site"),
         "lti_id",
         "upload_state",
+        "show_download",
         "uploaded_on",
         "updated_on",
         "created_on",
@@ -218,6 +219,7 @@ class VideoAdmin(admin.ModelAdmin):
         "playlist",
         "lti_id",
         "upload_state",
+        "show_download",
         "created_by",
         "duplicated_from",
         "uploaded_on",
@@ -233,7 +235,7 @@ class VideoAdmin(admin.ModelAdmin):
         "uploaded_on",
         "updated_on",
     ]
-    list_filter = ("upload_state", "playlist__consumer_site__domain")
+    list_filter = ("upload_state", "show_download", "playlist__consumer_site__domain")
     search_fields = (
         "id",
         "lti_id",
@@ -261,6 +263,7 @@ class VideosInline(admin.TabularInline):
         "playlist",
         "lti_id",
         "upload_state",
+        "show_download",
         "uploaded_on",
         "updated_on",
         "created_on",
