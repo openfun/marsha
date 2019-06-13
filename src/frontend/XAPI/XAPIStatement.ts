@@ -9,6 +9,7 @@ import {
   DataPayload,
   InitializedContextExtensions,
   InteractedContextExtensions,
+  InteractedResultExtensions,
   PausedResultExtensions,
   PlayedResultExtensions,
   ResultExtensionsDefinition,
@@ -335,7 +336,10 @@ export class XAPIStatement {
     this.send(data);
   }
 
-  interacted(contextExtensions: InteractedContextExtensions): void {
+  interacted(
+    resultExtensions: InteractedResultExtensions,
+    contextExtensions: InteractedContextExtensions,
+  ): void {
     // find a way to remove this undefined type. There is no undefined value
     const extensions: {
       [key: string]: string | boolean | number | undefined;
@@ -351,6 +355,13 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions,
+      },
+      result: {
+        extensions: {
+          [ResultExtensionsDefinition.time]: truncateDecimalDigits(
+            resultExtensions.time,
+          ),
+        },
       },
       verb: {
         display: {
