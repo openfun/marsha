@@ -104,6 +104,10 @@ export interface TerminatedResultExtensions {
 
 /************* Interacted event  *************/
 
+export interface InteractedResultExtensions {
+  time: number;
+}
+
 export interface InteractedContextExtensions {
   ccSubtitleEnabled?: boolean;
   ccSubtitleLanguage?: string;

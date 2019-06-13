@@ -435,17 +435,22 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
-      xapiStatement.interacted({
-        ccSubtitleEnabled: true,
-        ccSubtitleLanguage: 'en',
-        frameRate: 29.97,
-        fullScreen: true,
-        quality: '480',
-        speed: '1x',
-        track: 'foo',
-        videoPlaybackSize: '640x480',
-        volume: 1,
-      });
+      xapiStatement.interacted(
+        {
+          time: 50,
+        },
+        {
+          ccSubtitleEnabled: true,
+          ccSubtitleLanguage: 'en',
+          frameRate: 29.97,
+          fullScreen: true,
+          quality: '480',
+          speed: '1x',
+          track: 'foo',
+          videoPlaybackSize: '640x480',
+          volume: 1,
+        },
+      );
 
       const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
 
@@ -473,6 +478,9 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/track': 'foo',
         'https://w3id.org/xapi/video/extensions/video-playback-size': '640x480',
         'https://w3id.org/xapi/video/extensions/volume': 1,
+      });
+      expect(body.result.extensions).toEqual({
+        'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
       expect(body).toHaveProperty('timestamp');

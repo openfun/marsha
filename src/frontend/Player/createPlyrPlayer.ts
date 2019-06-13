@@ -130,7 +130,7 @@ export const createPlyrPlayer = (
         contextExtensions.ccSubtitleLanguage = track.srcLang;
       }
     }
-    xapiStatement.interacted(contextExtensions);
+    xapiStatement.interacted({ time: plyr.currentTime }, contextExtensions);
   };
 
   player.on('captionsdisabled', event => interacted(event));
