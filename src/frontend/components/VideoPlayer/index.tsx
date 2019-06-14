@@ -24,7 +24,7 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayerInterface';
-import { isMSESupported } from '../../utils/isAbrSupported';
+import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -139,14 +139,23 @@ class BaseVideoPlayer extends React.Component<
           crossOrigin="anonymous"
           poster={thumbnailUrls[720]}
         >
-          {(Object.keys(video.urls.mp4) as videoSize[]).map(size => (
+          {!!this.videoNodeRef && isHlsSupported(this.videoNodeRef) && (
             <source
-              key={video.urls.mp4[size]}
-              size={size}
-              src={video.urls.mp4[size]}
-              type="video/mp4"
+              src={video.urls.manifests.hls}
+              size="auto"
+              type="application/vnd.apple.mpegURL"
             />
-          ))}
+          )}
+          {!!this.videoNodeRef &&
+            !isHlsSupported(this.videoNodeRef) &&
+            (Object.keys(video.urls.mp4) as videoSize[]).map(size => (
+              <source
+                key={video.urls.mp4[size]}
+                size={size}
+                src={video.urls.mp4[size]}
+                type="video/mp4"
+              />
+            ))}
 
           {/* This is a workaround to force plyr to load its tracks list once
           instantiated. Without this, captions are not loaded correctly, at least, on firefox.

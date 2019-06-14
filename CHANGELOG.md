@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Hide dashboard button in instructor view when a video is in read only.
+- Reactivate HLS support.
 
 ### Fixed
 

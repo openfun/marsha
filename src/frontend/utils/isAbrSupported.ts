@@ -5,3 +5,6 @@
 export const isMSESupported = () =>
   !!(window as { MediaSource?: MediaSource }).MediaSource &&
   !!MediaSource.isTypeSupported;
+
+export const isHlsSupported = (video: HTMLVideoElement): boolean =>
+  !!video.canPlayType('application/vnd.apple.mpegurl');
