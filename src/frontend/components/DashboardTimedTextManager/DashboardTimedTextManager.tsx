@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
-import { TimedTextCreationFormConnected } from '../TimedTextCreationFormConnected/TimedTextCreationFormConnected';
+import { TimedTextCreationForm } from '../TimedTextCreationForm';
 import { TimedTextListItem } from '../TimedTextListItem';
 
 const DashboardTimedTextManagerStyled = styled.div`
@@ -39,7 +39,7 @@ export class DashboardTimedTextManager extends React.Component<
         {tracks.map(track => {
           return <TimedTextListItem key={track.id} track={track} />;
         })}
-        <TimedTextCreationFormConnected
+        <TimedTextCreationForm
           mode={mode}
           excludedLanguages={tracks.map(track => track.language)}
         />
