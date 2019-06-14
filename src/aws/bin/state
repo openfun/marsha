@@ -10,5 +10,5 @@ docker run --rm -it \
     -v "${PWD}/create_state_bucket:/app" \
     -w "/app" \
     --env-file ./env.d/development \
-    "hashicorp/terraform:light" \
+    "hashicorp/terraform:0.11.14" \
     "$@"
