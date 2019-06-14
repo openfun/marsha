@@ -14,7 +14,22 @@ describe('<TimedTextListItem />', () => {
   jest.useFakeTimers();
 
   beforeEach(() =>
-    fetchMock.mock('/api/timedtexttracks/', {}, { method: 'OPTIONS' }),
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: {
+          POST: {
+            language: {
+              choices: [
+                { display_name: 'English', value: 'en' },
+                { display_name: 'French', value: 'fr' },
+              ],
+            },
+          },
+        },
+      },
+      { method: 'OPTIONS' },
+    ),
   );
 
   afterEach(cleanup);
@@ -90,8 +105,9 @@ describe('<TimedTextListItem />', () => {
         </Provider>,
       ),
     );
+    await wait();
 
-    getByText('fr');
+    getByText('French');
     getByText(content => content.startsWith('Ready'));
     // No polling takes place as the track is already READY
     expect(

@@ -19,7 +19,22 @@ import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
 describe('<DashboardTimedTextPane />', () => {
   beforeEach(() =>
-    fetchMock.mock('/api/timedtexttracks/', {}, { method: 'OPTIONS' }),
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: {
+          POST: {
+            language: {
+              choices: [
+                { display_name: 'English', value: 'en' },
+                { display_name: 'French', value: 'fr' },
+              ],
+            },
+          },
+        },
+      },
+      { method: 'OPTIONS' },
+    ),
   );
 
   afterEach(cleanup);
@@ -108,9 +123,9 @@ describe('<DashboardTimedTextPane />', () => {
 
     await wait();
     const closedCaptions = getByText('Closed captions');
-    getByTextInContainer(closedCaptions.parentElement!, 'fr');
+    getByTextInContainer(closedCaptions.parentElement!, 'French');
     const subtitles = getByText('Subtitles');
-    getByTextInContainer(subtitles.parentElement!, 'en');
+    getByTextInContainer(subtitles.parentElement!, 'English');
     getByText('Transcripts');
   });
 
