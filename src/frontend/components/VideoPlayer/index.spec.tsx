@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
-import { isMSESupported } from '../../utils/isAbrSupported';
+import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { jestMockOf } from '../../utils/types';
 import { VideoPlayer } from './index';
 
@@ -23,9 +23,11 @@ jest.mock('dashjs', () => ({
 }));
 
 jest.mock('../../utils/isAbrSupported', () => ({
+  isHlsSupported: jest.fn(),
   isMSESupported: jest.fn(),
 }));
 const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
+const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
 describe('VideoPlayer', () => {
   afterEach(cleanup);
@@ -99,6 +101,7 @@ describe('VideoPlayer', () => {
   it('starts up the player with DashJS and renders all the relevant sources', () => {
     // Simulate a browser that supports MSE and will use DashJS
     mockIsMSESupported.mockReturnValue(true);
+    mockIsHlsSupported.mockReturnValue(false);
     const state = {
       jwt: 'jwt-token',
       state: appState.INSTRUCTOR,
@@ -186,5 +189,30 @@ describe('VideoPlayer', () => {
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
+  });
+
+  it('uses HLS source when browser support it', () => {
+    mockIsHlsSupported.mockReturnValue(true);
+
+    const state = {
+      jwt: 'jwt-token',
+      state: appState.INSTRUCTOR,
+      video,
+    } as any;
+
+    const { container } = render(
+      <Provider store={bootstrapStore(state)}>
+        <VideoPlayer createPlayer={createPlayer} video={video} />
+      </Provider>,
+    );
+
+    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
+      0,
+    );
+    expect(
+      container.querySelectorAll(
+        'source[type="application/vnd.apple.mpegURL"]',
+      ),
+    ).toHaveLength(1);
   });
 });
