@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Add time in interacted xapi payload.
+- pin Terraform to version 0.11.14
 
 ## [2.9.0] - 2019-06-11
 
