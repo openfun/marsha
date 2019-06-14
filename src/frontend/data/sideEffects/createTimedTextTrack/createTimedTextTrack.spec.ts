@@ -48,7 +48,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
     await expect(
       createTimedTextTrack('some token', 'en', timedTextMode.SUBTITLE),
     ).rejects.toThrowError(
-      'Failed to create a new TimedTextTrack with en, st.',
+      'Failed to create a new TimedTextTrack with en, st: 400.',
     );
   });
 });

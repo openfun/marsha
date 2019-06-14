@@ -28,7 +28,7 @@ export const createTimedTextTrack = async (
 
   if (!response.ok) {
     throw new Error(
-      `Failed to create a new TimedTextTrack with ${language}, ${mode}.`,
+      `Failed to create a new TimedTextTrack with ${language}, ${mode}: ${response.status}.`,
     );
   }
 
