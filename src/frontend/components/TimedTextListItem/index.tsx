@@ -9,7 +9,7 @@ import { deleteResource } from '../../data/genericReducers/resourceById/actions'
 import { RootState } from '../../data/rootReducer';
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
-import { getTimedTextTrackLanguageChoices } from '../../data/timedTextTrackLanguageChoices/action';
+import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { requestStatus } from '../../types/api';
 import { appStateSuccess } from '../../types/AppData';
 import { LanguageChoice } from '../../types/LanguageChoice';
@@ -64,13 +64,11 @@ const UploadStatusPickerStyled = styled(UploadStatusPicker)`
 /** Props shape for the TimedTextListItem component. */
 interface BaseTimedTextListItemProps {
   deleteTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
-  getLanguageChoices: (jwt: string) => void;
   pollForTimedTextTrack: (
     resourceName: modelName.TIMEDTEXTTRACKS,
     resourceId: string,
   ) => Promise<requestStatus>;
   jwt: string;
-  languageChoices: LanguageChoice[];
   track: TimedText;
 }
 
@@ -83,17 +81,17 @@ interface BaseTimedTextListItemProps {
  */
 const BaseTimedTextListItem = ({
   deleteTimedTextTrackRecord,
-  getLanguageChoices,
   jwt,
-  languageChoices,
   pollForTimedTextTrack,
   track,
 }: BaseTimedTextListItemProps) => {
   const [error, setError] = useState('');
 
+  const { choices, getChoices } = useTimedTextTrackLanguageChoices();
+
   // On load, get TTT language choices and start polling if necessary
   useEffect(() => {
-    getLanguageChoices(jwt);
+    getChoices();
 
     if (track.is_ready_to_play === false) {
       window.setTimeout(async () => {
@@ -112,9 +110,9 @@ const BaseTimedTextListItem = ({
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
   }
 
-  const language: Maybe<LanguageChoice> = languageChoices.find(
-    languageChoice => track.language === languageChoice.value,
-  );
+  const language: Maybe<LanguageChoice> =
+    choices &&
+    choices.find(languageChoice => track.language === languageChoice.value);
 
   const deleteTrack = async () => {
     await deleteTimedTextTrack(jwt, track);
@@ -151,7 +149,6 @@ const mapStateToProps = (
   { track }: Pick<BaseTimedTextListItemProps, 'track'>,
 ) => ({
   jwt: state.context.jwt,
-  languageChoices: state.languageChoices.items,
   track,
 });
 
@@ -165,12 +162,10 @@ const mapStateToProps = (
 export const TimedTextListItem = connect(
   mapStateToProps,
   null!,
-  ({ jwt, languageChoices, track }, { dispatch }: { dispatch: Dispatch }) => ({
+  ({ jwt, track }, { dispatch }: { dispatch: Dispatch }) => ({
     deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
       dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
-    getLanguageChoices: () => dispatch(getTimedTextTrackLanguageChoices(jwt)),
     jwt,
-    languageChoices,
     pollForTimedTextTrack: pollForTrack(dispatch, jwt),
     track,
   }),
