@@ -1,4 +1,5 @@
 import { cleanup, render } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
 
@@ -30,8 +31,28 @@ const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
 describe('VideoPlayer', () => {
+  beforeEach(() =>
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: {
+          POST: {
+            language: {
+              choices: [
+                { display_name: 'English', value: 'en' },
+                { display_name: 'French', value: 'fr' },
+              ],
+            },
+          },
+        },
+      },
+      { method: 'OPTIONS' },
+    ),
+  );
+
   afterEach(cleanup);
-  beforeEach(jest.clearAllMocks);
+  afterEach(fetchMock.restore);
+  afterEach(jest.clearAllMocks);
 
   const video = {
     description: 'Some description',

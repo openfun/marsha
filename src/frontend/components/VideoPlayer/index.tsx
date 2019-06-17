@@ -28,7 +28,7 @@ import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { TranscriptsConnected } from '../TranscriptsConnected/TranscriptsConnected';
+import { Transcripts } from '../Transcripts';
 import './VideoPlayer.css'; // Improve some plyr styles
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
@@ -181,9 +181,7 @@ class BaseVideoPlayer extends React.Component<
         </video>
         {video.show_download && <DownloadVideo video={video} />}
         {transcripts.length > 0 && (
-          <TranscriptsConnected
-            transcripts={transcripts as TimedTextTranscript[]}
-          />
+          <Transcripts transcripts={transcripts as TimedTextTranscript[]} />
         )}
       </Box>
     );
