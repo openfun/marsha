@@ -1,5 +1,3 @@
-import { Dispatch } from 'redux';
-
 type VideoPlayerType = 'plyr';
 
 export interface VideoPlayerInterface {
@@ -11,5 +9,5 @@ export type VideoPlayerCreator = (
   type: VideoPlayerType,
   ref: HTMLVideoElement,
   jwt: string,
-  dispatch: Dispatch,
+  dispatchPlayerTimeUpdate: (time: number) => void,
 ) => VideoPlayerInterface;

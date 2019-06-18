@@ -1,8 +1,6 @@
 import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
-import { Dispatch } from 'redux';
 
-import { notifyPlayerTimeUpdate } from '../data/player/actions';
 import { DecodedJwt } from '../types/jwt';
 import {
   InitializedContextExtensions,
@@ -14,7 +12,7 @@ import { XAPIStatement } from '../XAPI/XAPIStatement';
 export const createPlyrPlayer = (
   ref: HTMLVideoElement,
   jwt: string,
-  dispatch: Dispatch,
+  dispatchPlayerTimeUpdate: (time: number) => void,
 ): Plyr => {
   const settings = ['captions', 'speed', 'loop'];
   if (!isMSESupported()) {
@@ -145,7 +143,7 @@ export const createPlyrPlayer = (
 
   /**************** Dispatch time updated ************************/
   player.on('timeupdate', event => {
-    dispatch(notifyPlayerTimeUpdate(event.detail.plyr.currentTime));
+    dispatchPlayerTimeUpdate(event.detail.plyr.currentTime);
   });
   /**************** End dispatch time updated *********************/
 

@@ -4,10 +4,10 @@ import 'plyr/dist/plyr.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { Dispatch } from 'redux';
 
 import { RootState } from '../../data/rootReducer';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
+import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { getThumbnail } from '../../data/thumbnail/selector';
 import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { ConsumableQuery } from '../../types/api';
@@ -39,7 +39,6 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 
 interface BaseVideoPlayerProps {
   createPlayer: VideoPlayerCreator;
-  dispatch: Dispatch;
   jwt: string;
   timedtexttracks: ConsumableQuery<TimedText>;
   thumbnail: Nullable<Thumbnail>;
@@ -48,7 +47,6 @@ interface BaseVideoPlayerProps {
 
 const BaseVideoPlayer = ({
   createPlayer,
-  dispatch,
   jwt,
   thumbnail,
   timedtexttracks,
@@ -60,6 +58,7 @@ const BaseVideoPlayer = ({
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices();
+  const { setPlayerCurrentTime } = useVideoProgress();
 
   const languages: { [key: string]: string } =
     (choices &&
@@ -81,7 +80,9 @@ const BaseVideoPlayer = ({
 
     if (video) {
       // Instantiate Plyr and keep the instance in state
-      setPlayer(createPlayer('plyr', videoNodeRef.current!, jwt, dispatch));
+      setPlayer(
+        createPlayer('plyr', videoNodeRef.current!, jwt, setPlayerCurrentTime),
+      );
 
       if (isMSESupported()) {
         const dash = MediaPlayer().create();
@@ -185,17 +186,10 @@ const mapStateToProps = (
     video,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  dispatch,
-});
-
 /**
  * Component. Displays a player to show the video from context.
  * @param createPlayer A PlayerCreator function that instantiates and sets up tracking for the video player
  * we want to use.
  * @param video The video to play.
  */
-export const VideoPlayer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(BaseVideoPlayer);
+export const VideoPlayer = connect(mapStateToProps)(BaseVideoPlayer);
