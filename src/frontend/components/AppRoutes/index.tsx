@@ -9,7 +9,7 @@ import { Dashboard } from '../Dashboard';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { InstructorWrapperConnected } from '../InstructorWrapperConnected/InstructorWrapperConnected';
+import { InstructorWrapper } from '../InstructorWrapper';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -29,12 +29,12 @@ const BaseAppRoutes = ({ context }: BaseAppRoutesProps) => {
           exact
           path={VIDEO_PLAYER_ROUTE()}
           render={() => (
-            <InstructorWrapperConnected>
+            <InstructorWrapper>
               <VideoPlayer
                 video={context.ltiResourceVideo}
                 createPlayer={createPlayer}
               />
-            </InstructorWrapperConnected>
+            </InstructorWrapper>
           )}
         />
         <Route
