@@ -12,8 +12,8 @@ import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
+import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { UploadFormConnected } from '../UploadFormConnected/UploadFormConnected';
 import { VideoPlayer } from '../VideoPlayer';
 import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
@@ -41,7 +41,7 @@ const BaseAppRoutes = ({ context }: BaseAppRoutesProps) => {
           exact
           path={UPLOAD_FORM_ROUTE()}
           render={({ match }) => (
-            <UploadFormConnected
+            <UploadForm
               objectId={match.params.objectId}
               objectType={match.params.objectType}
             />
