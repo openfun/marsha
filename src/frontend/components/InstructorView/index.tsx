@@ -1,15 +1,14 @@
 import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import * as React from 'react';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { Video } from '../../types/tracks';
+import { RootState } from '../../data/rootReducer';
+import { appStateSuccess } from '../../types/AppData';
 import { theme } from '../../utils/theme/theme';
-import { Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({
@@ -51,19 +50,17 @@ export const InstructorControls = styled.div`
 
 const BtnWithLink = withLink(Button);
 
-interface InstructorViewProps {
+interface BaseInstructorViewProps {
   children: React.ReactNode;
-  videoId: Nullable<Video['id']>;
   readOnly: boolean;
 }
 
-export const InstructorView = ({
+export const BaseInstructorView = ({
   children,
-  videoId,
   readOnly,
-}: InstructorViewProps) => {
+}: BaseInstructorViewProps) => {
   const message = readOnly ? messages.disabledDashboard : messages.title;
-  return videoId ? (
+  return (
     <React.Fragment>
       <PreviewWrapper>
         <Preview>{children}</Preview>
@@ -79,7 +76,11 @@ export const InstructorView = ({
         )}
       </InstructorControls>
     </React.Fragment>
-  ) : (
-    <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />
   );
 };
+
+export const mapStateToProps = (state: RootState<appStateSuccess>) => ({
+  readOnly: state.context.decodedJwt.read_only,
+});
+
+export const InstructorView = connect(mapStateToProps)(BaseInstructorView);

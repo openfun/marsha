@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { appState } from '../../types/AppData';
-import { InstructorViewConnected } from '../InstructorViewConnected/InstructorViewConnected';
+import { InstructorView } from '../InstructorView';
 
 interface InstructorWrapperProps {
   ltiState: appState;
@@ -12,7 +12,7 @@ export class InstructorWrapper extends React.Component<InstructorWrapperProps> {
     const { children, ltiState } = this.props;
 
     if (ltiState === appState.INSTRUCTOR) {
-      return <InstructorViewConnected>{children}</InstructorViewConnected>;
+      return <InstructorView>{children}</InstructorView>;
     } else {
       return children;
     }

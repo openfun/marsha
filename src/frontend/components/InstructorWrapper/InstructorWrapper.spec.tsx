@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import * as React from 'react';
 
 import { appState } from '../../types/AppData';
-import { InstructorViewConnected } from '../InstructorViewConnected/InstructorViewConnected';
+import { InstructorView } from '../InstructorView';
 import { InstructorWrapper } from './InstructorWrapper';
 
 describe('<InstructorWrapper />', () => {
@@ -15,10 +15,10 @@ describe('<InstructorWrapper />', () => {
       </InstructorWrapper>,
     );
 
-    expect(wrapper.find(InstructorViewConnected).exists()).toBe(true);
+    expect(wrapper.find(InstructorView).exists()).toBe(true);
     expect(
       wrapper
-        .find(InstructorViewConnected)
+        .find(InstructorView)
         .containsMatchingElement(<div className="some-child" />),
     ).toBe(true);
   });
@@ -30,7 +30,7 @@ describe('<InstructorWrapper />', () => {
       </InstructorWrapper>,
     );
 
-    expect(wrapper.find(InstructorViewConnected).exists()).not.toBe(true);
+    expect(wrapper.find(InstructorView).exists()).not.toBe(true);
     expect(
       wrapper.containsMatchingElement(<div className="some-child" />),
     ).toBe(true);
