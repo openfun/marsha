@@ -7,7 +7,7 @@ import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedText
 import { TimedTextTranscript } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
-import { TranscriptReaderConnected } from '../TranscriptReaderConnected/TranscriptReaderConnected';
+import { TranscriptReader } from '../TranscriptReader';
 
 const messages = defineMessages({
   hideTranscript: {
@@ -112,7 +112,7 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
       </Box>
       {selected.transcript && (
         <Box>
-          <TranscriptReaderConnected
+          <TranscriptReader
             transcript={selected.transcript}
             key={selected.transcript.id}
           />
