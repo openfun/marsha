@@ -8,7 +8,7 @@ import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
-import { DashboardVideoPaneConnected } from '../DashboardVideoPaneConnected/DashboardVideoPaneConnected';
+import { DashboardVideoPane } from '../DashboardVideoPane';
 import { IframeHeading } from '../Headings/Headings';
 
 const messages = defineMessages({
@@ -51,7 +51,7 @@ class BaseDashboard extends React.Component<DashboardProps> {
         <IframeHeadingWithLayout>
           <FormattedMessage {...messages.title} />
         </IframeHeadingWithLayout>
-        <DashboardVideoPaneConnected video={this.props.video} />
+        <DashboardVideoPane video={this.props.video} />
         <DashboardTimedTextPane />
       </DashboardContainer>
     );
