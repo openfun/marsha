@@ -6,8 +6,8 @@ import { bootstrapStore } from '../../data/bootstrapStore';
 import { uploadState, Video } from '../../types/tracks';
 import { Dashboard } from './index';
 
-jest.mock('../DashboardVideoPaneConnected/DashboardVideoPaneConnected', () => ({
-  DashboardVideoPaneConnected: (props: { video: Video }) => (
+jest.mock('../DashboardVideoPane', () => ({
+  DashboardVideoPane: (props: { video: Video }) => (
     <span title={props.video.id} />
   ),
 }));
