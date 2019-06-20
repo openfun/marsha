@@ -166,7 +166,7 @@ export const TimedTextListItem = connect(
     deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
       dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
     jwt,
-    pollForTimedTextTrack: pollForTrack(dispatch, jwt),
+    pollForTimedTextTrack: pollForTrack(dispatch),
     track,
   }),
 )(BaseTimedTextListItem);

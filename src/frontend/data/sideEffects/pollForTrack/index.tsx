@@ -5,9 +5,10 @@ import { requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
 import { TimedText, Video } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
+import { appData } from '../../appData';
 import { addResource } from '../../genericReducers/resourceById/actions';
 
-export const pollForTrack = (dispatch: Dispatch, jwt: string) =>
+export const pollForTrack = (dispatch: Dispatch) =>
   async function doPollForTrack<
     T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS
   >(
@@ -21,7 +22,7 @@ export const pollForTrack = (dispatch: Dispatch, jwt: string) =>
         `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${appData.jwt}`,
           },
         },
       );

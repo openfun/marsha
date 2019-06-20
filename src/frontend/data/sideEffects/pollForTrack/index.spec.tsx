@@ -7,10 +7,15 @@ import { modelName } from '../../../types/models';
 import { report } from '../../../utils/errors/report';
 
 jest.mock('../../../utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('../../appData', () => ({
+  appData: {
+    jwt: 'some token',
+  },
+}));
 
 describe('sideEffects/pollForTrack', () => {
   const dispatch = jest.fn();
-  const doPollForTrack = pollForTrack(dispatch, 'some token');
+  const doPollForTrack = pollForTrack(dispatch);
 
   jest.useFakeTimers();
 
