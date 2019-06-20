@@ -78,19 +78,15 @@ const BaseDashboardTimedTextPane = ({
  * Intended for internal use, exported for testing purposes only.
  */
 const mapStateToProps = (state: RootState<appStateSuccess>) => ({
-  jwt: state.context.jwt,
   timedtexttracks: getTimedTextTracks(state),
 });
 
 /** Create a function that adds a bunch of timedtexttracks in the store. */
 const mergeProps = (
-  {
-    jwt,
-    timedtexttracks,
-  }: { jwt: string; timedtexttracks: ConsumableQuery<TimedText> },
+  { timedtexttracks }: { timedtexttracks: ConsumableQuery<TimedText> },
   { dispatch }: { dispatch: Dispatch },
 ) => ({
-  doGetResourceList: getResourceList(dispatch, jwt),
+  doGetResourceList: getResourceList(dispatch),
   timedtexttracks,
 });
 

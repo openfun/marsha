@@ -5,8 +5,12 @@ import { modelName } from '../../../types/models';
 import { uploadState, Video } from '../../../types/tracks';
 import { getResourceList } from './';
 
-// We'll be testing with a course-like Resource as the saga needs some specifics to operate: we want
-// something simple but we don't want to rely on the specific implementation of a resource
+jest.mock('../../appData', () => ({
+  appData: {
+    jwt: 'some token',
+  },
+}));
+
 describe('sideEffects/getResourceList', () => {
   const dispatch = jest.fn();
 
@@ -31,13 +35,10 @@ describe('sideEffects/getResourceList', () => {
       JSON.stringify([video42, video43]),
     );
 
-    const status = await getResourceList(dispatch, 'some token')(
-      modelName.VIDEOS,
-      {
-        limit: 2,
-        offset: 43,
-      },
-    );
+    const status = await getResourceList(dispatch)(modelName.VIDEOS, {
+      limit: 2,
+      offset: 43,
+    });
 
     expect(status).toEqual(requestStatus.SUCCESS);
     expect(dispatch).toHaveBeenCalledWith({
@@ -64,13 +65,10 @@ describe('sideEffects/getResourceList', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    const status = await getResourceList(dispatch, 'some token')(
-      modelName.VIDEOS,
-      {
-        limit: 2,
-        offset: 43,
-      },
-    );
+    const status = await getResourceList(dispatch)(modelName.VIDEOS, {
+      limit: 2,
+      offset: 43,
+    });
 
     expect(status).toEqual(requestStatus.FAILURE);
     expect(dispatch).toHaveBeenCalledWith({
@@ -88,13 +86,10 @@ describe('sideEffects/getResourceList', () => {
   it('returns an error response when it fails to get the resource list (api)', async () => {
     fetchMock.mock('/api/videos/?limit=2&offset=43', 404);
 
-    const status = await getResourceList(dispatch, 'some token')(
-      modelName.VIDEOS,
-      {
-        limit: 2,
-        offset: 43,
-      },
-    );
+    const status = await getResourceList(dispatch)(modelName.VIDEOS, {
+      limit: 2,
+      offset: 43,
+    });
 
     expect(status).toEqual(requestStatus.FAILURE);
     expect(dispatch).toHaveBeenCalledWith({
