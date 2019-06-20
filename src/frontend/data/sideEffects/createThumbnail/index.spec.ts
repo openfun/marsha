@@ -1,6 +1,12 @@
 import fetchMock from 'fetch-mock';
 
-import { createThumbnail } from './createThumbnail';
+import { createThumbnail } from '.';
+
+jest.mock('../../appData', () => ({
+  appData: {
+    jwt: 'token',
+  },
+}));
 
 describe('sideEffects/createThumbnail', () => {
   afterEach(fetchMock.restore);
@@ -12,7 +18,7 @@ describe('sideEffects/createThumbnail', () => {
       urls: null,
     });
 
-    const thumbnail = await createThumbnail('token');
+    const thumbnail = await createThumbnail();
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
@@ -34,7 +40,7 @@ describe('sideEffects/createThumbnail', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(createThumbnail('token')).rejects.toThrowError(
+    await expect(createThumbnail()).rejects.toThrowError(
       'Failed to perform the request',
     );
   });
@@ -42,7 +48,7 @@ describe('sideEffects/createThumbnail', () => {
   it('throws when it fails to create the thumbnail (API error)', async () => {
     fetchMock.mock('/api/thumbnail/', 400);
 
-    await expect(createThumbnail('token')).rejects.toThrowError(
+    await expect(createThumbnail()).rejects.toThrowError(
       'Failed to create a new thumbnail.',
     );
   });

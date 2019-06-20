@@ -1,26 +1,23 @@
 import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-jest.mock('../../data/sideEffects/createThumbnail/createThumbnail', () => ({
-  createThumbnail: jest.fn(),
-}));
+import { DashboardThumbnail } from '.';
+import { bootstrapStore } from '../../data/bootstrapStore';
+import { appState } from '../../types/AppData';
+import { uploadState } from '../../types/tracks';
 
 jest.mock('react-router-dom', () => ({
   Redirect: ({ push, to }: { push: boolean; to: string }) =>
     `Redirect push to ${to}.`,
 }));
 
-import { DashboardThumbnail } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { createThumbnail } from '../../data/sideEffects/createThumbnail/createThumbnail';
-import { appState } from '../../types/AppData';
-import { uploadState } from '../../types/tracks';
-import { jestMockOf } from '../../utils/types';
-
-const mockCreateThumbnail: jestMockOf<
-  typeof createThumbnail
-> = createThumbnail as any;
+jest.mock('../../data/appData', () => ({
+  appData: {
+    jwt: 'some token',
+  },
+}));
 
 describe('<DashboardThumbnail />', () => {
   afterEach(jest.resetAllMocks);
@@ -246,7 +243,9 @@ describe('<DashboardThumbnail />', () => {
   });
 
   it('creates a new thumbnail and redirects the user to the upload form they click on the replace button', async () => {
-    mockCreateThumbnail.mockResolvedValue(video.thumbnail);
+    fetchMock.mock('/api/thumbnail/', JSON.stringify(video.thumbnail), {
+      method: 'POST',
+    });
     const videoWithoutThumbnail = {
       ...video,
       thumbnail: null,
@@ -255,9 +254,7 @@ describe('<DashboardThumbnail />', () => {
     const { getByAltText, getByText } = render(
       <Provider
         store={bootstrapStore({
-          jwt:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2M' +
-            'jM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+          jwt: '',
           resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video: videoWithoutThumbnail,
@@ -273,10 +270,12 @@ describe('<DashboardThumbnail />', () => {
 
     fireEvent.click(getByText('Replace this thumbnail'));
     await wait();
-    expect(mockCreateThumbnail).toHaveBeenCalledWith(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2M' +
-        'jM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-    );
+    expect(fetchMock.calls()).toHaveLength(1);
+    expect(fetchMock.lastCall()![0]).toEqual('/api/thumbnail/');
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer some token',
+      'Content-Type': 'application/json',
+    });
     getByText('Redirect push to /form/thumbnail/42.');
   });
 });
