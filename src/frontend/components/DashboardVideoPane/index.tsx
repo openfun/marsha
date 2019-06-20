@@ -17,7 +17,7 @@ import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading'
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
-import { DashboardVideoPaneDownloadOptionConnected } from '../DashboardVideoPaneDownloadOptionConnected/DashboardVideoPaneDownloadOptionConnected';
+import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
@@ -151,7 +151,7 @@ const BaseDashboardVideoPane = ({
             <Box basis={'1/2'} margin={'small'}>
               {commonStatusLine}
               <DashboardVideoPaneHelptext state={video.upload_state} />
-              <DashboardVideoPaneDownloadOptionConnected video={video} />
+              <DashboardVideoPaneDownloadOption video={video} />
             </Box>
             <Box basis={'1/2'} margin={'small'}>
               <DashboardThumbnail video={video} />
