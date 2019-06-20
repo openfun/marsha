@@ -5,13 +5,10 @@ import { Link, Redirect } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
-import {
-  notifyUploadProgress,
-  UploadProgressNotification,
-} from '../../data/context/actions';
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { upload } from '../../data/sideEffects/upload';
+import { useObjectProgress } from '../../data/stores/useObjectProgress';
 import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
@@ -86,9 +83,6 @@ const UploadFormBack = styled.div`
 /** Props shape for the BaseUploadForm component. */
 interface BaseUploadFormProps {
   jwt: string;
-  notifyObjectUploadProgress: (
-    progress: UploadProgressNotification<UploadableObject>['progress'],
-  ) => void;
   object: Maybe<UploadableObject>;
   objectType: modelName;
   updateObject: (object: UploadableObject) => void;
@@ -100,12 +94,13 @@ export type Status = Maybe<
 
 const BaseUploadForm = ({
   jwt,
-  notifyObjectUploadProgress,
   object,
   objectType,
   updateObject,
 }: BaseUploadFormProps) => {
   const [status, setStatus] = useState(undefined as Status);
+
+  const setObjectProgress = useObjectProgress(state => state.setObjectProgress);
 
   const beforeUnload = (event: BeforeUnloadEvent) => {
     if (status === 'uploading') {
@@ -147,7 +142,8 @@ const BaseUploadForm = ({
                 onContentUpdated={upload(
                   updateObject,
                   setStatus,
-                  notifyObjectUploadProgress,
+                  (progress: number) =>
+                    object && setObjectProgress(object.id, progress),
                   jwt,
                   objectType,
                   object,
@@ -189,10 +185,8 @@ const mapStateToProps = (
 /** Create a function that updates a single object record in the store. */
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { objectId, objectType }: UploadFormProps,
+  { objectType }: UploadFormProps,
 ) => ({
-  notifyObjectUploadProgress: (progress: number) =>
-    dispatch(notifyUploadProgress(objectId, progress)),
   updateObject: (object: UploadableObject) =>
     dispatch(addResource(objectType, object)),
 });

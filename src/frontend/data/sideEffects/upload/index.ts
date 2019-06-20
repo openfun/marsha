@@ -4,16 +4,13 @@ import { modelName } from '../../../types/models';
 import { UploadableObject, uploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
-import { UploadProgressNotification } from '../../context/actions';
 import { initiateUpload } from '../initiateUpload/initiateUpload';
 import { uploadFile } from '../uploadFile/uploadFile';
 
 export const upload = (
   updateObject: (object: UploadableObject) => void,
   setStatus: (status: Status) => void,
-  notifyObjectUploadProgress: (
-    progress: UploadProgressNotification<UploadableObject>['progress'],
-  ) => void,
+  notifyObjectUploadProgress: (progress: number) => void,
   jwt: string,
   objectType: modelName,
   object: Maybe<UploadableObject>,

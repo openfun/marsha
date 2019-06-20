@@ -3,18 +3,14 @@ import { AnyAction, Reducer } from 'redux';
 
 import { AppData, appState } from '../../types/AppData';
 import { DecodedJwt } from '../../types/jwt';
-import { UploadableObject, Video } from '../../types/tracks';
+import { Video } from '../../types/tracks';
 import { appData as initialState } from '../appData';
-import { UploadProgressNotification } from './actions';
 
 export interface ContextState<state> {
   jwt: state extends appState.ERROR ? null : string;
   decodedJwt: state extends appState.ERROR ? null : DecodedJwt;
   ltiResourceVideo: state extends appState.ERROR ? null : Video;
   ltiState: state;
-  uploads_progress: {
-    [uploadableObjectId: string]: number;
-  };
 }
 
 export const buildInitialState = (appData: AppData) => ({
@@ -22,27 +18,11 @@ export const buildInitialState = (appData: AppData) => ({
   jwt: appData.jwt || null,
   ltiResourceVideo: appData.video || null,
   ltiState: appData.state,
-  uploads_progress: {},
 });
 
 export const context: Reducer<ContextState<appState>> = (
   state: ContextState<appState> = buildInitialState(initialState),
-  action?: UploadProgressNotification<UploadableObject> | AnyAction,
+  action?: AnyAction,
 ) => {
-  if (!action) {
-    return state;
-  }
-
-  switch (action.type) {
-    case 'UPLOAD_PROGRESS_NOTIFY':
-      return {
-        ...state,
-        uploads_progress: {
-          ...state.uploads_progress,
-          [action.id]: action.progress,
-        },
-      };
-  }
-
   return state;
 };

@@ -14,8 +14,8 @@ import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
+import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay/DashboardThumbnailDisplay';
-import { DashboardThumbnailProgressConnected } from '../DashboardThumbnailProgressConnected/DashboardThumbnailProgressConnected';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 const messages = defineMessages({
@@ -121,9 +121,7 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
     case uploadState.UPLOADING:
       return (
         <Box>
-          <DashboardThumbnailProgressConnected
-            thumbnailId={props.thumbnail!.id}
-          />
+          <DashboardObjectProgress objectId={props.thumbnail!.id} />
         </Box>
       );
     case uploadState.PROCESSING:
