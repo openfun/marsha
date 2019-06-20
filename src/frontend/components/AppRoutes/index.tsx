@@ -10,8 +10,8 @@ import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapper } from '../InstructorWrapper';
+import { RedirectOnLoad } from '../RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
-import { RedirectOnLoadConnected } from '../RedirectOnLoadConnected/RedirectOnLoadConnected';
 import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { VideoPlayer } from '../VideoPlayer';
@@ -57,10 +57,7 @@ const BaseAppRoutes = ({ context }: BaseAppRoutesProps) => {
           path={DASHBOARD_ROUTE()}
           render={() => <Dashboard video={context.ltiResourceVideo!} />}
         />
-        <Route
-          path={REDIRECT_ON_LOAD_ROUTE()}
-          component={RedirectOnLoadConnected}
-        />
+        <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </Switch>
     </MemoryRouter>
   );

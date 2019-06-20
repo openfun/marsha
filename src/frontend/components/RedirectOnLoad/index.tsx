@@ -1,23 +1,21 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
+import { appData } from '../../data/appData';
 import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
-interface RedirectOnLoadProps {
-  ltiState: appState;
-  video: Nullable<Video>;
-}
-
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
-export const RedirectOnLoad = ({ ltiState, video }: RedirectOnLoadProps) => {
+export const RedirectOnLoad = () => {
+  const video = appData.video || null;
+  const ltiState = appData.state;
+
   // Get LTI errors out of the way
   if (ltiState === appState.ERROR) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
