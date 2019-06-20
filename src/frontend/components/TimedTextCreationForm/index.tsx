@@ -10,10 +10,8 @@ import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
-import { RootState } from '../../data/rootReducer';
-import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack/createTimedTextTrack';
+import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
@@ -62,7 +60,6 @@ interface SelectOption {
 /** Props shape for the TimedTextCreationForm component. */
 interface BaseTimedTextCreationFormProps {
   doCreateTimedTextTrack: (timedtexttrack: TimedText) => void;
-  jwt: string;
   excludedLanguages: string[];
   mode: timedTextMode;
 }
@@ -77,7 +74,6 @@ const isSelectOption = (
 const BaseTimedTextCreationForm = ({
   doCreateTimedTextTrack,
   excludedLanguages,
-  jwt,
   mode,
 }: BaseTimedTextCreationFormProps) => {
   const [error, setError] = useState(undefined as Maybe<'creation' | 'schema'>);
@@ -104,7 +100,7 @@ const BaseTimedTextCreationForm = ({
 
   const createAndGoToUpload = async () => {
     try {
-      const newTTT = await createTimedTextTrack(jwt, newTTLanguage, mode);
+      const newTTT = await createTimedTextTrack(newTTLanguage, mode);
       doCreateTimedTextTrack(newTTT);
       setNewTTUploadId(newTTT.id);
     } catch (error) {
@@ -151,10 +147,6 @@ const BaseTimedTextCreationForm = ({
   );
 };
 
-const mapStateToProps = (state: RootState<appStateSuccess>) => ({
-  jwt: state.context.jwt,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   doCreateTimedTextTrack: (timedtexttrack: TimedText) =>
     dispatch(addResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
@@ -167,6 +159,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
  * @param mode The mode of the timedtexttracks we're creating.
  */
 export const TimedTextCreationForm = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(BaseTimedTextCreationForm);

@@ -1,16 +1,14 @@
 import { API_ENDPOINT } from '../../../settings';
 import { modelName } from '../../../types/models';
 import { TimedText, timedTextMode } from '../../../types/tracks';
-import { Nullable } from '../../../utils/types';
+import { appData } from '../../appData';
 
 /**
  * Create a new timedtexttrack record for a language-mode combination.
- * @param jwt The token that will be used to authenticate with the API.
  * @param language The language for the new timedtexttrack (from the list of available choices).
  * @param mode The mode for the new timedtexttrack.
  */
 export const createTimedTextTrack = async (
-  jwt: Nullable<string>,
   language: string,
   mode: timedTextMode,
 ) => {
@@ -19,7 +17,7 @@ export const createTimedTextTrack = async (
     {
       body: JSON.stringify({ language, mode }),
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${appData.jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
