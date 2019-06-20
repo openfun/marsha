@@ -5,7 +5,7 @@ import { UploadableObject, uploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
 import { initiateUpload } from '../initiateUpload';
-import { uploadFile } from '../uploadFile/uploadFile';
+import { uploadFile } from '../uploadFile';
 
 export const upload = (
   updateObject: (object: UploadableObject) => void,
