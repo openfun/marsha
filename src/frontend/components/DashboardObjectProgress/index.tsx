@@ -3,6 +3,9 @@ import React from 'react';
 import { defineMessages, InjectedIntlProps, injectIntl } from 'react-intl';
 import styled from 'styled-components';
 
+import { useObjectProgress } from '../../data/stores/useObjectProgress';
+import { Resource } from '../../types/tracks';
+
 const messages = defineMessages({
   progressLabel: {
     defaultMessage: 'Upload progress',
@@ -16,14 +19,14 @@ export const StyledMeter = styled(Meter)`
 `;
 
 interface DashboardObjectProgressProps {
-  progress: number;
+  objectId: Resource['id'];
 }
 
 export const DashboardObjectProgress = injectIntl(
-  ({
-    intl,
-    progress = 0,
-  }: DashboardObjectProgressProps & InjectedIntlProps) => {
+  ({ intl, objectId }: DashboardObjectProgressProps & InjectedIntlProps) => {
+    const objectProgress = useObjectProgress(state => state.objectProgress);
+    const progress = objectProgress[objectId] || 0;
+
     // There is a conflict in the type of the `values` prop between `react` and `grommet`
     // Use the const type to ensure correctness and the `any` escape hatch for the actual value
     const values: MeterProps['values'] = [
@@ -37,7 +40,7 @@ export const DashboardObjectProgress = injectIntl(
       >
         <StyledMeter
           a11yTitle={intl.formatMessage(messages.progressLabel)}
-          values={values as any}
+          values={values}
         />
         <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
       </Box>

@@ -14,11 +14,11 @@ import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
+import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOptionConnected } from '../DashboardVideoPaneDownloadOptionConnected/DashboardVideoPaneDownloadOptionConnected';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
-import { DashboardVideoPaneProgressConnected } from '../DashboardVideoPaneProgressConnected/DashboardVideoPaneProgressConnected';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
@@ -130,7 +130,7 @@ const BaseDashboardVideoPane = ({
       return (
         <DashboardVideoPaneInnerContainer>
           {commonStatusLine}
-          <DashboardVideoPaneProgressConnected videoId={video.id} />
+          <DashboardObjectProgress objectId={video.id} />
           <DashboardVideoPaneHelptext state={video.upload_state} />
         </DashboardVideoPaneInnerContainer>
       );
