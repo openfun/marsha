@@ -1,7 +1,10 @@
 import fetchMock from 'fetch-mock';
+
+import { updateResource } from '.';
 import { modelName } from '../../../types/models';
 import { Video } from '../../../types/tracks';
-import { updateResource } from './updateResource';
+
+jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
 
 describe('sideEffects/updateResource', () => {
   afterEach(fetchMock.restore);
@@ -33,7 +36,7 @@ describe('sideEffects/updateResource', () => {
       method: 'PUT',
     });
 
-    await updateResource('foo', video, modelName.VIDEOS);
+    await updateResource(video, modelName.VIDEOS);
 
     expect(fetchMock.called()).toBe(true);
   });
@@ -41,8 +44,8 @@ describe('sideEffects/updateResource', () => {
   it('throws an error if the response does not return a 2xx', async () => {
     fetchMock.mock('/api/videos/video-id/', 400, { method: 'PUT' });
 
-    await expect(
-      updateResource('foo', video, modelName.VIDEOS),
-    ).rejects.toThrowError('Failed to update resource videos with id video-id');
+    await expect(updateResource(video, modelName.VIDEOS)).rejects.toThrowError(
+      'Failed to update resource videos with id video-id',
+    );
   });
 });

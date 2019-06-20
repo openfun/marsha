@@ -1,9 +1,9 @@
 import { API_ENDPOINT } from '../../../settings';
 import { modelName } from '../../../types/models';
 import { Resource } from '../../../types/tracks';
+import { appData } from '../../appData';
 
 export async function updateResource<R extends Resource>(
-  jwt: string,
   resource: R,
   resourceName: modelName,
 ): Promise<R> {
@@ -12,7 +12,7 @@ export async function updateResource<R extends Resource>(
   const response = await fetch(endpoint, {
     body: JSON.stringify(resource),
     headers: {
-      Authorization: `Bearer ${jwt}`,
+      Authorization: `Bearer ${appData.jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'PUT',

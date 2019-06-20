@@ -9,11 +9,11 @@ import { Video } from '../../types/tracks';
 import { jestMockOf } from '../../utils/types';
 import { DashboardVideoPaneDownloadOption } from './DashboardVideoPaneDownloadOption';
 
-jest.mock('../../data/sideEffects/updateResource/updateResource', () => ({
+jest.mock('../../data/sideEffects/updateResource', () => ({
   updateResource: jest.fn(),
 }));
 
-import { updateResource } from '../../data/sideEffects/updateResource/updateResource';
+import { updateResource } from '../../data/sideEffects/updateResource';
 
 const mockUpdateResource: jestMockOf<
   typeof updateResource
@@ -46,7 +46,6 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
     const wrapper = mount(
       <DashboardVideoPaneDownloadOption
         video={video}
-        jwt={'foo'}
         addResource={jest.fn()}
       />,
     );
@@ -64,7 +63,6 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
     const wrapper = mount(
       <DashboardVideoPaneDownloadOption
         video={video}
-        jwt={'foo'}
         addResource={mockAddResource}
       />,
     );

@@ -2,7 +2,7 @@ import { Box, CheckBox, Form, Text } from 'grommet';
 import React, { SyntheticEvent, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { updateResource } from '../../data/sideEffects/updateResource/updateResource';
+import { updateResource } from '../../data/sideEffects/updateResource';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 
@@ -20,13 +20,11 @@ const messages = defineMessages({
 });
 
 interface Props {
-  jwt: string;
   addResource: (video: Video) => void;
   video: Video;
 }
 
 export const DashboardVideoPaneDownloadOption = ({
-  jwt,
   video,
   addResource,
 }: Props) => {
@@ -39,7 +37,6 @@ export const DashboardVideoPaneDownloadOption = ({
     try {
       setChecked(showDownload);
       const newVideo = await updateResource(
-        jwt,
         {
           ...video,
           show_download: showDownload,
