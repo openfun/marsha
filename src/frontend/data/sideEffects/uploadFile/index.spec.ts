@@ -1,6 +1,6 @@
 import '../../../testSetup';
 
-import { uploadFile } from './uploadFile';
+import { uploadFile } from '.';
 
 describe('sideEffects/uploadFile', () => {
   const mockProgressHandler = jest.fn();

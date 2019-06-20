@@ -3,12 +3,12 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-jest.mock('../../data/sideEffects/uploadFile/uploadFile', () => ({
+jest.mock('../../data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
 
 import { bootstrapStore } from '../../data/bootstrapStore';
-import { uploadFile } from '../../data/sideEffects/uploadFile/uploadFile';
+import { uploadFile } from '../../data/sideEffects/uploadFile';
 import { modelName } from '../../types/models';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
