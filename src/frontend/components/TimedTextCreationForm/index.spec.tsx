@@ -12,8 +12,8 @@ import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
-jest.mock('jwt-decode', () => () => '');
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('../../data/appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('<TimedTextCreationForm />', () => {
   beforeEach(() => {
@@ -83,7 +83,7 @@ describe('<TimedTextCreationForm />', () => {
       wrapInRouter(
         <Provider
           store={bootstrapStore({
-            jwt: 'some token',
+            jwt: '',
             resourceLinkid: '',
             state: appState.INSTRUCTOR,
             video: null,
@@ -140,7 +140,7 @@ describe('<TimedTextCreationForm />', () => {
       wrapInRouter(
         <Provider
           store={bootstrapStore({
-            jwt: 'some token',
+            jwt: '',
             resourceLinkid: '',
             state: appState.INSTRUCTOR,
             video: null,
