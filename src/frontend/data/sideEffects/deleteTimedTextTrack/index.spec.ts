@@ -1,14 +1,16 @@
 import fetchMock from 'fetch-mock';
 
+import { deleteTimedTextTrack } from '.';
 import { TimedText } from '../../../types/tracks';
-import { deleteTimedTextTrack } from './deleteTimedTextTrack';
+
+jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('sideEffects/deleteTimedTextTrack', () => {
   afterEach(fetchMock.restore);
 
   it('issues a DELETE request for the relevant timedtexttrack', async () => {
     fetchMock.mock('/api/timedtexttracks/42/', 204, { method: 'DELETE' });
-    const response = await deleteTimedTextTrack('some token', {
+    const response = await deleteTimedTextTrack({
       id: '42',
     } as TimedText);
 
@@ -26,7 +28,7 @@ describe('sideEffects/deleteTimedTextTrack', () => {
     );
 
     await expect(
-      deleteTimedTextTrack('some token', { id: '42' } as TimedText),
+      deleteTimedTextTrack({ id: '42' } as TimedText),
     ).rejects.toThrowError('Failed to perform the request');
   });
 
@@ -34,7 +36,7 @@ describe('sideEffects/deleteTimedTextTrack', () => {
     fetchMock.mock('/api/timedtexttracks/42/', 403, { method: 'DELETE' });
 
     await expect(
-      deleteTimedTextTrack('some token', { id: '42' } as TimedText),
+      deleteTimedTextTrack({ id: '42' } as TimedText),
     ).rejects.toThrowError('Failed to delete timedtexttracks/42.');
   });
 });
