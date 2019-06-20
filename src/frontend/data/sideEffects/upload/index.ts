@@ -4,14 +4,13 @@ import { modelName } from '../../../types/models';
 import { UploadableObject, uploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
-import { initiateUpload } from '../initiateUpload/initiateUpload';
+import { initiateUpload } from '../initiateUpload';
 import { uploadFile } from '../uploadFile/uploadFile';
 
 export const upload = (
   updateObject: (object: UploadableObject) => void,
   setStatus: (status: Status) => void,
   notifyObjectUploadProgress: (progress: number) => void,
-  jwt: string,
   objectType: modelName,
   object: Maybe<UploadableObject>,
 ) => async (file: Maybe<File>) => {
@@ -26,7 +25,7 @@ export const upload = (
 
   let policy: AWSPolicy;
   try {
-    policy = await initiateUpload(jwt, objectType, object.id);
+    policy = await initiateUpload(objectType, object.id);
   } catch (error) {
     return setStatus('policy_error');
   }

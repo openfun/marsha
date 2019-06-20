@@ -82,7 +82,6 @@ const UploadFormBack = styled.div`
 
 /** Props shape for the BaseUploadForm component. */
 interface BaseUploadFormProps {
-  jwt: string;
   object: Maybe<UploadableObject>;
   objectType: modelName;
   updateObject: (object: UploadableObject) => void;
@@ -93,7 +92,6 @@ export type Status = Maybe<
 >;
 
 const BaseUploadForm = ({
-  jwt,
   object,
   objectType,
   updateObject,
@@ -144,7 +142,6 @@ const BaseUploadForm = ({
                   setStatus,
                   (progress: number) =>
                     object && setObjectProgress(object.id, progress),
-                  jwt,
                   objectType,
                   object,
                 )}
@@ -175,7 +172,6 @@ const mapStateToProps = (
   state: RootState<appStateSuccess>,
   { objectId, objectType }: UploadFormProps,
 ) => ({
-  jwt: state.context.jwt,
   object:
     state.resources[objectType]!.byId &&
     state.resources[objectType]!.byId[objectId],
