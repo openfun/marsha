@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { deleteResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
-import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack/deleteTimedTextTrack';
+import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack';
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { requestStatus } from '../../types/api';
@@ -68,20 +68,11 @@ interface BaseTimedTextListItemProps {
     resourceName: modelName.TIMEDTEXTTRACKS,
     resourceId: string,
   ) => Promise<requestStatus>;
-  jwt: string;
   track: TimedText;
 }
 
-/**
- * Component. Displays one TimedTextTrack as part of a list of TimedTextTracks. Provides buttons for
- * the user to delete it or replace the linked video.
- * @param deleteTimedTextTrackRecord Action creator that takes a timedtexttrack to remove from the store.
- * @param jwt The token that will be used to interact with the API.
- * @param track The timedtexttrack to display.
- */
 const BaseTimedTextListItem = ({
   deleteTimedTextTrackRecord,
-  jwt,
   pollForTimedTextTrack,
   track,
 }: BaseTimedTextListItemProps) => {
@@ -115,7 +106,7 @@ const BaseTimedTextListItem = ({
     choices.find(languageChoice => track.language === languageChoice.value);
 
   const deleteTrack = async () => {
-    await deleteTimedTextTrack(jwt, track);
+    await deleteTimedTextTrack(track);
     deleteTimedTextTrackRecord(track);
   };
 
@@ -148,7 +139,6 @@ const mapStateToProps = (
   state: RootState<appStateSuccess>,
   { track }: Pick<BaseTimedTextListItemProps, 'track'>,
 ) => ({
-  jwt: state.context.jwt,
   track,
 });
 
@@ -156,16 +146,14 @@ const mapStateToProps = (
  * Component. Displays one TimedTextTrack as part of a list of TimedTextTracks. Provides buttons for
  * the user to delete it or replace the linked video.
  * @param deleteTimedTextTrackRecord Action creator that takes a timedtexttrack to remove from the store.
- * @param jwt The token that will be used to interact with the API.
  * @param track The timedtexttrack to display.
  */
 export const TimedTextListItem = connect(
   mapStateToProps,
   null!,
-  ({ jwt, track }, { dispatch }: { dispatch: Dispatch }) => ({
+  ({ track }, { dispatch }: { dispatch: Dispatch }) => ({
     deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
       dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
-    jwt,
     pollForTimedTextTrack: pollForTrack(dispatch),
     track,
   }),

@@ -1,22 +1,18 @@
 import { API_ENDPOINT } from '../../../settings';
 import { modelName } from '../../../types/models';
 import { TimedText } from '../../../types/tracks';
-import { Nullable } from '../../../utils/types';
+import { appData } from '../../appData';
 
 /**
  * Delete one timedtexttrack record.
- * @param jwt The token that will be used to authenticate with the API.
  * @param timedtexttrack The timedtexttrack to delete.
  */
-export const deleteTimedTextTrack = async (
-  jwt: Nullable<string>,
-  timedtexttrack: TimedText,
-) => {
+export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
   const response = await fetch(
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${appData.jwt}`,
       },
       method: 'DELETE',
     },
