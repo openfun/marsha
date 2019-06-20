@@ -5,6 +5,8 @@ import { modelName } from '../../../types/models';
 import { timedTextMode, uploadState, Video } from '../../../types/tracks';
 import { upload } from './';
 
+jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
+
 describe('upload', () => {
   const object = {
     description: 'Some description',
@@ -70,7 +72,6 @@ describe('upload', () => {
   const updateObject = jest.fn();
   const setStatus = jest.fn();
   const notifyObjectUploadProgress = jest.fn();
-  const jwt = 'foo';
   const objectType = modelName.VIDEOS;
 
   beforeEach(jest.resetAllMocks);
@@ -100,7 +101,6 @@ describe('upload', () => {
       updateObject,
       setStatus,
       notifyObjectUploadProgress,
-      jwt,
       objectType,
       object,
     )(file);
@@ -136,7 +136,6 @@ describe('upload', () => {
       updateObject,
       setStatus,
       notifyObjectUploadProgress,
-      jwt,
       objectType,
       object,
     )(file);
@@ -169,7 +168,6 @@ describe('upload', () => {
       updateObject,
       setStatus,
       notifyObjectUploadProgress,
-      jwt,
       objectType,
       object,
     )(file);
@@ -207,7 +205,6 @@ describe('upload', () => {
       updateObject,
       setStatus,
       notifyObjectUploadProgress,
-      jwt,
       objectType,
       object,
     )(undefined);
@@ -240,7 +237,6 @@ describe('upload', () => {
       updateObject,
       setStatus,
       notifyObjectUploadProgress,
-      jwt,
       objectType,
       undefined,
     )(file);
