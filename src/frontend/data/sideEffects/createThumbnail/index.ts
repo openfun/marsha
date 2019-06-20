@@ -1,15 +1,15 @@
 import { API_ENDPOINT } from '../../../settings';
 import { modelName } from '../../../types/models';
 import { Thumbnail } from '../../../types/tracks';
+import { appData } from '../../appData';
 
 /**
  * Create a new thumbnail record for a language-mode combination.
- * @param jwt The token that will be used to authenticate with the API.
  */
-export const createThumbnail = async (jwt: string) => {
+export const createThumbnail = async () => {
   const response = await fetch(`${API_ENDPOINT}/${modelName.THUMBNAIL}/`, {
     headers: {
-      Authorization: `Bearer ${jwt}`,
+      Authorization: `Bearer ${appData.jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

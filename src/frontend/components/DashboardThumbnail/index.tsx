@@ -7,7 +7,7 @@ import { Dispatch } from 'redux';
 
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
-import { createThumbnail } from '../../data/sideEffects/createThumbnail/createThumbnail';
+import { createThumbnail } from '../../data/sideEffects/createThumbnail';
 import { getThumbnail } from '../../data/thumbnail/selector';
 import { API_ENDPOINT } from '../../settings';
 import { appStateSuccess } from '../../types/AppData';
@@ -45,7 +45,12 @@ interface BaseDashboardThumbnailProps {
   jwt: string;
 }
 
-const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
+const BaseDashboardThumbnail = ({
+  addThumbnail,
+  video,
+  thumbnail,
+  jwt,
+}: BaseDashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
@@ -53,8 +58,8 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
 
   useEffect(() => {
     if (
-      props.thumbnail &&
-      props.thumbnail.upload_state === uploadState.PROCESSING &&
+      thumbnail &&
+      thumbnail.upload_state === uploadState.PROCESSING &&
       pollInterval === -1
     ) {
       setPollInterval(window.setInterval(() => pollThumbnail(), 1000 * 5));
@@ -69,7 +74,6 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
 
   const pollThumbnail = async () => {
     try {
-      const { addThumbnail, thumbnail, jwt } = props;
       const response = await fetch(
         `${API_ENDPOINT}/thumbnail/${thumbnail!.id}/`,
         {
@@ -94,8 +98,8 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
   const prepareUpdate = async () => {
     try {
       setDisableUploadBtn(true);
-      if (props.thumbnail === null) {
-        props.addThumbnail(await createThumbnail(props.jwt));
+      if (thumbnail === null) {
+        addThumbnail(await createThumbnail());
       }
 
       setShouldRedirect(true);
@@ -108,20 +112,18 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
     return (
       <Redirect
         push
-        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAIL, props.thumbnail!.id)}
+        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAIL, thumbnail!.id)}
       />
     );
   }
 
-  const thumbnailState = props.thumbnail
-    ? props.thumbnail.upload_state
-    : uploadState.READY;
+  const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
 
   switch (thumbnailState) {
     case uploadState.UPLOADING:
       return (
         <Box>
-          <DashboardObjectProgress objectId={props.thumbnail!.id} />
+          <DashboardObjectProgress objectId={thumbnail!.id} />
         </Box>
       );
     case uploadState.PROCESSING:
@@ -145,10 +147,7 @@ const BaseDashboardThumbnail = (props: BaseDashboardThumbnailProps) => {
       return (
         <Box direction={'column'}>
           <Box>
-            <DashboardThumbnailDisplay
-              video={props.video}
-              thumbnail={props.thumbnail}
-            />
+            <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />
           </Box>
           <Box margin={'xsmall'} direction={'column'}>
             <Button
