@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
 import { requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
+import { appData } from '../../appData';
 import { addMultipleResources } from '../../genericReducers/resourceById/actions';
 import {
   didGetResourceList,
@@ -16,12 +17,11 @@ import {
  * Makes and handles the GET request for a resource list. First returns a curried function that
  * enables us to easily pass the first batch of params from the connector.
  * @param dispatch The dispatcher for the store we're using for this given call.
- * @param jwt The token to use to authenticate the request.
  * @param resourceName The model name for the resource for which we're getting a list.
  * @param params The parameters for the list request.
  * @returns a promise for a request status, so the side effect caller can simply wait for it if needed.
  */
-export const getResourceList = (dispatch: Dispatch, jwt: string) => async (
+export const getResourceList = (dispatch: Dispatch) => async (
   resourceName: modelName,
   params: ResourceListGet['params'] = API_LIST_DEFAULT_PARAMS,
 ): Promise<requestStatus> => {
@@ -31,7 +31,7 @@ export const getResourceList = (dispatch: Dispatch, jwt: string) => async (
   try {
     const response = await fetch(`${endpoint}?${stringify(params)}`, {
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${appData.jwt}`,
         'Content-Type': 'application/json',
       },
     });
