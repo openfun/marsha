@@ -1,11 +1,10 @@
 import { createSelector } from 'reselect';
 
-import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText } from '../../types/tracks';
 import { RootState } from '../rootReducer';
 
-const timedTextTracksFilter = (state: RootState<appState>) =>
+const timedTextTracksFilter = (state: RootState) =>
   state.resources[modelName.TIMEDTEXTTRACKS];
 
 export const getTimedTextTracks = createSelector(

@@ -12,6 +12,9 @@ import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
 jest.mock('jwt-decode', () => jest.fn());
+jest.mock('../../data/appData', () => ({
+  appData: { jwt: 'cool_token_m8' },
+}));
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
 
 const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
@@ -64,7 +67,7 @@ describe('<DashboardVideoPane />', () => {
       wrapInRouter(
         <Provider
           store={bootstrapStore({
-            jwt: 'cool_token_m8',
+            jwt: '',
             resourceLinkid: '',
             state: appState.INSTRUCTOR,
             video,
@@ -140,11 +143,11 @@ describe('<DashboardVideoPane />', () => {
     fetchMock.mock('/api/videos/43/', {
       throws: new Error('Failed request'),
     });
-    const { debug, getByText } = render(
+    const { getByText } = render(
       wrapInRouter(
         <Provider
           store={bootstrapStore({
-            jwt: 'cool_token_m8',
+            jwt: '',
             resourceLinkid: '',
             state: appState.INSTRUCTOR,
             video,
@@ -175,7 +178,7 @@ describe('<DashboardVideoPane />', () => {
       wrapInRouter(
         <Provider
           store={bootstrapStore({
-            jwt: 'cool_token_m8',
+            jwt: '',
             resourceLinkid: '',
             state: appState.INSTRUCTOR,
             video,
@@ -203,7 +206,7 @@ describe('<DashboardVideoPane />', () => {
     const { getByText } = render(
       <Provider
         store={bootstrapStore({
-          jwt: 'cool_token_m8',
+          jwt: '',
           resourceLinkid: '',
           state: appState.INSTRUCTOR,
           video,
@@ -227,7 +230,7 @@ describe('<DashboardVideoPane />', () => {
         wrapInRouter(
           <Provider
             store={bootstrapStore({
-              jwt: 'cool_token_m8',
+              jwt: '',
               resourceLinkid: '',
               state: appState.INSTRUCTOR,
               video,
@@ -269,7 +272,7 @@ describe('<DashboardVideoPane />', () => {
         wrapInRouter(
           <Provider
             store={bootstrapStore({
-              jwt: 'cool_token_m8',
+              jwt: '',
               resourceLinkid: '',
               state: appState.INSTRUCTOR,
               video,
@@ -300,7 +303,7 @@ describe('<DashboardVideoPane />', () => {
         wrapInRouter(
           <Provider
             store={bootstrapStore({
-              jwt: 'cool_token_m8',
+              jwt: '',
               resourceLinkid: '',
               state: appState.INSTRUCTOR,
               video,

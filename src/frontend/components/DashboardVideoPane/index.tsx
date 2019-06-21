@@ -6,10 +6,9 @@ import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
+import { appData } from '../../data/appData';
 import { addResource } from '../../data/genericReducers/resourceById/actions';
-import { RootState } from '../../data/rootReducer';
 import { API_ENDPOINT } from '../../settings';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
@@ -47,13 +46,11 @@ const DashboardVideoPaneInternalHeading = styled(DashboardInternalHeading)`
 
 /** Props shape for the DashboardVideoPane component. */
 interface BaseDashboardVideoPaneProps {
-  jwt: string;
   updateVideo: (video: Video) => void;
   video: Video;
 }
 
 const BaseDashboardVideoPane = ({
-  jwt,
   updateVideo,
   video,
 }: BaseDashboardVideoPaneProps) => {
@@ -64,7 +61,7 @@ const BaseDashboardVideoPane = ({
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${appData.jwt}`,
         },
       });
 
@@ -163,10 +160,6 @@ const BaseDashboardVideoPane = ({
   }
 };
 
-const mapStateToProps = (state: RootState<appStateSuccess>) => ({
-  jwt: state.context.jwt,
-});
-
 /** Create a function that updates a single video in the store. */
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateVideo: (video: Video) => dispatch(addResource(modelName.VIDEOS, video)),
@@ -177,6 +170,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
  * @param video The video object from AppData. We need it to populate the component before polling starts.
  */
 export const DashboardVideoPane = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(BaseDashboardVideoPane);

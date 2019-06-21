@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
-import { uploadState } from '../../types/tracks';
 import { InstructorWrapper } from './index';
 
 jest.mock('../InstructorView/index', () => {
@@ -18,21 +17,25 @@ jest.mock('../InstructorView/index', () => {
   };
 });
 
+let mockState: appState;
+jest.mock('../../data/appData', () => ({
+  appData: {
+    get state() {
+      return mockState;
+    },
+  },
+}));
+
 describe('<InstructorWrapper />', () => {
   afterEach(cleanup);
 
-  it('wraps its children in an instructor view if the current user is an instructor', () => {
-    const mockVideo: any = {
-      id: 42,
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
-    const state = {
-      state: appState.INSTRUCTOR,
-      video: mockVideo,
-    } as any;
+  const state = {
+    state: appState.INSTRUCTOR,
+    video: null,
+  } as any;
 
+  it('wraps its children in an instructor view if the current user is an instructor', () => {
+    mockState = appState.INSTRUCTOR;
     const { getByText, getByTitle } = render(
       <Provider store={bootstrapStore(state)}>
         <InstructorWrapper>
@@ -46,17 +49,7 @@ describe('<InstructorWrapper />', () => {
   });
 
   it('just renders the children if the current user is not an instructor', () => {
-    const mockVideo: any = {
-      id: 42,
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
-    const state = {
-      state: appState.STUDENT,
-      video: mockVideo,
-    } as any;
-
+    mockState = appState.STUDENT;
     const { getByTitle, queryByText } = render(
       <Provider store={bootstrapStore(state)}>
         <InstructorWrapper>

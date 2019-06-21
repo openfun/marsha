@@ -4,11 +4,10 @@ import { createPlyrPlayer } from './createPlyrPlayer';
 export const createPlayer: VideoPlayerCreator = (
   type,
   ref,
-  jwt,
   dispatchPlayerTimeUpdate,
 ) => {
   switch (type) {
     case 'plyr':
-      return createPlyrPlayer(ref, jwt, dispatchPlayerTimeUpdate);
+      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate);
   }
 };

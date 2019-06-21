@@ -1,7 +1,6 @@
-import jwt_decode from 'jwt-decode';
 import Plyr from 'plyr';
 
-import { DecodedJwt } from '../types/jwt';
+import { appData, getDecodedJwt } from '../data/appData';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -11,7 +10,6 @@ import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (
   ref: HTMLVideoElement,
-  jwt: string,
   dispatchPlayerTimeUpdate: (time: number) => void,
 ): Plyr => {
   const settings = ['captions', 'speed', 'loop'];
@@ -25,9 +23,11 @@ export const createPlyrPlayer = (
     },
     settings,
   });
-  const decodedToken: DecodedJwt = jwt_decode(jwt);
 
-  const xapiStatement = new XAPIStatement(jwt, decodedToken.session_id);
+  const xapiStatement = new XAPIStatement(
+    appData.jwt,
+    getDecodedJwt().session_id,
+  );
 
   let currentTime: number = 0;
   let seekingAt: number = 0;

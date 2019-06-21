@@ -16,7 +16,7 @@ describe('createPlyrPlayer', () => {
     jest.clearAllMocks();
   });
   it('creates Plyr player and configure it', () => {
-    const player = createPlyrPlayer('ref' as any, 'jwt', jest.fn());
+    const player = createPlyrPlayer('ref' as any, jest.fn());
 
     expect(player.on).toHaveBeenNthCalledWith(
       1,

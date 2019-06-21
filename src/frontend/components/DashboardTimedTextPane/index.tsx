@@ -9,7 +9,6 @@ import { RootState } from '../../data/rootReducer';
 import { getResourceList } from '../../data/sideEffects/getResourceList';
 import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { ConsumableQuery, requestStatus } from '../../types/api';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager/DashboardTimedTextManager';
@@ -77,7 +76,7 @@ const BaseDashboardTimedTextPane = ({
  * Build props for `<DashboardTimedTextPaneConnected />` from `RootState`.
  * Intended for internal use, exported for testing purposes only.
  */
-const mapStateToProps = (state: RootState<appStateSuccess>) => ({
+const mapStateToProps = (state: RootState) => ({
   timedtexttracks: getTimedTextTracks(state),
 });
 

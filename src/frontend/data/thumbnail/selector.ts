@@ -4,7 +4,7 @@ import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { RootState } from '../rootReducer';
 
-const thumbnailFilter = (state: RootState<appState>) =>
+const thumbnailFilter = (state: RootState) =>
   state.resources[modelName.THUMBNAIL];
 
 export const getThumbnail = createSelector(
