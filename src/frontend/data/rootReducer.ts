@@ -1,7 +1,5 @@
-import { appState } from '../types/AppData';
 import { modelName } from '../types/models';
 import { Resource } from '../types/tracks';
-import { context, ContextState } from './context/reducer';
 import { byIdActions } from './genericReducers/resourceById/resourceById';
 import { currentQueryActions } from './genericReducers/resourceList/resourceList';
 import { thumbnail, ThumbnailState } from './thumbnail/reducer';
@@ -16,8 +14,7 @@ export type actionTypes<R extends Resource = Resource> =
   | byIdActions<R>
   | currentQueryActions<R>;
 
-export interface RootState<state extends appState> {
-  context: ContextState<state>;
+export interface RootState {
   resources: {
     [modelName.TIMEDTEXTTRACKS]: TimedTextTracksState;
     [modelName.THUMBNAIL]: ThumbnailState;
@@ -26,10 +23,9 @@ export interface RootState<state extends appState> {
 }
 
 export const rootReducer = (
-  state: RootState<appState> | undefined,
+  state: RootState | undefined,
   action: actionTypes,
 ) => ({
-  context: context(state!.context, action),
   resources: {
     [modelName.TIMEDTEXTTRACKS]: timedtexttracks(
       (state && state.resources[modelName.TIMEDTEXTTRACKS]) || undefined,

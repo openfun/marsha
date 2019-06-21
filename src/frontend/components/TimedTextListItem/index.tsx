@@ -6,12 +6,10 @@ import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 import { deleteResource } from '../../data/genericReducers/resourceById/actions';
-import { RootState } from '../../data/rootReducer';
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack';
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { requestStatus } from '../../types/api';
-import { appStateSuccess } from '../../types/AppData';
 import { LanguageChoice } from '../../types/LanguageChoice';
 import { modelName } from '../../types/models';
 import { TimedText, uploadState } from '../../types/tracks';
@@ -136,7 +134,7 @@ const BaseTimedTextListItem = ({
 };
 
 const mapStateToProps = (
-  state: RootState<appStateSuccess>,
+  _: never,
   { track }: Pick<BaseTimedTextListItemProps, 'track'>,
 ) => ({
   track,

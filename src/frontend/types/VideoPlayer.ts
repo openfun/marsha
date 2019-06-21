@@ -8,6 +8,5 @@ export interface VideoPlayerInterface {
 export type VideoPlayerCreator = (
   type: VideoPlayerType,
   ref: HTMLVideoElement,
-  jwt: string,
   dispatchPlayerTimeUpdate: (time: number) => void,
 ) => VideoPlayerInterface;

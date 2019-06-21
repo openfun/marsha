@@ -2,11 +2,9 @@ import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { RootState } from '../../data/rootReducer';
-import { appStateSuccess } from '../../types/AppData';
+import { getDecodedJwt } from '../../data/appData';
 import { theme } from '../../utils/theme/theme';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { withLink } from '../withLink/withLink';
@@ -50,15 +48,12 @@ export const InstructorControls = styled.div`
 
 const BtnWithLink = withLink(Button);
 
-interface BaseInstructorViewProps {
+interface InstructorViewProps {
   children: React.ReactNode;
-  readOnly: boolean;
 }
 
-export const BaseInstructorView = ({
-  children,
-  readOnly,
-}: BaseInstructorViewProps) => {
+export const InstructorView = ({ children }: InstructorViewProps) => {
+  const readOnly = getDecodedJwt().read_only;
   const message = readOnly ? messages.disabledDashboard : messages.title;
   return (
     <React.Fragment>
@@ -78,9 +73,3 @@ export const BaseInstructorView = ({
     </React.Fragment>
   );
 };
-
-export const mapStateToProps = (state: RootState<appStateSuccess>) => ({
-  readOnly: state.context.decodedJwt.read_only,
-});
-
-export const InstructorView = connect(mapStateToProps)(BaseInstructorView);

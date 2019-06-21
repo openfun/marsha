@@ -1,26 +1,27 @@
 import { cleanup, render } from '@testing-library/react';
-import jwt_decode from 'jwt-decode';
 import React from 'react';
 import { Provider } from 'react-redux';
 
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
-import { jestMockOf } from '../../utils/types';
 
 import { InstructorView } from './';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-const mockjwtDecode = jwt_decode as jestMockOf<typeof jwt_decode>;
+let mockDecodedJwt: any;
+jest.mock('../../data/appData', () => ({
+  getDecodedJwt: () => mockDecodedJwt,
+}));
 
 describe('<InstructorView />', () => {
   afterEach(cleanup);
 
   it('renders the instructor controls', () => {
-    mockjwtDecode.mockReturnValue({
+    mockDecodedJwt = {
       read_only: false,
-    });
+    };
     const mockVideo: any = {
       id: 42,
       thumbnail: null,
@@ -49,9 +50,9 @@ describe('<InstructorView />', () => {
   });
 
   it('remove the button when read_only is true', () => {
-    mockjwtDecode.mockReturnValue({
+    mockDecodedJwt = {
       read_only: true,
-    });
+    };
     const mockVideo: any = {
       id: 42,
       thumbnail: null,

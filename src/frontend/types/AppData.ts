@@ -16,6 +16,4 @@ export interface AppData {
   resourceLinkid: string;
   state: appState;
   video: Nullable<Video>;
-
-  updateVideo?: (video: Video) => void;
 }

@@ -1,10 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { RootState } from '../../data/rootReducer';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
@@ -63,10 +62,7 @@ class BaseDashboard extends React.Component<DashboardProps> {
  * state if available as it will hold the most recent version.
  * Also, just pass the jwt along.
  */
-const mapStateToProps = (
-  state: RootState<appStateSuccess>,
-  { video }: DashboardProps,
-) => ({
+const mapStateToProps = (state: RootState, { video }: DashboardProps) => ({
   video:
     (state.resources[modelName.VIDEOS]!.byId &&
       state.resources[modelName.VIDEOS]!.byId[video.id]) ||

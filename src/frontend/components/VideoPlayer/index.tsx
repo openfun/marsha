@@ -11,7 +11,6 @@ import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { getThumbnail } from '../../data/thumbnail/selector';
 import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { ConsumableQuery } from '../../types/api';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import {
   Thumbnail,
@@ -39,7 +38,6 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 
 interface BaseVideoPlayerProps {
   createPlayer: VideoPlayerCreator;
-  jwt: string;
   timedtexttracks: ConsumableQuery<TimedText>;
   thumbnail: Nullable<Thumbnail>;
   video: Nullable<Video>;
@@ -47,7 +45,6 @@ interface BaseVideoPlayerProps {
 
 const BaseVideoPlayer = ({
   createPlayer,
-  jwt,
   thumbnail,
   timedtexttracks,
   video,
@@ -81,7 +78,7 @@ const BaseVideoPlayer = ({
     if (video) {
       // Instantiate Plyr and keep the instance in state
       setPlayer(
-        createPlayer('plyr', videoNodeRef.current!, jwt, setPlayerCurrentTime),
+        createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
       );
 
       if (isMSESupported()) {
@@ -173,11 +170,7 @@ type VideoPlayerProps = Pick<BaseVideoPlayerProps, 'createPlayer' | 'video'>;
  * Replace the (read-only) video from context with one from the resources part of the
  * state if available as it will hold the most recent version.
  */
-const mapStateToProps = (
-  state: RootState<appStateSuccess>,
-  { video }: VideoPlayerProps,
-) => ({
-  jwt: state.context.jwt,
+const mapStateToProps = (state: RootState, { video }: VideoPlayerProps) => ({
   thumbnail: getThumbnail(state),
   timedtexttracks: getTimedTextTracks(state),
   video:

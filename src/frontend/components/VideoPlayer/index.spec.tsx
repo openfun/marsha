@@ -124,7 +124,6 @@ describe('VideoPlayer', () => {
     mockIsMSESupported.mockReturnValue(true);
     mockIsHlsSupported.mockReturnValue(false);
     const state = {
-      jwt: 'jwt-token',
       state: appState.INSTRUCTOR,
       video,
     } as any;
@@ -139,7 +138,6 @@ describe('VideoPlayer', () => {
     expect(createPlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
-      'jwt-token',
       expect.anything(),
     );
     expect(mockInitialize).toHaveBeenCalledWith(
@@ -165,7 +163,6 @@ describe('VideoPlayer', () => {
   it('allows video download when the video object specifies it', () => {
     mockIsMSESupported.mockReturnValue(false);
     const state = {
-      jwt: 'jwt-token',
       state: appState.INSTRUCTOR,
       video: {
         ...video,
@@ -187,7 +184,6 @@ describe('VideoPlayer', () => {
     // Simulate a browser that does not support MSE
     mockIsMSESupported.mockReturnValue(false);
     const state = {
-      jwt: 'jwt-token',
       state: appState.INSTRUCTOR,
       video,
     } as any;
@@ -202,7 +198,6 @@ describe('VideoPlayer', () => {
     expect(createPlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
-      'jwt-token',
       expect.anything(),
     );
     expect(mockInitialize).not.toHaveBeenCalled();
@@ -216,7 +211,6 @@ describe('VideoPlayer', () => {
     mockIsHlsSupported.mockReturnValue(true);
 
     const state = {
-      jwt: 'jwt-token',
       state: appState.INSTRUCTOR,
       video,
     } as any;

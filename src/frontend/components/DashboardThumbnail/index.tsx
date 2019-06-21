@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
+import { appData } from '../../data/appData';
 import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { createThumbnail } from '../../data/sideEffects/createThumbnail';
 import { getThumbnail } from '../../data/thumbnail/selector';
 import { API_ENDPOINT } from '../../settings';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
@@ -42,14 +42,12 @@ interface BaseDashboardThumbnailProps {
   addThumbnail: (thumbnail: Thumbnail) => void;
   video: Video;
   thumbnail: Nullable<Thumbnail>;
-  jwt: string;
 }
 
 const BaseDashboardThumbnail = ({
   addThumbnail,
   video,
   thumbnail,
-  jwt,
 }: BaseDashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
@@ -78,7 +76,7 @@ const BaseDashboardThumbnail = ({
         `${API_ENDPOINT}/thumbnail/${thumbnail!.id}/`,
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${appData.jwt}`,
           },
         },
       );
@@ -174,10 +172,9 @@ interface DashboardThumbnailProps {
 }
 
 const mapStateToProps = (
-  state: RootState<appStateSuccess>,
+  state: RootState,
   { video }: DashboardThumbnailProps,
 ) => ({
-  jwt: state.context.jwt,
   thumbnail: getThumbnail(state),
   video,
 });

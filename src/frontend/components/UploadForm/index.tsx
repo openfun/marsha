@@ -9,7 +9,6 @@ import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { RootState } from '../../data/rootReducer';
 import { upload } from '../../data/sideEffects/upload';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
-import { appStateSuccess } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
@@ -169,7 +168,7 @@ interface UploadFormProps {
  * Also, just pass the jwt and objectType along.
  */
 const mapStateToProps = (
-  state: RootState<appStateSuccess>,
+  state: RootState,
   { objectId, objectType }: UploadFormProps,
 ) => ({
   object:
