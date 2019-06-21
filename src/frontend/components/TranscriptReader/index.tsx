@@ -5,7 +5,7 @@ import { VTTCue, WebVTT } from 'vtt.js';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { TimedTextTranscript } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { TranscriptSentence } from '../TranscriptSentence/TranscriptSentence';
+import { TranscriptSentence } from '../TranscriptSentence';
 
 interface TranscriptReaderProps {
   transcript: TimedTextTranscript;

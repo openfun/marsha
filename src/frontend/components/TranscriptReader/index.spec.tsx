@@ -34,7 +34,7 @@ jest.mock('vtt.js', () => ({
   },
 }));
 
-jest.mock('../TranscriptSentence/TranscriptSentence', () => ({
+jest.mock('../TranscriptSentence', () => ({
   TranscriptSentence: ({ active, cue }: { active: boolean; cue: VTTCue }) => (
     <span>
       {active ? 'Active: ' : ''}
