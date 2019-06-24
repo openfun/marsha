@@ -11,7 +11,7 @@ import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
 import { ConsumableQuery, requestStatus } from '../../types/api';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
-import { DashboardTimedTextManager } from '../DashboardTimedTextManager/DashboardTimedTextManager';
+import { DashboardTimedTextManager } from '../DashboardTimedTextManager';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
 const messages = defineMessages({
