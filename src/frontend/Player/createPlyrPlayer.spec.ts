@@ -2,6 +2,26 @@ import { createPlyrPlayer } from './createPlyrPlayer';
 
 jest.mock('plyr', () => {
   return jest.fn().mockImplementation(() => ({
+    elements: {
+      buttons: {
+        play: [
+          {
+            classList: {
+              contains: jest.fn().mockReturnValue(true),
+            },
+            setAttribute: jest.fn(),
+            tabIndex: 0,
+          },
+          {
+            classList: {
+              contains: jest.fn().mockReturnValue(false),
+            },
+            setAttribute: jest.fn(),
+            tabIndex: 0,
+          },
+        ],
+      },
+    },
     on: jest.fn(),
   }));
 });
@@ -17,6 +37,15 @@ describe('createPlyrPlayer', () => {
   });
   it('creates Plyr player and configure it', () => {
     const player = createPlyrPlayer('ref' as any, jest.fn());
+
+    const playButton = player.elements.buttons.play! as HTMLButtonElement[];
+    expect(playButton[0].tabIndex).toEqual(-1);
+    expect(playButton[0].setAttribute).toHaveBeenCalledWith(
+      'aria-hidden',
+      'true',
+    );
+    expect(playButton[1].tabIndex).toEqual(0);
+    expect(playButton[1].setAttribute).not.toHaveBeenCalled();
 
     expect(player.on).toHaveBeenNthCalledWith(
       1,

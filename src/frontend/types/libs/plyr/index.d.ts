@@ -23,6 +23,14 @@ declare class Plyr {
   ): Plyr.Support;
 
   /**
+   * Options set when Plyr is instantiated.
+   */
+  config: Plyr.Options;
+
+  // Elements cache
+  elements: Plyr.Elements;
+
+  /**
    * Indicates if the current player is HTML5.
    */
   readonly isHTML5: boolean;
@@ -545,6 +553,12 @@ declare namespace Plyr {
   export interface StorageOptions {
     enabled?: boolean;
     key?: string;
+  }
+
+  export interface Elements {
+    buttons: {
+      play?: HTMLButtonElement | HTMLButtonElement[];
+    };
   }
 
   export interface SourceInfo {

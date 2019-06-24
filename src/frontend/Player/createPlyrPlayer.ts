@@ -24,6 +24,26 @@ export const createPlyrPlayer = (
     settings,
   });
 
+  if (player.elements.buttons.play) {
+    if (Array.isArray(player.elements.buttons.play)) {
+      player.elements.buttons.play.forEach(button => {
+        // the tabIndex of this play button is set to -1. It must not be
+        // focusable when a user navigate with their keyboard. The play button in
+        // control bar is enough.
+        if (button.classList.contains('plyr__control--overlaid')) {
+          button.tabIndex = -1;
+          button.setAttribute('aria-hidden', 'true');
+        }
+      });
+    } else {
+      const playButton = player.elements.buttons.play;
+      if (playButton.classList.contains('plyr__control--overlaid')) {
+        playButton.tabIndex = -1;
+        playButton.setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+
   const xapiStatement = new XAPIStatement(
     appData.jwt,
     getDecodedJwt().session_id,
