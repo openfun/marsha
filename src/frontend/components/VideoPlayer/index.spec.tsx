@@ -166,6 +166,7 @@ describe('VideoPlayer', () => {
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
+    expect(container.querySelector('video')!.tabIndex).toEqual(-1);
   });
 
   it('allows video download when the video object specifies it', () => {

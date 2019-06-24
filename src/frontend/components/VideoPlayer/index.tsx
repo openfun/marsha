@@ -119,10 +119,13 @@ const BaseVideoPlayer = ({
 
   return (
     <Box>
+      {/* tabIndex is set to -1 to not take focus on this element when a user is navigating using
+       their keyboard. */}
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
         poster={thumbnailUrls[720]}
+        tabIndex={-1}
       >
         {!!videoNodeRef.current && isHlsSupported(videoNodeRef.current) && (
           <source
