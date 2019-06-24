@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
@@ -25,25 +25,21 @@ interface DashboardTimedTextManagerProps {
  * @param mode The mode of the timedtexttracks we're managing.
  * @param tracks The list of timedtexttracks to display.
  */
-export class DashboardTimedTextManager extends React.Component<
-  DashboardTimedTextManagerProps
-> {
-  render() {
-    const { message, mode, tracks } = this.props;
-
-    return (
-      <DashboardTimedTextManagerStyled>
-        <DashboardInternalHeading>
-          <FormattedMessage {...message} />
-        </DashboardInternalHeading>
-        {tracks.map(track => {
-          return <TimedTextListItem key={track.id} track={track} />;
-        })}
-        <TimedTextCreationForm
-          mode={mode}
-          excludedLanguages={tracks.map(track => track.language)}
-        />
-      </DashboardTimedTextManagerStyled>
-    );
-  }
-}
+export const DashboardTimedTextManager = ({
+  message,
+  mode,
+  tracks,
+}: DashboardTimedTextManagerProps) => (
+  <DashboardTimedTextManagerStyled>
+    <DashboardInternalHeading>
+      <FormattedMessage {...message} />
+    </DashboardInternalHeading>
+    {tracks.map(track => {
+      return <TimedTextListItem key={track.id} track={track} />;
+    })}
+    <TimedTextCreationForm
+      mode={mode}
+      excludedLanguages={tracks.map(track => track.language)}
+    />
+  </DashboardTimedTextManagerStyled>
+);
