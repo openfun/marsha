@@ -6,6 +6,7 @@ import {
   InteractedContextExtensions,
 } from '../types/XAPI';
 import { isMSESupported } from '../utils/isAbrSupported';
+import { Nullable } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
 export const createPlyrPlayer = (
@@ -54,6 +55,16 @@ export const createPlyrPlayer = (
   let hasSeeked: boolean = false;
   let isInitialized: boolean = false;
 
+  const changePlayButtonAriaLabel = (label: string) => {
+    // change button control aria-label to given label.
+    const playButtons = document.querySelectorAll('button[data-plyr="play"]');
+    for (const playButton of playButtons) {
+      if (playButton.hasAttribute('aria-label')) {
+        playButton.setAttribute('aria-label', label);
+      }
+    }
+  };
+
   // canplay is the event when the video is really initialized and
   // information can be found in plyr object. Don't use ready event
   player.on('canplay', event => {
@@ -85,12 +96,16 @@ export const createPlyrPlayer = (
     xapiStatement.played({
       time: event.detail.plyr.currentTime,
     });
+
+    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.pause);
   });
 
   player.on('pause', event => {
     xapiStatement.paused({
       time: event.detail.plyr.currentTime,
     });
+
+    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.play);
   });
 
   /**************** Seeked statement ***********************/
@@ -166,6 +181,11 @@ export const createPlyrPlayer = (
     dispatchPlayerTimeUpdate(event.detail.plyr.currentTime);
   });
   /**************** End dispatch time updated *********************/
+
+  player.on('ended', event => {
+    // change button control aria-label to play.
+    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.play);
+  });
 
   window.addEventListener('unload', () => {
     if (false === isInitialized) {
