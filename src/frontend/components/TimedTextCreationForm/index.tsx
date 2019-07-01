@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Select from 'react-select';
-import { ActionMeta, ValueType } from 'react-select/lib/types';
+import { ActionMeta, ValueType } from 'react-select/src/types';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
