@@ -17,10 +17,10 @@
     "moduleResolution": "node",
     "paths": {
       "plyr": ["types/libs/plyr"],
-      "dashjs": ["types/libs/dashjs"],
       "vtt.js": ["types/libs/vtt.js"]
     },
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "strict": true,
     "sourceMap": true,
     "target": "es6",
