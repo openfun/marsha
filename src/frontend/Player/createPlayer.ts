@@ -1,13 +1,13 @@
 import { VideoPlayerCreator } from '../types/VideoPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
 
-export const createPlayer: VideoPlayerCreator = (
+export const createPlayer: VideoPlayerCreator = async (
   type,
   ref,
   dispatchPlayerTimeUpdate,
 ) => {
   switch (type) {
     case 'plyr':
-      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate);
+      return await createPlyrPlayer(ref, dispatchPlayerTimeUpdate);
   }
 };

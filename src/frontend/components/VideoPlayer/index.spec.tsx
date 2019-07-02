@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -30,6 +30,8 @@ jest.mock('../../utils/isAbrSupported', () => ({
 const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
+const createPlayer = jest.fn();
+
 describe('VideoPlayer', () => {
   beforeEach(() =>
     fetchMock.mock(
@@ -49,6 +51,12 @@ describe('VideoPlayer', () => {
       { method: 'OPTIONS' },
     ),
   );
+
+  beforeEach(() => {
+    createPlayer.mockResolvedValue({
+      destroy: jest.fn(),
+    });
+  });
 
   afterEach(cleanup);
   afterEach(fetchMock.restore);
@@ -115,11 +123,7 @@ describe('VideoPlayer', () => {
     },
   } as Video;
 
-  const createPlayer = jest.fn(() => ({
-    destroy: jest.fn(),
-  }));
-
-  it('starts up the player with DashJS and renders all the relevant sources', () => {
+  it('starts up the player with DashJS and renders all the relevant sources', async () => {
     // Simulate a browser that supports MSE and will use DashJS
     mockIsMSESupported.mockReturnValue(true);
     mockIsHlsSupported.mockReturnValue(false);
@@ -133,6 +137,7 @@ describe('VideoPlayer', () => {
         <VideoPlayer createPlayer={createPlayer} video={video} />
       </Provider>,
     );
+    await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
     expect(createPlayer).toHaveBeenCalledWith(
@@ -189,7 +194,7 @@ describe('VideoPlayer', () => {
     getByText('Show a transcript');
   });
 
-  it('does not use DashJS when MSE are not supported', () => {
+  it('does not use DashJS when MSE are not supported', async () => {
     // Simulate a browser that does not support MSE
     mockIsMSESupported.mockReturnValue(false);
     const state = {
@@ -202,6 +207,7 @@ describe('VideoPlayer', () => {
         <VideoPlayer createPlayer={createPlayer} video={video} />
       </Provider>,
     );
+    await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
     expect(createPlayer).toHaveBeenCalledWith(
@@ -216,7 +222,7 @@ describe('VideoPlayer', () => {
     );
   });
 
-  it('uses HLS source when browser support it', () => {
+  it('uses HLS source when browser support it', async () => {
     mockIsHlsSupported.mockReturnValue(true);
 
     const state = {
@@ -229,6 +235,7 @@ describe('VideoPlayer', () => {
         <VideoPlayer createPlayer={createPlayer} video={video} />
       </Provider>,
     );
+    await wait();
 
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       0,
