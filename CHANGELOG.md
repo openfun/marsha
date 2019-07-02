@@ -11,16 +11,19 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add the `show_download` flag to the video admin view.
+- Translate plyr interface.
 
 ### Changed
 
 - Hide dashboard button in instructor view when a video is in read only.
 - Reactivate HLS support.
+- Only one play button in the plyr is active for a screen reader.
 
 ### Fixed
 
 - Add time in interacted xapi payload.
-- pin Terraform to version 0.11.14
+- Pin Terraform to version 0.11.14.
+- Change arial-label on play button when its state changes.
 
 ## [2.9.0] - 2019-06-11
 

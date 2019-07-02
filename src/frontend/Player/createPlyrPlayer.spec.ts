@@ -27,16 +27,27 @@ jest.mock('plyr', () => {
 });
 jest.mock('jwt-decode', () => {
   return jest.fn().mockImplementation(() => ({
+    locale: 'en',
     session_id: 'abcd',
   }));
 });
+jest.mock('react-intl', () => ({
+  IntlProvider: jest.fn().mockImplementation(() => ({
+    getChildContext: jest.fn().mockReturnValue({
+      intl: {
+        formatMessage: jest.fn(),
+      },
+    }),
+  })),
+  defineMessages: jest.fn().mockImplementation(messages => messages),
+}));
 
 describe('createPlyrPlayer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('creates Plyr player and configure it', () => {
-    const player = createPlyrPlayer('ref' as any, jest.fn());
+  it('creates Plyr player and configure it', async () => {
+    const player = await createPlyrPlayer('ref' as any, jest.fn());
 
     const playButton = player.elements.buttons.play! as HTMLButtonElement[];
     expect(playButton[0].tabIndex).toEqual(-1);
