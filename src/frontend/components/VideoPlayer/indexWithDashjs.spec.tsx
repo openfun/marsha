@@ -6,29 +6,15 @@ import { Provider } from 'react-redux';
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
-import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
-import { jestMockOf } from '../../utils/types';
 import { VideoPlayer } from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-const mockInitialize = jest.fn();
-const mockUpdateSettings = jest.fn();
-jest.mock('dashjs', () => ({
-  MediaPlayer: () => ({
-    create: () => ({
-      initialize: mockInitialize,
-      updateSettings: mockUpdateSettings,
-    }),
-  }),
-}));
-
+// Simulate a browser that supports MSE and will use DashJS
 jest.mock('../../utils/isAbrSupported', () => ({
-  isHlsSupported: jest.fn(),
-  isMSESupported: jest.fn(),
+  isHlsSupported: jest.fn().mockReturnValue(false),
+  isMSESupported: jest.fn().mockReturnValue(true),
 }));
-const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
-const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
 describe('VideoPlayer', () => {
   beforeEach(() =>
@@ -119,10 +105,8 @@ describe('VideoPlayer', () => {
     destroy: jest.fn(),
   }));
 
-  it('starts up the player with DashJS and renders all the relevant sources', () => {
-    // Simulate a browser that supports MSE and will use DashJS
-    mockIsMSESupported.mockReturnValue(true);
-    mockIsHlsSupported.mockReturnValue(false);
+  // This test just makes sure everything works when dashjs is not mocked
+  it('starts up the player with DashJS', () => {
     const state = {
       state: appState.INSTRUCTOR,
       video,
@@ -140,20 +124,6 @@ describe('VideoPlayer', () => {
       expect.any(Element),
       expect.anything(),
     );
-    expect(mockInitialize).toHaveBeenCalledWith(
-      expect.any(Element),
-      'https://example.com/dash.mpd',
-      false,
-    );
-    expect(mockUpdateSettings).toHaveBeenCalledWith({
-      streaming: {
-        abr: {
-          initialBitrate: {
-            video: 1600000,
-          },
-        },
-      },
-    });
     expect(queryByText(/Download this video/i)).toEqual(null);
     getByText('Show a transcript');
     expect(container.querySelectorAll('track')).toHaveLength(2);
@@ -166,76 +136,5 @@ describe('VideoPlayer', () => {
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
-  });
-
-  it('allows video download when the video object specifies it', () => {
-    mockIsMSESupported.mockReturnValue(false);
-    const state = {
-      state: appState.INSTRUCTOR,
-      video: {
-        ...video,
-        show_download: true,
-      },
-    } as any;
-
-    const { getByText } = render(
-      <Provider store={bootstrapStore(state)}>
-        <VideoPlayer createPlayer={createPlayer} video={video} />
-      </Provider>,
-    );
-
-    getByText(/Download this video/i);
-    getByText('Show a transcript');
-  });
-
-  it('does not use DashJS when MSE are not supported', () => {
-    // Simulate a browser that does not support MSE
-    mockIsMSESupported.mockReturnValue(false);
-    const state = {
-      state: appState.INSTRUCTOR,
-      video,
-    } as any;
-
-    const { container } = render(
-      <Provider store={bootstrapStore(state)}>
-        <VideoPlayer createPlayer={createPlayer} video={video} />
-      </Provider>,
-    );
-
-    // The player is created and initialized with DashJS for adaptive bitrate
-    expect(createPlayer).toHaveBeenCalledWith(
-      'plyr',
-      expect.any(Element),
-      expect.anything(),
-    );
-    expect(mockInitialize).not.toHaveBeenCalled();
-    expect(mockUpdateSettings).not.toHaveBeenCalled();
-    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      2,
-    );
-  });
-
-  it('uses HLS source when browser support it', () => {
-    mockIsHlsSupported.mockReturnValue(true);
-
-    const state = {
-      state: appState.INSTRUCTOR,
-      video,
-    } as any;
-
-    const { container } = render(
-      <Provider store={bootstrapStore(state)}>
-        <VideoPlayer createPlayer={createPlayer} video={video} />
-      </Provider>,
-    );
-
-    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      0,
-    );
-    expect(
-      container.querySelectorAll(
-        'source[type="application/vnd.apple.mpegURL"]',
-      ),
-    ).toHaveLength(1);
   });
 });

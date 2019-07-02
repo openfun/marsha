@@ -88,7 +88,15 @@ const BaseVideoPlayer = ({
           video.urls.manifests.dash,
           false,
         );
-        dash.setInitialBitrateFor('video', 1600000);
+        dash.updateSettings({
+          streaming: {
+            abr: {
+              initialBitrate: {
+                video: 1600000,
+              },
+            },
+          },
+        } as dashjs.MediaPlayerSettingClass);
       }
 
       /** Make sure to destroy the player on unmount. */
