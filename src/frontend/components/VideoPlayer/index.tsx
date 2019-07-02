@@ -26,6 +26,7 @@ import {
 } from '../../types/VideoPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
+import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { Transcripts } from '../Transcripts';
@@ -72,13 +73,13 @@ const BaseVideoPlayer = ({
    * Initialize the `Plyr` video player and our adaptive bitrate library if applicable.
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
-  useEffect(() => {
+  useAsyncEffect(async () => {
     getChoices();
 
     if (video) {
       // Instantiate Plyr and keep the instance in state
       setPlayer(
-        createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
+        await createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
       );
 
       if (isMSESupported()) {

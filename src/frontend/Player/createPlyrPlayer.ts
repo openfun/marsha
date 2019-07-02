@@ -1,4 +1,5 @@
 import Plyr from 'plyr';
+import { IntlProvider } from 'react-intl';
 
 import { appData, getDecodedJwt } from '../data/appData';
 import {
@@ -8,19 +9,82 @@ import {
 import { isMSESupported } from '../utils/isAbrSupported';
 import { Nullable } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
+import { i18nMessages } from './i18n/plyrTranslation';
 
-export const createPlyrPlayer = (
+export const createPlyrPlayer = async (
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-): Plyr => {
+): Promise<Plyr> => {
   const settings = ['captions', 'speed', 'loop'];
   if (!isMSESupported()) {
     settings.push('quality');
   }
+
+  let localeCode = getDecodedJwt().locale;
+  if (localeCode.match(/^.*_.*$/)) {
+    localeCode = localeCode.split('_')[0];
+  }
+
+  let translatedMessages = null;
+  try {
+    translatedMessages = await import(
+      `../translations/${getDecodedJwt().locale}.json`
+    );
+  } catch (e) {}
+
+  const { intl } = new IntlProvider({
+    locale: localeCode,
+    messages: translatedMessages,
+  }).getChildContext();
+
   const player = new Plyr(ref, {
     captions: {
       active: true,
       update: true,
+    },
+    i18n: {
+      advertisement: intl.formatMessage(i18nMessages.advertisement),
+      all: intl.formatMessage(i18nMessages.all),
+      buffered: intl.formatMessage(i18nMessages.buffered),
+      captions: intl.formatMessage(i18nMessages.captions),
+      currentTime: intl.formatMessage(i18nMessages.currentTime),
+      disableCaptions: intl.formatMessage(i18nMessages.disableCaptions),
+      disabled: intl.formatMessage(i18nMessages.disabled),
+      download: intl.formatMessage(i18nMessages.download),
+      duration: intl.formatMessage(i18nMessages.duration),
+      enableCaptions: intl.formatMessage(i18nMessages.enableCaptions),
+      enabled: intl.formatMessage(i18nMessages.enabled),
+      end: intl.formatMessage(i18nMessages.end),
+      enterFullscreen: intl.formatMessage(i18nMessages.enterFullscreen),
+      exitFullscreen: intl.formatMessage(i18nMessages.exitFullscreen),
+      fastForward: intl.formatMessage(i18nMessages.fastForward),
+      frameTitle: intl.formatMessage(i18nMessages.frameTitle),
+      loop: intl.formatMessage(i18nMessages.loop),
+      menuBack: intl.formatMessage(i18nMessages.menuBack),
+      mute: intl.formatMessage(i18nMessages.mute),
+      normal: intl.formatMessage(i18nMessages.normal),
+      pause: intl.formatMessage(i18nMessages.pause),
+      play: intl.formatMessage(i18nMessages.play),
+      played: intl.formatMessage(i18nMessages.played),
+      quality: intl.formatMessage(i18nMessages.quality),
+      qualityBadge: {
+        2160: intl.formatMessage(i18nMessages[2160]),
+        1440: intl.formatMessage(i18nMessages[1440]),
+        1080: intl.formatMessage(i18nMessages[1080]),
+        720: intl.formatMessage(i18nMessages[720]),
+        576: intl.formatMessage(i18nMessages[576]),
+        480: intl.formatMessage(i18nMessages[480]),
+      },
+      reset: intl.formatMessage(i18nMessages.reset),
+      restart: intl.formatMessage(i18nMessages.restart),
+      rewind: intl.formatMessage(i18nMessages.rewind),
+      seek: intl.formatMessage(i18nMessages.seek),
+      seekLabel: intl.formatMessage(i18nMessages.seekLabel),
+      settings: intl.formatMessage(i18nMessages.settings),
+      speed: intl.formatMessage(i18nMessages.speed),
+      start: intl.formatMessage(i18nMessages.start),
+      unmute: intl.formatMessage(i18nMessages.unmute),
+      volume: intl.formatMessage(i18nMessages.volume),
     },
     settings,
   });

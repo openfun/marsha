@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -101,12 +101,16 @@ describe('VideoPlayer', () => {
     },
   } as Video;
 
-  const createPlayer = jest.fn(() => ({
-    destroy: jest.fn(),
-  }));
+  const createPlayer = jest.fn();
+
+  beforeEach(() => {
+    createPlayer.mockResolvedValue({
+      destroy: jest.fn(),
+    });
+  });
 
   // This test just makes sure everything works when dashjs is not mocked
-  it('starts up the player with DashJS', () => {
+  it('starts up the player with DashJS', async () => {
     const state = {
       state: appState.INSTRUCTOR,
       video,
@@ -117,6 +121,7 @@ describe('VideoPlayer', () => {
         <VideoPlayer createPlayer={createPlayer} video={video} />
       </Provider>,
     );
+    await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
     expect(createPlayer).toHaveBeenCalledWith(
