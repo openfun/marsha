@@ -16,7 +16,7 @@ import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { IframeHeading } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
-import { UploadField } from '../UploadField/UploadField';
+import { UploadField } from '../UploadField';
 
 const messages = defineMessages({
   linkToDashboard: {

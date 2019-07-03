@@ -137,7 +137,7 @@ describe('UploadForm', () => {
       ),
     );
 
-    fireEvent.change(container.querySelector('input[type="file"]')!, {
+    fireEvent.drop(container.querySelector('input[type="file"]')!, {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
