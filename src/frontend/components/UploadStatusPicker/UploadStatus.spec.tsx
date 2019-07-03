@@ -3,7 +3,7 @@ import '../../testSetup';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { Loader } from '../Loader/Loader';
+import { Loader } from '../Loader';
 import { statusIconKey, UploadStatus } from './UploadStatus';
 
 describe('<UploadStatus />', () => {

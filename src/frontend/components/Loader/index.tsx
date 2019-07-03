@@ -1,5 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';

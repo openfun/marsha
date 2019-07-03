@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Loader } from '../Loader/Loader';
+import { Loader } from '../Loader';
 
 /** Available icon names for statusIcon on the UploadStatus component. */
 export enum statusIconKey {
