@@ -17,7 +17,7 @@ import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
-import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
+import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
 
