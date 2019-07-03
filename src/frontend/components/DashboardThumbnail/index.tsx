@@ -15,7 +15,7 @@ import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
-import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay/DashboardThumbnailDisplay';
+import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 const messages = defineMessages({

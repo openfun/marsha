@@ -1,11 +1,11 @@
-import '../../testSetup';
-
-import { shallow } from 'enzyme';
+import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import { DashboardThumbnailDisplay } from './DashboardThumbnailDisplay';
+import { DashboardThumbnailDisplay } from '.';
 
 describe('<DashboardThumbnailDisplay />', () => {
+  afterEach(cleanup);
+
   it('display images from thumbnail resource when ready', () => {
     const thumbnail = {
       id: 42,
@@ -34,13 +34,16 @@ describe('<DashboardThumbnailDisplay />', () => {
       },
     } as any;
 
-    const wrapper = shallow(
+    const { container } = render(
       <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
     );
-    expect(wrapper.prop('src')).toEqual(
+
+    const img = container.querySelector('img')!;
+
+    expect(img.getAttribute('src')).toEqual(
       'https://example.com/thumbnail/144.jpg',
     );
-    expect(wrapper.prop('srcSet')).toEqual(
+    expect(img.getAttribute('srcset')).toEqual(
       'https://example.com/thumbnail/144.jpg 256w, https://example.com/thumbnail/240.jpg 426w, https://example.com/thumbnail/480.jpg 854w, https://example.com/thumbnail/720.jpg 1280w, https://example.com/thumbnail/1080.jpg 1920w',
     );
   });
@@ -71,13 +74,16 @@ describe('<DashboardThumbnailDisplay />', () => {
       },
     } as any;
 
-    const wrapper = shallow(
+    const { container } = render(
       <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
     );
-    expect(wrapper.prop('src')).toEqual(
+
+    const img = container.querySelector('img')!;
+
+    expect(img.getAttribute('src')).toEqual(
       'https://example.com/video/thumbnail/144.jpg',
     );
-    expect(wrapper.prop('srcSet')).toEqual(
+    expect(img.getAttribute('srcset')).toEqual(
       'https://example.com/video/thumbnail/144.jpg 256w, https://example.com/video/thumbnail/240.jpg 426w, https://example.com/video/thumbnail/480.jpg 854w, https://example.com/video/thumbnail/720.jpg 1280w, https://example.com/video/thumbnail/1080.jpg 1920w',
     );
   });
@@ -98,13 +104,16 @@ describe('<DashboardThumbnailDisplay />', () => {
       },
     } as any;
 
-    const wrapper = shallow(
+    const { container } = render(
       <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
     );
-    expect(wrapper.prop('src')).toEqual(
+
+    const img = container.querySelector('img')!;
+
+    expect(img.getAttribute('src')).toEqual(
       'https://example.com/video/thumbnail/144.jpg',
     );
-    expect(wrapper.prop('srcSet')).toEqual(
+    expect(img.getAttribute('srcset')).toEqual(
       'https://example.com/video/thumbnail/144.jpg 256w, https://example.com/video/thumbnail/240.jpg 426w, https://example.com/video/thumbnail/480.jpg 854w, https://example.com/video/thumbnail/720.jpg 1280w, https://example.com/video/thumbnail/1080.jpg 1920w',
     );
   });
