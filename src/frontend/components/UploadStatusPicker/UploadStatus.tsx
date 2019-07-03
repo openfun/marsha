@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Loader } from '../Loader';
 
@@ -11,6 +11,7 @@ export enum statusIconKey {
 
 /** Props shape for the UploadStatus component. */
 export interface UploadStatusProps {
+  children: React.ReactNode;
   className?: string;
   statusIcon?: statusIconKey;
 }
@@ -18,31 +19,31 @@ export interface UploadStatusProps {
 /** Component. Displays one word status information along with an optional icon.
  * @param statusIcon The key for an icon to display along with the status.
  */
-export class UploadStatus extends React.Component<UploadStatusProps> {
-  render() {
-    const { children, className, statusIcon } = this.props;
+export const UploadStatus = ({
+  children,
+  className,
+  statusIcon,
+}: UploadStatusProps) => {
+  let icon;
+  switch (statusIcon) {
+    case statusIconKey.LOADER:
+      icon = <Loader />;
+      break;
 
-    let icon;
-    switch (statusIcon) {
-      case statusIconKey.LOADER:
-        icon = <Loader />;
-        break;
+    case statusIconKey.TICK:
+      icon = '✔️';
+      break;
 
-      case statusIconKey.TICK:
-        icon = '✔️';
-        break;
-
-      case statusIconKey.X:
-        icon = '❌';
-        break;
-    }
-
-    return (
-      <div className={className || ''}>
-        {children}
-        &nbsp;
-        {icon}
-      </div>
-    );
+    case statusIconKey.X:
+      icon = '❌';
+      break;
   }
-}
+
+  return (
+    <div className={className || ''}>
+      {children}
+      &nbsp;
+      {icon}
+    </div>
+  );
+};

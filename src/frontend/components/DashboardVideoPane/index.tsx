@@ -19,7 +19,7 @@ import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
+import { UploadStatusPicker } from '../UploadStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
