@@ -27,7 +27,7 @@ import {
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { DownloadVideo } from '../DowloadVideo/DownloadVideo';
+import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { Transcripts } from '../Transcripts';
 import './VideoPlayer.css'; // Improve some plyr styles
