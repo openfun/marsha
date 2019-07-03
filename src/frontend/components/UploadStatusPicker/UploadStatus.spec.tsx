@@ -1,31 +1,45 @@
-import '../../testSetup';
+import { cleanup, render } from '@testing-library/react';
+import React from 'react';
 
-import { shallow } from 'enzyme';
-import * as React from 'react';
-
-import { Loader } from '../Loader';
 import { statusIconKey, UploadStatus } from './UploadStatus';
 
 describe('<UploadStatus />', () => {
+  afterEach(cleanup);
+
   it('renders with children', () => {
-    expect(
-      shallow(<UploadStatus>Some child content</UploadStatus>).html(),
-    ).toContain('Some child content');
+    const { getByText } = render(
+      <UploadStatus>Some child content</UploadStatus>,
+    );
+    getByText('Some child content');
   });
 
-  it('displays the status icon depending on the props', () => {
-    expect(
-      shallow(<UploadStatus statusIcon={statusIconKey.X} />).html(),
-    ).toContain('❌');
+  it('displays the status icon ❌', () => {
+    const { getByText } = render(
+      <UploadStatus statusIcon={statusIconKey.X}>
+        Some child content
+      </UploadStatus>,
+    );
 
-    expect(
-      shallow(<UploadStatus statusIcon={statusIconKey.TICK} />).html(),
-    ).toContain('✔️');
+    getByText('Some child content ❌');
+  });
 
-    expect(
-      shallow(
-        <UploadStatus statusIcon={statusIconKey.LOADER} />,
-      ).containsMatchingElement(<Loader />),
-    ).toBeTruthy();
+  it('displays the status icon ✔️', () => {
+    const { getByText } = render(
+      <UploadStatus statusIcon={statusIconKey.TICK}>
+        Some child content
+      </UploadStatus>,
+    );
+
+    getByText('Some child content ✔️');
+  });
+
+  it('displays the Loader status icon ✔️', () => {
+    const { container } = render(
+      <UploadStatus statusIcon={statusIconKey.LOADER}>
+        Some child content
+      </UploadStatus>,
+    );
+
+    expect(container.querySelector('div[aria-busy="true"]')).not.toBeNull();
   });
 });

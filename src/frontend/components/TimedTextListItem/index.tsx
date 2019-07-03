@@ -17,7 +17,7 @@ import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { UploadStatusPicker } from '../UploadStatusPicker/UploadStatusPicker';
+import { UploadStatusPicker } from '../UploadStatusPicker';
 
 const messages = defineMessages({
   delete: {
