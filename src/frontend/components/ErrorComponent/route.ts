@@ -1,4 +1,4 @@
-import { ErrorComponentProps } from './ErrorComponent';
+import { ErrorComponentProps } from '.';
 
 /**
  * Route for the `<ErrorComponent />` component.

@@ -5,7 +5,7 @@ import { appData } from '../../data/appData';
 import { createPlayer } from '../../Player/createPlayer';
 import { Dashboard } from '../Dashboard';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ErrorComponent } from '../ErrorComponent/ErrorComponent';
+import { ErrorComponent } from '../ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { RedirectOnLoad } from '../RedirectOnLoad';
