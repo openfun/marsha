@@ -1,5 +1,3 @@
-import '../../testSetup';
-
 import {
   cleanup,
   getByText as getByTextInContainer,

@@ -1,5 +1,3 @@
-import '../../../testSetup';
-
 import { uploadFile } from '.';
 
 describe('sideEffects/uploadFile', () => {
