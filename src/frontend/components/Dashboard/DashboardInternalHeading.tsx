@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H6 } from '../Headings/Headings';
+import { H6 } from '../Headings';
 
 export const DashboardInternalHeading = styled(H6)`
   margin: 0;

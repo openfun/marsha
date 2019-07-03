@@ -2,7 +2,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from '../Headings/Headings';
+import { H2 } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 
 export interface ErrorComponentProps {
