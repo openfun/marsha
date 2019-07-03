@@ -8,7 +8,7 @@ import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
 import { DashboardVideoPane } from '../DashboardVideoPane';
-import { IframeHeading } from '../Headings/Headings';
+import { IframeHeading } from '../Headings';
 
 const messages = defineMessages({
   title: {

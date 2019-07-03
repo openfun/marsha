@@ -14,7 +14,7 @@ import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { IframeHeading } from '../Headings/Headings';
+import { IframeHeading } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
 import { UploadField } from '../UploadField/UploadField';
 
