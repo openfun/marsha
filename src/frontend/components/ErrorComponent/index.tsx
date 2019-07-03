@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { H2 } from '../Headings';
-import { LayoutMainArea } from '../LayoutMainArea/LayoutMainArea';
+import { LayoutMainArea } from '../LayoutMainArea';
 
 export interface ErrorComponentProps {
   code: 'lti' | 'notFound' | 'policy' | 'upload';
