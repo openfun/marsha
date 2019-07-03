@@ -15,7 +15,7 @@ import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnail } from '../DashboardThumbnail';
-import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons/DashboardVideoPaneButtons';
+import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext/DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
