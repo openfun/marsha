@@ -1,10 +1,8 @@
-import '../../testSetup';
-
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import * as React from 'react';
 
+import { DownloadVideo } from '.';
 import { Video } from '../../types/tracks';
-import { DownloadVideo } from './DownloadVideo';
 
 describe('<DownloadVideo />', () => {
   const video = {
@@ -29,12 +27,10 @@ describe('<DownloadVideo />', () => {
     },
   } as Video;
   it('renders all video links', () => {
-    const wrapper = mount(<DownloadVideo video={video} />);
+    const { getByText } = render(<DownloadVideo video={video} />);
 
-    const links = wrapper.find('a');
-    expect(links.length).toEqual(3);
-    expect(links.at(0).text()).toEqual('1080p');
-    expect(links.at(1).text()).toEqual('720p');
-    expect(links.at(2).text()).toEqual('480p');
+    getByText('1080p');
+    getByText('720p');
+    getByText('480p');
   });
 });
