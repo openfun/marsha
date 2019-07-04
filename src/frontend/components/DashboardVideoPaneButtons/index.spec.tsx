@@ -8,8 +8,6 @@ import { wrapInRouter } from '../../utils/tests/router';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 describe('<DashboardVideoPaneButtons />', () => {
-  afterEach(cleanup);
-
   it('only renders the "Watch" button if the video is ready', () => {
     const { getByText } = render(
       wrapInRouter(

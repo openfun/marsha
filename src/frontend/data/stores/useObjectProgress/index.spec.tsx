@@ -1,11 +1,9 @@
-import { act, cleanup, render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import React from 'react';
 
 import { ObjectProgress, useObjectProgress } from '.';
 
 describe('stores/useObjectProgress', () => {
-  afterEach(cleanup);
-
   let setObjectProgress: any;
   const ControlComponent = () => {
     setObjectProgress = useObjectProgress(state => state.setObjectProgress);

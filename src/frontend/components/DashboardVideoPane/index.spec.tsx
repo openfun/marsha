@@ -22,7 +22,6 @@ const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
 describe('<DashboardVideoPane />', () => {
   beforeEach(jest.useFakeTimers);
 
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
   afterEach(jest.resetAllMocks);
 

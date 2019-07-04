@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 
@@ -16,8 +16,6 @@ jest.mock('../DashboardTimedTextPane', () => ({
 }));
 
 describe('<Dashboard />', () => {
-  afterEach(cleanup);
-
   it('renders', () => {
     const mockVideo: any = {
       id: 'dd44',

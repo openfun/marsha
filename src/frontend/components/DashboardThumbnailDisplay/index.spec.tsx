@@ -1,11 +1,9 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import { DashboardThumbnailDisplay } from '.';
 
 describe('<DashboardThumbnailDisplay />', () => {
-  afterEach(cleanup);
-
   it('display images from thumbnail resource when ready', () => {
     const thumbnail = {
       id: 42,

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -21,7 +21,6 @@ jest.mock('../../data/appData', () => ({
 
 describe('<DashboardThumbnail />', () => {
   afterEach(jest.resetAllMocks);
-  afterEach(cleanup);
 
   // Disable useless async act warnings
   // TODO: remove this spy as soon as async act is available

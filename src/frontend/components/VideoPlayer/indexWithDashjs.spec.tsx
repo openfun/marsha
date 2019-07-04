@@ -1,4 +1,4 @@
-import { cleanup, render, wait } from '@testing-library/react';
+import { render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -36,7 +36,6 @@ describe('VideoPlayer', () => {
     ),
   );
 
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
   afterEach(jest.clearAllMocks);
 
