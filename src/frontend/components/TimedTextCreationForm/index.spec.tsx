@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -35,7 +35,6 @@ describe('<TimedTextCreationForm />', () => {
     );
   });
 
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
   afterEach(jest.resetAllMocks);
 

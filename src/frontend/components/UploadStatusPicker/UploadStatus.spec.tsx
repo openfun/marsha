@@ -1,11 +1,9 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import { statusIconKey, UploadStatus } from './UploadStatus';
 
 describe('<UploadStatus />', () => {
-  afterEach(cleanup);
-
   it('renders with children', () => {
     const { getByText } = render(
       <UploadStatus>Some child content</UploadStatus>,

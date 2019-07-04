@@ -1,12 +1,10 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { VTTCue } from 'vtt.js';
 
 import { TranscriptSentence } from '.';
 
 describe('<TranscriptSentence />', () => {
-  afterEach(cleanup);
-
   it('displays a simple <Text /> when not active', () => {
     const cue: VTTCue = {
       endTime: 1,

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -64,7 +64,6 @@ describe('<Transcripts />', () => {
     ),
   );
 
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
 
   it('displays a list of available transcripts', async () => {

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
@@ -10,7 +10,6 @@ import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
 
 describe('<DashboardVideoPaneDownloadOption />', () => {
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
 
   const video = {
