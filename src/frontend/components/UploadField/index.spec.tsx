@@ -1,11 +1,9 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import React from 'react';
 
 import { UploadField } from '.';
 
 describe('<UploadField />', () => {
-  afterEach(cleanup);
-
   it('renders a Dropzone with the relevant messages', () => {
     const { getByText } = render(<UploadField onContentUpdated={jest.fn()} />);
     getByText('Select a file to upload');

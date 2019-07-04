@@ -1,11 +1,9 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import { ErrorComponent } from '.';
 
 describe('<ErrorComponent />', () => {
-  afterEach(cleanup);
-
   it('displays the content for 404 not found errors', () => {
     const { getByText } = render(<ErrorComponent code="notFound" />);
     getByText('The video you are looking for could not be found');

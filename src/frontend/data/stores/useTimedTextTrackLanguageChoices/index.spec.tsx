@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -29,7 +29,6 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
     useTimedTextTrackLanguageChoicesApi.setState({ choices: undefined });
   });
 
-  afterEach(cleanup);
   afterEach(fetchMock.restore);
 
   it('gets the choices the first time getChoices is called and makes them available', async () => {

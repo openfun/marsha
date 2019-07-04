@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import { UploadStatusPicker } from '.';
@@ -7,8 +7,6 @@ import { uploadState } from '../../types/tracks';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 describe('<UploadStatusPicker />', () => {
-  afterEach(cleanup);
-
   it('renders the status list for PENDING', () => {
     const { getByText } = render(<UploadStatusPicker state={PENDING} />);
 

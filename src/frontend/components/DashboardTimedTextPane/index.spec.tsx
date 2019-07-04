@@ -1,5 +1,4 @@
 import {
-  cleanup,
   getByText as getByTextInContainer,
   render,
   wait,
@@ -35,7 +34,6 @@ describe('<DashboardTimedTextPane />', () => {
     ),
   );
 
-  afterEach(cleanup);
   afterEach(jest.resetAllMocks);
   afterEach(fetchMock.restore);
 

@@ -1,12 +1,10 @@
-import { act, cleanup, render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import React from 'react';
 
 import { DashboardObjectProgress } from '.';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
 
 describe('<DashboardVideoPaneProgress />', () => {
-  afterEach(cleanup);
-
   let setObjectProgress: any;
   const ControlComponent = () => {
     setObjectProgress = useObjectProgress(state => state.setObjectProgress);

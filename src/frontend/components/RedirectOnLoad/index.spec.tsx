@@ -25,7 +25,6 @@ jest.mock('../../data/appData', () => ({
 
 describe('<RedirectOnLoad />', () => {
   beforeEach(jest.resetAllMocks);
-  afterEach(cleanup);
 
   it('redirects to the error view on LTI error', () => {
     mockState = appState.ERROR;

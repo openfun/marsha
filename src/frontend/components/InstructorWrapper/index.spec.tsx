@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 
@@ -27,8 +27,6 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<InstructorWrapper />', () => {
-  afterEach(cleanup);
-
   const state = {
     state: appState.INSTRUCTOR,
     video: null,
