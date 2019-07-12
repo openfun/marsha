@@ -25,6 +25,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Pin Terraform to version 0.11.14.
 - Change arial-label on play button when its state changes.
 
+### Security
+
+- Update `handlebars` and `lodash` packages to safe versions.
+
 ## [2.9.0] - 2019-06-11
 
 ### Added
