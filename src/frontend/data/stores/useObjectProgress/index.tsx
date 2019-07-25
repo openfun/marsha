@@ -6,9 +6,14 @@ export interface ObjectProgress {
   [uploadableObjectId: string]: Maybe<number>;
 }
 
-export const [useObjectProgress] = create((set, get) => ({
-  objectProgress: {} as ObjectProgress,
-  setObjectProgress: (objectId: string, progress: number) =>
+interface State {
+  objectProgress: ObjectProgress;
+  setObjectProgress: (objectId: string, progress: number) => void;
+}
+
+export const [useObjectProgress] = create<State>((set, get) => ({
+  objectProgress: {},
+  setObjectProgress: (objectId, progress) =>
     set({
       objectProgress: {
         ...get().objectProgress,

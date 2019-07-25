@@ -45,7 +45,9 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
     transcript: null as Nullable<TimedTextTranscript>,
   });
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices();
+  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
+    state => state,
+  );
 
   const options = transcripts.map(transcript => {
     const language =
