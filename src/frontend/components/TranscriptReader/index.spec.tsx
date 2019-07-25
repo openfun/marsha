@@ -57,7 +57,7 @@ const transcript = {
 describe('<TranscriptReader />', () => {
   let setPlayerCurrentTime: (time: number) => void;
   const VideoPlayer = () => {
-    const videoProgress = useVideoProgress();
+    const videoProgress = useVideoProgress(state => state);
     setPlayerCurrentTime = videoProgress.setPlayerCurrentTime;
     return null;
   };

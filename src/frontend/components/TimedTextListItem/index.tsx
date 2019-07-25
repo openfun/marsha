@@ -76,7 +76,9 @@ const BaseTimedTextListItem = ({
 }: BaseTimedTextListItemProps) => {
   const [error, setError] = useState('');
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices();
+  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
+    state => state,
+  );
 
   // On load, get TTT language choices and start polling if necessary
   useEffect(() => {

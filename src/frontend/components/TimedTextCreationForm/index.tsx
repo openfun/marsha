@@ -80,7 +80,9 @@ const BaseTimedTextCreationForm = ({
   const [newTTLanguage, setNewTTLanguage] = useState('');
   const [newTTUploadId, setNewTTUploadId] = useState('');
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices();
+  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
+    state => state,
+  );
   useEffect(() => {
     getChoices();
   }, []);
