@@ -55,8 +55,12 @@ const BaseVideoPlayer = ({
   >);
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices();
-  const { setPlayerCurrentTime } = useVideoProgress();
+  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
+    state => state,
+  );
+  const setPlayerCurrentTime = useVideoProgress(
+    state => state.setPlayerCurrentTime,
+  );
 
   const languages: { [key: string]: string } =
     (choices &&

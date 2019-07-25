@@ -14,7 +14,7 @@ interface TranscriptReaderProps {
 export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
   const [cues, setCues] = useState([] as VTTCue[]);
 
-  const { playerCurrentTime } = useVideoProgress();
+  const playerCurrentTime = useVideoProgress(state => state.playerCurrentTime);
 
   useAsyncEffect(async () => {
     const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());

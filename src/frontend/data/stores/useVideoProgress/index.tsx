@@ -1,6 +1,11 @@
 import create from 'zustand';
 
-export const [useVideoProgress] = create(set => ({
+interface State {
+  playerCurrentTime: number;
+  setPlayerCurrentTime: (newTime: number) => void;
+}
+
+export const [useVideoProgress] = create<State>(set => ({
   playerCurrentTime: 0,
-  setPlayerCurrentTime: (time: number) => set({ playerCurrentTime: time }),
+  setPlayerCurrentTime: time => set({ playerCurrentTime: time }),
 }));
