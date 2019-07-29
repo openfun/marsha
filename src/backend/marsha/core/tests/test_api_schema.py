@@ -11,4 +11,4 @@ class SchemaAPITest(TestCase):
         """The API has a schema route that answers."""
         response = self.client.get("/api/schema")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)["_meta"]["title"], "Marsha API")
+        self.assertEqual(json.loads(response.content)["info"]["title"], "Marsha API")
