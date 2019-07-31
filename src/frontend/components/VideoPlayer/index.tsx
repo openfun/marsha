@@ -1,20 +1,15 @@
 import { MediaPlayer } from 'dashjs';
 import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
-import React, { useEffect, useRef, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useRef, useState } from 'react';
 import { Redirect } from 'react-router';
 
-import { RootState } from '../../data/rootReducer';
+import { useThumbnail } from '../../data/stores/useThumbnail';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
+import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { getThumbnail } from '../../data/thumbnail/selector';
-import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
-import { ConsumableQuery } from '../../types/api';
-import { modelName } from '../../types/models';
 import {
-  Thumbnail,
-  TimedText,
   timedTextMode,
   TimedTextTranscript,
   Video,
@@ -39,16 +34,12 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 
 interface BaseVideoPlayerProps {
   createPlayer: VideoPlayerCreator;
-  timedtexttracks: ConsumableQuery<TimedText>;
-  thumbnail: Nullable<Thumbnail>;
   video: Nullable<Video>;
 }
 
-const BaseVideoPlayer = ({
+export const VideoPlayer = ({
   createPlayer,
-  thumbnail,
-  timedtexttracks,
-  video,
+  video: baseVideo,
 }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState(undefined as Maybe<
     VideoPlayerInterface
@@ -58,6 +49,13 @@ const BaseVideoPlayer = ({
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     state => state,
   );
+
+  const video = useVideo(state => state.getVideo(baseVideo));
+  const thumbnail = useThumbnail(state => state.getThumbnail());
+  const timedTextTracks = useTimedTextTrack(state =>
+    state.getTimedTextTracks(),
+  );
+
   const setPlayerCurrentTime = useVideoProgress(
     state => state.setPlayerCurrentTime,
   );
@@ -114,7 +112,7 @@ const BaseVideoPlayer = ({
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
   }
 
-  const transcripts = timedtexttracks.objects
+  const transcripts = timedTextTracks
     .filter(track => track.is_ready_to_play)
     .filter(track => timedTextMode.TRANSCRIPT === track.mode);
 
@@ -154,7 +152,7 @@ const BaseVideoPlayer = ({
           instantiated. Without this, captions are not loaded correctly, at least, on firefox.
           */}
         {player &&
-          timedtexttracks.objects
+          timedTextTracks
             .filter(track => track.is_ready_to_play)
             .filter(track =>
               [
@@ -179,26 +177,3 @@ const BaseVideoPlayer = ({
     </Box>
   );
 };
-
-type VideoPlayerProps = Pick<BaseVideoPlayerProps, 'createPlayer' | 'video'>;
-
-/**
- * Replace the (read-only) video from context with one from the resources part of the
- * state if available as it will hold the most recent version.
- */
-const mapStateToProps = (state: RootState, { video }: VideoPlayerProps) => ({
-  thumbnail: getThumbnail(state),
-  timedtexttracks: getTimedTextTracks(state),
-  video:
-    (state.resources[modelName.VIDEOS]!.byId &&
-      state.resources[modelName.VIDEOS]!.byId[(video && video.id) || '']) ||
-    video,
-});
-
-/**
- * Component. Displays a player to show the video from context.
- * @param createPlayer A PlayerCreator function that instantiates and sets up tracking for the video player
- * we want to use.
- * @param video The video to play.
- */
-export const VideoPlayer = connect(mapStateToProps)(BaseVideoPlayer);

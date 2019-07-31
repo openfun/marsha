@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { appData } from '../../data/appData';
 import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
@@ -14,6 +15,71 @@ jest.mock('jwt-decode', () => jest.fn());
 jest.mock('../../utils/isAbrSupported', () => ({
   isHlsSupported: jest.fn().mockReturnValue(false),
   isMSESupported: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../data/appData', () => ({
+  appData: {
+    video: {
+      description: 'Some description',
+      id: 'video-id',
+      is_ready_to_play: true,
+      show_download: false,
+      thumbnail: null,
+      timed_text_tracks: [
+        {
+          active_stamp: 1549385921,
+          id: 'ttt-1',
+          is_ready_to_play: true,
+          language: 'fr',
+          mode: 'st',
+          upload_state: 'ready',
+          url: 'https://example.com/timedtext/ttt-1.vtt',
+        },
+        {
+          active_stamp: 1549385922,
+          id: 'ttt-2',
+          is_ready_to_play: false,
+          language: 'fr',
+          mode: 'st',
+          upload_state: 'ready',
+          url: 'https://example.com/timedtext/ttt-2.vtt',
+        },
+        {
+          active_stamp: 1549385923,
+          id: 'ttt-3',
+          is_ready_to_play: true,
+          language: 'en',
+          mode: 'cc',
+          upload_state: 'ready',
+          url: 'https://example.com/timedtext/ttt-3.vtt',
+        },
+        {
+          active_stamp: 1549385924,
+          id: 'ttt-4',
+          is_ready_to_play: true,
+          language: 'fr',
+          mode: 'ts',
+          upload_state: 'ready',
+          url: 'https://example.com/timedtext/ttt-4.vtt',
+        },
+      ],
+      title: 'Some title',
+      upload_state: 'ready',
+      urls: {
+        manifests: {
+          dash: 'https://example.com/dash.mpd',
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {
+          144: 'https://example.com/144p.mp4',
+          1080: 'https://example.com/1080p.mp4',
+        },
+        thumbnails: {
+          720: 'https://example.com/144p.jpg',
+        },
+      },
+    },
+  },
 }));
 
 describe('VideoPlayer', () => {
@@ -39,67 +105,6 @@ describe('VideoPlayer', () => {
   afterEach(fetchMock.restore);
   afterEach(jest.clearAllMocks);
 
-  const video = {
-    description: 'Some description',
-    id: 'video-id',
-    is_ready_to_play: true,
-    show_download: false,
-    thumbnail: null,
-    timed_text_tracks: [
-      {
-        active_stamp: 1549385921,
-        id: 'ttt-1',
-        is_ready_to_play: true,
-        language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
-        url: 'https://example.com/timedtext/ttt-1.vtt',
-      },
-      {
-        active_stamp: 1549385922,
-        id: 'ttt-2',
-        is_ready_to_play: false,
-        language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
-        url: 'https://example.com/timedtext/ttt-2.vtt',
-      },
-      {
-        active_stamp: 1549385923,
-        id: 'ttt-3',
-        is_ready_to_play: true,
-        language: 'en',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
-        url: 'https://example.com/timedtext/ttt-3.vtt',
-      },
-      {
-        active_stamp: 1549385924,
-        id: 'ttt-4',
-        is_ready_to_play: true,
-        language: 'fr',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
-        url: 'https://example.com/timedtext/ttt-4.vtt',
-      },
-    ],
-    title: 'Some title',
-    upload_state: 'ready',
-    urls: {
-      manifests: {
-        dash: 'https://example.com/dash.mpd',
-        hls: 'https://example.com/hls.m3u8',
-      },
-      mp4: {
-        144: 'https://example.com/144p.mp4',
-        1080: 'https://example.com/1080p.mp4',
-      },
-      thumbnails: {
-        720: 'https://example.com/144p.jpg',
-      },
-    },
-  } as Video;
-
   const createPlayer = jest.fn();
 
   beforeEach(() => {
@@ -110,15 +115,8 @@ describe('VideoPlayer', () => {
 
   // This test just makes sure everything works when dashjs is not mocked
   it('starts up the player with DashJS', async () => {
-    const state = {
-      state: appState.INSTRUCTOR,
-      video,
-    } as any;
-
     const { container, getByText, queryByText } = render(
-      <Provider store={bootstrapStore(state)}>
-        <VideoPlayer createPlayer={createPlayer} video={video} />
-      </Provider>,
+      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
     );
     await wait();
 
