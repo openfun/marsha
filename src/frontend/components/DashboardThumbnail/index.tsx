@@ -1,19 +1,14 @@
 import { Box, Button, Text } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
 import { appData } from '../../data/appData';
-import { addResource } from '../../data/genericReducers/resourceById/actions';
-import { RootState } from '../../data/rootReducer';
 import { createThumbnail } from '../../data/sideEffects/createThumbnail';
-import { getThumbnail } from '../../data/thumbnail/selector';
+import { useThumbnail } from '../../data/stores/useThumbnail';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -38,21 +33,19 @@ const messages = defineMessages({
   },
 });
 
-interface BaseDashboardThumbnailProps {
-  addThumbnail: (thumbnail: Thumbnail) => void;
+interface DashboardThumbnailProps {
   video: Video;
-  thumbnail: Nullable<Thumbnail>;
 }
 
-const BaseDashboardThumbnail = ({
-  addThumbnail,
-  video,
-  thumbnail,
-}: BaseDashboardThumbnailProps) => {
+export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
   const [pollInterval, setPollInterval] = useState(-1);
+  const { addThumbnail, thumbnail } = useThumbnail(state => ({
+    addThumbnail: state.addResource,
+    thumbnail: state.getThumbnail(),
+  }));
 
   useEffect(() => {
     if (
@@ -166,25 +159,3 @@ const BaseDashboardThumbnail = ({
       );
   }
 };
-
-interface DashboardThumbnailProps {
-  video: Video;
-}
-
-const mapStateToProps = (
-  state: RootState,
-  { video }: DashboardThumbnailProps,
-) => ({
-  thumbnail: getThumbnail(state),
-  video,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  addThumbnail: (thumbnail: Thumbnail) =>
-    dispatch(addResource(modelName.THUMBNAIL, thumbnail)),
-});
-
-export const DashboardThumbnail = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(BaseDashboardThumbnail);
