@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
-import { addResource } from '../../data/genericReducers/resourceById/actions';
-import { RootState } from '../../data/rootReducer';
 import { upload } from '../../data/sideEffects/upload';
+import { getResource } from '../../data/stores/generics';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
@@ -79,23 +76,22 @@ const UploadFormBack = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-/** Props shape for the BaseUploadForm component. */
-interface BaseUploadFormProps {
-  object: Maybe<UploadableObject>;
+/** Props shape for the UploadForm component. */
+interface UploadFormProps {
+  objectId: UploadableObject['id'];
   objectType: modelName;
-  updateObject: (object: UploadableObject) => void;
 }
 
 export type Status = Maybe<
   'not_found_error' | 'policy_error' | 'uploading' | 'success'
 >;
 
-const BaseUploadForm = ({
-  object,
+export const UploadForm = ({
+  objectId,
   objectType,
-  updateObject,
-}: BaseUploadFormProps) => {
+}: UploadFormProps) => {
   const [status, setStatus] = useState(undefined as Status);
+  const object = getResource(objectType, objectId);
 
   const setObjectProgress = useObjectProgress(state => state.setObjectProgress);
 
@@ -137,7 +133,6 @@ const BaseUploadForm = ({
             <UploadFieldContainer>
               <UploadField
                 onContentUpdated={upload(
-                  updateObject,
                   setStatus,
                   (progress: number) =>
                     object && setObjectProgress(object.id, progress),
@@ -156,42 +151,3 @@ const BaseUploadForm = ({
       );
   }
 };
-
-/** Props shape for the UploadForm connected component. */
-interface UploadFormProps {
-  objectId: UploadableObject['id'];
-  objectType: modelName;
-}
-
-/**
- * Use the objectType & objectId from the props to get the actual object.
- * Also, just pass the jwt and objectType along.
- */
-const mapStateToProps = (
-  state: RootState,
-  { objectId, objectType }: UploadFormProps,
-) => ({
-  object:
-    state.resources[objectType]!.byId &&
-    state.resources[objectType]!.byId[objectId],
-  objectType,
-});
-
-/** Create a function that updates a single object record in the store. */
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  { objectType }: UploadFormProps,
-) => ({
-  updateObject: (object: UploadableObject) =>
-    dispatch(addResource(objectType, object)),
-});
-
-/**
- * Component. Displays the `<UploadForm />` to allow a file upload to a related object.
- * @param objectId The ID for the relevant object record for which we're uploading a file.
- * @param objectType The model name for the object for which we're uploading a file.
- */
-export const UploadForm = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(BaseUploadForm);
