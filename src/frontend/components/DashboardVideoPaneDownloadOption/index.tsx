@@ -1,11 +1,9 @@
 import { Box, CheckBox, Form, Text } from 'grommet';
 import React, { useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
-import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { updateResource } from '../../data/sideEffects/updateResource';
+import { useVideo } from '../../data/stores/useVideo';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
@@ -23,17 +21,18 @@ const messages = defineMessages({
   },
 });
 
-interface BaseDashboardVideoPaneDownloadOptionProps {
-  doAddResource: (video: Video) => void;
+interface DashboardVideoPaneDownloadOptionProps {
   video: Video;
 }
 
-const BaseDashboardVideoPaneDownloadOption = ({
+export const DashboardVideoPaneDownloadOption = ({
   video,
-  doAddResource,
-}: BaseDashboardVideoPaneDownloadOptionProps) => {
+}: DashboardVideoPaneDownloadOptionProps) => {
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(video.show_download);
+  const { updateVideo } = useVideo(state => ({
+    updateVideo: state.addResource,
+  }));
 
   useAsyncEffect(async () => {
     if (checked !== video.show_download) {
@@ -45,7 +44,7 @@ const BaseDashboardVideoPaneDownloadOption = ({
           },
           modelName.VIDEOS,
         );
-        doAddResource(newVideo);
+        updateVideo(newVideo);
       } catch (e) {
         setChecked(!checked);
         setError(true);
@@ -73,17 +72,3 @@ const BaseDashboardVideoPaneDownloadOption = ({
     </Box>
   );
 };
-
-const mapDistachToProps = (dispatch: Dispatch) => ({
-  doAddResource: (video: Video) =>
-    dispatch(addResource(modelName.VIDEOS, video)),
-});
-
-/**
- * Component. Form with a checkbox to allow/disallow users to download video files.
- * @param video The video for which to allow/disallow file downloads.
- */
-export const DashboardVideoPaneDownloadOption = connect(
-  null,
-  mapDistachToProps,
-)(BaseDashboardVideoPaneDownloadOption);

@@ -1,15 +1,12 @@
 import { Box } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
-import { addResource } from '../../data/genericReducers/resourceById/actions';
+import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
@@ -45,18 +42,16 @@ const DashboardVideoPaneInternalHeading = styled(DashboardInternalHeading)`
 `;
 
 /** Props shape for the DashboardVideoPane component. */
-interface BaseDashboardVideoPaneProps {
-  updateVideo: (video: Video) => void;
+interface DashboardVideoPaneProps {
   video: Video;
 }
 
-const BaseDashboardVideoPane = ({
-  updateVideo,
+export const DashboardVideoPane = ({
   video,
-}: BaseDashboardVideoPaneProps) => {
+}: DashboardVideoPaneProps) => {
   const [error, setError] = useState(false);
   const [pollInterval, setPollInterval] = useState();
-
+  const { updateVideo } = useVideo(state => ({ updateVideo: state.addResource }));
   const pollForVideo = async () => {
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
@@ -159,17 +154,3 @@ const BaseDashboardVideoPane = ({
       );
   }
 };
-
-/** Create a function that updates a single video in the store. */
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateVideo: (video: Video) => dispatch(addResource(modelName.VIDEOS, video)),
-});
-
-/** Component. Displays the "video" part of the Dashboard, including the state of the video in
- * marsha's pipeline. Provides links to the player and to the form to replace the video with another one.
- * @param video The video object from AppData. We need it to populate the component before polling starts.
- */
-export const DashboardVideoPane = connect(
-  null,
-  mapDispatchToProps,
-)(BaseDashboardVideoPane);
