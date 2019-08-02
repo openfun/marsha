@@ -3,9 +3,16 @@ import xhrMock from 'xhr-mock';
 
 import { modelName } from '../../../types/models';
 import { timedTextMode, uploadState, Video } from '../../../types/tracks';
+import { jestMockOf } from '../../../utils/types';
+import { addResource } from '../../stores/generics';
 import { upload } from './';
 
 jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
+
+jest.mock('../../stores/generics', () => ({
+  addResource: jest.fn(),
+}));
+const mockAddResource = addResource as jestMockOf<typeof addResource>;
 
 describe('upload', () => {
   const object = {
@@ -69,7 +76,6 @@ describe('upload', () => {
     },
   } as Video;
 
-  const updateObject = jest.fn();
   const setStatus = jest.fn();
   const notifyObjectUploadProgress = jest.fn();
   const objectType = modelName.VIDEOS;
@@ -98,7 +104,6 @@ describe('upload', () => {
     });
 
     await upload(
-      updateObject,
       setStatus,
       notifyObjectUploadProgress,
       objectType,
@@ -111,11 +116,11 @@ describe('upload', () => {
       }),
     ).toHaveLength(1);
     expect(setStatus).toHaveBeenCalledWith('uploading');
-    expect(updateObject).toHaveBeenCalledWith({
+    expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
       upload_state: uploadState.UPLOADING,
     });
-    expect(updateObject).toHaveBeenCalledWith({
+    expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
       upload_state: uploadState.PROCESSING,
     });
@@ -133,7 +138,6 @@ describe('upload', () => {
     });
 
     await upload(
-      updateObject,
       setStatus,
       notifyObjectUploadProgress,
       objectType,
@@ -165,7 +169,6 @@ describe('upload', () => {
     });
 
     await upload(
-      updateObject,
       setStatus,
       notifyObjectUploadProgress,
       objectType,
@@ -181,11 +184,11 @@ describe('upload', () => {
       ),
     ).toHaveLength(1);
     expect(setStatus).toHaveBeenCalledWith('uploading');
-    expect(updateObject).toHaveBeenCalledWith({
+    expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
       upload_state: uploadState.UPLOADING,
     });
-    expect(updateObject).toHaveBeenCalledWith({
+    expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
       upload_state: uploadState.ERROR,
     });
@@ -202,7 +205,6 @@ describe('upload', () => {
     );
 
     await upload(
-      updateObject,
       setStatus,
       notifyObjectUploadProgress,
       objectType,
@@ -218,7 +220,7 @@ describe('upload', () => {
       ),
     ).toHaveLength(0);
     expect(setStatus).not.toHaveBeenCalled();
-    expect(updateObject).not.toHaveBeenCalled();
+    expect(mockAddResource).not.toHaveBeenCalled();
   });
 
   it('sets the status to not found and stops the execution if there is no object', async () => {
@@ -234,7 +236,6 @@ describe('upload', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
 
     await upload(
-      updateObject,
       setStatus,
       notifyObjectUploadProgress,
       objectType,
@@ -247,6 +248,6 @@ describe('upload', () => {
       }),
     ).toHaveLength(0);
     expect(setStatus).toHaveBeenCalledWith('not_found_error');
-    expect(updateObject).not.toHaveBeenCalled();
+    expect(mockAddResource).not.toHaveBeenCalled();
   });
 });

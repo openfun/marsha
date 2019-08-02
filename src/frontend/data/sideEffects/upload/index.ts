@@ -4,11 +4,11 @@ import { modelName } from '../../../types/models';
 import { UploadableObject, uploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
+import { addResource } from '../../stores/generics';
 import { initiateUpload } from '../initiateUpload';
 import { uploadFile } from '../uploadFile';
 
 export const upload = (
-  updateObject: (object: UploadableObject) => void,
   setStatus: (status: Status) => void,
   notifyObjectUploadProgress: (progress: number) => void,
   objectType: modelName,
@@ -50,7 +50,7 @@ export const upload = (
   try {
     // Update the state to reflect the in-progress upload (for the dashboard)
     // Useful for the Dashboard loader and help text.
-    updateObject({
+    addResource(objectType, {
       ...object,
       upload_state: uploadState.UPLOADING,
     });
@@ -66,12 +66,12 @@ export const upload = (
       notifyObjectUploadProgress,
     );
 
-    updateObject({
+    addResource(objectType, {
       ...object,
       upload_state: uploadState.PROCESSING,
     });
   } catch (error) {
-    updateObject({
+    addResource(objectType, {
       ...object,
       upload_state: uploadState.ERROR,
     });
