@@ -21,6 +21,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix an issue that prevented replacement videos from being shown as "ready"
+  in the dashboard.
 - Add time in interacted xapi payload.
 - Pin Terraform to version 0.11.14.
 - Change arial-label on play button when its state changes.

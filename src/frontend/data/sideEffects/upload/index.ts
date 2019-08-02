@@ -30,8 +30,6 @@ export const upload = (
     return setStatus('policy_error');
   }
 
-  setStatus('uploading');
-
   // Use FormData to meet the requirement of a multi-part POST request for s3
   // NB: order of keys is important here, which is why we do not iterate over an object
   const formData = makeFormData.apply(null, [
@@ -56,6 +54,11 @@ export const upload = (
       ...object,
       upload_state: uploadState.UPLOADING,
     });
+
+    // This `setStatus` call, which results in a redirection from the upload form to the dashboard, needs to
+    // happen **after** the video object has been updated. This is necessary to avoid an initial render of the
+    // dashboard with outdated data (a "READY" video, instead of a "PROCESSING"/"UPLOADING" one).
+    setStatus('uploading');
 
     await uploadFile(
       `https://${policy.s3_endpoint}/${policy.bucket}`,
