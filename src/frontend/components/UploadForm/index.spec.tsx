@@ -1,14 +1,13 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 jest.mock('../../data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
 
-import { bootstrapStore } from '../../data/bootstrapStore';
 import { uploadFile } from '../../data/sideEffects/uploadFile';
+import { getResource } from '../../data/stores/generics';
 import { modelName } from '../../types/models';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -19,7 +18,13 @@ import { UploadForm } from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
 
+jest.mock('../../data/stores/generics', () => ({
+  addResource: jest.fn(),
+  getResource: jest.fn(),
+}));
+
 const mockUploadFile: jestMockOf<typeof uploadFile> = uploadFile as any;
+const mockGetResource = getResource as jestMockOf<typeof getResource>;
 
 describe('UploadForm', () => {
   const object = {
@@ -83,13 +88,6 @@ describe('UploadForm', () => {
     },
   } as Video;
 
-  const state = {
-    jwt: {
-      read_only: false,
-    },
-    video: object,
-  } as any;
-
   beforeEach(jest.resetAllMocks);
   // Disable useless async act warnings
   // TODO: remove this spy as soon as async act is available
@@ -100,11 +98,10 @@ describe('UploadForm', () => {
   afterEach(fetchMock.restore);
 
   it('renders the form by default', () => {
+    mockGetResource.mockReturnValue(object);
     const { getByText } = render(
       wrapInRouter(
-        <Provider store={bootstrapStore(state)}>
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-        </Provider>,
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       ),
     );
 
@@ -121,12 +118,11 @@ describe('UploadForm', () => {
       { method: 'POST' },
     );
     mockUploadFile.mockResolvedValue(true);
+    mockGetResource.mockReturnValue(object);
 
-    const { container, getByText } = render(
+    const { debug, container, getByText } = render(
       wrapInRouter(
-        <Provider store={bootstrapStore(state)}>
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-        </Provider>,
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
         [
           {
             path: DASHBOARD_ROUTE(),
@@ -157,12 +153,11 @@ describe('UploadForm', () => {
     fetchMock.mock('/api/videos/video-id/initiate-upload/', 400, {
       method: 'POST',
     });
+    mockGetResource.mockReturnValue(object);
 
     const { container, getByText } = render(
       wrapInRouter(
-        <Provider store={bootstrapStore(state)}>
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-        </Provider>,
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
         [
           {
             path: ERROR_COMPONENT_ROUTE('policy'),
