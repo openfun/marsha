@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { useTimedTextTrack } from '.';
+import { useTimedTextTrack, useTimedTextTrackApi } from '.';
+import { modelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
   appData: {
@@ -61,9 +62,9 @@ describe('stores/useTimedTextTrack', () => {
   it('parses appData to found timed text track in video data', () => {
     render(<TestComponent />);
 
-    const { timedTextTracks, getTimedTextTracks } = getLatestHookValues();
+    const state = getLatestHookValues();
 
-    expect(timedTextTracks).toEqual({
+    expect(state[modelName.TIMEDTEXTTRACKS]).toEqual({
       'ttt-1': {
         active_stamp: 1549385921,
         id: 'ttt-1',
@@ -101,7 +102,7 @@ describe('stores/useTimedTextTrack', () => {
         url: 'https://example.com/timedtext/ttt-4.vtt',
       },
     });
-    expect(getTimedTextTracks()).toEqual([
+    expect(state.getTimedTextTracks()).toEqual([
       {
         active_stamp: 1549385921,
         id: 'ttt-1',
@@ -139,5 +140,30 @@ describe('stores/useTimedTextTrack', () => {
         url: 'https://example.com/timedtext/ttt-4.vtt',
       },
     ]);
+  });
+  it('adds a resource to the store', () => {
+    useTimedTextTrackApi.getState().addResource({ id: 'newResource' } as any);
+
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].newResource).toEqual({ id: 'newResource' });
+  });
+  it('removes an existing resource', () => {
+    useTimedTextTrackApi.getState().addResource({ id: 'toDelete' } as any);
+
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete).toEqual({ id: 'toDelete' });
+
+    useTimedTextTrackApi.getState().removeResource({ id: 'toDelete' } as any);
+
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete).toBeUndefined();
+  });
+  it('adds multiple resources to the store', () => {
+    useTimedTextTrackApi.getState().addMultipleResources([
+      { id: 'multi1' } as any,
+      { id: 'multi2' } as any,
+      { id: 'multi3' } as any,
+    ]);
+
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi1).toEqual({ id: 'multi1' });
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi2).toEqual({ id: 'multi2' });
+    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi3).toEqual({ id: 'multi3' });
   });
 });
