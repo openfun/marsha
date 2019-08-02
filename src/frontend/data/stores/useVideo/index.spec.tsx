@@ -3,7 +3,8 @@ import React from 'react';
 
 import { appData } from '../../appData';
 
-import { useVideo } from '.';
+import { useVideo, useVideoApi } from '.';
+import { modelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
   appData: {
@@ -83,11 +84,36 @@ describe('stores/useVideo', () => {
   it('parses appData to found video element', () => {
     render(<TestComponent />);
 
-    const { videos, getVideo } = getLatestHookValues();
+    const state = getLatestHookValues();
 
-    expect(videos).toEqual({
+    expect(state[modelName.VIDEOS]).toEqual({
       'video-id': appData.video,
     });
-    expect(getVideo({ id: 'video-id' })).toEqual(appData.video);
+    expect(state.getVideo({ id: 'video-id' })).toEqual(appData.video);
+  });
+  it('adds a resource to the store', () => {
+    useVideoApi.getState().addResource({ id: 'newResource' } as any);
+
+    expect(useVideoApi.getState()[modelName.VIDEOS].newResource).toEqual({ id: 'newResource' });
+  });
+  it('removes an existing resource', () => {
+    useVideoApi.getState().addResource({ id: 'toDelete' } as any);
+
+    expect(useVideoApi.getState()[modelName.VIDEOS].toDelete).toEqual({ id: 'toDelete' });
+
+    useVideoApi.getState().removeResource({ id: 'toDelete' } as any);
+
+    expect(useVideoApi.getState()[modelName.VIDEOS].toDelete).toBeUndefined();
+  });
+  it('adds multiple resources to the store', () => {
+    useVideoApi.getState().addMultipleResources([
+      { id: 'multi1' } as any,
+      { id: 'multi2' } as any,
+      { id: 'multi3' } as any,
+    ]);
+
+    expect(useVideoApi.getState()[modelName.VIDEOS].multi1).toEqual({ id: 'multi1' });
+    expect(useVideoApi.getState()[modelName.VIDEOS].multi2).toEqual({ id: 'multi2' });
+    expect(useVideoApi.getState()[modelName.VIDEOS].multi3).toEqual({ id: 'multi3' });
   });
 });
