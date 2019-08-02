@@ -1,11 +1,8 @@
 import { cleanup, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { DashboardVideoPane } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -64,16 +61,7 @@ describe('<DashboardVideoPane />', () => {
 
     const { getByText, queryByText, rerender } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />
-        </Provider>,
+        <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
       ),
     );
 
@@ -115,16 +103,7 @@ describe('<DashboardVideoPane />', () => {
 
     rerender(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: 'cool_token_m8',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <DashboardVideoPane video={{ ...video, upload_state: READY }} />
-        </Provider>,
+        <DashboardVideoPane video={{ ...video, upload_state: READY }} />,
       ),
     );
 
@@ -144,16 +123,7 @@ describe('<DashboardVideoPane />', () => {
     });
     const { getByText } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />
-        </Provider>,
+        <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
         [
           {
             path: ERROR_COMPONENT_ROUTE(),
@@ -175,18 +145,9 @@ describe('<DashboardVideoPane />', () => {
   it('redirects to error when the video is in the error state and not `is_ready_to_play`', async () => {
     const { getByText } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <DashboardVideoPane
-            video={{ ...video, is_ready_to_play: false, upload_state: ERROR }}
-          />
-        </Provider>,
+        <DashboardVideoPane
+          video={{ ...video, is_ready_to_play: false, upload_state: ERROR }}
+        />,
         [
           {
             path: ERROR_COMPONENT_ROUTE(),
@@ -203,18 +164,9 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the dashboard when the video is in the error state but `is_ready_to_play`', async () => {
     const { getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
-        <DashboardVideoPane
-          video={{ ...video, is_ready_to_play: true, upload_state: ERROR }}
-        />
-      </Provider>,
+      <DashboardVideoPane
+        video={{ ...video, is_ready_to_play: true, upload_state: ERROR }}
+      />,
     );
 
     getByText(content => content.startsWith('Error'));
@@ -227,22 +179,13 @@ describe('<DashboardVideoPane />', () => {
     for (const state of Object.values(uploadState)) {
       const { getByText, queryByText } = render(
         wrapInRouter(
-          <Provider
-            store={bootstrapStore({
-              jwt: '',
-              resourceLinkid: '',
-              state: appState.INSTRUCTOR,
-              video,
-            })}
-          >
-            <DashboardVideoPane
-              video={{
-                ...video,
-                is_ready_to_play: false,
-                upload_state: state,
-              }}
-            />
-          </Provider>,
+          <DashboardVideoPane
+            video={{
+              ...video,
+              is_ready_to_play: false,
+              upload_state: state,
+            }}
+          />,
         ),
       );
 
@@ -269,22 +212,13 @@ describe('<DashboardVideoPane />', () => {
     for (const state of Object.values(uploadState)) {
       const { getByAltText, queryByAltText } = render(
         wrapInRouter(
-          <Provider
-            store={bootstrapStore({
-              jwt: '',
-              resourceLinkid: '',
-              state: appState.INSTRUCTOR,
-              video,
-            })}
-          >
-            <DashboardVideoPane
-              video={{
-                ...video,
-                is_ready_to_play: false,
-                upload_state: state,
-              }}
-            />
-          </Provider>,
+          <DashboardVideoPane
+            video={{
+              ...video,
+              is_ready_to_play: false,
+              upload_state: state,
+            }}
+          />,
         ),
       );
       if (state === READY) {
@@ -300,22 +234,13 @@ describe('<DashboardVideoPane />', () => {
     for (const state of Object.values(uploadState)) {
       const { getByText, queryByText } = render(
         wrapInRouter(
-          <Provider
-            store={bootstrapStore({
-              jwt: '',
-              resourceLinkid: '',
-              state: appState.INSTRUCTOR,
-              video,
-            })}
-          >
-            <DashboardVideoPane
-              video={{
-                ...video,
-                is_ready_to_play: false,
-                upload_state: state,
-              }}
-            />
-          </Provider>,
+          <DashboardVideoPane
+            video={{
+              ...video,
+              is_ready_to_play: false,
+              upload_state: state,
+            }}
+          />,
         ),
       );
       if (state === UPLOADING) {

@@ -45,17 +45,11 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
 
   it('renders with checkbox not checked', () => {
     const { getByLabelText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
+      <React.Fragment>
         {' '}
         <DashboardVideoPaneDownloadOption video={video} />
-      </Provider>,
+      </React.Fragment>
+      ,
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(
@@ -71,17 +65,10 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
       { method: 'PUT' },
     );
     const { getByLabelText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
+      <React.Fragment>
         {' '}
         <DashboardVideoPaneDownloadOption video={video} />
-      </Provider>,
+      </React.Fragment>,
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(
