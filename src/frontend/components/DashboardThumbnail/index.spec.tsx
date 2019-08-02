@@ -5,8 +5,10 @@ import { Provider } from 'react-redux';
 
 import { DashboardThumbnail } from '.';
 import { bootstrapStore } from '../../data/bootstrapStore';
+import { useThumbnail } from '../../data/stores/useThumbnail';
 import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
+import { jestMockOf } from '../../utils/types';
 
 jest.mock('react-router-dom', () => ({
   Redirect: ({ push, to }: { push: boolean; to: string }) =>
@@ -18,6 +20,12 @@ jest.mock('../../data/appData', () => ({
     jwt: 'some token',
   },
 }));
+
+jest.mock('../../data/stores/useThumbnail', () => ({
+  useThumbnail: jest.fn(),
+}));
+const mockUseThumbnail = useThumbnail as jestMockOf<typeof useThumbnail>;
+const mockAddThumbnail = jest.fn();
 
 describe('<DashboardThumbnail />', () => {
   afterEach(jest.resetAllMocks);
@@ -73,17 +81,12 @@ describe('<DashboardThumbnail />', () => {
   };
 
   it('displays a thumbnail image when the related Thumbnail object is ready', () => {
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: video.thumbnail,
+    });
     const { getByAltText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
-        <DashboardThumbnail video={video} />
-      </Provider>,
+      <DashboardThumbnail video={video} />,
     );
 
     // The progress indicator, processing message & error message are not shown
@@ -107,18 +110,13 @@ describe('<DashboardThumbnail />', () => {
       ...video,
       thumbnail: null,
     };
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: null,
+    });
 
     const { getByAltText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: videoWithoutThumbnail,
-        })}
-      >
-        <DashboardThumbnail video={videoWithoutThumbnail} />
-      </Provider>,
+      <DashboardThumbnail video={videoWithoutThumbnail} />,
     );
 
     // The progress indicator, processing message & error message are not shown
@@ -146,17 +144,16 @@ describe('<DashboardThumbnail />', () => {
       },
     };
 
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: {
+        ...video.thumbnail,
+        upload_state: uploadState.UPLOADING,
+      },
+    });
+
     const { getByText, queryByAltText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: videoWithLoadingThumbnail,
-        })}
-      >
-        <DashboardThumbnail video={videoWithLoadingThumbnail} />
-      </Provider>,
+      <DashboardThumbnail video={videoWithLoadingThumbnail} />,
     );
 
     // The thumbnail image, processing message & error message are not shown
@@ -182,17 +179,16 @@ describe('<DashboardThumbnail />', () => {
       },
     };
 
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: {
+        ...video.thumbnail,
+        upload_state: uploadState.PROCESSING,
+      },
+    });
+
     const { getByText, queryByAltText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: videoWithProcessingThumbnail,
-        })}
-      >
-        <DashboardThumbnail video={videoWithProcessingThumbnail} />
-      </Provider>,
+      <DashboardThumbnail video={videoWithProcessingThumbnail} />,
     );
 
     // The thumbnail image, progress indicator & error message are not shown
@@ -216,17 +212,16 @@ describe('<DashboardThumbnail />', () => {
       },
     };
 
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: {
+        ...video.thumbnail,
+        upload_state: uploadState.ERROR,
+      },
+    });
+
     const { getByText, queryByAltText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: videoWithErroredThumbnail,
-        })}
-      >
-        <DashboardThumbnail video={videoWithErroredThumbnail} />
-      </Provider>,
+      <DashboardThumbnail video={videoWithErroredThumbnail} />,
     );
 
     // The thumbnail image, progress indicator & processing message are not shown
@@ -250,17 +245,25 @@ describe('<DashboardThumbnail />', () => {
       thumbnail: null,
     };
 
-    const { getByAltText, getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: videoWithoutThumbnail,
-        })}
-      >
-        <DashboardThumbnail video={videoWithoutThumbnail} />
-      </Provider>,
+    mockUseThumbnail
+      .mockReturnValueOnce({
+        addThumbnail: mockAddThumbnail,
+        thumbnail: null,
+      })
+      .mockReturnValueOnce({
+        addThumbnail: mockAddThumbnail,
+        thumbnail: null,
+      });
+
+    mockUseThumbnail.mockReturnValue({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: {
+        id: '42',
+      },
+    });
+
+    const { debug, getByAltText, getByText } = render(
+      <DashboardThumbnail video={videoWithoutThumbnail} />,
     );
 
     expect(
@@ -275,6 +278,7 @@ describe('<DashboardThumbnail />', () => {
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
     });
+    expect(mockAddThumbnail).toHaveBeenCalled();
     getByText('Redirect push to /form/thumbnail/42.');
   });
 });
