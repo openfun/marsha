@@ -2,15 +2,13 @@ import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Select from 'react-select';
 import { ActionMeta, ValueType } from 'react-select/src/types';
-import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
-import { addResource } from '../../data/genericReducers/resourceById/actions';
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode } from '../../types/tracks';
@@ -58,8 +56,7 @@ interface SelectOption {
 }
 
 /** Props shape for the TimedTextCreationForm component. */
-interface BaseTimedTextCreationFormProps {
-  doCreateTimedTextTrack: (timedtexttrack: TimedText) => void;
+interface TimedTextCreationFormProps {
   excludedLanguages: string[];
   mode: timedTextMode;
 }
@@ -71,11 +68,10 @@ const isSelectOption = (
 /**
  * Component. Displays a form that allows the user to create a new timedtexttrack.
  */
-const BaseTimedTextCreationForm = ({
-  doCreateTimedTextTrack,
+export const TimedTextCreationForm = ({
   excludedLanguages,
   mode,
-}: BaseTimedTextCreationFormProps) => {
+}: TimedTextCreationFormProps) => {
   const [error, setError] = useState(undefined as Maybe<'creation' | 'schema'>);
   const [newTTLanguage, setNewTTLanguage] = useState('');
   const [newTTUploadId, setNewTTUploadId] = useState('');
@@ -83,6 +79,8 @@ const BaseTimedTextCreationForm = ({
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     state => state,
   );
+  const doCreateTimedTextTrack = useTimedTextTrack(state => state.addResource);
+
   useEffect(() => {
     getChoices();
   }, []);
@@ -148,19 +146,3 @@ const BaseTimedTextCreationForm = ({
     </TimedTextCreationFormStyled>
   );
 };
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  doCreateTimedTextTrack: (timedtexttrack: TimedText) =>
-    dispatch(addResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
-});
-
-/**
- * Component. Displays a form that allows the user to create a new timedtexttrack.
- * @param excludedLanguages An array of language codes for which we should not accept new tracks. Any given video
- * cannot have more than one timed text track of a given language for a given mode.
- * @param mode The mode of the timedtexttracks we're creating.
- */
-export const TimedTextCreationForm = connect(
-  null,
-  mapDispatchToProps,
-)(BaseTimedTextCreationForm);

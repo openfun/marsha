@@ -5,11 +5,8 @@ import {
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { DashboardTimedTextPane } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -104,18 +101,7 @@ describe('<DashboardTimedTextPane />', () => {
       },
     ]);
 
-    const { getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
-        {wrapInRouter(<DashboardTimedTextPane />)}
-      </Provider>,
-    );
+    const { getByText } = render(wrapInRouter(<DashboardTimedTextPane />));
 
     await wait();
     const closedCaptions = getByText('Closed captions');
@@ -126,28 +112,19 @@ describe('<DashboardTimedTextPane />', () => {
   });
 
   it('redirects to the error view when the timedtexttrack list request fails', async () => {
-    fetchMock.get(
+    fetchMock.mock(
       '/api/timedtexttracks/?limit=20&offset=0',
-      new Error('Failed!'),
+      Promise.reject(new Error('Failed!')),
     );
     const { getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video,
-        })}
-      >
-        {wrapInRouter(<DashboardTimedTextPane />, [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ])}
-      </Provider>,
+      wrapInRouter(<DashboardTimedTextPane />, [
+        {
+          path: ERROR_COMPONENT_ROUTE(),
+          render: ({ match }) => (
+            <span>{`Error Component: ${match.params.code}`}</span>
+          ),
+        },
+      ]),
     );
 
     await wait();

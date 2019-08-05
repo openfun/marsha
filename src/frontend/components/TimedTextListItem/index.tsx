@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
-import { deleteResource } from '../../data/genericReducers/resourceById/actions';
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack';
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { requestStatus } from '../../types/api';
 import { LanguageChoice } from '../../types/LanguageChoice';
@@ -60,25 +58,20 @@ const UploadStatusPickerStyled = styled(UploadStatusPicker)`
 `;
 
 /** Props shape for the TimedTextListItem component. */
-interface BaseTimedTextListItemProps {
-  deleteTimedTextTrackRecord: (timedtexttrack: TimedText) => void;
-  pollForTimedTextTrack: (
-    resourceName: modelName.TIMEDTEXTTRACKS,
-    resourceId: string,
-  ) => Promise<requestStatus>;
+interface TimedTextListItemProps {
   track: TimedText;
 }
 
-const BaseTimedTextListItem = ({
-  deleteTimedTextTrackRecord,
-  pollForTimedTextTrack,
+export const TimedTextListItem = ({
   track,
-}: BaseTimedTextListItemProps) => {
+}: TimedTextListItemProps) => {
   const [error, setError] = useState('');
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     state => state,
   );
+
+  const deleteTimedTextTrackRecord = useTimedTextTrack(state => state.removeResource);
 
   // On load, get TTT language choices and start polling if necessary
   useEffect(() => {
@@ -86,7 +79,7 @@ const BaseTimedTextListItem = ({
 
     if (track.is_ready_to_play === false) {
       window.setTimeout(async () => {
-        const result = await pollForTimedTextTrack(
+        const result = await pollForTrack(
           modelName.TIMEDTEXTTRACKS,
           track.id,
         );
@@ -134,27 +127,3 @@ const BaseTimedTextListItem = ({
     </TimedTextListItemStyled>
   );
 };
-
-const mapStateToProps = (
-  _: never,
-  { track }: Pick<BaseTimedTextListItemProps, 'track'>,
-) => ({
-  track,
-});
-
-/**
- * Component. Displays one TimedTextTrack as part of a list of TimedTextTracks. Provides buttons for
- * the user to delete it or replace the linked video.
- * @param deleteTimedTextTrackRecord Action creator that takes a timedtexttrack to remove from the store.
- * @param track The timedtexttrack to display.
- */
-export const TimedTextListItem = connect(
-  mapStateToProps,
-  null!,
-  ({ track }, { dispatch }: { dispatch: Dispatch }) => ({
-    deleteTimedTextTrackRecord: (timedtexttrack: TimedText) =>
-      dispatch(deleteResource(modelName.TIMEDTEXTTRACKS, timedtexttrack)),
-    pollForTimedTextTrack: pollForTrack(dispatch),
-    track,
-  }),
-)(BaseTimedTextListItem);
