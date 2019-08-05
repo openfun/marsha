@@ -62,16 +62,16 @@ interface TimedTextListItemProps {
   track: TimedText;
 }
 
-export const TimedTextListItem = ({
-  track,
-}: TimedTextListItemProps) => {
+export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   const [error, setError] = useState('');
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     state => state,
   );
 
-  const deleteTimedTextTrackRecord = useTimedTextTrack(state => state.removeResource);
+  const deleteTimedTextTrackRecord = useTimedTextTrack(
+    state => state.removeResource,
+  );
 
   // On load, get TTT language choices and start polling if necessary
   useEffect(() => {
@@ -79,10 +79,7 @@ export const TimedTextListItem = ({
 
     if (track.is_ready_to_play === false) {
       window.setTimeout(async () => {
-        const result = await pollForTrack(
-          modelName.TIMEDTEXTTRACKS,
-          track.id,
-        );
+        const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
         if (result === requestStatus.FAILURE) {
           setError('notFound');
         }

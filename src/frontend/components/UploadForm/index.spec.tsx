@@ -101,7 +101,7 @@ describe('UploadForm', () => {
     mockGetResource.mockReturnValue(object);
     const { getByText } = render(
       wrapInRouter(
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
       ),
     );
 

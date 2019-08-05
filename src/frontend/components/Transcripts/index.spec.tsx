@@ -1,11 +1,8 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { Transcripts } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState } from '../../types/tracks';
 
 const transcriptContent = `
@@ -68,16 +65,7 @@ describe('<Transcripts />', () => {
 
   it('displays a list of available transcripts', async () => {
     const { getByText, queryByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: null,
-        })}
-      >
-        <Transcripts transcripts={transcripts} />
-      </Provider>,
+      <Transcripts transcripts={transcripts} />,
     );
     await wait();
 
@@ -91,16 +79,7 @@ describe('<Transcripts />', () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
 
     const { getByLabelText, getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: null,
-        })}
-      >
-        <Transcripts transcripts={transcripts} />
-      </Provider>,
+      <Transcripts transcripts={transcripts} />,
     );
 
     const select = getByLabelText('Show a transcript');

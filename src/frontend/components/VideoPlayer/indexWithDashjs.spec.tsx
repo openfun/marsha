@@ -1,12 +1,8 @@
 import { render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { appData } from '../../data/appData';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
-import { timedTextMode, uploadState, Video } from '../../types/tracks';
 import { VideoPlayer } from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
