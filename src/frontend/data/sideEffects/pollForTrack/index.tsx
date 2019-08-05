@@ -6,44 +6,43 @@ import { modelName } from '../../../types/models';
 import { TimedText, Video } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
 import { appData } from '../../appData';
-import { addResource } from '../../genericReducers/resourceById/actions';
+import { addResource } from '../../stores/generics';
 
-export const pollForTrack = (dispatch: Dispatch) =>
-  async function doPollForTrack<
-    T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS
-  >(
-    resourceName: T,
-    resourceId: string,
-    timer: number = 15,
-    counter: number = 1,
-  ): Promise<requestStatus> {
-    try {
-      const response = await fetch(
-        `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${appData.jwt}`,
-          },
+export async function pollForTrack<
+  T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS
+>(
+  resourceName: T,
+  resourceId: string,
+  timer: number = 15,
+  counter: number = 1,
+): Promise<requestStatus> {
+  try {
+    const response = await fetch(
+      `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${appData.jwt}`,
         },
-      );
+      },
+    );
 
-      const incomingTrack: T extends modelName.TIMEDTEXTTRACKS
-        ? TimedText
-        : T extends modelName.VIDEOS
-        ? Video
-        : never = await response.json();
+    const incomingTrack: T extends modelName.TIMEDTEXTTRACKS
+      ? TimedText
+      : T extends modelName.VIDEOS
+      ? Video
+      : never = await response.json();
 
-      if (incomingTrack.is_ready_to_play) {
-        dispatch(addResource(resourceName, incomingTrack));
-        return requestStatus.SUCCESS;
-      } else {
-        counter++;
-        timer = timer * counter;
-        await new Promise(resolve => window.setTimeout(resolve, 1000 * timer));
-        return await doPollForTrack(resourceName, resourceId, timer, counter);
-      }
-    } catch (error) {
-      report(error);
-      return requestStatus.FAILURE;
+    if (incomingTrack.is_ready_to_play) {
+      addResource(resourceName, incomingTrack);
+      return requestStatus.SUCCESS;
+    } else {
+      counter++;
+      timer = timer * counter;
+      await new Promise(resolve => window.setTimeout(resolve, 1000 * timer));
+      return await pollForTrack(resourceName, resourceId, timer, counter);
     }
-  };
+  } catch (error) {
+    report(error);
+    return requestStatus.FAILURE;
+  }
+}
