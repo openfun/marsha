@@ -1,12 +1,10 @@
 import { stringify } from 'querystring';
-import { Dispatch } from 'redux';
 
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
-import { requestStatus } from '../../../types/api';
+import { APIListCommonRequestParams, requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
 import { report } from '../../../utils/errors/report';
 import { appData } from '../../appData';
-import { ResourceListGet } from '../../genericReducers/resourceList/actions';
 import { addMultipleResources } from '../../stores/generics';
 
 /**
@@ -19,7 +17,7 @@ import { addMultipleResources } from '../../stores/generics';
  */
 export const getResourceList = async (
   resourceName: modelName,
-  params: ResourceListGet['params'] = API_LIST_DEFAULT_PARAMS,
+  params: APIListCommonRequestParams = API_LIST_DEFAULT_PARAMS,
 ): Promise<requestStatus> => {
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
 

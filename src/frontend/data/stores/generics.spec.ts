@@ -22,13 +22,15 @@ describe('stores/generics', () => {
       addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
 
       const state = useThumbnailApi.getState();
-      expect(state[modelName.THUMBNAIL].thumbnail).toEqual({ id: 'thumbnail'});
+      expect(state[modelName.THUMBNAIL].thumbnail).toEqual({ id: 'thumbnail' });
     });
     it('adds a timed text track resource', () => {
       addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedTextTrack' } as any);
 
       const state = useTimedTextTrackApi.getState();
-      expect(state[modelName.TIMEDTEXTTRACKS].timedTextTrack).toEqual({ id: 'timedTextTrack' });
+      expect(state[modelName.TIMEDTEXTTRACKS].timedTextTrack).toEqual({
+        id: 'timedTextTrack',
+      });
     });
     it('adds a video resource', () => {
       addResource(modelName.VIDEOS, { id: 'video' } as any);
@@ -41,7 +43,9 @@ describe('stores/generics', () => {
     it('fetch an existing thumbnail resource and return it', () => {
       addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
 
-      expect(getResource(modelName.THUMBNAIL, 'thumbnail')).toEqual({ id: 'thumbnail' });
+      expect(getResource(modelName.THUMBNAIL, 'thumbnail')).toEqual({
+        id: 'thumbnail',
+      });
     });
     it('fetch a non existing thumbnail and should return undefined', () => {
       expect(getResource(modelName.THUMBNAIL, 'foo')).toBeUndefined();
@@ -49,7 +53,9 @@ describe('stores/generics', () => {
     it('fetch an existing timed text resource and return it', () => {
       addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
 
-      expect(getResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual({ id: 'timedtext' });
+      expect(getResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual({
+        id: 'timedtext',
+      });
     });
     it('fetch a non existing timed text and should return undefined', () => {
       expect(getResource(modelName.TIMEDTEXTTRACKS, 'foo')).toBeUndefined();

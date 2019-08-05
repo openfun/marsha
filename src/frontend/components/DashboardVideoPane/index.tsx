@@ -46,12 +46,12 @@ interface DashboardVideoPaneProps {
   video: Video;
 }
 
-export const DashboardVideoPane = ({
-  video,
-}: DashboardVideoPaneProps) => {
+export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   const [error, setError] = useState(false);
   const [pollInterval, setPollInterval] = useState();
-  const { updateVideo } = useVideo(state => ({ updateVideo: state.addResource }));
+  const { updateVideo } = useVideo(state => ({
+    updateVideo: state.addResource,
+  }));
   const pollForVideo = async () => {
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {

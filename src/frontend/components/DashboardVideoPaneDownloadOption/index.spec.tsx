@@ -2,11 +2,8 @@ import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { Provider } from 'react-redux';
 
 import { DashboardVideoPaneDownloadOption } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
 
 describe('<DashboardVideoPaneDownloadOption />', () => {
@@ -48,8 +45,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
       <React.Fragment>
         {' '}
         <DashboardVideoPaneDownloadOption video={video} />
-      </React.Fragment>
-      ,
+      </React.Fragment>,
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(

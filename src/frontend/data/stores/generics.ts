@@ -19,20 +19,21 @@ export const addMultipleResources = (
   objectType: modelName,
   objects: UploadableObject[],
 ) => {
-  getStore(objectType).getState().addMultipleResources(objects as any);
+  getStore(objectType)
+    .getState()
+    .addMultipleResources(objects as any);
 };
 
 export const addResource = (
   objectType: modelName,
   object: UploadableObject,
 ) => {
-  getStore(objectType).getState().addResource(object as any);
+  getStore(objectType)
+    .getState()
+    .addResource(object as any);
 };
 
-export const getResource = (
-  objectType: modelName,
-  objectId: string,
-) => {
+export const getResource = (objectType: modelName, objectId: string) => {
   const state = getStore(objectType).getState();
   return state[objectType] && state[objectType]![objectId];
 };

@@ -43,7 +43,9 @@ export const DashboardTimedTextPane = () => {
   useAsyncEffect(async () => {
     setStatus(await getResourceList(modelName.TIMEDTEXTTRACKS));
   }, []);
-  const timedtexttracks = useTimedTextTrack(state => state.getTimedTextTracks());
+  const timedtexttracks = useTimedTextTrack(state =>
+    state.getTimedTextTracks(),
+  );
 
   if (status === requestStatus.FAILURE) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;

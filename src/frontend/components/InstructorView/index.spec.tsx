@@ -1,8 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux';
 
-import { bootstrapStore } from '../../data/bootstrapStore';
 import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -35,11 +33,9 @@ describe('<InstructorView />', () => {
 
     const { getByText } = render(
       wrapInRouter(
-        <Provider store={bootstrapStore(state)}>
-          <InstructorView>
-            <div className="some-child" />
-          </InstructorView>
-        </Provider>,
+        <InstructorView>
+          <div className="some-child" />
+        </InstructorView>,
       ),
     );
 
@@ -66,11 +62,9 @@ describe('<InstructorView />', () => {
 
     const { getByText, queryByText } = render(
       wrapInRouter(
-        <Provider store={bootstrapStore(state)}>
-          <InstructorView>
-            <div className="some-child" />
-          </InstructorView>
-        </Provider>,
+        <InstructorView>
+          <div className="some-child" />
+        </InstructorView>,
       ),
     );
 

@@ -1,12 +1,9 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { DashboardThumbnail } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
 import { useThumbnail } from '../../data/stores/useThumbnail';
-import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
 import { jestMockOf } from '../../utils/types';
 

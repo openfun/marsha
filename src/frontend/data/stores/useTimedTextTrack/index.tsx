@@ -13,39 +13,39 @@ interface TimedTextTrackState extends StoreState<TimedText> {
   };
 }
 
-export const [useTimedTextTrack, useTimedTextTrackApi] = create<TimedTextTrackState>(
-  (set, get) => {
-    const timedTextTracks: { [id: string]: TimedText } = {};
+export const [useTimedTextTrack, useTimedTextTrackApi] = create<
+  TimedTextTrackState
+>((set, get) => {
+  const timedTextTracks: { [id: string]: TimedText } = {};
 
-    if (appData.video && appData.video.timed_text_tracks.length > 0) {
-      appData.video.timed_text_tracks.forEach(
-        timedTextTrack => (timedTextTracks[timedTextTrack.id] = timedTextTrack),
-      );
-    }
+  if (appData.video && appData.video.timed_text_tracks.length > 0) {
+    appData.video.timed_text_tracks.forEach(
+      timedTextTrack => (timedTextTracks[timedTextTrack.id] = timedTextTrack),
+    );
+  }
 
-    return {
-      addMultipleResources: (timedTextTracksToAdd: TimedText[]) =>
-        set(
-          addMultipleResources(
-            get(),
-            modelName.TIMEDTEXTTRACKS,
-            timedTextTracksToAdd,
-          ),
+  return {
+    addMultipleResources: (timedTextTracksToAdd: TimedText[]) =>
+      set(
+        addMultipleResources(
+          get(),
+          modelName.TIMEDTEXTTRACKS,
+          timedTextTracksToAdd,
         ),
-      addResource: (timedTextTrack: TimedText) =>
-        set(
-          addResource<TimedText>(
-            get(),
-            modelName.TIMEDTEXTTRACKS,
-            timedTextTrack,
-          ),
+      ),
+    addResource: (timedTextTrack: TimedText) =>
+      set(
+        addResource<TimedText>(
+          get(),
+          modelName.TIMEDTEXTTRACKS,
+          timedTextTrack,
         ),
-      getTimedTextTracks: () => {
-        return Object.values(get()[modelName.TIMEDTEXTTRACKS]);
-      },
-      removeResource: (timedTextTrack: TimedText) =>
-        set(removeResource(get(), modelName.TIMEDTEXTTRACKS, timedTextTrack)),
-      [modelName.TIMEDTEXTTRACKS]: timedTextTracks,
-    };
-  },
-);
+      ),
+    getTimedTextTracks: () => {
+      return Object.values(get()[modelName.TIMEDTEXTTRACKS]);
+    },
+    removeResource: (timedTextTrack: TimedText) =>
+      set(removeResource(get(), modelName.TIMEDTEXTTRACKS, timedTextTrack)),
+    [modelName.TIMEDTEXTTRACKS]: timedTextTracks,
+  };
+});
