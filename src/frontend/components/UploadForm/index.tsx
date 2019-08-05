@@ -86,10 +86,7 @@ export type Status = Maybe<
   'not_found_error' | 'policy_error' | 'uploading' | 'success'
 >;
 
-export const UploadForm = ({
-  objectId,
-  objectType,
-}: UploadFormProps) => {
+export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   const [status, setStatus] = useState(undefined as Status);
   const object = getResource(objectType, objectId);
 

@@ -17,7 +17,9 @@ jest.mock('../../stores/generics', () => ({
   addMultipleResources: jest.fn(),
 }));
 
-const mockAddMultipleResources = addMultipleResources as jestMockOf<typeof addMultipleResources>;
+const mockAddMultipleResources = addMultipleResources as jestMockOf<
+  typeof addMultipleResources
+>;
 
 describe('sideEffects/getResourceList', () => {
   const dispatch = jest.fn();
@@ -59,7 +61,7 @@ describe('sideEffects/getResourceList', () => {
         id: '43',
         is_ready_to_play: true,
         upload_state: uploadState.READY,
-      }
+      },
     ]);
   });
 

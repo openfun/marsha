@@ -2,10 +2,8 @@ import { render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { defineMessages } from 'react-intl';
-import { Provider } from 'react-redux';
 
 import { DashboardTimedTextManager } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
 import { appState } from '../../types/AppData';
 import { TimedText, timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -66,15 +64,13 @@ describe('<DashboardTimedTextManager />', () => {
     } as any;
 
     const { getByText } = render(
-      <Provider store={bootstrapStore(state)}>
-        {wrapInRouter(
-          <DashboardTimedTextManager
-            message={message.key}
-            mode={timedTextMode.TRANSCRIPT}
-            tracks={tracks}
-          />,
-        )}
-      </Provider>,
+      wrapInRouter(
+        <DashboardTimedTextManager
+          message={message.key}
+          mode={timedTextMode.TRANSCRIPT}
+          tracks={tracks}
+        />,
+      ),
     );
 
     await wait();

@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Hide dashboard button in instructor view when a video is in read only.
 - Reactivate HLS support.
 - Only one play button in the plyr is active for a screen reader.
+- Remove usage of react-redux
 
 ### Fixed
 

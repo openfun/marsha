@@ -74,26 +74,40 @@ describe('stores/useThumbnail', () => {
   it('adds a resource to the store', () => {
     useThumbnailApi.getState().addResource({ id: 'newResource' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].newResource).toEqual({ id: 'newResource' });
+    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].newResource).toEqual(
+      { id: 'newResource' },
+    );
   });
   it('removes an existing resource', () => {
     useThumbnailApi.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete).toEqual({ id: 'toDelete' });
+    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete).toEqual({
+      id: 'toDelete',
+    });
 
     useThumbnailApi.getState().removeResource({ id: 'toDelete' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete).toBeUndefined();
+    expect(
+      useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete,
+    ).toBeUndefined();
   });
   it('adds multiple resources to the store', () => {
-    useThumbnailApi.getState().addMultipleResources([
-      { id: 'multi1' } as any,
-      { id: 'multi2' } as any,
-      { id: 'multi3' } as any,
-    ]);
+    useThumbnailApi
+      .getState()
+      .addMultipleResources([
+        { id: 'multi1' } as any,
+        { id: 'multi2' } as any,
+        { id: 'multi3' } as any,
+      ]);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi1).toEqual({ id: 'multi1' });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi2).toEqual({ id: 'multi2' });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi3).toEqual({ id: 'multi3' });
+    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi1).toEqual({
+      id: 'multi1',
+    });
+    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi2).toEqual({
+      id: 'multi2',
+    });
+    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi3).toEqual({
+      id: 'multi3',
+    });
   });
 });

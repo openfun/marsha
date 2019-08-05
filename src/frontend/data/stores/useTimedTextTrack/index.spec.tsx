@@ -144,26 +144,40 @@ describe('stores/useTimedTextTrack', () => {
   it('adds a resource to the store', () => {
     useTimedTextTrackApi.getState().addResource({ id: 'newResource' } as any);
 
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].newResource).toEqual({ id: 'newResource' });
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].newResource,
+    ).toEqual({ id: 'newResource' });
   });
   it('removes an existing resource', () => {
     useTimedTextTrackApi.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete).toEqual({ id: 'toDelete' });
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete,
+    ).toEqual({ id: 'toDelete' });
 
     useTimedTextTrackApi.getState().removeResource({ id: 'toDelete' } as any);
 
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete).toBeUndefined();
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete,
+    ).toBeUndefined();
   });
   it('adds multiple resources to the store', () => {
-    useTimedTextTrackApi.getState().addMultipleResources([
-      { id: 'multi1' } as any,
-      { id: 'multi2' } as any,
-      { id: 'multi3' } as any,
-    ]);
+    useTimedTextTrackApi
+      .getState()
+      .addMultipleResources([
+        { id: 'multi1' } as any,
+        { id: 'multi2' } as any,
+        { id: 'multi3' } as any,
+      ]);
 
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi1).toEqual({ id: 'multi1' });
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi2).toEqual({ id: 'multi2' });
-    expect(useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi3).toEqual({ id: 'multi3' });
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi1,
+    ).toEqual({ id: 'multi1' });
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi2,
+    ).toEqual({ id: 'multi2' });
+    expect(
+      useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].multi3,
+    ).toEqual({ id: 'multi3' });
   });
 });

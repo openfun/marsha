@@ -103,12 +103,9 @@ describe('upload', () => {
       status: 204,
     });
 
-    await upload(
-      setStatus,
-      notifyObjectUploadProgress,
-      objectType,
-      object,
-    )(file);
+    await upload(setStatus, notifyObjectUploadProgress, objectType, object)(
+      file,
+    );
 
     expect(
       fetchMock.calls('/api/videos/video-id/initiate-upload/', {
@@ -137,12 +134,9 @@ describe('upload', () => {
       throw new Error('upload file should not be called');
     });
 
-    await upload(
-      setStatus,
-      notifyObjectUploadProgress,
-      objectType,
-      object,
-    )(file);
+    await upload(setStatus, notifyObjectUploadProgress, objectType, object)(
+      file,
+    );
 
     expect(
       fetchMock.calls('/api/videos/video-id/initiate-upload/', {
@@ -168,12 +162,9 @@ describe('upload', () => {
       status: 400,
     });
 
-    await upload(
-      setStatus,
-      notifyObjectUploadProgress,
-      objectType,
-      object,
-    )(file);
+    await upload(setStatus, notifyObjectUploadProgress, objectType, object)(
+      file,
+    );
 
     expect(
       fetchMock.calls(
@@ -204,12 +195,9 @@ describe('upload', () => {
       { method: 'POST' },
     );
 
-    await upload(
-      setStatus,
-      notifyObjectUploadProgress,
-      objectType,
-      object,
-    )(undefined);
+    await upload(setStatus, notifyObjectUploadProgress, objectType, object)(
+      undefined,
+    );
 
     expect(
       fetchMock.calls(
@@ -235,12 +223,9 @@ describe('upload', () => {
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
 
-    await upload(
-      setStatus,
-      notifyObjectUploadProgress,
-      objectType,
-      undefined,
-    )(file);
+    await upload(setStatus, notifyObjectUploadProgress, objectType, undefined)(
+      file,
+    );
 
     expect(
       fetchMock.calls('/api/videos/video-id/initiate-upload/', {
