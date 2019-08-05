@@ -5,17 +5,13 @@ import jwtDecode from 'jwt-decode';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import { Provider } from 'react-redux';
 
 import { AppRoutes } from './components/AppRoutes';
 import { appData } from './data/appData';
-import { bootstrapStore } from './data/bootstrapStore';
 import { DecodedJwt } from './types/jwt';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
-
-const store = bootstrapStore(appData);
 
 const decodedToken: DecodedJwt = jwtDecode(appData.jwt);
 
@@ -42,10 +38,8 @@ document.addEventListener('DOMContentLoaded', async event => {
   ReactDOM.render(
     <IntlProvider locale={localeCode} messages={translatedMessages}>
       <Grommet theme={theme}>
-        <Provider store={store}>
-          <AppRoutes />
-          <GlobalStyles />
-        </Provider>
+        <AppRoutes />
+        <GlobalStyles />
       </Grommet>
     </IntlProvider>,
     document.querySelector('#marsha-frontend-root'),
