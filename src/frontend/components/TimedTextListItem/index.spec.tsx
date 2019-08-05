@@ -1,12 +1,9 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { TimedTextListItem } from '.';
 import { ERROR_COMPONENT_ROUTE } from '../../components/ErrorComponent/route';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -81,27 +78,18 @@ describe('<TimedTextListItem />', () => {
   it('renders a track, showing its language and status', async () => {
     const { getByText } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <TimedTextListItem
-            track={{
-              active_stamp: 28271937429,
-              id: '42',
-              is_ready_to_play: true,
-              language: 'fr',
-              mode: timedTextMode.SUBTITLE,
-              upload_state: uploadState.READY,
-              url: 'https://example.com/timedtexttrack/42',
-              video: '142',
-            }}
-          />
-        </Provider>,
+        <TimedTextListItem
+          track={{
+            active_stamp: 28271937429,
+            id: '42',
+            is_ready_to_play: true,
+            language: 'fr',
+            mode: timedTextMode.SUBTITLE,
+            upload_state: uploadState.READY,
+            url: 'https://example.com/timedtexttrack/42',
+            video: '142',
+          }}
+        />,
       ),
     );
     await wait();
@@ -130,26 +118,14 @@ describe('<TimedTextListItem />', () => {
     });
 
     const { getByText, queryByText } = render(
-      wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <TimedTextListItem track={track} />
-        </Provider>,
-        [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ],
-      ),
+      wrapInRouter(<TimedTextListItem track={track} />, [
+        {
+          path: ERROR_COMPONENT_ROUTE(),
+          render: ({ match }) => (
+            <span>{`Error Component: ${match.params.code}`}</span>
+          ),
+        },
+      ]),
     );
 
     expect(
@@ -196,18 +172,7 @@ describe('<TimedTextListItem />', () => {
     fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track));
 
     const { getByText, queryByText, rerender } = render(
-      wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <TimedTextListItem track={track} />
-        </Provider>,
-      ),
+      wrapInRouter(<TimedTextListItem track={track} />),
     );
 
     expect(
@@ -235,20 +200,7 @@ describe('<TimedTextListItem />', () => {
     // Second backend call
     jest.advanceTimersByTime(1000 * 30 + 200);
     await wait();
-    rerender(
-      wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video,
-          })}
-        >
-          <TimedTextListItem track={updatedTrack} />
-        </Provider>,
-      ),
-    );
+    rerender(wrapInRouter(<TimedTextListItem track={updatedTrack} />));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
     expect(
@@ -262,27 +214,18 @@ describe('<TimedTextListItem />', () => {
       fetchMock.delete('/api/timedtexttracks/42/', 204);
       const { getByText } = render(
         wrapInRouter(
-          <Provider
-            store={bootstrapStore({
-              jwt: '',
-              resourceLinkid: '',
-              state: appState.INSTRUCTOR,
-              video,
-            })}
-          >
-            <TimedTextListItem
-              track={{
-                active_stamp: 28271937429,
-                id: '42',
-                is_ready_to_play: true,
-                language: 'fr',
-                mode: timedTextMode.SUBTITLE,
-                upload_state: uploadState.READY,
-                url: 'https://example.com/timedtexttrack/42',
-                video: '142',
-              }}
-            />
-          </Provider>,
+          <TimedTextListItem
+            track={{
+              active_stamp: 28271937429,
+              id: '42',
+              is_ready_to_play: true,
+              language: 'fr',
+              mode: timedTextMode.SUBTITLE,
+              upload_state: uploadState.READY,
+              url: 'https://example.com/timedtexttrack/42',
+              video: '142',
+            }}
+          />,
         ),
       );
 

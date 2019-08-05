@@ -1,11 +1,8 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import { TimedTextCreationForm } from '.';
-import { bootstrapStore } from '../../data/bootstrapStore';
-import { appState } from '../../types/AppData';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -40,19 +37,10 @@ describe('<TimedTextCreationForm />', () => {
 
   it('renders and loads the language choices', async () => {
     const { getByText } = render(
-      <Provider
-        store={bootstrapStore({
-          jwt: '',
-          resourceLinkid: '',
-          state: appState.INSTRUCTOR,
-          video: null,
-        })}
-      >
-        <TimedTextCreationForm
-          excludedLanguages={['en']}
-          mode={timedTextMode.SUBTITLE}
-        />
-      </Provider>,
+      <TimedTextCreationForm
+        excludedLanguages={['en']}
+        mode={timedTextMode.SUBTITLE}
+      />,
     );
 
     getByText('Add a language');
@@ -80,19 +68,10 @@ describe('<TimedTextCreationForm />', () => {
 
     const { container, getByText } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video: null,
-          })}
-        >
-          <TimedTextCreationForm
-            excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
-          />
-        </Provider>,
+        <TimedTextCreationForm
+          excludedLanguages={['en']}
+          mode={timedTextMode.SUBTITLE}
+        />,
         [
           {
             path: UPLOAD_FORM_ROUTE(),
@@ -137,19 +116,10 @@ describe('<TimedTextCreationForm />', () => {
 
     const { container, getByText } = render(
       wrapInRouter(
-        <Provider
-          store={bootstrapStore({
-            jwt: '',
-            resourceLinkid: '',
-            state: appState.INSTRUCTOR,
-            video: null,
-          })}
-        >
-          <TimedTextCreationForm
-            excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
-          />
-        </Provider>,
+        <TimedTextCreationForm
+          excludedLanguages={['en']}
+          mode={timedTextMode.SUBTITLE}
+        />,
         [
           {
             path: ERROR_COMPONENT_ROUTE(),

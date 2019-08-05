@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages } from 'react-intl';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
-import { RootState } from '../../data/rootReducer';
 import { getResourceList } from '../../data/sideEffects/getResourceList';
-import { getTimedTextTracks } from '../../data/timedtexttracks/selector';
-import { ConsumableQuery, requestStatus } from '../../types/api';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
+import { requestStatus } from '../../types/api';
 import { modelName } from '../../types/models';
-import { TimedText, timedTextMode } from '../../types/tracks';
+import { timedTextMode } from '../../types/tracks';
+import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
@@ -36,23 +34,16 @@ const DashboardTimedTextPaneStyled = styled.div`
   padding: 1rem;
 `;
 
-/** Props shape for the DashboardTimedTextPane component. */
-interface BaseDashboardTimedTextPaneProps {
-  doGetResourceList: ReturnType<typeof getResourceList>;
-  timedtexttracks: ConsumableQuery<TimedText>;
-}
-
 /**
  * Component. Displays the complete timedtexttrack management area in the dashboard, that lets the user
  * create, delete and modify timedtexttracks related to their video.
  */
-const BaseDashboardTimedTextPane = ({
-  doGetResourceList,
-  timedtexttracks: { objects: timedtexttracks, status },
-}: BaseDashboardTimedTextPaneProps) => {
-  useEffect(() => {
-    doGetResourceList(modelName.TIMEDTEXTTRACKS);
+export const DashboardTimedTextPane = () => {
+  const [status, setStatus] = useState('');
+  useAsyncEffect(async () => {
+    setStatus(await getResourceList(modelName.TIMEDTEXTTRACKS));
   }, []);
+  const timedtexttracks = useTimedTextTrack(state => state.getTimedTextTracks());
 
   if (status === requestStatus.FAILURE) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
@@ -65,36 +56,9 @@ const BaseDashboardTimedTextPane = ({
           key={mode}
           message={messages[mode]}
           mode={mode}
-          tracks={timedtexttracks.filter(track => track.mode === mode)}
+          tracks={timedtexttracks.filter(track => track && track.mode === mode)}
         />
       ))}
     </DashboardTimedTextPaneStyled>
   );
 };
-
-/**
- * Build props for `<DashboardTimedTextPaneConnected />` from `RootState`.
- * Intended for internal use, exported for testing purposes only.
- */
-const mapStateToProps = (state: RootState) => ({
-  timedtexttracks: getTimedTextTracks(state),
-});
-
-/** Create a function that adds a bunch of timedtexttracks in the store. */
-const mergeProps = (
-  { timedtexttracks }: { timedtexttracks: ConsumableQuery<TimedText> },
-  { dispatch }: { dispatch: Dispatch },
-) => ({
-  doGetResourceList: getResourceList(dispatch),
-  timedtexttracks,
-});
-
-/**
- * Component. Displays the complete timedtexttrack management area in the dashboard, that lets the user
- * create, delete and modify timedtexttracks related to their video.
- */
-export const DashboardTimedTextPane = connect(
-  mapStateToProps,
-  null!,
-  mergeProps,
-)(BaseDashboardTimedTextPane);
