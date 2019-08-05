@@ -4,14 +4,10 @@ import { Dispatch } from 'redux';
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
 import { requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
+import { report } from '../../../utils/errors/report';
 import { appData } from '../../appData';
-import { addMultipleResources } from '../../genericReducers/resourceById/actions';
-import {
-  didGetResourceList,
-  failedToGetResourceList,
-  getResourceList as getResourceListAct,
-  ResourceListGet,
-} from '../../genericReducers/resourceList/actions';
+import { ResourceListGet } from '../../genericReducers/resourceList/actions';
+import { addMultipleResources } from '../../stores/generics';
 
 /**
  * Makes and handles the GET request for a resource list. First returns a curried function that
@@ -21,12 +17,11 @@ import {
  * @param params The parameters for the list request.
  * @returns a promise for a request status, so the side effect caller can simply wait for it if needed.
  */
-export const getResourceList = (dispatch: Dispatch) => async (
+export const getResourceList = async (
   resourceName: modelName,
   params: ResourceListGet['params'] = API_LIST_DEFAULT_PARAMS,
 ): Promise<requestStatus> => {
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
-  dispatch(getResourceListAct(resourceName, params));
 
   try {
     const response = await fetch(`${endpoint}?${stringify(params)}`, {
@@ -46,11 +41,10 @@ export const getResourceList = (dispatch: Dispatch) => async (
     }
 
     const resources = await response.json();
-    dispatch(didGetResourceList(resourceName, resources, params));
-    dispatch(addMultipleResources(resourceName, resources));
+    addMultipleResources(resourceName, resources);
     return requestStatus.SUCCESS;
   } catch (error) {
-    dispatch(failedToGetResourceList(resourceName, error));
+    report(error);
     return requestStatus.FAILURE;
   }
 };
