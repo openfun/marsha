@@ -14,9 +14,6 @@ jest.mock('../../appData', () => ({
 }));
 
 describe('sideEffects/pollForTrack', () => {
-  const dispatch = jest.fn();
-  const doPollForTrack = pollForTrack(dispatch);
-
   jest.useFakeTimers();
 
   afterEach(fetchMock.restore);
@@ -27,7 +24,7 @@ describe('sideEffects/pollForTrack', () => {
       JSON.stringify({ is_ready_to_play: false }),
       { method: 'GET' },
     );
-    const promise = doPollForTrack(modelName.VIDEOS, '42', 15);
+    const promise = pollForTrack(modelName.VIDEOS, '42', 15);
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
@@ -80,7 +77,7 @@ describe('sideEffects/pollForTrack', () => {
       JSON.stringify({ is_ready_to_play: false }),
       { method: 'GET' },
     );
-    const promise = doPollForTrack(modelName.VIDEOS, '42', 15);
+    const promise = pollForTrack(modelName.VIDEOS, '42', 15);
 
     // The first call was successful
     expect(
