@@ -14,10 +14,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.501.0"
+    "aws-sdk": "2.503.0"
   },
   "devDependencies": {
-    "@types/jest": "24.0.15",
+    "@types/jest": "24.0.16",
     "aws-sdk-mock": "4.5.0",
     "jest": "24.8.0"
   },
