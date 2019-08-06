@@ -17,61 +17,72 @@ describe('stores/generics', () => {
       [modelName.TIMEDTEXTTRACKS]: {},
     });
   });
+
   describe('addResource', () => {
-    it('adds a thumbnail resource', () => {
-      addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
+    it('adds a thumbnail resource', async () => {
+      await addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
 
       const state = useThumbnailApi.getState();
       expect(state[modelName.THUMBNAIL].thumbnail).toEqual({ id: 'thumbnail' });
     });
-    it('adds a timed text track resource', () => {
-      addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedTextTrack' } as any);
+    it('adds a timed text track resource', async () => {
+      await addResource(modelName.TIMEDTEXTTRACKS, {
+        id: 'timedTextTrack',
+      } as any);
 
       const state = useTimedTextTrackApi.getState();
       expect(state[modelName.TIMEDTEXTTRACKS].timedTextTrack).toEqual({
         id: 'timedTextTrack',
       });
     });
-    it('adds a video resource', () => {
-      addResource(modelName.VIDEOS, { id: 'video' } as any);
+    it('adds a video resource', async () => {
+      await addResource(modelName.VIDEOS, { id: 'video' } as any);
 
       const state = useVideoApi.getState();
       expect(state[modelName.VIDEOS].video).toEqual({ id: 'video' });
     });
   });
-  describe('getResource', () => {
-    it('fetch an existing thumbnail resource and return it', () => {
-      addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
 
-      expect(getResource(modelName.THUMBNAIL, 'thumbnail')).toEqual({
+  describe('getResource', () => {
+    it('fetch an existing thumbnail resource and return it', async () => {
+      await addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
+
+      expect(await getResource(modelName.THUMBNAIL, 'thumbnail')).toEqual({
         id: 'thumbnail',
       });
     });
-    it('fetch a non existing thumbnail and should return undefined', () => {
-      expect(getResource(modelName.THUMBNAIL, 'foo')).toBeUndefined();
+    it('fetch a non existing thumbnail and should return undefined', async () => {
+      expect(await getResource(modelName.THUMBNAIL, 'foo')).toBeUndefined();
     });
-    it('fetch an existing timed text resource and return it', () => {
-      addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
+    it('fetch an existing timed text resource and return it', async () => {
+      await addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
 
-      expect(getResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual({
-        id: 'timedtext',
+      expect(await getResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual(
+        {
+          id: 'timedtext',
+        },
+      );
+    });
+    it('fetch a non existing timed text and should return undefined', async () => {
+      expect(
+        await getResource(modelName.TIMEDTEXTTRACKS, 'foo'),
+      ).toBeUndefined();
+    });
+    it('fetch an existing video resource and return it', async () => {
+      await addResource(modelName.VIDEOS, { id: 'video' } as any);
+
+      expect(await getResource(modelName.VIDEOS, 'video')).toEqual({
+        id: 'video',
       });
     });
-    it('fetch a non existing timed text and should return undefined', () => {
-      expect(getResource(modelName.TIMEDTEXTTRACKS, 'foo')).toBeUndefined();
-    });
-    it('fetch an existing video resource and return it', () => {
-      addResource(modelName.VIDEOS, { id: 'video' } as any);
-
-      expect(getResource(modelName.VIDEOS, 'video')).toEqual({ id: 'video' });
-    });
-    it('fetch a non existing video and should return undefined', () => {
-      expect(getResource(modelName.VIDEOS, 'foo')).toBeUndefined();
+    it('fetch a non existing video and should return undefined', async () => {
+      expect(await getResource(modelName.VIDEOS, 'foo')).toBeUndefined();
     });
   });
+
   describe('addMultipleResources', () => {
-    it('adds multiple thumbnails', () => {
-      addMultipleResources(modelName.THUMBNAIL, [
+    it('adds multiple thumbnails', async () => {
+      await addMultipleResources(modelName.THUMBNAIL, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -83,8 +94,8 @@ describe('stores/generics', () => {
       expect(state[modelName.THUMBNAIL].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.THUMBNAIL].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple timed text tracks', () => {
-      addMultipleResources(modelName.TIMEDTEXTTRACKS, [
+    it('adds multiple timed text tracks', async () => {
+      await addMultipleResources(modelName.TIMEDTEXTTRACKS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -96,8 +107,8 @@ describe('stores/generics', () => {
       expect(state[modelName.TIMEDTEXTTRACKS].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.TIMEDTEXTTRACKS].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple videos', () => {
-      addMultipleResources(modelName.VIDEOS, [
+    it('adds multiple videos', async () => {
+      await addMultipleResources(modelName.VIDEOS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
