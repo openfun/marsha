@@ -97,13 +97,14 @@ describe('UploadForm', () => {
 
   afterEach(fetchMock.restore);
 
-  it('renders the form by default', () => {
-    mockGetResource.mockReturnValue(object);
+  it('renders the form by default', async () => {
+    mockGetResource.mockResolvedValue(object);
     const { getByText } = render(
       wrapInRouter(
         <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
       ),
     );
+    await wait();
 
     getByText('Create a new video');
   });
@@ -118,9 +119,9 @@ describe('UploadForm', () => {
       { method: 'POST' },
     );
     mockUploadFile.mockResolvedValue(true);
-    mockGetResource.mockReturnValue(object);
+    mockGetResource.mockResolvedValue(object);
 
-    const { debug, container, getByText } = render(
+    const { container, getByText } = render(
       wrapInRouter(
         <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
         [
@@ -131,6 +132,7 @@ describe('UploadForm', () => {
         ],
       ),
     );
+    await wait();
 
     fireEvent.drop(container.querySelector('input[type="file"]')!, {
       target: {
@@ -153,7 +155,7 @@ describe('UploadForm', () => {
     fetchMock.mock('/api/videos/video-id/initiate-upload/', 400, {
       method: 'POST',
     });
-    mockGetResource.mockReturnValue(object);
+    mockGetResource.mockResolvedValue(object);
 
     const { container, getByText } = render(
       wrapInRouter(
@@ -166,6 +168,7 @@ describe('UploadForm', () => {
         ],
       ),
     );
+    await wait();
 
     fireEvent.change(container.querySelector('input[type="file"]')!, {
       target: {
