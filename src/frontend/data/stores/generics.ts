@@ -1,39 +1,38 @@
 import { modelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
-import { useThumbnailApi } from './useThumbnail';
-import { useTimedTextTrackApi } from './useTimedTextTrack';
-import { useVideoApi } from './useVideo';
 
-const getStore = (objectType: modelName) => {
+const getStore = async (objectType: modelName) => {
   switch (objectType) {
     case modelName.THUMBNAIL:
+      const { useThumbnailApi } = await import('./useThumbnail');
       return useThumbnailApi;
     case modelName.TIMEDTEXTTRACKS:
+      const { useTimedTextTrackApi } = await import('./useTimedTextTrack');
       return useTimedTextTrackApi;
     case modelName.VIDEOS:
+      const { useVideoApi } = await import('./useVideo');
       return useVideoApi;
   }
 };
 
-export const addMultipleResources = (
+export const addMultipleResources = async (
   objectType: modelName,
   objects: UploadableObject[],
 ) => {
-  getStore(objectType)
-    .getState()
-    .addMultipleResources(objects as any);
+  const store = await getStore(objectType);
+  store.getState().addMultipleResources(objects as any);
 };
 
-export const addResource = (
+export const addResource = async (
   objectType: modelName,
   object: UploadableObject,
 ) => {
-  getStore(objectType)
-    .getState()
-    .addResource(object as any);
+  const store = await getStore(objectType);
+  store.getState().addResource(object as any);
 };
 
-export const getResource = (objectType: modelName, objectId: string) => {
-  const state = getStore(objectType).getState();
+export const getResource = async (objectType: modelName, objectId: string) => {
+  const store = await getStore(objectType);
+  const state = store.getState();
   return state[objectType] && state[objectType]![objectId];
 };

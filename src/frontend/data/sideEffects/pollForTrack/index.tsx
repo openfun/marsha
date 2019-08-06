@@ -33,7 +33,7 @@ export async function pollForTrack<
       : never = await response.json();
 
     if (incomingTrack.is_ready_to_play) {
-      addResource(resourceName, incomingTrack);
+      await addResource(resourceName, incomingTrack);
       return requestStatus.SUCCESS;
     } else {
       counter++;

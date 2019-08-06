@@ -9,10 +9,12 @@ import { useObjectProgress } from '../../data/stores/useObjectProgress';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
+import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { IframeHeading } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
+import { Loader } from '../Loader';
 import { UploadField } from '../UploadField';
 
 const messages = defineMessages({
@@ -88,7 +90,11 @@ export type Status = Maybe<
 
 export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   const [status, setStatus] = useState(undefined as Status);
-  const object = getResource(objectType, objectId);
+  const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
+
+  useAsyncEffect(async () => {
+    setObject(await getResource(objectType, objectId));
+  }, []);
 
   const setObjectProgress = useObjectProgress(state => state.setObjectProgress);
 
@@ -104,6 +110,10 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
 
     return () => window.removeEventListener('beforeunload', beforeUnload);
   }, []);
+
+  if (object === undefined) {
+    return <Loader />;
+  }
 
   switch (status) {
     case 'success':

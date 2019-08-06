@@ -50,7 +50,7 @@ export const upload = (
   try {
     // Update the state to reflect the in-progress upload (for the dashboard)
     // Useful for the Dashboard loader and help text.
-    addResource(objectType, {
+    await addResource(objectType, {
       ...object,
       upload_state: uploadState.UPLOADING,
     });
@@ -66,12 +66,12 @@ export const upload = (
       notifyObjectUploadProgress,
     );
 
-    addResource(objectType, {
+    await addResource(objectType, {
       ...object,
       upload_state: uploadState.PROCESSING,
     });
   } catch (error) {
-    addResource(objectType, {
+    await addResource(objectType, {
       ...object,
       upload_state: uploadState.ERROR,
     });
