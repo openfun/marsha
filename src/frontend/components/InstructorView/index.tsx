@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   disabledDashboard: {
     defaultMessage:
-      'This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video.',
+      'This video is read-only because it belongs to another course: {context_id}',
     description:
       'Text explaining that the ivdeo is in read_only mode and the dashboard is not available',
     id: 'components.InstructorView.disabledDashboard',
@@ -55,13 +55,16 @@ interface InstructorViewProps {
 export const InstructorView = ({ children }: InstructorViewProps) => {
   const readOnly = getDecodedJwt().read_only;
   const message = readOnly ? messages.disabledDashboard : messages.title;
+  const messagePlaceholder = readOnly
+    ? { context_id: getDecodedJwt().context_id }
+    : {};
   return (
     <React.Fragment>
       <PreviewWrapper>
         <Preview>{children}</Preview>
       </PreviewWrapper>
       <InstructorControls>
-        <FormattedMessage {...message} />
+        <FormattedMessage {...message} values={messagePlaceholder} />
         {!readOnly && (
           <BtnWithLink
             color={'brand'}

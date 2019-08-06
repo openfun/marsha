@@ -20,6 +20,15 @@ Intl.injectIntl = (Node: any) => {
 };
 
 // Patch FormattedMessage to just spit out the default message
-Intl.FormattedMessage = (props: FormattedMessage.Props) => props.defaultMessage;
+Intl.FormattedMessage = (props: FormattedMessage.Props) => {
+  if (props.values && props.defaultMessage) {
+    const keys = Object.keys(props.values);
+    return keys.reduce((message, key) => {
+      return message.replace(`{${key}}`, props.values![key] as any);
+    }, props.defaultMessage);
+  }
+
+  return props.defaultMessage;
+};
 
 module.exports = Intl;

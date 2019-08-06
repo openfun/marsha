@@ -1,7 +1,5 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-
-import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 
 import { InstructorView } from './';
@@ -18,18 +16,6 @@ describe('<InstructorView />', () => {
     mockDecodedJwt = {
       read_only: false,
     };
-    const mockVideo: any = {
-      id: 42,
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
-    const state = {
-      jwt: {
-        read_only: false,
-      },
-      video: mockVideo,
-    } as any;
 
     const { getByText } = render(
       wrapInRouter(
@@ -43,33 +29,20 @@ describe('<InstructorView />', () => {
     getByText('Go to Dashboard');
   });
 
-  it('remove the button when read_only is true', () => {
+  it('removes the button when read_only is true', () => {
     mockDecodedJwt = {
+      context_id: 'foo+context_id',
       read_only: true,
     };
-    const mockVideo: any = {
-      id: 42,
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
-    const state = {
-      jwt: {
-        read_only: true,
-      },
-      video: mockVideo,
-    } as any;
 
     const { getByText, queryByText } = render(
-      wrapInRouter(
-        <InstructorView>
-          <div className="some-child" />
-        </InstructorView>,
-      ),
+      <InstructorView>
+        <div className="some-child" />
+      </InstructorView>,
     );
 
     getByText(
-      'This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video.',
+      'This video is read-only because it belongs to another course: foo+context_id',
     );
     expect(queryByText('Go to Dashboard')).toBeNull();
   });
