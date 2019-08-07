@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Manage administrator role like an instructor.
+
 ## [2.10.1] - 2019-08-13
 
 ### Fixed

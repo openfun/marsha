@@ -94,6 +94,7 @@ class VideoLTITestCase(TestCase):
         """The instructor role should be identified even when a synonym is used."""
         for roles_string in [
             "instructor",
+            "administrator",
             "Teacher",  # upper case letters should be normalized
             "student,instructor",  # two roles separated by comma
             "student, Instructor",  # a space after the comma is allowed
@@ -104,7 +105,7 @@ class VideoLTITestCase(TestCase):
             lti = LTI(request, uuid.uuid4())
             self.assertTrue(lti.is_instructor)
 
-        for roles_string in ["", "instructori", "student", "administrator,student"]:
+        for roles_string in ["", "instructori", "student", "student"]:
             request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request, uuid.uuid4())
             self.assertFalse(lti.is_instructor)

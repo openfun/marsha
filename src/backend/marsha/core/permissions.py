@@ -2,7 +2,7 @@
 from rest_framework import exceptions, permissions
 from rest_framework_simplejwt.models import TokenUser
 
-from .models.account import INSTRUCTOR, LTI_ROLES
+from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 
 
 class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
@@ -35,7 +35,10 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
         user = request.user
         if (
             isinstance(user, TokenUser)
-            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+            and (
+                LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+                or LTI_ROLES[ADMINISTRATOR] & set(user.token.payload.get("roles", []))
+            )
             and user.token.payload.get("read_only", True) is False
         ):
             return True
@@ -87,7 +90,10 @@ class IsVideoInstructorTokenOrAdminUser(permissions.IsAdminUser):
         user = request.user
         if (
             isinstance(user, TokenUser)
-            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+            and (
+                LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+                or LTI_ROLES[ADMINISTRATOR] & set(user.token.payload.get("roles", []))
+            )
             and str(self.get_video_id(obj)) != user.id
         ):
             raise exceptions.PermissionDenied()

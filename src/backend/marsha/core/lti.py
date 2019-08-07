@@ -11,7 +11,7 @@ from pylti.common import LTIException, verify_request_common
 
 from .defaults import PENDING, READY
 from .models import ConsumerSite, Playlist, Video
-from .models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
+from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
 
 class LTI:
@@ -236,7 +236,9 @@ class LTI:
             True if the user is an instructor, False otherwise
 
         """
-        return bool(LTI_ROLES[INSTRUCTOR] & set(self.roles))
+        return bool(LTI_ROLES[INSTRUCTOR] & set(self.roles)) or bool(
+            LTI_ROLES[ADMINISTRATOR] & set(self.roles)
+        )
 
     @property
     def is_student(self):

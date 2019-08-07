@@ -97,6 +97,75 @@ class ViewsTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
+    def test_views_video_lti_post_administrator(self):
+        """Validate the response format returned by the view for an administrator request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "administrator",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+        with mock.patch.object(
+            LTI, "verify", return_value=passport.consumer_site
+        ) as mock_verify:
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        # Extract the JWT Token and state
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertFalse(jwt_token.payload["read_only"])
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
+
+        data_state = match.group(2)
+        self.assertEqual(data_state, "instructor")
+
+        # Extract the video data
+        data_video = re.search(
+            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+        ).group(1)
+
+        self.assertEqual(
+            json.loads(unescape(data_video)),
+            {
+                "active_stamp": None,
+                "is_ready_to_play": False,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": "pending",
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+            },
+        )
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
     def test_views_lti_video_read_only_video(self):
         """A video from another portable playlist should have read_only attribute set to True."""
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
