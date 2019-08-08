@@ -2,12 +2,12 @@ import Plyr from 'plyr';
 import { IntlProvider } from 'react-intl';
 
 import { appData, getDecodedJwt } from '../data/appData';
+import { useTranscriptTimeSelectorApi } from '../data/stores/useTranscriptTimeSelector';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from '../types/XAPI';
 import { isMSESupported } from '../utils/isAbrSupported';
-import { Nullable } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { i18nMessages } from './i18n/plyrTranslation';
 
@@ -109,6 +109,13 @@ export const createPlyrPlayer = async (
       }
     }
   }
+
+  useTranscriptTimeSelectorApi.subscribe(
+    time => (player.currentTime = time as number),
+    {
+      selector: state => state.time,
+    },
+  );
 
   const xapiStatement = new XAPIStatement(
     appData.jwt,
