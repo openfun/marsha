@@ -3,7 +3,16 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { VTTCue } from 'vtt.js';
 
-export const ActiveSentence = styled(Text)`
+import { useTranscriptTimeSelector } from '../../data/stores/useTranscriptTimeSelector';
+
+const Sentence = styled(Text)`
+  cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
+`;
+
+const ActiveSentence = styled(Sentence)`
   background-color: rgba(242, 94, 35, 0.25);
   outline: 1px solid rgba(242, 94, 35, 0.5);
 `;
@@ -13,12 +22,21 @@ interface TranscriptSentenceProps {
   active: boolean;
 }
 
-export const TranscriptSentence = (props: TranscriptSentenceProps) => {
-  const { cue, active } = props;
+export const TranscriptSentence = ({
+  cue,
+  active,
+}: TranscriptSentenceProps) => {
+  const setTime = useTranscriptTimeSelector(state => state.setTime);
 
   if (active) {
-    return <ActiveSentence>{cue.text} </ActiveSentence>;
+    return (
+      <ActiveSentence onClick={() => setTime(cue.startTime)}>
+        {cue.text}{' '}
+      </ActiveSentence>
+    );
   } else {
-    return <Text>{cue.text} </Text>;
+    return (
+      <Sentence onClick={() => setTime(cue.startTime)}>{cue.text} </Sentence>
+    );
   }
 };
