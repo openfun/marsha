@@ -86,6 +86,7 @@ export const createPlyrPlayer = async (
       unmute: intl.formatMessage(i18nMessages.unmute),
       volume: intl.formatMessage(i18nMessages.volume),
     },
+    seekTime: 5,
     settings,
   });
 

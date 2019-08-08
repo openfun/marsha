@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Reactivate HLS support.
 - Only one play button in the plyr is active for a screen reader.
 - Remove usage of react-redux
+- Change seek time to 5 seconds in plyr configuration.
 
 ### Fixed
 
