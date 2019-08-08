@@ -12,6 +12,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add the `show_download` flag to the video admin view.
 - Translate plyr interface.
+- Seek the video to the time corresponding to a transcript sentence
+  when a user click on it.
 
 ### Changed
 
