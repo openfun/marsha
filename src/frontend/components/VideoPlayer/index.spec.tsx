@@ -168,13 +168,14 @@ describe('VideoPlayer', () => {
     expect(container.querySelector('video')!.tabIndex).toEqual(-1);
   });
 
-  it('allows video download when the video object specifies it', () => {
+  it('allows video download when the video object specifies it', async () => {
     mockIsMSESupported.mockReturnValue(false);
     appData.video!.show_download = true;
 
     const { getByText } = render(
       <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
     );
+    await wait();
 
     getByText(/Download this video/i);
     getByText('Show a transcript');

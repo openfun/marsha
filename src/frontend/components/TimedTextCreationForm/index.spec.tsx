@@ -43,6 +43,8 @@ describe('<TimedTextCreationForm />', () => {
       />,
     );
 
+    await wait();
+
     getByText('Add a language');
     getByText('Select...');
     expect(
