@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.10.0] - 2019-08-12
+
 ### Added
 
 - Add the `show_download` flag to the video admin view.
@@ -308,7 +310,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.9.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.10.0...master
+[2.10.0]: https://github.com/openfun/marsha/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openfun/marsha/compare/v2.8.4...v2.9.0
 [2.8.4]: https://github.com/openfun/marsha/compare/v2.8.3...v2.8.4
 [2.8.3]: https://github.com/openfun/marsha/compare/v2.8.2...v2.8.3
