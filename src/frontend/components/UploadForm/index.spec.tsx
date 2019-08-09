@@ -89,11 +89,6 @@ describe('UploadForm', () => {
   } as Video;
 
   beforeEach(jest.resetAllMocks);
-  // Disable useless async act warnings
-  // TODO: remove this spy as soon as async act is available
-  beforeAll(() => {
-    jest.spyOn(console, 'error');
-  });
 
   afterEach(fetchMock.restore);
 

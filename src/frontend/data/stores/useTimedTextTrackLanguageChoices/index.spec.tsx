@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -53,7 +53,9 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
     {
       const { choices, getChoices } = getLatestHookValues();
       expect(choices).toEqual(undefined);
-      expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+      await act(async () => {
+        expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+      });
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/');
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -67,7 +69,9 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
         { label: 'English', value: 'en' },
         { label: 'French', value: 'fr' },
       ]);
-      expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+      await act(async () => {
+        expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+      });
       expect(fetchMock.calls().length).toEqual(1);
     }
   });
@@ -79,7 +83,9 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
     {
       const { choices, getChoices } = getLatestHookValues();
       expect(choices).toEqual(undefined);
-      expect(await getChoices()).toEqual(requestStatus.FAILURE);
+      await act(async () => {
+        expect(await getChoices()).toEqual(requestStatus.FAILURE);
+      });
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/');
       expect(fetchMock.lastCall()![1]).toEqual({
