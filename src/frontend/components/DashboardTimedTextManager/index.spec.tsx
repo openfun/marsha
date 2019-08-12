@@ -6,6 +6,7 @@ import { defineMessages } from 'react-intl';
 import { DashboardTimedTextManager } from '.';
 import { appState } from '../../types/AppData';
 import { TimedText, timedTextMode, uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -64,12 +65,14 @@ describe('<DashboardTimedTextManager />', () => {
     } as any;
 
     const { getByText } = render(
-      wrapInRouter(
-        <DashboardTimedTextManager
-          message={message.key}
-          mode={timedTextMode.TRANSCRIPT}
-          tracks={tracks}
-        />,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardTimedTextManager
+            message={message.key}
+            mode={timedTextMode.TRANSCRIPT}
+            tracks={tracks}
+          />,
+        ),
       ),
     );
 

@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { VideoPlayer } from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -112,7 +113,9 @@ describe('VideoPlayer', () => {
   // This test just makes sure everything works when dashjs is not mocked
   it('starts up the player with DashJS', async () => {
     const { container, getByText, queryByText } = render(
-      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      wrapInIntlProvider(
+        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      ),
     );
     await wait();
 

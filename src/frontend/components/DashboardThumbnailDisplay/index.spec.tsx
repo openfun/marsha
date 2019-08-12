@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { DashboardThumbnailDisplay } from '.';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 describe('<DashboardThumbnailDisplay />', () => {
   it('display images from thumbnail resource when ready', () => {
@@ -33,7 +34,9 @@ describe('<DashboardThumbnailDisplay />', () => {
     } as any;
 
     const { container } = render(
-      <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      ),
     );
 
     const img = container.querySelector('img')!;
@@ -73,7 +76,9 @@ describe('<DashboardThumbnailDisplay />', () => {
     } as any;
 
     const { container } = render(
-      <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      ),
     );
 
     const img = container.querySelector('img')!;
@@ -103,7 +108,9 @@ describe('<DashboardThumbnailDisplay />', () => {
     } as any;
 
     const { container } = render(
-      <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />,
+      ),
     );
 
     const img = container.querySelector('img')!;

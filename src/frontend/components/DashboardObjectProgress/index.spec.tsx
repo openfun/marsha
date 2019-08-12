@@ -3,6 +3,7 @@ import React from 'react';
 
 import { DashboardObjectProgress } from '.';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 describe('<DashboardVideoPaneProgress />', () => {
   let setObjectProgress: any;
@@ -12,7 +13,9 @@ describe('<DashboardVideoPaneProgress />', () => {
   };
 
   it('renders and displays the current progress', () => {
-    const { getByText } = render(<DashboardObjectProgress objectId={'42'} />);
+    const { getByText } = render(
+      wrapInIntlProvider(<DashboardObjectProgress objectId={'42'} />),
+    );
     getByText('0%');
 
     render(<ControlComponent />);

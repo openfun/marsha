@@ -5,6 +5,7 @@ import React from 'react';
 import { TimedTextCreationForm } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -37,11 +38,14 @@ describe('<TimedTextCreationForm />', () => {
 
   it('renders and loads the language choices', async () => {
     const { getByText } = render(
-      <TimedTextCreationForm
-        excludedLanguages={['en']}
-        mode={timedTextMode.SUBTITLE}
-      />,
+      wrapInIntlProvider(
+        <TimedTextCreationForm
+          excludedLanguages={['en']}
+          mode={timedTextMode.SUBTITLE}
+        />,
+      ),
     );
+    await wait();
 
     await wait();
 
@@ -69,19 +73,21 @@ describe('<TimedTextCreationForm />', () => {
     );
 
     const { container, getByText } = render(
-      wrapInRouter(
-        <TimedTextCreationForm
-          excludedLanguages={['en']}
-          mode={timedTextMode.SUBTITLE}
-        />,
-        [
-          {
-            path: UPLOAD_FORM_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Upload form: ${match.params.objectType} ${match.params.objectId}`}</span>
-            ),
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <TimedTextCreationForm
+            excludedLanguages={['en']}
+            mode={timedTextMode.SUBTITLE}
+          />,
+          [
+            {
+              path: UPLOAD_FORM_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Upload form: ${match.params.objectType} ${match.params.objectId}`}</span>
+              ),
+            },
+          ],
+        ),
       ),
     );
     await wait();
@@ -117,19 +123,21 @@ describe('<TimedTextCreationForm />', () => {
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'POST' });
 
     const { container, getByText } = render(
-      wrapInRouter(
-        <TimedTextCreationForm
-          excludedLanguages={['en']}
-          mode={timedTextMode.SUBTITLE}
-        />,
-        [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <TimedTextCreationForm
+            excludedLanguages={['en']}
+            mode={timedTextMode.SUBTITLE}
+          />,
+          [
+            {
+              path: ERROR_COMPONENT_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
       ),
     );
     await wait();

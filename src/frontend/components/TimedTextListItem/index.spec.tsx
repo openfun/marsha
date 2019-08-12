@@ -5,6 +5,7 @@ import React from 'react';
 import { TimedTextListItem } from '.';
 import { ERROR_COMPONENT_ROUTE } from '../../components/ErrorComponent/route';
 import { timedTextMode, uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
 describe('<TimedTextListItem />', () => {
@@ -77,19 +78,21 @@ describe('<TimedTextListItem />', () => {
 
   it('renders a track, showing its language and status', async () => {
     const { getByText } = render(
-      wrapInRouter(
-        <TimedTextListItem
-          track={{
-            active_stamp: 28271937429,
-            id: '42',
-            is_ready_to_play: true,
-            language: 'fr',
-            mode: timedTextMode.SUBTITLE,
-            upload_state: uploadState.READY,
-            url: 'https://example.com/timedtexttrack/42',
-            video: '142',
-          }}
-        />,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <TimedTextListItem
+            track={{
+              active_stamp: 28271937429,
+              id: '42',
+              is_ready_to_play: true,
+              language: 'fr',
+              mode: timedTextMode.SUBTITLE,
+              upload_state: uploadState.READY,
+              url: 'https://example.com/timedtexttrack/42',
+              video: '142',
+            }}
+          />,
+        ),
       ),
     );
     await wait();
@@ -118,14 +121,16 @@ describe('<TimedTextListItem />', () => {
     });
 
     const { getByText, queryByText } = render(
-      wrapInRouter(<TimedTextListItem track={track} />, [
-        {
-          path: ERROR_COMPONENT_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-      ]),
+      wrapInIntlProvider(
+        wrapInRouter(<TimedTextListItem track={track} />, [
+          {
+            path: ERROR_COMPONENT_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+        ]),
+      ),
     );
 
     expect(
@@ -172,7 +177,7 @@ describe('<TimedTextListItem />', () => {
     fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track));
 
     const { getByText, queryByText, rerender } = render(
-      wrapInRouter(<TimedTextListItem track={track} />),
+      wrapInIntlProvider(wrapInRouter(<TimedTextListItem track={track} />)),
     );
 
     expect(
@@ -200,7 +205,11 @@ describe('<TimedTextListItem />', () => {
     // Second backend call
     jest.advanceTimersByTime(1000 * 30 + 200);
     await wait();
-    rerender(wrapInRouter(<TimedTextListItem track={updatedTrack} />));
+    rerender(
+      wrapInIntlProvider(
+        wrapInRouter(<TimedTextListItem track={updatedTrack} />),
+      ),
+    );
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
     expect(
@@ -213,19 +222,21 @@ describe('<TimedTextListItem />', () => {
     it('issues a deleteTimedTextTrack request and deletes the track from the store', async () => {
       fetchMock.delete('/api/timedtexttracks/42/', 204);
       const { getByText } = render(
-        wrapInRouter(
-          <TimedTextListItem
-            track={{
-              active_stamp: 28271937429,
-              id: '42',
-              is_ready_to_play: true,
-              language: 'fr',
-              mode: timedTextMode.SUBTITLE,
-              upload_state: uploadState.READY,
-              url: 'https://example.com/timedtexttrack/42',
-              video: '142',
-            }}
-          />,
+        wrapInIntlProvider(
+          wrapInRouter(
+            <TimedTextListItem
+              track={{
+                active_stamp: 28271937429,
+                id: '42',
+                is_ready_to_play: true,
+                language: 'fr',
+                mode: timedTextMode.SUBTITLE,
+                upload_state: uploadState.READY,
+                url: 'https://example.com/timedtexttrack/42',
+                video: '142',
+              }}
+            />,
+          ),
         ),
       );
 

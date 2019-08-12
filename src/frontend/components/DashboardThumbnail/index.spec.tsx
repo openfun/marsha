@@ -5,6 +5,7 @@ import React from 'react';
 import { DashboardThumbnail } from '.';
 import { useThumbnail } from '../../data/stores/useThumbnail';
 import { uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { jestMockOf } from '../../utils/types';
 
 jest.mock('react-router-dom', () => ({
@@ -77,7 +78,7 @@ describe('<DashboardThumbnail />', () => {
       thumbnail: video.thumbnail,
     });
     const { getByAltText, queryByText } = render(
-      <DashboardThumbnail video={video} />,
+      wrapInIntlProvider(<DashboardThumbnail video={video} />),
     );
 
     // The progress indicator, processing message & error message are not shown
@@ -107,7 +108,7 @@ describe('<DashboardThumbnail />', () => {
     });
 
     const { getByAltText, queryByText } = render(
-      <DashboardThumbnail video={videoWithoutThumbnail} />,
+      wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
     );
 
     // The progress indicator, processing message & error message are not shown
@@ -144,7 +145,9 @@ describe('<DashboardThumbnail />', () => {
     });
 
     const { getByText, queryByAltText, queryByText } = render(
-      <DashboardThumbnail video={videoWithLoadingThumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnail video={videoWithLoadingThumbnail} />,
+      ),
     );
 
     // The thumbnail image, processing message & error message are not shown
@@ -179,7 +182,9 @@ describe('<DashboardThumbnail />', () => {
     });
 
     const { getByText, queryByAltText, queryByText } = render(
-      <DashboardThumbnail video={videoWithProcessingThumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnail video={videoWithProcessingThumbnail} />,
+      ),
     );
 
     // The thumbnail image, progress indicator & error message are not shown
@@ -212,7 +217,9 @@ describe('<DashboardThumbnail />', () => {
     });
 
     const { getByText, queryByAltText, queryByText } = render(
-      <DashboardThumbnail video={videoWithErroredThumbnail} />,
+      wrapInIntlProvider(
+        <DashboardThumbnail video={videoWithErroredThumbnail} />,
+      ),
     );
 
     // The thumbnail image, progress indicator & processing message are not shown
@@ -254,7 +261,7 @@ describe('<DashboardThumbnail />', () => {
     });
 
     const { debug, getByAltText, getByText } = render(
-      <DashboardThumbnail video={videoWithoutThumbnail} />,
+      wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
     );
 
     expect(

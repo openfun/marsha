@@ -5,6 +5,7 @@ import React from 'react';
 import { DashboardVideoPane } from '.';
 import { uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
@@ -60,8 +61,10 @@ describe('<DashboardVideoPane />', () => {
     );
 
     const { getByText, queryByText, rerender } = render(
-      wrapInRouter(
-        <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
+        ),
       ),
     );
 
@@ -102,8 +105,10 @@ describe('<DashboardVideoPane />', () => {
     });
 
     rerender(
-      wrapInRouter(
-        <DashboardVideoPane video={{ ...video, upload_state: READY }} />,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoPane video={{ ...video, upload_state: READY }} />,
+        ),
       ),
     );
 
@@ -122,16 +127,18 @@ describe('<DashboardVideoPane />', () => {
       throws: new Error('Failed request'),
     });
     const { getByText } = render(
-      wrapInRouter(
-        <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
-        [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
+          [
+            {
+              path: ERROR_COMPONENT_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
       ),
     );
 
@@ -144,18 +151,20 @@ describe('<DashboardVideoPane />', () => {
 
   it('redirects to error when the video is in the error state and not `is_ready_to_play`', async () => {
     const { getByText } = render(
-      wrapInRouter(
-        <DashboardVideoPane
-          video={{ ...video, is_ready_to_play: false, upload_state: ERROR }}
-        />,
-        [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoPane
+            video={{ ...video, is_ready_to_play: false, upload_state: ERROR }}
+          />,
+          [
+            {
+              path: ERROR_COMPONENT_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
       ),
     );
 
@@ -164,9 +173,11 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the dashboard when the video is in the error state but `is_ready_to_play`', async () => {
     const { getByText } = render(
-      <DashboardVideoPane
-        video={{ ...video, is_ready_to_play: true, upload_state: ERROR }}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoPane
+          video={{ ...video, is_ready_to_play: true, upload_state: ERROR }}
+        />,
+      ),
     );
 
     getByText(content => content.startsWith('Error'));
@@ -178,14 +189,16 @@ describe('<DashboardVideoPane />', () => {
   it('shows the buttons only when the video is pending or ready', () => {
     for (const state of Object.values(uploadState)) {
       const { getByText, queryByText } = render(
-        wrapInRouter(
-          <DashboardVideoPane
-            video={{
-              ...video,
-              is_ready_to_play: false,
-              upload_state: state,
-            }}
-          />,
+        wrapInIntlProvider(
+          wrapInRouter(
+            <DashboardVideoPane
+              video={{
+                ...video,
+                is_ready_to_play: false,
+                upload_state: state,
+              }}
+            />,
+          ),
         ),
       );
 
@@ -211,14 +224,16 @@ describe('<DashboardVideoPane />', () => {
   it('shows the thumbnail only when the video is ready', () => {
     for (const state of Object.values(uploadState)) {
       const { getByAltText, queryByAltText } = render(
-        wrapInRouter(
-          <DashboardVideoPane
-            video={{
-              ...video,
-              is_ready_to_play: false,
-              upload_state: state,
-            }}
-          />,
+        wrapInIntlProvider(
+          wrapInRouter(
+            <DashboardVideoPane
+              video={{
+                ...video,
+                is_ready_to_play: false,
+                upload_state: state,
+              }}
+            />,
+          ),
         ),
       );
       if (state === READY) {
@@ -233,14 +248,16 @@ describe('<DashboardVideoPane />', () => {
   it('shows the upload progress only when the video is uploading', () => {
     for (const state of Object.values(uploadState)) {
       const { getByText, queryByText } = render(
-        wrapInRouter(
-          <DashboardVideoPane
-            video={{
-              ...video,
-              is_ready_to_play: false,
-              upload_state: state,
-            }}
-          />,
+        wrapInIntlProvider(
+          wrapInRouter(
+            <DashboardVideoPane
+              video={{
+                ...video,
+                is_ready_to_play: false,
+                upload_state: state,
+              }}
+            />,
+          ),
         ),
       );
       if (state === UPLOADING) {
