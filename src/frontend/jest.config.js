@@ -5,7 +5,6 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     './testSetup.ts',
-    '@testing-library/react/cleanup-after-each',
   ],
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
   testURL: 'https://localhost',
