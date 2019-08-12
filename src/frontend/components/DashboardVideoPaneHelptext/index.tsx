@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+} from 'react-intl';
 
 import { uploadState } from '../../types/tracks';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages: {
-  [state in uploadState]: FormattedMessage.MessageDescriptor;
+  [state in uploadState]: MessageDescriptor;
 } = defineMessages({
   [ERROR]: {
     defaultMessage:

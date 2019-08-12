@@ -8,6 +8,7 @@ import React from 'react';
 
 import { DashboardTimedTextPane } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
@@ -101,7 +102,9 @@ describe('<DashboardTimedTextPane />', () => {
       },
     ]);
 
-    const { getByText } = render(wrapInRouter(<DashboardTimedTextPane />));
+    const { getByText } = render(
+      wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)),
+    );
 
     await wait();
     const closedCaptions = getByText('Closed captions');
@@ -117,14 +120,16 @@ describe('<DashboardTimedTextPane />', () => {
       Promise.reject(new Error('Failed!')),
     );
     const { getByText } = render(
-      wrapInRouter(<DashboardTimedTextPane />, [
-        {
-          path: ERROR_COMPONENT_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-      ]),
+      wrapInIntlProvider(
+        wrapInRouter(<DashboardTimedTextPane />, [
+          {
+            path: ERROR_COMPONENT_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+        ]),
+      ),
     );
 
     await wait();

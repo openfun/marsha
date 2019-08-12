@@ -10,6 +10,7 @@ import { uploadFile } from '../../data/sideEffects/uploadFile';
 import { getResource } from '../../data/stores/generics';
 import { modelName } from '../../types/models';
 import { timedTextMode, uploadState, Video } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { jestMockOf } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -95,8 +96,10 @@ describe('UploadForm', () => {
   it('renders the form by default', async () => {
     mockGetResource.mockResolvedValue(object);
     const { getByText } = render(
-      wrapInRouter(
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+        ),
       ),
     );
     await wait();
@@ -117,14 +120,16 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
 
     const { container, getByText } = render(
-      wrapInRouter(
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-        [
-          {
-            path: DASHBOARD_ROUTE(),
-            render: () => <span>dashboard</span>,
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          [
+            {
+              path: DASHBOARD_ROUTE(),
+              render: () => <span>dashboard</span>,
+            },
+          ],
+        ),
       ),
     );
     await wait();
@@ -153,14 +158,16 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
 
     const { container, getByText } = render(
-      wrapInRouter(
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-        [
-          {
-            path: ERROR_COMPONENT_ROUTE('policy'),
-            render: () => <span>error policy</span>,
-          },
-        ],
+      wrapInIntlProvider(
+        wrapInRouter(
+          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          [
+            {
+              path: ERROR_COMPONENT_ROUTE('policy'),
+              render: () => <span>error policy</span>,
+            },
+          ],
+        ),
       ),
     );
     await wait();

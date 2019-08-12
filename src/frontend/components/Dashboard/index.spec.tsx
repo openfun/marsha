@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { uploadState, Video } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Dashboard } from './index';
 
 jest.mock('../DashboardVideoPane', () => ({
@@ -33,7 +34,9 @@ describe('<Dashboard />', () => {
       upload_state: uploadState.PROCESSING,
     };
 
-    const { getByText, getByTitle } = render(<Dashboard video={mockVideo} />);
+    const { getByText, getByTitle } = render(
+      wrapInIntlProvider(<Dashboard video={mockVideo} />),
+    );
     getByText('Dashboard');
     getByTitle('dd44');
   });
@@ -45,7 +48,9 @@ describe('<Dashboard />', () => {
       timed_text_tracks: [],
       upload_state: uploadState.PROCESSING,
     };
-    const { getByText, getByTitle } = render(<Dashboard video={videoProps} />);
+    const { getByText, getByTitle } = render(
+      wrapInIntlProvider(<Dashboard video={videoProps} />),
+    );
     getByText('Dashboard');
     getByTitle('dd43');
   });

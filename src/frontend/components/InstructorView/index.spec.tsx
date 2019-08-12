@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { wrapInRouter } from '../../utils/tests/router';
 
+import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { wrapInRouter } from '../../utils/tests/router';
 import { InstructorView } from './';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -18,10 +19,12 @@ describe('<InstructorView />', () => {
     };
 
     const { getByText } = render(
-      wrapInRouter(
-        <InstructorView>
-          <div className="some-child" />
-        </InstructorView>,
+      wrapInIntlProvider(
+        wrapInRouter(
+          <InstructorView>
+            <div className="some-child" />
+          </InstructorView>,
+        ),
       ),
     );
 
@@ -36,9 +39,11 @@ describe('<InstructorView />', () => {
     };
 
     const { getByText, queryByText } = render(
-      <InstructorView>
-        <div className="some-child" />
-      </InstructorView>,
+      wrapInIntlProvider(
+        <InstructorView>
+          <div className="some-child" />
+        </InstructorView>,
+      ),
     );
 
     getByText(
