@@ -5,6 +5,7 @@ import { act } from 'react-dom/test-utils';
 
 import { DashboardVideoPaneDownloadOption } from '.';
 import { uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 describe('<DashboardVideoPaneDownloadOption />', () => {
   afterEach(fetchMock.restore);
@@ -42,10 +43,12 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
 
   it('renders with checkbox not checked', () => {
     const { getByLabelText } = render(
-      <React.Fragment>
-        {' '}
-        <DashboardVideoPaneDownloadOption video={video} />
-      </React.Fragment>,
+      wrapInIntlProvider(
+        <React.Fragment>
+          {' '}
+          <DashboardVideoPaneDownloadOption video={video} />
+        </React.Fragment>,
+      ),
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(
@@ -61,10 +64,12 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
       { method: 'PUT' },
     );
     const { getByLabelText } = render(
-      <React.Fragment>
-        {' '}
-        <DashboardVideoPaneDownloadOption video={video} />
-      </React.Fragment>,
+      wrapInIntlProvider(
+        <React.Fragment>
+          {' '}
+          <DashboardVideoPaneDownloadOption video={video} />
+        </React.Fragment>,
+      ),
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(

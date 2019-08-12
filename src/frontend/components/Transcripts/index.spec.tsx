@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Transcripts } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 const transcriptContent = `
 WEBVTT
@@ -65,7 +66,7 @@ describe('<Transcripts />', () => {
 
   it('displays a list of available transcripts', async () => {
     const { getByText, queryByText } = render(
-      <Transcripts transcripts={transcripts} />,
+      wrapInIntlProvider(<Transcripts transcripts={transcripts} />),
     );
     await wait();
 
@@ -78,12 +79,12 @@ describe('<Transcripts />', () => {
   it('shows the transcript when the user selects a language', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
 
-    const { getByLabelText, getByText } = render(
-      <Transcripts transcripts={transcripts} />,
+    const { debug, getByLabelText, getByText } = render(
+      wrapInIntlProvider(<Transcripts transcripts={transcripts} />),
     );
 
     const select = getByLabelText('Show a transcript');
-    fireEvent.change(select, { target: { value: 'fr' } });
+    fireEvent.change(select, { target: { value: '1' } });
     await wait();
     // TODO: make sure the transcript is displayed
     getByText('Hide transcript');

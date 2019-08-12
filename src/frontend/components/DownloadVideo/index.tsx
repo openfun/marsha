@@ -2,12 +2,12 @@ import { Box } from 'grommet';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import React, { Fragment } from 'react';
-import { defineMessages, FormattedMessage, Messages } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Video, videoSize } from '../../types/tracks';
 
-const messages: Messages = defineMessages({
+const messages = defineMessages({
   downloadVideo: {
     defaultMessage: 'Download this video: ',
     description: 'Text to download the video',
@@ -34,6 +34,8 @@ const StatusInfo = styled.span`
   cursor: pointer;
 `;
 
+type downloadableSize = Extract<videoSize, '1080' | '720' | '480'>;
+
 export const DownloadVideo = ({ video }: { video: Video }) => {
   const elements: JSX.Element[] = [];
 
@@ -41,8 +43,8 @@ export const DownloadVideo = ({ video }: { video: Video }) => {
     <Box align="center" justify="start" direction="row" pad="small">
       <FormattedMessage {...messages.downloadVideo} />
       &nbsp;
-      {(['1080', '720', '480'] as videoSize[])
-        .reduce((acc: JSX.Element[], size: videoSize) => {
+      {(['1080', '720', '480'] as downloadableSize[])
+        .reduce((acc: JSX.Element[], size: downloadableSize) => {
           acc.push(
             <Fragment key={`fragment-${size}`}>
               <a href={video.urls.mp4[size]}>{size}p</a>

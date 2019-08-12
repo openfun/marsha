@@ -31,15 +31,11 @@ jest.mock('jwt-decode', () => {
     session_id: 'abcd',
   }));
 });
-jest.mock('react-intl', () => ({
-  IntlProvider: jest.fn().mockImplementation(() => ({
-    getChildContext: jest.fn().mockReturnValue({
-      intl: {
-        formatMessage: jest.fn(),
-      },
-    }),
-  })),
-  defineMessages: jest.fn().mockImplementation(messages => messages),
+
+jest.mock('../index', () => ({
+  intl: {
+    formatMessage: jest.fn(),
+  },
 }));
 
 describe('createPlyrPlayer', () => {

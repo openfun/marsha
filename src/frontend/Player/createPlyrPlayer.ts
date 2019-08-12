@@ -1,8 +1,8 @@
 import Plyr from 'plyr';
-import { IntlProvider } from 'react-intl';
 
 import { appData, getDecodedJwt } from '../data/appData';
 import { useTranscriptTimeSelectorApi } from '../data/stores/useTranscriptTimeSelector';
+import { intl } from '../index';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -19,23 +19,6 @@ export const createPlyrPlayer = async (
   if (!isMSESupported()) {
     settings.push('quality');
   }
-
-  let localeCode = getDecodedJwt().locale;
-  if (localeCode.match(/^.*_.*$/)) {
-    localeCode = localeCode.split('_')[0];
-  }
-
-  let translatedMessages = null;
-  try {
-    translatedMessages = await import(
-      `../translations/${getDecodedJwt().locale}.json`
-    );
-  } catch (e) {}
-
-  const { intl } = new IntlProvider({
-    locale: localeCode,
-    messages: translatedMessages,
-  }).getChildContext();
 
   const player = new Plyr(ref, {
     captions: {

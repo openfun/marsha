@@ -4,7 +4,12 @@ import { Grommet } from 'grommet';
 import jwtDecode from 'jwt-decode';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { addLocaleData, IntlProvider } from 'react-intl';
+import {
+  createIntl,
+  createIntlCache,
+  IntlShape,
+  RawIntlProvider,
+} from 'react-intl';
 
 import { AppRoutes } from './components/AppRoutes';
 import { appData } from './data/appData';
@@ -20,13 +25,10 @@ if (localeCode.match(/^.*_.*$/)) {
   localeCode = localeCode.split('_')[0];
 }
 
+export let intl: IntlShape;
+
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', async event => {
-  try {
-    const localeData = await import(`react-intl/locale-data/${localeCode}`);
-    addLocaleData(Object.values(localeData));
-  } catch (e) {}
-
   let translatedMessages = null;
   try {
     translatedMessages = await import(
@@ -34,14 +36,23 @@ document.addEventListener('DOMContentLoaded', async event => {
     );
   } catch (e) {}
 
+  const cache = createIntlCache();
+  intl = createIntl(
+    {
+      locale: localeCode,
+      messages: translatedMessages,
+    },
+    cache,
+  );
+
   // Render our actual component tree
   ReactDOM.render(
-    <IntlProvider locale={localeCode} messages={translatedMessages}>
+    <RawIntlProvider value={intl}>
       <Grommet theme={theme}>
         <AppRoutes />
         <GlobalStyles />
       </Grommet>
-    </IntlProvider>,
+    </RawIntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );
 });

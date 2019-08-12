@@ -1,6 +1,13 @@
 import { createPlayer } from './createPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
 
+jest.mock('jwt-decode', () => {
+  return jest.fn().mockImplementation(() => ({
+    locale: 'en',
+    session_id: 'abcd',
+  }));
+});
+
 jest.mock('./createPlyrPlayer');
 
 describe('createPlayer', () => {

@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { DownloadVideo } from '.';
 import { Video } from '../../types/tracks';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 describe('<DownloadVideo />', () => {
   const video = {
@@ -27,7 +28,9 @@ describe('<DownloadVideo />', () => {
     },
   } as Video;
   it('renders all video links', () => {
-    const { getByText } = render(<DownloadVideo video={video} />);
+    const { getByText } = render(
+      wrapInIntlProvider(<DownloadVideo video={video} />),
+    );
 
     getByText('1080p');
     getByText('720p');

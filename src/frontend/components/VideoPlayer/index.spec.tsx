@@ -4,6 +4,7 @@ import React from 'react';
 
 import { appData } from '../../data/appData';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { jestMockOf } from '../../utils/types';
 import { VideoPlayer } from './index';
 
@@ -129,7 +130,9 @@ describe('VideoPlayer', () => {
     mockIsHlsSupported.mockReturnValue(false);
 
     const { container, getByText, queryByText } = render(
-      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      wrapInIntlProvider(
+        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      ),
     );
     await wait();
 
@@ -173,7 +176,9 @@ describe('VideoPlayer', () => {
     appData.video!.show_download = true;
 
     const { getByText } = render(
-      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      wrapInIntlProvider(
+        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      ),
     );
     await wait();
 
@@ -185,7 +190,9 @@ describe('VideoPlayer', () => {
     // Simulate a browser that does not support MSE
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
-      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      wrapInIntlProvider(
+        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      ),
     );
     await wait();
 
@@ -206,7 +213,9 @@ describe('VideoPlayer', () => {
     mockIsHlsSupported.mockReturnValue(true);
 
     const { container } = render(
-      <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      wrapInIntlProvider(
+        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+      ),
     );
     await wait();
 
