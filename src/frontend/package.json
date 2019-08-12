@@ -58,10 +58,12 @@
     "xhr-mock": "2.5.0"
   },
   "dependencies": {
+    "@formatjs/intl-relativetimeformat": "2.6.3",
     "core-js": "3",
     "dashjs": "3.0.0",
     "grommet": "2.7.5",
     "iframe-resizer": "4.1.1",
+    "intl-pluralrules": "1.0.3",
     "jwt-decode": "2.2.0",
     "luxon": "1.17.2",
     "plyr": "3.5.6",
