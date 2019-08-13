@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix first thumbnail creation.
+
 ## [2.10.0] - 2019-08-12
 
 ### Added

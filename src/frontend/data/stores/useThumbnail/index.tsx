@@ -17,7 +17,6 @@ interface ThumbnailState extends StoreState<Thumbnail> {
 export const [useThumbnail, useThumbnailApi] = create<ThumbnailState>(
   (set, get) => {
     let thumbnails = {};
-
     if (appData.video && appData.video.thumbnail !== null) {
       thumbnails = {
         [appData.video.thumbnail.id]: appData.video.thumbnail,
@@ -30,7 +29,7 @@ export const [useThumbnail, useThumbnailApi] = create<ThumbnailState>(
       addResource: (thumbnail: Thumbnail) =>
         set(addResource<Thumbnail>(get(), modelName.THUMBNAIL, thumbnail)),
       getThumbnail: () => {
-        if (get()[modelName.THUMBNAIL]) {
+        if (Object.keys(get()[modelName.THUMBNAIL]).length > 0) {
           const thumbnailId = Object.keys(get()[modelName.THUMBNAIL]).shift();
           return get()[modelName.THUMBNAIL][thumbnailId!];
         }
