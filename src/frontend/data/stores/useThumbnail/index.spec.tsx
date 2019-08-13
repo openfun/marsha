@@ -71,6 +71,15 @@ describe('stores/useThumbnail', () => {
       video: 'd9583272-dcb5-44f3-998f-59797e613754',
     });
   });
+
+  it('returns null when there is no thumbnail', () => {
+    useThumbnailApi.setState({
+      [modelName.THUMBNAIL]: {},
+    });
+
+    expect(useThumbnailApi.getState().getThumbnail()).toBeNull();
+  });
+
   it('adds a resource to the store', () => {
     useThumbnailApi.getState().addResource({ id: 'newResource' } as any);
 
@@ -78,6 +87,7 @@ describe('stores/useThumbnail', () => {
       { id: 'newResource' },
     );
   });
+
   it('removes an existing resource', () => {
     useThumbnailApi.getState().addResource({ id: 'toDelete' } as any);
 
@@ -91,6 +101,7 @@ describe('stores/useThumbnail', () => {
       useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete,
     ).toBeUndefined();
   });
+
   it('adds multiple resources to the store', () => {
     useThumbnailApi
       .getState()
