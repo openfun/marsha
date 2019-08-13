@@ -160,6 +160,13 @@ describe('stores/useTimedTextTrack', () => {
     expect(
       useTimedTextTrackApi.getState()[modelName.TIMEDTEXTTRACKS].toDelete,
     ).toBeUndefined();
+
+    useTimedTextTrackApi
+      .getState()
+      .getTimedTextTracks()
+      .forEach(timedtext => {
+        expect(timedtext).toBeDefined();
+      });
   });
   it('adds multiple resources to the store', () => {
     useTimedTextTrackApi
