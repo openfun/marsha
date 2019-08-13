@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fix first thumbnail creation.
+- Remove undefined values in zustand store when removing a resource.
 
 ## [2.10.0] - 2019-08-12
 
