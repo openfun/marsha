@@ -33,10 +33,16 @@ export function removeResource<R extends Resource>(
   objectType: modelName,
   object: R,
 ) {
+  const objects = Object.values(state[objectType]!).filter(
+    (objectToFilter: R) => objectToFilter.id !== object.id,
+  );
+
   return {
     [objectType]: {
-      ...state[objectType],
-      [object.id]: undefined,
+      ...objects.reduce(
+        (acc, resource) => ({ ...acc, [resource.id]: resource }),
+        {},
+      ),
     },
   };
 }
