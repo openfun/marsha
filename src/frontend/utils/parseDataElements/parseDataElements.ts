@@ -37,6 +37,7 @@ export const parseDataElements: (
             // Nested objects use straight JSON instead of a series of data-attributes
             return {
               ...acc,
+              modelName: element.getAttribute('data-modelname'),
               [element.id]: JSON.parse(
                 element.getAttribute(`data-${element.id}`)!,
               ),

@@ -1,3 +1,5 @@
+import { Document } from '../../types/file';
+import { uploadState } from '../../types/tracks';
 import { keyFromAttr, parseDataElements } from './parseDataElements';
 
 describe.only('utils/parseDataElements', () => {
@@ -52,14 +54,15 @@ describe.only('utils/parseDataElements', () => {
       const data: { [data: string]: string } = {
         keyfive: 'valueFive',
       };
-      // Make a standard AWS S3 policy for illustration purposes
-      const policy: { [key: string]: string } = {
-        acl: 'public-read',
-        awsaccesskeyid: 'MyAWSKey',
-        key: 'file_key_in_s3',
-        policy: 'base64_encoded_policy',
-        signature: 'the_policys_hmac_signature',
-        url: 'my_s3_buckets_url',
+      // create a document
+      const doc: Document = {
+        description: '',
+        id: '46',
+        is_ready_to_display: true,
+        show_download: true,
+        title: 'foo.pdf',
+        upload_state: uploadState.READY,
+        url: 'https://example.com/document/45',
       };
       // Set up the element that contains our bogus data as data-attributes
       const dataElement = document.createElement('div');
@@ -67,13 +70,15 @@ describe.only('utils/parseDataElements', () => {
         dataElement.setAttribute(`data-${key}`, data[key]),
       );
       // Set up the element that contains the policy as data-attributes
-      const policyElement = document.createElement('div');
-      policyElement.id = 'policy'; // triggers the creation of a nested object
-      policyElement.setAttribute('data-policy', JSON.stringify(policy));
+      const documentElement = document.createElement('div');
+      documentElement.id = 'document'; // triggers the creation of a nested object
+      documentElement.setAttribute('data-document', JSON.stringify(doc));
+      documentElement.setAttribute('data-modelname', 'documents');
       // The bogus data and policy are extracted from the data elements
-      expect(parseDataElements([dataElement, policyElement])).toEqual({
+      expect(parseDataElements([dataElement, documentElement])).toEqual({
         ...data,
-        policy,
+        document: doc,
+        modelName: 'documents',
       });
     });
   });

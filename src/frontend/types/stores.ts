@@ -1,3 +1,4 @@
+import { Document } from './file';
 import { modelName } from './models';
 import { Resource, Thumbnail, TimedText, Video } from './tracks';
 
@@ -13,5 +14,8 @@ export interface StoreState<R extends Resource> {
   };
   [modelName.VIDEOS]?: {
     [id: string]: Video;
+  };
+  [modelName.DOCUMENTS]?: {
+    [id: string]: Document;
   };
 }
