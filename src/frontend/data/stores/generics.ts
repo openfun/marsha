@@ -12,6 +12,9 @@ const getStore = async (objectType: modelName) => {
     case modelName.VIDEOS:
       const { useVideoApi } = await import('./useVideo');
       return useVideoApi;
+    case modelName.DOCUMENTS:
+      const { useDocumentApi } = await import('./useDocument');
+      return useDocumentApi;
   }
 };
 

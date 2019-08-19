@@ -1,5 +1,7 @@
 import { Nullable } from '../utils/types';
 import { AWSPolicy } from './AWSPolicy';
+import { Document } from './file';
+import { modelName } from './models';
 import { Video } from './tracks';
 
 export enum appState {
@@ -7,7 +9,6 @@ export enum appState {
   INSTRUCTOR = 'instructor',
   STUDENT = 'student',
 }
-
 export type appStateSuccess = appState.INSTRUCTOR | appState.STUDENT;
 
 export interface AppData {
@@ -15,5 +16,7 @@ export interface AppData {
   policy?: AWSPolicy;
   resourceLinkid: string;
   state: appState;
-  video: Nullable<Video>;
+  video?: Nullable<Video>;
+  document?: Nullable<Document>;
+  modelName: modelName;
 }
