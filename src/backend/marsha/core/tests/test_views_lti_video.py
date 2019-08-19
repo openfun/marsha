@@ -76,7 +76,9 @@ class VideoViewTestCase(TestCase):
 
         # Extract the video data
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
@@ -148,7 +150,9 @@ class VideoViewTestCase(TestCase):
 
         # Extract the video data
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
@@ -209,7 +213,9 @@ class VideoViewTestCase(TestCase):
 
         # Extract the video data
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
@@ -277,7 +283,9 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(data_state, "student")
 
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
         self.assertEqual(
             json.loads(unescape(data_video)),
@@ -369,7 +377,9 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(data_state, "student")
 
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
         self.assertEqual(data_video, "null")
 
@@ -396,7 +406,8 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(data_state, "error")
 
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" data-modelname="" data-video="(.*)">',
+            content,
         ).group(1)
         self.assertEqual(data_video, "null")
 
@@ -550,7 +561,9 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(data_state, "student")
 
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
@@ -611,7 +624,9 @@ class DevelopmentViewsTestCase(TestCase):
 
         # Extract the video data
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
@@ -668,7 +683,9 @@ class DevelopmentViewsTestCase(TestCase):
 
         # Extract the video data
         data_video = re.search(
-            '<div class="marsha-frontend-data" id="video" data-video="(.*)">', content
+            '<div class="marsha-frontend-data" id="video" '
+            'data-modelname="videos" data-video="(.*)">',
+            content,
         ).group(1)
 
         self.assertEqual(
