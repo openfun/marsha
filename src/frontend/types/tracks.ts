@@ -1,4 +1,5 @@
 import { Nullable } from '../utils/types';
+import { Document } from './file';
 
 /** Base shape for all resources to extend. */
 export interface Resource {
@@ -88,4 +89,4 @@ export interface Video extends Resource {
   };
 }
 
-export type UploadableObject = TimedText | Video | Thumbnail;
+export type UploadableObject = TimedText | Video | Thumbnail | Document;
