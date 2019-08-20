@@ -2,7 +2,12 @@ import fetchMock from 'fetch-mock';
 import xhrMock from 'xhr-mock';
 
 import { modelName } from '../../../types/models';
-import { timedTextMode, uploadState, Video } from '../../../types/tracks';
+import {
+  Thumbnail,
+  timedTextMode,
+  uploadState,
+  Video,
+} from '../../../types/tracks';
 import { jestMockOf } from '../../../utils/types';
 import { addResource } from '../../stores/generics';
 import { upload } from './';
@@ -98,6 +103,8 @@ describe('upload', () => {
       { method: 'POST' },
     );
 
+    fetchMock.mock('/api/videos/video-id/', 200, { method: 'PUT' });
+
     xhrMock.post('https://s3.aws.example.com/dev', {
       body: 'form data body',
       status: 204,
@@ -119,8 +126,77 @@ describe('upload', () => {
     });
     expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
+      title: file.name,
       upload_state: uploadState.PROCESSING,
     });
+    expect(fetchMock.called('/api/videos/video-id/', { method: 'PUT' })).toBe(
+      true,
+    );
+    const call = fetchMock.lastCall('/api/videos/video-id/', { method: 'PUT' });
+    expect(JSON.parse(call![1]!.body as string)).toEqual({
+      ...object,
+      title: file.name,
+    });
+  });
+
+  it('gets the policy and upload the file for an object without title', async () => {
+    const thumbnail: Thumbnail = {
+      active_stamp: null,
+      id: 'thumb1',
+      is_ready_to_display: false,
+      upload_state: uploadState.PENDING,
+      urls: {
+        144: 'https://example.com/144p.jpg',
+        240: 'https://example.com/240p.jpg',
+        480: 'https://example.com/480p.jpg',
+        720: 'https://example.com/720p.jpg',
+        1080: 'https://example.com/1080p.jpg',
+      },
+      video: 'video-id',
+    };
+
+    const file = new File(['(⌐□_□)'], 'thumbnail.png', { type: 'image/png' });
+
+    fetchMock.mock(
+      '/api/thumbnail/thumb1/initiate-upload/',
+      {
+        bucket: 'dev',
+        s3_endpoint: 's3.aws.example.com',
+      },
+      { method: 'POST' },
+    );
+
+    fetchMock.mock('/api/thumbnail/thumb1/', 200, { method: 'PUT' });
+
+    xhrMock.post('https://s3.aws.example.com/dev', {
+      body: 'form data body',
+      status: 204,
+    });
+
+    await upload(
+      setStatus,
+      notifyObjectUploadProgress,
+      modelName.THUMBNAIL,
+      thumbnail,
+    )(file);
+
+    expect(
+      fetchMock.called('/api/thumbnail/thumb1/initiate-upload/', {
+        method: 'POST',
+      }),
+    ).toBe(true);
+    expect(setStatus).toHaveBeenCalledWith('uploading');
+    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAIL, {
+      ...thumbnail,
+      upload_state: uploadState.UPLOADING,
+    });
+    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAIL, {
+      ...thumbnail,
+      upload_state: uploadState.PROCESSING,
+    });
+    expect(fetchMock.called('/api/thumbnail/thumb1/', { method: 'PUT' })).toBe(
+      false,
+    );
   });
 
   it('reports the error and does not upload to AWS when it fails to create an initiate upload', async () => {

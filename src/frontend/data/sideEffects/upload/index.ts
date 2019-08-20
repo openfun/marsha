@@ -6,6 +6,7 @@ import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
 import { addResource } from '../../stores/generics';
 import { initiateUpload } from '../initiateUpload';
+import { updateResource } from '../updateResource';
 import { uploadFile } from '../uploadFile';
 
 export const upload = (
@@ -66,10 +67,29 @@ export const upload = (
       notifyObjectUploadProgress,
     );
 
-    await addResource(objectType, {
-      ...object,
-      upload_state: uploadState.PROCESSING,
-    });
+    if (object.hasOwnProperty('title')) {
+      // Add the new object with title and upload_state in the store
+      // to replace the old state.
+      await addResource(objectType, {
+        ...object,
+        title: file.name,
+        upload_state: uploadState.PROCESSING,
+      });
+
+      // Fetch the API to update the title resource.
+      await updateResource(
+        {
+          ...object,
+          title: file.name,
+        },
+        objectType,
+      );
+    } else {
+      await addResource(objectType, {
+        ...object,
+        upload_state: uploadState.PROCESSING,
+      });
+    }
   } catch (error) {
     await addResource(objectType, {
       ...object,
