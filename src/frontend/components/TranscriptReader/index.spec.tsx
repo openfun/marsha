@@ -49,6 +49,7 @@ const transcript = {
   is_ready_to_play: true,
   language: 'fr',
   mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
+  title: 'foo',
   upload_state: uploadState.READY,
   url: 'https://example.com/vtt/fr.vtt',
   video: '42',

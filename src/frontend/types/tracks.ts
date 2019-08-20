@@ -49,6 +49,7 @@ export interface TimedText extends Resource {
   upload_state: uploadState;
   url: string;
   video: Video['id'];
+  title: string;
 }
 
 export interface TimedTextTranscript extends TimedText {
