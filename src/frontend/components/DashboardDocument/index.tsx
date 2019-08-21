@@ -1,13 +1,15 @@
-import { Box } from 'grommet';
-import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
+import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
+import { updateResource } from '../../data/sideEffects/updateResource';
 import { useDocument } from '../../data/stores/useDocument';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
+import { Maybe } from '../../utils/types';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
@@ -21,9 +23,24 @@ const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 const messages = defineMessages({
   title: {
     defaultMessage: 'Document status',
+    description: 'Document upload status.',
+    id: 'components.DashboardDocument.title',
+  },
+  updateError: {
+    defaultMessage: 'Impossible to update the title. Try again later.',
     description:
-      'Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).',
-    id: 'components.DashboardVideoPane.title',
+      'Error message to warn the user that a title update failed and ask them to try again later.',
+    id: 'components.DashboardDocument.form.label.error',
+  },
+  updateSuccessful: {
+    defaultMessage: 'Title successfully updated',
+    description: 'message display when the title is successfully updated',
+    id: 'components.DashboardDocument.form.success',
+  },
+  updateTitle: {
+    defaultMessage: 'Change document title',
+    description: 'Label informing the user they can change the document title.',
+    id: 'components.DashboardDocument.form.label.title',
   },
 });
 
@@ -44,7 +61,14 @@ interface DashboardDocumentProps {
 }
 
 const DashboardDocument = (props: DashboardDocumentProps) => {
-  const document = useDocument(state => state.getDocument(props.document));
+  const { document, updateDocument } = useDocument(state => ({
+    document: state.getDocument(props.document),
+    updateDocument: state.addResource,
+  }));
+  const [title, setTitle] = useState(document.title);
+  const [error, setError] = useState<Maybe<string>>(undefined);
+  const [udpated, setUpdated] = useState(false);
+  const intl = useIntl();
 
   useEffect(() => {
     if ([PENDING, UPLOADING, PROCESSING].includes(document.upload_state)) {
@@ -54,10 +78,29 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     }
   }, []);
 
+  const updateTitle = async () => {
+    try {
+      setUpdated(false);
+      const newDocument = await updateResource(
+        {
+          ...document,
+          title,
+        },
+        modelName.DOCUMENTS,
+      );
+      setError(undefined);
+      setUpdated(true);
+      updateDocument(newDocument);
+    } catch (error) {
+      setError(intl.formatMessage(messages.updateError));
+      setUpdated(false);
+    }
+  };
+
   const commonStatusLine = (
     <Box align={'center'} direction={'row'}>
       <DashboardDocumentInternalHeading>
-        <FormattedMessage {...messages.title} />
+        {intl.formatMessage(messages.title)}
       </DashboardDocumentInternalHeading>
       <UploadStatusPicker state={document.upload_state} />
     </Box>
@@ -117,6 +160,30 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
             <Box basis={'1/2'} margin={'small'}>
               <DocumentPlayer document={document} />
             </Box>
+          </Box>
+          <Box margin={'small'}>
+            <Form onSubmit={updateTitle}>
+              <FormField
+                label={intl.formatMessage(messages.updateTitle)}
+                htmlFor={'title'}
+                error={error}
+                component={TextInput}
+              >
+                <TextInput
+                  placeholder="Title"
+                  value={title}
+                  onChange={event => setTitle(event.target.value)}
+                  size={'medium'}
+                  id={'title'}
+                />
+              </FormField>
+              <Button type="submit" primary label="Submit" />
+              {udpated && (
+                <Text margin={'small'} color={'status-ok'}>
+                  {intl.formatMessage(messages.updateSuccessful)}
+                </Text>
+              )}
+            </Form>
           </Box>
           <DashboardPaneButtons
             object={document}
