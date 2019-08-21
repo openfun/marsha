@@ -1,20 +1,24 @@
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import { DashboardVideoPaneButtons } from '.';
+import { DashboardPaneButtons } from '.';
+import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
-describe('<DashboardVideoPaneButtons />', () => {
+describe('<DashboardPaneButtons />', () => {
   it('only renders the "Watch" button if the video is ready', () => {
     const { getByText } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoPaneButtons
-            video={{ upload_state: READY } as Video}
+          <DashboardPaneButtons
+            object={{ id: 'vid1', upload_state: READY } as Video}
+            objectType={modelName.VIDEOS}
+            routePlayer={VIDEO_PLAYER_ROUTE()}
           />,
         ),
       ),
@@ -27,8 +31,10 @@ describe('<DashboardVideoPaneButtons />', () => {
       const { queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
-            <DashboardVideoPaneButtons
-              video={{ upload_state: state } as Video}
+            <DashboardPaneButtons
+              object={{ id: 'vid1', upload_state: state } as Video}
+              objectType={modelName.VIDEOS}
+              routePlayer={VIDEO_PLAYER_ROUTE()}
             />,
           ),
         ),
@@ -42,8 +48,10 @@ describe('<DashboardVideoPaneButtons />', () => {
     const { getByText, rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoPaneButtons
-            video={{ upload_state: PENDING } as Video}
+          <DashboardPaneButtons
+            object={{ id: 'vid1', upload_state: PENDING } as Video}
+            objectType={modelName.VIDEOS}
+            routePlayer={VIDEO_PLAYER_ROUTE()}
           />,
         ),
       ),
@@ -54,8 +62,10 @@ describe('<DashboardVideoPaneButtons />', () => {
       rerender(
         wrapInIntlProvider(
           wrapInRouter(
-            <DashboardVideoPaneButtons
-              video={{ upload_state: state } as Video}
+            <DashboardPaneButtons
+              object={{ id: 'vid1', upload_state: state } as Video}
+              objectType={modelName.VIDEOS}
+              routePlayer={VIDEO_PLAYER_ROUTE()}
             />,
           ),
         ),

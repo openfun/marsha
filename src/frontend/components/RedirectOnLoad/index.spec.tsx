@@ -2,9 +2,11 @@ import { cleanup, render } from '@testing-library/react';
 import * as React from 'react';
 
 import { appState } from '../../types/AppData';
+import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
+import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
@@ -12,6 +14,8 @@ import { RedirectOnLoad } from './index';
 
 let mockState: any;
 let mockVideo: any;
+let mockDocument: any;
+let mockModelName: any;
 jest.mock('../../data/appData', () => ({
   appData: {
     get state() {
@@ -19,6 +23,12 @@ jest.mock('../../data/appData', () => ({
     },
     get video() {
       return mockVideo;
+    },
+    get document() {
+      return mockDocument;
+    },
+    get modelName() {
+      return mockModelName;
     },
   },
 }));
@@ -28,7 +38,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects to the error view on LTI error', () => {
     mockState = appState.ERROR;
-    mockVideo = {};
+    mockVideo = null;
+    mockDocument = null;
+    mockModelName = modelName.VIDEOS;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -46,6 +58,8 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects instructors to the player when the video is ready', () => {
     mockState = appState.INSTRUCTOR;
+    mockModelName = modelName.VIDEOS;
+    mockDocument = null;
 
     for (const state of Object.values(uploadState)) {
       mockVideo = { is_ready_to_play: true, upload_state: state };
@@ -63,8 +77,31 @@ describe('<RedirectOnLoad />', () => {
     }
   });
 
+  it('redirects instructors to the player when the document is ready', () => {
+    mockState = appState.INSTRUCTOR;
+    mockModelName = modelName.DOCUMENTS;
+    mockVideo = null;
+
+    for (const state of Object.values(uploadState)) {
+      mockDocument = { is_ready_to_display: true, upload_state: state };
+      const { getByText } = render(
+        wrapInRouter(<RedirectOnLoad />, [
+          {
+            path: DOCUMENT_PLAYER_ROUTE(),
+            render: () => <span>document player</span>,
+          },
+        ]),
+      );
+
+      getByText('document player');
+      cleanup();
+    }
+  });
+
   it('redirects students to /player when the video is ready', () => {
     mockState = appState.STUDENT;
+    mockModelName = modelName.VIDEOS;
+    mockDocument = null;
 
     for (const state of Object.values(uploadState)) {
       mockVideo = { is_ready_to_play: true, upload_state: state };
@@ -78,6 +115,27 @@ describe('<RedirectOnLoad />', () => {
       );
 
       getByText('video player');
+      cleanup();
+    }
+  });
+
+  it('redirects students to /player when the document is ready', () => {
+    mockState = appState.STUDENT;
+    mockModelName = modelName.DOCUMENTS;
+    mockVideo = null;
+
+    for (const state of Object.values(uploadState)) {
+      mockDocument = { is_ready_to_display: true, upload_state: state };
+      const { getByText } = render(
+        wrapInRouter(<RedirectOnLoad />, [
+          {
+            path: DOCUMENT_PLAYER_ROUTE(),
+            render: () => <span>document player</span>,
+          },
+        ]),
+      );
+
+      getByText('document player');
       cleanup();
     }
   });
@@ -89,6 +147,8 @@ describe('<RedirectOnLoad />', () => {
       is_ready_to_play: false,
       upload_state: uploadState.PENDING,
     };
+    mockModelName = modelName.VIDEOS;
+    mockDocument = null;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -104,10 +164,59 @@ describe('<RedirectOnLoad />', () => {
     getByText('objectType: videos and objectId: 42');
   });
 
+  it('redirects instructors to /form when there is no document yet', () => {
+    mockState = appState.INSTRUCTOR;
+    mockVideo = null;
+    mockModelName = modelName.DOCUMENTS;
+    mockDocument = {
+      id: '42',
+      is_ready_to_display: false,
+      upload_state: uploadState.PENDING,
+    };
+
+    const { getByText } = render(
+      wrapInRouter(<RedirectOnLoad />, [
+        {
+          path: UPLOAD_FORM_ROUTE(),
+          render: ({ match }) => (
+            <span>{`objectType: ${match.params.objectType} and objectId: ${match.params.objectId}`}</span>
+          ),
+        },
+      ]),
+    );
+
+    getByText('objectType: documents and objectId: 42');
+  });
+
   it('redirects instructors to /dashboard when there is a video undergoing processing', () => {
     mockState = appState.INSTRUCTOR;
     mockVideo = {
       is_ready_to_play: false,
+      upload_state: uploadState.PROCESSING,
+    };
+    mockModelName = modelName.VIDEOS;
+    mockDocument = null;
+
+    const { getByText } = render(
+      wrapInRouter(<RedirectOnLoad />, [
+        {
+          path: DASHBOARD_ROUTE(),
+          render: ({ match }) => (
+            <span>{`dashboard ${match.params.objectType}`}</span>
+          ),
+        },
+      ]),
+    );
+
+    getByText('dashboard videos');
+  });
+
+  it('redirects instructors to /dashboard when there is a document undergoing processing', () => {
+    mockState = appState.INSTRUCTOR;
+    mockVideo = null;
+    mockModelName = modelName.DOCUMENTS;
+    mockDocument = {
+      is_ready_to_display: false,
       upload_state: uploadState.PROCESSING,
     };
 
@@ -115,12 +224,14 @@ describe('<RedirectOnLoad />', () => {
       wrapInRouter(<RedirectOnLoad />, [
         {
           path: DASHBOARD_ROUTE(),
-          render: () => <span>dashboard</span>,
+          render: ({ match }) => (
+            <span>{`dashboard ${match.params.objectType}`}</span>
+          ),
         },
       ]),
     );
 
-    getByText('dashboard');
+    getByText('dashboard documents');
   });
 
   it('redirects students to the error view when the video is not ready', () => {
@@ -129,6 +240,8 @@ describe('<RedirectOnLoad />', () => {
       is_ready_to_play: false,
       upload_state: uploadState.PROCESSING,
     };
+    mockModelName = modelName.VIDEOS;
+    mockDocument = null;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -144,8 +257,13 @@ describe('<RedirectOnLoad />', () => {
     getByText('Error Component: notFound');
   });
 
-  it('redirects students to the error view when the video is null', () => {
+  it('redirects students to the error view when the document is not ready', () => {
     mockState = appState.STUDENT;
+    mockDocument = {
+      is_ready_to_display: false,
+      upload_state: uploadState.PROCESSING,
+    };
+    mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
 
     const { getByText } = render(
@@ -160,5 +278,28 @@ describe('<RedirectOnLoad />', () => {
     );
 
     getByText('Error Component: notFound');
+  });
+
+  it('redirects students to the error view when the resource is null', () => {
+    mockState = appState.STUDENT;
+    mockVideo = null;
+    mockDocument = null;
+
+    for (const model of [modelName.VIDEOS, modelName.DOCUMENTS]) {
+      mockModelName = model;
+      const { getByText } = render(
+        wrapInRouter(<RedirectOnLoad />, [
+          {
+            path: ERROR_COMPONENT_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+        ]),
+      );
+
+      getByText('Error Component: notFound');
+      cleanup();
+    }
   });
 });

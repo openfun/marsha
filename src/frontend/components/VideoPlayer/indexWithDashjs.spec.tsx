@@ -4,7 +4,7 @@ import React from 'react';
 
 import { appData } from '../../data/appData';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { VideoPlayer } from './index';
+import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -114,7 +114,7 @@ describe('VideoPlayer', () => {
   it('starts up the player with DashJS', async () => {
     const { container, getByText, queryByText } = render(
       wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
       ),
     );
     await wait();
