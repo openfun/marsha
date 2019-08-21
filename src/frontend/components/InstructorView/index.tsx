@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { getDecodedJwt } from '../../data/appData';
+import { appData, getDecodedJwt } from '../../data/appData';
 import { theme } from '../../utils/theme/theme';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { withLink } from '../withLink/withLink';
@@ -69,7 +69,7 @@ export const InstructorView = ({ children }: InstructorViewProps) => {
           <BtnWithLink
             color={'brand'}
             label={<FormattedMessage {...messages.btnDashboard} />}
-            to={DASHBOARD_ROUTE()}
+            to={DASHBOARD_ROUTE(appData.modelName)}
           />
         )}
       </InstructorControls>

@@ -24,6 +24,12 @@ jest.mock('../../data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
+jest.mock('../../data/appData', () => ({
+  appData: {
+    modelName: 'videos',
+  },
+}));
+
 const mockUploadFile: jestMockOf<typeof uploadFile> = uploadFile as any;
 const mockGetResource = getResource as jestMockOf<typeof getResource>;
 

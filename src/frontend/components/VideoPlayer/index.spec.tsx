@@ -6,7 +6,7 @@ import { appData } from '../../data/appData';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { jestMockOf } from '../../utils/types';
-import { VideoPlayer } from './index';
+import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -131,7 +131,7 @@ describe('VideoPlayer', () => {
 
     const { container, getByText, queryByText } = render(
       wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
       ),
     );
     await wait();
@@ -177,7 +177,7 @@ describe('VideoPlayer', () => {
 
     const { getByText } = render(
       wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
       ),
     );
     await wait();
@@ -191,7 +191,7 @@ describe('VideoPlayer', () => {
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
       ),
     );
     await wait();
@@ -214,7 +214,7 @@ describe('VideoPlayer', () => {
 
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video} />,
+        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
       ),
     );
     await wait();

@@ -1,21 +1,27 @@
-import { render } from '@testing-library/react';
-import React from 'react';
+import { render, wait } from '@testing-library/react';
+import React, { Suspense } from 'react';
 
+import { Document } from '../../types/file';
+import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { Dashboard } from './index';
+import { Loader } from '../Loader';
+import Dashboard from './index';
 
-jest.mock('../DashboardVideoPane', () => ({
-  DashboardVideoPane: (props: { video: Video }) => (
-    <span title={props.video.id} />
-  ),
-}));
-jest.mock('../DashboardTimedTextPane', () => ({
-  DashboardTimedTextPane: () => '',
-}));
+jest.mock('../DashboardVideo', () => (props: { video: Video }) => (
+  <span title={props.video.id} />
+));
+
+jest.mock('../DashboardDocument', () => (props: { document: Document }) => (
+  <span title={props.document.id} />
+));
 
 jest.mock('../../data/appData', () => ({
   appData: {
+    document: {
+      id: 'doc1',
+      upload_state: 'processing',
+    },
     video: {
       id: 'dd44',
       thumbnail: null,
@@ -26,32 +32,52 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<Dashboard />', () => {
-  it('renders', () => {
-    const mockVideo: any = {
-      id: 'dd44',
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
+  describe('video', () => {
+    it('renders', async () => {
+      const mockVideo: any = {
+        id: 'dd44',
+        thumbnail: null,
+        timed_text_tracks: [],
+        upload_state: uploadState.PROCESSING,
+      };
 
-    const { getByText, getByTitle } = render(
-      wrapInIntlProvider(<Dashboard video={mockVideo} />),
-    );
-    getByText('Dashboard');
-    getByTitle('dd44');
+      const { getByText, getByTitle } = render(
+        wrapInIntlProvider(
+          <Suspense fallback={<Loader />}>
+            <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+          </Suspense>,
+        ),
+      );
+      await wait();
+      getByText('Dashboard');
+
+      await wait();
+      getByTitle('dd44');
+    });
   });
 
-  it('defaults to the video from props', () => {
-    const videoProps: any = {
-      id: 'dd43',
-      thumbnail: null,
-      timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
-    };
-    const { getByText, getByTitle } = render(
-      wrapInIntlProvider(<Dashboard video={videoProps} />),
-    );
-    getByText('Dashboard');
-    getByTitle('dd43');
+  describe('document', () => {
+    it('renders', async () => {
+      const mockDocument: any = {
+        id: 'doc1',
+        upload_state: uploadState.PROCESSING,
+      };
+
+      const { getByText, getByTitle } = render(
+        wrapInIntlProvider(
+          <Suspense fallback={<Loader />}>
+            <Dashboard
+              document={mockDocument}
+              objectType={modelName.DOCUMENTS}
+            />
+          </Suspense>,
+        ),
+      );
+      await wait();
+      getByText('Dashboard');
+
+      await wait();
+      getByTitle('doc1');
+    });
   });
 });
