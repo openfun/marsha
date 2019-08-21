@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 
 import { API_ENDPOINT } from '../../../settings';
 import { requestStatus } from '../../../types/api';
+import { Document } from '../../../types/file';
 import { modelName } from '../../../types/models';
 import { TimedText, Video } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
@@ -9,7 +10,7 @@ import { appData } from '../../appData';
 import { addResource } from '../../stores/generics';
 
 export async function pollForTrack<
-  T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS
+  T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS
 >(
   resourceName: T,
   resourceId: string,
@@ -30,9 +31,11 @@ export async function pollForTrack<
       ? TimedText
       : T extends modelName.VIDEOS
       ? Video
+      : T extends modelName.DOCUMENTS
+      ? Document
       : never = await response.json();
 
-    if (incomingTrack.is_ready_to_play) {
+    if (isReadyToPlay(incomingTrack)) {
       await addResource(resourceName, incomingTrack);
       return requestStatus.SUCCESS;
     } else {
@@ -46,3 +49,11 @@ export async function pollForTrack<
     return requestStatus.FAILURE;
   }
 }
+
+const isReadyToPlay = (object: Document | Video | TimedText): boolean => {
+  if ((object as Document).is_ready_to_display !== undefined) {
+    return (object as Document).is_ready_to_display;
+  }
+
+  return (object as Video | TimedText).is_ready_to_play;
+};
