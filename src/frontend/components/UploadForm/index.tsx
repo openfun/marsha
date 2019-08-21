@@ -3,6 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { appData } from '../../data/appData';
 import { upload } from '../../data/sideEffects/upload';
 import { getResource } from '../../data/stores/generics';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
@@ -35,6 +36,11 @@ const titleMessages = defineMessages({
     defaultMessage: 'Upload a new thumbnail',
     description: 'Title for the thumbnail upload form',
     id: 'components.UploadForm.title-thumbnail',
+  },
+  [modelName.DOCUMENTS]: {
+    defaultMessage: 'Upload a new document',
+    description: 'Title for the document upload form',
+    id: 'components.UploadForm.title-document',
   },
 });
 
@@ -118,7 +124,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   switch (status) {
     case 'success':
     case 'uploading':
-      return <Redirect push to={DASHBOARD_ROUTE()} />;
+      return <Redirect push to={DASHBOARD_ROUTE(appData.modelName)} />;
 
     case 'not_found_error':
       return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
@@ -150,7 +156,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
             </UploadFieldContainer>
           </UploadFormContainer>
           <UploadFormBack>
-            <Link to={DASHBOARD_ROUTE()}>
+            <Link to={DASHBOARD_ROUTE(appData.modelName)}>
               <FormattedMessage {...messages.linkToDashboard} />
             </Link>
           </UploadFormBack>

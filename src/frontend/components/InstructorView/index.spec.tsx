@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
+import { modelName } from '../../types/models';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { InstructorView } from './';
@@ -9,6 +10,9 @@ jest.mock('jwt-decode', () => jest.fn());
 
 let mockDecodedJwt: any;
 jest.mock('../../data/appData', () => ({
+  appData: {
+    modelName: 'videos',
+  },
   getDecodedJwt: () => mockDecodedJwt,
 }));
 

@@ -37,7 +37,7 @@ interface BaseVideoPlayerProps {
   video: Nullable<Video>;
 }
 
-export const VideoPlayer = ({
+const VideoPlayer = ({
   createPlayer,
   video: baseVideo,
 }: BaseVideoPlayerProps) => {
@@ -177,3 +177,5 @@ export const VideoPlayer = ({
     </Box>
   );
 };
+
+export default VideoPlayer;

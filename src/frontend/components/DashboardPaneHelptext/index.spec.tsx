@@ -1,15 +1,19 @@
 import { render } from '@testing-library/react';
 import * as React from 'react';
 
-import { DashboardVideoPaneHelptext } from '.';
+import { DashboardPaneHelptext } from '.';
+import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
-describe('<DashboardVideoPaneHelptext />', () => {
+describe('<DashboardPaneHelptext />', () => {
   it('displays the relevant helptext for each state', () => {
     const { getByText, rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoPaneHelptext state={uploadState.ERROR} />,
+        <DashboardPaneHelptext
+          objectType={modelName.VIDEOS}
+          state={uploadState.ERROR}
+        />,
       ),
     );
     getByText(
@@ -18,14 +22,20 @@ describe('<DashboardVideoPaneHelptext />', () => {
 
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoPaneHelptext state={uploadState.PENDING} />,
+        <DashboardPaneHelptext
+          objectType={modelName.VIDEOS}
+          state={uploadState.PENDING}
+        />,
       ),
     );
     getByText('There is currently no video to display.');
 
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoPaneHelptext state={uploadState.PROCESSING} />,
+        <DashboardPaneHelptext
+          objectType={modelName.VIDEOS}
+          state={uploadState.PROCESSING}
+        />,
       ),
     );
     getByText(
@@ -34,14 +44,20 @@ describe('<DashboardVideoPaneHelptext />', () => {
 
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoPaneHelptext state={uploadState.READY} />,
+        <DashboardPaneHelptext
+          objectType={modelName.VIDEOS}
+          state={uploadState.READY}
+        />,
       ),
     );
     getByText('Your video is ready to play.');
 
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoPaneHelptext state={uploadState.UPLOADING} />,
+        <DashboardPaneHelptext
+          objectType={modelName.VIDEOS}
+          state={uploadState.UPLOADING}
+        />,
       ),
     );
     getByText('Upload in progress... Please do not close or reload this page.');
