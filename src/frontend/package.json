@@ -14,6 +14,8 @@
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
     "prettier-write": "prettier --write '**/*.+(ts|tsx|json|js|jsx)' --ignore-path '../.prettierignore'",
     "lint-all": "yarn lint-fix && yarn prettier-write",
+    "sass": "node-sass --include-path node_modules scss/_main.scss ../backend/marsha/static/css/main.css",
+    "sass-production": "node-sass --include-path node_modules scss/_main.scss --output-style compressed ../backend/marsha/static/css/main.css",
     "test": "jest"
   },
   "repository": "git@github.com:openfun/marsha.git",
@@ -66,6 +68,7 @@
     "intl-pluralrules": "1.0.3",
     "jwt-decode": "2.2.0",
     "luxon": "1.17.2",
+    "node-sass": "4.12.0",
     "plyr": "3.5.6",
     "polished": "3.4.1",
     "rc-tooltip": "3.7.3",
