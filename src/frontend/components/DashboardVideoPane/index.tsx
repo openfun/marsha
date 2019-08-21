@@ -7,16 +7,18 @@ import styled from 'styled-components';
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
+import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
+import { DashboardPaneButtons } from '../DashboardPaneButtons';
+import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import { DashboardThumbnail } from '../DashboardThumbnail';
-import { DashboardVideoPaneButtons } from '../DashboardVideoPaneButtons';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
-import { DashboardVideoPaneHelptext } from '../DashboardVideoPaneHelptext';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker';
+import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
@@ -113,8 +115,15 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       return (
         <DashboardVideoPaneInnerContainer>
           {commonStatusLine}
-          <DashboardVideoPaneHelptext state={video.upload_state} />
-          <DashboardVideoPaneButtons video={video} />
+          <DashboardPaneHelptext
+            objectType={modelName.VIDEOS}
+            state={video.upload_state}
+          />
+          <DashboardPaneButtons
+            object={video}
+            objectType={modelName.VIDEOS}
+            routePlayer={VIDEO_PLAYER_ROUTE()}
+          />
         </DashboardVideoPaneInnerContainer>
       );
 
@@ -123,7 +132,10 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
         <DashboardVideoPaneInnerContainer>
           {commonStatusLine}
           <DashboardObjectProgress objectId={video.id} />
-          <DashboardVideoPaneHelptext state={video.upload_state} />
+          <DashboardPaneHelptext
+            objectType={modelName.VIDEOS}
+            state={video.upload_state}
+          />
         </DashboardVideoPaneInnerContainer>
       );
 
@@ -132,7 +144,10 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       return (
         <DashboardVideoPaneInnerContainer>
           {commonStatusLine}
-          <DashboardVideoPaneHelptext state={video.upload_state} />
+          <DashboardPaneHelptext
+            objectType={modelName.VIDEOS}
+            state={video.upload_state}
+          />
         </DashboardVideoPaneInnerContainer>
       );
 
@@ -142,14 +157,21 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
           <Box direction={'row'}>
             <Box basis={'1/2'} margin={'small'}>
               {commonStatusLine}
-              <DashboardVideoPaneHelptext state={video.upload_state} />
+              <DashboardPaneHelptext
+                objectType={modelName.VIDEOS}
+                state={video.upload_state}
+              />
               <DashboardVideoPaneDownloadOption video={video} />
             </Box>
             <Box basis={'1/2'} margin={'small'}>
               <DashboardThumbnail video={video} />
             </Box>
           </Box>
-          <DashboardVideoPaneButtons video={video} />
+          <DashboardPaneButtons
+            object={video}
+            objectType={modelName.VIDEOS}
+            routePlayer={VIDEO_PLAYER_ROUTE()}
+          />
         </DashboardVideoPaneInnerContainer>
       );
   }

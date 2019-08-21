@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { useVideo } from '../../data/stores/useVideo';
+import { Document } from '../../types/file';
+import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
-import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
-import { DashboardVideoPane } from '../DashboardVideoPane';
 import { IframeHeading } from '../Headings';
+
+const DashboardVideo = lazy(() => import('../DashboardVideo'));
+const DashboardDocument = lazy(() => import('../DashboardDocument'));
 
 const messages = defineMessages({
   title: {
@@ -33,7 +35,9 @@ const DashboardContainer = styled.div`
 
 /** Props shape for the Dashboard component. */
 interface DashboardProps {
-  video: Video;
+  video?: Video;
+  document?: Document;
+  objectType: modelName;
 }
 
 /** Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
@@ -41,16 +45,18 @@ interface DashboardProps {
  * Will also be used to manage related tracks such as timed text when they are available.
  * @param video The video object from AppData. We need it to populate the component before polling starts.
  */
-export const Dashboard = (props: DashboardProps) => {
-  const video = useVideo(state => state.getVideo(props.video));
-
+const Dashboard = ({ document, video, objectType }: DashboardProps) => {
   return (
     <DashboardContainer>
       <IframeHeadingWithLayout>
         <FormattedMessage {...messages.title} />
       </IframeHeadingWithLayout>
-      <DashboardVideoPane video={video} />
-      <DashboardTimedTextPane />
+      {objectType === modelName.VIDEOS && <DashboardVideo video={video!} />}
+      {objectType === modelName.DOCUMENTS && (
+        <DashboardDocument document={document!} />
+      )}
     </DashboardContainer>
   );
 };
+
+export default Dashboard;
