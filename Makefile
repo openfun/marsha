@@ -154,9 +154,19 @@ test:  ## Run django tests for the marsha project.
 ## -- Front-end
 
 build-front: ## Build front application
+build-front: \
+	build-ts \
+	build-sass
+.PHONY: build-front
+
+build-sass: ## Build Sass file to CSS
+	@$(YARN) sass
+.PHONY: build-sass
+
+build-ts: ### Build TypeScript application
 	@$(YARN) generate-translations
 	@$(YARN) build
-.PHONY: build-front
+.PHONY: build-ts
 
 watch-front: ## Build front application and activate watch mode
 	@$(YARN) build --watch
