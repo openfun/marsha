@@ -82,8 +82,25 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Only admin users or object owners are allowed."}
+            content, {"detail": "You do not have permission to perform this action."}
         )
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_video_read_detail_admin_token_user(self):
+        """Administrator should be able to read detail of a video."""
+        video = VideoFactory(upload_state="pending")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["administrator"]
+        jwt_token.payload["read_only"] = False
+
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user(self):
