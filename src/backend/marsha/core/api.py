@@ -14,23 +14,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from . import defaults
+from . import defaults, permissions, serializers
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
-from .permissions import (
-    IsResourceInstructorOrAdminUser,
-    IsVideoRelatedInstructorTokenOrAdminUser,
-    IsVideoToken,
-)
-from .serializers import (
-    DocumentSerializer,
-    ThumbnailSerializer,
-    TimedTextTrackSerializer,
-    UpdateStateSerializer,
-    VideoSerializer,
-    XAPIStatementSerializer,
-)
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
 from .xapi import XAPI
@@ -57,7 +44,7 @@ def update_state(request):
         HttpResponse acknowledging the success or failure of the state update operation.
 
     """
-    serializer = UpdateStateSerializer(data=request.data)
+    serializer = serializers.UpdateStateSerializer(data=request.data)
 
     if serializer.is_valid() is not True:
         return Response(serializer.errors, status=400)
@@ -110,8 +97,10 @@ class VideoViewSet(
     """Viewset for the API of the video object."""
 
     queryset = Video.objects.all()
-    serializer_class = VideoSerializer
-    permission_classes = [IsResourceInstructorOrAdminUser]
+    serializer_class = serializers.VideoSerializer
+    permission_classes = [
+        permissions.IsResourceAdmin | permissions.IsResourceInstructor
+    ]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
@@ -169,8 +158,10 @@ class DocumentViewSet(
     """Viewset for the API of the File object."""
 
     queryset = Document.objects.all()
-    serializer_class = DocumentSerializer
-    permission_classes = [IsResourceInstructorOrAdminUser]
+    serializer_class = serializers.DocumentSerializer
+    permission_classes = [
+        permissions.IsResourceAdmin | permissions.IsResourceInstructor
+    ]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
@@ -231,14 +222,16 @@ class TimedTextTrackViewSet(
 ):
     """Viewset for the API of the TimedTextTrack object."""
 
-    serializer_class = TimedTextTrackSerializer
+    serializer_class = serializers.TimedTextTrackSerializer
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "metadata":
-            permission_classes = [IsVideoToken]
+            permission_classes = [permissions.IsVideoToken]
         else:
-            permission_classes = [IsVideoRelatedInstructorTokenOrAdminUser]
+            permission_classes = [
+                permissions.IsVideoRelatedAdmin | permissions.IsVideoRelatedInstructor
+            ]
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
@@ -305,8 +298,10 @@ class ThumbnailViewSet(
 ):
     """Viewset for the API of the Thumbnail object."""
 
-    permission_classes = [IsVideoRelatedInstructorTokenOrAdminUser]
-    serializer_class = ThumbnailSerializer
+    permission_classes = [
+        permissions.IsVideoRelatedInstructor | permissions.IsVideoRelatedAdmin
+    ]
+    serializer_class = serializers.ThumbnailSerializer
 
     def get_queryset(self):
         """Restrict list access to thumbnail related to the video in the JWT token."""
@@ -368,7 +363,7 @@ class ThumbnailViewSet(
 class XAPIStatementView(APIView):
     """Viewset managing xAPI requests."""
 
-    permission_classes = [IsVideoToken]
+    permission_classes = [permissions.IsVideoToken]
     http_method_names = ["post"]
 
     def post(self, request):
@@ -412,7 +407,7 @@ class XAPIStatementView(APIView):
                 status=501,
             )
 
-        xapi_statement = XAPIStatementSerializer(data=request.data)
+        xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
 
         if not xapi_statement.is_valid():
             return Response(xapi_statement.errors, status=400)

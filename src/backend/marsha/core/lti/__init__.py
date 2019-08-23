@@ -9,7 +9,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from pylti.common import LTIException, verify_request_common
 
 from ..models import ConsumerSite
-from ..models.account import INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
+from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
 
 
 class LTI:
@@ -261,6 +261,18 @@ class LTI:
 
         """
         return bool(LTI_ROLES[INSTRUCTOR] & set(self.roles))
+
+    @property
+    def is_admin(self):
+        """Check if the user of the launch request is an administrator on the course.
+
+        Returns
+        -------
+        boolean
+            True if the user is an administrator, False otherwise
+
+        """
+        return bool(LTI_ROLES[ADMINISTRATOR] & set(self.roles))
 
     @property
     def is_student(self):
