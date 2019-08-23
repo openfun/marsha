@@ -70,6 +70,54 @@ class FileViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    def test_document_view_administrator(self, mock_get_consumer_site, mock_verify):
+        """Validate the format of the response returned by the view for an admin request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        document = DocumentFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": document.lti_id,
+            "context_id": document.playlist.lti_id,
+            "roles": "administrator",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/documents/{!s}".format(document.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        # Extract the JWT Token and state
+        match = re.search(
+            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
+            content,
+        )
+        data_jwt = match.group(1)
+        jwt_token = AccessToken(data_jwt)
+        self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+
+        data_state = match.group(2)
+        # front application will still use instructor role, nothing change here
+        self.assertEqual(data_state, "instructor")
+
+        # Extract the file data
+        data_file = re.search(
+            '<div class="marsha-frontend-data" id="document" data-document="(.*)">',
+            content,
+        ).group(1)
+
+        self.assertIsNotNone(data_file)
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
     def test_document_view_student(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for a student request."""
         passport = ConsumerSiteLTIPassportFactory()

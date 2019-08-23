@@ -48,7 +48,7 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Only admin users or object owners are allowed."}
+            content, {"detail": "You do not have permission to perform this action."}
         )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
@@ -101,7 +101,7 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Only admin users or object owners are allowed."}
+            content, {"detail": "You do not have permission to perform this action."}
         )
 
     def test_api_document_fetch_list_anonymous(self):

@@ -79,6 +79,34 @@ class TimedTextTrackAPITest(TestCase):
             ],
         )
 
+    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
+    def test_api_timed_text_track_options_as_administrator(self):
+        """The details of choices fields should be available via http options for an admin."""
+        timed_text_track = TimedTextTrackFactory(language="af")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["administrator"]
+
+        response = self.client.options(
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        content = json.loads(response.content)
+        self.assertEqual(
+            content["actions"]["POST"]["mode"]["choices"],
+            [
+                {"value": "st", "display_name": "Subtitle"},
+                {"value": "ts", "display_name": "Transcript"},
+                {"value": "cc", "display_name": "Closed captioning"},
+            ],
+        )
+        self.assertEqual(
+            content["actions"]["POST"]["language"]["choices"],
+            [
+                {"value": "af", "display_name": "Afrikaans"},
+                {"value": "ast", "display_name": "Asturian"},
+            ],
+        )
+
     def test_api_timed_text_track_options_anonymous(self):
         """The details of choices fields should be available via http options for a student."""
         response = self.client.options("/api/timedtexttracks/")
@@ -110,7 +138,7 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Only admin users or object owners are allowed."}
+            content, {"detail": "You do not have permission to perform this action."}
         )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
@@ -127,6 +155,57 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
         jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["read_only"] = False
+
+        # Get the timed text track using the JWT token
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "active_stamp": "1533686400",
+                "is_ready_to_play": True,
+                "id": str(timed_text_track.id),
+                "mode": "cc",
+                "language": "fr",
+                "upload_state": "ready",
+                "url": (
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "timedtext/1533686400_fr_cc.vtt"
+                ),
+                "video": str(timed_text_track.video.id),
+            },
+        )
+
+        # Try getting another timed_text_track
+        other_timed_text_track = TimedTextTrackFactory()
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 404)
+        content = json.loads(response.content)
+        self.assertEqual(content, {"detail": "Not found."})
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_timed_text_track_read_detail_admin_user(self):
+        """Admin user associated to a video can read a timed text track related to this video."""
+        timed_text_track = TimedTextTrackFactory(
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            mode="cc",
+            language="fr",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = ["administrator"]
         jwt_token.payload["read_only"] = False
 
         # Get the timed text track using the JWT token
