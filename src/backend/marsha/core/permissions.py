@@ -1,12 +1,12 @@
 """Custom permission classes for the Marsha project."""
-from rest_framework import exceptions, permissions
+from rest_framework import permissions
 from rest_framework_simplejwt.models import TokenUser
 
-from .models.account import INSTRUCTOR, LTI_ROLES
+from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 
 
-class IsResourceInstructorOrAdminUser(permissions.IsAdminUser):
-    """A custom permission class for JWT Tokens related to a resource object.
+class BaseResourcePermission(permissions.IsAdminUser):
+    """Base permission class for JWT Tokens related to a resource object.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
     to users authenticated with a JWT token built from a resource ie related to a TokenUser as
@@ -14,7 +14,7 @@ class IsResourceInstructorOrAdminUser(permissions.IsAdminUser):
 
     """
 
-    message = "Only admin users or object owners are allowed."
+    role = None
 
     def has_permission(self, request, view):
         """Allow TokenUser and postpone further check to the object permission check.
@@ -35,7 +35,8 @@ class IsResourceInstructorOrAdminUser(permissions.IsAdminUser):
         user = request.user
         if (
             isinstance(user, TokenUser)
-            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
+            and LTI_ROLES[self.__class__.role]
+            & set(user.token.payload.get("roles", []))
             and user.token.payload.get("read_only", True) is False
         ):
             return True
@@ -85,17 +86,30 @@ class IsResourceInstructorOrAdminUser(permissions.IsAdminUser):
         # Users authentified via LTI are identified by a TokenUser with the
         # resource_link_id as user ID.
         user = request.user
-        if (
-            isinstance(user, TokenUser)
-            and LTI_ROLES[INSTRUCTOR] & set(user.token.payload.get("roles", []))
-            and str(self.get_resource_id(obj)) != user.id
+        if isinstance(user, TokenUser) and str(self.get_resource_id(obj)) != user.id:
+            return False
+
+        if not LTI_ROLES[self.__class__.role] & set(
+            user.token.payload.get("roles", [])
         ):
-            raise exceptions.PermissionDenied()
+            return False
 
         return super().has_object_permission(request, view, obj)
 
 
-class IsVideoRelatedInstructorTokenOrAdminUser(IsResourceInstructorOrAdminUser):
+class IsResourceInstructor(BaseResourcePermission):
+    """Class dedicated to instructor users."""
+
+    role = INSTRUCTOR
+
+
+class IsResourceAdmin(BaseResourcePermission):
+    """Class dedicated to administrator users."""
+
+    role = ADMINISTRATOR
+
+
+class BaseVideoRelatedPermission(BaseResourcePermission):
     """A custom permission class for JWT Tokens related to objects linked to a video.
 
     These permissions build on the `IsAdminUser` class but grants additional specific accesses
@@ -119,6 +133,18 @@ class IsVideoRelatedInstructorTokenOrAdminUser(IsResourceInstructorOrAdminUser):
 
         """
         return obj.video.id
+
+
+class IsVideoRelatedInstructor(BaseVideoRelatedPermission):
+    """Class dedicated to instructor users."""
+
+    role = INSTRUCTOR
+
+
+class IsVideoRelatedAdmin(BaseVideoRelatedPermission):
+    """Class dedicated to administrator users."""
+
+    role = ADMINISTRATOR
 
 
 class IsVideoToken(permissions.IsAuthenticated):

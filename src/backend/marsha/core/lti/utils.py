@@ -40,7 +40,9 @@ def get_or_create_resource(model, lti):
         raise LTIException("A context ID is required.")
 
     # If the video already exists, retrieve it from database
-    filter_kwargs = {"upload_state": READY} if not lti.is_instructor else {}
+    filter_kwargs = (
+        {} if (lti.is_instructor or lti.is_admin) else {"upload_state": READY}
+    )
     try:
         return model.objects.get(
             Q(playlist__lti_id=lti.context_id)
@@ -57,7 +59,7 @@ def get_or_create_resource(model, lti):
     except model.DoesNotExist:
         pass
 
-    if not lti.is_instructor:
+    if not (lti.is_instructor or lti.is_admin):
         return None
 
     try:

@@ -22,6 +22,7 @@ SHARED_SECRET_SIZE = 40
 
 ADMINISTRATOR, INSTRUCTOR, STUDENT = ("administrator", "instructor", "student")
 LTI_ROLES = {
+    ADMINISTRATOR: {"administrator"},
     INSTRUCTOR: {"instructor", "teacher", "staff"},
     STUDENT: {"student", "learner"},
 }

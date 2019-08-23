@@ -85,7 +85,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource_data": "null",
             }
 
-        context = {"state": INSTRUCTOR if lti.is_instructor else STUDENT}
+        context = {"state": STUDENT if lti.is_student else INSTRUCTOR}
 
         locale = "en_US"
         try:

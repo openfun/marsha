@@ -97,6 +97,55 @@ class ThumbnailApiTest(TestCase):
             },
         )
 
+    def test_api_thumbnail_administrator_read_detail_in_read_only(self):
+        """Admin should not be able to read thumbnails in a read_only mode."""
+        thumbnail = ThumbnailFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
+        jwt_token.payload["roles"] = ["administrator"]
+        jwt_token.payload["read_only"] = True
+
+        response = self.client.get(
+            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_thumbnail_read_detail_admin_user(self):
+        """Admin should be able to read details of thumbnail assotiated to their video."""
+        video = VideoFactory(
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), upload_state="ready"
+        )
+        thumbnail = ThumbnailFactory(video=video, upload_state="pending")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["administrator"]
+        jwt_token.payload["read_only"] = False
+
+        response = self.client.get(
+            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "id": str(thumbnail.id),
+                "active_stamp": None,
+                "is_ready_to_display": False,
+                "upload_state": "pending",
+                "urls": None,
+                "video": str(video.id),
+            },
+        )
+
     def test_api_thumbnail_read_ready_thumbnail(self):
         """A ready thumbnail should have computed urls."""
         video = VideoFactory(
