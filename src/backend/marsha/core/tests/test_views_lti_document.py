@@ -59,8 +59,7 @@ class FileViewTestCase(TestCase):
 
         # Extract the file data
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="documents" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
 
@@ -108,8 +107,7 @@ class FileViewTestCase(TestCase):
 
         # Extract the file data
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="documents" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
 
@@ -157,8 +155,7 @@ class FileViewTestCase(TestCase):
 
         # Extract the file data
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="documents" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
 
@@ -192,8 +189,7 @@ class FileViewTestCase(TestCase):
         self.assertEqual(data_state, "student")
 
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="documents" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
         self.assertEqual(data_file, "null")
@@ -232,8 +228,7 @@ class FileViewTestCase(TestCase):
         self.assertEqual(data_state.group(2), "instructor")
 
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="documents" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
         self.assertNotEqual(data_file, "null")
@@ -261,8 +256,7 @@ class FileViewTestCase(TestCase):
         self.assertEqual(data_state, "error")
 
         data_file = re.search(
-            '<div class="marsha-frontend-data" id="document" '
-            'data-modelname="" data-document="(.*)">',
+            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
             content,
         ).group(1)
         self.assertEqual(data_file, "null")
