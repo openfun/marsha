@@ -1,4 +1,5 @@
 import { AppData } from '../../types/AppData';
+import { modelName } from '../../types/models';
 
 // Transform a data-attribute into a proper key: drop 'data-' & camel-case it
 // Exported for testing purposes
@@ -35,13 +36,25 @@ export const parseDataElements: (
           if (element.id) {
             // Use of ID denotes a nested object
             // Nested objects use straight JSON instead of a series of data-attributes
-            return {
+            const obj = {
               ...acc,
-              modelName: element.getAttribute('data-modelname'),
-              [element.id]: JSON.parse(
-                element.getAttribute(`data-${element.id}`)!,
-              ),
+              modelName: element.id,
             };
+
+            switch (obj.modelName) {
+              case modelName.VIDEOS:
+                obj.video = JSON.parse(element.getAttribute(`data-resource`)!);
+                break;
+              case modelName.DOCUMENTS:
+                obj.document = JSON.parse(
+                  element.getAttribute(`data-resource`)!,
+                );
+                break;
+              default:
+                throw new Error(`model ${obj.modelName} not supported`);
+            }
+
+            return obj;
           } else {
             // If there's no ID, just merge on the main accumulator
             return {

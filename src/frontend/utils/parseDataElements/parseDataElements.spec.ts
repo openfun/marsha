@@ -1,4 +1,5 @@
 import { Document } from '../../types/file';
+import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { keyFromAttr, parseDataElements } from './parseDataElements';
 
@@ -71,15 +72,35 @@ describe.only('utils/parseDataElements', () => {
       );
       // Set up the element that contains the policy as data-attributes
       const documentElement = document.createElement('div');
-      documentElement.id = 'document'; // triggers the creation of a nested object
-      documentElement.setAttribute('data-document', JSON.stringify(doc));
-      documentElement.setAttribute('data-modelname', 'documents');
-      // The bogus data and policy are extracted from the data elements
+      documentElement.id = modelName.DOCUMENTS; // triggers the creation of a nested object
+      documentElement.setAttribute('data-resource', JSON.stringify(doc));
       expect(parseDataElements([dataElement, documentElement])).toEqual({
         ...data,
         document: doc,
-        modelName: 'documents',
+        modelName: modelName.DOCUMENTS,
       });
+    });
+
+    it('parses a not supported resource', () => {
+      // Build some bogus objects with string values & lowecase string keys
+      const data: { [data: string]: string } = {
+        keyfive: 'valueFive',
+      };
+      const resource = {
+        foo: 'bar',
+      };
+      // Set up the element that contains our bogus data as data-attributes
+      const dataElement = document.createElement('div');
+      Object.keys(data).forEach(key =>
+        dataElement.setAttribute(`data-${key}`, data[key]),
+      );
+      // Set up the element that contains the policy as data-attributes
+      const documentElement = document.createElement('div');
+      documentElement.id = 'foo'; // triggers the creation of a nested object
+      documentElement.setAttribute('data-resource', JSON.stringify(resource));
+      expect(() => {
+        parseDataElements([dataElement, documentElement]);
+      }).toThrowError('model foo not supported');
     });
   });
 });
