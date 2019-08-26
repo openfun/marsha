@@ -24,7 +24,12 @@ describe('<TranscriptSentence />', () => {
       <TranscriptSentence cue={cue} active={false} />,
     );
 
-    fireEvent.click(getByText('Lorem ipsum dolor sit amet.'));
+    const sentence = getByText('Lorem ipsum dolor sit amet.');
+
+    expect(sentence).not.toHaveStyleRule('background-color');
+    expect(sentence).not.toHaveStyleRule('outline');
+
+    fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(10);
   });
 
@@ -40,7 +45,12 @@ describe('<TranscriptSentence />', () => {
       <TranscriptSentence cue={cue} active={true} />,
     );
 
-    fireEvent.click(getByText('Lorem ipsum dolor sit amet.'));
+    const sentence = getByText('Lorem ipsum dolor sit amet.');
+
+    expect(sentence).toHaveStyleRule('background-color', /rgba(.*)/);
+    expect(sentence).toHaveStyleRule('outline', /1px solid rgba(.*)/);
+
+    fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(20);
   });
 });
