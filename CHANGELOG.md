@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - Everything related to the OpenEDX LTI view. This a BC break
+- Deprecated settings. This is a BC break
 
 ## [2.10.1] - 2019-08-13
 
