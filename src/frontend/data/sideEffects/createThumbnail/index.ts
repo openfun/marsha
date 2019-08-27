@@ -7,7 +7,7 @@ import { appData } from '../../appData';
  * Create a new thumbnail record for a language-mode combination.
  */
 export const createThumbnail = async () => {
-  const response = await fetch(`${API_ENDPOINT}/${modelName.THUMBNAIL}/`, {
+  const response = await fetch(`${API_ENDPOINT}/${modelName.THUMBNAILS}/`, {
     headers: {
       Authorization: `Bearer ${appData.jwt}`,
       'Content-Type': 'application/json',

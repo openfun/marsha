@@ -12,11 +12,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Create a File model which will be the base model for all the resources
   we will manage
+- create a property `RESOURCE_NAME` on models having a url
 
 ## Changed
 
 - Refactor the LTI view to be generic for all the resources we want to manage
 - Video model is a special File model
+- pluralize thumbnail url
 
 ### Removed
 
@@ -28,7 +30,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fix first thumbnail creation.
-- Remove undefined values in zustand store when removing a resource.
+- create a property `RESOURCE_NAME` on models having a url to make it DRY
 
 ## [2.10.0] - 2019-08-12
 

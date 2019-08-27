@@ -103,7 +103,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     return (
       <Redirect
         push
-        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAIL, thumbnail!.id)}
+        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, thumbnail!.id)}
       />
     );
   }

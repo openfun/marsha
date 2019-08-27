@@ -40,7 +40,7 @@ describe('stores/useThumbnail', () => {
 
     const state = getLatestHookValues();
 
-    expect(state[modelName.THUMBNAIL]).toEqual({
+    expect(state[modelName.THUMBNAILS]).toEqual({
       'c0ea0fbc-5ce1-4340-a589-3db01d804045': {
         active_stamp: '1564494507',
         id: 'c0ea0fbc-5ce1-4340-a589-3db01d804045',
@@ -74,7 +74,7 @@ describe('stores/useThumbnail', () => {
 
   it('returns null when there is no thumbnail', () => {
     useThumbnailApi.setState({
-      [modelName.THUMBNAIL]: {},
+      [modelName.THUMBNAILS]: {},
     });
 
     expect(useThumbnailApi.getState().getThumbnail()).toBeNull();
@@ -83,22 +83,22 @@ describe('stores/useThumbnail', () => {
   it('adds a resource to the store', () => {
     useThumbnailApi.getState().addResource({ id: 'newResource' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].newResource).toEqual(
-      { id: 'newResource' },
-    );
+    expect(
+      useThumbnailApi.getState()[modelName.THUMBNAILS].newResource,
+    ).toEqual({ id: 'newResource' });
   });
 
   it('removes an existing resource', () => {
     useThumbnailApi.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete).toEqual({
+    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].toDelete).toEqual({
       id: 'toDelete',
     });
 
     useThumbnailApi.getState().removeResource({ id: 'toDelete' } as any);
 
     expect(
-      useThumbnailApi.getState()[modelName.THUMBNAIL].toDelete,
+      useThumbnailApi.getState()[modelName.THUMBNAILS].toDelete,
     ).toBeUndefined();
   });
 
@@ -111,13 +111,13 @@ describe('stores/useThumbnail', () => {
         { id: 'multi3' } as any,
       ]);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi1).toEqual({
+    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi1).toEqual({
       id: 'multi1',
     });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi2).toEqual({
+    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi2).toEqual({
       id: 'multi2',
     });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAIL].multi3).toEqual({
+    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi3).toEqual({
       id: 'multi3',
     });
   });
