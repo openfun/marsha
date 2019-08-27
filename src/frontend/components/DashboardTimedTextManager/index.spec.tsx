@@ -11,6 +11,12 @@ import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('jwt-decode', () => jest.fn());
 
+jest.mock('../../data/appData', () => ({
+  appData: {
+    jwt: 'foo',
+  },
+}));
+
 describe('<DashboardTimedTextManager />', () => {
   it('renders the message & tracks it is passed', async () => {
     fetchMock.mock(
@@ -55,7 +61,6 @@ describe('<DashboardTimedTextManager />', () => {
 
     const state = {
       jwt: 'jwt-token',
-      state: appState.INSTRUCTOR,
       video: {
         id: 'dd44',
         thumbnail: null,

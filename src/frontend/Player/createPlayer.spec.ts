@@ -8,6 +8,12 @@ jest.mock('jwt-decode', () => {
   }));
 });
 
+jest.mock('../data/appData', () => ({
+  appData: {
+    jwt: 'foo',
+  },
+}));
+
 jest.mock('./createPlyrPlayer');
 
 describe('createPlayer', () => {
