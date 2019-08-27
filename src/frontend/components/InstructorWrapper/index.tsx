@@ -9,7 +9,7 @@ interface InstructorWrapperProps {
 }
 
 export const InstructorWrapper = ({ children }: InstructorWrapperProps) => {
-  if (appData.state === appState.INSTRUCTOR) {
+  if (appData.isEditable) {
     return <InstructorView>{children}</InstructorView>;
   } else {
     return <React.Fragment>{children}</React.Fragment>;

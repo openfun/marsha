@@ -4,6 +4,10 @@ import { useThumbnailApi } from './useThumbnail';
 import { useTimedTextTrackApi } from './useTimedTextTrack';
 import { useVideoApi } from './useVideo';
 
+jest.mock('../../data/appData', () => ({
+  appData: {},
+}));
+
 describe('stores/generics', () => {
   afterEach(() => {
     // restore the state of each store.

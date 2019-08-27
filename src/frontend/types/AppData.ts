@@ -5,13 +5,13 @@ import { Video } from './tracks';
 
 export enum appState {
   ERROR = 'error',
-  INSTRUCTOR = 'instructor',
-  STUDENT = 'student',
+  SUCCESS = 'success',
 }
 
 export interface AppData {
   jwt: string;
   state: appState;
+  isEditable: boolean;
   video?: Nullable<Video>;
   document?: Nullable<Document>;
   modelName: modelName;

@@ -7,6 +7,10 @@ import { DashboardVideoPaneDownloadOption } from '.';
 import { uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
+jest.mock('../../data/appData', () => ({
+  appData: {},
+}));
+
 describe('<DashboardVideoPaneDownloadOption />', () => {
   afterEach(fetchMock.restore);
 
