@@ -39,7 +39,7 @@ def get_or_create_resource(model, lti):
     except AssertionError:
         raise LTIException("A context ID is required.")
 
-    # If the video already exists, retrieve it from database
+    # If the resource already exists, retrieve it from database
     filter_kwargs = (
         {} if (lti.is_instructor or lti.is_admin) else {"upload_state": READY}
     )

@@ -45,7 +45,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     @property
     @abstractmethod
     def serializer_class(self):
-        """Serilizer used by the view."""
+        """Return the serializer used by the view."""
 
     @abstractmethod
     def _enrich_jwt_token(self, token, resource):
