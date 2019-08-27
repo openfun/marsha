@@ -1,4 +1,6 @@
 """Test the file LTI view."""
+import html
+import json
 from logging import Logger
 import random
 import re
@@ -18,7 +20,7 @@ from ..lti import LTI
 # pylint: disable=unused-argument
 
 
-class FileViewTestCase(TestCase):
+class DocumentViewTestCase(TestCase):
     """Test case for the file LTI view."""
 
     @mock.patch.object(LTI, "verify")
@@ -45,25 +47,18 @@ class FileViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(html.unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
 
-        data_state = match.group(2)
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the file data
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-
-        self.assertIsNotNone(data_file)
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "documents")
+        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -92,26 +87,18 @@ class FileViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(html.unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
 
-        data_state = match.group(2)
-        # front application will still use instructor role, nothing change here
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the file data
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-
-        self.assertIsNotNone(data_file)
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "documents")
+        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -141,25 +128,17 @@ class FileViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(html.unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
-
-        data_state = match.group(2)
-        self.assertEqual(data_state, "student")
-
-        # Extract the file data
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-
-        self.assertIsNotNone(data_file)
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "documents")
+        self.assertFalse(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -183,16 +162,15 @@ class FileViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "student")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
 
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-        self.assertEqual(data_file, "null")
+        context = json.loads(html.unescape(match.group(1)))
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "documents")
+        self.assertFalse(context.get("isEditable"))
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -220,18 +198,16 @@ class FileViewTestCase(TestCase):
         content = response.content.decode("utf-8")
         print(content)
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        self.assertIsNotNone(data_state.group(1))
-        self.assertEqual(data_state.group(2), "instructor")
 
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-        self.assertNotEqual(data_file, "null")
+        context = json.loads(html.unescape(match.group(1)))
+        self.assertIsNotNone(context.get("jwt"))
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "documents")
+        self.assertTrue(context.get("isEditable"))
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -250,13 +226,11 @@ class FileViewTestCase(TestCase):
 
         mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "error")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
 
-        data_file = re.search(
-            '<div class="marsha-frontend-data" id="documents" data-resource="(.*)">',
-            content,
-        ).group(1)
-        self.assertEqual(data_file, "null")
+        context = json.loads(html.unescape(match.group(1)))
+        self.assertEqual(context.get("state"), "error")
+        self.assertIsNone(context.get("resource"))
+        self.assertFalse(context.get("isEditable"))

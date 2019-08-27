@@ -53,13 +53,12 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -71,17 +70,9 @@ class VideoViewTestCase(TestCase):
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
-        data_state = match.group(2)
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the video data
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -95,6 +86,8 @@ class VideoViewTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -125,13 +118,12 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -143,18 +135,9 @@ class VideoViewTestCase(TestCase):
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
-        data_state = match.group(2)
-        # front application will still use instructor role, nothing change here
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the video data
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -168,6 +151,8 @@ class VideoViewTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -197,26 +182,16 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertTrue(jwt_token.payload["read_only"])
-
-        data_state = match.group(2)
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the video data
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -230,6 +205,8 @@ class VideoViewTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -259,12 +236,11 @@ class VideoViewTestCase(TestCase):
         content = response.content.decode("utf-8")
 
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
 
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -276,15 +252,9 @@ class VideoViewTestCase(TestCase):
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
-        data_state = match.group(2)
-        self.assertEqual(data_state, "student")
-
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -298,6 +268,8 @@ class VideoViewTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertFalse(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -327,12 +299,11 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
 
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -341,6 +312,8 @@ class VideoViewTestCase(TestCase):
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
+        self.assertFalse(context.get("isEditable"))
+        self.assertEqual(context.get("modelName"), "videos")
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -367,16 +340,15 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "student")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
 
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-        self.assertEqual(data_video, "null")
+        context = json.loads(unescape(match.group(1)))
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNone(context.get("resource"))
+        self.assertFalse(context.get("isEditable"))
+        self.assertEqual(context.get("modelName"), "videos")
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -395,16 +367,14 @@ class VideoViewTestCase(TestCase):
 
         mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
 
-        data_state = re.search(
-            '<div class="marsha-frontend-data" data-state="(.*)">', content
-        ).group(1)
-        self.assertEqual(data_state, "error")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
 
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-        self.assertEqual(data_video, "null")
+        context = json.loads(unescape(match.group(1)))
+        self.assertEqual(context.get("state"), "error")
+        self.assertIsNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "videos")
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
@@ -434,16 +404,17 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
 
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
 
     @override_settings(STATICFILES_AWS_ENABLED=False)
     @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
@@ -536,12 +507,11 @@ class DevelopmentViewsTestCase(TestCase):
         content = response.content.decode("utf-8")
 
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
 
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -551,17 +521,9 @@ class DevelopmentViewsTestCase(TestCase):
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
-
-        data_state = match.group(2)
-        self.assertEqual(data_state, "student")
-
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -575,6 +537,8 @@ class DevelopmentViewsTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertFalse(context.get("isEditable"))
 
     @override_settings(DEBUG=True)
     @override_settings(BYPASS_LTI_VERIFICATION=True)
@@ -596,13 +560,12 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -612,18 +575,9 @@ class DevelopmentViewsTestCase(TestCase):
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
-
-        data_state = match.group(2)
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the video data
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
-
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -637,6 +591,8 @@ class DevelopmentViewsTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
 
     @override_settings(DEBUG=True)
     @override_settings(BYPASS_LTI_VERIFICATION=True)
@@ -653,13 +609,12 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
-        # Extract the JWT Token and state
         match = re.search(
-            '<div class="marsha-frontend-data" data-jwt="(.*)" data-state="(.*)">',
-            content,
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
         )
-        data_jwt = match.group(1)
-        jwt_token = AccessToken(data_jwt)
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
         video = Video.objects.get()
         self.assertEqual(jwt_token.payload["video_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
@@ -670,18 +625,10 @@ class DevelopmentViewsTestCase(TestCase):
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
-
-        data_state = match.group(2)
-        self.assertEqual(data_state, "instructor")
-
-        # Extract the video data
-        data_video = re.search(
-            '<div class="marsha-frontend-data" id="videos" data-resource="(.*)">',
-            content,
-        ).group(1)
+        self.assertEqual(context.get("state"), "success")
 
         self.assertEqual(
-            json.loads(unescape(data_video)),
+            context.get("resource"),
             {
                 "active_stamp": None,
                 "is_ready_to_play": False,
@@ -695,6 +642,8 @@ class DevelopmentViewsTestCase(TestCase):
                 "urls": None,
             },
         )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertTrue(context.get("isEditable"))
         # The consumer site was created with a name and a domain name
         ConsumerSite.objects.get(name="example.com", domain="example.com")
 
