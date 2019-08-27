@@ -465,13 +465,13 @@ class DocumentSerializer(serializers.ModelSerializer):
         Parameters
         ----------
         obj : Type[models.Document]
-            The file that we want to serialize
+            The document that we want to serialize
 
         Returns
         -------
         String or None
-            String the url to fetch the file on cloudfront
-            None if the file is still not uploaded to S3 with success
+            the url to fetch the document on CloudFront
+            None if the document is still not uploaded to S3 with success
 
         """
         if obj.uploaded_on is None:
@@ -484,7 +484,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             stamp=time_utils.to_timestamp(obj.uploaded_on),
         )
 
-        # Sign the urls of mp4 videos only if the functionality is activated
+        # Sign the document urls only if the functionality is activated
         if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
             date_less_than = timezone.now() + timedelta(
                 seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY

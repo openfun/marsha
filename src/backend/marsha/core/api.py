@@ -155,7 +155,7 @@ class VideoViewSet(
 class DocumentViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
-    """Viewset for the API of the File object."""
+    """Viewset for the API of the Document object."""
 
     queryset = Document.objects.all()
     serializer_class = serializers.DocumentSerializer
@@ -176,7 +176,7 @@ class DocumentViewSet(
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the file
+            The primary key of the Document instance
 
         Returns
         -------

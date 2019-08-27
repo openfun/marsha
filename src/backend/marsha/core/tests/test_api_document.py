@@ -62,7 +62,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -91,7 +91,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.get(
@@ -129,7 +129,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -162,7 +162,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -192,12 +192,12 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_delete_instructor(self):
-        """An instrustor should not be able to create a document."""
+        """An instructor should not be able to create a document."""
         document = DocumentFactory()
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
@@ -231,12 +231,12 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_update_instructor_read_only(self):
-        """An instructor should not be able to update a video in read_only."""
+        """An instructor should not be able to update a document in read_only."""
         document = DocumentFactory()
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
         data = {"title": "new title"}
 
@@ -249,12 +249,12 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_update_instructor(self):
-        """An instructor should be able to update a video."""
+        """An instructor should be able to update a document."""
         document = DocumentFactory()
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
         data = {"title": "new title"}
 
@@ -298,7 +298,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
@@ -308,7 +308,7 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_initiate_upload_instructor(self):
-        """An instructor should not be able to initiate an upload for a document."""
+        """An instructor should be able to initiate an upload for a document."""
         document = DocumentFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
@@ -316,7 +316,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)

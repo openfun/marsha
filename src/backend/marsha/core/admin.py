@@ -73,7 +73,7 @@ def link_field(field_name):
 
 
 class BaseFileAdmin(admin.ModelAdmin):
-    """Base class for file model."""
+    """Base admin class for file model."""
 
     exclude = ("duplicated_from",)
 
