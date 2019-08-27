@@ -2,6 +2,7 @@
 from base64 import b64decode
 from datetime import datetime
 import json
+import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
@@ -54,7 +55,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.get(
@@ -74,7 +75,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -161,7 +162,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -220,7 +221,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.post(
@@ -249,7 +250,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
@@ -288,7 +289,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
@@ -304,7 +305,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.delete(
@@ -322,7 +323,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video_token.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
@@ -363,7 +364,7 @@ class ThumbnailApiTest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Get the upload policy for this thumbnail
@@ -432,7 +433,7 @@ class ThumbnailApiTest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(

@@ -29,7 +29,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
 
         response = self.client.options(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -154,7 +154,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Get the timed text track using the JWT token
@@ -249,7 +249,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.get(
@@ -267,7 +267,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(uploaded_on=None)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Get the timed text track using the JWT token
@@ -288,7 +288,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Get the timed_text_track linked to the JWT token
@@ -317,7 +317,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Get the timed_text_track via the API using the JWT token
@@ -377,7 +377,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track_one.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -412,7 +412,7 @@ class TimedTextTrackAPITest(TestCase):
         video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         data = {"language": "fr"}
@@ -445,7 +445,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
@@ -479,7 +479,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(language="fr")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         data = {"language": "en"}
@@ -498,7 +498,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(mode="cc")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -523,7 +523,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -549,7 +549,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -576,7 +576,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.put(
@@ -593,7 +593,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
         self.assertEqual(timed_text_track.upload_state, "pending")
         self.assertIsNone(timed_text_track.uploaded_on)
@@ -618,7 +618,7 @@ class TimedTextTrackAPITest(TestCase):
         original_id = timed_text_track.id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -644,7 +644,7 @@ class TimedTextTrackAPITest(TestCase):
         original_video = timed_text_track.video
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
@@ -670,7 +670,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track_update = TimedTextTrackFactory(language="en")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         data = {"language": "fr"}
@@ -690,7 +690,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.patch(
@@ -722,7 +722,9 @@ class TimedTextTrackAPITest(TestCase):
         for timed_text_track in timed_text_tracks:
             jwt_token = AccessToken()
             jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-            jwt_token.payload["roles"] = ["instructor"]
+            jwt_token.payload["roles"] = [
+                random.choice(["instructor", "administrator"])
+            ]
             jwt_token.payload["read_only"] = False
             response = self.client.delete(
                 "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
@@ -766,7 +768,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
@@ -796,7 +798,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.delete(
@@ -830,7 +832,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
 
         # Create other timed text tracks to check that their upload state are unaffected
@@ -946,7 +948,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["instructor"]
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
