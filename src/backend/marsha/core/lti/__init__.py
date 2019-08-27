@@ -251,6 +251,18 @@ class LTI:
         return roles.lower().split(",") if roles else []
 
     @property
+    def is_editable(self):
+        """Check if the current role is one that allows the user to modify the resource.
+
+        Returns
+        -------
+        boolean
+            True if the user can edit a resource
+
+        """
+        return self.is_instructor or self.is_admin
+
+    @property
     def is_instructor(self):
         """Check if the user of the launch request is an instructor on the course.
 
