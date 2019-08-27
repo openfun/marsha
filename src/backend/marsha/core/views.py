@@ -81,7 +81,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             logger.warning("LTI Exception: %s", str(error))
             return {
                 "state": "error",
-                "resource": self.model._meta.verbose_name_plural.lower(),
+                "resource": self.model.RESOURCE_NAME,
                 "resource_data": "null",
             }
 
@@ -120,7 +120,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         context["resource_data"] = json.dumps(
             self.serializer_class(resource).data if resource else None
         )
-        context["resource"] = self.model._meta.verbose_name_plural.lower()
+        context["resource"] = self.model.RESOURCE_NAME
 
         if getattr(settings, "STATICFILES_AWS_ENABLED", False):
             context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN

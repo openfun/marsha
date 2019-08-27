@@ -7,17 +7,21 @@ describe('stores/actions', () => {
     it('adds multiple resources to an empty state', () => {
       const state = {};
 
-      const newState = addMultipleResources(state as any, modelName.THUMBNAIL, [
-        {
-          id: 'foo',
-        },
-        {
-          id: 'bar',
-        },
-      ]);
+      const newState = addMultipleResources(
+        state as any,
+        modelName.THUMBNAILS,
+        [
+          {
+            id: 'foo',
+          },
+          {
+            id: 'bar',
+          },
+        ],
+      );
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           bar: {
             id: 'bar',
           },
@@ -30,25 +34,29 @@ describe('stores/actions', () => {
 
     it('adds multiple resources to an existing state', () => {
       const state = {
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
         },
       };
 
-      const newState = addMultipleResources(state as any, modelName.THUMBNAIL, [
-        {
-          id: 'foo',
-          upload_state: uploadState.PENDING,
-        },
-        {
-          id: 'bar',
-        },
-      ]);
+      const newState = addMultipleResources(
+        state as any,
+        modelName.THUMBNAILS,
+        [
+          {
+            id: 'foo',
+            upload_state: uploadState.PENDING,
+          },
+          {
+            id: 'bar',
+          },
+        ],
+      );
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           bar: {
             id: 'bar',
           },
@@ -65,12 +73,12 @@ describe('stores/actions', () => {
     it('adds a new resource to an empty state', () => {
       const state = {};
 
-      const newState = addResource(state as any, modelName.THUMBNAIL, {
+      const newState = addResource(state as any, modelName.THUMBNAILS, {
         id: 'foo',
       });
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
@@ -80,19 +88,19 @@ describe('stores/actions', () => {
 
     it('adds a new resource to an existing state', () => {
       const state = {
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
         },
       };
 
-      const newState = addResource(state as any, modelName.THUMBNAIL, {
+      const newState = addResource(state as any, modelName.THUMBNAILS, {
         id: 'bar',
       });
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           bar: {
             id: 'bar',
           },
@@ -105,20 +113,20 @@ describe('stores/actions', () => {
 
     it('replaces an existing resource if same id already exists', () => {
       const state = {
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
         },
       };
 
-      const newState = addResource(state as any, modelName.THUMBNAIL, {
+      const newState = addResource(state as any, modelName.THUMBNAILS, {
         id: 'foo',
         upload_state: uploadState.PENDING,
       });
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
             upload_state: uploadState.PENDING,
@@ -131,37 +139,37 @@ describe('stores/actions', () => {
   describe('removeResource', () => {
     it('removes an existing resource', () => {
       const state = {
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
         },
       };
 
-      const newState = removeResource(state as any, modelName.THUMBNAIL, {
+      const newState = removeResource(state as any, modelName.THUMBNAILS, {
         id: 'foo',
       });
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {},
+        [modelName.THUMBNAILS]: {},
       });
     });
 
     it('returns the same state when trying to remove a non existing resource', () => {
       const state = {
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },
         },
       };
 
-      const newState = removeResource(state as any, modelName.THUMBNAIL, {
+      const newState = removeResource(state as any, modelName.THUMBNAILS, {
         id: 'bar',
       });
 
       expect(newState).toEqual({
-        [modelName.THUMBNAIL]: {
+        [modelName.THUMBNAILS]: {
           foo: {
             id: 'foo',
           },

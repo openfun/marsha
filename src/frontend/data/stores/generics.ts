@@ -3,7 +3,7 @@ import { UploadableObject } from '../../types/tracks';
 
 const getStore = async (objectType: modelName) => {
   switch (objectType) {
-    case modelName.THUMBNAIL:
+    case modelName.THUMBNAILS:
       const { useThumbnailApi } = await import('./useThumbnail');
       return useThumbnailApi;
     case modelName.TIMEDTEXTTRACKS:

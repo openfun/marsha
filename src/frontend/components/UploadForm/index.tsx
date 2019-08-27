@@ -32,7 +32,7 @@ const titleMessages = defineMessages({
     description: 'Title for the video upload form',
     id: 'components.UploadForm.title-videos',
   },
-  [modelName.THUMBNAIL]: {
+  [modelName.THUMBNAILS]: {
     defaultMessage: 'Upload a new thumbnail',
     description: 'Title for the thumbnail upload form',
     id: 'components.UploadForm.title-thumbnail',

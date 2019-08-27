@@ -9,7 +9,7 @@ import { addMultipleResources, addResource, removeResource } from '../actions';
 
 interface ThumbnailState extends StoreState<Thumbnail> {
   getThumbnail: () => Nullable<Thumbnail>;
-  [modelName.THUMBNAIL]: {
+  [modelName.THUMBNAILS]: {
     [id: string]: Thumbnail;
   };
 }
@@ -25,20 +25,20 @@ export const [useThumbnail, useThumbnailApi] = create<ThumbnailState>(
 
     return {
       addMultipleResources: (thumbnailsToAdd: Thumbnail[]) =>
-        set(addMultipleResources(get(), modelName.THUMBNAIL, thumbnailsToAdd)),
+        set(addMultipleResources(get(), modelName.THUMBNAILS, thumbnailsToAdd)),
       addResource: (thumbnail: Thumbnail) =>
-        set(addResource<Thumbnail>(get(), modelName.THUMBNAIL, thumbnail)),
+        set(addResource<Thumbnail>(get(), modelName.THUMBNAILS, thumbnail)),
       getThumbnail: () => {
-        if (Object.keys(get()[modelName.THUMBNAIL]).length > 0) {
-          const thumbnailId = Object.keys(get()[modelName.THUMBNAIL]).shift();
-          return get()[modelName.THUMBNAIL][thumbnailId!];
+        if (Object.keys(get()[modelName.THUMBNAILS]).length > 0) {
+          const thumbnailId = Object.keys(get()[modelName.THUMBNAILS]).shift();
+          return get()[modelName.THUMBNAILS][thumbnailId!];
         }
 
         return null;
       },
       removeResource: (thumbnail: Thumbnail) =>
-        set(removeResource(get(), modelName.THUMBNAIL, thumbnail)),
-      [modelName.THUMBNAIL]: thumbnails,
+        set(removeResource(get(), modelName.THUMBNAILS, thumbnail)),
+      [modelName.THUMBNAILS]: thumbnails,
     };
   },
 );

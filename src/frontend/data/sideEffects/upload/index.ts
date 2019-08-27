@@ -36,7 +36,7 @@ export const upload = (
   const formData = makeFormData.apply(null, [
     ['key', policy.key],
     ['acl', policy.acl],
-    ...(([modelName.VIDEOS, modelName.THUMBNAIL].includes(objectType)
+    ...(([modelName.VIDEOS, modelName.THUMBNAILS].includes(objectType)
       ? [['Content-Type', file!.type]]
       : []) as any),
     ['X-Amz-Credential', policy.x_amz_credential],

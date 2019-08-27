@@ -235,7 +235,7 @@ describe('<DashboardThumbnail />', () => {
   });
 
   it('creates a new thumbnail and redirects the user to the upload form they click on the replace button', async () => {
-    fetchMock.mock('/api/thumbnail/', JSON.stringify(video.thumbnail), {
+    fetchMock.mock('/api/thumbnails/', JSON.stringify(video.thumbnail), {
       method: 'POST',
     });
     const videoWithoutThumbnail = {
@@ -271,12 +271,12 @@ describe('<DashboardThumbnail />', () => {
     fireEvent.click(getByText('Replace this thumbnail'));
     await wait();
     expect(fetchMock.calls()).toHaveLength(1);
-    expect(fetchMock.lastCall()![0]).toEqual('/api/thumbnail/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/thumbnails/');
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
     });
     expect(mockAddThumbnail).toHaveBeenCalled();
-    getByText('Redirect push to /form/thumbnail/42.');
+    getByText('Redirect push to /form/thumbnails/42.');
   });
 });

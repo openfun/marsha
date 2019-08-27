@@ -158,7 +158,7 @@ describe('upload', () => {
     const file = new File(['(⌐□_□)'], 'thumbnail.png', { type: 'image/png' });
 
     fetchMock.mock(
-      '/api/thumbnail/thumb1/initiate-upload/',
+      '/api/thumbnails/thumb1/initiate-upload/',
       {
         bucket: 'dev',
         s3_endpoint: 's3.aws.example.com',
@@ -166,7 +166,7 @@ describe('upload', () => {
       { method: 'POST' },
     );
 
-    fetchMock.mock('/api/thumbnail/thumb1/', 200, { method: 'PUT' });
+    fetchMock.mock('/api/thumbnails/thumb1/', 200, { method: 'PUT' });
 
     xhrMock.post('https://s3.aws.example.com/dev', {
       body: 'form data body',
@@ -176,25 +176,25 @@ describe('upload', () => {
     await upload(
       setStatus,
       notifyObjectUploadProgress,
-      modelName.THUMBNAIL,
+      modelName.THUMBNAILS,
       thumbnail,
     )(file);
 
     expect(
-      fetchMock.called('/api/thumbnail/thumb1/initiate-upload/', {
+      fetchMock.called('/api/thumbnails/thumb1/initiate-upload/', {
         method: 'POST',
       }),
     ).toBe(true);
     expect(setStatus).toHaveBeenCalledWith('uploading');
-    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAIL, {
+    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAILS, {
       ...thumbnail,
       upload_state: uploadState.UPLOADING,
     });
-    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAIL, {
+    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAILS, {
       ...thumbnail,
       upload_state: uploadState.PROCESSING,
     });
-    expect(fetchMock.called('/api/thumbnail/thumb1/', { method: 'PUT' })).toBe(
+    expect(fetchMock.called('/api/thumbnails/thumb1/', { method: 'PUT' })).toBe(
       false,
     );
   });
