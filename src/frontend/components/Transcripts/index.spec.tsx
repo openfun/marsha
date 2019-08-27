@@ -6,6 +6,12 @@ import { Transcripts } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
+jest.mock('../../data/appData', () => ({
+  appData: {
+    jwt: 'foo',
+  },
+}));
+
 const transcriptContent = `
 WEBVTT
 

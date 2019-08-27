@@ -8,6 +8,12 @@ import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
+jest.mock('../../data/appData', () => ({
+  appData: {
+    jwt: 'foo',
+  },
+}));
+
 describe('<TimedTextListItem />', () => {
   jest.useFakeTimers();
 

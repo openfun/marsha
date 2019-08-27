@@ -1,106 +1,43 @@
-import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { keyFromAttr, parseDataElements } from './parseDataElements';
+import { parseDataElements } from './parseDataElements';
 
 describe.only('utils/parseDataElements', () => {
-  describe('keyFromAttr()', () => {
-    it('drops "data-" from the attribute name and camel-cases it', () => {
-      expect(keyFromAttr('data-example')).toEqual('example');
-      expect(keyFromAttr('data-split-name')).toEqual('splitName');
-    });
-  });
-
   describe('parseDataElements()', () => {
-    it('returns an object from the key/values of a data-element', () => {
-      // Build some bogus object with string values & lowecase string keys
-      const data: { [key: string]: string } = {
-        keyone: 'valueOne',
-        keytwo: 'valueTwo',
-      };
-      // Set up the element that contains our data as data-attributes
+    it('parses the data-context and creates a video attribute', () => {
       const dataElement = document.createElement('div');
-      Object.keys(data).forEach(key =>
-        dataElement.setAttribute(`data-${key}`, data[key]),
-      );
-      // The data is extracted from the data element
-      expect(parseDataElements([dataElement])).toEqual(data);
+      const context = {
+        modelName: modelName.VIDEOS,
+        resource: { id: 'video1' },
+      };
+      dataElement.setAttribute('data-context', JSON.stringify(context));
+
+      const data = parseDataElements(dataElement);
+      expect(data.video).toEqual(context.resource);
     });
 
-    it('merges data from two separate elements', () => {
-      // Build some bogus objects with string values & lowecase string keys
-      const dataX: { [key: string]: string } = {
-        keythree: 'valueThree',
-      };
-      const dataY: { [key: string]: string } = {
-        keyfour: 'valueFour',
-      };
-      // Set up the elements that contains our data as data-attributes
-      const dataElementX = document.createElement('div');
-      Object.keys(dataX).forEach(key =>
-        dataElementX.setAttribute(`data-${key}`, dataX[key]),
-      );
-      const dataElementY = document.createElement('div');
-      Object.keys(dataY).forEach(key =>
-        dataElementY.setAttribute(`data-${key}`, dataY[key]),
-      ); // The data is extracted from the data element
-      expect(parseDataElements([dataElementX, dataElementY])).toEqual({
-        ...dataX,
-        ...dataY,
-      });
-    });
-
-    it('creates a nested object when an element as an ID attribute', () => {
-      // Build some bogus objects with string values & lowecase string keys
-      const data: { [data: string]: string } = {
-        keyfive: 'valueFive',
-      };
-      // create a document
-      const doc: Document = {
-        description: '',
-        id: '46',
-        is_ready_to_display: true,
-        show_download: true,
-        title: 'foo.pdf',
-        upload_state: uploadState.READY,
-        url: 'https://example.com/document/45',
-      };
-      // Set up the element that contains our bogus data as data-attributes
+    it('parses the data-context and creates a document attribute', () => {
       const dataElement = document.createElement('div');
-      Object.keys(data).forEach(key =>
-        dataElement.setAttribute(`data-${key}`, data[key]),
-      );
-      // Set up the element that contains the policy as data-attributes
-      const documentElement = document.createElement('div');
-      documentElement.id = modelName.DOCUMENTS; // triggers the creation of a nested object
-      documentElement.setAttribute('data-resource', JSON.stringify(doc));
-      expect(parseDataElements([dataElement, documentElement])).toEqual({
-        ...data,
-        document: doc,
+      const context = {
         modelName: modelName.DOCUMENTS,
-      });
+        resource: { id: 'doc' },
+      };
+      dataElement.setAttribute('data-context', JSON.stringify(context));
+
+      const data = parseDataElements(dataElement);
+      expect(data.document).toEqual(context.resource);
     });
 
-    it('parses a not supported resource', () => {
-      // Build some bogus objects with string values & lowecase string keys
-      const data: { [data: string]: string } = {
-        keyfive: 'valueFive',
-      };
-      const resource = {
-        foo: 'bar',
-      };
-      // Set up the element that contains our bogus data as data-attributes
+    it('throws an error when the model name is not supported', () => {
       const dataElement = document.createElement('div');
-      Object.keys(data).forEach(key =>
-        dataElement.setAttribute(`data-${key}`, data[key]),
-      );
-      // Set up the element that contains the policy as data-attributes
-      const documentElement = document.createElement('div');
-      documentElement.id = 'foo'; // triggers the creation of a nested object
-      documentElement.setAttribute('data-resource', JSON.stringify(resource));
+      const context = {
+        modelName: modelName.THUMBNAILS,
+        resource: { id: 'thumbnail' },
+      };
+      dataElement.setAttribute('data-context', JSON.stringify(context));
+
       expect(() => {
-        parseDataElements([dataElement, documentElement]);
-      }).toThrowError('model foo not supported');
+        parseDataElements(dataElement);
+      }).toThrowError(`Model ${modelName.THUMBNAILS} not supported`);
     });
   });
 });

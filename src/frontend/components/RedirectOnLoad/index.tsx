@@ -15,11 +15,10 @@ import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
 export const RedirectOnLoad = () => {
-  const ltiState = appData.state;
   const resource = appData.document || appData.video || null;
 
   // Get LTI errors out of the way
-  if (ltiState === appState.ERROR) {
+  if (appData.state === appState.ERROR) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
   }
 
@@ -39,7 +38,7 @@ export const RedirectOnLoad = () => {
     return <Redirect push to={DOCUMENT_PLAYER_ROUTE()} />;
   }
 
-  if (ltiState === appState.INSTRUCTOR) {
+  if (appData.isEditable) {
     if (resource!.upload_state === uploadState.PENDING) {
       return (
         <Redirect
@@ -52,7 +51,7 @@ export const RedirectOnLoad = () => {
     }
   }
 
-  // For safety default to the 404 view: this is for students, and any other role we add later on and don't add
-  // a special clause for, when the video is not ready.
+  // For safety default to the 404 view: this is for users not able to edit the current resource
+  // when this one is not ready.
   return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
 };
