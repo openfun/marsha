@@ -2,7 +2,7 @@
 import json
 from unittest import mock
 
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
 import requests
 from rest_framework_simplejwt.tokens import AccessToken
@@ -163,41 +163,6 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-
-        data = {
-            "verb": {
-                "id": "http://adlnet.gov/expapi/verbs/initialized",
-                "display": {"en-US": "initialized"},
-            },
-            "context": {
-                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
-            },
-            "timestamp": "2018-12-31T16:17:35.717Z",
-        }
-
-        video_model_mock.return_value = video
-        xapi_instance = xapi_mock.return_value
-        xapi_instance.send.return_value = None
-
-        response = self.client.post(
-            "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            data=json.dumps(data),
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 204)
-
-    @override_settings(LRS_URL=r"http://lrs.com/data/xAPI")
-    @override_settings(LRS_AUTH_TOKEN=r"Basic ThisIsABasicAuth")
-    @mock.patch("marsha.core.api.Video.objects.get")
-    @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_fallbacking_on_settings(self, xapi_mock, video_model_mock):
-        """If LRS is not configured in consumer_site but in settings, settings should be used."""
-        video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
