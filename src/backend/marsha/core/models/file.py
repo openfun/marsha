@@ -104,6 +104,8 @@ class BaseFile(BaseModel):
 class Document(BaseFile):
     """Model representing a document."""
 
+    RESOURCE_NAME = "documents"
+
     class Meta:
         """Options for the ``Document`` model."""
 

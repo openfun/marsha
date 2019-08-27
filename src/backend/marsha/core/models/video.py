@@ -13,6 +13,8 @@ from .file import BaseFile
 class Video(BaseFile):
     """Model representing a video, created by an author."""
 
+    RESOURCE_NAME = "videos"
+
     class Meta:
         """Options for the ``Video`` model."""
 
@@ -130,6 +132,8 @@ class TimedTextTrack(BaseTrack):
     Can be subtitles, closed captioning or transcripts.
     """
 
+    RESOURCE_NAME = "timedtexttracks"
+
     SUBTITLE, TRANSCRIPT, CLOSED_CAPTIONING = "st", "ts", "cc"
     MODE_CHOICES = (
         (SUBTITLE, _("Subtitle")),
@@ -215,6 +219,8 @@ class SignTrack(BaseTrack):
 
 class Thumbnail(AbstractImage):
     """Thumbnail model illustrating a video."""
+
+    RESOURCE_NAME = "thumbnails"
 
     video = models.OneToOneField(
         to="Video",

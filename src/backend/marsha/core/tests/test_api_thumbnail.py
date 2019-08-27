@@ -26,7 +26,7 @@ class ThumbnailApiTest(TestCase):
         """Anonymous users should not be allowed to retrieve a thumbnail."""
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
-        response = self.client.get("/api/thumbnail/{!s}/".format(thumbnail.id))
+        response = self.client.get("/api/thumbnails/{!s}/".format(thumbnail.id))
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -43,7 +43,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -59,7 +59,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = True
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -79,7 +79,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -108,7 +108,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = True
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -128,7 +128,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -166,7 +166,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.get(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -198,7 +198,7 @@ class ThumbnailApiTest(TestCase):
 
     def test_api_thumbnail_create_anonymous(self):
         """Anonymous users should not be able to create a thumbnail."""
-        response = self.client.post("/api/thumbnail/")
+        response = self.client.post("/api/thumbnails/")
         self.assertEqual(response.status_code, 401)
 
     def test_api_thumbnail_create_student(self):
@@ -210,7 +210,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            "/api/thumbnail/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
 
         self.assertEqual(response.status_code, 403)
@@ -225,7 +225,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.post(
-            "/api/thumbnail/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
 
         self.assertEqual(response.status_code, 201)
@@ -254,7 +254,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
-            "/api/thumbnail/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
 
         self.assertEqual(response.status_code, 403)
@@ -264,7 +264,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        response = self.client.delete("/api/thumbnail/{!s}/".format(thumbnail.id))
+        response = self.client.delete("/api/thumbnails/{!s}/".format(thumbnail.id))
         self.assertEqual(response.status_code, 401)
 
     def test_api_thumbnail_delete_student(self):
@@ -277,7 +277,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.delete(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 403)
@@ -293,7 +293,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 204)
@@ -309,7 +309,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = True
 
         response = self.client.delete(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 
@@ -327,7 +327,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = False
 
         response = self.client.delete(
-            "/api/thumbnail/{!s}/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 404)
@@ -337,7 +337,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         response = self.client.post(
-            "/api/thumbnail/{!s}/initiate-upload/".format(thumbnail.id)
+            "/api/thumbnails/{!s}/initiate-upload/".format(thumbnail.id)
         )
         self.assertEqual(response.status_code, 401)
 
@@ -349,7 +349,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            "/api/thumbnail/{!s}/initiate-upload/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/initiate-upload/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
         self.assertEqual(response.status_code, 403)
@@ -372,7 +372,7 @@ class ThumbnailApiTest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.post(
-                "/api/thumbnail/{!s}/initiate-upload/".format(thumbnail.id),
+                "/api/thumbnails/{!s}/initiate-upload/".format(thumbnail.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
         self.assertEqual(response.status_code, 200)
@@ -437,7 +437,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["read_only"] = True
 
         response = self.client.post(
-            "/api/thumbnail/{!s}/initiate-upload/".format(thumbnail.id),
+            "/api/thumbnails/{!s}/initiate-upload/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
 

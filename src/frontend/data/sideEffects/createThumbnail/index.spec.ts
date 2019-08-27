@@ -12,7 +12,7 @@ describe('sideEffects/createThumbnail', () => {
   afterEach(fetchMock.restore);
 
   it('creates a new thumbnail and return it', async () => {
-    fetchMock.mock('/api/thumbnail/', {
+    fetchMock.mock('/api/thumbnails/', {
       id: '42',
       ready_to_display: false,
       urls: null,
@@ -36,7 +36,7 @@ describe('sideEffects/createThumbnail', () => {
 
   it('throws when it fails to create the thumbnail (request failure)', async () => {
     fetchMock.mock(
-      '/api/thumbnail/',
+      '/api/thumbnails/',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -46,7 +46,7 @@ describe('sideEffects/createThumbnail', () => {
   });
 
   it('throws when it fails to create the thumbnail (API error)', async () => {
-    fetchMock.mock('/api/thumbnail/', 400);
+    fetchMock.mock('/api/thumbnails/', 400);
 
     await expect(createThumbnail()).rejects.toThrowError(
       'Failed to create a new thumbnail.',

@@ -11,7 +11,7 @@ describe('stores/generics', () => {
       [modelName.VIDEOS]: {},
     });
     useThumbnailApi.setState({
-      [modelName.THUMBNAIL]: {},
+      [modelName.THUMBNAILS]: {},
     });
     useTimedTextTrackApi.setState({
       [modelName.TIMEDTEXTTRACKS]: {},
@@ -20,10 +20,12 @@ describe('stores/generics', () => {
 
   describe('addResource', () => {
     it('adds a thumbnail resource', async () => {
-      await addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
+      await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
       const state = useThumbnailApi.getState();
-      expect(state[modelName.THUMBNAIL].thumbnail).toEqual({ id: 'thumbnail' });
+      expect(state[modelName.THUMBNAILS].thumbnail).toEqual({
+        id: 'thumbnail',
+      });
     });
     it('adds a timed text track resource', async () => {
       await addResource(modelName.TIMEDTEXTTRACKS, {
@@ -45,14 +47,14 @@ describe('stores/generics', () => {
 
   describe('getResource', () => {
     it('fetch an existing thumbnail resource and return it', async () => {
-      await addResource(modelName.THUMBNAIL, { id: 'thumbnail' } as any);
+      await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
-      expect(await getResource(modelName.THUMBNAIL, 'thumbnail')).toEqual({
+      expect(await getResource(modelName.THUMBNAILS, 'thumbnail')).toEqual({
         id: 'thumbnail',
       });
     });
     it('fetch a non existing thumbnail and should return undefined', async () => {
-      expect(await getResource(modelName.THUMBNAIL, 'foo')).toBeUndefined();
+      expect(await getResource(modelName.THUMBNAILS, 'foo')).toBeUndefined();
     });
     it('fetch an existing timed text resource and return it', async () => {
       await addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
@@ -82,7 +84,7 @@ describe('stores/generics', () => {
 
   describe('addMultipleResources', () => {
     it('adds multiple thumbnails', async () => {
-      await addMultipleResources(modelName.THUMBNAIL, [
+      await addMultipleResources(modelName.THUMBNAILS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -90,9 +92,9 @@ describe('stores/generics', () => {
 
       const state = useThumbnailApi.getState();
 
-      expect(state[modelName.THUMBNAIL].multi1).toEqual({ id: 'multi1' });
-      expect(state[modelName.THUMBNAIL].multi2).toEqual({ id: 'multi2' });
-      expect(state[modelName.THUMBNAIL].multi3).toEqual({ id: 'multi3' });
+      expect(state[modelName.THUMBNAILS].multi1).toEqual({ id: 'multi1' });
+      expect(state[modelName.THUMBNAILS].multi2).toEqual({ id: 'multi2' });
+      expect(state[modelName.THUMBNAILS].multi3).toEqual({ id: 'multi3' });
     });
     it('adds multiple timed text tracks', async () => {
       await addMultipleResources(modelName.TIMEDTEXTTRACKS, [

@@ -7,6 +7,7 @@ from rest_framework.renderers import CoreJSONRenderer
 from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
+from marsha.core import models
 from marsha.core.admin import admin_site
 from marsha.core.api import (
     DocumentViewSet,
@@ -20,10 +21,14 @@ from marsha.core.views import DocumentLTIView, LTIDevelopmentView, VideoLTIView
 
 
 router = DefaultRouter()
-router.register(r"videos", VideoViewSet, basename="videos")
-router.register(r"documents", DocumentViewSet, basename="documents")
-router.register(r"timedtexttracks", TimedTextTrackViewSet, basename="timed_text_tracks")
-router.register(r"thumbnail", ThumbnailViewSet, basename="thumbnail")
+router.register(models.Video.RESOURCE_NAME, VideoViewSet, basename="videos")
+router.register(models.Document.RESOURCE_NAME, DocumentViewSet, basename="documents")
+router.register(
+    models.TimedTextTrack.RESOURCE_NAME,
+    TimedTextTrackViewSet,
+    basename="timed_text_tracks",
+)
+router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
 
 urlpatterns = [
     # Admin
