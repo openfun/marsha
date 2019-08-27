@@ -18,7 +18,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .lti import LTI
 from .lti.utils import get_or_create_resource
 from .models import Document, Video
-from .models.account import INSTRUCTOR, STUDENT
 from .serializers import DocumentSerializer, VideoSerializer
 from .utils.react_locales_utils import react_locale
 
@@ -80,12 +79,17 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         except LTIException as error:
             logger.warning("LTI Exception: %s", str(error))
             return {
-                "state": "error",
-                "resource": self.model.RESOURCE_NAME,
-                "resource_data": "null",
+                "app_data": json.dumps(
+                    {
+                        "state": "error",
+                        "modelName": self.model.RESOURCE_NAME,
+                        "resource": None,
+                        "isEditable": False,
+                    }
+                )
             }
 
-        context = {"state": STUDENT if lti.is_student else INSTRUCTOR}
+        app_data = {"state": "success"}
 
         locale = "en_US"
         try:
@@ -115,12 +119,15 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
             self._enrich_jwt_token(jwt_token, resource)
 
-            context["jwt_token"] = str(jwt_token)
+            app_data["jwt"] = str(jwt_token)
 
-        context["resource_data"] = json.dumps(
+        app_data["resource"] = (
             self.serializer_class(resource).data if resource else None
         )
-        context["resource"] = self.model.RESOURCE_NAME
+        app_data["modelName"] = self.model.RESOURCE_NAME
+        app_data["isEditable"] = lti.is_editable
+
+        context = {"app_data": json.dumps(app_data)}
 
         if getattr(settings, "STATICFILES_AWS_ENABLED", False):
             context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
