@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactor the LTI view to be generic for all the resources we want to manage
 - Video model is a special File model
 - pluralize thumbnail url
+- Simplify template to frontend communication by using JSON instead of multiple data-attributes
 
 ### Removed
 

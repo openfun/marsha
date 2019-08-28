@@ -25,17 +25,18 @@ jest.mock('plyr', () => {
     on: jest.fn(),
   }));
 });
-jest.mock('jwt-decode', () => {
-  return jest.fn().mockImplementation(() => ({
-    locale: 'en',
-    session_id: 'abcd',
-  }));
-});
-
 jest.mock('../index', () => ({
   intl: {
     formatMessage: jest.fn(),
   },
+}));
+
+jest.mock('../data/appData', () => ({
+  appData: { jwt: 'foo' },
+  getDecodedJwt: jest.fn().mockImplementation(() => ({
+    locale: 'en',
+    session_id: 'abcd',
+  })),
 }));
 
 describe('createPlyrPlayer', () => {
