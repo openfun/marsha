@@ -7,7 +7,14 @@ export const appData = parseDataElements(
   document.getElementById('marsha-frontend-data')!,
 );
 
-// Jwt is lazily decoded only when needed
+// Jwt is lazily decoded only when needed and available
 let cacheDecodedJwt: DecodedJwt;
-export const getDecodedJwt = () =>
-  cacheDecodedJwt || (cacheDecodedJwt = jwt_decode(appData.jwt));
+export const getDecodedJwt = () => {
+  if (appData.jwt) {
+    return cacheDecodedJwt || (cacheDecodedJwt = jwt_decode(appData.jwt));
+  }
+
+  throw new Error(
+    'Impossible to decode JWT token, none present in the app state',
+  );
+};

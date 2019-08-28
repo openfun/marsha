@@ -7,6 +7,7 @@ import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from '../types/XAPI';
+import { report } from '../utils/errors/report';
 import { isMSESupported } from '../utils/isAbrSupported';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { i18nMessages } from './i18n/plyrTranslation';
@@ -100,10 +101,13 @@ export const createPlyrPlayer = async (
     },
   );
 
-  const xapiStatement = new XAPIStatement(
-    appData.jwt,
-    getDecodedJwt().session_id,
-  );
+  let xapiStatement: XAPIStatement;
+  try {
+    xapiStatement = new XAPIStatement(appData.jwt!, getDecodedJwt().session_id);
+  } catch (error) {
+    report(error);
+    throw error;
+  }
 
   let currentTime: number = 0;
   let seekingAt: number = 0;
