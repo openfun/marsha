@@ -9,7 +9,7 @@ export enum appState {
 }
 
 export interface AppData {
-  jwt: string;
+  jwt?: string;
   state: appState;
   isEditable: boolean;
   video?: Nullable<Video>;

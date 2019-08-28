@@ -1,7 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { appState } from '../../types/AppData';
 import { InstructorWrapper } from './index';
 
 jest.mock('../InstructorView/index', () => {
