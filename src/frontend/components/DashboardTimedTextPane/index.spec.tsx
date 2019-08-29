@@ -145,6 +145,6 @@ describe('<DashboardTimedTextPane />', () => {
 
     await wait();
     getByText('Error Component: notFound');
-    expect(report).toBeCalledWith(Error('Failed!'));
+    expect(report).toBeCalledWith(new Error('Failed!'));
   });
 });

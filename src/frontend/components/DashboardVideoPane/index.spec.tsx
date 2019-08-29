@@ -54,6 +54,33 @@ describe('<DashboardVideoPane />', () => {
     },
   };
 
+  it('redirects to error when it fails to fetch the video', async () => {
+    fetchMock.mock('/api/videos/43/', () => {
+      throw new Error('Failed request');
+    });
+    const { getByText } = render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
+          [
+            {
+              path: ERROR_COMPONENT_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
+      ),
+    );
+
+    jest.advanceTimersByTime(1000 * 60 + 200);
+    await wait();
+
+    expect(report).toHaveBeenCalledWith(new Error('Failed request'));
+    getByText('Error Component: notFound');
+  });
+
   it('renders & starts polling for the video', async () => {
     fetchMock.mock(
       '/api/videos/43/',
@@ -122,34 +149,7 @@ describe('<DashboardVideoPane />', () => {
     getByText('Your video is ready to play.');
   });
 
-  it('redirects to error when it fails to fetch the video', async () => {
-    fetchMock.mock('/api/videos/43/', {
-      throws: new Error('Failed request'),
-    });
-    const { getByText } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
-          [
-            {
-              path: ERROR_COMPONENT_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
-            },
-          ],
-        ),
-      ),
-    );
-
-    jest.advanceTimersByTime(1000 * 60 + 200);
-    await wait();
-
-    expect(report).toHaveBeenCalledWith(new Error('Failed request'));
-    getByText('Error Component: notFound');
-  });
-
-  it('redirects to error when the video is in the error state and not `is_ready_to_play`', async () => {
+  it('redirects to error when the video is in the error state and not `is_ready_to_play`', () => {
     const { getByText } = render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -171,7 +171,7 @@ describe('<DashboardVideoPane />', () => {
     getByText('Error Component: upload');
   });
 
-  it('shows the dashboard when the video is in the error state but `is_ready_to_play`', async () => {
+  it('shows the dashboard when the video is in the error state but `is_ready_to_play`', () => {
     const { getByText } = render(
       wrapInIntlProvider(
         <DashboardVideoPane
