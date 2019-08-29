@@ -9,7 +9,7 @@ jest.mock('../../data/appData', () => ({
     document: {
       description: '',
       id: '42',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: 'ready',
@@ -23,7 +23,7 @@ describe('<DocumentPlayer />', () => {
     const document = {
       description: '',
       id: '42',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.READY,
@@ -41,7 +41,7 @@ describe('<DocumentPlayer />', () => {
     const document = {
       description: '',
       id: '43',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'bar.pdf',
       upload_state: uploadState.READY,

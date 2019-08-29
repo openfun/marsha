@@ -30,15 +30,6 @@ class Video(BaseFile):
             )
         ]
 
-    @property
-    def is_ready_to_play(self):
-        """Whether the video is ready to play (ie) has been sucessfully uploaded.
-
-        The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
-        """
-        return self.uploaded_on is not None
-
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket (ID of the video + version stamp).
 
@@ -99,8 +90,8 @@ class BaseTrack(BaseModel):
         abstract = True
 
     @property
-    def is_ready_to_play(self):
-        """Whether the track is ready to play (ie) has been sucessfully uploaded.
+    def is_ready_to_show(self):
+        """Whether the file is ready to display (ie) has been sucessfully uploaded.
 
         The value of this field seems to be trivially derived from the value of the
         `uploaded_on` field but it is necessary for conveniency and clarity in the client.

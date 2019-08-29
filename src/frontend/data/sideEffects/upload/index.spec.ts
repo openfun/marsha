@@ -23,14 +23,14 @@ describe('upload', () => {
   const object = {
     description: 'Some description',
     id: 'video-id',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: false,
     thumbnail: null,
     timed_text_tracks: [
       {
         active_stamp: 1549385921,
         id: 'ttt-1',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
@@ -39,7 +39,7 @@ describe('upload', () => {
       {
         active_stamp: 1549385922,
         id: 'ttt-2',
-        is_ready_to_play: false,
+        is_ready_to_show: false,
         language: 'fr',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
@@ -48,7 +48,7 @@ describe('upload', () => {
       {
         active_stamp: 1549385923,
         id: 'ttt-3',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'en',
         mode: timedTextMode.CLOSED_CAPTIONING,
         upload_state: uploadState.READY,
@@ -57,7 +57,7 @@ describe('upload', () => {
       {
         active_stamp: 1549385924,
         id: 'ttt-4',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.TRANSCRIPT,
         upload_state: uploadState.READY,
@@ -143,7 +143,7 @@ describe('upload', () => {
     const thumbnail: Thumbnail = {
       active_stamp: null,
       id: 'thumb1',
-      is_ready_to_display: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PENDING,
       urls: {
         144: 'https://example.com/144p.jpg',

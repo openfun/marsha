@@ -41,12 +41,12 @@ describe('<TimedTextListItem />', () => {
   const video = {
     description: '',
     id: '43',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: true,
     thumbnail: {
       active_stamp: 128748302847,
       id: '42',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       upload_state: uploadState.READY,
       urls: {
         144: 'https://example.com/thumbnail/144',
@@ -90,7 +90,7 @@ describe('<TimedTextListItem />', () => {
             track={{
               active_stamp: 28271937429,
               id: '42',
-              is_ready_to_play: true,
+              is_ready_to_show: true,
               language: 'fr',
               mode: timedTextMode.SUBTITLE,
               title: 'foo',
@@ -116,7 +116,7 @@ describe('<TimedTextListItem />', () => {
     const track = {
       active_stamp: 28271937429,
       id: '1',
-      is_ready_to_play: false,
+      is_ready_to_show: false,
       language: 'fr',
       mode: timedTextMode.SUBTITLE,
       title: 'foo',
@@ -175,7 +175,7 @@ describe('<TimedTextListItem />', () => {
     const track = {
       active_stamp: 28271937429,
       id: '1',
-      is_ready_to_play: false,
+      is_ready_to_show: false,
       language: 'fr',
       mode: timedTextMode.SUBTITLE,
       title: 'foo',
@@ -205,7 +205,7 @@ describe('<TimedTextListItem />', () => {
 
     const updatedTrack = {
       ...track,
-      is_ready_to_play: true,
+      is_ready_to_show: true,
       upload_state: uploadState.READY,
     };
     fetchMock.restore();
@@ -237,7 +237,7 @@ describe('<TimedTextListItem />', () => {
               track={{
                 active_stamp: 28271937429,
                 id: '42',
-                is_ready_to_play: true,
+                is_ready_to_show: true,
                 language: 'fr',
                 mode: timedTextMode.SUBTITLE,
                 title: 'foo',

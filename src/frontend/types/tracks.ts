@@ -43,7 +43,7 @@ export enum timedTextMode {
 /** A timed text track record as it exists on the backend. */
 export interface TimedText extends Resource {
   active_stamp: Nullable<number>;
-  is_ready_to_play: boolean;
+  is_ready_to_show: boolean;
   language: string;
   mode: timedTextMode;
   upload_state: uploadState;
@@ -64,7 +64,7 @@ export type urls = { [key in videoSize]: string };
 
 /** A Thumbnail record as it exists on the backend. */
 export interface Thumbnail extends Resource {
-  is_ready_to_display: boolean;
+  is_ready_to_show: boolean;
   upload_state: uploadState;
   urls: urls;
   active_stamp: Nullable<number>;
@@ -74,7 +74,7 @@ export interface Thumbnail extends Resource {
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   description: string;
-  is_ready_to_play: boolean;
+  is_ready_to_show: boolean;
   show_download: boolean;
   thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];

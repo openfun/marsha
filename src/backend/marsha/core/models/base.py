@@ -255,8 +255,8 @@ class AbstractImage(BaseModel):
         abstract = True
 
     @property
-    def is_ready_to_display(self):
-        """Whether the image is ready to display (ie) has been sucessfully uploaded.
+    def is_ready_to_show(self):
+        """Whether the file is ready to display (ie) has been sucessfully uploaded.
 
         The value of this field seems to be trivially derived from the value of the
         `uploaded_on` field but it is necessary for conveniency and clarity in the client.

@@ -31,12 +31,12 @@ describe('<DashboardThumbnail />', () => {
   const video = {
     description: '',
     id: '43',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: true,
     thumbnail: {
       active_stamp: 128748302847,
       id: '42',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       upload_state: uploadState.READY,
       urls: {
         144: 'https://example.com/thumbnail/144',

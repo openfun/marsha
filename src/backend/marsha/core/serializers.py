@@ -82,7 +82,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         fields = (
             "active_stamp",
             "id",
-            "is_ready_to_play",
+            "is_ready_to_show",
             "mode",
             "language",
             "upload_state",
@@ -92,7 +92,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "active_stamp",
-            "is_ready_to_play",
+            "is_ready_to_show",
             "upload_state",
             "url",
             "video",
@@ -106,7 +106,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
     video = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
-    is_ready_to_play = serializers.BooleanField(read_only=True)
+    is_ready_to_show = serializers.BooleanField(read_only=True)
 
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
@@ -181,7 +181,7 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         fields = (
             "active_stamp",
             "id",
-            "is_ready_to_display",
+            "is_ready_to_show",
             "upload_state",
             "urls",
             "video",
@@ -189,7 +189,7 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "active_stamp",
             "id",
-            "is_ready_to_display",
+            "is_ready_to_show",
             "upload_state",
             "urls",
             "video",
@@ -201,7 +201,7 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     video = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
-    is_ready_to_display = serializers.BooleanField(read_only=True)
+    is_ready_to_show = serializers.BooleanField(read_only=True)
     urls = serializers.SerializerMethodField()
 
     def create(self, validated_data):
@@ -268,7 +268,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "active_stamp",
             "description",
             "id",
-            "is_ready_to_play",
+            "is_ready_to_show",
             "timed_text_tracks",
             "thumbnail",
             "title",
@@ -279,7 +279,7 @@ class VideoSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "active_stamp",
-            "is_ready_to_play",
+            "is_ready_to_show",
             "upload_state",
             "urls",
         )
@@ -292,7 +292,7 @@ class VideoSerializer(serializers.ModelSerializer):
     )
     thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
     urls = serializers.SerializerMethodField()
-    is_ready_to_play = serializers.BooleanField(read_only=True)
+    is_ready_to_show = serializers.BooleanField(read_only=True)
 
     def get_urls(self, obj):
         """Urls of the video for each type of encoding.
@@ -439,7 +439,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         fields = (
             "active_stamp",
             "id",
-            "is_ready_to_display",
+            "is_ready_to_show",
             "title",
             "upload_state",
             "url",
@@ -448,7 +448,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "active_stamp",
-            "is_ready_to_display",
+            "is_ready_to_show",
             "upload_state",
             "url",
         )
@@ -457,7 +457,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         source="uploaded_on", required=False, allow_null=True, read_only=True
     )
     url = serializers.SerializerMethodField()
-    is_ready_to_display = serializers.BooleanField(read_only=True)
+    is_ready_to_show = serializers.BooleanField(read_only=True)
 
     def get_url(self, obj):
         """Url of the Document.

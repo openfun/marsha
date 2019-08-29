@@ -67,7 +67,7 @@ describe('<RedirectOnLoad />', () => {
     mockIsEditable = true;
 
     for (const state of Object.values(uploadState)) {
-      mockVideo = { is_ready_to_play: true, upload_state: state };
+      mockVideo = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
@@ -89,7 +89,7 @@ describe('<RedirectOnLoad />', () => {
     mockIsEditable = true;
 
     for (const state of Object.values(uploadState)) {
-      mockDocument = { is_ready_to_display: true, upload_state: state };
+      mockDocument = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
@@ -111,7 +111,7 @@ describe('<RedirectOnLoad />', () => {
     mockIsEditable = false;
 
     for (const state of Object.values(uploadState)) {
-      mockVideo = { is_ready_to_play: true, upload_state: state };
+      mockVideo = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
@@ -133,7 +133,7 @@ describe('<RedirectOnLoad />', () => {
     mockIsEditable = false;
 
     for (const state of Object.values(uploadState)) {
-      mockDocument = { is_ready_to_display: true, upload_state: state };
+      mockDocument = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
@@ -152,7 +152,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
       id: '42',
-      is_ready_to_play: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PENDING,
     };
     mockModelName = modelName.VIDEOS;
@@ -179,7 +179,7 @@ describe('<RedirectOnLoad />', () => {
     mockModelName = modelName.DOCUMENTS;
     mockDocument = {
       id: '42',
-      is_ready_to_display: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PENDING,
     };
     mockIsEditable = true;
@@ -201,7 +201,7 @@ describe('<RedirectOnLoad />', () => {
   it('redirects instructors to /dashboard when there is a video undergoing processing', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
-      is_ready_to_play: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
     mockModelName = modelName.VIDEOS;
@@ -227,7 +227,7 @@ describe('<RedirectOnLoad />', () => {
     mockVideo = null;
     mockModelName = modelName.DOCUMENTS;
     mockDocument = {
-      is_ready_to_display: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
     mockIsEditable = true;
@@ -249,7 +249,7 @@ describe('<RedirectOnLoad />', () => {
   it('redirects students to the error view when the video is not ready', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
-      is_ready_to_play: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
     mockModelName = modelName.VIDEOS;
@@ -273,7 +273,7 @@ describe('<RedirectOnLoad />', () => {
   it('redirects students to the error view when the document is not ready', () => {
     mockState = appState.SUCCESS;
     mockDocument = {
-      is_ready_to_display: false,
+      is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
     mockModelName = modelName.DOCUMENTS;

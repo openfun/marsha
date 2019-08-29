@@ -29,13 +29,13 @@ const mockAddMultipleResources = addMultipleResources as jestMockOf<
 describe('sideEffects/getResourceList', () => {
   const video42 = {
     id: '42',
-    is_ready_to_play: false,
+    is_ready_to_show: false,
     upload_state: uploadState.PENDING,
   } as Video;
 
   const video43 = {
     id: '43',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     upload_state: uploadState.READY,
   } as Video;
 
@@ -57,12 +57,12 @@ describe('sideEffects/getResourceList', () => {
     expect(mockAddMultipleResources).toHaveBeenCalledWith(modelName.VIDEOS, [
       {
         id: '42',
-        is_ready_to_play: false,
+        is_ready_to_show: false,
         upload_state: uploadState.PENDING,
       },
       {
         id: '43',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         upload_state: uploadState.READY,
       },
     ]);

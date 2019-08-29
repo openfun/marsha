@@ -46,7 +46,7 @@ jest.mock('../TranscriptSentence', () => ({
 const transcript = {
   active_stamp: 234243242353,
   id: '1',
-  is_ready_to_play: true,
+  is_ready_to_show: true,
   language: 'fr',
   mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
   title: 'foo',

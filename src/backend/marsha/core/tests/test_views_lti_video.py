@@ -75,7 +75,7 @@ class VideoViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -140,7 +140,7 @@ class VideoViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -194,7 +194,7 @@ class VideoViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -257,7 +257,7 @@ class VideoViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -526,7 +526,7 @@ class DevelopmentViewsTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -580,7 +580,7 @@ class DevelopmentViewsTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -631,7 +631,7 @@ class DevelopmentViewsTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),

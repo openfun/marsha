@@ -91,7 +91,7 @@ class ThumbnailApiTest(TestCase):
             {
                 "id": str(thumbnail.id),
                 "active_stamp": None,
-                "is_ready_to_display": False,
+                "is_ready_to_show": False,
                 "upload_state": "pending",
                 "urls": None,
                 "video": str(video.id),
@@ -140,7 +140,7 @@ class ThumbnailApiTest(TestCase):
             {
                 "id": str(thumbnail.id),
                 "active_stamp": None,
-                "is_ready_to_display": False,
+                "is_ready_to_show": False,
                 "upload_state": "pending",
                 "urls": None,
                 "video": str(video.id),
@@ -178,7 +178,7 @@ class ThumbnailApiTest(TestCase):
             {
                 "id": str(thumbnail.id),
                 "active_stamp": "1533686400",
-                "is_ready_to_display": True,
+                "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
                     "144": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
@@ -237,7 +237,7 @@ class ThumbnailApiTest(TestCase):
             {
                 "id": str(created_thumbnail.id),
                 "active_stamp": None,
-                "is_ready_to_display": False,
+                "is_ready_to_show": False,
                 "upload_state": "pending",
                 "urls": None,
                 "video": str(video.id),
