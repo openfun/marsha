@@ -8,7 +8,7 @@ describe('<DashboardThumbnailDisplay />', () => {
   it('display images from thumbnail resource when ready', () => {
     const thumbnail = {
       id: 42,
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       urls: {
         144: 'https://example.com/thumbnail/144.jpg',
         240: 'https://example.com/thumbnail/240.jpg',
@@ -52,7 +52,7 @@ describe('<DashboardThumbnailDisplay />', () => {
   it('display images from video resource when thumbnail resource is not ready', () => {
     const thumbnail = {
       id: 42,
-      is_ready_to_display: false,
+      is_ready_to_show: false,
       urls: {
         144: 'https://example.com/thumbnail/144.jpg',
         240: 'https://example.com/thumbnail/240.jpg',

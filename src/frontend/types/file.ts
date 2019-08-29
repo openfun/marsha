@@ -2,7 +2,7 @@ import { Resource, uploadState } from './tracks';
 
 export interface Document extends Resource {
   description: string;
-  is_ready_to_display: boolean;
+  is_ready_to_show: boolean;
   title: string;
   upload_state: uploadState;
   url: string;

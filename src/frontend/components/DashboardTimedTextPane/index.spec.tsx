@@ -49,7 +49,7 @@ describe('<DashboardTimedTextPane />', () => {
   const video = {
     description: '',
     id: '43',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: true,
     thumbnail: null,
     timed_text_tracks: [
@@ -57,7 +57,7 @@ describe('<DashboardTimedTextPane />', () => {
       {
         active_stamp: 2094219242,
         id: '142',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'en',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
@@ -94,7 +94,7 @@ describe('<DashboardTimedTextPane />', () => {
       {
         active_stamp: 2094219242,
         id: '142',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'en',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
@@ -104,7 +104,7 @@ describe('<DashboardTimedTextPane />', () => {
       {
         active_stamp: 2094219242,
         id: '144',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.CLOSED_CAPTIONING,
         upload_state: uploadState.READY,

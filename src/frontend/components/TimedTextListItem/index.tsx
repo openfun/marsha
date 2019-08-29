@@ -77,7 +77,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   useEffect(() => {
     getChoices();
 
-    if (track.is_ready_to_play === false) {
+    if (track.is_ready_to_show === false) {
       window.setTimeout(async () => {
         const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
         if (result === requestStatus.FAILURE) {

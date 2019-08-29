@@ -96,7 +96,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
   }
 
-  if (!video.is_ready_to_play && video.upload_state === ERROR) {
+  if (!video.is_ready_to_show && video.upload_state === ERROR) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
   }
 

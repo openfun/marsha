@@ -51,9 +51,9 @@ export async function pollForTrack<
 }
 
 const isReadyToPlay = (object: Document | Video | TimedText): boolean => {
-  if ((object as Document).is_ready_to_display !== undefined) {
-    return (object as Document).is_ready_to_display;
+  if ((object as Document).is_ready_to_show !== undefined) {
+    return (object as Document).is_ready_to_show;
   }
 
-  return (object as Video | TimedText).is_ready_to_play;
+  return (object as Video | TimedText).is_ready_to_show;
 };

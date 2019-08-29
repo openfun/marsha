@@ -26,7 +26,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '44',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.PROCESSING,
@@ -37,7 +37,7 @@ describe('<DashboardDocument />', () => {
       '/api/documents/44/',
       JSON.stringify({
         ...document,
-        is_ready_to_display: false,
+        is_ready_to_show: false,
         upload_state: uploadState.PROCESSING,
       }),
     );
@@ -73,7 +73,7 @@ describe('<DashboardDocument />', () => {
       '/api/documents/44/',
       JSON.stringify({
         ...document,
-        is_ready_to_display: true,
+        is_ready_to_show: true,
         upload_state: uploadState.READY,
       }),
     );
@@ -94,7 +94,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '45',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.PENDING,
@@ -114,7 +114,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '45',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.ERROR,
@@ -135,7 +135,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '45',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.READY,
@@ -171,7 +171,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '46',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.READY,
@@ -223,7 +223,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '47',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.READY,
@@ -267,7 +267,7 @@ describe('<DashboardDocument />', () => {
     const document = {
       description: '',
       id: '45',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.UPLOADING,

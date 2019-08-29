@@ -113,11 +113,11 @@ const VideoPlayer = ({
   }
 
   const transcripts = timedTextTracks
-    .filter(track => track.is_ready_to_play)
+    .filter(track => track.is_ready_to_show)
     .filter(track => timedTextMode.TRANSCRIPT === track.mode);
 
   const thumbnailUrls =
-    (thumbnail && thumbnail.is_ready_to_display && thumbnail.urls) ||
+    (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
     video.urls.thumbnails;
 
   return (
@@ -153,7 +153,7 @@ const VideoPlayer = ({
           */}
         {player &&
           timedTextTracks
-            .filter(track => track.is_ready_to_play)
+            .filter(track => track.is_ready_to_show)
             .filter(track =>
               [
                 timedTextMode.CLOSED_CAPTIONING,
