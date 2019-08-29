@@ -1,5 +1,3 @@
-import { stringify } from 'querystring';
-
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
 import { APIListCommonRequestParams, requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
@@ -22,12 +20,15 @@ export const getResourceList = async (
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
 
   try {
-    const response = await fetch(`${endpoint}?${stringify(params)}`, {
-      headers: {
-        Authorization: `Bearer ${appData.jwt}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${endpoint}?limit=${params.limit}&offset=${params.offset}`,
+      {
+        headers: {
+          Authorization: `Bearer ${appData.jwt}`,
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       // Push remote errors to the error channel for consistency
