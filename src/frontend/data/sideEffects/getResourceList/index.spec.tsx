@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import { requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
 import { uploadState, Video } from '../../../types/tracks';
+import { report } from '../../../utils/errors/report';
 import { jestMockOf } from '../../../utils/types';
 import { addMultipleResources } from '../../stores/generics';
 import { getResourceList } from './';
@@ -17,13 +18,15 @@ jest.mock('../../stores/generics', () => ({
   addMultipleResources: jest.fn(),
 }));
 
+jest.mock('../../../utils/errors/report', () => ({
+  report: jest.fn(),
+}));
+
 const mockAddMultipleResources = addMultipleResources as jestMockOf<
   typeof addMultipleResources
 >;
 
 describe('sideEffects/getResourceList', () => {
-  const dispatch = jest.fn();
-
   const video42 = {
     id: '42',
     is_ready_to_play: false,
@@ -77,6 +80,9 @@ describe('sideEffects/getResourceList', () => {
     });
 
     expect(status).toEqual(requestStatus.FAILURE);
+    expect(report).toHaveBeenCalledWith(
+      new Error('Failed to perform the request'),
+    );
     expect(mockAddMultipleResources).not.toHaveBeenCalled();
   });
 
@@ -89,6 +95,11 @@ describe('sideEffects/getResourceList', () => {
     });
 
     expect(status).toEqual(requestStatus.FAILURE);
+    expect(report).toHaveBeenCalledWith(
+      new Error(
+        'Failed to get list for /api/videos/ and {"limit":2,"offset":43} : 404.',
+      ),
+    );
     expect(mockAddMultipleResources).not.toHaveBeenCalled();
   });
 });
