@@ -12,7 +12,7 @@ describe('sideEffects/updateResource', () => {
   const video = {
     description: 'Some description',
     id: 'video-id',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: false,
     title: 'Some title',
     upload_state: 'ready',

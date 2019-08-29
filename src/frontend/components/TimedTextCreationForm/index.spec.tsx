@@ -62,7 +62,7 @@ describe('<TimedTextCreationForm />', () => {
       {
         active_stamp: null,
         id: '42',
-        is_ready_to_play: false,
+        is_ready_to_show: false,
         language: 'en',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.PENDING,

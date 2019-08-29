@@ -76,7 +76,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
 
       const incomingThumbnail: Thumbnail = await response.json();
       if (
-        incomingThumbnail.is_ready_to_display &&
+        incomingThumbnail.is_ready_to_show &&
         incomingThumbnail.upload_state === uploadState.READY
       ) {
         addThumbnail(incomingThumbnail);

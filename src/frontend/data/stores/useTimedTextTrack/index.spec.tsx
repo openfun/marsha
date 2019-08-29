@@ -11,7 +11,7 @@ jest.mock('../../appData', () => ({
         {
           active_stamp: 1549385921,
           id: 'ttt-1',
-          is_ready_to_play: true,
+          is_ready_to_show: true,
           language: 'fr',
           mode: 'st',
           upload_state: 'ready',
@@ -20,7 +20,7 @@ jest.mock('../../appData', () => ({
         {
           active_stamp: 1549385922,
           id: 'ttt-2',
-          is_ready_to_play: false,
+          is_ready_to_show: false,
           language: 'fr',
           mode: 'st',
           upload_state: 'ready',
@@ -29,7 +29,7 @@ jest.mock('../../appData', () => ({
         {
           active_stamp: 1549385923,
           id: 'ttt-3',
-          is_ready_to_play: true,
+          is_ready_to_show: true,
           language: 'en',
           mode: 'cc',
           upload_state: 'ready',
@@ -38,7 +38,7 @@ jest.mock('../../appData', () => ({
         {
           active_stamp: 1549385924,
           id: 'ttt-4',
-          is_ready_to_play: true,
+          is_ready_to_show: true,
           language: 'fr',
           mode: 'ts',
           upload_state: 'ready',
@@ -68,7 +68,7 @@ describe('stores/useTimedTextTrack', () => {
       'ttt-1': {
         active_stamp: 1549385921,
         id: 'ttt-1',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
@@ -77,7 +77,7 @@ describe('stores/useTimedTextTrack', () => {
       'ttt-2': {
         active_stamp: 1549385922,
         id: 'ttt-2',
-        is_ready_to_play: false,
+        is_ready_to_show: false,
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
@@ -86,7 +86,7 @@ describe('stores/useTimedTextTrack', () => {
       'ttt-3': {
         active_stamp: 1549385923,
         id: 'ttt-3',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'en',
         mode: 'cc',
         upload_state: 'ready',
@@ -95,7 +95,7 @@ describe('stores/useTimedTextTrack', () => {
       'ttt-4': {
         active_stamp: 1549385924,
         id: 'ttt-4',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: 'ts',
         upload_state: 'ready',
@@ -106,7 +106,7 @@ describe('stores/useTimedTextTrack', () => {
       {
         active_stamp: 1549385921,
         id: 'ttt-1',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
@@ -115,7 +115,7 @@ describe('stores/useTimedTextTrack', () => {
       {
         active_stamp: 1549385922,
         id: 'ttt-2',
-        is_ready_to_play: false,
+        is_ready_to_show: false,
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
@@ -124,7 +124,7 @@ describe('stores/useTimedTextTrack', () => {
       {
         active_stamp: 1549385923,
         id: 'ttt-3',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'en',
         mode: 'cc',
         upload_state: 'ready',
@@ -133,7 +133,7 @@ describe('stores/useTimedTextTrack', () => {
       {
         active_stamp: 1549385924,
         id: 'ttt-4',
-        is_ready_to_play: true,
+        is_ready_to_show: true,
         language: 'fr',
         mode: 'ts',
         upload_state: 'ready',

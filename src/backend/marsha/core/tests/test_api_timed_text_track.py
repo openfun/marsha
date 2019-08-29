@@ -169,7 +169,7 @@ class TimedTextTrackAPITest(TestCase):
             content,
             {
                 "active_stamp": "1533686400",
-                "is_ready_to_play": True,
+                "is_ready_to_show": True,
                 "id": str(timed_text_track.id),
                 "mode": "cc",
                 "language": "fr",
@@ -220,7 +220,7 @@ class TimedTextTrackAPITest(TestCase):
             content,
             {
                 "active_stamp": "1533686400",
-                "is_ready_to_play": True,
+                "is_ready_to_show": True,
                 "id": str(timed_text_track.id),
                 "mode": "cc",
                 "language": "fr",
@@ -430,7 +430,7 @@ class TimedTextTrackAPITest(TestCase):
             {
                 "id": str(TimedTextTrack.objects.first().id),
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "mode": "st",
                 "language": "fr",
                 "upload_state": "pending",

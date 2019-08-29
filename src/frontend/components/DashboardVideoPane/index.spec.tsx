@@ -26,7 +26,7 @@ describe('<DashboardVideoPane />', () => {
   const video = {
     description: '',
     id: '43',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     show_download: true,
     thumbnail: null,
     timed_text_tracks: [],
@@ -149,12 +149,12 @@ describe('<DashboardVideoPane />', () => {
     getByText('Your video is ready to play.');
   });
 
-  it('redirects to error when the video is in the error state and not `is_ready_to_play`', () => {
+  it('redirects to error when the video is in the error state and not `is_ready_to_show`', () => {
     const { getByText } = render(
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoPane
-            video={{ ...video, is_ready_to_play: false, upload_state: ERROR }}
+            video={{ ...video, is_ready_to_show: false, upload_state: ERROR }}
           />,
           [
             {
@@ -171,11 +171,11 @@ describe('<DashboardVideoPane />', () => {
     getByText('Error Component: upload');
   });
 
-  it('shows the dashboard when the video is in the error state but `is_ready_to_play`', () => {
+  it('shows the dashboard when the video is in the error state but `is_ready_to_show`', async () => {
     const { getByText } = render(
       wrapInIntlProvider(
         <DashboardVideoPane
-          video={{ ...video, is_ready_to_play: true, upload_state: ERROR }}
+          video={{ ...video, is_ready_to_show: true, upload_state: ERROR }}
         />,
       ),
     );
@@ -194,7 +194,7 @@ describe('<DashboardVideoPane />', () => {
             <DashboardVideoPane
               video={{
                 ...video,
-                is_ready_to_play: false,
+                is_ready_to_show: false,
                 upload_state: state,
               }}
             />,
@@ -229,7 +229,7 @@ describe('<DashboardVideoPane />', () => {
             <DashboardVideoPane
               video={{
                 ...video,
-                is_ready_to_play: false,
+                is_ready_to_show: false,
                 upload_state: state,
               }}
             />,
@@ -253,7 +253,7 @@ describe('<DashboardVideoPane />', () => {
             <DashboardVideoPane
               video={{
                 ...video,
-                is_ready_to_play: false,
+                is_ready_to_show: false,
                 upload_state: state,
               }}
             />,

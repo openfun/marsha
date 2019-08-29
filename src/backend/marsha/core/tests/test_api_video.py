@@ -152,14 +152,14 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
-                "is_ready_to_play": True,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "upload_state": "ready",
                 "thumbnail": None,
                 "timed_text_tracks": [
                     {
                         "active_stamp": "1533686400",
-                        "is_ready_to_play": True,
+                        "is_ready_to_show": True,
                         "mode": "cc",
                         "id": str(timed_text_track.id),
                         "language": "fr",
@@ -245,7 +245,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "upload_state": "pending",
                 "timed_text_tracks": [],
@@ -279,7 +279,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_play": False,
+                "is_ready_to_show": False,
                 "show_download": True,
                 "upload_state": state,
                 "timed_text_tracks": [],
@@ -398,7 +398,7 @@ class VideoAPITest(TestCase):
             {
                 "active_stamp": "1533686400",
                 "id": str(thumbnail.id),
-                "is_ready_to_display": True,
+                "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
                     "144": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"

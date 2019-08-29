@@ -76,7 +76,7 @@ class DocumentAPITest(TestCase):
             {
                 "active_stamp": "1533686400",
                 "id": str(document.id),
-                "is_ready_to_display": True,
+                "is_ready_to_show": True,
                 "title": document.title,
                 "upload_state": "ready",
                 "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"

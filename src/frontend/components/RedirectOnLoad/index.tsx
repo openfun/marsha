@@ -3,9 +3,8 @@ import { Redirect } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
 import { appState } from '../../types/AppData';
-import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { uploadState } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -25,7 +24,7 @@ export const RedirectOnLoad = () => {
   if (
     appData.modelName === modelName.VIDEOS &&
     resource &&
-    (resource as Video).is_ready_to_play
+    resource.is_ready_to_show
   ) {
     return <Redirect push to={VIDEO_PLAYER_ROUTE()} />;
   }
@@ -33,7 +32,7 @@ export const RedirectOnLoad = () => {
   if (
     appData.modelName === modelName.DOCUMENTS &&
     resource &&
-    (resource as Document).is_ready_to_display
+    resource.is_ready_to_show
   ) {
     return <Redirect push to={DOCUMENT_PLAYER_ROUTE()} />;
   }

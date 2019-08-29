@@ -10,7 +10,7 @@ jest.mock('../../appData', () => ({
       thumbnail: {
         active_stamp: '1564494507',
         id: 'c0ea0fbc-5ce1-4340-a589-3db01d804045',
-        is_ready_to_display: true,
+        is_ready_to_show: true,
         upload_state: 'ready',
         urls: {
           144: 'https://example.com/144.jpg',
@@ -44,7 +44,7 @@ describe('stores/useThumbnail', () => {
       'c0ea0fbc-5ce1-4340-a589-3db01d804045': {
         active_stamp: '1564494507',
         id: 'c0ea0fbc-5ce1-4340-a589-3db01d804045',
-        is_ready_to_display: true,
+        is_ready_to_show: true,
         upload_state: 'ready',
         urls: {
           144: 'https://example.com/144.jpg',
@@ -59,7 +59,7 @@ describe('stores/useThumbnail', () => {
     expect(state.getThumbnail()).toEqual({
       active_stamp: '1564494507',
       id: 'c0ea0fbc-5ce1-4340-a589-3db01d804045',
-      is_ready_to_display: true,
+      is_ready_to_show: true,
       upload_state: 'ready',
       urls: {
         144: 'https://example.com/144.jpg',

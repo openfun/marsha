@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Video model is a special File model
 - pluralize thumbnail url
 - Simplify template to frontend communication by using JSON instead of multiple data-attributes
+- Rename all is_ready_to_* model properties to is_ready_to_show
 
 ### Removed
 

@@ -87,7 +87,7 @@ class BaseFile(BaseModel):
         return result
 
     @property
-    def is_ready_to_display(self):
+    def is_ready_to_show(self):
         """Whether the file is ready to display (ie) has been sucessfully uploaded.
 
         The value of this field seems to be trivially derived from the value of the

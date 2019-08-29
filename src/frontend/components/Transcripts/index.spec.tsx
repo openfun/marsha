@@ -29,7 +29,7 @@ const transcripts = [
   {
     active_stamp: 234243242353,
     id: '1',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     language: 'fr',
     mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
     title: 'foo',
@@ -40,7 +40,7 @@ const transcripts = [
   {
     active_stamp: 1243401243953,
     id: '2',
-    is_ready_to_play: true,
+    is_ready_to_show: true,
     language: 'en',
     mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
     title: 'foo',

@@ -24,7 +24,7 @@ export const DashboardThumbnailDisplay = ({
   thumbnail,
 }: DashboardThumbnailDisplayProps) => {
   const urls =
-    thumbnail && thumbnail.is_ready_to_display
+    thumbnail && thumbnail.is_ready_to_show
       ? thumbnail.urls
       : video.urls.thumbnails;
   return (
