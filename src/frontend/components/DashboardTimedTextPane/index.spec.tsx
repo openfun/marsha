@@ -8,6 +8,7 @@ import React from 'react';
 
 import { DashboardTimedTextPane } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
+import { report } from '../../utils/errors/report';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -16,6 +17,10 @@ jest.mock('../../data/appData', () => ({
   appData: {
     jwt: 'foo',
   },
+}));
+
+jest.mock('../../utils/errors/report', () => ({
+  report: jest.fn(),
 }));
 
 describe('<DashboardTimedTextPane />', () => {
@@ -140,5 +145,6 @@ describe('<DashboardTimedTextPane />', () => {
 
     await wait();
     getByText('Error Component: notFound');
+    expect(report).toBeCalledWith(Error('Failed!'));
   });
 });
