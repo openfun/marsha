@@ -25,6 +25,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Everything related to the OpenEDX LTI view. This a BC break
 - Deprecated settings. This is a BC break
 
+### Security
+
+- Update the mixin-deep and set-value packages to safe versions.
+
 ## [2.10.1] - 2019-08-13
 
 ### Fixed
