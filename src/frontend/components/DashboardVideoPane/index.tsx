@@ -50,7 +50,6 @@ interface DashboardVideoPaneProps {
 
 export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   const [error, setError] = useState(false);
-  const [pollInterval, setPollInterval] = useState();
   const { updateVideo } = useVideo(state => ({
     updateVideo: state.addResource,
   }));
@@ -84,11 +83,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
 
   useEffect(() => {
     if ([PENDING, UPLOADING, PROCESSING].includes(video.upload_state)) {
-      setPollInterval(window.setInterval(() => pollForVideo(), 1000 * 60));
+      const interval = window.setInterval(() => pollForVideo(), 1000 * 60);
 
       return () => {
         // As a matter of hygiene, stop the polling as we unmount
-        window.clearInterval(pollInterval);
+        window.clearInterval(interval);
       };
     }
   }, []);
