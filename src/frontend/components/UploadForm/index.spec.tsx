@@ -122,6 +122,7 @@ describe('UploadForm', () => {
       },
       { method: 'POST' },
     );
+    fetchMock.mock('/api/videos/video-id/', 200, { method: 'PUT' });
     mockUploadFile.mockResolvedValue(true);
     mockGetResource.mockResolvedValue(object);
 
@@ -147,11 +148,14 @@ describe('UploadForm', () => {
     });
     await wait();
     expect(
-      fetchMock.calls('/api/videos/video-id/initiate-upload/', {
+      fetchMock.called('/api/videos/video-id/initiate-upload/', {
         method: 'POST',
       }),
-    ).toHaveLength(1);
+    ).toBe(true);
     await wait();
+    expect(fetchMock.called('/api/videos/video-id/', { method: 'PUT' })).toBe(
+      true,
+    );
     expect(mockUploadFile).toHaveBeenCalled();
     // redirected to the dashboard
     getByText('dashboard');
