@@ -14,5 +14,5 @@ export interface AppData {
   isEditable: boolean;
   video?: Nullable<Video>;
   document?: Nullable<Document>;
-  modelName: modelName;
+  modelName: modelName.VIDEOS | modelName.DOCUMENTS;
 }

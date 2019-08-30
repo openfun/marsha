@@ -5,16 +5,15 @@ import { appData } from '../../data/appData';
 import { createPlayer } from '../../Player/createPlayer';
 import { modelName } from '../../types/models';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { ErrorComponent } from '../ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { Loader } from '../Loader';
 import { RedirectOnLoad } from '../RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
+import { PLAYER_ROUTE } from '../routes';
 import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
@@ -26,32 +25,32 @@ export const AppRoutes = () => (
       <Switch>
         <Route
           exact
-          path={VIDEO_PLAYER_ROUTE()}
-          render={() =>
-            appData.video ? (
-              <InstructorWrapper>
-                <VideoPlayer
-                  video={appData.video}
-                  createPlayer={createPlayer}
-                />
-              </InstructorWrapper>
-            ) : (
-              <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />
-            )
-          }
-        />
-        <Route
-          exact
-          path={DOCUMENT_PLAYER_ROUTE()}
-          render={() =>
-            appData.document ? (
-              <InstructorWrapper>
-                <DocumentPlayer document={appData.document} />
-              </InstructorWrapper>
-            ) : (
-              <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />
-            )
-          }
+          path={PLAYER_ROUTE()}
+          render={({ match }) => {
+            if (match.params.objectType === modelName.VIDEOS && appData.video) {
+              return (
+                <InstructorWrapper>
+                  <VideoPlayer
+                    video={appData.video}
+                    createPlayer={createPlayer}
+                  />
+                </InstructorWrapper>
+              );
+            }
+
+            if (
+              match.params.objectType === modelName.DOCUMENTS &&
+              appData.document
+            ) {
+              return (
+                <InstructorWrapper>
+                  <DocumentPlayer document={appData.document} />
+                </InstructorWrapper>
+              );
+            }
+
+            return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+          }}
         />
         <Route
           exact

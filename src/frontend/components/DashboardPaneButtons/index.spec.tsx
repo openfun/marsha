@@ -6,7 +6,6 @@ import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
@@ -18,7 +17,6 @@ describe('<DashboardPaneButtons />', () => {
           <DashboardPaneButtons
             object={{ id: 'vid1', upload_state: READY } as Video}
             objectType={modelName.VIDEOS}
-            routePlayer={VIDEO_PLAYER_ROUTE()}
           />,
         ),
       ),
@@ -34,7 +32,6 @@ describe('<DashboardPaneButtons />', () => {
             <DashboardPaneButtons
               object={{ id: 'vid1', upload_state: state } as Video}
               objectType={modelName.VIDEOS}
-              routePlayer={VIDEO_PLAYER_ROUTE()}
             />,
           ),
         ),
@@ -51,7 +48,6 @@ describe('<DashboardPaneButtons />', () => {
           <DashboardPaneButtons
             object={{ id: 'vid1', upload_state: PENDING } as Video}
             objectType={modelName.VIDEOS}
-            routePlayer={VIDEO_PLAYER_ROUTE()}
           />,
         ),
       ),
@@ -65,7 +61,6 @@ describe('<DashboardPaneButtons />', () => {
             <DashboardPaneButtons
               object={{ id: 'vid1', upload_state: state } as Video}
               objectType={modelName.VIDEOS}
-              routePlayer={VIDEO_PLAYER_ROUTE()}
             />,
           ),
         ),
