@@ -65,8 +65,8 @@ export const i18nMessages = defineMessages({
   disabled: {
     defaultMessage: 'Disabled',
     description:
-      'When captions are enabled, this label is used on the button to disable captions',
-    id: 'plyr.controls.captions.disabled',
+      'label used in the captions menu list to select the disabled option and then disable captions if selected',
+    id: 'plyr.controls.captions.menu.disabled',
   },
   download: {
     defaultMessage: 'Download',
@@ -86,8 +86,8 @@ export const i18nMessages = defineMessages({
   enabled: {
     defaultMessage: 'enabled',
     description:
-      'When captions are disabled, this label is used on the button to enable captions',
-    id: 'plyr.controls.captions.enabled',
+      'label used in the captions menu list if captions are enabled and the selected caption has no language nor label',
+    id: 'plyr.controls.captions.menu.enabled',
   },
   end: {
     defaultMessage: 'End',
