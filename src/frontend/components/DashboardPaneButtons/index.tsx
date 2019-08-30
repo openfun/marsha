@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
+import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
 
@@ -71,7 +72,6 @@ const DashboardButtonStyled = styled(BtnWithLink)`
 export interface DashboardPaneButtonsProps {
   object: Video | Document;
   objectType: modelName.VIDEOS | modelName.DOCUMENTS;
-  routePlayer: string;
 }
 
 /** Component. Displays buttons with links to the Player & the Form, adapting their state and
@@ -83,7 +83,6 @@ export interface DashboardPaneButtonsProps {
 export const DashboardPaneButtons = ({
   object,
   objectType,
-  routePlayer,
 }: DashboardPaneButtonsProps) => {
   const displayWatchBtn = object.upload_state === uploadState.READY;
 
@@ -108,7 +107,7 @@ export const DashboardPaneButtons = ({
         <DashboardButtonStyled
           label={<FormattedMessage {...messages[objectType].btnPlay} />}
           primary={displayWatchBtn}
-          to={routePlayer}
+          to={PLAYER_ROUTE(objectType)}
         />
       ) : null}
     </Box>

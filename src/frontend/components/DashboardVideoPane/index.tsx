@@ -18,7 +18,6 @@ import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker';
-import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
@@ -118,11 +117,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
             objectType={modelName.VIDEOS}
             state={video.upload_state}
           />
-          <DashboardPaneButtons
-            object={video}
-            objectType={modelName.VIDEOS}
-            routePlayer={VIDEO_PLAYER_ROUTE()}
-          />
+          <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
         </DashboardVideoPaneInnerContainer>
       );
 
@@ -166,11 +161,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
               <DashboardThumbnail video={video} />
             </Box>
           </Box>
-          <DashboardPaneButtons
-            object={video}
-            objectType={modelName.VIDEOS}
-            routePlayer={VIDEO_PLAYER_ROUTE()}
-          />
+          <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
         </DashboardVideoPaneInnerContainer>
       );
   }

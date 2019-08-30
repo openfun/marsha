@@ -15,7 +15,6 @@ import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import DocumentPlayer from '../DocumentPlayer';
-import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { UploadStatusPicker } from '../UploadStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
@@ -118,7 +117,6 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}
-            routePlayer={DOCUMENT_PLAYER_ROUTE()}
           />
         </DashboardDocumentInnerContainer>
       );
@@ -130,7 +128,6 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}
-            routePlayer={DOCUMENT_PLAYER_ROUTE()}
           />
         </DashboardDocumentInnerContainer>
       );
@@ -142,7 +139,6 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}
-            routePlayer={DOCUMENT_PLAYER_ROUTE()}
           />
         </DashboardDocumentInnerContainer>
       );
@@ -188,7 +184,6 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}
-            routePlayer={DOCUMENT_PLAYER_ROUTE()}
           />
         </DashboardDocumentInnerContainer>
       );
