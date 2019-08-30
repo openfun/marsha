@@ -6,10 +6,9 @@ import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
@@ -21,20 +20,8 @@ export const RedirectOnLoad = () => {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
   }
 
-  if (
-    appData.modelName === modelName.VIDEOS &&
-    resource &&
-    resource.is_ready_to_show
-  ) {
-    return <Redirect push to={VIDEO_PLAYER_ROUTE()} />;
-  }
-
-  if (
-    appData.modelName === modelName.DOCUMENTS &&
-    resource &&
-    resource.is_ready_to_show
-  ) {
-    return <Redirect push to={DOCUMENT_PLAYER_ROUTE()} />;
+  if (resource && resource.is_ready_to_show) {
+    return <Redirect push to={PLAYER_ROUTE(appData.modelName)} />;
   }
 
   if (appData.isEditable) {

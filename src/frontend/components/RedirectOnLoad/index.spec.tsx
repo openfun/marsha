@@ -6,10 +6,9 @@ import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DOCUMENT_PLAYER_ROUTE } from '../DocumentPlayer/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { VIDEO_PLAYER_ROUTE } from '../VideoPlayer/route';
 import { RedirectOnLoad } from './index';
 
 let mockState: any;
@@ -71,7 +70,7 @@ describe('<RedirectOnLoad />', () => {
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: VIDEO_PLAYER_ROUTE(),
+            path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
         ]),
@@ -93,7 +92,7 @@ describe('<RedirectOnLoad />', () => {
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: DOCUMENT_PLAYER_ROUTE(),
+            path: PLAYER_ROUTE(modelName.DOCUMENTS),
             render: () => <span>document player</span>,
           },
         ]),
@@ -115,7 +114,7 @@ describe('<RedirectOnLoad />', () => {
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: VIDEO_PLAYER_ROUTE(),
+            path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
         ]),
@@ -137,7 +136,7 @@ describe('<RedirectOnLoad />', () => {
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: DOCUMENT_PLAYER_ROUTE(),
+            path: PLAYER_ROUTE(modelName.DOCUMENTS),
             render: () => <span>document player</span>,
           },
         ]),
