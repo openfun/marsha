@@ -58,6 +58,7 @@ class DocumentAPITest(TestCase):
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            title="foo.pdf",
         )
 
         jwt_token = AccessToken()
@@ -80,7 +81,8 @@ class DocumentAPITest(TestCase):
                 "title": document.title,
                 "upload_state": "ready",
                 "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
-                "document/1533686400",
+                "document/1533686400"
+                "?response-content-disposition=attachment%3B+filename%3Dfoo.pdf",
                 "show_download": True,
             },
         )
