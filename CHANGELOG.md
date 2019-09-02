@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a File model which will be the base model for all the resources
   we will manage
 - create a property `RESOURCE_NAME` on models having a url
+- Use document title as filename when the user download it
 
 ## Changed
 
