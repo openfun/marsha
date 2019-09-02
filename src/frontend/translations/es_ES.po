@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2019-04-23T09:57:22.769Z\n"
+"POT-Creation-Date: 2019-08-30T14:20:26.440Z\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -13,184 +13,441 @@ msgstr ""
 "Last-Translator: Manuel Raynaud (lunika)\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
-"PO-Revision-Date: 2019-04-24 09:49\n"
+"PO-Revision-Date: 2019-09-02 09:13\n"
 
 #. [components.DownloadVideo.1080] - High quality video
 #. defaultMessage is:
 #. 1080p: FullHD (high quality)
-#: i18n/components/DowloadVideo/DownloadVideo.json
+#: i18n/components/DownloadVideo/index.json
 msgid "1080p: FullHD (high quality)"
 msgstr "1080p: FullHD (alta calidad)"
 
 #. [components.DownloadVideo.480] - Mobile quality video
 #. defaultMessage is:
 #. 480p: SD (Mobile)
-#: i18n/components/DowloadVideo/DownloadVideo.json
+#: i18n/components/DownloadVideo/index.json
 msgid "480p: SD (Mobile)"
 msgstr "480p: SD (Móvil)"
+
+#. [plyr.controls.quality.badge.2160] - Label associatied to the 2160px quality badge
+#. defaultMessage is:
+#. 4K
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "4K"
+msgstr ""
 
 #. [components.DownloadVideo.720] - Normal quality video
 #. defaultMessage is:
 #. 720p: HD (standard)
-#: i18n/components/DowloadVideo/DownloadVideo.json
+#: i18n/components/DownloadVideo/index.json
 msgid "720p: HD (standard)"
 msgstr "720p: HD (estándar)"
+
+#. [plyr.pluging.ad] - When Ad plugin is used, a countdown is display and this label is used to indicated the remaining time before viewing the video. Eg: Ad - 0:08
+#. defaultMessage is:
+#. Ad
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Ad"
+msgstr ""
 
 #. [components.TimedTextCreationForm.addTrackLabel] - Label for the form that lets the instructor add a new timed text track.
 #. defaultMessage is:
 #. Add a language
-#: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
+#: i18n/components/TimedTextCreationForm/index.json
 msgid "Add a language"
 msgstr "Añadir un idioma"
+
+#. [plyr.controls.loop.all] - When loop is activated, loop over all the video
+#. defaultMessage is:
+#. All
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "All"
+msgstr ""
 
 #. [component.DashboardVideoPaneDownloadOption.allowDownload]
 #. defaultMessage is:
 #. Allow video download
-#: i18n/components/DashboardVideoPaneDownloadOption/DashboardVideoPaneDownloadOption.json
+#: i18n/components/DashboardVideoPaneDownloadOption/index.json
 msgid "Allow video download"
 msgstr "Permitir descarga de vídeos"
 
 #. [components.UploadForm.linkToDashboard] - Text for the link to the dashboard in the upload form.
 #. defaultMessage is:
 #. Back to dashboard
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Back to dashboard"
 msgstr "Volver al panel de control"
+
+#. [plyr.controls.progress.buffered] - Used to indicate the % of buffered video
+#. defaultMessage is:
+#. Buffered
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Buffered"
+msgstr ""
+
+#. [plyr.ui.settings.captions] - Label used in the setting menu to access captions choices
+#. defaultMessage is:
+#. Captions
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Captions"
+msgstr ""
+
+#. [components.DashboardDocument.form.label.title] - Label informing the user they can change the document title.
+#. defaultMessage is:
+#. Change document title
+#: i18n/components/DashboardDocument/index.json
+msgid "Change document title"
+msgstr ""
 
 #. [components.Transcripts.transcriptSelect] - Placeholder for the transcript select box
 #. defaultMessage is:
 #. Choose a language
-#: i18n/components/Transcripts/Transcripts.json
+#: i18n/components/Transcripts/index.json
 msgid "Choose a language"
 msgstr "Elegir un idioma"
 
 #. [components.DashboardTimedTextPane.closedCaptions] - Title for the closed captions management in the dashboard.
 #. defaultMessage is:
 #. Closed captions
-#: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
+#: i18n/components/DashboardTimedTextPane/index.json
 msgid "Closed captions"
 msgstr "Subtítulos"
 
 #. [components.UploadForm.title-videos] - Title for the video upload form
 #. defaultMessage is:
 #. Create a new video
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Create a new video"
 msgstr "Crear un nuevo vídeo"
+
+#. [plyr.controls.currentTime] - Indicates the current time in the video.
+#. defaultMessage is:
+#. Current time
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Current time"
+msgstr ""
 
 #. [components.Dashboard.title] - Title for the dashboard, where the user can see the status of the video/audio/timed text upload
 #.       & processing, and will be able to manage them.
 #. defaultMessage is:
 #. Dashboard
-#: i18n/components/Dashboard/Dashboard.json
+#: i18n/components/Dashboard/index.json
 msgid "Dashboard"
 msgstr "Panel de control"
 
 #. [components.TimedTextListItem.delete] - Link text to delete a subtitle/transcript/captions item.
 #. defaultMessage is:
 #. Delete
-#: i18n/components/TimedTextListItem/TimedTextListItem.json
+#: i18n/components/TimedTextListItem/index.json
 msgid "Delete"
 msgstr "Eliminar"
 
+#. [plyr.controls.disableCaptions] - Button to disable captions
+#. defaultMessage is:
+#. Disable captions
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Disable captions"
+msgstr ""
+
+#. [plyr.controls.captions.menu.disabled] - label used in the captions menu list to select the disabled option and then disable captions if selected
+#. defaultMessage is:
+#. Disabled
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Disabled"
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneButtons.documents.btnPlay] - Dashboard button to display the existing document, if there is one.
+#. defaultMessage is:
+#. Display
+#: i18n/components/DashboardPaneButtons/index.json
+msgid "Display"
+msgstr ""
+
+#. [components.DashboardDocument.title] - Document upload status.
+#. defaultMessage is:
+#. Document status
+#: i18n/components/DashboardDocument/index.json
+msgid "Document status"
+msgstr ""
+
+#. [plyr.controls.download] - Download button
+#. defaultMessage is:
+#. Download
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Download"
+msgstr ""
+
 #. [components.DownloadVideo.downloadVideo] - Text to download the video
 #. defaultMessage is:
-#. Download this video:
-#: i18n/components/DowloadVideo/DownloadVideo.json
-msgid "Download this video:"
-msgstr "Descargar este vídeo:"
+#. Download this video: 
+#: i18n/components/DownloadVideo/index.json
+msgid "Download this video: "
+msgstr ""
+
+#. [plyr.ui.display.duration] - Display the total video duration
+#. defaultMessage is:
+#. Duration
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Duration"
+msgstr ""
+
+#. [plyr.controls.enableCaptions] - Button to enable captions
+#. defaultMessage is:
+#. Enable captions
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Enable captions"
+msgstr ""
+
+#. [plyr.controls.loop.end] - When loop is activated, this the time where the loop should end at
+#. defaultMessage is:
+#. End
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "End"
+msgstr ""
+
+#. [plyr.controls.enterFullscreen] - Button to activate the fullscreen mode
+#. defaultMessage is:
+#. Enter fullscreen
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Enter fullscreen"
+msgstr ""
 
 #. [components.UploadStatusPicker.ERROR] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Error
-#: i18n/components/UploadStatusPicker/UploadStatusPicker.json
+#: i18n/components/UploadStatusPicker/index.json
 msgid "Error"
 msgstr "Error"
+
+#. [plyr.controls.exitFullscreen] - Button to exit fullscreen mode
+#. defaultMessage is:
+#. Exit fullscreen
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Exit fullscreen"
+msgstr ""
 
 #. [components.ErrorComponent.policy.title] - Helpful text for the upload permission error page
 #. defaultMessage is:
 #. Failed to authenticate your permission to upload
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "Failed to authenticate your permission to upload"
 msgstr "Error al autenticar su permiso para subir vídeos"
 
 #. [component.DashboardVideoPaneDownloadOption.updateVideoFail] - Failed to update download permission on your video.
 #. defaultMessage is:
 #. Failed to update your video. Please try again later.
-#: i18n/components/DashboardVideoPaneDownloadOption/DashboardVideoPaneDownloadOption.json
+#: i18n/components/DashboardVideoPaneDownloadOption/index.json
 msgid "Failed to update your video. Please try again later."
 msgstr "Error al actualizar el vídeo. Por favor, inténtelo de nuevo más tarde."
 
 #. [components.ErrorComponent.upload.title] - Title for the video upload error page
 #. defaultMessage is:
 #. Failed to upload your video file
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "Failed to upload your video file"
 msgstr "Error al subir el archivo de vídeo"
+
+#. [plyr.controls.forward] - Video control forward button
+#. defaultMessage is:
+#. Forward {seektime}s
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Forward {seektime}s"
+msgstr ""
+
+#. [plyr.ui.menuBack] - When a setting menu is open, this label is added to the button responsible to go back to the previous menu
+#. defaultMessage is:
+#. Go back to previous menu
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Go back to previous menu"
+msgstr ""
 
 #. [components.InstructorView.btnDashboard] - Text for the button in the instructor view that allows the instructor to go to the dashboard.
 #. defaultMessage is:
 #. Go to Dashboard
-#: i18n/components/InstructorView/InstructorView.json
+#: i18n/components/InstructorView/index.json
 msgid "Go to Dashboard"
 msgstr "Ir al panel de control"
+
+#. [plyr.controls.quality.badge.1440] - Label associatied to the 1440px quality badge
+#. defaultMessage is:
+#. HD
+#. [plyr.controls.quality.badge.1080] - Label associatied to the 1080px quality badge
+#. defaultMessage is:
+#. HD
+#. [plyr.controls.quality.badge.720] - Label associatied to the 720px quality badge
+#. defaultMessage is:
+#. HD
+#: i18n/Player/i18n/plyrTranslation.json
+#: i18n/Player/i18n/plyrTranslation.json
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "HD"
+msgstr ""
 
 #. [components.Transcripts.hideTranscript] - Text to hide a displayed transcript
 #. defaultMessage is:
 #. Hide transcript
-#: i18n/components/Transcripts/Transcripts.json
+#: i18n/components/Transcripts/index.json
 msgid "Hide transcript"
 msgstr "Ocultar transcripción"
+
+#. [components.DashboardDocument.form.label.error] - Error message to warn the user that a title update failed and ask them to try again later.
+#. defaultMessage is:
+#. Impossible to update the title. Try again later.
+#: i18n/components/DashboardDocument/index.json
+msgid "Impossible to update the title. Try again later."
+msgstr ""
 
 #. [components.InstructorView.title] - Title for the Instructor View. Describes the area appearing right above, which is a preview
 #.       of what the student will see there.
 #. defaultMessage is:
 #. Instructor Preview 👆
-#: i18n/components/InstructorView/InstructorView.json
+#: i18n/components/InstructorView/index.json
 msgid "Instructor Preview 👆"
 msgstr "Vista previa del instructor"
+
+#. [plyr.controls.loop] - Loop is commented in Plyr's code, it is a feature allowing users to play in loop a video section
+#. defaultMessage is:
+#. Loop
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Loop"
+msgstr ""
 
 #. [components.UploadStatusPicker.PENDING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Missing
-#: i18n/components/UploadStatusPicker/UploadStatusPicker.json
+#: i18n/components/UploadStatusPicker/index.json
 msgid "Missing"
 msgstr "Desaparecido"
+
+#. [plyr.controls.mute] - Mute button
+#. defaultMessage is:
+#. Mute
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Mute"
+msgstr ""
+
+#. [plyr.ui.setting.speed.normal] - Value used in the speed setting, corresponding to a 1x speed
+#. defaultMessage is:
+#. Normal
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Normal"
+msgstr ""
+
+#. [plyr.controls.pause] - Video control pause button
+#. defaultMessage is:
+#. Pause
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Pause"
+msgstr ""
+
+#. [plyr.controls.play] - Video control play button
+#. defaultMessage is:
+#. Play
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Play"
+msgstr ""
+
+#. [plyr.controls.progress.played] - Used to indicate the % of video played
+#. defaultMessage is:
+#. Played
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Played"
+msgstr ""
+
+#. [plyr.ui.frameTitle] - Title set to an iframe when the video is loaded in an iframe as parent element
+#. defaultMessage is:
+#. Player for {title}
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Player for {title}"
+msgstr ""
 
 #. [components.UploadStatusPicker.PROCESSING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Processing
-#: i18n/components/UploadStatusPicker/UploadStatusPicker.json
+#: i18n/components/UploadStatusPicker/index.json
 msgid "Processing"
 msgstr "Procesando"
+
+#. [plyr.ui.setting.quality] - Label used in the menu to open quality setting
+#. defaultMessage is:
+#. Quality
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Quality"
+msgstr ""
 
 #. [components.UploadStatusPicker.READY] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Ready
-#: i18n/components/UploadStatusPicker/UploadStatusPicker.json
+#: i18n/components/UploadStatusPicker/index.json
 msgid "Ready"
 msgstr "Listo"
 
 #. [components.TimedTextListItem.replace] - Link text to replace a subtitle/transcript/captions item with a new file (for the same language).
 #. defaultMessage is:
 #. Replace
-#: i18n/components/TimedTextListItem/TimedTextListItem.json
+#: i18n/components/TimedTextListItem/index.json
 msgid "Replace"
 msgstr "Reemplazar"
 
-#. [components.Dashboard.DashboardVideoPaneButtons.btnReplaceVideo] - Dashboard button to upload a video to replace the existing one, when there *is* an existing video.
+#. [components.Dashboard.DashboardPaneButtons.documents.btnReplace] - Dashboard button to upload a document to replace the existing one, when there *is* an existing document.
+#. defaultMessage is:
+#. Replace the document
+#: i18n/components/DashboardPaneButtons/index.json
+msgid "Replace the document"
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneButtons.videos.btnReplace] - Dashboard button to upload a video to replace the existing one, when there *is* an existing video.
 #. defaultMessage is:
 #. Replace the video
-#: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
+#: i18n/components/DashboardPaneButtons/index.json
 msgid "Replace the video"
 msgstr "Reemplazar este vídeo"
 
 #. [components.dashboardThumbnail.replaceThumbnailButton]
 #. defaultMessage is:
 #. Replace this thumbnail
-#: i18n/components/DashboardThumbnail/DashboardThumbnail.json
+#: i18n/components/DashboardThumbnail/index.json
 msgid "Replace this thumbnail"
 msgstr "Reemplazar esta miniatura"
+
+#. [plyr.controls.loop.reset] - When loop is activated, button to reset the loop configuration
+#. defaultMessage is:
+#. Reset
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Reset"
+msgstr ""
+
+#. [plyr.controls.restart] - Video control restart button
+#. defaultMessage is:
+#. Restart
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Restart"
+msgstr ""
+
+#. [plyr.controls.rewind] - Video control rewind button
+#. defaultMessage is:
+#. Rewind {seektime}s
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Rewind {seektime}s"
+msgstr ""
+
+#. [plyr.controls.quality.badge.576] - Label associatied to the 576px quality badge
+#. defaultMessage is:
+#. SD
+#. [plyr.controls.quality.badge.480] - Label associatied to the 480px quality badge
+#. defaultMessage is:
+#. SD
+#: i18n/Player/i18n/plyrTranslation.json
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "SD"
+msgstr ""
+
+#. [plyr.controls.seek] - Video control seek slider
+#. defaultMessage is:
+#. Seek
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Seek"
+msgstr ""
 
 #. [components.UploadForm.dropzoneButtonPick] - File upload dropzone: button to choose a file to upload,
 #.       has the drag text next to it (components.UploadForm.dropzoneDragText)
@@ -200,59 +457,94 @@ msgstr "Reemplazar esta miniatura"
 msgid "Select a file to upload"
 msgstr "Eligir un archivo para subir"
 
+#. [plyr.ui.settings] - Label used to indicate settings menu
+#. defaultMessage is:
+#. Settings
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Settings"
+msgstr ""
+
 #. [components.Transcripts.transcriptLabel] - Text indicated to choose an available transcript language
 #. defaultMessage is:
 #. Show a transcript
-#: i18n/components/Transcripts/Transcripts.json
+#: i18n/components/Transcripts/index.json
 msgid "Show a transcript"
 msgstr "Eligir una transcripción"
+
+#. [plyr.ui.setting.speed] - Label used in the menu to open speed setting
+#. defaultMessage is:
+#. Speed
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Speed"
+msgstr ""
+
+#. [plyr.controls.loop.start] - When loop is activated, this the time where the loop should start at
+#. defaultMessage is:
+#. Start
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Start"
+msgstr ""
 
 #. [components.DashboardTimedTextPane.subtitles] - Title for the subtitles management in the dashboard.
 #. defaultMessage is:
 #. Subtitles
-#: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
+#: i18n/components/DashboardTimedTextPane/index.json
 msgid "Subtitles"
 msgstr "Subtítulos"
 
 #. [components.ErrorComponent.notFound.title] - Title for the 404 Not Found error page
 #. defaultMessage is:
 #. The video you are looking for could not be found
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "The video you are looking for could not be found"
 msgstr "El vídeo que está buscando no ha sido encontrado"
 
-#. [components.Dashboard.DashboardVideoPaneHelptext.helptextPending] - Dashboard helptext for the case when there is no existing video nor anything in progress.
+#. [components.Dashboard.DashboardPaneHelptext.documents.helptextPending] - Dashboard helptext for the case when there is no existing document nor anything in progress.
+#. defaultMessage is:
+#. There is currently no document to display.
+#: i18n/components/DashboardPaneHelptext/index.json
+msgid "There is currently no document to display."
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneHelptext.videos.helptextPending] - Dashboard helptext for the case when there is no existing video nor anything in progress.
 #. defaultMessage is:
 #. There is currently no video to display.
-#: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
+#: i18n/components/DashboardPaneHelptext/index.json
 msgid "There is currently no video to display."
 msgstr "Actualmente no hay ningún vídeo para mostrar."
 
 #. [components.DashboardThumbnail.error] - Generic error message when we fail to create a thumbnail.
 #. defaultMessage is:
 #. There was an error during thumbnail creation.
-#: i18n/components/DashboardThumbnail/DashboardThumbnail.json
+#: i18n/components/DashboardThumbnail/index.json
 msgid "There was an error during thumbnail creation."
 msgstr "Se produjo un error durante la creación de miniaturas."
 
 #. [components.TimedTextCreationForm.error] - Generic error message when we fail to create a subtitle/transcript/caption track.
 #. defaultMessage is:
 #. There was an error during track creation.
-#: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
+#: i18n/components/TimedTextCreationForm/index.json
 msgid "There was an error during track creation."
 msgstr "Se produjo un error durante la creación de pistas."
 
 #. [components.ErrorComponent.lti.title] - Title for the LTI error page
 #. defaultMessage is:
 #. There was an error loading this video
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "There was an error loading this video"
 msgstr "Se produjo un error al cargar este video"
 
-#. [components.Dashboard.DashboardVideoPaneHelptext.helptextError] - Dashboard helptext for when the video failed to upload or get processed.
+#. [components.Dashboard.DashboardPaneHelptext.documents.helptextError] - Dashboard helptext for when the document failed to upload or get processed.
+#. defaultMessage is:
+#. There was an error with your document. Retry or upload another one.
+#: i18n/components/DashboardPaneHelptext/index.json
+msgid "There was an error with your document. Retry or upload another one."
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneHelptext.videos.helptextError] - Dashboard helptext for when the video failed to upload or get processed.
 #. defaultMessage is:
 #. There was an error with your video. Retry or upload another one.
-#: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
+#: i18n/components/DashboardPaneHelptext/index.json
 msgid "There was an error with your video. Retry or upload another one."
 msgstr "Se produjo un error con el vídeo. Vuelva a intentarlo o suba otro."
 
@@ -260,7 +552,7 @@ msgstr "Se produjo un error con el vídeo. Vuelva a intentarlo o suba otro."
 #. defaultMessage is:
 #. This video does not exist or has not been published yet.
 #.       If you are an instructor, please make sure you are properly authenticated.
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "This video does not exist or has not been published yet.\n"
 "      If you are an instructor, please make sure you are properly authenticated."
 msgstr "Este video no existe o no ha sido publicado todavía.\n"
@@ -268,113 +560,152 @@ msgstr "Este video no existe o no ha sido publicado todavía.\n"
 
 #. [components.InstructorView.disabledDashboard] - Text explaining that the ivdeo is in read_only mode and the dashboard is not available
 #. defaultMessage is:
-#. This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video.
-#: i18n/components/InstructorView/InstructorView.json
-msgid "This video is imported from another playlist. You can go to the original playlist to directly modify this video, or delete it from the current playlist and replace it by a new video."
+#. This video is read-only because it belongs to another course: {context_id}
+#: i18n/components/InstructorView/index.json
+msgid "This video is read-only because it belongs to another course: {context_id}"
+msgstr ""
+
+#. [components.DashboardDocument.form.success] - message display when the title is successfully updated
+#. defaultMessage is:
+#. Title successfully updated
+#: i18n/components/DashboardDocument/index.json
+msgid "Title successfully updated"
 msgstr ""
 
 #. [components.DashboardTimedTextPane.transcripts] - Title for the transcripts management in the dashboard.
 #. defaultMessage is:
 #. Transcripts
-#: i18n/components/DashboardTimedTextPane/DashboardTimedTextPane.json
+#: i18n/components/DashboardTimedTextPane/index.json
 msgid "Transcripts"
 msgstr "Transcripción"
+
+#. [plyr.controls.unmute] - Unmute button
+#. defaultMessage is:
+#. Unmute
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Unmute"
+msgstr ""
 
 #. [components.TimedTextListItem.upload] - Link text to upload a missing subtitle/transcript/captions item file.
 #. defaultMessage is:
 #. Upload
-#: i18n/components/TimedTextListItem/TimedTextListItem.json
+#: i18n/components/TimedTextListItem/index.json
 msgid "Upload"
 msgstr "Subir"
+
+#. [components.Dashboard.DashboardPaneButtons.documents.btnUploadFirst] - Dashboard button to upload a document, when there is no existing document.
+#. defaultMessage is:
+#. Upload a document
+#: i18n/components/DashboardPaneButtons/index.json
+msgid "Upload a document"
+msgstr ""
 
 #. [components.UploadForm.title-timedtexttracks-cc] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new closed captions file
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Upload a new closed captions file"
 msgstr "Subir un nuevo archivo de subtítulos"
+
+#. [components.UploadForm.title-document] - Title for the document upload form
+#. defaultMessage is:
+#. Upload a new document
+#: i18n/components/UploadForm/index.json
+msgid "Upload a new document"
+msgstr ""
 
 #. [components.UploadForm.title-timedtexttracks-st] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new subtitles file
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Upload a new subtitles file"
 msgstr "Subir un nuevo archivo de subtítulos"
 
 #. [components.UploadForm.title-thumbnail] - Title for the thumbnail upload form
 #. defaultMessage is:
 #. Upload a new thumbnail
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Upload a new thumbnail"
 msgstr "Subir una nueva miniatura"
 
 #. [components.UploadForm.title-timedtexttracks-ts] - Title for the timed text file upload form
 #. defaultMessage is:
 #. Upload a new transcript file
-#: i18n/components/UploadForm/UploadForm.json
+#: i18n/components/UploadForm/index.json
 msgid "Upload a new transcript file"
 msgstr "Subir un nuevo archivo de transcripción"
 
-#. [components.Dashboard.DashboardVideoPaneButtons.btnUploadFirstVideo] - Dashboard button to upload a video, when there is no existing video.
+#. [components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst] - Dashboard button to upload a video, when there is no existing video.
 #. defaultMessage is:
 #. Upload a video
-#: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
+#: i18n/components/DashboardPaneButtons/index.json
 msgid "Upload a video"
 msgstr "Subir un vídeo"
 
-#. [components.Dashboard.DashboardVideoPaneHelptext.helptextUploading] - Dashboard helptext to warn user not to navigate away during video upload.
+#. [components.Dashboard.DashboardPaneHelptext.videos.helptextUploading] - Dashboard helptext to warn user not to navigate away during video upload.
 #. defaultMessage is:
 #. Upload in progress... Please do not close or reload this page.
-#: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
+#. [components.Dashboard.DashboardPaneHelptext.documents.helptextUploading] - Dashboard helptext to warn user not to navigate away during document upload.
+#. defaultMessage is:
+#. Upload in progress... Please do not close or reload this page.
+#: i18n/components/DashboardPaneHelptext/index.json
+#: i18n/components/DashboardPaneHelptext/index.json
 msgid "Upload in progress... Please do not close or reload this page."
 msgstr "Carga en curso... Por favor no cierre o vuelva a cargar esta página."
 
 #. [components.DashboardVideoPaneProgress.progressLabel] - Accessibility message for the upload progress bar.
 #. defaultMessage is:
 #. Upload progress
-#: i18n/components/DashboardObjectProgress/DashboardObjectProgress.json
+#: i18n/components/DashboardObjectProgress/index.json
 msgid "Upload progress"
 msgstr "Progreso de carga"
 
 #. [components.TimedTextCreationForm.addTrackBtn] - Text for the button in the dashboard to go upload a new timed text file.
 #. defaultMessage is:
 #. Upload the file
-#: i18n/components/TimedTextCreationForm/TimedTextCreationForm.json
+#: i18n/components/TimedTextCreationForm/index.json
 msgid "Upload the file"
 msgstr "Subir el archivo"
 
 #. [components.UploadStatusPicker.UPLOADING] - Status information for a video/audio/timed text track
 #. defaultMessage is:
 #. Uploading
-#: i18n/components/UploadStatusPicker/UploadStatusPicker.json
+#: i18n/components/UploadStatusPicker/index.json
 msgid "Uploading"
 msgstr "Subiendo"
 
 #. [components.DashboardVideoPane.title] - Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).
 #. defaultMessage is:
 #. Video status
-#: i18n/components/DashboardVideoPane/DashboardVideoPane.json
+#: i18n/components/DashboardVideoPane/index.json
 msgid "Video status"
 msgstr "Estado del vídeo"
 
 #. [components.DashboardVideoPane.thumbnailAlt] - Accessibility text for the video thumbnail in the Dashboard.
 #. defaultMessage is:
 #. Video thumbnail preview image.
-#: i18n/components/DashboardThumbnailDisplay/DashboardThumbnailDisplay.json
+#: i18n/components/DashboardThumbnailDisplay/index.json
 msgid "Video thumbnail preview image."
 msgstr "Imagen previa de la miniatura del vídeo."
 
-#. [components.Dashboard.DashboardVideoPaneButtons.btnPlayVideo] - Dashboard button to play the existing video, if there is one.
+#. [plyr.controls.volume] - Indicates the zone where the volume is managed in the plyr interface
+#. defaultMessage is:
+#. Volume
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "Volume"
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneButtons.videos.btnPlay] - Dashboard button to play the existing video, if there is one.
 #. defaultMessage is:
 #. Watch
-#: i18n/components/DashboardVideoPaneButtons/DashboardVideoPaneButtons.json
+#: i18n/components/DashboardPaneButtons/index.json
 msgid "Watch"
 msgstr "Ver"
 
 #. [components.ErrorComponent.policy.text] - Title for the upload permission error page
 #. defaultMessage is:
 #. We could not make sure you are allowed to upload a video file. Please check your settings and/or try again.
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "We could not make sure you are allowed to upload a video file. Please check your settings and/or try again."
 msgstr "No pudimos asegurarnos que usted está autorizado a subir un archivo de vídeo. Por favor, compruebe su configuración y/o vuelva a intentarlo."
 
@@ -382,7 +713,7 @@ msgstr "No pudimos asegurarnos que usted está autorizado a subir un archivo de 
 #. defaultMessage is:
 #. We could not validate your access to this video. Please contact your instructor.
 #.       If you are the instructor, please check your settings.
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "We could not validate your access to this video. Please contact your instructor.\n"
 "      If you are the instructor, please check your settings."
 msgstr "No hemos podido validar su acceso a este vídeo. Por favor, póngase en contacto con su instructor.\n"
@@ -391,30 +722,51 @@ msgstr "No hemos podido validar su acceso a este vídeo. Por favor, póngase en 
 #. [components.ErrorComponent.upload.text] - Helpful text for the Upload error page
 #. defaultMessage is:
 #. You can try again later. You may want to check your Internet connection quality.
-#: i18n/components/ErrorComponent/ErrorComponent.json
+#: i18n/components/ErrorComponent/index.json
 msgid "You can try again later. You may want to check your Internet connection quality."
 msgstr "Puede intentarlo más tarde. Comprobe la calidad de su conexión a internet."
+
+#. [components.Dashboard.DashboardPaneHelptext.documents.helptextProcessing] - Dashboard helptext to warn users document is processing.
+#. defaultMessage is:
+#. Your document is currently processing. This may take some minutes.
+#: i18n/components/DashboardPaneHelptext/index.json
+msgid "Your document is currently processing. This may take some minutes."
+msgstr ""
+
+#. [components.Dashboard.DashboardPaneHelptext.documents.helptextReady] - Dashboard helptext for ready-to-display documents.
+#. defaultMessage is:
+#. Your document is ready to display.
+#: i18n/components/DashboardPaneHelptext/index.json
+msgid "Your document is ready to display."
+msgstr ""
 
 #. [components.DashboardThumbnail.helptextProcessing] - Thumbnail help text informing that the thumbnail is processing and will be available soon.
 #. defaultMessage is:
 #. Your thumbnail is currently processing. This may take several minutes. It will appear here once done.
-#: i18n/components/DashboardThumbnail/DashboardThumbnail.json
+#: i18n/components/DashboardThumbnail/index.json
 msgid "Your thumbnail is currently processing. This may take several minutes. It will appear here once done."
 msgstr "Su miniatura está siendo procesada. Esto puede tardar varios minutos. Aparecerá aquí una vez este proceso terminado."
 
-#. [components.Dashboard.DashboardVideoPaneHelptext.helptextProcessing] - Dashboard helptext to warn users not to wait for video processing in front of this page.
+#. [components.Dashboard.DashboardPaneHelptext.videos.helptextProcessing] - Dashboard helptext to warn users not to wait for video processing in front of this page.
 #. defaultMessage is:
 #. Your video is currently processing. This may take up to an hour. Please come back later.
-#: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
+#: i18n/components/DashboardPaneHelptext/index.json
 msgid "Your video is currently processing. This may take up to an hour. Please come back later."
 msgstr "El vídeo está siendo procesado. Esto puede tomar hasta una hora. Por favor, vuelva más tarde."
 
-#. [components.Dashboard.DashboardVideoPaneHelptext.helptextReady] - Dashboard helptext for ready-to-play videos.
+#. [components.Dashboard.DashboardPaneHelptext.videos.helptextReady] - Dashboard helptext for ready-to-play videos.
 #. defaultMessage is:
 #. Your video is ready to play.
-#: i18n/components/DashboardVideoPaneHelptext/DashboardVideoPaneHelptext.json
+#: i18n/components/DashboardPaneHelptext/index.json
 msgid "Your video is ready to play."
 msgstr "El vídeo está listo para ser reproducido."
+
+#. [plyr.controls.captions.menu.enabled] - label used in the captions menu list if captions are enabled and the selected caption has no language nor label
+#. defaultMessage is:
+#. enabled
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "enabled"
+msgstr ""
 
 #. [components.UploadForm.dropzoneDragText] - File upload dropzone: helptext on the dropzone,
 #.       goes along with the button (components.UploadForm.dropzoneButtonPick)
@@ -423,4 +775,11 @@ msgstr "El vídeo está listo para ser reproducido."
 #: i18n/components/UploadField/DropzonePlaceholder.json
 msgid "or drop it here"
 msgstr "o arrastrarlo aquí"
+
+#. [plyr.controls.rangeFill.seek] - Video seek progress bar used as polyfill for webkit
+#. defaultMessage is:
+#. {currentTime} of {duration}
+#: i18n/Player/i18n/plyrTranslation.json
+msgid "{currentTime} of {duration}"
+msgstr ""
 
