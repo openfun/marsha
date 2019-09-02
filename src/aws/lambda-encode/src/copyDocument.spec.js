@@ -36,7 +36,6 @@ describe('lambda-encore/src/copyDocument', () => {
       Body: 'input timed text',
       Bucket: 'destination bucket',
       Key: 'foo/document/bar',
-      ContentType: 'binary/octet-stream',
     })
   });
 })
