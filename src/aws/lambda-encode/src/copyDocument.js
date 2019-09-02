@@ -18,7 +18,6 @@ module.exports = async (objectKey, sourceBucket) => {
       Body: sourceDocument.Body,
       Bucket: destinationBucket,
       Key: `${parts[0]}/document/${parts[3]}`,
-      ContentType: 'binary/octet-stream',
     })
     .promise();
 };
