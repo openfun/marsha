@@ -1,6 +1,7 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
 import re
+from urllib.parse import quote_plus
 import uuid
 
 from django.conf import settings
@@ -477,11 +478,15 @@ class DocumentSerializer(serializers.ModelSerializer):
         if obj.uploaded_on is None:
             return None
 
-        url = "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}".format(
+        url = (
+            "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}"
+            "?response-content-disposition={content_disposition:s}"
+        ).format(
             protocol=settings.AWS_S3_URL_PROTOCOL,
             cloudfront=settings.CLOUDFRONT_DOMAIN,
             pk=obj.pk,
             stamp=time_utils.to_timestamp(obj.uploaded_on),
+            content_disposition=quote_plus("attachment; filename=" + obj.title),
         )
 
         # Sign the document urls only if the functionality is activated
