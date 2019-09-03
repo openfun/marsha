@@ -66,7 +66,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     trusted_signers  = ["${var.cloudfront_trusted_signer_id}"]
 
     forwarded_values {
-      query_string = false
+      query_string = true
       headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 
       cookies {
