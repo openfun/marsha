@@ -109,6 +109,7 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            title="foo.mp4",
         )
         timed_text_track = TimedTextTrackFactory(
             video=video,
@@ -139,7 +140,10 @@ class VideoAPITest(TestCase):
             for rate in [144, 240, 480, 720, 1080]
         }
 
-        mp4_template = "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
+        mp4_template = (
+            "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
+            "?response-content-disposition=attachment%3B+filename%3Dfoo.mp4"
+        )
         mp4_dict = {
             str(rate): mp4_template.format(video.pk, rate)
             for rate in [144, 240, 480, 720, 1080]
@@ -299,6 +303,7 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            title="foo.mp4",
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -327,12 +332,13 @@ class VideoAPITest(TestCase):
             content["urls"]["mp4"]["144"],
             (
                 "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/"
-                "1533686400_144.mp4?Expires=1533693600&Signature=Sr8lng3~F7DC~omoNl-~brtKo0W7oZj8"
-                "gSMmcRjMGPvWJst5lGvLjt5IYKGArcgh7VCHrdDa35Vg5NKqnUisFGfAujeMqktbYuwTgx1UDIq0479M"
-                "mQlkZU3UxS8CDgMQyPzjJjy7-BmlYRkqDBXBvCIE3oHE~y2kqjYp1vse5JTJse8SFwYNuyUxU3Dx9cvG"
-                "nlPxql~yZmwz17wAJ9bYK3riIvfyy3wcgbdEm2KoopPAE22moEyBW6CD8m3MNNXj0mx-DkTWBkRolwZW"
-                "voVZULcqlG2OO7wD4eJq8qFYs5~woBwuHx7HD96WT464XrN6mhjL3tO~zcNfOrLtS3oVVQ__&"
-                "Key-Pair-Id=cloudfront-access-key-id"
+                "1533686400_144.mp4?response-content-disposition=attachment%3B+filename%3Dfoo.mp4"
+                "&Expires=1533693600&Signature=LfURd~okaPKHURF-4ho18MoAH8-gkW~340uMsVfvZuVNSnRhc~"
+                "qbltgq1I53XzZZIkh-hdVEUPbuwRY28TXWdfNOc22glDGVUAaqLcWF6WkT5RxcSfti4f35ull~bs1VXV"
+                "rsoKb5Ii8GikbDmQdeCI9y-qkxYURibksL15V7NAf4XaGF8BB8orpjoxTeU4krOkY86dvJZQON~jnfbC"
+                "LDD1oylbCGhDMJdjLG7x0LhW5AgaFeqanRFFJuYXyeE1AcSkM0Hi8TEkXd035kjJH7wn7BlkAy4T8gB2"
+                "rEE5JIL1zq8I7H2J76dutEC7y4qZOcu-KGb2AKLATAld1Xap8PUg__"
+                "&Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
 

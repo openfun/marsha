@@ -341,10 +341,14 @@ class VideoSerializer(serializers.ModelSerializer):
         )
         for resolution in settings.VIDEO_RESOLUTIONS:
             # MP4
-            mp4_url = "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4".format(
+            mp4_url = (
+                "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4"
+                "?response-content-disposition={content_disposition:s}"
+            ).format(
                 base=base,
                 stamp=time_utils.to_timestamp(obj.uploaded_on),
                 resolution=resolution,
+                content_disposition=quote_plus("attachment; filename=" + obj.title),
             )
 
             # Thumbnails
