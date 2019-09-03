@@ -66,7 +66,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const pollThumbnail = async () => {
     try {
       const response = await fetch(
-        `${API_ENDPOINT}/thumbnail/${thumbnail!.id}/`,
+        `${API_ENDPOINT}/${modelName.THUMBNAILS}/${thumbnail!.id}/`,
         {
           headers: {
             Authorization: `Bearer ${appData.jwt}`,
