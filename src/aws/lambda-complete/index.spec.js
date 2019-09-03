@@ -3,16 +3,12 @@
 const mockUpdateState = jest.fn();
 jest.doMock('./src/updateState', () => mockUpdateState);
 
-const mockUpdateVideosContentType = jest.fn();
-jest.doMock('./src/updateVideosContentType', () => mockUpdateVideosContentType);
-
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log').mockReset();
 
 const lambda = require('./index.js').handler;
 
 describe('lambda', () => {
-  beforeEach(mockUpdateVideosContentType.mockReset);
   it('calls updateState with "ready" when the task was "COMPLETE" and triggers the callback', async () => {
     const callback = jest.fn();
     const event = {
@@ -39,7 +35,6 @@ describe('lambda', () => {
     await lambda(event, null, callback);
 
     expect(mockUpdateState).toHaveBeenCalledWith('some object key', 'ready');
-    expect(mockUpdateVideosContentType).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -57,7 +52,6 @@ describe('lambda', () => {
     await lambda(event, null, callback);
 
     expect(mockUpdateState).toHaveBeenCalledWith('failed object key', 'error');
-    expect(mockUpdateVideosContentType).not.toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -82,7 +76,6 @@ describe('lambda', () => {
       'object key that will fail to update',
       'ready',
     );
-    expect(mockUpdateVideosContentType).not.toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith('Failed to updateState!');
   });
 });
