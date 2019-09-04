@@ -339,12 +339,20 @@ class VideoSerializer(serializers.ModelSerializer):
         date_less_than = timezone.now() + timedelta(
             seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
         )
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        filename = "{playlist_title:s}_{stamp:s}.mp4".format(
+            playlist_title=obj.playlist.title, stamp=stamp
+        )
         for resolution in settings.VIDEO_RESOLUTIONS:
             # MP4
-            mp4_url = "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4".format(
+            mp4_url = (
+                "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4"
+                "?response-content-disposition={content_disposition:s}"
+            ).format(
                 base=base,
-                stamp=time_utils.to_timestamp(obj.uploaded_on),
+                stamp=stamp,
                 resolution=resolution,
+                content_disposition=quote_plus("attachment; filename=" + filename),
             )
 
             # Thumbnails

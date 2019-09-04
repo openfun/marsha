@@ -109,6 +109,8 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            position=1,
+            playlist__title="foo",
         )
         timed_text_track = TimedTextTrackFactory(
             video=video,
@@ -139,7 +141,10 @@ class VideoAPITest(TestCase):
             for rate in [144, 240, 480, 720, 1080]
         }
 
-        mp4_template = "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
+        mp4_template = (
+            "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
+            "?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.mp4"
+        )
         mp4_dict = {
             str(rate): mp4_template.format(video.pk, rate)
             for rate in [144, 240, 480, 720, 1080]
@@ -299,6 +304,8 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            position=1,
+            playlist__title="foo",
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -326,13 +333,14 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content["urls"]["mp4"]["144"],
             (
-                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/"
-                "1533686400_144.mp4?Expires=1533693600&Signature=Sr8lng3~F7DC~omoNl-~brtKo0W7oZj8"
-                "gSMmcRjMGPvWJst5lGvLjt5IYKGArcgh7VCHrdDa35Vg5NKqnUisFGfAujeMqktbYuwTgx1UDIq0479M"
-                "mQlkZU3UxS8CDgMQyPzjJjy7-BmlYRkqDBXBvCIE3oHE~y2kqjYp1vse5JTJse8SFwYNuyUxU3Dx9cvG"
-                "nlPxql~yZmwz17wAJ9bYK3riIvfyy3wcgbdEm2KoopPAE22moEyBW6CD8m3MNNXj0mx-DkTWBkRolwZW"
-                "voVZULcqlG2OO7wD4eJq8qFYs5~woBwuHx7HD96WT464XrN6mhjL3tO~zcNfOrLtS3oVVQ__&"
-                "Key-Pair-Id=cloudfront-access-key-id"
+                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/1533686400_1"
+                "44.mp4?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.mp4&"
+                "Expires=1533693600&Signature=RmAPJfO~TI6aTyL9NJbEwi2Hyn80i3GdbLHdjm78wR~J3HLgVqa"
+                "Zdw6U88iMQ9aMsF3vYLsxJ8FH1l8BySSc~UGOPgyT-1qpSnyYmLXsINNHgw8WUKUvxy5syZO8E7sD70-"
+                "D~QuxvCAT1UBacZuoRCB~ITZqZlpEKcm7D4UmM7mwQXACdOF5a~6XCISWUYGPRMInUMPXLCPFsEuflx-"
+                "QDB~Rxkwybl~vEi31M2FQuU8ab1fwjC~Jy2RLzmQBDJwzvPuJDTRItJEj137Ohcacf6lGJbAZi8Fu63A"
+                "6lfKXgqgT~lFdwN-LAoehi4IYomUial7Wh8TkMmLPOMXvf5PgEw__"
+                "&Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
 
