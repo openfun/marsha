@@ -106,6 +106,15 @@ class Document(BaseFile):
 
     RESOURCE_NAME = "documents"
 
+    extension = models.CharField(
+        default=None,
+        help_text=_("file extension"),
+        max_length=10,
+        null=True,
+        verbose_name=_("extension"),
+        blank=True,
+    )
+
     class Meta:
         """Options for the ``Document`` model."""
 
