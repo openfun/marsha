@@ -12,12 +12,19 @@ import { appData } from '../../appData';
 export const initiateUpload = async (
   objectType: modelName,
   objectId: UploadableObject['id'],
+  filename: string,
+  mimetype: string,
 ) => {
   const response = await fetch(
     `${API_ENDPOINT}/${objectType}/${objectId}/initiate-upload/`,
     {
+      body: JSON.stringify({
+        filename,
+        mimetype,
+      }),
       headers: {
         Authorization: `Bearer ${appData.jwt}`,
+        'Content-Type': 'application/json',
       },
       method: 'POST',
     },
