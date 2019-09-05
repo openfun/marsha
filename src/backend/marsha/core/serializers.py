@@ -20,11 +20,14 @@ from .utils import cloudfront_utils, time_utils
 UUID_REGEX = (
     "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
 )
-# This regex matches keys in AWS for videos or timed text tracks
+# This regex matches keys in AWS for videos, timed text tracks, thumbail and document
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
-    "^{uuid:s}/(?P<model_name>video|thumbnail|timedtexttrack|document)/(?P<object_id>"
-    "{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?$"
+    r"^{uuid:s}/(?P<model_name>video|thumbnail|timedtexttrack|document)/(?P<object_id>"
+    r"{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?"
+    # The extension is captured and is optional. If present and the resource has an extension
+    # attribute we will save it in database.
+    r"(\.(?P<extension>[^.\\/:*?&\"<>|\r\n]+))?$"
 ).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS)
 KEY_REGEX = re.compile(KEY_PATTERN)
 
@@ -404,6 +407,13 @@ class UpdateStateSerializer(serializers.Serializer):
         return elements
 
 
+class InitiateUploadSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the initiate-upload API endoint."""
+
+    filename = serializers.CharField()
+    mimetype = serializers.CharField(allow_blank=True)
+
+
 class VerbSerializer(serializers.Serializer):
     """Validate the verb in a xAPI statement."""
 
@@ -486,15 +496,22 @@ class DocumentSerializer(serializers.ModelSerializer):
         if obj.uploaded_on is None:
             return None
 
+        extension = "." + obj.extension if obj.extension else ""
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+
+        filename = "{playlist_title:s}_{stamp:s}{extension:s}".format(
+            playlist_title=obj.playlist.title, stamp=stamp, extension=extension
+        )
         url = (
-            "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}"
+            "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}{extension:s}"
             "?response-content-disposition={content_disposition:s}"
         ).format(
             protocol=settings.AWS_S3_URL_PROTOCOL,
             cloudfront=settings.CLOUDFRONT_DOMAIN,
             pk=obj.pk,
-            stamp=time_utils.to_timestamp(obj.uploaded_on),
-            content_disposition=quote_plus("attachment; filename=" + obj.title),
+            stamp=stamp,
+            content_disposition=quote_plus("attachment; filename=" + filename),
+            extension=extension,
         )
 
         # Sign the document urls only if the functionality is activated

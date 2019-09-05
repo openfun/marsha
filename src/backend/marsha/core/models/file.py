@@ -107,12 +107,12 @@ class Document(BaseFile):
     RESOURCE_NAME = "documents"
 
     extension = models.CharField(
+        blank=True,
         default=None,
         help_text=_("file extension"),
         max_length=10,
         null=True,
         verbose_name=_("extension"),
-        blank=True,
     )
 
     class Meta:
@@ -129,7 +129,7 @@ class Document(BaseFile):
             )
         ]
 
-    def get_source_s3_key(self, stamp=None):
+    def get_source_s3_key(self, stamp=None, extension=None):
         """Compute the S3 key in the source bucket (ID of the file + version stamp).
 
         Parameters
@@ -140,6 +140,10 @@ class Document(BaseFile):
             policy for this prospective version of the document, so that the client can upload the
             file to S3 and the confirmation lambda can set the `uploaded_on` field to this value
             only after file upload is successful.
+        extension: Type[string]
+            The extension used by the uploaded file. This extension is added at the end of the key
+            to keep a record of the extension. We will use it in the update-state endpoint to
+            record it in the database.
 
         Returns
         -------
@@ -149,4 +153,15 @@ class Document(BaseFile):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{pk!s}/document/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
+
+        # We don't want to deal with None value so we set it with an empty string
+        extension = extension or ""
+
+        # We check if the extension starts with a leading dot or not. If it's not the case we add
+        # it at the beginning of the string
+        if extension and extension[:1] != ".":
+            extension = "." + extension
+
+        return "{pk!s}/document/{pk!s}/{stamp:s}{extension:s}".format(
+            pk=self.pk, stamp=stamp, extension=extension
+        )
