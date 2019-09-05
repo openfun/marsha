@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 
 import pytz
 
-from ..factories import TimedTextTrackFactory, VideoFactory
+from ..factories import DocumentFactory, TimedTextTrackFactory, VideoFactory
 
 
 class UpdateStateAPITest(TestCase):
@@ -145,3 +145,47 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertIsNone(video.uploaded_on)
         self.assertEqual(video.upload_state, "pending")
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_document_extension(self):
+        """Try to update the document extension property."""
+        document = DocumentFactory(
+            id="663be0f9-38b0-4fd9-a5bb-f123d9b09ac6", extension="doc"
+        )
+
+        data = {
+            "key": "{doc!s}/document/{doc!s}/1533686400.pdf".format(doc=document.pk),
+            "state": "ready",
+            "signature": "f6cd0e57f5dd34c4794cb4549a4494933c44c4c0af8effe8c92f74f57e193d5d",
+        }
+
+        response = self.client.post("/api/update-state", data)
+
+        document.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(document.upload_state, "ready")
+        self.assertEqual(document.extension, "pdf")
+        self.assertEqual(document.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_document_without_extension(self):
+        """Without extension the `extension` field should have None value."""
+        document = DocumentFactory(
+            id="663be0f9-38b0-4fd9-a5bb-f123d9b09ac6", extension="doc"
+        )
+
+        data = {
+            "key": "{doc!s}/document/{doc!s}/1533686400".format(doc=document.pk),
+            "state": "ready",
+            "signature": "8034de111ed5164383903ee211fc27ee215f99c0444bf9b8e0e9598e1b29c0ec",
+        }
+
+        response = self.client.post("/api/update-state", data)
+
+        document.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(document.upload_state, "ready")
+        self.assertEqual(document.extension, None)
+        self.assertEqual(document.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))

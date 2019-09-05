@@ -113,7 +113,30 @@ class UpdateStateSerializerTest(TestCase):
         self.assertEqual(
             serializer.get_key_elements(),
             {
+                "extension": None,
                 "model_name": "video",
+                "object_id": str(object_id),
+                "stamp": "1533686400",
+                "uploaded_on": datetime(2018, 8, 8, tzinfo=pytz.utc),
+            },
+        )
+
+    def test_serializers_update_state_key_elements_with_extension(self):
+        """Serializer should extract extension from the key parameter."""
+        resource_id, object_id = uuid4(), uuid4()
+        valid_data = {
+            "key": "{!s}/document/{!s}/1533686400.pdf".format(resource_id, object_id),
+            "state": "ready",
+            "signature": "123abc",
+        }
+        serializer = UpdateStateSerializer(data=valid_data)
+
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(
+            serializer.get_key_elements(),
+            {
+                "extension": "pdf",
+                "model_name": "document",
                 "object_id": str(object_id),
                 "stamp": "1533686400",
                 "uploaded_on": datetime(2018, 8, 8, tzinfo=pytz.utc),

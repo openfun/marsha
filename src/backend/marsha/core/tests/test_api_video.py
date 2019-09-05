@@ -109,7 +109,6 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
-            position=1,
             playlist__title="foo",
         )
         timed_text_track = TimedTextTrackFactory(
@@ -304,7 +303,6 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
-            position=1,
             playlist__title="foo",
         )
         jwt_token = AccessToken()
