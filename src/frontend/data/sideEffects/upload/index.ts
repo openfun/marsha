@@ -26,7 +26,12 @@ export const upload = (
 
   let policy: AWSPolicy;
   try {
-    policy = await initiateUpload(objectType, object.id);
+    policy = await initiateUpload(
+      objectType,
+      object.id,
+      file!.name,
+      file!.type,
+    );
   } catch (error) {
     return setStatus('policy_error');
   }
