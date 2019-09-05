@@ -58,7 +58,8 @@ class DocumentAPITest(TestCase):
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
-            title="foo.pdf",
+            extension="pdf",
+            playlist__title="foo",
         )
 
         jwt_token = AccessToken()
@@ -81,8 +82,8 @@ class DocumentAPITest(TestCase):
                 "title": document.title,
                 "upload_state": "ready",
                 "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
-                "document/1533686400"
-                "?response-content-disposition=attachment%3B+filename%3Dfoo.pdf",
+                "document/1533686400.pdf"
+                "?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.pdf",
                 "show_download": True,
             },
         )
@@ -325,7 +326,139 @@ class DocumentAPITest(TestCase):
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.post(
                 "/api/documents/{!s}/initiate-upload/".format(document.id),
+                json.dumps({"filename": "foo.pdf", "mimetype": "application/pdf"}),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        policy = content.pop("policy")
+        self.assertEqual(
+            json.loads(b64decode(policy)),
+            {
+                "expiration": "2018-08-09T00:00:00.000Z",
+                "conditions": [
+                    {"acl": "private"},
+                    {"bucket": "test-marsha-source"},
+                    {
+                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
+                    },
+                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
+                    {"x-amz-date": "20180808T000000Z"},
+                    {
+                        "key": (
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/"
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        )
+                    },
+                    ["content-length-range", 0, 1073741824],
+                ],
+            },
+        )
+        self.assertEqual(
+            content,
+            {
+                "acl": "private",
+                "bucket": "test-marsha-source",
+                "stamp": "1533686400",
+                "key": "{id!s}/document/{id!s}/1533686400.pdf".format(id=document.pk),
+                "max_file_size": 1073741824,
+                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
+                "x_amz_algorithm": "AWS4-HMAC-SHA256",
+                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                "x_amz_date": "20180808T000000Z",
+                "x_amz_expires": 86400,
+                "x_amz_signature": (
+                    "f5b19f6167f076a92f77bcb30fbd5474bdd749093ba7095eaa8e820830859227"
+                ),
+            },
+        )
+
+    def test_api_document_initiate_upload_file_without_extension(self):
+        """An extension should be guessed fromt the mimetype."""
+        document = DocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["read_only"] = False
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.post(
+                "/api/documents/{!s}/initiate-upload/".format(document.id),
+                json.dumps({"filename": "foo", "mimetype": "application/pdf"}),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        policy = content.pop("policy")
+        self.assertEqual(
+            json.loads(b64decode(policy)),
+            {
+                "expiration": "2018-08-09T00:00:00.000Z",
+                "conditions": [
+                    {"acl": "private"},
+                    {"bucket": "test-marsha-source"},
+                    {
+                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
+                    },
+                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
+                    {"x-amz-date": "20180808T000000Z"},
+                    {
+                        "key": (
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/"
+                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        )
+                    },
+                    ["content-length-range", 0, 1073741824],
+                ],
+            },
+        )
+        self.assertEqual(
+            content,
+            {
+                "acl": "private",
+                "bucket": "test-marsha-source",
+                "stamp": "1533686400",
+                "key": "{id!s}/document/{id!s}/1533686400.pdf".format(id=document.pk),
+                "max_file_size": 1073741824,
+                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
+                "x_amz_algorithm": "AWS4-HMAC-SHA256",
+                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                "x_amz_date": "20180808T000000Z",
+                "x_amz_expires": 86400,
+                "x_amz_signature": (
+                    "f5b19f6167f076a92f77bcb30fbd5474bdd749093ba7095eaa8e820830859227"
+                ),
+            },
+        )
+
+    def test_api_document_initiate_upload_file_without_mimetype(self):
+        """With no mimetype the extension should be ignored."""
+        document = DocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["read_only"] = False
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.post(
+                "/api/documents/{!s}/initiate-upload/".format(document.id),
+                json.dumps({"filename": "foo", "mimetype": ""}),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                content_type="application/json",
             )
 
         self.assertEqual(response.status_code, 200)

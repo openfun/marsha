@@ -2,6 +2,8 @@
 import hashlib
 import hmac
 import logging
+from mimetypes import guess_extension
+from os.path import splitext
 
 from django.apps import apps
 from django.conf import settings
@@ -73,14 +75,16 @@ def update_state(request):
     # Update the object targeted by the "object_id" and "resource_id"
     model = apps.get_model(app_label="core", model_name=key_elements["model_name"])
 
+    update_parameters = {}
+    if serializer.validated_data["state"] == defaults.READY:
+        update_parameters["uploaded_on"] = key_elements["uploaded_on"]
+        if hasattr(model, "extension"):
+            update_parameters["extension"] = key_elements.get("extension")
+
     updated = model.objects.filter(id=key_elements["object_id"]).update(
         **{
             # Only update `uploaded_on` if the upload was actually successful
-            **(
-                {"uploaded_on": key_elements["uploaded_on"]}
-                if serializer.validated_data["state"] == defaults.READY
-                else {}
-            ),
+            **update_parameters,
             "upload_state": serializer.validated_data["state"],
         }
     )
@@ -184,11 +188,20 @@ class DocumentViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        serializer = serializers.InitiateUploadSerializer(data=request.data)
+
+        if serializer.is_valid() is not True:
+            return Response(serializer.errors, status=400)
+
         now = timezone.now()
         stamp = to_timestamp(now)
 
+        extension = splitext(serializer.validated_data["filename"])[
+            1
+        ] or guess_extension(serializer.validated_data["mimetype"])
+
         document = self.get_object()
-        key = document.get_source_s3_key(stamp=stamp)
+        key = document.get_source_s3_key(stamp=stamp, extension=extension)
 
         policy = get_s3_upload_policy_signature(
             now,
