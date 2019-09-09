@@ -8,6 +8,8 @@ jest.mock('../../data/appData', () => ({
   appData: {
     document: {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '42',
       is_ready_to_show: true,
       show_download: true,
@@ -22,6 +24,8 @@ describe('<DocumentPlayer />', () => {
   it('renders', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '42',
       is_ready_to_show: true,
       show_download: true,
@@ -40,6 +44,8 @@ describe('<DocumentPlayer />', () => {
   it('defaults to the document from props', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '43',
       is_ready_to_show: true,
       show_download: true,

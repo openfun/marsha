@@ -22,8 +22,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - pluralize thumbnail url
 - Simplify template to frontend communication by using JSON instead of multiple data-attributes
 - Rename all is_ready_to_* model properties to is_ready_to_show
-- Change filename when a user downloads a resource. It now uses the playlist title
-  and upload timestamp and ended with the appropriate extension.
+- Change filename when a user downloads a resource.
+  For video it has the following pattern: {playlist title}_{uploaded timestamp}.mp4
+  For document it has the following pattern: {playlist_title}_{document_title}.{document_extension}
 - Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
 - Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
   (a critical feature for us)
