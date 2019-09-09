@@ -20,6 +20,11 @@ import { UploadStatusPicker } from '../UploadStatusPicker';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 const messages = defineMessages({
+  filename: {
+    defaultMessage: 'Filename',
+    description: 'Document filename.',
+    id: 'components.DashboardDocument.filename',
+  },
   title: {
     defaultMessage: 'Document status',
     description: 'Document upload status.',
@@ -152,6 +157,12 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
                 objectType={modelName.DOCUMENTS}
                 state={document.upload_state}
               />
+              <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
+                <DashboardDocumentInternalHeading>
+                  {intl.formatMessage(messages.filename)}
+                </DashboardDocumentInternalHeading>
+                <div>{document.filename}</div>
+              </Box>
             </Box>
             <Box basis={'1/2'} margin={'small'}>
               <DocumentPlayer document={document} />

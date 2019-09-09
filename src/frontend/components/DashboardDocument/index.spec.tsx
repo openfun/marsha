@@ -25,6 +25,8 @@ describe('<DashboardDocument />', () => {
   it('starts polling when the document is in pending, uploading and processing', async () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '44',
       is_ready_to_show: true,
       show_download: true,
@@ -93,6 +95,8 @@ describe('<DashboardDocument />', () => {
   it('shows the upload button in pending state', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '45',
       is_ready_to_show: true,
       show_download: true,
@@ -113,6 +117,8 @@ describe('<DashboardDocument />', () => {
   it('shows the replace button in error state', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '45',
       is_ready_to_show: true,
       show_download: true,
@@ -134,10 +140,12 @@ describe('<DashboardDocument />', () => {
   it('renders in ready state', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '45',
       is_ready_to_show: true,
       show_download: true,
-      title: 'foo.pdf',
+      title: 'foo',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/45',
     };
@@ -158,18 +166,24 @@ describe('<DashboardDocument />', () => {
     // document state
     getByText(content => content.startsWith('Ready'));
 
+    // document filename
+    getByText('Filename');
+    getByText('bar_foo.pdf');
+
     // Buttons
     getByText('Replace the document');
     getByText('Display');
 
     // show the player
-    getByText('foo.pdf');
+    getByText('foo');
     expect(container.getElementsByClassName('icon-file-text2')).toHaveLength(1);
   });
 
   it('successfully update document title', async () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '46',
       is_ready_to_show: true,
       show_download: true,
@@ -222,6 +236,8 @@ describe('<DashboardDocument />', () => {
   it('fails to update document title', async () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '47',
       is_ready_to_show: true,
       show_download: true,
@@ -266,6 +282,8 @@ describe('<DashboardDocument />', () => {
   it('shows the progress bar when the document is uploading', () => {
     const document = {
       description: '',
+      extension: 'pdf',
+      filename: 'bar_foo.pdf',
       id: '45',
       is_ready_to_show: true,
       show_download: true,
