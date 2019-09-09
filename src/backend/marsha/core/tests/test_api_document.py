@@ -78,6 +78,8 @@ class DocumentAPITest(TestCase):
             content,
             {
                 "active_stamp": "1533686400",
+                "extension": "pdf",
+                "filename": "foo_bar-baz.pdf",
                 "id": str(document.id),
                 "is_ready_to_show": True,
                 "title": document.title,
