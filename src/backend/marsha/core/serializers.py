@@ -500,8 +500,10 @@ class DocumentSerializer(serializers.ModelSerializer):
         extension = "." + obj.extension if obj.extension else ""
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
-        filename = "{playlist_title:s}_{stamp:s}{extension:s}".format(
-            playlist_title=obj.playlist.title, stamp=stamp, extension=extension
+        filename = "{playlist_title:s}_{title:s}{extension:s}".format(
+            playlist_title=slugify(obj.playlist.title),
+            title=slugify(obj.title),
+            extension=extension,
         )
         url = (
             "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}{extension:s}"
