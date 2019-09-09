@@ -60,6 +60,7 @@ class DocumentAPITest(TestCase):
             upload_state="ready",
             extension="pdf",
             playlist__title="foo",
+            title="bar baz"
         )
 
         jwt_token = AccessToken()
@@ -83,7 +84,7 @@ class DocumentAPITest(TestCase):
                 "upload_state": "ready",
                 "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
                 "document/1533686400.pdf"
-                "?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.pdf",
+                "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
                 "show_download": True,
             },
         )
