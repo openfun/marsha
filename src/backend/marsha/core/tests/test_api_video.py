@@ -109,7 +109,7 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
-            playlist__title="foo",
+            playlist__title="foo bar",
         )
         timed_text_track = TimedTextTrackFactory(
             video=video,
@@ -142,7 +142,7 @@ class VideoAPITest(TestCase):
 
         mp4_template = (
             "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
-            "?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.mp4"
+            "?response-content-disposition=attachment%3B+filename%3Dfoo-bar_1533686400.mp4"
         )
         mp4_dict = {
             str(rate): mp4_template.format(video.pk, rate)

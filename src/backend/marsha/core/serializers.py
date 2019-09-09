@@ -7,6 +7,7 @@ import uuid
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.utils.text import slugify
 
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
@@ -344,7 +345,7 @@ class VideoSerializer(serializers.ModelSerializer):
         )
         stamp = time_utils.to_timestamp(obj.uploaded_on)
         filename = "{playlist_title:s}_{stamp:s}.mp4".format(
-            playlist_title=obj.playlist.title, stamp=stamp
+            playlist_title=slugify(obj.playlist.title), stamp=stamp
         )
         for resolution in settings.VIDEO_RESOLUTIONS:
             # MP4
