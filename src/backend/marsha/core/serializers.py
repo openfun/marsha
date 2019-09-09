@@ -459,6 +459,8 @@ class DocumentSerializer(serializers.ModelSerializer):
         model = Document
         fields = (
             "active_stamp",
+            "extension",
+            "filename",
             "id",
             "is_ready_to_show",
             "title",
@@ -467,8 +469,10 @@ class DocumentSerializer(serializers.ModelSerializer):
             "show_download",
         )
         read_only_fields = (
-            "id",
             "active_stamp",
+            "extension",
+            "filename",
+            "id",
             "is_ready_to_show",
             "upload_state",
             "url",
@@ -477,6 +481,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
     )
+    filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
 
@@ -535,14 +540,6 @@ class DocumentSerializer(serializers.ModelSerializer):
         if obj.uploaded_on is None:
             return None
 
-        extension = "." + obj.extension if obj.extension else ""
-        stamp = time_utils.to_timestamp(obj.uploaded_on)
-
-        filename = "{playlist_title:s}_{title:s}{extension:s}".format(
-            playlist_title=slugify(obj.playlist.title),
-            title=slugify(obj.title),
-            extension=extension,
-        )
         url = (
             "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}{extension:s}"
             "?response-content-disposition={content_disposition:s}"
