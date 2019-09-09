@@ -60,7 +60,7 @@ class DocumentAPITest(TestCase):
             upload_state="ready",
             extension="pdf",
             playlist__title="foo",
-            title="bar baz"
+            title="bar baz",
         )
 
         jwt_token = AccessToken()
@@ -261,6 +261,27 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["read_only"] = False
         data = {"title": "new title"}
+
+        response = self.client.put(
+            "/api/documents/{!s}/".format(document.id),
+            json.dumps(data),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        document.refresh_from_db()
+        self.assertEqual(document.title, "new title")
+
+    def test_api_document_update_title_with_extension(self):
+        """Serializer should remove the extension from the document title (if any)."""
+        document = DocumentFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["read_only"] = False
+        data = {"title": "new title.pdf"}
 
         response = self.client.put(
             "/api/documents/{!s}/".format(document.id),
