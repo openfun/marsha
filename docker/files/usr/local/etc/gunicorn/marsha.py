@@ -9,6 +9,9 @@ python_path = "/app"
 graceful_timeout = 90
 timeout = 90
 workers = 3
+worker_class = "gthread"
+worker_tmp_dir = "/dev/shm"
+threads = 6
 
 # Logging
 # Using '-' for the access log file makes gunicorn log accesses to stdout
