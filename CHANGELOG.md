@@ -25,6 +25,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Change filename when a user downloads a resource. It now uses the playlist title
   and upload timestamp and ended with the appropriate extension.
 - Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
+- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
+  (a critical feature for us)
 
 ### Removed
 
