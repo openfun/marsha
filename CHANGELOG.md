@@ -24,6 +24,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rename all is_ready_to_* model properties to is_ready_to_show
 - Change filename when a user downloads a resource. It now uses the playlist title
   and upload timestamp and ended with the appropriate extension.
+- Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
 
 ### Removed
 
