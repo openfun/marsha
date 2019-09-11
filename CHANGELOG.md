@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
+
 ## [2.10.1] - 2019-08-13
 
 ### Fixed
