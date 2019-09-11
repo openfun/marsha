@@ -539,10 +539,10 @@
   dependencies:
     core-js "^2.5.7"
 
-"@openfun/subsrt@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@openfun/subsrt/-/subsrt-1.0.1.tgz#b735038ef887ffd185a19dd83766f0dc6c58a77b"
-  integrity sha512-zcfdY/q5QGJJkcsCuxIYX/z+8C0ySJfJK5yY2i3oMwylrTZhs80pgdlQnvt09urskb6B54vI6H5sJUitIAAlYA==
+"@openfun/subsrt@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@openfun/subsrt/-/subsrt-1.0.2.tgz#ef3bfc3db0ded11db8b0ecad5d370dfda9dce34a"
+  integrity sha512-sJKcj1KYC2MOR94vbGclas/C+Tut9GX9vkc80YavvJn2hcGnXSZbI+bW5wqA6P4bm3UsS4wgHF7u4dgTrA9sgQ==
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"
