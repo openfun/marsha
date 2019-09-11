@@ -11,6 +11,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
+- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
+  (a critical feature for us)
 
 ## [2.10.1] - 2019-08-13
 
