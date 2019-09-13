@@ -1,4 +1,4 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { cleanup, fireEvent, render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -172,59 +172,65 @@ describe('<TimedTextListItem />', () => {
   });
 
   it('renders & polls the track until it is READY', async () => {
-    const track = {
-      active_stamp: 28271937429,
-      id: '1',
-      is_ready_to_show: false,
-      language: 'fr',
-      mode: timedTextMode.SUBTITLE,
-      title: 'foo',
-      upload_state: uploadState.PROCESSING,
-      url: 'https://example.com/timedtexttrack/1',
-      video: '142',
-    };
-    fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track));
+    for (const state of [
+      uploadState.PENDING,
+      uploadState.PROCESSING,
+      uploadState.UPLOADING,
+    ]) {
+      const track = {
+        active_stamp: 28271937429,
+        id: '1',
+        is_ready_to_show: false,
+        language: 'fr',
+        mode: timedTextMode.SUBTITLE,
+        title: 'foo',
+        upload_state: state,
+        url: 'https://example.com/timedtexttrack/1',
+        video: '142',
+      };
+      fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track));
 
-    const { getByText, queryByText, rerender } = render(
-      wrapInIntlProvider(wrapInRouter(<TimedTextListItem track={track} />)),
-    );
+      const { getByText, queryByText, rerender } = render(
+        wrapInIntlProvider(wrapInRouter(<TimedTextListItem track={track} />)),
+      );
 
-    expect(
-      fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
-    ).not.toBeTruthy();
+      expect(
+        fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
+      ).not.toBeTruthy();
 
-    // first backend call
-    jest.advanceTimersByTime(1000 * 10 + 200);
-    await wait();
+      // first backend call
+      jest.advanceTimersByTime(1000 * 10 + 200);
+      await wait();
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
-    expect(
-      queryByText(content => content.startsWith('Ready')),
-    ).not.toBeTruthy();
-    getByText(content => content.startsWith('Processing'));
+      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
+      expect(
+        queryByText(content => content.startsWith('Ready')),
+      ).not.toBeTruthy();
 
-    const updatedTrack = {
-      ...track,
-      is_ready_to_show: true,
-      upload_state: uploadState.READY,
-    };
-    fetchMock.restore();
-    fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(updatedTrack));
+      const updatedTrack = {
+        ...track,
+        upload_state: uploadState.READY,
+      };
+      fetchMock.restore();
+      fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(updatedTrack));
 
-    // Second backend call
-    jest.advanceTimersByTime(1000 * 30 + 200);
-    await wait();
-    rerender(
-      wrapInIntlProvider(
-        wrapInRouter(<TimedTextListItem track={updatedTrack} />),
-      ),
-    );
+      // Second backend call
+      jest.advanceTimersByTime(1000 * 30 + 200);
+      await wait();
+      rerender(
+        wrapInIntlProvider(
+          wrapInRouter(<TimedTextListItem track={updatedTrack} />),
+        ),
+      );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
-    expect(
-      queryByText(content => content.startsWith('Processing')),
-    ).not.toBeTruthy();
-    getByText(content => content.startsWith('Ready'));
+      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
+      expect(
+        queryByText(content => content.startsWith('Processing')),
+      ).not.toBeTruthy();
+      getByText(content => content.startsWith('Ready'));
+      cleanup();
+      fetchMock.restore();
+    }
   });
 
   describe('delete link', () => {
