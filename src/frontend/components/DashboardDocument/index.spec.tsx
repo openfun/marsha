@@ -1,4 +1,4 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import React from 'react';
@@ -177,106 +177,6 @@ describe('<DashboardDocument />', () => {
     // show the player
     getByText('foo');
     expect(container.getElementsByClassName('icon-file-text2')).toHaveLength(1);
-  });
-
-  it('successfully update document title', async () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '46',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/45',
-    };
-
-    fetchMock.mock(
-      '/api/documents/46/',
-      JSON.stringify({
-        ...document,
-        title: 'Bar.pdf',
-      }),
-      { method: 'PUT' },
-    );
-
-    // wrap the component in a grommet provider to have a valid theme.
-    // Without it, the FormField component fail to render because it is a composed
-    // component using property in the theme.
-    const { getByText, container } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <DashboardDocument document={document} />
-          </Grommet>,
-        ),
-      ),
-    );
-
-    getByText('Change document title');
-
-    // actual document title
-    getByText('foo.pdf');
-
-    const inputTitle = container.querySelector('#title');
-    fireEvent.change(inputTitle!, { target: { value: 'Bar.pdf' } });
-    fireEvent.click(getByText('Submit'));
-    await wait();
-
-    expect(fetchMock.called('/api/documents/46/', { method: 'PUT' })).toBe(
-      true,
-    );
-
-    // updated document title
-    getByText('Bar.pdf');
-    getByText('Title successfully updated');
-  });
-
-  it('fails to update document title', async () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '47',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/47',
-    };
-
-    fetchMock.mock('/api/documents/47/', 400, { method: 'PUT' });
-
-    // wrap the component in a grommet provider to have a valid theme.
-    // Without it, the FormField component fail to render because it is a composed
-    // component using property in the theme.
-    const { getByText, container } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <DashboardDocument document={document} />
-          </Grommet>,
-        ),
-      ),
-    );
-    getByText('Change document title');
-
-    // actual document title
-    getByText('foo.pdf');
-
-    const inputTitle = container.querySelector('#title');
-    fireEvent.change(inputTitle!, { target: { value: 'Bar.pdf' } });
-    fireEvent.click(getByText('Submit'));
-    await wait();
-
-    expect(fetchMock.called('/api/documents/47/', { method: 'PUT' })).toBe(
-      true,
-    );
-
-    // document title is still the same
-    getByText('foo.pdf');
-    getByText('Impossible to update the title. Try again later.');
   });
 
   it('shows the progress bar when the document is uploading', () => {
