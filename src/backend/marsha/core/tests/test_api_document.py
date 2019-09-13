@@ -39,7 +39,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/documents/{!s}/".format(document.id),
@@ -66,7 +66,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/documents/{!s}/".format(document.id),
@@ -98,7 +98,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.get(
             "/api/documents/{!s}/".format(document.id),
@@ -122,7 +122,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -136,7 +136,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -155,7 +155,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -169,7 +169,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -189,7 +189,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
             "/api/documents/{!s}/".format(document.id),
@@ -204,7 +204,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
             "/api/documents/{!s}/".format(document.id),
@@ -225,7 +225,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -243,7 +243,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -261,7 +261,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -282,7 +282,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "new title.pdf"}
 
         response = self.client.put(
@@ -311,7 +311,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.post(
             "/api/documents/{!s}/initiate-upload/".format(document.id),
@@ -326,7 +326,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
             "/api/documents/{!s}/initiate-upload/".format(document.id),
@@ -344,7 +344,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -409,7 +409,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -474,7 +474,7 @@ class DocumentAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(document.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
