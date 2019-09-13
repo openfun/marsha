@@ -6,5 +6,8 @@ export interface DecodedJwt {
   user_id: string;
   resource_id: string;
   locale: string;
-  read_only: boolean;
+  permissions: {
+    can_access_dashboard: boolean;
+    can_update: boolean;
+  };
 }

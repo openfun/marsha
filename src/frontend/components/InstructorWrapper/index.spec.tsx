@@ -14,18 +14,18 @@ jest.mock('../InstructorView/index', () => {
   };
 });
 
-let mockIsEditable: boolean;
+let mockCanUpdate: boolean;
 jest.mock('../../data/appData', () => ({
-  appData: {
-    get isEditable() {
-      return mockIsEditable;
+  getDecodedJwt: () => ({
+    permissions: {
+      can_update: mockCanUpdate,
     },
-  },
+  }),
 }));
 
 describe('<InstructorWrapper />', () => {
   it('wraps its children in an instructor view if the current user is an instructor', () => {
-    mockIsEditable = true;
+    mockCanUpdate = true;
     const { getByText, getByTitle } = render(
       <InstructorWrapper>
         <div title="some-child" />
@@ -37,7 +37,7 @@ describe('<InstructorWrapper />', () => {
   });
 
   it('just renders the children if the current user is not an instructor', () => {
-    mockIsEditable = false;
+    mockCanUpdate = false;
     const { getByTitle, queryByText } = render(
       <InstructorWrapper>
         <div title="some-child" />

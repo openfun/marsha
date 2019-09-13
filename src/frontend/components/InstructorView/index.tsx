@@ -53,9 +53,11 @@ interface InstructorViewProps {
 }
 
 export const InstructorView = ({ children }: InstructorViewProps) => {
-  const readOnly = getDecodedJwt().read_only;
-  const message = readOnly ? messages.disabledDashboard : messages.title;
-  const messagePlaceholder = readOnly
+  const canAccessDashboard = getDecodedJwt().permissions.can_access_dashboard;
+  const message = canAccessDashboard
+    ? messages.disabledDashboard
+    : messages.title;
+  const messagePlaceholder = canAccessDashboard
     ? { context_id: getDecodedJwt().context_id }
     : {};
   return (
@@ -65,7 +67,7 @@ export const InstructorView = ({ children }: InstructorViewProps) => {
       </PreviewWrapper>
       <InstructorControls>
         <FormattedMessage {...message} values={messagePlaceholder} />
-        {!readOnly && (
+        {!canAccessDashboard && (
           <BtnWithLink
             color={'brand'}
             label={<FormattedMessage {...messages.btnDashboard} />}

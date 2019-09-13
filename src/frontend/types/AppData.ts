@@ -11,7 +11,6 @@ export enum appState {
 export interface AppData {
   jwt?: string;
   state: appState;
-  isEditable: boolean;
   video?: Nullable<Video>;
   document?: Nullable<Document>;
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
