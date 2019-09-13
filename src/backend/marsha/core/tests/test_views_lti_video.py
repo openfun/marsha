@@ -59,7 +59,7 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -124,7 +124,7 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -241,7 +241,7 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -304,7 +304,7 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
@@ -409,7 +409,7 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
@@ -512,7 +512,7 @@ class DevelopmentViewsTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -566,7 +566,7 @@ class DevelopmentViewsTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -616,7 +616,7 @@ class DevelopmentViewsTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         video = Video.objects.get()
-        self.assertEqual(jwt_token.payload["video_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])

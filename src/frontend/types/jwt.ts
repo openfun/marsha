@@ -4,7 +4,7 @@ export interface DecodedJwt {
   roles: string[];
   session_id: string;
   user_id: string;
-  video_id: string;
+  resource_id: string;
   locale: string;
   read_only: boolean;
 }

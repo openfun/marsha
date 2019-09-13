@@ -46,10 +46,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     def serializer_class(self):
         """Return the serializer used by the view."""
 
-    @abstractmethod
-    def _enrich_jwt_token(self, token, resource):
-        """Enrich the base JWT Token with specific data from the targeted resource."""
-
     def get_context_data(self):
         """Build a context with data retrieved from the LTI launch request.
 
@@ -117,8 +113,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             except AttributeError:
                 pass
 
-            self._enrich_jwt_token(jwt_token, resource)
-
             app_data["jwt"] = str(jwt_token)
 
         app_data["resource"] = (
@@ -164,19 +158,12 @@ class VideoLTIView(BaseLTIView):
     model = Video
     serializer_class = VideoSerializer
 
-    def _enrich_jwt_token(self, token, resource):
-        """Enrich the base JWT Token with specific data from the targeted resource."""
-        token.payload.update({"video_id": str(resource.id)})
-
 
 class DocumentLTIView(BaseLTIView):
     """Document view called by an LTI launch request."""
 
     model = Document
     serializer_class = DocumentSerializer
-
-    def _enrich_jwt_token(self, token, resource):
-        pass
 
 
 class LTIDevelopmentView(TemplateView):
