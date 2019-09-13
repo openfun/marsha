@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Changed
 
+- Move all permission flags to a "permissions" object in the JWT token
 - Refactor the LTI view to be generic for all the resources we want to manage
 - Video model is a special File model
 - pluralize thumbnail url

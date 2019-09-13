@@ -56,7 +56,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.get(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -76,7 +76,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -105,7 +105,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.get(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -125,7 +125,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -163,7 +163,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -222,7 +222,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -251,7 +251,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -290,7 +290,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -306,7 +306,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.delete(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -324,7 +324,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video_token.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
             "/api/thumbnails/{!s}/".format(thumbnail.id),
@@ -365,7 +365,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time
@@ -434,7 +434,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
             "/api/thumbnails/{!s}/initiate-upload/".format(thumbnail.id),

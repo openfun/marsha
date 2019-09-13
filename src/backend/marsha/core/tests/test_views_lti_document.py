@@ -12,7 +12,7 @@ from django.test import TestCase
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..factories import ConsumerSiteLTIPassportFactory, DocumentFactory
+from ..factories import ConsumerSiteLTIPassportFactory, DocumentFactory, PlaylistFactory
 from ..lti import LTI
 
 
@@ -35,7 +35,7 @@ class DocumentViewTestCase(TestCase):
         data = {
             "resource_link_id": document.lti_id,
             "context_id": document.playlist.lti_id,
-            "roles": "instructor",
+            "roles": random.choice(["instructor", "administrator"]),
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
@@ -54,28 +54,47 @@ class DocumentViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
 
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
-        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_administrator(self, mock_get_consumer_site, mock_verify):
-        """Validate the format of the response returned by the view for an admin request."""
+    def test_document_view_instructor_other_playlist(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the response returned by the view for an instructor from another playlist."""
         passport = ConsumerSiteLTIPassportFactory()
         document = DocumentFactory(
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
+            playlist__is_portable_to_playlist=True,
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            upload_state="ready",
+        )
+        other_playlist = PlaylistFactory(
+            consumer_site=passport.consumer_site,
+            lti_id="course-v1:amd+litterature+00003",
         )
         data = {
             "resource_link_id": document.lti_id,
-            "context_id": document.playlist.lti_id,
-            "roles": "administrator",
+            "context_id": other_playlist.lti_id,
+            "roles": random.choice(["instructor", "administrator"]),
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
@@ -94,11 +113,22 @@ class DocumentViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": False},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "amd", "course_name": "litterature", "course_run": "00003"},
+        )
 
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
-        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -135,10 +165,22 @@ class DocumentViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
+
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
-        self.assertFalse(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -170,7 +212,6 @@ class DocumentViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
-        self.assertFalse(context.get("isEditable"))
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -196,7 +237,6 @@ class DocumentViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
-        print(content)
 
         match = re.search(
             '<div id="marsha-frontend-data" data-context="(.*)">', content
@@ -207,7 +247,6 @@ class DocumentViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
-        self.assertTrue(context.get("isEditable"))
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -233,4 +272,3 @@ class DocumentViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         self.assertEqual(context.get("state"), "error")
         self.assertIsNone(context.get("resource"))
-        self.assertFalse(context.get("isEditable"))
