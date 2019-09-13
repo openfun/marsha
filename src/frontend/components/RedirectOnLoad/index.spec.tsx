@@ -15,11 +15,11 @@ let mockState: any;
 let mockVideo: any;
 let mockDocument: any;
 let mockModelName: any;
-let mockIsEditable: boolean;
+let mockCanUpdate: boolean;
 jest.mock('../../data/appData', () => ({
   appData: {
     get isEditable() {
-      return mockIsEditable;
+      return mockCanUpdate;
     },
     get state() {
       return mockState;
@@ -34,6 +34,11 @@ jest.mock('../../data/appData', () => ({
       return mockModelName;
     },
   },
+  getDecodedJwt: () => ({
+    permissions: {
+      can_update: mockCanUpdate,
+    },
+  }),
 }));
 
 describe('<RedirectOnLoad />', () => {
@@ -63,7 +68,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     for (const state of Object.values(uploadState)) {
       mockVideo = { is_ready_to_show: true, upload_state: state };
@@ -85,7 +90,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     for (const state of Object.values(uploadState)) {
       mockDocument = { is_ready_to_show: true, upload_state: state };
@@ -107,7 +112,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
-    mockIsEditable = false;
+    mockCanUpdate = false;
 
     for (const state of Object.values(uploadState)) {
       mockVideo = { is_ready_to_show: true, upload_state: state };
@@ -129,7 +134,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
-    mockIsEditable = false;
+    mockCanUpdate = false;
 
     for (const state of Object.values(uploadState)) {
       mockDocument = { is_ready_to_show: true, upload_state: state };
@@ -156,7 +161,7 @@ describe('<RedirectOnLoad />', () => {
     };
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -181,7 +186,7 @@ describe('<RedirectOnLoad />', () => {
       is_ready_to_show: false,
       upload_state: uploadState.PENDING,
     };
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -205,7 +210,7 @@ describe('<RedirectOnLoad />', () => {
     };
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -229,7 +234,7 @@ describe('<RedirectOnLoad />', () => {
       is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
-    mockIsEditable = true;
+    mockCanUpdate = true;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -253,7 +258,7 @@ describe('<RedirectOnLoad />', () => {
     };
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
-    mockIsEditable = false;
+    mockCanUpdate = false;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -277,7 +282,7 @@ describe('<RedirectOnLoad />', () => {
     };
     mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
-    mockIsEditable = false;
+    mockCanUpdate = false;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -297,7 +302,7 @@ describe('<RedirectOnLoad />', () => {
     mockState = appState.SUCCESS;
     mockVideo = null;
     mockDocument = null;
-    mockIsEditable = false;
+    mockCanUpdate = false;
 
     for (const model of [modelName.VIDEOS, modelName.DOCUMENTS]) {
       mockModelName = model;

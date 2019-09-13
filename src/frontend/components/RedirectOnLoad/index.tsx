@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { appData } from '../../data/appData';
+import { appData, getDecodedJwt } from '../../data/appData';
 import { appState } from '../../types/AppData';
-import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -24,7 +23,7 @@ export const RedirectOnLoad = () => {
     return <Redirect push to={PLAYER_ROUTE(appData.modelName)} />;
   }
 
-  if (appData.isEditable) {
+  if (getDecodedJwt().permissions.can_update) {
     if (resource!.upload_state === uploadState.PENDING) {
       return (
         <Redirect
