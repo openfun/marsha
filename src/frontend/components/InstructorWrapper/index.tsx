@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { appData } from '../../data/appData';
+import { getDecodedJwt } from '../../data/appData';
 import { InstructorView } from '../InstructorView';
 
 interface InstructorWrapperProps {
@@ -8,7 +8,7 @@ interface InstructorWrapperProps {
 }
 
 export const InstructorWrapper = ({ children }: InstructorWrapperProps) => {
-  if (appData.isEditable) {
+  if (getDecodedJwt().permissions.can_update) {
     return <InstructorView>{children}</InstructorView>;
   } else {
     return <React.Fragment>{children}</React.Fragment>;

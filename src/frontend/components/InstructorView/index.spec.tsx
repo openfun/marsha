@@ -1,7 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { modelName } from '../../types/models';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { InstructorView } from './';
@@ -19,7 +18,9 @@ jest.mock('../../data/appData', () => ({
 describe('<InstructorView />', () => {
   it('renders the instructor controls', () => {
     mockDecodedJwt = {
-      read_only: false,
+      permissions: {
+        can_access_dasboard: false,
+      },
     };
 
     const { getByText } = render(
@@ -39,7 +40,9 @@ describe('<InstructorView />', () => {
   it('removes the button when read_only is true', () => {
     mockDecodedJwt = {
       context_id: 'foo+context_id',
-      read_only: true,
+      permissions: {
+        can_access_dashboard: true,
+      },
     };
 
     const { getByText, queryByText } = render(
