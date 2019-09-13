@@ -35,7 +35,7 @@ export async function pollForTrack<
       ? Document
       : never = await response.json();
 
-    if (isReadyToPlay(incomingTrack)) {
+    if (incomingTrack.is_ready_to_show) {
       await addResource(resourceName, incomingTrack);
       return requestStatus.SUCCESS;
     } else {
@@ -49,11 +49,3 @@ export async function pollForTrack<
     return requestStatus.FAILURE;
   }
 }
-
-const isReadyToPlay = (object: Document | Video | TimedText): boolean => {
-  if ((object as Document).is_ready_to_show !== undefined) {
-    return (object as Document).is_ready_to_show;
-  }
-
-  return (object as Video | TimedText).is_ready_to_show;
-};
