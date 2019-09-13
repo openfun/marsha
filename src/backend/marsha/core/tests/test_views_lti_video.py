@@ -64,7 +64,10 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
-        self.assertFalse(jwt_token.payload["read_only"])
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -87,7 +90,6 @@ class VideoViewTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -129,7 +131,10 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
-        self.assertFalse(jwt_token.payload["read_only"])
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -152,14 +157,15 @@ class VideoViewTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_video_read_only_video(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_video_read_other_playlist(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """A video from another portable playlist should have read_only attribute set to True."""
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
@@ -188,7 +194,10 @@ class VideoViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
-        self.assertTrue(jwt_token.payload["read_only"])
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": False},
+        )
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("resource"),
@@ -206,7 +215,6 @@ class VideoViewTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -246,7 +254,10 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
-        self.assertTrue(jwt_token.payload["read_only"])
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
@@ -269,7 +280,6 @@ class VideoViewTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertFalse(context.get("isEditable"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -308,11 +318,14 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
-        self.assertFalse(context.get("isEditable"))
         self.assertEqual(context.get("modelName"), "videos")
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
@@ -347,7 +360,6 @@ class VideoViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNone(context.get("resource"))
-        self.assertFalse(context.get("isEditable"))
         self.assertEqual(context.get("modelName"), "videos")
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
@@ -413,8 +425,11 @@ class VideoViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
 
     @override_settings(STATICFILES_AWS_ENABLED=False)
     @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
@@ -517,6 +532,10 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -538,7 +557,6 @@ class DevelopmentViewsTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertFalse(context.get("isEditable"))
 
     @override_settings(DEBUG=True)
     @override_settings(BYPASS_LTI_VERIFICATION=True)
@@ -556,7 +574,6 @@ class DevelopmentViewsTestCase(TestCase):
         }
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
-        print(response)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
@@ -571,6 +588,10 @@ class DevelopmentViewsTestCase(TestCase):
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
         self.assertDictEqual(
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
@@ -592,7 +613,6 @@ class DevelopmentViewsTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
 
     @override_settings(DEBUG=True)
     @override_settings(BYPASS_LTI_VERIFICATION=True)
@@ -643,7 +663,6 @@ class DevelopmentViewsTestCase(TestCase):
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
-        self.assertTrue(context.get("isEditable"))
         # The consumer site was created with a name and a domain name
         ConsumerSite.objects.get(name="example.com", domain="example.com")
 

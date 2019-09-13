@@ -5,12 +5,11 @@ from rest_framework_simplejwt.models import TokenUser
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 
 
-class BaseResourcePermission(permissions.IsAdminUser):
+class BaseResourcePermission(permissions.BasePermission):
     """Base permission class for JWT Tokens related to a resource object.
 
-    These permissions build on the `IsAdminUser` class but grants additional specific accesses
-    to users authenticated with a JWT token built from a resource ie related to a TokenUser as
-    defined in `rest_framework_simplejwt`.
+    These permissions grants access to users authenticated with a JWT token built from a
+    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
 
     """
 
@@ -37,11 +36,12 @@ class BaseResourcePermission(permissions.IsAdminUser):
             isinstance(user, TokenUser)
             and LTI_ROLES[self.__class__.role]
             & set(user.token.payload.get("roles", []))
-            and user.token.payload.get("read_only", True) is False
+            and user.token.payload.get("permissions", {}).get("can_update", False)
+            is True
         ):
             return True
 
-        return super().has_permission(request, view)
+        return False
 
     def get_resource_id(self, obj):
         """Get the resource id to check that it matches the JWT Token.
@@ -85,16 +85,10 @@ class BaseResourcePermission(permissions.IsAdminUser):
         """
         # Users authentified via LTI are identified by a TokenUser with the
         # resource_link_id as user ID.
-        user = request.user
-        if isinstance(user, TokenUser) and str(self.get_resource_id(obj)) != user.id:
-            return False
+        if str(self.get_resource_id(obj)) == request.user.id:
+            return True
 
-        if not LTI_ROLES[self.__class__.role] & set(
-            user.token.payload.get("roles", [])
-        ):
-            return False
-
-        return super().has_object_permission(request, view, obj)
+        return False
 
 
 class IsResourceInstructor(BaseResourcePermission):

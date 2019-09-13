@@ -80,12 +80,15 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                         "state": "error",
                         "modelName": self.model.RESOURCE_NAME,
                         "resource": None,
-                        "isEditable": False,
                     }
                 )
             }
 
-        app_data = {"state": "success"}
+        app_data = {
+            "state": "success",
+            "resource": self.serializer_class(resource).data if resource else None,
+            "modelName": self.model.RESOURCE_NAME,
+        }
 
         locale = "en_US"
         try:
@@ -104,8 +107,11 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
                     "locale": locale,
-                    "read_only": lti.is_student
-                    or resource.playlist.lti_id != lti.context_id,
+                    "permissions": {
+                        "can_access_dashboard": lti.is_instructor or lti.is_admin,
+                        "can_update": (lti.is_instructor or lti.is_admin)
+                        and resource.playlist.lti_id == lti.context_id,
+                    },
                 }
             )
             try:
@@ -114,12 +120,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 pass
 
             app_data["jwt"] = str(jwt_token)
-
-        app_data["resource"] = (
-            self.serializer_class(resource).data if resource else None
-        )
-        app_data["modelName"] = self.model.RESOURCE_NAME
-        app_data["isEditable"] = lti.is_editable
 
         context = {"app_data": json.dumps(app_data)}
 

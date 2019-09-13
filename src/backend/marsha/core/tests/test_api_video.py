@@ -73,7 +73,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
         # Get the video linked to the JWT token
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -93,7 +93,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -122,7 +122,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -215,7 +215,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -231,7 +231,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -266,7 +266,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -308,7 +308,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -389,7 +389,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -488,7 +488,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
@@ -506,7 +506,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -530,7 +530,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -556,7 +556,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -582,7 +582,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         data = {"upload_state": "ready"}
 
@@ -600,7 +600,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         data = {"upload_state": "ready"}
 
@@ -621,7 +621,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
         self.assertEqual(video.upload_state, "pending")
         self.assertIsNone(video.uploaded_on)
 
@@ -646,7 +646,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
             "/api/videos/{!s}/".format(video.id),
@@ -672,6 +672,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video_token.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -691,7 +692,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         data = {"description": "my new description"}
 
@@ -722,7 +723,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(videos[0].id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -756,7 +757,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.delete(
             "/api/videos/{!s}/".format(video.id),
@@ -817,7 +818,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = True
+        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
             "/api/videos/{!s}/initiate-upload/".format(video.id),
@@ -834,7 +835,7 @@ class VideoAPITest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["read_only"] = False
+        jwt_token.payload["permissions"] = {"can_update": True}
 
         # Create another video to check that its upload state is unaffected
         other_video = VideoFactory(upload_state=random.choice(["ready", "error"]))
