@@ -17,6 +17,8 @@ import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { UploadStatusPicker } from '../UploadStatusPicker';
 
+const { PENDING, PROCESSING, UPLOADING } = uploadState;
+
 const messages = defineMessages({
   delete: {
     defaultMessage: 'Delete',
@@ -77,7 +79,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   useEffect(() => {
     getChoices();
 
-    if (track.is_ready_to_show === false) {
+    if ([PENDING, UPLOADING, PROCESSING].includes(track.upload_state)) {
       window.setTimeout(async () => {
         const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
         if (result === requestStatus.FAILURE) {
