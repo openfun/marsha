@@ -371,7 +371,7 @@ jobs:
   # translation management tool
   i18n:
     docker:
-      - image: fundocker/crowdin:2.0.27
+      - image: fundocker/crowdin:2.0.31
     working_directory: ~/marsha
     steps:
       - checkout:
