@@ -5,6 +5,7 @@ from logging import getLogger
 import uuid
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -16,7 +17,7 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .lti import LTI
-from .lti.utils import get_or_create_resource
+from .lti.utils import PortabilityError, get_or_create_resource
 from .models import Document, Video
 from .serializers import DocumentSerializer, VideoSerializer
 from .utils.react_locales_utils import react_locale
@@ -47,71 +48,101 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         """Return the serializer used by the view."""
 
     def get_context_data(self):
-        """Build a context with data retrieved from the LTI launch request.
+        """Build context for template rendering of configuration data for the frontend.
 
         Returns
         -------
         dictionary
-            context for template rendering:
+            context with configuration data for the frontend
+
+        """
+        try:
+            app_data = self._get_app_data()
+        except (LTIException, PortabilityError) as error:
+            logger.warning(str(error))
+            app_data = {
+                "state": "error",
+                "modelName": self.model.RESOURCE_NAME,
+                "resource": None,
+            }
+
+        context = {"app_data": json.dumps(app_data)}
+
+        if getattr(settings, "STATICFILES_AWS_ENABLED", False):
+            context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
+
+        return context
+
+    def _get_app_data(self):
+        """Build app data for the frontend with information retrieved from the LTI launch request.
+
+        Returns
+        -------
+        dictionary
+            Configuration data to bootstrap the frontend:
 
             For all roles
             +++++++++++++
 
-            - state: state of the LTI launch request. Can be one of `student`, `instructor` or
-                `error`.
-            - video: representation of the video including urls for the video file in all
-                resolutions, with thumbnails and timed text tracks.
+            - state: state of the LTI launch request. Can be one of `success` or `error`.
+            - modelName: the type of resource (video, document,...)
+            - resource: representation of the targetted resource including urls for the resource
+                file (e.g. for a video: all resolutions, thumbnails and timed text tracks).
 
             For instructors only
             ++++++++++++++++++++
 
-            - jwt_token: a short-lived JWT token linked to the video ID that will be
-                used as authentication.
+            - jwt_token: a short-lived JWT token linked to the resource ID that will be
+                used for authentication and authorization on the API.
 
         """
         lti = LTI(self.request, self.kwargs["uuid"])
-        try:
+        lti.verify()
+
+        app_data = None
+        if lti.is_student:
+            cache_key = "app_data|{model:s}|{domain:s}|{context:s}|{resource!s}".format(
+                model=self.model.__name__,
+                domain=lti.get_consumer_site().domain,
+                context=lti.context_id,
+                resource=lti.resource_id,
+            )
+
+            app_data = cache.get(cache_key)
+            permissions = {"can_access_dashboard": False, "can_update": False}
+
+        if not app_data:
             resource = get_or_create_resource(self.model, lti)
-        except LTIException as error:
-            logger.warning("LTI Exception: %s", str(error))
-            return {
-                "app_data": json.dumps(
-                    {
-                        "state": "error",
-                        "modelName": self.model.RESOURCE_NAME,
-                        "resource": None,
-                    }
-                )
+            permissions = {
+                "can_access_dashboard": lti.is_instructor or lti.is_admin,
+                "can_update": (lti.is_instructor or lti.is_admin)
+                and resource.playlist.lti_id == lti.context_id,
             }
+            app_data = {
+                "modelName": self.model.RESOURCE_NAME,
+                "resource": self.serializer_class(resource).data if resource else None,
+                "state": "success",
+            }
+            if lti.is_student:
+                cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
-        app_data = {
-            "state": "success",
-            "resource": self.serializer_class(resource).data if resource else None,
-            "modelName": self.model.RESOURCE_NAME,
-        }
+        if app_data["resource"] is not None:
+            try:
+                locale = react_locale(lti.launch_presentation_locale)
+            except ImproperlyConfigured:
+                locale = "en_US"
 
-        locale = "en_US"
-        try:
-            locale = react_locale(lti.launch_presentation_locale)
-        except ImproperlyConfigured:
-            pass
-
-        if resource is not None:
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
             jwt_token.payload.update(
                 {
                     "session_id": str(uuid.uuid4()),
                     "context_id": lti.context_id,
-                    "resource_id": str(resource.id),
+                    "resource_id": str(lti.resource_id),
                     "roles": lti.roles,
                     "course": lti.get_course_info(),
                     "locale": locale,
-                    "permissions": {
-                        "can_access_dashboard": lti.is_instructor or lti.is_admin,
-                        "can_update": (lti.is_instructor or lti.is_admin)
-                        and resource.playlist.lti_id == lti.context_id,
-                    },
+                    "permissions": permissions,
                 }
             )
             try:
@@ -121,12 +152,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
             app_data["jwt"] = str(jwt_token)
 
-        context = {"app_data": json.dumps(app_data)}
-
-        if getattr(settings, "STATICFILES_AWS_ENABLED", False):
-            context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
-
-        return context
+        return app_data
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):

@@ -1,10 +1,12 @@
 """Helpers to create a dedicated resources."""
 from django.db.models import Q
 
-from pylti.common import LTIException
-
 from ..defaults import PENDING, READY
 from ..models import Playlist
+
+
+class PortabilityError(Exception):
+    """An error raised when trying to access a resource that is not portable."""
 
 
 def get_or_create_resource(model, lti):
@@ -33,18 +35,12 @@ def get_or_create_resource(model, lti):
     An instance of the model targeted by the LTI request or None
 
     """
-    lti.verify()
-    try:
-        assert lti.context_id
-    except AssertionError:
-        raise LTIException("A context ID is required.")
-
     # If the resource already exists, retrieve it from database
     filter_kwargs = (
         {} if (lti.is_instructor or lti.is_admin) else {"upload_state": READY}
     )
     try:
-        return model.objects.get(
+        return model.objects.select_related("playlist").get(
             Q(playlist__lti_id=lti.context_id)
             | Q(playlist__is_portable_to_playlist=True, upload_state=READY),
             Q(playlist__consumer_site=lti.get_consumer_site())
@@ -67,7 +63,7 @@ def get_or_create_resource(model, lti):
     except model.DoesNotExist:
         pass
     else:
-        raise LTIException(
+        raise PortabilityError(
             "The {!s} ID {!s} already exists but is not portable to your playlist ({!s}) "
             "and/or consumer site ({!s}).".format(
                 model.__name__,

@@ -20,7 +20,7 @@ from ..lti import LTI
 # pylint: disable=unused-argument
 
 
-class DocumentViewTestCase(TestCase):
+class DocumentLTIViewTestCase(TestCase):
     """Test case for the file LTI view."""
 
     @mock.patch.object(LTI, "verify")
@@ -66,7 +66,6 @@ class DocumentViewTestCase(TestCase):
             jwt_token.payload["course"],
             {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
-
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
@@ -263,7 +262,7 @@ class DocumentViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
+        mock_logger.assert_called_once_with("lti error")
 
         match = re.search(
             '<div id="marsha-frontend-data" data-context="(.*)">', content

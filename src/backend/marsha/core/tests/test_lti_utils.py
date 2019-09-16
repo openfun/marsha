@@ -6,7 +6,7 @@ import uuid
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
-from pylti.common import LTIException, LTIOAuthServer
+from pylti.common import LTIOAuthServer
 
 from ..defaults import STATE_CHOICES
 from ..factories import (
@@ -16,7 +16,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..lti import LTI
-from ..lti.utils import get_or_create_resource
+from ..lti.utils import PortabilityError, get_or_create_resource
 from ..models import ConsumerSitePortability, Document, Playlist, Video
 
 
@@ -109,6 +109,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -160,6 +161,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -214,6 +216,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -266,6 +269,7 @@ class PortabilityLTITestCase(TestCase):
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
 
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -303,8 +307,8 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-2-1-2-1.
 
-        An LTI Exception should be raised if an instructor tries to retrieve a resource that is
-        already existing for a consumer site but not ready, even if it is portable to another
+        A PortabilityError should be raised if an instructor tries to retrieve a resource that
+        is already existing for a consumer site but not ready, even if it is portable to another
         consumer site.
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
@@ -324,7 +328,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -390,6 +395,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or video are created
@@ -449,6 +455,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -507,7 +514,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -577,7 +585,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -613,7 +621,7 @@ class PortabilityLTITestCase(TestCase):
     def _test_lti_get_resource_other_site_not_portable_instructor(self, factory, model):
         """Above case 1-2-3-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
@@ -632,7 +640,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -650,7 +659,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_video_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-3-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
@@ -662,7 +671,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_document_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-3-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
@@ -686,6 +695,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -731,6 +741,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -766,7 +777,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-3-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
@@ -788,7 +799,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -803,8 +815,8 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_video_other_pl_portable_not_ready_instructor(self, mock_verify):
         """Above case 1-3-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
-        already existing in a playlist but not ready, even if it is portable to another
+        A PortabilityError should be raised if an instructor tries to retrieve a video that
+        is already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
         self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
@@ -815,8 +827,8 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_document_other_pl_portable_not_ready_instructor(self, mock_verify):
         """Above case 1-3-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a document that is
-        already existing in a playlist but not ready, even if it is portable to another
+        A PortabilityError should be raised if an instructor tries to retrieve a document that
+        is already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
         self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
@@ -847,6 +859,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -882,7 +895,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-3-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         existing in a playlist but not portable to another playlist, even if it
         is ready.
         """
@@ -903,7 +916,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -918,7 +932,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_video_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         existing in a playlist but not portable to another playlist, even if it
         is ready.
         """
@@ -930,7 +944,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_document_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a document that is
+        A PortabilityError should be raised if an instructor tries to retrieve a document that is
         existing in a playlist but not portable to another playlist, even if it
         is ready.
         """
@@ -960,6 +974,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -1009,6 +1024,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -1044,7 +1060,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-4-1-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a resource that is
+        A PortabilityError should be raised if an instructor tries to retrieve a resource that is
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
@@ -1066,7 +1082,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -1086,7 +1103,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-4-1-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video that is
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
@@ -1100,7 +1117,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above case 1-4-1-1-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a document that is
+        A PortabilityError should be raised if an instructor tries to retrieve a document that is
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
@@ -1133,6 +1150,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -1191,6 +1209,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         retrieved_resource = get_or_create_resource(model, lti)
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
@@ -1255,7 +1274,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -1324,6 +1344,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -1361,7 +1382,7 @@ class PortabilityLTITestCase(TestCase):
     ):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a resource already
+        A PortabilityError should be raised if an instructor tries to retrieve a resource already
         existing in a playlist and another consumer site but not portable either to another
         playlist or to another consumer site, even if it is ready.
         """
@@ -1382,7 +1403,8 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
-        with self.assertRaises(LTIException) as context:
+        lti.verify()
+        with self.assertRaises(PortabilityError) as context:
             get_or_create_resource(model, lti)
         self.assertEqual(
             context.exception.args[0],
@@ -1400,7 +1422,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_video_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a video already
+        A PortabilityError should be raised if an instructor tries to retrieve a video already
         existing in a playlist and another consumer site but not portable either to another
         playlist or to another consumer site, even if it is ready.
         """
@@ -1412,7 +1434,7 @@ class PortabilityLTITestCase(TestCase):
     def test_lti_get_document_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-3-1 and 1-4-2-1.
 
-        An LTIException should be raised if an instructor tries to retrieve a document already
+        A PortabilityError should be raised if an instructor tries to retrieve a document already
         existing in a playlist and another consumer site but not portable either to another
         playlist or to another consumer site, even if it is ready.
         """
@@ -1442,6 +1464,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, resource.pk)
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
@@ -1490,6 +1513,7 @@ class PortabilityLTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
+        lti.verify()
         new_resource = get_or_create_resource(model, lti)
 
         # A new resource is created
@@ -1538,6 +1562,7 @@ class PortabilityLTITestCase(TestCase):
 
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
+        lti.verify()
         self.assertIsNone(get_or_create_resource(model, lti))
 
         # No new playlist or resource are created
