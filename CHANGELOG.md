@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Added
 
+- Cache database queries and serialization in LTI views for students
 - Create a File model which will be the base model for all the resources
   we will manage
 - create a property `RESOURCE_NAME` on models having a url

@@ -26,7 +26,7 @@ from ..models import ConsumerSite, Video
 # pylint: disable=unused-argument
 
 
-class VideoViewTestCase(TestCase):
+class VideoLTIViewTestCase(TestCase):
     """Test the video view in the ``core`` app of the Marsha project."""
 
     @mock.patch.object(LTI, "verify")
@@ -166,7 +166,7 @@ class VideoViewTestCase(TestCase):
     def test_views_lti_video_read_other_playlist(
         self, mock_get_consumer_site, mock_verify
     ):
-        """A video from another portable playlist should have read_only attribute set to True."""
+        """A video from another portable playlist should have "can_update" set to False."""
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
             playlist__is_portable_to_playlist=True,
@@ -377,7 +377,7 @@ class VideoViewTestCase(TestCase):
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
 
-        mock_logger.assert_called_once_with("LTI Exception: %s", "lti error")
+        mock_logger.assert_called_once_with("lti error")
 
         match = re.search(
             '<div id="marsha-frontend-data" data-context="(.*)">', content
@@ -692,3 +692,33 @@ class DevelopmentViewsTestCase(TestCase):
 
         with self.assertRaises(ImproperlyConfigured):
             self.client.post("/lti/videos/{!s}".format(video.pk), data)
+
+    @override_settings(DEBUG=True)
+    @override_settings(BYPASS_LTI_VERIFICATION=True)
+    def test_views_video_lti_post_bypass_lti_no_referer(self):
+        """Trying to bypass LTI verification without a referer, should return an LTI error."""
+        video = VideoFactory(
+            playlist__consumer_site__domain="example.com", upload_state="ready"
+        )
+        # There is no need to provide an "oauth_consumer_key"
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": random.choice(["instructor", "student"]),
+            "context_title": "mathematics",
+            "tool_consumer_instance_name": "ufr",
+            "tool_consumer_instance_guid": "example.com",
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        self.assertEqual(context["state"], "error")

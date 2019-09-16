@@ -211,6 +211,7 @@ class LTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
+        lti.verify()
         video = get_or_create_resource(Video, lti)
         self.assertFalse(video.show_download)
 
@@ -238,6 +239,7 @@ class LTITestCase(TestCase):
         }
         request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
         lti = LTI(request, uuid.uuid4())
+        lti.verify()
         video = get_or_create_resource(Video, lti)
         self.assertTrue(video.show_download)
 

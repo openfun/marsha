@@ -213,6 +213,9 @@ class Base(Configuration):
     # Helper to easily know if static files in AWS is activated
     STATICFILES_AWS_ENABLED = False
 
+    # Cache
+    APP_DATA_CACHE_DURATION = values.Value(10)  # 10 secondes
+
     # pylint: disable=invalid-name
     @property
     def SIMPLE_JWT(self):
@@ -268,6 +271,7 @@ class Development(Base):
     AWS_SOURCE_BUCKET_NAME = values.Value("development-marsha-source")
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 
     LOGGING = values.DictValue(
         {
