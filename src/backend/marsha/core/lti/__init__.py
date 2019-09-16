@@ -55,15 +55,20 @@ class LTI:
         if self._consumer_site:
             return True
 
+        request_domain = self.request_domain
+
         if settings.BYPASS_LTI_VERIFICATION:
             if not settings.DEBUG:
                 raise ImproperlyConfigured(
                     "Bypassing LTI verification only works in DEBUG mode."
                 )
-            self._consumer_site = ConsumerSite.objects.get_or_create(
-                domain=self.consumer_site_domain,
-                defaults={"name": self.consumer_site_domain},
-            )[0]
+            if not request_domain:
+                raise LTIException(
+                    "You must provide an http referer in your LTI launch request."
+                )
+            self._consumer_site, _created = ConsumerSite.objects.get_or_create(
+                domain=request_domain, defaults={"name": request_domain}
+            )
             return True
 
         passport = self.get_passport()
@@ -100,13 +105,12 @@ class LTI:
         # Make sure we only accept requests from domains in which the "top parts" match
         # the URL for the consumer_site associated with the passport.
         # eg. sub.example.com & example.com for an example.com consumer site.
-        domain_check = urlparse(self.request.META.get("HTTP_REFERER")).hostname
-        if domain_check != consumer_site.domain and not domain_check.endswith(
+        if request_domain != consumer_site.domain and not request_domain.endswith(
             ".{:s}".format(consumer_site.domain)
         ):
             raise LTIException(
                 "Host domain ({:s}) does not match registered passport ({:s}).".format(
-                    domain_check, consumer_site.domain
+                    request_domain, consumer_site.domain
                 )
             )
 
@@ -215,24 +219,16 @@ class LTI:
         return self.request.POST.get("context_title", self.context_id)
 
     @property
-    def consumer_site_domain(self):
-        """Get consumer site domain from the LTI launch request.
+    def request_domain(self):
+        """Get consumer site domain from the incoming request http referer header.
 
         Returns
         -------
         string
-            Consumer site domain from the request POST parameters
+            Hostname parsed from the request http referer header.
 
         """
-        # get the consumer site domain from the lti request
-        try:
-            return self.request.POST["tool_consumer_instance_guid"]
-        except MultiValueDictKeyError:
-            # in the case of OpenEDX, resource_link_id format is defined in settings.py file.
-            # it is defined as follow: ``consumer_site_id-xblock_id``
-            # example: ``dns.fr-724d6c2b5fcc4a17a26b9120a1d463aa``
-            elements = self.request.POST.get("resource_link_id", "").rsplit("-", 1)
-            return elements[0] if len(elements) == 2 and elements[0] else None
+        return urlparse(self.request.META.get("HTTP_REFERER")).hostname
 
     @property
     def roles(self):
