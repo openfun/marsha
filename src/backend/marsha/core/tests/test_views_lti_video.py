@@ -516,7 +516,11 @@ class DevelopmentViewsTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
         }
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(
+            "/lti/videos/{!s}".format(video.pk),
+            data,
+            HTTP_REFERER="https://example.com",
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -572,7 +576,11 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_name": "ufr",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(
+            "/lti/videos/{!s}".format(video.pk),
+            data,
+            HTTP_REFERER="https://example.com",
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -625,7 +633,11 @@ class DevelopmentViewsTestCase(TestCase):
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
-        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(
+            "/lti/videos/{!s}".format(uuid.uuid4()),
+            data,
+            HTTP_REFERER="https://example.com",
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
