@@ -55,6 +55,9 @@ class LTI:
         if self._consumer_site:
             return True
 
+        if not self.context_id:
+            raise LTIException("A context ID is required.")
+
         request_domain = self.request_domain
 
         if settings.BYPASS_LTI_VERIFICATION:
