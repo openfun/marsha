@@ -192,7 +192,7 @@ class DocumentLTIView(BaseLTIView):
     serializer_class = DocumentSerializer
 
 
-class LTIDevelopmentView(TemplateView):
+class DevelopmentLTIView(TemplateView):
     """A development view with iframe POST / plain POST helpers.
 
     Not available outside of DEBUG = true environments.
