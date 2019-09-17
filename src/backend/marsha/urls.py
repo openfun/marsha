@@ -17,7 +17,7 @@ from marsha.core.api import (
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import DocumentLTIView, LTIDevelopmentView, VideoLTIView
+from marsha.core.views import DevelopmentLTIView, DocumentLTIView, VideoLTIView
 
 
 router = DefaultRouter()
@@ -51,5 +51,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        path("development/", LTIDevelopmentView.as_view(), name="lti-development-view")
+        path("development/", DevelopmentLTIView.as_view(), name="lti-development-view")
     ]
