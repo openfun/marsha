@@ -210,9 +210,6 @@ class Base(Configuration):
 
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
-    # Helper to easily know if static files in AWS is activated
-    STATICFILES_AWS_ENABLED = False
-
     # Cache
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
 
@@ -308,9 +305,6 @@ class Production(Base):
 
     ALLOWED_HOSTS = values.ListValue(None)
     AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
-
-    # Helper to easily know if static files in AWS is activated
-    STATICFILES_AWS_ENABLED = True
 
     # For static files in production, we want to use a backend that includes a hash in
     # the filename, that is calculated from the file content, so that browsers always

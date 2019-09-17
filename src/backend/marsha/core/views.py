@@ -5,6 +5,7 @@ from logging import getLogger
 import uuid
 
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.decorators import method_decorator
@@ -66,12 +67,12 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource": None,
             }
 
-        context = {"app_data": json.dumps(app_data)}
+        static_base_url = staticfiles_storage.url("").rstrip("/")
 
-        if getattr(settings, "STATICFILES_AWS_ENABLED", False):
-            context["cloudfront_domain"] = settings.CLOUDFRONT_DOMAIN
-
-        return context
+        return {
+            "app_data": json.dumps(app_data),
+            "static_base_url": f"{static_base_url}/",
+        }
 
     def _get_app_data(self):
         """Build app data for the frontend with information retrieved from the LTI launch request.
