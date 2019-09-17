@@ -34,6 +34,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Redundant setting `STATICFILES_AWS_ENABLED`
 - Everything related to the OpenEDX LTI view. This a BC break
 - Deprecated settings. This is a BC break
 

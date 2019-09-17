@@ -7,7 +7,8 @@ import re
 from unittest import mock
 import uuid
 
-from django.test import TestCase, override_settings
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.test import TestCase
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
@@ -431,14 +432,13 @@ class VideoLTIViewTestCase(TestCase):
         )
         self.assertEqual(context.get("modelName"), "videos")
 
-    @override_settings(STATICFILES_AWS_ENABLED=False)
-    @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_video_staticfiles_aws_disabled(
-        self, mock_get_consumer_site, mock_verify
+    @mock.patch.object(staticfiles_storage, "url")
+    def test_views_lti_video_static_base_url_with_trailing_slash(
+        self, mock_staticfiles_storage_url, mock_get_consumer_site, mock_verify
     ):
-        """Meta tag public-path should'nt be in the response when staticfiles on AWS is diabled."""
+        """Trailing slash is kept on static base url when present."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         data = {
@@ -450,22 +450,20 @@ class VideoLTIViewTestCase(TestCase):
             "launch_presentation_locale": "fr",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
+        mock_staticfiles_storage_url.return_value = "/static/"
 
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
-        self.assertNotContains(
-            response, '<meta name="public-path" value="abcd.cloudfront.net" />'
-        )
+        self.assertContains(response, '<meta name="public-path" value="/static/" />')
 
-    @override_settings(STATICFILES_AWS_ENABLED=True)
-    @override_settings(CLOUDFRONT_DOMAIN="abcd.cloudfront.net")
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_video_staticfiles_aws_enabled(
-        self, mock_get_consumer_site, mock_verify
+    @mock.patch.object(staticfiles_storage, "url")
+    def test_views_lti_video_static_base_url_without_trailing_slash(
+        self, mock_staticfiles_storage_url, mock_get_consumer_site, mock_verify
     ):
-        """Meta tag public-path should be in the response when staticfiles on AWS is enabled."""
+        """Trailing slash is added on static base url when missing."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         data = {
@@ -477,10 +475,9 @@ class VideoLTIViewTestCase(TestCase):
             "launch_presentation_locale": "fr",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
+        mock_staticfiles_storage_url.return_value = "/static"
 
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
-        self.assertContains(
-            response, '<meta name="public-path" value="abcd.cloudfront.net" />'
-        )
+        self.assertContains(response, '<meta name="public-path" value="/static/" />')
