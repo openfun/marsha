@@ -25,7 +25,9 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_instructor(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_document_instructor_same_playlist(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
         document = DocumentFactory(
@@ -75,7 +77,7 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_instructor_other_playlist(
+    def test_views_lti_document_instructor_other_playlist(
         self, mock_get_consumer_site, mock_verify
     ):
         """Validate the response returned by the view for an instructor from another playlist."""
@@ -134,7 +136,9 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_student(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_document_student_with_video(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Validate the format of the response returned by the view for a student request."""
         passport = ConsumerSiteLTIPassportFactory()
         document = DocumentFactory(
@@ -186,7 +190,9 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_student_no_video(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_document_student_no_video(
+        self, mock_get_consumer_site, mock_verify
+    ):
         """Validate the response returned for a student request when there is no file."""
         passport = ConsumerSiteLTIPassportFactory()
         data = {
@@ -218,7 +224,7 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_document_view_instructor_no_video(
+    def test_views_lti_document_instructor_no_video(
         self, mock_get_consumer_site, mock_verify
     ):
         """Validate the response returned for an instructor request when there is no file."""
@@ -253,7 +259,7 @@ class DocumentLTIViewTestCase(TestCase):
 
     @mock.patch.object(Logger, "warning")
     @mock.patch.object(LTI, "verify", side_effect=LTIException("lti error"))
-    def test_document_view_lti_post_error(self, mock_verify, mock_logger):
+    def test_views_lti_document_post_error(self, mock_verify, mock_logger):
         """Validate the response returned in case of an LTI exception."""
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
