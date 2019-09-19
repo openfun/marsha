@@ -886,21 +886,21 @@
   dependencies:
     "@formatjs/intl-utils" "^1.1.1"
 
-"@formatjs/intl-relativetimeformat@^3.1.0":
+"@formatjs/intl-relativetimeformat@^3.0.2":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-relativetimeformat/-/intl-relativetimeformat-3.1.0.tgz#a657d67e8e26a5985d72a80699be874c9bc470d3"
   integrity sha512-xSW9RMJtZZTGAlT7qCom+0INLYgshowpBN0Xf+j4kME+U/g/ogTVRFeGvCZX3nDQ21vdTHAabR3AIGQRX7NU1g==
   dependencies:
     "@formatjs/intl-utils" "^1.1.0"
 
-"@formatjs/intl-unified-numberformat@^0.5.0":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@formatjs/intl-unified-numberformat/-/intl-unified-numberformat-0.5.2.tgz#c530d312f14d6c08ca4eb38bdcd25d73520cc29f"
-  integrity sha512-b/Oh/e1wIrGhS8mZaEphqzzXvadir9zegqNsRo3QKQwYuiBRHLupk0st1NTyUwVTy9lI58HpL0U/RJxqki8diQ==
+"@formatjs/intl-unified-numberformat@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-unified-numberformat/-/intl-unified-numberformat-0.4.9.tgz#343ce36d8c95bd5529ce80120a4abbf933cae69e"
+  integrity sha512-llHvEZTaMEStXK7mFjUMcsS3Qtxd3csdgyo2j/fvjk+NdEBjGYrEO7gdLhGAjh6sDeRGFzMze91ScrwLK3ukqw==
   dependencies:
-    "@formatjs/intl-utils" "^1.1.1"
+    "@formatjs/intl-utils" "^1.0.1"
 
-"@formatjs/intl-utils@^1.1.0", "@formatjs/intl-utils@^1.1.1":
+"@formatjs/intl-utils@^1.0.1", "@formatjs/intl-utils@^1.1.0", "@formatjs/intl-utils@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-utils/-/intl-utils-1.1.1.tgz#53dcae233b53c505e4abe68f7ed6abb506c6d6a5"
   integrity sha512-80pdaKuGILzALSRNtVwwAcxkrh31cYWzPH/QBfUS/FLilIxr4NtCf8t5h2clFhxk+pLbtgqAY5WrT0X14A5Dsg==
@@ -3786,22 +3786,22 @@ interpret@1.2.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
   integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
-intl-format-cache@^4.1.22:
+intl-format-cache@^4.1.19, intl-format-cache@^4.1.22:
   version "4.1.22"
   resolved "https://registry.yarnpkg.com/intl-format-cache/-/intl-format-cache-4.1.22.tgz#fc2b4536913fb5b6c790721a0a9ac4869e4947c4"
   integrity sha512-q1g9NxmxTmenkW4mfMSsyvuqOYSl7Zc5OMTwLCh1DdAIgvZ9P3w7dpn1ZLgv2tCxXq+pbfdkEZa4vIc1Rxub1Q==
 
-intl-locales-supported@^1.4.8:
+intl-locales-supported@^1.4.5:
   version "1.4.8"
   resolved "https://registry.yarnpkg.com/intl-locales-supported/-/intl-locales-supported-1.4.8.tgz#99263bc4777fac409610093cf65aba7ffbe5c694"
   integrity sha512-kua9s/BGXo3BmqvQiN/xGsMJZnMqlNrZvXzxbDaIUD2Zt4gV5G8o/YUhuTUu3V9DTVWEx9ZSVRCvZxXK1Ig95w==
 
-intl-messageformat-parser@^3.1.1:
+intl-messageformat-parser@^3.1.0, intl-messageformat-parser@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/intl-messageformat-parser/-/intl-messageformat-parser-3.1.1.tgz#9e2800252dba23f59cce136bd85b1f4e9914c48a"
   integrity sha512-rp28ut8Xj/R0IN3wcvJqtVTKWDNaBk9Z5R+D/mSB7rpycc1jsE3vn5ShZa//zN7NpYXF3rkl8A6mZVhWNlMUJA==
 
-intl-messageformat@^7.2.4:
+intl-messageformat@^7.2.0:
   version "7.2.4"
   resolved "https://registry.yarnpkg.com/intl-messageformat/-/intl-messageformat-7.2.4.tgz#f122599ee0039e2461483c19ebbe5c13bff02c13"
   integrity sha512-6quBtpsTJKzyIzuR08hlu5jlGcc7lurCC1SZ54vim/aYic2pxTkpoJH0gVGRcmNQkg+mD6IW8rvpqx+M60BAyA==
@@ -6042,20 +6042,20 @@ react-intl-po@2.2.2:
     po2json "^0.4.5"
     ramda "^0.25.0"
 
-react-intl@3.2.4:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-3.2.4.tgz#fdeb1e208b37b441f5dbf58e4a28338cb559b06f"
-  integrity sha512-LKQRsXFO4K35DB9pl8vUreLXd7rf/Cpr4tYFtv17TFzIaiFHIAUF+xZIRW2laXUawADX7QZfxXgsL8McwAJfBQ==
+react-intl@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-3.2.1.tgz#3563d10b4116d61eb3234137f23d71a99d8d68af"
+  integrity sha512-iFxPFsvgGoh94YQbc5H4VDCO7d16c78QXTUfJE4BlKFhuIejL0t+iC5n44529kJCihxGvyJy1HIqPZpIjhprGQ==
   dependencies:
-    "@formatjs/intl-relativetimeformat" "^3.1.0"
-    "@formatjs/intl-unified-numberformat" "^0.5.0"
+    "@formatjs/intl-relativetimeformat" "^3.0.2"
+    "@formatjs/intl-unified-numberformat" "^0.4.9"
     "@types/hoist-non-react-statics" "^3.3.1"
     "@types/invariant" "^2.2.30"
     hoist-non-react-statics "^3.3.0"
-    intl-format-cache "^4.1.22"
-    intl-locales-supported "^1.4.8"
-    intl-messageformat "^7.2.4"
-    intl-messageformat-parser "^3.1.1"
+    intl-format-cache "^4.1.19"
+    intl-locales-supported "^1.4.5"
+    intl-messageformat "^7.2.0"
+    intl-messageformat-parser "^3.1.0"
     invariant "^2.1.1"
     shallow-equal "^1.1.0"
 
