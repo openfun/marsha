@@ -14,7 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.524.0",
+    "aws-sdk": "2.531.0",
     "request": "2.88.0",
     "request-promise-native": "1.0.7"
   },
