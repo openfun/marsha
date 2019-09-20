@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
   (a critical feature for us)
 - Upgrade crowdin image used in circle-ci to version 2.0.31 including tar command
+- Upgrade to python 3.7
 
 ### Removed
 
