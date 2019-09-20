@@ -145,6 +145,15 @@ User to connect to the Postgres database used by Marsha.
 - Required: No
 - Default: `"marsha_user"`
 
+#### APP_DATA_CACHE_DURATION
+
+Cache expiration (in seconds) for application data passed to the frontend by LTI views.
+
+- Type: number
+- Required: No
+- Default: 60
+
+
 ### Amazon Web Services-related settings
 
 #### DJANGO_AWS_ACCESS_KEY_ID, DJANGO_AWS_SECRET_ACCESS_KEY
