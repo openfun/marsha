@@ -214,7 +214,7 @@ class Base(Configuration):
     STATICFILES_AWS_ENABLED = False
 
     # Cache
-    APP_DATA_CACHE_DURATION = values.Value(10)  # 10 secondes
+    APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
 
     # pylint: disable=invalid-name
     @property
