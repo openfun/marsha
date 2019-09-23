@@ -1,6 +1,7 @@
 # Marsha contributors (sorted alphabetically)
 # Please make sure you insert here the email with which your git is configured
 
+- [Mathieu Agopian](https://github.com/magopian) <mathieu@agopian.info>
 - [Stéphane Angel](https://github.com/twidi) <s.angel@twidi.com>
 - [Mehdi Benadda](https://github.com/mbenadda) <me@mbenadda.com>
 - [Julien Maupetit](https://github.com/jmaupetit) <julien@maupetit.net>
