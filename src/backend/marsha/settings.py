@@ -33,6 +33,7 @@ class Base(Configuration):
     # Static files (CSS, JavaScript, Images)
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
     STATIC_URL = "/static/"
+    ABSOLUTE_STATIC_URL = STATIC_URL
     MEDIA_URL = "/media/"
     # Allow to configure location of static/media files for non-Docker installation
     MEDIA_ROOT = values.Value(os.path.join(str(DATA_DIR), "media"))
@@ -336,6 +337,12 @@ class Production(Base):
 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+    # pylint: disable=invalid-name
+    @property
+    def ABSOLUTE_STATIC_URL(self):
+        """Compute the absolute static url used in the lti template."""
+        return f"//{self.CLOUDFRONT_DOMAIN}{self.STATIC_URL}"
 
 
 class Staging(Production):
