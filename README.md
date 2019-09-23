@@ -110,7 +110,7 @@ The easiest way to start working on the project is to use our `Makefile`:
 
 This command builds the `app` container, installs back-end dependencies and performs database migrations. It's a good idea to use this command each time you are pulling code from the project repository to avoid dependency-related or migration-related issues.
 
-🔧 **Before you go further**, you should take a look at the newly created `./env.d/development` file and replace the relevant values with your own. You can take a look at the [environment documentation](https://github.com/openfun/marsha/blob/write-the-readme/docs/env.md#1-django-backend-environment) for more details on this topic.
+🔧 **Before you go further**, you should take a look at the newly created `./env.d/development` file and replace the relevant values with your own. You can take a look at the [environment documentation](https://github.com/openfun/marsha/blob/master/docs/env.md#1-django-backend-environment) for more details on this topic.
 
 Now that your `Docker` services are ready to be used, start the application by running:
 
