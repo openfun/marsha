@@ -5,7 +5,6 @@ from logging import getLogger
 import uuid
 
 from django.conf import settings
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.decorators import method_decorator
@@ -67,11 +66,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource": None,
             }
 
-        static_base_url = staticfiles_storage.url("js").rstrip("/")
-
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{static_base_url}/",
+            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
         }
 
     def _get_app_data(self):
