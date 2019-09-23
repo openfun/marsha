@@ -4,5 +4,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // urls. By convention this static base url always has a trailing slash.
   const metaPublicPath = document.querySelector('meta[name="public-path"]');
 
-  __webpack_public_path__ = `${metaPublicPath.getAttribute('value')}js/`;
+  __webpack_public_path__ = `${metaPublicPath.getAttribute('value')}`;
 });
