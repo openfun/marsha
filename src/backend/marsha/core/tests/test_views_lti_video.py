@@ -435,10 +435,10 @@ class VideoLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     @mock.patch.object(staticfiles_storage, "url")
-    def test_views_lti_video_static_base_url_with_trailing_slash(
+    def test_views_lti_video_static_base_url(
         self, mock_staticfiles_storage_url, mock_get_consumer_site, mock_verify
     ):
-        """Trailing slash is kept on static base url when present."""
+        """metage tag public-path must always be /static/js."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         data = {
@@ -450,34 +450,10 @@ class VideoLTIViewTestCase(TestCase):
             "launch_presentation_locale": "fr",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
-        mock_staticfiles_storage_url.return_value = "/static/"
+        mock_staticfiles_storage_url.return_value = "/static/js/index.js"
 
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        mock_staticfiles_storage_url.assert_called_with("js/index.js")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
-        self.assertContains(response, '<meta name="public-path" value="/static/" />')
-
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    @mock.patch.object(staticfiles_storage, "url")
-    def test_views_lti_video_static_base_url_without_trailing_slash(
-        self, mock_staticfiles_storage_url, mock_get_consumer_site, mock_verify
-    ):
-        """Trailing slash is added on static base url when missing."""
-        passport = ConsumerSiteLTIPassportFactory()
-        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
-        data = {
-            "resource_link_id": video.lti_id,
-            "context_id": video.playlist.lti_id,
-            "roles": "instructor",
-            "oauth_consumer_key": passport.oauth_consumer_key,
-            "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "launch_presentation_locale": "fr",
-        }
-        mock_get_consumer_site.return_value = passport.consumer_site
-        mock_staticfiles_storage_url.return_value = "/static"
-
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<html>")
-        self.assertContains(response, '<meta name="public-path" value="/static/" />')
+        self.assertContains(response, '<meta name="public-path" value="/static/js/" />')

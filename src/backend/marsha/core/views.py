@@ -67,11 +67,11 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource": None,
             }
 
-        static_base_url = staticfiles_storage.url("js").rstrip("/")
+        static_base_url = staticfiles_storage.url("js/index.js").rstrip("index.js")
 
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{static_base_url}/",
+            "static_base_url": f"{static_base_url}",
         }
 
     def _get_app_data(self):
