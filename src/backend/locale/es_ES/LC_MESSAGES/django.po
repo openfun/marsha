@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-30 09:43+0000\n"
-"PO-Revision-Date: 2019-09-02 09:13\n"
+"POT-Creation-Date: 2019-09-16 09:09+0000\n"
+"PO-Revision-Date: 2019-09-23 07:49\n"
 "Last-Translator: Manuel Raynaud (lunika)\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -82,11 +82,11 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: marsha/core/admin.py:308 marsha/core/models/file.py:113
+#: marsha/core/admin.py:308 marsha/core/models/file.py:122
 msgid "document"
 msgstr ""
 
-#: marsha/core/admin.py:309 marsha/core/models/file.py:114
+#: marsha/core/admin.py:309 marsha/core/models/file.py:123
 msgid "documents"
 msgstr ""
 
@@ -478,6 +478,14 @@ msgstr ""
 
 #: marsha/core/models/file.py:73
 msgid "position of this file in the playlist"
+msgstr ""
+
+#: marsha/core/models/file.py:112
+msgid "file extension"
+msgstr ""
+
+#: marsha/core/models/file.py:115
+msgid "extension"
 msgstr ""
 
 #: marsha/core/models/playlist.py:15

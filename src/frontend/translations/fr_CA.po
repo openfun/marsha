@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2019-08-30T14:20:26.440Z\n"
+"POT-Creation-Date: 2019-09-20T16:11:51.702Z\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Last-Translator: Manuel Raynaud (lunika)\n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
-"PO-Revision-Date: 2019-09-02 09:13\n"
+"PO-Revision-Date: 2019-09-23 07:49\n"
 
 #. [components.DownloadVideo.1080] - High quality video
 #. defaultMessage is:
@@ -92,10 +92,10 @@ msgstr ""
 msgid "Captions"
 msgstr ""
 
-#. [components.DashboardDocument.form.label.title] - Label informing the user they can change the document title.
+#. [components.DashboardDocumentTitleForm.form.label.title] - Label informing the user they can change the document title.
 #. defaultMessage is:
 #. Change document title
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Change document title"
 msgstr ""
 
@@ -247,6 +247,13 @@ msgstr ""
 msgid "Failed to upload your video file"
 msgstr ""
 
+#. [components.DashboardDocument.filename] - Document filename.
+#. defaultMessage is:
+#. Filename
+#: i18n/components/DashboardDocument/index.json
+msgid "Filename"
+msgstr ""
+
 #. [plyr.controls.forward] - Video control forward button
 #. defaultMessage is:
 #. Forward {seektime}s
@@ -290,10 +297,10 @@ msgstr ""
 msgid "Hide transcript"
 msgstr ""
 
-#. [components.DashboardDocument.form.label.error] - Error message to warn the user that a title update failed and ask them to try again later.
+#. [components.DashboardDocumentTitleForm.form.label.error] - Error message to warn the user that a title update failed and ask them to try again later.
 #. defaultMessage is:
 #. Impossible to update the title. Try again later.
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Impossible to update the title. Try again later."
 msgstr ""
 
@@ -564,10 +571,10 @@ msgstr ""
 msgid "This video is read-only because it belongs to another course: {context_id}"
 msgstr ""
 
-#. [components.DashboardDocument.form.success] - message display when the title is successfully updated
+#. [components.DashboardDocumentTitleForm.form.success] - message display when the title is successfully updated
 #. defaultMessage is:
 #. Title successfully updated
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Title successfully updated"
 msgstr ""
 
