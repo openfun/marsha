@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-30 09:43+0000\n"
-"PO-Revision-Date: 2019-09-02 09:13\n"
+"POT-Creation-Date: 2019-09-16 09:09+0000\n"
+"PO-Revision-Date: 2019-09-23 07:49\n"
 "Last-Translator: Manuel Raynaud (lunika)\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: marsha/core/admin.py:155
 #, python-brace-format
 msgid "{marsha_name} administration"
-msgstr "administration {marsha_name}"
+msgstr "administration de {marsha_name}"
 
 #: marsha/core/admin.py:166 marsha/core/admin.py:189
 #: marsha/core/models/account.py:383 marsha/core/models/account.py:415
@@ -82,11 +82,11 @@ msgstr "accès utilisateur"
 msgid "Document"
 msgstr "Document"
 
-#: marsha/core/admin.py:308 marsha/core/models/file.py:113
+#: marsha/core/admin.py:308 marsha/core/models/file.py:122
 msgid "document"
 msgstr "document"
 
-#: marsha/core/admin.py:309 marsha/core/models/file.py:114
+#: marsha/core/admin.py:309 marsha/core/models/file.py:123
 msgid "documents"
 msgstr "documents"
 
@@ -132,7 +132,7 @@ msgstr "étudiant"
 
 #: marsha/core/models/account.py:54 marsha/core/models/account.py:390
 msgid " [deleted]"
-msgstr "[deleted]"
+msgstr " [deleted]"
 
 #: marsha/core/models/account.py:77
 msgid "oauth consumer key"
@@ -216,11 +216,11 @@ msgstr "URL LRS utilisée pour communiquer avec un LRS distant"
 
 #: marsha/core/models/account.py:225
 msgid "xAPI version"
-msgstr "version xAPI"
+msgstr "version de xAPI"
 
 #: marsha/core/models/account.py:226
 msgid "xAPI version used by the remote LRS server"
-msgstr "version xAPI utilisée par le serveur LRS distant"
+msgstr "version de xAPI utilisée par le serveur LRS distant"
 
 #: marsha/core/models/account.py:232
 msgid "show video download"
@@ -361,11 +361,11 @@ msgstr "organisation à laquelle l'utilisateur a accès"
 
 #: marsha/core/models/account.py:485
 msgid "organization access"
-msgstr "accès de l'organisation"
+msgstr "accès à l'organisation"
 
 #: marsha/core/models/account.py:486
 msgid "organization accesses"
-msgstr "accès de l'organisation"
+msgstr "accès à l'organisation"
 
 #: marsha/core/models/account.py:503
 #, python-brace-format
@@ -429,7 +429,7 @@ msgstr "titre du document"
 
 #: marsha/core/models/file.py:20 marsha/core/models/playlist.py:19
 msgid "lti id"
-msgstr "id de lti"
+msgstr "ID LTI"
 
 #: marsha/core/models/file.py:21 marsha/core/models/playlist.py:20
 msgid "ID for synchronization with an external LTI tool"
@@ -450,7 +450,7 @@ msgstr "liste de lecture"
 
 #: marsha/core/models/file.py:37
 msgid "playlist to which this file belongs"
-msgstr ""
+msgstr "liste de lecture à laquelle le fichier appartient"
 
 #: marsha/core/models/file.py:44 marsha/core/models/playlist.py:52
 msgid "duplicated from"
@@ -458,11 +458,11 @@ msgstr "dupliqué de"
 
 #: marsha/core/models/file.py:45
 msgid "original file this one was duplicated from"
-msgstr ""
+msgstr "fichier d'origine depuis lequel celui-ci a été dupliqué"
 
 #: marsha/core/models/file.py:53
 msgid "datetime at which the active version of the file was uploaded."
-msgstr ""
+msgstr "date et heure à laquelle la version active de ce fichier a été téléversé."
 
 #: marsha/core/models/file.py:66
 msgid "description"
@@ -470,7 +470,7 @@ msgstr "description"
 
 #: marsha/core/models/file.py:67
 msgid "description of the file"
-msgstr ""
+msgstr "description du fichier"
 
 #: marsha/core/models/file.py:72
 msgid "position"
@@ -478,7 +478,15 @@ msgstr "position"
 
 #: marsha/core/models/file.py:73
 msgid "position of this file in the playlist"
-msgstr ""
+msgstr "position de ce fichier dans la liste de lecture"
+
+#: marsha/core/models/file.py:112
+msgid "file extension"
+msgstr "extension de fichier"
+
+#: marsha/core/models/file.py:115
+msgid "extension"
+msgstr "extension"
 
 #: marsha/core/models/playlist.py:15
 msgid "title of the playlist"

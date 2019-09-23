@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2019-08-30T14:20:26.440Z\n"
+"POT-Creation-Date: 2019-09-20T16:11:51.702Z\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Last-Translator: Manuel Raynaud (lunika)\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
-"PO-Revision-Date: 2019-09-02 09:13\n"
+"PO-Revision-Date: 2019-09-23 07:49\n"
 
 #. [components.DownloadVideo.1080] - High quality video
 #. defaultMessage is:
@@ -92,10 +92,10 @@ msgstr "Mis en mémoire"
 msgid "Captions"
 msgstr "Sous-titres"
 
-#. [components.DashboardDocument.form.label.title] - Label informing the user they can change the document title.
+#. [components.DashboardDocumentTitleForm.form.label.title] - Label informing the user they can change the document title.
 #. defaultMessage is:
 #. Change document title
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Change document title"
 msgstr "Modifier le titre du document"
 
@@ -111,7 +111,7 @@ msgstr "Choisir une langue"
 #. Closed captions
 #: i18n/components/DashboardTimedTextPane/index.json
 msgid "Closed captions"
-msgstr "Sous-titres"
+msgstr "Sous-titres codés (sourds et malentendants)"
 
 #. [components.UploadForm.title-videos] - Title for the video upload form
 #. defaultMessage is:
@@ -125,7 +125,7 @@ msgstr "Créer une nouvelle vidéo"
 #. Current time
 #: i18n/Player/i18n/plyrTranslation.json
 msgid "Current time"
-msgstr "Temps actuel"
+msgstr "Heure actuelle"
 
 #. [components.Dashboard.title] - Title for the dashboard, where the user can see the status of the video/audio/timed text upload
 #.       & processing, and will be able to manage them.
@@ -247,6 +247,13 @@ msgstr "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
 msgid "Failed to upload your video file"
 msgstr "Erreur lors du téléversement du fichier vidéo"
 
+#. [components.DashboardDocument.filename] - Document filename.
+#. defaultMessage is:
+#. Filename
+#: i18n/components/DashboardDocument/index.json
+msgid "Filename"
+msgstr "Nom de fichier"
+
 #. [plyr.controls.forward] - Video control forward button
 #. defaultMessage is:
 #. Forward {seektime}s
@@ -290,10 +297,10 @@ msgstr "HD"
 msgid "Hide transcript"
 msgstr "Masquer la transcription"
 
-#. [components.DashboardDocument.form.label.error] - Error message to warn the user that a title update failed and ask them to try again later.
+#. [components.DashboardDocumentTitleForm.form.label.error] - Error message to warn the user that a title update failed and ask them to try again later.
 #. defaultMessage is:
 #. Impossible to update the title. Try again later.
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Impossible to update the title. Try again later."
 msgstr "Impossible de mettre à jour le titre. Merci de réessayer plus tard."
 
@@ -564,10 +571,10 @@ msgstr "La vidéo n'existe pas ou n'a pas encore été publiée. Si vous êtes u
 msgid "This video is read-only because it belongs to another course: {context_id}"
 msgstr "Cette vidéo est en lecture seule parce qu'elle appartient à un autre cours : {context_id}"
 
-#. [components.DashboardDocument.form.success] - message display when the title is successfully updated
+#. [components.DashboardDocumentTitleForm.form.success] - message display when the title is successfully updated
 #. defaultMessage is:
 #. Title successfully updated
-#: i18n/components/DashboardDocument/index.json
+#: i18n/components/DashboardDocumentTitleForm/index.json
 msgid "Title successfully updated"
 msgstr "Titre mis à jour"
 
