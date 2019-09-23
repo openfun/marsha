@@ -67,7 +67,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource": None,
             }
 
-        static_base_url = staticfiles_storage.url("").rstrip("/")
+        static_base_url = staticfiles_storage.url("js").rstrip("/")
 
         return {
             "app_data": json.dumps(app_data),
