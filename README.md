@@ -10,7 +10,7 @@ Instructors & organizations can use Marsha to upload and manage their videos (an
 
 Once the course is published, learners simply see a video player in the course.
 
-This seamless integration works with any LMS ([`Open edX`](https://open.edx.org), [`Moodle`](https://moodle.org), ...) thanks to the LTI standard for interoperability.
+This seamless integration works with any LMS ([`Open edX`](https://open.edx.org), [`Moodle`](https://moodle.org), ...) thanks to the [LTI](https://en.wikipedia.org/wiki/Learning_Tools_Interoperability) standard for interoperability.
 
 Here is what `Marsha` offers out of the box:
 
