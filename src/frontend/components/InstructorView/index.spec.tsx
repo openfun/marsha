@@ -19,7 +19,7 @@ describe('<InstructorView />', () => {
   it('renders the instructor controls', () => {
     mockDecodedJwt = {
       permissions: {
-        can_access_dasboard: false,
+        can_access_dashboard: true,
       },
     };
 
@@ -37,11 +37,11 @@ describe('<InstructorView />', () => {
     getByText('Go to Dashboard');
   });
 
-  it('removes the button when read_only is true', () => {
+  it('removes the button when permissions.can_access_dashboard is set to false', () => {
     mockDecodedJwt = {
       context_id: 'foo+context_id',
       permissions: {
-        can_access_dashboard: true,
+        can_access_dashboard: false,
       },
     };
 
