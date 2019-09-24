@@ -8,15 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## Added
+## [3.0.0] - 2019-09-24
 
+### Added
+
+- Add document management
 - Cache database queries and serialization in LTI views for students
-- Create a File model which will be the base model for all the resources
-  we will manage
-- create a property `RESOURCE_NAME` on models having a url
-- Use document title as filename when the user download it
 
-## Changed
+### Changed
 
 - Move all permission flags to a "permissions" object in the JWT token
 - Refactor the LTI view to be generic for all the resources we want to manage
@@ -32,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   (a critical feature for us)
 - Upgrade crowdin image used in circle-ci to version 2.0.31 including tar command
 - Upgrade to python 3.7
+- Refactor resource models to share code
 
 ### Removed
 
@@ -360,7 +360,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.10.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.0.0...master
+[3.0.0]: https://github.com/openfun/marsha/compare/v2.10.2...v3.0.0
 [2.10.2]: https://github.com/openfun/marsha/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/openfun/marsha/compare/v2.10.0...v2.10.1
 [2.10.0]: https://github.com/openfun/marsha/compare/v2.9.0...v2.10.0
