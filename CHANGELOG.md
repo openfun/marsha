@@ -43,6 +43,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Update the mixin-deep and set-value packages to safe versions.
 
+## [2.10.2] - 2019-09-11
+
+### Fixed
+
+- Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
+- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
+  (a critical feature for us)
+
 ## [2.10.1] - 2019-08-13
 
 ### Fixed
@@ -352,7 +360,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v2.10.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v2.10.2...master
+[2.10.2]: https://github.com/openfun/marsha/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/openfun/marsha/compare/v2.10.0...v2.10.1
 [2.10.0]: https://github.com/openfun/marsha/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openfun/marsha/compare/v2.8.4...v2.9.0
