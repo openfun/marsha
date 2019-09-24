@@ -7,12 +7,24 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2.8.x to 3.0.x
+## 2.10.x to 3.0.x
 
 ### Before switching
 
 - The deprecated route `/lti-video/` is removed. You must move all your existing
   link using this route to the route `/lti/videos/{id}` where `id` is the video id.
+- The deprecated settings `DJANGO_LRS_URL`, `DJANGO_LRS_AUTH_TOKEN`, `DJANGO_LRS_XAPI_VERSION`
+  are not used anymore. See migration from 2.6.x to 2.7.x
+- Setting `STATICFILES_AWS_ENABLED` is not used anymore. Just delete it you have nothing more
+  to do.
+
+## 2.9.x to 2.10.x
+
+Nothing to do
+
+## 2.8.x to 2.9.x
+
+Nothing to do
 
 ## 2.6.x to 2.7.x
 
