@@ -28,15 +28,21 @@ export const TranscriptSentence = ({
 }: TranscriptSentenceProps) => {
   const setTime = useTranscriptTimeSelector(state => state.setTime);
 
+  const textSentence = () => ({ __html: `${cue.text} ` });
+
   if (active) {
     return (
-      <ActiveSentence onClick={() => setTime(cue.startTime)}>
-        {cue.text}{' '}
-      </ActiveSentence>
+      <ActiveSentence
+        onClick={() => setTime(cue.startTime)}
+        dangerouslySetInnerHTML={textSentence()}
+      />
     );
   } else {
     return (
-      <Sentence onClick={() => setTime(cue.startTime)}>{cue.text} </Sentence>
+      <Sentence
+        onClick={() => setTime(cue.startTime)}
+        dangerouslySetInnerHTML={textSentence()}
+      />
     );
   }
 };
