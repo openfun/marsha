@@ -9,6 +9,7 @@
   "dependencies": {
     "@openfun/subsrt": "1.0.3",
     "aws-sdk": "2.539.0",
+    "he": "1.2.0",
     "jimp": "0.8.4",
     "request": "2.88.0",
     "request-promise-native": "1.0.7"
