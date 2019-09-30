@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const subsrt = require('@openfun/subsrt');
+const he = require('he');
 
 /**
  * Convert any uploaded timed text track to `.vtt`.
@@ -16,9 +17,10 @@ module.exports = async (objectKey, sourceBucket) => {
     .getObject({ Bucket: sourceBucket, Key: objectKey })
     .promise();
 
-  let vttTimedText;
+  // first parse any substitle file in captions formatted for VTT
+  let captions;
   try {
-    vttTimedText = subsrt.convert(timedTextFile.Body.toString(), {
+    captions = subsrt.parse(timedTextFile.Body.toString(), {
       format: 'vtt',
     });
   } catch (e) {
@@ -27,9 +29,29 @@ module.exports = async (objectKey, sourceBucket) => {
     throw new Error(`Invalid timed text format for ${objectKey}.`);
   }
 
+  const encodedCaptions = captions.map(caption => {
+    // meta caption does not have data, nothing to encode here we directly return it
+    if (caption.type == 'meta') {
+      return caption;
+    }
+
+    // caption.content contains the raw string. We choose to use this property instead of
+    // caption.text because substr strips HTML tags before setting this property.
+    // First we decode it to avoid double escaping issue and set the value
+    // in caption.text because this is the property used in substr.build to create
+    // the final WebVTT subtitle.
+    caption.text = he.decode(caption.content);
+    // Then the text is only escaped, we don't want to encode everything
+    caption.text = he.escape(caption.text);
+
+    return caption;
+  });
+
+  const encodedVttTimedText = subsrt.build(encodedCaptions, { format: 'vtt' });
+
   await s3
     .putObject({
-      Body: vttTimedText,
+      Body: encodedVttTimedText,
       Bucket: destinationBucket,
       // Transform the source key to the format expected for destination keys:
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr

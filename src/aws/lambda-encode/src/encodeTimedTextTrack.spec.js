@@ -10,30 +10,28 @@ jest.mock('aws-sdk', () => ({
   },
 }));
 
-// Mock subsrt so we avoid line break issues between \n and \r\n
-const mockSubsrt = { convert: jest.fn() };
-jest.mock('@openfun/subsrt', () => mockSubsrt);
-
 const encodeTimedTextTrack = require('./encodeTimedTextTrack');
 
 describe('lambda-encode/src/encodeTimedTextTrack', () => {
   beforeEach(() => {
     mockGetObject.mockReset();
     mockPutObject.mockReset();
-    mockSubsrt.convert.mockReset();
   });
 
   it('reads the source timed text, converts it to VTT and writes it to destination', async () => {
+    const eol = '\r\n';
+    const rawSubstitles = `1${eol}00:00:17,000 --> 00:00:19,000${eol}<script>alert("foo");</script>${eol}${eol}2${eol}00:00:19,750 --> 00:00:23,500${eol}doit être placé entre &lt;script&gt; et &lt;/script&gt;`;
+    const expectedEncodedSubtitles = `WEBVTT${eol}${eol}1${eol}00:00:17.000 --> 00:00:19.000${eol}&lt;script&gt;alert(&quot;foo&quot;);&lt;/script&gt;${eol}${eol}2${eol}00:00:19.750 --> 00:00:23.500${eol}doit être placé entre &lt;script&gt; et &lt;/script&gt;${eol}${eol}`;
+
     mockGetObject.mockReturnValue({
       promise: () =>
         new Promise(resolve =>
-          resolve({ Body: { toString: () => 'input timed text' } }),
+          resolve({ Body: { toString: () => rawSubstitles } }),
         ),
     });
     mockPutObject.mockReturnValue({
       promise: () => new Promise(resolve => resolve()),
     });
-    mockSubsrt.convert.mockReturnValue('output timed text');
 
     await encodeTimedTextTrack('some key', 'source bucket');
 
@@ -42,12 +40,9 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
       Key: 'some key',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
-      Body: 'output timed text',
+      Body: expectedEncodedSubtitles,
       Bucket: 'destination bucket',
       Key: 'some key.vtt',
-    });
-    expect(mockSubsrt.convert).toHaveBeenCalledWith('input timed text', {
-      format: 'vtt',
     });
   });
 
@@ -55,11 +50,9 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     mockGetObject.mockReturnValue({
       promise: () =>
         new Promise(resolve =>
-          resolve({ Body: { toString: () => 'input invalid timed text' } }),
+          // no subtitles handler support number.
+          resolve({ Body: { toString: () => 42 } }),
         ),
-    });
-    mockSubsrt.convert.mockImplementation(() => {
-      throw new Error('Failed!');
     });
 
     await expect(
@@ -89,7 +82,6 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
       promise: () =>
         new Promise((resolve, reject) => reject(new Error('Failed!'))),
     });
-    mockSubsrt.convert.mockReturnValue('output timed text');
 
     await expect(
       encodeTimedTextTrack('some key', 'source bucket'),
