@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - new setting `AWS_BASE_NAME`. The value should be the terraform workspace name used to deploy
   all the AWS stack. For example if your workspace name is `production` set `AWS_BASE_NAME` to
   `production`
+- AWS lambda-encode must be deployed before running Django migrations.
+- A Django data migration will be run that will look to all existing timed text tracks in the
+  S3 source bucket and trigger the marsha-encode lambda to escape them. If you don't want to
+  run this migration you should set `SHOULD_RUN_TIMEDTEXT_TRACKS_ESCAPING_MIGRATION` setting
+  to False. We want to warn that not running this migration is strongly discouraged and poses
+  security threats as the content of the timed text tracks will now be displayed insecurely
+  by React.
 
 ## 2.10.x to 3.0.x
 
