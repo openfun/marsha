@@ -56,13 +56,11 @@ class LTITestCase(TestCase):
         )
 
         # Parse headers to pass to template as part of context:
-        oauth_dict = {
-            k: v
-            for k, v in [
-                param.strip().replace('"', "").split("=")
-                for param in headers["Authorization"].split(",")
-            ]
-        }
+        oauth_dict = dict(
+            param.strip().replace('"', "").split("=")
+            for param in headers["Authorization"].split(",")
+        )
+
         signature = oauth_dict["oauth_signature"]
         oauth_dict["oauth_signature"] = unquote(signature)
         oauth_dict["oauth_nonce"] = oauth_dict.pop("OAuth oauth_nonce")
