@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@formatjs/intl-relativetimeformat": "4.1.1",
+    "@sentry/browser": "5.6.3",
     "core-js": "3",
     "dashjs": "3.0.0",
     "grommet": "2.7.8",
