@@ -196,7 +196,7 @@ class Base(Configuration):
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
     AWS_S3_REGION_NAME = values.Value("eu-west-1")
     AWS_S3_URL_PROTOCOL = values.Value("https")
-    AWS_SOURCE_BUCKET_NAME = values.Value()
+    AWS_BASE_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
 
     # Cloud Front key pair for signed urls
@@ -213,6 +213,24 @@ class Base(Configuration):
 
     # Cache
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
+
+    # pylint: disable=invalid-name
+    @property
+    def AWS_SOURCE_BUCKET_NAME(self):
+        """Source bucket name.
+
+        If this setting is set in an environment variable we use it. Otherwise
+        the value is computed with the AWS_BASE_NAME value.
+        """
+        return os.environ.get(
+            "DJANGO_AWS_SOURCE_BUCKET_NAME", f"{self.AWS_BASE_NAME}-marsha-source"
+        )
+
+    # pylint: disable=invalid-name
+    @property
+    def AWS_LAMBDA_ENCODE_NAME(self):
+        """Lambda encode name."""
+        return f"{self.AWS_BASE_NAME}-marsha-encode"
 
     # pylint: disable=invalid-name
     @property
@@ -266,7 +284,7 @@ class Development(Base):
     """
 
     ALLOWED_HOSTS = ["*"]
-    AWS_SOURCE_BUCKET_NAME = values.Value("development-marsha-source")
+    AWS_BASE_NAME = values.Value("development")
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
@@ -292,7 +310,7 @@ class Test(Base):
     """Test environment settings."""
 
     CLOUDFRONT_SIGNED_URLS_ACTIVE = False
-    AWS_SOURCE_BUCKET_NAME = values.Value("test-marsha-source")
+    AWS_BASE_NAME = values.Value("test")
 
 
 class Production(Base):
@@ -305,7 +323,6 @@ class Production(Base):
     """
 
     ALLOWED_HOSTS = values.ListValue(None)
-    AWS_SOURCE_BUCKET_NAME = values.Value("production-marsha-source")
 
     # For static files in production, we want to use a backend that includes a hash in
     # the filename, that is calculated from the file content, so that browsers always
@@ -325,7 +342,7 @@ class Production(Base):
         "Expires": "Thu, 31 Dec 2099 20:00:00 GMT",
         "CacheControl": "max-age=94608000",
     }
-    AWS_STATIC_BUCKET_NAME = values.Value("production-marsha-static")
+    AWS_BASE_NAME = values.Value("production")
 
     # folder where static will be stored. It matches the path_pattern used
     # in the cloudfront configuration.
@@ -344,16 +361,26 @@ class Production(Base):
         """Compute the absolute static url used in the lti template."""
         return f"//{self.CLOUDFRONT_DOMAIN}{self.STATIC_URL}"
 
+    # pylint: disable=invalid-name
+    @property
+    def AWS_STATIC_BUCKET_NAME(self):
+        """AWS Static bucket name.
+
+        If this setting is set in an environment variable we use it. Otherwise
+        the value is computed with the AWS_BASE_NAME value.
+        """
+        return os.environ.get(
+            "DJANGO_AWS_STATIC_BUCKET_NAME", f"{self.AWS_BASE_NAME}-marsha-static"
+        )
+
 
 class Staging(Production):
     """Staging environment settings."""
 
-    AWS_SOURCE_BUCKET_NAME = values.Value("staging-marsha-source")
-    AWS_STATIC_BUCKET_NAME = values.Value("staging-marsha-static")
+    AWS_BASE_NAME = values.Value("staging")
 
 
 class PreProduction(Production):
     """Pre-production environment settings."""
 
-    AWS_SOURCE_BUCKET_NAME = values.Value("preprod-marsha-source")
-    AWS_STATIC_BUCKET_NAME = values.Value("preprod-marsha-static")
+    AWS_BASE_NAME = values.Value("preprod")

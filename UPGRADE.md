@@ -7,6 +7,14 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.0.0 to 3.1.0
+
+### Before deploying
+
+- new setting `AWS_BASE_NAME`. The value should be the terraform workspace name used to deploy
+  all the AWS stack. For example if your workspace name is `production` set `AWS_BASE_NAME` to
+  `production`
+
 ## 2.10.x to 3.0.x
 
 ### Before switching
