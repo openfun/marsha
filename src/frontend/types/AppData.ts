@@ -14,4 +14,7 @@ export interface AppData {
   video?: Nullable<Video>;
   document?: Nullable<Document>;
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
+  sentry_dsn: Nullable<string>;
+  environment: string;
+  release: string;
 }

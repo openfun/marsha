@@ -1,5 +1,6 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
 
+import * as Sentry from '@sentry/browser';
 import { Grommet } from 'grommet';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -11,11 +12,20 @@ import {
 } from 'react-intl';
 
 import { AppRoutes } from './components/AppRoutes';
-import { getDecodedJwt } from './data/appData';
+import { appData, getDecodedJwt } from './data/appData';
 import { report } from './utils/errors/report';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
+
+if (appData.sentry_dsn) {
+  Sentry.init({
+    dsn: appData.sentry_dsn,
+    environment: appData.environment,
+    release: appData.release,
+  });
+  Sentry.configureScope(scope => scope.setExtra('application', 'frontend'));
+}
 
 let localeCode: string;
 let locale: string;
