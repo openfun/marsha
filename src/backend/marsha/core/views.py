@@ -120,6 +120,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "modelName": self.model.RESOURCE_NAME,
                 "resource": self.serializer_class(resource).data if resource else None,
                 "state": "success",
+                "sentry_dsn": settings.SENTRY_DSN,
+                "environment": settings.ENVIRONMENT,
+                "release": settings.RELEASE,
             }
             if lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
