@@ -8,6 +8,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Introduce a new setting AWS_BASE_NAME to prefix all AWS settings in the project.
+
+### Changed
+
+- Using HTML entities in timed text tracks is allowed. Every tag used
+  will be escaped and rendered in the web page without being executed.
+
 ## [3.0.0] - 2019-09-24
 
 ### Added

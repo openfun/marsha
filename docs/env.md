@@ -173,6 +173,20 @@ The Amazon Web Services region where we deployed or want to deploy our serverles
 - Default: `"eu-west-1"`
 - Choices: Any valid AWS region name.
 
+#### DJANGO_AWS_BASE_NAME
+
+All the AWS services we use have their name prefixed by the terraform workspace name.
+This setting should contain the terraform workspace name defined in marsha's AWS project.
+
+- Type: string
+- Required: No
+- Default: Varies depending on the environment.
+  - `"development"` in development;
+  - `"test"` in test;
+  - `"staging"` in staging;
+  - `"preprod"` in preprod;
+  - `"production"` in production.
+
 #### DJANGO_AWS_SOURCE_BUCKET_NAME
 
 The source AWS S3 bucket where files will be uploaded by end users. This should match the name of the bucket created by the relevant AWS deployment.
