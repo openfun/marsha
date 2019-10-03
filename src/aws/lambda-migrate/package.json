@@ -1,0 +1,22 @@
+{
+  "author": "France Université Numérique",
+  "name": "aws-marsha-migrate",
+  "version": "3.0.0",
+  "engines": {
+    "node": "10"
+  },
+  "description": "Tasks to run when we want to execute a migration on AWS services",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/openfun/marsha"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "aws-sdk": "2.539.0"
+  },
+  "devDependencies": {
+    "jest": "24.9.0"
+  }
+}
