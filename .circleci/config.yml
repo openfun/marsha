@@ -297,7 +297,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: circleci/node:8.10
+      - image: circleci/node:10.16.3
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-configure
@@ -310,7 +310,7 @@ jobs:
             - v3-lambdas-configure-dependencies-
       - run:
           name: Install configure lambda dependencies
-          command: yarn install --ignore-engines --frozen-lockfile
+          command: yarn install --frozen-lockfile
       - run:
           name: Run configure lambda tests
           command: yarn test
@@ -321,7 +321,7 @@ jobs:
 
   test-lambda-encode:
     docker:
-      - image: circleci/node:8.10
+      - image: circleci/node:10.16.3
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-encode
@@ -334,7 +334,7 @@ jobs:
             - v3-lambdas-encode-dependencies-
       - run:
           name: Install encode lambda dependencies
-          command: yarn install --ignore-engines --frozen-lockfile
+          command: yarn install --frozen-lockfile
       - run:
           name: Run encode lambda tests
           command: yarn test
@@ -345,7 +345,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: circleci/node:8.10
+      - image: circleci/node:10.16.3
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-complete
@@ -358,7 +358,7 @@ jobs:
             - v3-lambdas-complete-dependencies-
       - run:
           name: Install complete lambda dependencies
-          command: yarn install --ignore-engines --frozen-lockfile
+          command: yarn install --frozen-lockfile
       - run:
           name: Run complete lambda tests
           command: yarn test
