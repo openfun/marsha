@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 3.0.0 to 3.1.0
 
+### After switching
+
+- If before deploying you've added the `AWSLambdaRole` policy to your AWS user, you may now
+  safely remove it.
+
 ### Before deploying
 
 - new setting `AWS_BASE_NAME`. The value should be the terraform workspace name used to deploy
@@ -21,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to False. We want to warn that not running this migration is strongly discouraged and poses
   security threats as the content of the timed text tracks will now be displayed insecurely
   by React.
+- The migration 0016 will invoke an AWS lambda. To achieve this migration, the AWS user you use
+  in the project must have sufficient permissions to invoke lambdas. If it's not the case, you
+  should assign him the `AWSLambdaRole` policy.
 
 ## 2.10.x to 3.0.x
 
