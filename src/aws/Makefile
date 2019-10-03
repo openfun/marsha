@@ -32,7 +32,7 @@ lambda:
 	@rm -rf dist && mkdir dist
 	@for lambda_name in configure encode complete ; do \
 		cd ./lambda-$$lambda_name ; \
-		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:8 bash -c "rm -rf node_modules; yarn install --frozen-lockfile --production=true" ; \
+		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 bash -c "rm -rf node_modules; yarn install --frozen-lockfile --production=true" ; \
 		zip -q -r9 ../dist/marsha_$$lambda_name.zip *; \
 		cd - ; \
 	done
@@ -43,7 +43,7 @@ test:
 	@echo "Test all lambda packages"
 	@for lambda_name in configure encode complete ; do \
 		cd ./lambda-$$lambda_name ; \
-		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:8 bash -c "rm -rf node_modules; yarn install --frozen-lockfile" ; \
+		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 bash -c "rm -rf node_modules; yarn install --frozen-lockfile" ; \
 		yarn test; \
 		cd - ; \
 	done

@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Using HTML entities in timed text tracks is allowed. Every tag used
   will be escaped and rendered in the web page without being executed.
+- Use node 10 engine to run AWS lambdas.
 
 ## [3.0.0] - 2019-09-24
 
