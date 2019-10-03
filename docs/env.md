@@ -368,3 +368,12 @@ Whether SSL certificate validation in requests made by the AWS lambdas should be
 - Type: boolean
 - Required: No
 - Default: false
+
+#### TF_VAR_migrations
+
+A comma separated list of migrations to execute by the migration lambda without the extension (`.js`). List of migrations are available in `src/aws/lambda-migrate/src/migrations`.
+To execute the migration `0001_encode_timed_text_tracks.js` set this variable with `0001_encode_timed_text_tracks`
+
+- Type: string
+- Required: No
+- Default: None
