@@ -80,11 +80,13 @@
     "react-router-dom": "5.1.2",
     "react-select": "3.0.8",
     "redux": "4.0.4",
+    "regenerator-runtime": "0.13.3",
     "reselect": "4.0.0",
     "styled-components": "4.4.0",
     "styled-reboot": "4.0.3",
     "uuid": "3.3.3",
     "vtt.js": "0.13.0",
+    "whatwg-fetch": "3.0.0",
     "zustand": "1.0.7"
   },
   "resolutions": {
