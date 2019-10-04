@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Support critical features (video & document playback) in IE 11.
 - Introduce a new setting AWS_BASE_NAME to prefix all AWS settings in the project.
 - Use sentry to track errors in the front application.
 
