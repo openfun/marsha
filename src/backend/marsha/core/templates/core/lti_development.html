@@ -1,5 +1,5 @@
 {% load static %}
-
+<!DOCTYPE html>
 <html>
   <head>
     <style>
@@ -40,21 +40,22 @@
     </style>
 
     <script>
-      const baseUrl = "http://localhost:8060/lti";
+      var baseUrl = "http://localhost:8060/lti";
 
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('form').forEach(form => {
-          form.addEventListener('submit', event => {
+      document.addEventListener('DOMContentLoaded', function () {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          var formForListener = forms[i];
+          formForListener.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const form = event.target;
-            const uuid = form.querySelector('input[name="uuid"]').value;
-            const resource = form.querySelector('select[name="resource"]').value;
-
-            form.action = `${baseUrl}/${resource}/${uuid}`;
+            var form = event.target;
+            var uuid = form.querySelector('input[name="uuid"]').value;
+            var resource = form.querySelector('select[name="resource"]').value;
+            form.action = baseUrl + '/' + resource + '/' + uuid;
             form.submit();
           });
-        });
+        }
       });
     </script>
   </head>
