@@ -36,7 +36,7 @@ module.exports = {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
-        test: /\.tsx?$/,
+        test: /(public-path\.js|\.tsx?$|(memoize-one|react-intl|zustand).*\.(jsx?))/,
         use: [
           {
             loader: 'babel-loader',
