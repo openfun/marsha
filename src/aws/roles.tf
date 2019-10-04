@@ -231,3 +231,78 @@ resource "aws_iam_role_policy_attachment" "event_rule_lambda_invoke_policy_attac
   role       = "${aws_iam_role.event_rule_role.name}"
   policy_arn = "${aws_iam_policy.event_rule_lambda_invoke_policy.arn}"
 }
+
+# Migrate lambda role
+#####################
+
+resource "aws_iam_role" "lambda_migrate_invocation_role" {
+  name = "${terraform.workspace}-marsha-lambda-migrate-invocation-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_migrate_logging_policy_attachment" {
+  role       = "${aws_iam_role.lambda_migrate_invocation_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+}
+
+resource "aws_iam_policy" "lambda_migrate_s3_access_policy" {
+  name        = "${terraform.workspace}-marsha-migrate-lambda-s3-access-policy"
+  path        = "/"
+  description = "IAM policy needed by lambda-migrate on S3"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["s3:ListBucket"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.marsha_source.bucket}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_migrate_s3_access_policy_attachment" {
+  role        = "${aws_iam_role.lambda_migrate_invocation_role.name}"
+  policy_arn  = "${aws_iam_policy.lambda_migrate_s3_access_policy.arn}"
+}
+
+resource "aws_iam_policy" "lambda_migrate_lambda_invoke_policy" {
+  name        = "${terraform.workspace}-marsha-migrate-lambda-invoke-policy"
+  path        = "/"
+  description = "IAM policy needed by lambda-migrate on S3"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["lambda:invokeAsync"],
+      "Effect": "Allow",
+      "Resource": "arn:aws:lambda:*:*:function:${aws_lambda_function.marsha_encode_lambda.function_name}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_migrate_lambda_invoke_policy_attachment" {
+  role        = "${aws_iam_role.lambda_migrate_invocation_role.name}"
+  policy_arn  = "${aws_iam_policy.lambda_migrate_lambda_invoke_policy.arn}"
+}
