@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 module.exports = {
   // Disable production-specific optimizations by default
   // They can be re-enabled by running the cli with `--mode=production` or making a separate
@@ -11,8 +9,9 @@ module.exports = {
   // the promise and iterator polyfills be added manually.
   entry: [
     './public-path.js',
-    'core-js/modules/es.promise',
-    'core-js/modules/es.array.iterator',
+    'core-js',
+    'regenerator-runtime/runtime',
+    'whatwg-fetch',
     './index.tsx',
   ],
 
