@@ -214,13 +214,6 @@ class Base(Configuration):
     # Cache
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
 
-    # This setting determines if migration 0016 should be run
-    # This migration will look for every uploaded timed text track in the
-    # S3 source bucket and then trigger the lambda to escape them
-    # By default this setting is false but overriden to true in production,
-    # staging and preprod
-    SHOULD_RUN_TIMEDTEXT_TRACKS_ESCAPING_MIGRATION = values.BooleanValue(True)
-
     SENTRY_DSN = values.Value(None)
 
     # pylint: disable=invalid-name
@@ -326,15 +319,12 @@ class Development(Base):
         }
     )
 
-    SHOULD_RUN_TIMEDTEXT_TRACKS_ESCAPING_MIGRATION = values.BooleanValue(False)
-
 
 class Test(Base):
     """Test environment settings."""
 
     CLOUDFRONT_SIGNED_URLS_ACTIVE = False
     AWS_BASE_NAME = values.Value("test")
-    SHOULD_RUN_TIMEDTEXT_TRACKS_ESCAPING_MIGRATION = values.BooleanValue(False)
 
 
 class Production(Base):
