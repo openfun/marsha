@@ -113,3 +113,39 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   principal     = "events.amazonaws.com"
   source_arn    = "${aws_cloudwatch_event_rule.marsha_encode_complete_rule.arn}"
 }
+
+# Migrations
+################
+resource "aws_lambda_function" "marsha_migrate_lambda" {
+  function_name    = "${terraform.workspace}-marsha-migrate"
+  handler          = "index.handler"
+  # Run on the highest version of node available on AWS lambda
+  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
+  runtime          = "nodejs10.x"
+  filename         = "dist/marsha_migrate.zip"
+  source_code_hash = "${base64sha256(file("dist/marsha_migrate.zip"))}"
+  role             = "${aws_iam_role.lambda_migrate_invocation_role.arn}"
+
+  timeout = 600
+
+  environment {
+    variables = {
+      S3_SOURCE_BUCKET        = "${aws_s3_bucket.marsha_source.id}"
+      MIGRATIONS              = "${var.migrations}"
+      LAMBDA_ENCODE_NAME      = "${aws_lambda_function.marsha_encode_lambda.function_name}"
+      NODE_ENV                = "production"
+    }
+  }
+}
+
+# Invoke marsha-migrate lambda on each deploy with an empty input
+data "aws_lambda_invocation" "invoke_migration" {
+  depends_on    = [
+    "aws_lambda_function.marsha_migrate_lambda",
+    "aws_lambda_function.marsha_encode_lambda"
+  ]
+  function_name     = "${aws_lambda_function.marsha_migrate_lambda.function_name}"
+  input = <<JSON
+{}
+JSON
+}

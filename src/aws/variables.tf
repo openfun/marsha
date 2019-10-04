@@ -28,3 +28,7 @@ variable "update_state_endpoint" {
 variable "update_state_secret" {
   type    = "string"
 }
+
+variable "migrations" {
+  type    = "string"
+}
