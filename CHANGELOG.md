@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.0] - 2019-10-07
+
 ### Added
 
 - Support critical features (video & document playback) in IE 11.
@@ -373,7 +375,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.0.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.1.0...master
+[3.1.0]: https://github.com/openfun/marsha/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/openfun/marsha/compare/v2.10.2...v3.0.0
 [2.10.2]: https://github.com/openfun/marsha/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/openfun/marsha/compare/v2.10.0...v2.10.1
