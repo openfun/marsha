@@ -5,17 +5,17 @@ const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 
 const regex = /^.*\/timedtexttrack\/.*$/
 
-const processTimedTextTracks = async (marker = null) => {
+const processTimedTextTracks = async (continuationToken = null) => {
 
   const params = {
     Bucket: process.env.S3_SOURCE_BUCKET,
   };
 
-  if (marker) {
-    params['Marker'] = marker;
+  if (continuationToken) {
+    params['ContinuationToken'] = continuationToken;
   }
 
-  const data = await s3.listObjects(params).promise();
+  const data = await s3.listObjectsV2(params).promise();
 
   data.Contents.map(async (object) => {
     if (regex.test(object.Key)) {
@@ -25,7 +25,7 @@ const processTimedTextTracks = async (marker = null) => {
   });
 
   if (data.IsTruncated) {
-    await processTimedTextTracks(data.NextMarker);
+    await processTimedTextTracks(data.NextContinuationToken);
   }
 }
 
