@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Polyfill Intl API for browsers not supporting this API.
+
 ## [3.1.1] - 2019-10-08
 
 ### Fixed
