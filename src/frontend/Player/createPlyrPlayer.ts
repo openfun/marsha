@@ -132,17 +132,16 @@ export const createPlyrPlayer = async (
     }
     isInitialized = true;
 
-    const plyr = event.detail.plyr;
     const contextExtensions: InitializedContextExtensions = {
-      ccSubtitleEnabled: plyr.currentTrack === -1 ? false : true,
-      fullScreen: plyr.fullscreen.active,
-      length: plyr.duration,
-      speed: `${plyr.speed || 1}x`,
-      volume: plyr.volume,
+      ccSubtitleEnabled: player.currentTrack === -1 ? false : true,
+      fullScreen: player.fullscreen.active,
+      length: player.duration,
+      speed: `${player.speed || 1}x`,
+      volume: player.volume,
     };
 
-    if (plyr.currentTrack > -1 && plyr.source.tracks) {
-      const track = plyr.source.tracks[plyr.currentTrack];
+    if (player.currentTrack > -1 && player.source.tracks) {
+      const track = player.source.tracks[player.currentTrack];
 
       if (track.srcLang) {
         contextExtensions.ccSubtitleLanguage = track.srcLang;
@@ -153,26 +152,27 @@ export const createPlyrPlayer = async (
 
   player.on('playing', event => {
     xapiStatement.played({
-      time: event.detail.plyr.currentTime,
+      time: player.currentTime,
     });
 
-    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.pause);
+    changePlayButtonAriaLabel(player.config.i18n.pause);
   });
 
   player.on('pause', event => {
     xapiStatement.paused({
-      time: event.detail.plyr.currentTime,
+      time: player.currentTime,
     });
 
-    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.play);
+    changePlayButtonAriaLabel(player.config.i18n.play);
   });
 
   /**************** Seeked statement ***********************/
   player.on('timeupdate', event => {
-    if (true === isInitialized && false === event.detail.plyr.seeking) {
-      currentTime = event.detail.plyr.currentTime;
+    if (true === isInitialized && false === player.seeking) {
+      currentTime = player.currentTime;
     }
   });
+
   player.on('seeking', event => {
     if (false === isInitialized) {
       return;
@@ -187,7 +187,7 @@ export const createPlyrPlayer = async (
       // while the video is not played. Without this, the state seeks a little bit
       // when loaded and the poster is not displayed.
       // see: https://github.com/sampotts/plyr/issues/1397
-      event.detail.plyr.currentTime = 0;
+      player.currentTime = 0;
       return;
     }
     if (false === hasSeeked) {
@@ -196,7 +196,7 @@ export const createPlyrPlayer = async (
     hasSeeked = false;
     xapiStatement.seeked({
       timeFrom: seekingAt,
-      timeTo: event.detail.plyr.currentTime,
+      timeTo: player.currentTime,
     });
   });
 
@@ -206,23 +206,22 @@ export const createPlyrPlayer = async (
       return;
     }
 
-    const plyr = event.detail.plyr;
     const contextExtensions: InteractedContextExtensions = {
-      ccSubtitleEnabled: plyr.currentTrack === -1 ? false : true,
-      fullScreen: plyr.fullscreen.active,
-      quality: plyr.quality,
-      speed: `${plyr.speed || 1}x`,
-      volume: plyr.volume,
+      ccSubtitleEnabled: player.currentTrack === -1 ? false : true,
+      fullScreen: player.fullscreen.active,
+      quality: player.quality,
+      speed: `${player.speed || 1}x`,
+      volume: player.volume,
     };
 
-    if (plyr.currentTrack > -1 && plyr.source.tracks) {
-      const track = plyr.source.tracks[plyr.currentTrack];
+    if (player.currentTrack > -1 && player.source.tracks) {
+      const track = player.source.tracks[player.currentTrack];
 
       if (track.srcLang) {
         contextExtensions.ccSubtitleLanguage = track.srcLang;
       }
     }
-    xapiStatement.interacted({ time: plyr.currentTime }, contextExtensions);
+    xapiStatement.interacted({ time: player.currentTime }, contextExtensions);
   };
 
   player.on('captionsdisabled', event => interacted(event));
@@ -237,13 +236,13 @@ export const createPlyrPlayer = async (
 
   /**************** Dispatch time updated ************************/
   player.on('timeupdate', event => {
-    dispatchPlayerTimeUpdate(event.detail.plyr.currentTime);
+    dispatchPlayerTimeUpdate(player.currentTime);
   });
   /**************** End dispatch time updated *********************/
 
   player.on('ended', event => {
     // change button control aria-label to play.
-    changePlayButtonAriaLabel(event.detail.plyr.config.i18n.play);
+    changePlayButtonAriaLabel(player.config.i18n.play);
   });
 
   window.addEventListener('unload', () => {
