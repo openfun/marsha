@@ -49,6 +49,15 @@ document.addEventListener('DOMContentLoaded', async event => {
       await import(`intl/locale-data/jsonp/${localeCode}.js`);
     }
 
+    // Plyr uses CustomEvents which we consume in our xapi event infrastructure
+    try {
+      // We need to specifically attempt to use the constructor as `CustomEvent` exists in some browsers
+      // (eg. IE11) but does not support the constructor.
+      const test = new CustomEvent('CustomEventConstructorIsSupported');
+    } catch (e) {
+      await import('custom-event-polyfill');
+    }
+
     if (!Intl.PluralRules) {
       await import('intl-pluralrules');
     }
