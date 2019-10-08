@@ -25,7 +25,7 @@ describe('0001_encode_timed_text_tracks', () => {
     jest.resetAllMocks();
   });
 
-  it('runs the migration without pagination', () => {
+  it('runs the migration without pagination', async () => {
     const listObjectsResponse = {
       Contents: [
         { Key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/1' },
@@ -34,23 +34,23 @@ describe('0001_encode_timed_text_tracks', () => {
       ],
       IsTruncated: false,
     }
-    let expectedCallback;
-    mockListObjects.mockImplementation((parameters, callback) => {
-      expectedCallback = callback;
-      callback(null, listObjectsResponse);
+
+    mockListObjects.mockReturnValue({
+      promise: () =>
+        new Promise(resolve => resolve(listObjectsResponse)),
     });
 
     mockInvokeAsync.mockReturnValue({
-      send: jest.fn(),
+      promise: () => Promise.resolve(),
     });
 
-    migration();
+    await migration();
 
-    expect(mockListObjects).toHaveBeenCalledWith({ Bucket: 'test-marsha-source' }, expectedCallback);
+    expect(mockListObjects).toHaveBeenCalledWith({ Bucket: 'test-marsha-source' });
     expect(mockInvokeAsync).toHaveBeenCalledTimes(2);
     expect(mockInvokeAsync).toHaveBeenCalledWith({
       FunctionName: 'test-marsha-encode',
-      InvokeArgs: {
+      InvokeArgs: JSON.stringify({
         Records: [{
           s3: {
             object: {key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr'},
@@ -59,11 +59,11 @@ describe('0001_encode_timed_text_tracks', () => {
             },
           },
         }]
-      },
+      }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
       FunctionName: 'test-marsha-encode',
-      InvokeArgs: {
+      InvokeArgs: JSON.stringify({
         Records: [{
           s3: {
             object: {key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en'},
@@ -72,11 +72,11 @@ describe('0001_encode_timed_text_tracks', () => {
             },
           },
         }]
-      },
+      }),
     });
   });
 
-  it('runs the migration with pagination', () => {
+  it('runs the migration with pagination', async () => {
     const firstListObjectsResponse = {
       Contents: [
         { Key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/1' },
@@ -95,32 +95,30 @@ describe('0001_encode_timed_text_tracks', () => {
       IsTruncated: false,
     }
 
-    let expectedCallback1;
-    let expectedCallback2;
-    mockListObjects.mockImplementationOnce((parameters, callback) => {
-      expectedCallback1 = callback;
-      callback(null, firstListObjectsResponse);
-    }).mockImplementationOnce((parameters, callback) => {
-      expectedCallback2 = callback;
-      callback(null, secondListObjectsResponse);
-    });;
-
-    mockInvokeAsync.mockReturnValue({
-      send: jest.fn(),
+    mockListObjects.mockReturnValueOnce({
+      promise: () =>
+        new Promise(resolve => resolve(firstListObjectsResponse)),
+    }).mockReturnValueOnce({
+      promise: () =>
+        new Promise(resolve => resolve(secondListObjectsResponse)),
     });
 
-    migration();
+    mockInvokeAsync.mockReturnValue({
+      promise: () => Promise.resolve(),
+    });
+
+    await migration();
 
     expect(mockListObjects).toHaveBeenCalledTimes(2);
-    expect(mockListObjects).toHaveBeenCalledWith({ Bucket: 'test-marsha-source' }, expectedCallback1);
+    expect(mockListObjects).toHaveBeenCalledWith({ Bucket: 'test-marsha-source' });
     expect(mockListObjects).toHaveBeenCalledWith({
       Bucket: 'test-marsha-source',
       Marker: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/2'
-    }, expectedCallback2);
+    });
     expect(mockInvokeAsync).toHaveBeenCalledTimes(3);
     expect(mockInvokeAsync).toHaveBeenCalledWith({
       FunctionName: 'test-marsha-encode',
-      InvokeArgs: {
+      InvokeArgs: JSON.stringify({
         Records: [{
           s3: {
             object: {key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr'},
@@ -129,11 +127,11 @@ describe('0001_encode_timed_text_tracks', () => {
             },
           },
         }]
-      },
+      }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
       FunctionName: 'test-marsha-encode',
-      InvokeArgs: {
+      InvokeArgs: JSON.stringify({
         Records: [{
           s3: {
             object: {key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en'},
@@ -142,11 +140,11 @@ describe('0001_encode_timed_text_tracks', () => {
             },
           },
         }]
-      },
+      }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
       FunctionName: 'test-marsha-encode',
-      InvokeArgs: {
+      InvokeArgs: JSON.stringify({
         Records: [{
           s3: {
             object: {key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/3_ts_fr'},
@@ -155,7 +153,7 @@ describe('0001_encode_timed_text_tracks', () => {
             },
           },
         }]
-      },
+      }),
     });
   });
 });

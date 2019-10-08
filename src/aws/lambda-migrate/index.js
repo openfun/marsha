@@ -17,18 +17,19 @@ exports.handler = async (event, context, callback) => {
       return acc;
     }, [])
     .map(migration => `./${basePath}/migrations/${migration}.js`)
-    .map(migration => {
+    .map(async (migration) => {
       let toMigrate;
       try {
         toMigrate = require(migration);
       } catch (e) {
         console.error(`migration ${migration} does not exists`);
+        callback(e);
         return;
       }
 
       try {
         console.log(`executing migration ${migration}`);
-        toMigrate();
+        await toMigrate();
         console.log(`end migration ${migration}`)
       } catch (e){
         errors.push(e);

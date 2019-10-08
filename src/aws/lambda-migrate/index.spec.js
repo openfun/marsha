@@ -13,15 +13,15 @@ describe('lambda', () => {
     spyError.mockRestore();
   });
 
-  it('should execute nothing if MIGRATIONS env is missing', () => {
+  it('should execute nothing if MIGRATIONS env is missing', async () => {
     const lambda = require('./index.js').handler;
-    lambda(null, null, jest.fn());
+    await lambda(null, null, jest.fn());
   });
 
-  it('should execute only existing migrations', () => {
+  it('should execute only existing migrations', async () => {
     process.env.MIGRATIONS = ' 0001_migration,foo';
     const lambda = require('./index.js').handler;
-    lambda(null, null, jest.fn());
+    await lambda(null, null, jest.fn());
     expect(spyError).toHaveBeenCalledWith('migration ./stubs/migrations/foo.js does not exists');
     expect(spyLog).toHaveBeenNthCalledWith(1, 'executing migration ./stubs/migrations/0001_migration.js');
     expect(spyLog).toHaveBeenNthCalledWith(2, 'foo');
