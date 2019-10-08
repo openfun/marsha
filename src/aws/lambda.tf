@@ -126,7 +126,7 @@ resource "aws_lambda_function" "marsha_migrate_lambda" {
   source_code_hash = "${base64sha256(file("dist/marsha_migrate.zip"))}"
   role             = "${aws_iam_role.lambda_migrate_invocation_role.arn}"
 
-  timeout = 600
+  timeout = 900
 
   environment {
     variables = {
@@ -145,7 +145,5 @@ data "aws_lambda_invocation" "invoke_migration" {
     "aws_lambda_function.marsha_encode_lambda"
   ]
   function_name     = "${aws_lambda_function.marsha_migrate_lambda.function_name}"
-  input = <<JSON
-{}
-JSON
+  input = "{}"
 }
