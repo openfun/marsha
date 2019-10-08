@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix errors in lambda-migrate function. The timed text tracks migrations can
+  lead to an infinite loop.
+
 ## [3.1.0] - 2019-10-07
 
 ### Added
