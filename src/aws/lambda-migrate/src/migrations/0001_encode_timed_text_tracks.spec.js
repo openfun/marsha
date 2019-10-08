@@ -9,7 +9,7 @@ const mockListObjects = jest.fn();
 const mockInvokeAsync = jest.fn();
 jest.mock('aws-sdk', () => ({
   S3: function() {
-    this.listObjects = mockListObjects;
+    this.listObjectsV2 = mockListObjects;
   },
   Lambda: function() {
     this.invokeAsync = mockInvokeAsync
@@ -84,7 +84,7 @@ describe('0001_encode_timed_text_tracks', () => {
         { Key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en'},
       ],
       IsTruncated: true,
-      NextMarker: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/2'
+      NextContinuationToken: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/2'
     }
 
     const secondListObjectsResponse = {
@@ -113,7 +113,7 @@ describe('0001_encode_timed_text_tracks', () => {
     expect(mockListObjects).toHaveBeenCalledWith({ Bucket: 'test-marsha-source' });
     expect(mockListObjects).toHaveBeenCalledWith({
       Bucket: 'test-marsha-source',
-      Marker: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/2'
+      ContinuationToken: '80c43d43-4ed0-4695-ac64-8318f59d04ec/videos/2'
     });
     expect(mockInvokeAsync).toHaveBeenCalledTimes(3);
     expect(mockInvokeAsync).toHaveBeenCalledWith({
