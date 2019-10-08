@@ -1224,6 +1224,11 @@
   resolved "https://registry.yarnpkg.com/@types/iframe-resizer/-/iframe-resizer-3.5.7.tgz#a30de6f049fe2475fe9288e783f814e8c3b627ca"
   integrity sha512-SMDeDi0c5HdAtfgJ/UVMCllJyYLWpnnCrufl/E7BOfG2KQvRAmWTE7xK3u6xJHeOlHTpOHo3Ps7tQzsHUSyoWQ==
 
+"@types/intl@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/intl/-/intl-1.2.0.tgz#1245511f13064402087979f498764611a3c758fc"
+  integrity sha512-BP+KwmOvD9AR5aoxnbyyPr3fAtpjEI/bVImHsotmpuC43+z0NAmjJ9cQbX7vPCq8XcvCeAVc8E3KSQPYNaPsUQ==
+
 "@types/invariant@^2.2.30":
   version "2.2.30"
   resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.30.tgz#20efa342807606ada5483731a8137cb1561e5fe9"
@@ -3925,6 +3930,11 @@ intl-pluralrules@1.0.3:
   integrity sha512-N+q+NmxJD5Pi+h7DoemDcNZN86e1dPSFUsWUtYtnSc/fKRen4vxCTcsmGveWOUgI9O9uSLTaiwJpC9f5xa2X4w==
   dependencies:
     make-plural "^4.3.0"
+
+intl@1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/intl/-/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
+  integrity sha1-giRKIZDE5Bn4Nx9ao02qNCDiq94=
 
 invariant@^2.1.1, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
