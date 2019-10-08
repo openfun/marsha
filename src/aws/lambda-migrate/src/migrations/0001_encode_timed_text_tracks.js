@@ -5,7 +5,7 @@ const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 
 const regex = /^.*\/timedtexttrack\/.*$/
 
-const processTimedTextTracks = (marker = null) => {
+const processTimedTextTracks = async (marker = null) => {
 
   const params = {
     Bucket: process.env.S3_SOURCE_BUCKET,
@@ -15,29 +15,25 @@ const processTimedTextTracks = (marker = null) => {
     params['Marker'] = marker;
   }
 
-  s3.listObjects(params, (error, data) => {
-    if (error) {
-      throw error;
-    }
+  const data = await s3.listObjects(params).promise();
 
-    data.Contents.map(object => {
-      if (regex.test(object.Key)) {
-        console.log(object.Key);
-        invokeLambda(object);
-      }
-    });
-
-    if (data.IsTruncated) {
-      processTimedTextTracks(data.NextMarker);
+  data.Contents.map(async (object) => {
+    if (regex.test(object.Key)) {
+      console.log(object.Key);
+      await invokeLambda(object);
     }
   });
+
+  if (data.IsTruncated) {
+    await processTimedTextTracks(data.NextMarker);
+  }
 }
 
-const invokeLambda = timedTextTrack => {
+const invokeLambda = async (timedTextTrack) => {
   console.log("invoke lambda");
-  const request =  lambda.invokeAsync({
+  await lambda.invokeAsync({
     FunctionName: process.env.LAMBDA_ENCODE_NAME,
-    InvokeArgs: {
+    InvokeArgs: JSON.stringify({
       Records: [{
         s3: {
           object: {key: timedTextTrack.Key},
@@ -46,12 +42,11 @@ const invokeLambda = timedTextTrack => {
           },
         }
       }]
-    }
-  });
-  request.send();
+    }),
+  }).promise();
 }
 
-module.exports = () => {
+module.exports = async () => {
   console.log("execute migration 1");
-  processTimedTextTracks();
+  await processTimedTextTracks();
 };
