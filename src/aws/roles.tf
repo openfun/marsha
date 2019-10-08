@@ -293,7 +293,10 @@ resource "aws_iam_policy" "lambda_migrate_lambda_invoke_policy" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": ["lambda:invokeAsync"],
+      "Action": [
+        "lambda:invokeAsync",
+        "lambda:invokeFunction"
+      ],
       "Effect": "Allow",
       "Resource": "arn:aws:lambda:*:*:function:${aws_lambda_function.marsha_encode_lambda.function_name}"
     }
