@@ -108,8 +108,10 @@ class LTI:
         # Make sure we only accept requests from domains in which the "top parts" match
         # the URL for the consumer_site associated with the passport.
         # eg. sub.example.com & example.com for an example.com consumer site.
-        if request_domain != consumer_site.domain and not request_domain.endswith(
-            ".{:s}".format(consumer_site.domain)
+        if (
+            request_domain
+            and request_domain != consumer_site.domain
+            and not request_domain.endswith(".{:s}".format(consumer_site.domain))
         ):
             raise LTIException(
                 "Host domain ({:s}) does not match registered passport ({:s}).".format(
