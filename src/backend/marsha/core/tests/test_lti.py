@@ -82,6 +82,58 @@ class LTITestCase(TestCase):
         with self.assertRaises(LTIException):
             lti.verify()
 
+    def test_lti_request_body_without_referer(self):
+        """Simulate an LTI launch request with oauth in the body.
+
+        When the http referer is missing the request should still be authorized.
+        """
+        passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="testserver")
+        lti_parameters = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Instructor",
+        }
+        resource_id = uuid.uuid4()
+        url = "http://testserver/lti/videos/{!s}".format(resource_id)
+        client = oauth1.Client(
+            client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
+        )
+        # Compute Authorization header which looks like:
+        # Authorization: OAuth oauth_nonce="80966668944732164491378916897",
+        # oauth_timestamp="1378916897", oauth_version="1.0", oauth_signature_method="HMAC-SHA1",
+        # oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"
+        _uri, headers, _body = client.sign(
+            url,
+            http_method="POST",
+            body=lti_parameters,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+        # Parse headers to pass to template as part of context:
+        oauth_dict = dict(
+            param.strip().replace('"', "").split("=")
+            for param in headers["Authorization"].split(",")
+        )
+
+        signature = oauth_dict["oauth_signature"]
+        oauth_dict["oauth_signature"] = unquote(signature)
+        oauth_dict["oauth_nonce"] = oauth_dict.pop("OAuth oauth_nonce")
+
+        lti_parameters.update(oauth_dict)
+        request = self.factory.post(url, lti_parameters)
+        lti = LTI(request, uuid.uuid4())
+        self.assertTrue(lti.verify())
+        self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
+
+        # If we alter the signature (e.g. add "a" to it), the verification should fail
+        oauth_dict["oauth_signature"] = "{:s}a".format(signature)
+
+        lti_parameters.update(oauth_dict)
+        request = self.factory.post(url, lti_parameters)
+        lti = LTI(request, resource_id)
+        with self.assertRaises(LTIException):
+            lti.verify()
+
     def test_lti_video_instructor(self):
         """The instructor role should be identified even when a synonym is used."""
         for roles_string in [
