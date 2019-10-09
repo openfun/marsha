@@ -44,7 +44,7 @@ export let intl: IntlShape;
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', async event => {
   try {
-    if (!Intl) {
+    if (!window.Intl) {
       await import('intl');
       await import(`intl/locale-data/jsonp/${localeCode}.js`);
     }
