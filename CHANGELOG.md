@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fix errors in lambda-migrate function. The timed text tracks migrations can
   lead to an infinite loop.
+- Authorize LTI requests that have an empty HTTP referer.
 
 ## [3.1.0] - 2019-10-07
 
