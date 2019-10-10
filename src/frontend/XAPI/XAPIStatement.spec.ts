@@ -61,7 +61,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
 
     it('post an initialized statement with all extensions', () => {
@@ -118,7 +117,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/volume': 1,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
 
@@ -153,7 +151,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time': 42.321,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
 
@@ -195,7 +192,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time': 10,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
 
@@ -237,7 +233,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time-to': 10,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
 
@@ -282,7 +277,6 @@ describe('XAPIStatement', () => {
       expect(body.result.completion).toBe(true);
       expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
 
     it('sends a completed statement even if progress is higher 100%', () => {
@@ -330,7 +324,6 @@ describe('XAPIStatement', () => {
       expect(body.result.completion).toBe(true);
       expect(body.result.duration).toMatch(/^PT[0-9]*.?[0-9]*S$/);
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
 
@@ -373,7 +366,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
 
     it('sends a terminated statement with a segment started and not closed', () => {
@@ -426,7 +418,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
   describe('XAPIStatement.interacted', () => {
@@ -483,7 +474,6 @@ describe('XAPIStatement', () => {
         'https://w3id.org/xapi/video/extensions/time': 50,
       });
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('timestamp');
     });
   });
   describe('XAPIStatement played segment', () => {

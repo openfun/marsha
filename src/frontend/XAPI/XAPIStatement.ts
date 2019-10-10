@@ -379,7 +379,6 @@ export class XAPIStatement {
       body: JSON.stringify({
         ...data,
         id: uuid(),
-        timestamp: DateTime.utc().toISO(),
       }),
       headers: {
         Authorization: `Bearer ${this.jwt}`,
