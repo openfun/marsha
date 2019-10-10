@@ -442,7 +442,6 @@ class XAPIStatementSerializer(serializers.Serializer):
         required=False,
         default=str(uuid.uuid4()),
     )
-    timestamp = serializers.DateTimeField()
 
     def validate(self, attrs):
         """Check if there is no extra arguments in the submitted payload."""

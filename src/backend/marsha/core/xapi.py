@@ -2,6 +2,8 @@
 import re
 import uuid
 
+from django.utils import timezone
+
 import requests
 
 from .exceptions import MissingUserIdError
@@ -86,8 +88,7 @@ class XAPI:
         if "id" not in statement:
             statement["id"] = str(uuid.uuid4())
 
-        statement["timestamp"] = statement["timestamp"].isoformat()
-
+        statement["timestamp"] = timezone.now().isoformat()
         statement["context"].update(
             {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
         )
