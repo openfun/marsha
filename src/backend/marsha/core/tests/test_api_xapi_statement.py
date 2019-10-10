@@ -72,7 +72,6 @@ class XAPIStatementApiTest(TestCase):
             {
                 "verb": ["This field is required."],
                 "context": ["This field is required."],
-                "timestamp": ["This field is required."],
             },
         )
 
@@ -95,7 +94,6 @@ class XAPIStatementApiTest(TestCase):
             "context": {
                 "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
             },
-            "timestamp": "2018-12-31T16:17:35.717Z",
         }
 
         response = self.client.post(
@@ -129,7 +127,6 @@ class XAPIStatementApiTest(TestCase):
             "context": {
                 "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
             },
-            "timestamp": "2018-12-31T16:17:35.717Z",
         }
 
         mock_response = mock.Mock()
@@ -175,7 +172,6 @@ class XAPIStatementApiTest(TestCase):
             "context": {
                 "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
             },
-            "timestamp": "2018-12-31T16:17:35.717Z",
         }
 
         video_model_mock.return_value = video
@@ -211,7 +207,6 @@ class XAPIStatementApiTest(TestCase):
             "context": {
                 "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
             },
-            "timestamp": "2018-12-31T16:17:35.717Z",
         }
 
         video_model_mock.return_value = video
