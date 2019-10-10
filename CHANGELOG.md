@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Correctly load Intl polyfill
+- XAPI timestamp is set in the backend.
 
 ## [3.1.2] - 2019-10-09
 
