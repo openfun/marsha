@@ -102,7 +102,6 @@ class XAPIStatementSerializersTest(TestCase):
         data = {
             "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
             "context": {"extensions": {"foo": "bar"}},
-            "timestamp": "2018-12-31T16:17:35.717Z",
         }
 
         serializer = XAPIStatementSerializer(data=data)
@@ -117,7 +116,6 @@ class XAPIStatementSerializersTest(TestCase):
         data = {
             "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
             "context": {"extensions": {"foo": "bar"}},
-            "timestamp": "2018-12-31T16:17:35.717Z",
             "result": {"extensions": {"foo": "bar"}},
             "id": "cc8868ac-d84b-4826-89df-a6171e9e3641",
         }
@@ -134,10 +132,7 @@ class XAPIStatementSerializersTest(TestCase):
 
     def test_xapi_statement_serializer_with_missing_verb(self):
         """The XAPIStatementSerializer should fail when verb is missing."""
-        data = {
-            "context": {"extensions": {"foo": "bar"}},
-            "timestamp": "2018-12-31T16:17:35.717Z",
-        }
+        data = {"context": {"extensions": {"foo": "bar"}}}
 
         serializer = XAPIStatementSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -147,10 +142,7 @@ class XAPIStatementSerializersTest(TestCase):
 
     def test_xapi_statement_serializer_with_missing_context(self):
         """The XAPIStatementSerializer should fail when context is missing."""
-        data = {
-            "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
-            "timestamp": "2018-12-31T16:17:35.717Z",
-        }
+        data = {"verb": {"id": "http://url.tld", "display": {"foo": "bar"}}}
 
         serializer = XAPIStatementSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -163,7 +155,6 @@ class XAPIStatementSerializersTest(TestCase):
         data = {
             "verb": {"id": "http://url.tld", "display": {"foo": "bar"}},
             "context": {"extensions": {"foo": "bar"}},
-            "timestamp": "2018-12-31T16:17:35.717Z",
             "foo": "bar",
         }
 
