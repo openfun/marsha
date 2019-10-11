@@ -140,6 +140,26 @@ Run the build and copy the `iframe-resizer` host-side JS into your local `Django
     $ yarn build
     $ yarn copy-iframe-resizer
 
+The front application is tested using [jest](https://jestjs.io/). Every js module has its corresponding spec file containing related tests:
+
+```
+├── VideoPlayer
+│   ├── index.spec.tsx
+│   ├── index.tsx
+│   ├── indexWithDashjs.spec.tsx
+│   └── VideoPlayer.css
+```
+
+Run the tests:
+
+    $ yarn test
+
+Browser testing provided by:
+
+<a href="https://www.browserstack.com">
+<img width="160" src="https://d29emq8to944i.cloudfront.net/static/browserstack/Browserstack-logo.svg" alt="BrowserStack"/>
+</a>
+
 🗝 **Before you go further**, you need to create a `Consumer Site` and `Passport` in Marsha's [admin panel](http://localhost:8060/admin/).
 
 You should be all set to make the LTI request on the [development view](http://localhost:8060/development/) and access `Marsha`'s frontend interface!
