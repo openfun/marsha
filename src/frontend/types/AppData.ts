@@ -17,4 +17,9 @@ export interface AppData {
   sentry_dsn: Nullable<string>;
   environment: string;
   release: string;
+  static: {
+    svg: {
+      plyr: string;
+    };
+  };
 }
