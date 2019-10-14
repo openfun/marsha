@@ -70,6 +70,7 @@ export const createPlyrPlayer = async (
       unmute: intl.formatMessage(i18nMessages.unmute),
       volume: intl.formatMessage(i18nMessages.volume),
     },
+    iconUrl: appData.static.svg.plyr,
     seekTime: 5,
     settings,
   });

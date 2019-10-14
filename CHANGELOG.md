@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Host plyr's icons SVG on Marsha's infrastructure.
+
 ### Fixed
 
 - Correctly load Intl polyfill
