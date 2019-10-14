@@ -32,7 +32,14 @@ jest.mock('../index', () => ({
 }));
 
 jest.mock('../data/appData', () => ({
-  appData: { jwt: 'foo' },
+  appData: {
+    jwt: 'foo',
+    static: {
+      svg: {
+        plyr: '/static/svg/plyr.svg',
+      },
+    },
+  },
   getDecodedJwt: jest.fn().mockImplementation(() => ({
     locale: 'en',
     session_id: 'abcd',
