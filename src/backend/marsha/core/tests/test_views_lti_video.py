@@ -75,6 +75,9 @@ class VideoLTIViewTestCase(TestCase):
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
+            context.get("static"), {"svg": {"plyr": "/static/svg/plyr.svg"}}
+        )
+        self.assertEqual(
             context.get("resource"),
             {
                 "active_stamp": None,

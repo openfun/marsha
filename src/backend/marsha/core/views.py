@@ -7,6 +7,7 @@ import uuid
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
+from django.templatetags.static import static
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
@@ -123,6 +124,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "sentry_dsn": settings.SENTRY_DSN,
                 "environment": settings.ENVIRONMENT,
                 "release": settings.RELEASE,
+                "static": {"svg": {"plyr": static("svg/plyr.svg")}},
             }
             if lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
