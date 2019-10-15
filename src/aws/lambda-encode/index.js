@@ -80,7 +80,7 @@ exports.handler = async (event, context, callback) => {
 
     case 'timedtexttrack':
       try {
-        await encodeTimedTextTrack(objectKey, sourceBucket);
+        await encodeTimedTextTrack(objectKey, sourceBucket, extendedStamp);
         await updateState(objectKey, READY);
       } catch (error) {
         return callback(error);
