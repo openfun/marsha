@@ -158,7 +158,7 @@ describe('lambda', () => {
             },
             object: {
               key:
-                '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr',
+                '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st',
             },
           },
         },
@@ -169,11 +169,12 @@ describe('lambda', () => {
       await lambda(event, null, callback);
 
       expect(mockEncodeTimedTextTrack).toHaveBeenCalledWith(
-        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr',
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st',
         'source bucket',
+        '1542967735_fr_st'
       );
       expect(mockUpdateState).toHaveBeenCalledWith(
-        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr',
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st',
         'ready',
       );
     });
@@ -186,8 +187,9 @@ describe('lambda', () => {
       await lambda(event, null, callback);
 
       expect(mockEncodeTimedTextTrack).toHaveBeenCalledWith(
-        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr',
+        '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st',
         'source bucket',
+        '1542967735_fr_st'
       );
       expect(mockUpdateState).not.toHaveBeenCalled();
       expect(callback).toHaveBeenCalledWith('Failed!');

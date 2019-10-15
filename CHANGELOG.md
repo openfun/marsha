@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Firefox does not interpret html entities in subtitles. Only transcripts
+  are encoded.
+
 ## [3.1.4] - 2019-10-16
 
 ### Fixed
