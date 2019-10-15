@@ -90,7 +90,7 @@
     "uuid": "3.3.3",
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.0.0",
-    "zustand": "2.1.0"
+    "zustand": "1.0.7"
   },
   "resolutions": {
     "@types/styled-components": "4.1.19",
