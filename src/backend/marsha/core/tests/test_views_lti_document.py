@@ -12,6 +12,7 @@ from django.test import TestCase
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..defaults import STATE_CHOICES
 from ..factories import ConsumerSiteLTIPassportFactory, DocumentFactory, PlaylistFactory
 from ..lti import LTI
 
@@ -33,6 +34,8 @@ class DocumentLTIViewTestCase(TestCase):
         document = DocumentFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": document.lti_id,
@@ -86,7 +89,8 @@ class DocumentLTIViewTestCase(TestCase):
             playlist__consumer_site=passport.consumer_site,
             playlist__is_portable_to_playlist=True,
             playlist__lti_id="course-v1:ufr+mathematics+00001",
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         other_playlist = PlaylistFactory(
             consumer_site=passport.consumer_site,
@@ -144,7 +148,8 @@ class DocumentLTIViewTestCase(TestCase):
         document = DocumentFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": document.lti_id,

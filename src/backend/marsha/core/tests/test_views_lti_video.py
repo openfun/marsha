@@ -12,6 +12,7 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..defaults import STATE_CHOICES
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
     TimedTextTrackFactory,
@@ -176,9 +177,12 @@ class VideoLTIViewTestCase(TestCase):
         """A video from another portable playlist should have "can_update" set to False."""
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         video = VideoFactory(
+            id="301b5f4f-b9f1-4a5f-897d-f8f1bf22c396",
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            upload_state="ready",
+            playlist__title="playlist-003",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": video.lti_id,
@@ -209,16 +213,54 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
-                "active_stamp": None,
-                "is_ready_to_show": False,
+                "active_stamp": "1569309880",
+                "is_ready_to_show": True,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
-                "upload_state": "ready",
+                "upload_state": video.upload_state,
                 "timed_text_tracks": [],
                 "thumbnail": None,
                 "title": video.title,
-                "urls": None,
+                "urls": {
+                    "mp4": {
+                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "thumbnails/1569309880_144.0000000.jpg",
+                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "thumbnails/1569309880_1080.0000000.jpg",
+                    },
+                    "manifests": {
+                        "dash": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "cmaf/1569309880.mpd",
+                        "hls": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "cmaf/1569309880.m3u8",
+                    },
+                    "previews": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                    "previews/1569309880_100.jpg",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -234,9 +276,12 @@ class VideoLTIViewTestCase(TestCase):
         """Validate the format of the response returned by the view for a student request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
+            id="59c0fc7a-0f64-46c0-993f-bdf47ecd837f",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
-            upload_state="ready",
+            playlist__title="playlist-002",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": video.lti_id,
@@ -273,19 +318,58 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         self.assertEqual(context.get("state"), "success")
+
         self.assertEqual(
             context.get("resource"),
             {
-                "active_stamp": None,
-                "is_ready_to_show": False,
+                "active_stamp": "1569309880",
+                "is_ready_to_show": True,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
-                "upload_state": "ready",
+                "upload_state": video.upload_state,
                 "timed_text_tracks": [],
                 "thumbnail": None,
                 "title": video.title,
-                "urls": None,
+                "urls": {
+                    "mp4": {
+                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_144.0000000.jpg",
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_1080.0000000.jpg",
+                    },
+                    "manifests": {
+                        "dash": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "cmaf/1569309880.mpd",
+                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "cmaf/1569309880.m3u8",
+                    },
+                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews/1569309880_100.jpg",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -301,7 +385,9 @@ class VideoLTIViewTestCase(TestCase):
         """Ensure JWT is created if user_id is missing in the LTI request."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
-            playlist__consumer_site=passport.consumer_site, upload_state="ready"
+            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": video.lti_id,

@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fetch a resource based on the uploaded_on field and not on its upload_state
+
 ## [3.1.3] - 2019-10-14
 
 ### Changed
