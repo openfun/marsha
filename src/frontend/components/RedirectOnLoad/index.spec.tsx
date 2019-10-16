@@ -44,7 +44,7 @@ jest.mock('../../data/appData', () => ({
 describe('<RedirectOnLoad />', () => {
   beforeEach(jest.resetAllMocks);
 
-  it('redirects to the error view on LTI error', () => {
+  it('redirects users to the error view on LTI error', () => {
     mockState = appState.ERROR;
     mockVideo = null;
     mockDocument = null;
@@ -64,51 +64,27 @@ describe('<RedirectOnLoad />', () => {
     getByText('Error Component: lti');
   });
 
-  it('redirects instructors to the player when the video is ready', () => {
+  it('redirects users to the error view when there is no resource', () => {
     mockState = appState.SUCCESS;
-    mockModelName = modelName.VIDEOS;
-    mockDocument = null;
-    mockCanUpdate = true;
-
-    for (const state of Object.values(uploadState)) {
-      mockVideo = { is_ready_to_show: true, upload_state: state };
-      const { getByText } = render(
-        wrapInRouter(<RedirectOnLoad />, [
-          {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
-          },
-        ]),
-      );
-
-      getByText('video player');
-      cleanup();
-    }
-  });
-
-  it('redirects instructors to the player when the document is ready', () => {
-    mockState = appState.SUCCESS;
-    mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
-    mockCanUpdate = true;
+    mockDocument = null;
+    mockModelName = modelName.VIDEOS;
 
-    for (const state of Object.values(uploadState)) {
-      mockDocument = { is_ready_to_show: true, upload_state: state };
-      const { getByText } = render(
-        wrapInRouter(<RedirectOnLoad />, [
-          {
-            path: PLAYER_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>document player</span>,
-          },
-        ]),
-      );
+    const { getByText } = render(
+      wrapInRouter(<RedirectOnLoad />, [
+        {
+          path: ERROR_COMPONENT_ROUTE(),
+          render: ({ match }) => (
+            <span>{`Error Component: ${match.params.code}`}</span>
+          ),
+        },
+      ]),
+    );
 
-      getByText('document player');
-      cleanup();
-    }
+    getByText('Error Component: notFound');
   });
 
-  it('redirects students to /player when the video is ready', () => {
+  it('redirects users to the player when the video can be shown', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
@@ -130,7 +106,7 @@ describe('<RedirectOnLoad />', () => {
     }
   });
 
-  it('redirects students to /player when the document is ready', () => {
+  it('redirects users to the player when the document can be shown', () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
@@ -152,7 +128,7 @@ describe('<RedirectOnLoad />', () => {
     }
   });
 
-  it('redirects instructors to /form when there is no video yet', () => {
+  it('redirects users to /form when video is pending, not ready to be shown and it has permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
       id: '42',
@@ -177,15 +153,15 @@ describe('<RedirectOnLoad />', () => {
     getByText('objectType: videos and objectId: 42');
   });
 
-  it('redirects instructors to /form when there is no document yet', () => {
+  it('redirects users to /form when document is pending, not ready to be shown and it has permissions to update it', () => {
     mockState = appState.SUCCESS;
-    mockVideo = null;
-    mockModelName = modelName.DOCUMENTS;
     mockDocument = {
       id: '42',
       is_ready_to_show: false,
       upload_state: uploadState.PENDING,
     };
+    mockModelName = modelName.DOCUMENTS;
+    mockVideo = null;
     mockCanUpdate = true;
 
     const { getByText } = render(
@@ -202,7 +178,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('objectType: documents and objectId: 42');
   });
 
-  it('redirects instructors to /dashboard when there is a video undergoing processing', () => {
+  it('redirects users to /dashboard when video is not pending, not ready to be shown and it has permissions to upadte it', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
       is_ready_to_show: false,
@@ -226,14 +202,14 @@ describe('<RedirectOnLoad />', () => {
     getByText('dashboard videos');
   });
 
-  it('redirects instructors to /dashboard when there is a document undergoing processing', () => {
+  it('redirects users to /dashboard when document is not pending, not ready to be shown and it has permissions to upadte it', () => {
     mockState = appState.SUCCESS;
-    mockVideo = null;
-    mockModelName = modelName.DOCUMENTS;
     mockDocument = {
       is_ready_to_show: false,
       upload_state: uploadState.PROCESSING,
     };
+    mockModelName = modelName.DOCUMENTS;
+    mockVideo = null;
     mockCanUpdate = true;
 
     const { getByText } = render(
@@ -250,7 +226,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('dashboard documents');
   });
 
-  it('redirects students to the error view when the video is not ready', () => {
+  it('redirects users to /error when video is not ready to be shown and it has no permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
       is_ready_to_show: false,
@@ -274,7 +250,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('Error Component: notFound');
   });
 
-  it('redirects students to the error view when the document is not ready', () => {
+  it('redirects users to /error when document is not ready to be shown and it has no permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockDocument = {
       is_ready_to_show: false,
@@ -296,29 +272,5 @@ describe('<RedirectOnLoad />', () => {
     );
 
     getByText('Error Component: notFound');
-  });
-
-  it('redirects students to the error view when the resource is null', () => {
-    mockState = appState.SUCCESS;
-    mockVideo = null;
-    mockDocument = null;
-    mockCanUpdate = false;
-
-    for (const model of [modelName.VIDEOS, modelName.DOCUMENTS]) {
-      mockModelName = model;
-      const { getByText } = render(
-        wrapInRouter(<RedirectOnLoad />, [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ]),
-      );
-
-      getByText('Error Component: notFound');
-      cleanup();
-    }
   });
 });
