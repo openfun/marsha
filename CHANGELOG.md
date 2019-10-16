@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.4] - 2019-10-16
+
 ### Fixed
 
 - Fetch a resource based on the uploaded_on field and not on its upload_state
@@ -408,7 +410,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.1.3...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.1.4...master
+[3.1.4]: https://github.com/openfun/marsha/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/openfun/marsha/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/openfun/marsha/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/openfun/marsha/compare/v3.1.0...v3.1.1
