@@ -10,6 +10,7 @@ from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..defaults import STATE_CHOICES
 from ..factories import VideoFactory
 from ..models import ConsumerSite, Video
 
@@ -35,7 +36,9 @@ class DevelopmentLTIViewTestCase(TestCase):
     def test_views_lti_development_post_bypass_lti_student(self):
         """In development, passport creation and LTI verification can be bypassed for a student."""
         video = VideoFactory(
-            playlist__consumer_site__domain="example.com", upload_state="ready"
+            playlist__consumer_site__domain="example.com",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         # There is no need to provide an "oauth_consumer_key"
         data = {
@@ -77,21 +80,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
         self.assertEqual(context.get("state"), "success")
-        self.assertEqual(
-            context.get("resource"),
-            {
-                "active_stamp": None,
-                "is_ready_to_show": False,
-                "show_download": True,
-                "description": video.description,
-                "id": str(video.id),
-                "upload_state": "ready",
-                "timed_text_tracks": [],
-                "thumbnail": None,
-                "title": video.title,
-                "urls": None,
-            },
-        )
+        self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "videos")
 
     @override_settings(DEBUG=True)
