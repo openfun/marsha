@@ -19,6 +19,10 @@ export const RedirectOnLoad = () => {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
   }
 
+  if (!resource) {
+    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+  }
+
   if (resource && resource.is_ready_to_show) {
     return <Redirect push to={PLAYER_ROUTE(appData.modelName)} />;
   }
