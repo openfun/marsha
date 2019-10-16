@@ -35,13 +35,13 @@ class PortabilityLTITestCase(TestCase):
                 **1-1-2) student**
             1-2) resource exists in same playlist, other site
                 1-2-1) resource playlist is portable to consumer site
-                    **1-2-1-1) resource is ready**
-                    1-2-1-2) resource is not ready
+                    **1-2-1-1) resource is ready to show**
+                    1-2-1-2) resource is not ready to show
                         **1-2-1-2-1) instructor**
                         **1-2-1-2-2) student**
                 1-2-2) resource is automatically portable to consumer site
-                    **1-2-2-1) resource is ready**
-                    1-2-2-2) resource is not ready
+                    **1-2-2-1) resource is ready to show**
+                    1-2-2-2) resource is not ready to show
                         **1-2-2-2-1) instructor**
                         **1-2-2-2-2) student**
                 1-2-3) resource playlist is not portable to consumer site
@@ -49,8 +49,8 @@ class PortabilityLTITestCase(TestCase):
                     **1-2-3-2) student**
             1-3) resource exists in other playlist, same site
                 1-3-1) resource is portable to playlist
-                    **1-3-1-1) resource is ready**
-                    1-3-1-2) resource is not ready
+                    **1-3-1-1) resource is ready to show**
+                    1-3-1-2) resource is not ready to show
                         **1-3-1-2-1) instructor**
                         **1-3-1-2-2) student**
                 1-3-2) resource is not portable to playlist
@@ -59,13 +59,13 @@ class PortabilityLTITestCase(TestCase):
             1-4) resource exists in other playlist, other site
                 1-4-1) resource is portable to playlist
                     1-4-1-1) resource playlist is portable to consumer site
-                        **1-4-1-1-1) resource is ready**
-                        1-4-1-1-2) resource is not ready
+                        **1-4-1-1-1) resource is ready to show**
+                        1-4-1-1-2) resource is not ready to show
                             **1-4-1-1-2-1) instructor**
                             **1-4-1-1-2-2) student**
                     1-4-1-2) resource is automatically portable to consumer site
-                        **1-4-1-2-1) resource is ready**
-                        1-4-1-2-2) resource is not ready
+                        **1-4-1-2-1) resource is ready to show**
+                        1-4-1-2-2) resource is not ready to show
                             **1-4-1-2-2-1) instructor**
                             **1-4-1-2-2-2) student**
                     1-4-1-3) resource is not portable to consumer site
@@ -140,7 +140,7 @@ class PortabilityLTITestCase(TestCase):
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_same_playlist_same_site_student_ready(
+    def _test_lti_get_resource_same_playlist_same_site_student_ready_to_show(
         self, factory, model
     ):
         """Above case 1-1-2 upload state ready.
@@ -150,7 +150,9 @@ class PortabilityLTITestCase(TestCase):
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         resource = factory(
-            playlist__consumer_site=passport.consumer_site, upload_state="ready"
+            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": resource.lti_id,
@@ -171,28 +173,32 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_same_playlist_same_site_student_ready(self, mock_verify):
+    def test_lti_get_video_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-1-2 upload state ready.
 
         A video that exists for the requested playlist and consumer site should be returned
         to a student if it is ready.
         """
-        self._test_lti_get_resource_same_playlist_same_site_student_ready(
+        self._test_lti_get_resource_same_playlist_same_site_student_ready_to_show(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_same_playlist_same_site_student_ready(self, mock_verify):
+    def test_lti_get_document_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-1-2 upload state ready.
 
         A Document that exists for the requested playlist and consumer site should be returned
         to a student if it is ready.
         """
-        self._test_lti_get_resource_same_playlist_same_site_student_ready(
+        self._test_lti_get_resource_same_playlist_same_site_student_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_same_playlist_same_site_student_not_ready(
+    def _test_lti_get_resource_same_playlist_same_site_student_not_ready_to_show(
         self, factory, model
     ):
         """Above case 1-1-2 upload state not ready.
@@ -224,18 +230,20 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_same_playlist_same_site_student_not_ready(self, mock_verify):
+    def test_lti_get_video_same_playlist_same_site_student_not_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-1-2 upload state not ready.
 
         A video that exists for the requested playlist and consumer site should not be returned
         to a student if it is not ready.
         """
-        self._test_lti_get_resource_same_playlist_same_site_student_not_ready(
+        self._test_lti_get_resource_same_playlist_same_site_student_not_ready_to_show(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_same_playlist_same_site_student_not_ready(
+    def test_lti_get_document_same_playlist_same_site_student_not_ready_to_show(
         self, mock_verify
     ):
         """Above case 1-1-2 upload state not ready.
@@ -243,11 +251,13 @@ class PortabilityLTITestCase(TestCase):
         A Document that exists for the requested playlist and consumer site should not be returned
         to a student if it is not ready.
         """
-        self._test_lti_get_resource_same_playlist_same_site_student_not_ready(
+        self._test_lti_get_resource_same_playlist_same_site_student_not_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_playlist_portable_ready(self, factory, model):
+    def _test_lti_get_resource_other_site_playlist_portable_ready_to_show(
+        self, factory, model
+    ):
         """Above case 1-2-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -258,7 +268,7 @@ class PortabilityLTITestCase(TestCase):
         resource = factory(
             playlist__is_portable_to_consumer_site=True,
             uploaded_on=timezone.now(),
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         data = {
             "resource_link_id": resource.lti_id,
@@ -279,30 +289,34 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_video_other_site_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-2-1-1.
 
         The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but on another consumer site if it is marked as portable to another
         consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_ready(
+        self._test_lti_get_resource_other_site_playlist_portable_ready_to_show(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_site_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-2-1-1.
 
         The existing document should be returned if a student or instructor tries to retrieve a
         document that is ready but on another consumer site if it is marked as portable to another
         consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_ready(
+        self._test_lti_get_resource_other_site_playlist_portable_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
+    def _test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_instructor(
         self, factory, model
     ):
         """Above case 1-2-1-2-1.
@@ -344,7 +358,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_playlist_portable_not_ready_instructor(
+    def test_lti_get_video_other_site_playlist_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-2-1-2-1.
@@ -353,12 +367,12 @@ class PortabilityLTITestCase(TestCase):
         already existing for a consumer site but not ready, even if it is portable to another
         consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_instructor(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_playlist_portable_not_ready_instructor(
+    def test_lti_get_document_other_site_playlist_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-2-1-2-1.
@@ -367,11 +381,11 @@ class PortabilityLTITestCase(TestCase):
         already existing for a consumer site but not ready, even if it is portable to another
         consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_instructor(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_playlist_portable_not_ready_student(
+    def _test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_student(
         self, factory, model
     ):
         """Above case 1-2-1-2-2.
@@ -403,7 +417,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_playlist_portable_not_ready_student(
+    def test_lti_get_video_other_site_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-2-1-2-2.
@@ -411,12 +425,12 @@ class PortabilityLTITestCase(TestCase):
         No video is returned to a student trying to access a video that is existing for another
         consumer site but not ready, even if it is portable to another consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_not_ready_student(
+        self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_student(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_playlist_portable_not_ready_student(
+    def test_lti_get_document_other_site_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-2-1-2-2.
@@ -424,11 +438,13 @@ class PortabilityLTITestCase(TestCase):
         No document is returned to a student trying to access a resource that is existing for
         another consumer site but not ready, even if it is portable to another consumer site.
         """
-        self._test_lti_get_resource_other_site_playlist_portable_not_ready_student(
+        self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_student(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_auto_portable_ready(self, factory, model):
+    def _test_lti_get_resource_other_site_auto_portable_ready_to_show(
+        self, factory, model
+    ):
         """Above case 1-2-2-1.
 
         Same as 1-2-1-1 but portability is automatic from the site of the resource to the site
@@ -439,7 +455,7 @@ class PortabilityLTITestCase(TestCase):
         resource = factory(
             playlist__is_portable_to_consumer_site=False,
             uploaded_on=timezone.now(),
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
 
         # Add automatic portability from the site of the resource to the site of the passport
@@ -465,26 +481,28 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_video_other_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-2-2-1.
 
         Same as 1-2-1-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_ready(VideoFactory, Video)
+        self._test_lti_get_resource_other_site_auto_portable_ready_to_show(
+            VideoFactory, Video
+        )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-2-2-1.
 
         Same as 1-2-1-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_ready(
+        self._test_lti_get_resource_other_site_auto_portable_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
+    def _test_lti_get_resource_other_site_auto_portable_not_ready_to_show_instructor(
         self, factory, model
     ):
         """Above case 1-2-2-2-1.
@@ -530,7 +548,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_auto_portable_not_ready_instructor(
+    def test_lti_get_video_other_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-2-2-2-1.
@@ -538,12 +556,12 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-2-1-2-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_site_auto_portable_not_ready_to_show_instructor(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_auto_portable_not_ready_instructor(
+    def test_lti_get_document_other_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-2-2-2-1.
@@ -551,11 +569,11 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-2-1-2-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_site_auto_portable_not_ready_to_show_instructor(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_site_auto_portable_not_ready_student(
+    def _test_lti_get_resource_other_site_auto_portable_not_ready_to_show_student(
         self, factory, model
     ):
         """Above case 1-2-2-2-2.
@@ -593,7 +611,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_site_auto_portable_not_ready_student(
+    def test_lti_get_video_other_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-2-2-2-2.
@@ -601,12 +619,12 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-2-1-2-2 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_not_ready_student(
+        self._test_lti_get_resource_other_site_auto_portable_not_ready_to_show_student(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_site_auto_portable_not_ready_student(
+    def test_lti_get_document_other_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-2-2-2-2.
@@ -614,7 +632,7 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-2-1-2-2 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_site_auto_portable_not_ready_student(
+        self._test_lti_get_resource_other_site_auto_portable_not_ready_to_show_student(
             DocumentFactory, Document
         )
 
@@ -722,7 +740,9 @@ class PortabilityLTITestCase(TestCase):
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_playlist_portable_ready(self, factory, model):
+    def _test_lti_get_resource_other_playlist_portable_ready_to_show(
+        self, factory, model
+    ):
         """Above case 1-3-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -731,7 +751,9 @@ class PortabilityLTITestCase(TestCase):
         """
         passport = ConsumerSiteLTIPassportFactory(consumer_site__domain="example.com")
         resource = factory(
-            playlist__consumer_site=passport.consumer_site, upload_state="ready"
+            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": resource.lti_id,
@@ -751,28 +773,30 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_video_other_playlist_portable_ready_to_show(self, mock_verify):
         """Above case 1-3-1-1.
 
         The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but linked to another playlist if it is marked as portable to another
         playlist.
         """
-        self._test_lti_get_resource_other_playlist_portable_ready(VideoFactory, Video)
+        self._test_lti_get_resource_other_playlist_portable_ready_to_show(
+            VideoFactory, Video
+        )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_playlist_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_playlist_portable_ready_to_show(self, mock_verify):
         """Above case 1-3-1-1.
 
         The existing document should be returned if a student or instructor tries to retrieve a
         document that is ready but linked to another playlist if it is marked as portable to
         another playlist.
         """
-        self._test_lti_get_resource_other_playlist_portable_ready(
+        self._test_lti_get_resource_other_playlist_portable_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_portable_not_ready_instructor(
+    def _test_lti_get_resource_other_pl_portable_not_ready_to_show_instructor(
         self, factory, model
     ):
         """Above case 1-3-1-2-1.
@@ -812,30 +836,34 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_portable_not_ready_instructor(self, mock_verify):
+    def test_lti_get_video_other_pl_portable_not_ready_to_show_instructor(
+        self, mock_verify
+    ):
         """Above case 1-3-1-2-1.
 
         A PortabilityError should be raised if an instructor tries to retrieve a video that
         is already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
-        self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_portable_not_ready_to_show_instructor(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_portable_not_ready_instructor(self, mock_verify):
+    def test_lti_get_document_other_pl_portable_not_ready_to_show_instructor(
+        self, mock_verify
+    ):
         """Above case 1-3-1-2-1.
 
         A PortabilityError should be raised if an instructor tries to retrieve a document that
         is already existing in a playlist but not ready, even if it is portable to another
         playlist.
         """
-        self._test_lti_get_resource_other_pl_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_portable_not_ready_to_show_instructor(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_playlist_portable_not_ready_student(
+    def _test_lti_get_resource_other_playlist_portable_not_ready_to_show_student(
         self, factory, model
     ):
         """Above case 1-3-1-2-2.
@@ -867,18 +895,20 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_playlist_portable_not_ready_student(self, mock_verify):
+    def test_lti_get_video_other_playlist_portable_not_ready_to_show_student(
+        self, mock_verify
+    ):
         """Above case 1-3-1-2-2.
 
         No video is returned to a student trying to access a video that is existing in another
         playlist but not ready, even if it is portable to another playlist.
         """
-        self._test_lti_get_resource_other_playlist_portable_not_ready_student(
+        self._test_lti_get_resource_other_playlist_portable_not_ready_to_show_student(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_playlist_portable_not_ready_student(
+    def test_lti_get_document_other_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-3-1-2-2.
@@ -886,7 +916,7 @@ class PortabilityLTITestCase(TestCase):
         No document is returned to a student trying to access a document that is existing in
         another playlist but not ready, even if it is portable to another playlist.
         """
-        self._test_lti_get_resource_other_playlist_portable_not_ready_student(
+        self._test_lti_get_resource_other_playlist_portable_not_ready_to_show_student(
             DocumentFactory, Document
         )
 
@@ -1003,7 +1033,9 @@ class PortabilityLTITestCase(TestCase):
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_portable_ready(self, factory, model):
+    def _test_lti_get_resource_other_pl_site_portable_ready_to_show(
+        self, factory, model
+    ):
         """Above case 1-4-1-1-1.
 
         The existing resource should be returned if a student or instructor tries to retrieve a
@@ -1014,7 +1046,8 @@ class PortabilityLTITestCase(TestCase):
         resource = factory(
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": resource.lti_id,
@@ -1034,28 +1067,30 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_portable_ready(self, mock_verify):
+    def test_lti_get_video_other_pl_site_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-1-1.
 
         The existing video should be returned if a student or instructor tries to retrieve a
         video that is ready but in another playlist on another consumer site if it is marked as
         portable to another playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_ready(VideoFactory, Video)
+        self._test_lti_get_resource_other_pl_site_portable_ready_to_show(
+            VideoFactory, Video
+        )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_pl_site_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-1-1.
 
         The existing document should be returned if a student or instructor tries to retrieve a
         document that is ready but in another playlist on another consumer site if it is marked as
         portable to another playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_ready(
+        self._test_lti_get_resource_other_pl_site_portable_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
+    def _test_lti_get_resource_other_pl_site_portable_not_ready_to_show_instructor(
         self, factory, model
     ):
         """Above case 1-4-1-1-2-1.
@@ -1098,7 +1133,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_portable_not_ready_instructor(
+    def test_lti_get_video_other_pl_site_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-1-2-1.
@@ -1107,12 +1142,12 @@ class PortabilityLTITestCase(TestCase):
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_site_portable_not_ready_to_show_instructor(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_portable_not_ready_instructor(
+    def test_lti_get_document_other_pl_site_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-1-2-1.
@@ -1121,11 +1156,11 @@ class PortabilityLTITestCase(TestCase):
         already existing in a playlist on another consumer site but not ready, even if it is
         portable to another playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_site_portable_not_ready_to_show_instructor(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_portable_not_ready_student(
+    def _test_lti_get_resource_other_pl_site_portable_not_ready_to_show_student(
         self, factory, model
     ):
         """Above case 1-4-1-1-2-2.
@@ -1158,19 +1193,21 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_portable_not_ready_student(self, mock_verify):
+    def test_lti_get_video_other_pl_site_portable_not_ready_to_show_student(
+        self, mock_verify
+    ):
         """Above case 1-4-1-1-2-2.
 
         No video is returned to a student trying to access a video that is existing in another
         playlist for another consumer site but not ready, even if it is portable to another
         playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_not_ready_student(
+        self._test_lti_get_resource_other_pl_site_portable_not_ready_to_show_student(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_portable_not_ready_student(
+    def test_lti_get_document_other_pl_site_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-4-1-1-2-2.
@@ -1179,11 +1216,13 @@ class PortabilityLTITestCase(TestCase):
         another playlist for another consumer site but not ready, even if it is portable to another
         playlist AND to another consumer site.
         """
-        self._test_lti_get_resource_other_pl_site_portable_not_ready_student(
+        self._test_lti_get_resource_other_pl_site_portable_not_ready_to_show_student(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_auto_portable_ready(self, factory, model):
+    def _test_lti_get_resource_other_pl_site_auto_portable_ready_to_show(
+        self, factory, model
+    ):
         """Above case 1-4-1-2-1.
 
         Same as 1-4-1-1-1 but portability is automatic from the site of the resource to the site
@@ -1194,7 +1233,8 @@ class PortabilityLTITestCase(TestCase):
         resource = factory(
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=False,
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
         )
         # Add automatic portability from the site of the video to the site of the passport
         ConsumerSitePortability.objects.create(
@@ -1219,28 +1259,30 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_video_other_pl_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-2-1.
 
         Same as 1-4-1-1-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_ready(
+        self._test_lti_get_resource_other_pl_site_auto_portable_ready_to_show(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_auto_portable_ready(self, mock_verify):
+    def test_lti_get_document_other_pl_site_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
         """Above case 1-4-1-2-1.
 
         Same as 1-4-1-1-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_ready(
+        self._test_lti_get_resource_other_pl_site_auto_portable_ready_to_show(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
+    def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_instructor(
         self, factory, model
     ):
         """Above case 1-4-1-2-2-1.
@@ -1290,7 +1332,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_auto_portable_not_ready_instructor(
+    def test_lti_get_video_other_pl_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-1.
@@ -1298,12 +1340,12 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-4-1-1-2-1 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_instructor(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_auto_portable_not_ready_instructor(
+    def test_lti_get_document_other_pl_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-1.
@@ -1311,11 +1353,11 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-4-1-1-2-1 but portability is automatic from the site of the document to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_instructor(
+        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_instructor(
             DocumentFactory, Document
         )
 
-    def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
+    def _test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_student(
         self, factory, model
     ):
         """Above case 1-4-1-2-2-2.
@@ -1352,7 +1394,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(model.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_site_auto_portable_not_ready_student(
+    def test_lti_get_video_other_pl_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-2.
@@ -1360,12 +1402,12 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-4-1-1-2-2 but portability is automatic from the site of the video to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
+        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_student(
             VideoFactory, Video
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_other_pl_site_auto_portable_not_ready_student(
+    def test_lti_get_document_other_pl_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
         """Above case 1-4-1-2-2-2.
@@ -1373,7 +1415,7 @@ class PortabilityLTITestCase(TestCase):
         Same as 1-4-1-1-2-2 but portability is automatic from the site of the document to the site
         of the passport.
         """
-        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_student(
+        self._test_lti_get_resource_other_pl_site_auto_portable_not_ready_to_show_student(
             DocumentFactory, Document
         )
 

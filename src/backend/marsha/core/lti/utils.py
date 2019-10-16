@@ -1,7 +1,7 @@
 """Helpers to create a dedicated resources."""
 from django.db.models import Q
 
-from ..defaults import PENDING, READY
+from ..defaults import PENDING
 from ..models import Playlist
 
 
@@ -37,17 +37,17 @@ def get_or_create_resource(model, lti):
     """
     # If the resource already exists, retrieve it from database
     filter_kwargs = (
-        {} if (lti.is_instructor or lti.is_admin) else {"upload_state": READY}
+        {} if (lti.is_instructor or lti.is_admin) else {"uploaded_on__isnull": False}
     )
     try:
         return model.objects.select_related("playlist").get(
             Q(playlist__lti_id=lti.context_id)
-            | Q(playlist__is_portable_to_playlist=True, upload_state=READY),
+            | Q(playlist__is_portable_to_playlist=True, uploaded_on__isnull=False),
             Q(playlist__consumer_site=lti.get_consumer_site())
-            | Q(playlist__is_portable_to_consumer_site=True, upload_state=READY)
+            | Q(playlist__is_portable_to_consumer_site=True, uploaded_on__isnull=False)
             | Q(
                 playlist__consumer_site__in=lti.get_consumer_site().reachable_from.all(),
-                upload_state=READY,
+                uploaded_on__isnull=False,
             ),
             pk=lti.resource_id,
             **filter_kwargs,

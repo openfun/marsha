@@ -1,12 +1,14 @@
 """Test caching LTI views in the ``core`` app of the Marsha project."""
 from html import unescape
 import json
+import random
 import re
 import time
 from unittest import mock
 
 from django.test import TestCase
 
+from ..defaults import STATE_CHOICES
 from ..factories import ConsumerSiteFactory, VideoFactory
 from ..lti import LTI
 
@@ -37,9 +39,10 @@ class CacheLTIViewTestCase(TestCase):
         """Validate that responses are cached for students."""
         video1, video2 = VideoFactory.create_batch(
             2,
-            upload_state="ready",
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
+            uploaded_on="2019-09-24 07:24:40+00",
         )
 
         mock_get_consumer_site.return_value = video1.playlist.consumer_site
@@ -113,7 +116,10 @@ class CacheLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_cache_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate that responses are not cached for instructors."""
-        video = VideoFactory(upload_state="ready")
+        video = VideoFactory(
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
+        )
 
         mock_get_consumer_site.return_value = video.playlist.consumer_site
 
