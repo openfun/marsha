@@ -1,4 +1,4 @@
-# Marsha, a self-hosted open source video provider 🐠
+# Marsha, a self-hosted open source video and document provider 🐠
 
 [![CircleCI](https://circleci.com/gh/openfun/marsha/tree/master.svg?style=svg)](https://circleci.com/gh/openfun/marsha/tree/master)
 
@@ -6,18 +6,30 @@
 
 `Marsha` is a video management & playback service. It is intended to be operated independently: it's like having your very own YouTube for education.
 
-Instructors & organizations can use Marsha to upload and manage their videos (and associated files, such as subtitles or transcripts) directly from a course as they are creating it.
+Marsha also supports hosting documents and distribute them on all your courses.
 
-Once the course is published, learners simply see a video player in the course.
+Instructors & organizations can use Marsha to upload and manage their videos (and associated files, such as subtitles or transcripts) or documents directly from a course as they are creating it.
+
+Once the course is published, learners simply see a video player or documents in the course.
 
 This seamless integration works with any LMS ([`Open edX`](https://open.edx.org), [`Moodle`](https://moodle.org), ...) thanks to the [LTI](https://en.wikipedia.org/wiki/Learning_Tools_Interoperability) standard for interoperability.
 
 Here is what `Marsha` offers out of the box:
 
+Video:
+
 - automatic transcoding of videos to all suitable formats from a single video file uploaded by the instructor;
 - adaptive-bitrate streaming playback (both HLS and DASH);
-- video access control through LTI authentication;
 - accessibility through the player itself and support for subtitles, closed captions and transcripts;
+
+Document:
+
+- upload any type of documents;
+- prevent disk storage quota by using AWS S3;
+
+Moreover, Marsha provides:
+
+- access control to resources through LTI authentication;
 - easy deployment & management of environments through `Terraform`;
 
 ## Architecture
@@ -32,7 +44,11 @@ It is defined using a [docker-compose file](../docker-compose.yml) for developme
 
 ### The storage & transcoding environment
 
-Source files (video, subtitles,...) are directly uploaded to an `S3` bucket by instructors, which triggers `MediaConvert` to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `CloudFront` CDN.
+Source files (video, documents, subtitles,...) are directly uploaded to an `S3` bucket by instructors. Depending the uploaded resource a lambda will be triggered to do different jobs:
+- Launch `MediaConvert` to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `CloudFront` CDN.
+- Convert any kind of subtitles (also captions and transcripts) in [WebVTT](https://www.w3.org/TR/webvtt1/) format and encode them properly.
+- Resize thumbnails in many formats.
+- Copy documents from a source to a destination `S3` Bucket accessible through the `CloudFront` CDN.
 
 Lambdas are used to manage and monitor the process and report back to the `Django` backend.
 
@@ -40,14 +56,14 @@ This storage & transcoding environment requires `AWS` as it heavily relies on `A
 
 ⚠️ **Privacy concerns**
 
-Please note that the only objects we handle in `AWS` are the actual video and subtitles files, from upload to distribution through transcoding and storage. It is not required to deploy any database or application backend to `AWS` or to send any user's personal information there.
+Please note that the only objects we handle in `AWS` are the actual video, documents or subtitles files, from the upload to the distribution through transcoding and storage. It is not required to deploy any database or application backend to `AWS` or send any user's personal information there.
 
 ### The `React` frontend
 
 The `React` frontend is responsible for the interfaces with which users interact in the LTI Iframes. It gets an authenticated token with permissions
 from the view and interacts with the `Django` backend to manage objects and directly with `AWS s3` to upload files.
 
-It also powers the same view when loaded by a learner to display a video player (thanks to [Plyr](https://plyr.io)).
+It also powers the same resource view when loaded by a learner to display a video player (thanks to [Plyr](https://plyr.io)) or a document reader.
 
 ⚠️ **Iframe management**
 
