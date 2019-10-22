@@ -35,7 +35,7 @@
     "@types/jwt-decode": "2.2.1",
     "@types/luxon": "1.15.2",
     "@types/rc-tooltip": "3.7.1",
-    "@types/react": "16.9.6",
+    "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
     "@types/react-router-dom": "5.1.0",
     "@types/react-select": "3.0.5",
@@ -56,21 +56,21 @@
     "style-loader": "1.0.0",
     "tslint": "5.20.0",
     "typescript": "3.6.4",
-    "webpack": "4.41.1",
+    "webpack": "4.41.2",
     "webpack-cli": "3.3.9",
     "xhr-mock": "2.5.0"
   },
   "dependencies": {
     "@formatjs/intl-relativetimeformat": "4.2.0",
-    "@sentry/browser": "5.7.0",
+    "@sentry/browser": "5.7.1",
     "@types/intl": "1.2.0",
     "core-js": "3",
     "custom-event-polyfill": "1.0.7",
     "dashjs": "3.0.0",
-    "grommet": "2.7.9",
+    "grommet": "2.7.11",
     "iframe-resizer": "4.2.2",
     "intl": "1.2.5",
-    "intl-pluralrules": "1.0.3",
+    "intl-pluralrules": "1.1.1",
     "jwt-decode": "2.2.0",
     "luxon": "1.19.3",
     "plyr": "3.5.6",
@@ -90,7 +90,7 @@
     "uuid": "3.3.3",
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.0.0",
-    "zustand": "1.0.7"
+    "zustand": "2.1.0"
   },
   "resolutions": {
     "@types/styled-components": "4.1.19",
