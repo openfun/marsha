@@ -25,10 +25,9 @@ services:
     env_file:
       - env.d/${ENV_FILE:-development}
     # Override production container command that runs gunicorn in favor of the
-    # django development server (wrapped by dockerize to ensure the db is ready
-    # to accept connections before running the development server)
+    # django development server
     command: >
-      dockerize -wait tcp://db:5432 -timeout 60s python manage.py runserver 0.0.0.0:8000
+      python manage.py runserver 0.0.0.0:8000
     ports:
       - "8060:8000"
     volumes:
@@ -52,3 +51,6 @@ services:
     volumes:
       - ".:/app"
     working_dir: /app/src/frontend
+
+  dockerize:
+    image: jwilder/dockerize

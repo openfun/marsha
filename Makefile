@@ -72,6 +72,8 @@ logs: ## display app logs (follow mode)
 
 run: ## start the development server using Docker
 	@$(COMPOSE) up -d
+	@echo "Wait for postgresql to be up..."
+	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 .PHONY: run
 
 stop: ## stop the development server using Docker
@@ -139,7 +141,8 @@ lint-pylint:  ## Run the pylint tool
 .PHONY: migrate
 migrate:  ## Run django migration for the marsha project.
 	@echo "$(BOLD)Running migrations$(RESET)"
-	@$(COMPOSE_RUN_APP) dockerize -wait tcp://db:5432 -timeout 60s python manage.py migrate
+	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
+	@$(COMPOSE_RUN_APP) python manage.py migrate
 
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
