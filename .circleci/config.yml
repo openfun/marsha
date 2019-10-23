@@ -218,7 +218,7 @@ jobs:
       # Nota bene: to run the django test suite, we need to ensure that the
       # PostgreSQL service is up and ready. To achieve this,
       # we wrap the command execution with dockerize, a tiny tool
-      # installed in the development image. In our case, dockerize will wait
+      # installed in circleci/python image. In our case, dockerize will wait
       # up to one minute until the database container is answering on port 5432.
       - run:
           name: Run tests
