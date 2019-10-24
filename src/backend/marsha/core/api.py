@@ -138,14 +138,14 @@ class VideoViewSet(
             [
                 {"key": key},
                 ["starts-with", "$Content-Type", "video/"],
-                ["content-length-range", 0, defaults.VIDEO_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, settings.VIDEO_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
             {
                 "key": key,
-                "max_file_size": defaults.VIDEO_SOURCE_MAX_SIZE,
+                "max_file_size": settings.VIDEO_SOURCE_MAX_SIZE,
                 "stamp": stamp,
             }
         )
@@ -207,14 +207,14 @@ class DocumentViewSet(
             now,
             [
                 {"key": key},
-                ["content-length-range", 0, defaults.DOCUMENT_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
             {
                 "key": key,
-                "max_file_size": defaults.DOCUMENT_SOURCE_MAX_SIZE,
+                "max_file_size": settings.DOCUMENT_SOURCE_MAX_SIZE,
                 "stamp": stamp,
             }
         )
@@ -285,14 +285,14 @@ class TimedTextTrackViewSet(
             now,
             [
                 {"key": key},
-                ["content-length-range", 0, defaults.SUBTITLE_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
             {
                 "key": key,
-                "max_file_size": defaults.SUBTITLE_SOURCE_MAX_SIZE,
+                "max_file_size": settings.SUBTITLE_SOURCE_MAX_SIZE,
                 "stamp": stamp,
             }
         )
@@ -355,14 +355,14 @@ class ThumbnailViewSet(
             [
                 {"key": key},
                 ["starts-with", "$Content-Type", "image/"],
-                ["content-length-range", 0, defaults.THUMBNAIL_SOURCE_MAX_SIZE],
+                ["content-length-range", 0, settings.THUMBNAIL_SOURCE_MAX_SIZE],
             ],
         )
 
         policy.update(
             {
                 "key": key,
-                "max_file_size": defaults.THUMBNAIL_SOURCE_MAX_SIZE,
+                "max_file_size": settings.THUMBNAIL_SOURCE_MAX_SIZE,
                 "stamp": stamp,
             }
         )
