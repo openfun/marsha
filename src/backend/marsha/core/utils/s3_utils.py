@@ -7,8 +7,6 @@ import json
 
 from django.conf import settings
 
-from ..defaults import AWS_UPLOAD_EXPIRATION_DELAY
-
 
 def sign(key, message):
     """Return a SHA256 hmac updated with the message.
@@ -81,7 +79,7 @@ def get_s3_upload_policy_signature(now, conditions):
 
     """
     acl = "private"
-    expires_at = now + timedelta(seconds=AWS_UPLOAD_EXPIRATION_DELAY)
+    expires_at = now + timedelta(seconds=settings.AWS_UPLOAD_EXPIRATION_DELAY)
     x_amz_algorithm = "AWS4-HMAC-SHA256"
     x_amz_credential = "{key:s}/{date:%Y%m%d}/{region:s}/s3/aws4_request".format(
         date=now, key=settings.AWS_ACCESS_KEY_ID, region=settings.AWS_S3_REGION_NAME
@@ -121,7 +119,7 @@ def get_s3_upload_policy_signature(now, conditions):
         "x_amz_algorithm": x_amz_algorithm,
         "x_amz_credential": x_amz_credential,
         "x_amz_date": x_amz_date,
-        "x_amz_expires": AWS_UPLOAD_EXPIRATION_DELAY,
+        "x_amz_expires": settings.AWS_UPLOAD_EXPIRATION_DELAY,
         "x_amz_signature": signature,
     }
 

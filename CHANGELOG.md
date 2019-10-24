@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- move defaults settings to settings file
+
 ## [3.1.5] - 2019-10-22
 
 ### Fixed
