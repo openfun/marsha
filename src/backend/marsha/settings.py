@@ -198,6 +198,7 @@ class Base(Configuration):
     AWS_S3_URL_PROTOCOL = values.Value("https")
     AWS_BASE_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
+    AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
@@ -215,6 +216,12 @@ class Base(Configuration):
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
 
     SENTRY_DSN = values.Value(None)
+
+    # Resource max file size
+    DOCUMENT_SOURCE_MAX_SIZE = values.Value(2 ** 30)  # 1GB
+    VIDEO_SOURCE_MAX_SIZE = values.Value(2 ** 30)  # 1GB
+    SUBTITLE_SOURCE_MAX_SIZE = values.Value(2 ** 20)  # 1MB
+    THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2 ** 20))  # 10MB
 
     # pylint: disable=invalid-name
     @property
