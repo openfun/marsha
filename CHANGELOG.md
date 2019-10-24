@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.6] - 2019-10-24
+
 ### Fixed
 
 - move defaults settings to settings file
@@ -421,7 +423,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.1.5...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.1.6...master
+[3.1.6]: https://github.com/openfun/marsha/compare/v3.1.5...v3.1.6
 [3.1.5]: https://github.com/openfun/marsha/compare/v3.1.4...v3.1.5
 [3.1.4]: https://github.com/openfun/marsha/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/openfun/marsha/compare/v3.1.2...v3.1.3
