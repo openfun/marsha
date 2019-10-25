@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
-import { createPlayer } from '../../Player/createPlayer';
 import { modelName } from '../../types/models';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ErrorComponent } from '../ErrorComponent';
@@ -30,10 +29,7 @@ export const AppRoutes = () => (
             if (match.params.objectType === modelName.VIDEOS && appData.video) {
               return (
                 <InstructorWrapper>
-                  <VideoPlayer
-                    video={appData.video}
-                    createPlayer={createPlayer}
-                  />
+                  <VideoPlayer video={appData.video} />
                 </InstructorWrapper>
               );
             }

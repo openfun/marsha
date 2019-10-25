@@ -3,7 +3,9 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
+import { createPlayer } from '../../Player/createPlayer';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { jestMockOf } from '../../utils/types';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -13,6 +15,12 @@ jest.mock('../../utils/isAbrSupported', () => ({
   isHlsSupported: jest.fn().mockReturnValue(false),
   isMSESupported: jest.fn().mockReturnValue(true),
 }));
+
+jest.mock('../../Player/createPlayer', () => ({
+  createPlayer: jest.fn(),
+}));
+
+const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -102,10 +110,8 @@ describe('VideoPlayer', () => {
   afterEach(fetchMock.restore);
   afterEach(jest.clearAllMocks);
 
-  const createPlayer = jest.fn();
-
   beforeEach(() => {
-    createPlayer.mockResolvedValue({
+    mockCreatePlayer.mockReturnValue({
       destroy: jest.fn(),
     });
   });
@@ -113,14 +119,12 @@ describe('VideoPlayer', () => {
   // This test just makes sure everything works when dashjs is not mocked
   it('starts up the player with DashJS', async () => {
     const { container, getByText, queryByText } = render(
-      wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
     );
     await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
-    expect(createPlayer).toHaveBeenCalledWith(
+    expect(mockCreatePlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
       expect.anything(),
