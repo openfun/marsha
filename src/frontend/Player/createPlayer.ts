@@ -5,9 +5,10 @@ export const createPlayer: VideoPlayerCreator = (
   type,
   ref,
   dispatchPlayerTimeUpdate,
+  video,
 ) => {
   switch (type) {
     case 'plyr':
-      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate);
+      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate, video);
   }
 };

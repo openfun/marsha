@@ -1,3 +1,5 @@
+import { Video } from './tracks';
+
 type VideoPlayerType = 'plyr';
 
 export interface VideoPlayerInterface {
@@ -9,4 +11,5 @@ export type VideoPlayerCreator = (
   type: VideoPlayerType,
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
+  video: Video,
 ) => VideoPlayerInterface;
