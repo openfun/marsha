@@ -9,6 +9,7 @@ import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
+import { createDashPlayer } from '../../Player/createDashPlayer';
 import { createPlayer } from '../../Player/createPlayer';
 import {
   timedTextMode,
@@ -78,21 +79,7 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
       );
 
       if (isMSESupported()) {
-        const dash = MediaPlayer().create();
-        dash.initialize(
-          videoNodeRef.current!,
-          video.urls.manifests.dash,
-          false,
-        );
-        dash.updateSettings({
-          streaming: {
-            abr: {
-              initialBitrate: {
-                video: 1600000,
-              },
-            },
-          },
-        } as dashjs.MediaPlayerSettingClass);
+        createDashPlayer(video, videoNodeRef.current!);
       }
 
       /** Make sure to destroy the player on unmount. */
