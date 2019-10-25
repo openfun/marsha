@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
+import { createDashPlayer } from '../../Player/createDashPlayer';
 import { createPlayer } from '../../Player/createPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -10,17 +11,6 @@ import { jestMockOf } from '../../utils/types';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
-
-const mockInitialize = jest.fn();
-const mockUpdateSettings = jest.fn();
-jest.mock('dashjs', () => ({
-  MediaPlayer: () => ({
-    create: () => ({
-      initialize: mockInitialize,
-      updateSettings: mockUpdateSettings,
-    }),
-  }),
-}));
 
 jest.mock('../../utils/isAbrSupported', () => ({
   isHlsSupported: jest.fn(),
@@ -34,6 +24,14 @@ jest.mock('../../Player/createPlayer', () => ({
 }));
 
 const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
+
+jest.mock('../../Player/createDashPlayer', () => ({
+  createDashPlayer: jest.fn(),
+}));
+
+const mockCreateDashPlayer = createDashPlayer as jestMockOf<
+  typeof createDashPlayer
+>;
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -145,20 +143,10 @@ describe('VideoPlayer', () => {
       expect.any(Element),
       expect.anything(),
     );
-    expect(mockInitialize).toHaveBeenCalledWith(
+    expect(mockCreateDashPlayer).toHaveBeenCalledWith(
+      appData.video!,
       expect.any(Element),
-      'https://example.com/dash.mpd',
-      false,
     );
-    expect(mockUpdateSettings).toHaveBeenCalledWith({
-      streaming: {
-        abr: {
-          initialBitrate: {
-            video: 1600000,
-          },
-        },
-      },
-    });
     expect(queryByText(/Download this video/i)).toEqual(null);
     getByText('Show a transcript');
     expect(container.querySelectorAll('track')).toHaveLength(2);
@@ -201,8 +189,7 @@ describe('VideoPlayer', () => {
       expect.any(Element),
       expect.anything(),
     );
-    expect(mockInitialize).not.toHaveBeenCalled();
-    expect(mockUpdateSettings).not.toHaveBeenCalled();
+    expect(mockCreateDashPlayer).not.toHaveBeenCalled();
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
