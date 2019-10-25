@@ -3,6 +3,7 @@ import Plyr from 'plyr';
 import { appData, getDecodedJwt } from '../data/appData';
 import { useTranscriptTimeSelectorApi } from '../data/stores/useTranscriptTimeSelector';
 import { intl } from '../index';
+import { Video } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -10,18 +11,21 @@ import {
 import { report } from '../utils/errors/report';
 import { isMSESupported } from '../utils/isAbrSupported';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
+import { createDashPlayer } from './createDashPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
 
 export const createPlyrPlayer = (
-  ref: HTMLVideoElement,
+  videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
+  video: Video,
 ): Plyr => {
+  let dash;
   const settings = ['captions', 'speed', 'loop'];
   if (!isMSESupported()) {
     settings.push('quality');
   }
 
-  const player = new Plyr(ref, {
+  const player = new Plyr(videoNode, {
     captions: {
       active: true,
       update: true,
@@ -74,6 +78,10 @@ export const createPlyrPlayer = (
     seekTime: 5,
     settings,
   });
+
+  if (isMSESupported()) {
+    dash = createDashPlayer(video, videoNode);
+  }
 
   if (player.elements.buttons.play) {
     if (Array.isArray(player.elements.buttons.play)) {

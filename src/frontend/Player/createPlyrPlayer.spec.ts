@@ -1,4 +1,21 @@
+import { Video } from '../types/tracks';
+import { isMSESupported } from '../utils/isAbrSupported';
+import { jestMockOf } from '../utils/types';
+import { createDashPlayer } from './createDashPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
+
+jest.mock('../utils/isAbrSupported', () => ({
+  isMSESupported: jest.fn(),
+}));
+const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
+
+jest.mock('./createDashPlayer', () => ({
+  createDashPlayer: jest.fn(),
+}));
+
+const mockCreateDashPlayer = createDashPlayer as jestMockOf<
+  typeof createDashPlayer
+>;
 
 jest.mock('plyr', () => {
   return jest.fn().mockImplementation(() => ({
@@ -50,8 +67,11 @@ describe('createPlyrPlayer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('creates Plyr player and configure it', async () => {
-    const player = await createPlyrPlayer('ref' as any, jest.fn());
+  it('creates Plyr player and configure it', () => {
+    mockIsMSESupported.mockReturnValue(false);
+    const player = createPlyrPlayer('ref' as any, jest.fn(), {} as Video);
+
+    expect(mockCreateDashPlayer).not.toHaveBeenCalled();
 
     const playButton = player.elements.buttons.play! as HTMLButtonElement[];
     expect(playButton[0].tabIndex).toEqual(-1);
@@ -128,5 +148,14 @@ describe('createPlyrPlayer', () => {
       'volumechange',
       expect.any(Function),
     );
+  });
+  it('creates Plyr player with DashJS', () => {
+    mockIsMSESupported.mockReturnValue(true);
+
+    const video = {} as Video;
+    const ref = 'ref' as any;
+    createPlyrPlayer(ref, jest.fn(), video);
+
+    expect(mockCreateDashPlayer).toHaveBeenCalledWith(video, ref);
   });
 });
