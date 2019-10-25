@@ -2,7 +2,10 @@ import { MediaPlayer, MediaPlayerClass, MediaPlayerSettingClass } from 'dashjs';
 
 import { Video } from '../types/tracks';
 
-export const createDashPlayer = (video: Video, videoNode: HTMLVideoElement) => {
+export const createDashPlayer = (
+  video: Video,
+  videoNode: HTMLVideoElement,
+): MediaPlayerClass => {
   const dash = MediaPlayer().create();
   dash.initialize(videoNode, video.urls.manifests.dash, false);
   dash.updateSettings({

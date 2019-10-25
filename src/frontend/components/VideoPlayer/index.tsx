@@ -1,4 +1,3 @@
-import { MediaPlayer } from 'dashjs';
 import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,7 +8,6 @@ import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { createDashPlayer } from '../../Player/createDashPlayer';
 import { createPlayer } from '../../Player/createPlayer';
 import {
   timedTextMode,
@@ -18,7 +16,7 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
-import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
+import { isHlsSupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -75,12 +73,13 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
     if (video) {
       // Instantiate Plyr and keep the instance in state
       setPlayer(
-        createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
+        createPlayer(
+          'plyr',
+          videoNodeRef.current!,
+          setPlayerCurrentTime,
+          video,
+        ),
       );
-
-      if (isMSESupported()) {
-        createDashPlayer(video, videoNodeRef.current!);
-      }
 
       /** Make sure to destroy the player on unmount. */
       return () => player && player.destroy();

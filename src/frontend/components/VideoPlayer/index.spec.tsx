@@ -3,7 +3,6 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
-import { createDashPlayer } from '../../Player/createDashPlayer';
 import { createPlayer } from '../../Player/createPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -24,14 +23,6 @@ jest.mock('../../Player/createPlayer', () => ({
 }));
 
 const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
-
-jest.mock('../../Player/createDashPlayer', () => ({
-  createDashPlayer: jest.fn(),
-}));
-
-const mockCreateDashPlayer = createDashPlayer as jestMockOf<
-  typeof createDashPlayer
->;
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -142,10 +133,7 @@ describe('VideoPlayer', () => {
       'plyr',
       expect.any(Element),
       expect.anything(),
-    );
-    expect(mockCreateDashPlayer).toHaveBeenCalledWith(
       appData.video!,
-      expect.any(Element),
     );
     expect(queryByText(/Download this video/i)).toEqual(null);
     getByText('Show a transcript');
@@ -188,8 +176,8 @@ describe('VideoPlayer', () => {
       'plyr',
       expect.any(Element),
       expect.anything(),
+      appData.video!,
     );
-    expect(mockCreateDashPlayer).not.toHaveBeenCalled();
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
