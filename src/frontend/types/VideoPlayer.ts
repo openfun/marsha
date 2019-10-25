@@ -9,4 +9,4 @@ export type VideoPlayerCreator = (
   type: VideoPlayerType,
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-) => Promise<VideoPlayerInterface>;
+) => VideoPlayerInterface;
