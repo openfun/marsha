@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
+import { createPlayer } from '../../Player/createPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { jestMockOf } from '../../utils/types';
@@ -28,7 +29,11 @@ jest.mock('../../utils/isAbrSupported', () => ({
 const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
-const createPlayer = jest.fn();
+jest.mock('../../Player/createPlayer', () => ({
+  createPlayer: jest.fn(),
+}));
+
+const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -116,7 +121,7 @@ describe('VideoPlayer', () => {
   );
 
   beforeEach(() => {
-    createPlayer.mockResolvedValue({
+    mockCreatePlayer.mockReturnValue({
       destroy: jest.fn(),
     });
   });
@@ -130,14 +135,12 @@ describe('VideoPlayer', () => {
     mockIsHlsSupported.mockReturnValue(false);
 
     const { container, getByText, queryByText } = render(
-      wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
     );
     await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
-    expect(createPlayer).toHaveBeenCalledWith(
+    expect(mockCreatePlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
       expect.anything(),
@@ -176,9 +179,7 @@ describe('VideoPlayer', () => {
     appData.video!.show_download = true;
 
     const { getByText } = render(
-      wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
     );
     await wait();
 
@@ -190,14 +191,12 @@ describe('VideoPlayer', () => {
     // Simulate a browser that does not support MSE
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
     );
     await wait();
 
     // The player is created and initialized with DashJS for adaptive bitrate
-    expect(createPlayer).toHaveBeenCalledWith(
+    expect(mockCreatePlayer).toHaveBeenCalledWith(
       'plyr',
       expect.any(Element),
       expect.anything(),
@@ -213,9 +212,7 @@ describe('VideoPlayer', () => {
     mockIsHlsSupported.mockReturnValue(true);
 
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer createPlayer={createPlayer} video={appData.video!} />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
     );
     await wait();
 

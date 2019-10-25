@@ -12,10 +12,10 @@ import { isMSESupported } from '../utils/isAbrSupported';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { i18nMessages } from './i18n/plyrTranslation';
 
-export const createPlyrPlayer = async (
+export const createPlyrPlayer = (
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-): Promise<Plyr> => {
+): Plyr => {
   const settings = ['captions', 'speed', 'loop'];
   if (!isMSESupported()) {
     settings.push('quality');

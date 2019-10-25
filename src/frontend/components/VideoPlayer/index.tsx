@@ -1,7 +1,7 @@
 import { MediaPlayer } from 'dashjs';
 import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'react-router';
 
 import { useThumbnail } from '../../data/stores/useThumbnail';
@@ -9,19 +9,16 @@ import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
+import { createPlayer } from '../../Player/createPlayer';
 import {
   timedTextMode,
   TimedTextTranscript,
   Video,
   videoSize,
 } from '../../types/tracks';
-import {
-  VideoPlayerCreator,
-  VideoPlayerInterface,
-} from '../../types/VideoPlayer';
+import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { Transcripts } from '../Transcripts';
@@ -33,14 +30,10 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 };
 
 interface BaseVideoPlayerProps {
-  createPlayer: VideoPlayerCreator;
   video: Nullable<Video>;
 }
 
-const VideoPlayer = ({
-  createPlayer,
-  video: baseVideo,
-}: BaseVideoPlayerProps) => {
+const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState(undefined as Maybe<
     VideoPlayerInterface
   >);
@@ -75,13 +68,13 @@ const VideoPlayer = ({
    * Initialize the `Plyr` video player and our adaptive bitrate library if applicable.
    * Noop out if the video or jwt is missing, render will redirect to an error page.
    */
-  useAsyncEffect(async () => {
+  useEffect(() => {
     getChoices();
 
     if (video) {
       // Instantiate Plyr and keep the instance in state
       setPlayer(
-        await createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
+        createPlayer('plyr', videoNodeRef.current!, setPlayerCurrentTime),
       );
 
       if (isMSESupported()) {
