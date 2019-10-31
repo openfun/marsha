@@ -1,9 +1,10 @@
-import Plyr from 'plyr';
+import Plyr, { SourceInfo } from 'plyr';
 
 import { appData, getDecodedJwt } from '../data/appData';
+import { useTimedTextTrackApi } from '../data/stores/useTimedTextTrack';
 import { useTranscriptTimeSelectorApi } from '../data/stores/useTranscriptTimeSelector';
 import { intl } from '../index';
-import { Video } from '../types/tracks';
+import { timedTextMode, Video, videoSize } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -14,14 +15,46 @@ import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { createDashPlayer } from './createDashPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
 
+const trackTextKind: { [key in timedTextMode]?: string } = {
+  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
+  [timedTextMode.SUBTITLE]: 'subtitles',
+};
+
 export const createPlyrPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
 ): Plyr => {
   let dash;
+  let sources;
   const settings = ['captions', 'speed', 'loop'];
   if (!isMSESupported()) {
+    const timedTextTracks = useTimedTextTrackApi
+      .getState()
+      .getTimedTextTracks();
+
+    sources = {
+      sources: (Object.keys(video.urls.mp4) as videoSize[]).map(size => ({
+        size,
+        src: video.urls.mp4[size],
+        type: 'video/mp4',
+      })),
+      tracks: timedTextTracks
+        .filter(track => track.is_ready_to_show)
+        .filter(track =>
+          [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+            track.mode,
+          ),
+        )
+        .map(track => ({
+          kind: trackTextKind[track.mode],
+          label: track.language,
+          src: track.url,
+          srclang: track.language,
+        })),
+      type: 'video',
+    } as SourceInfo;
+
     settings.push('quality');
   }
 
@@ -78,6 +111,14 @@ export const createPlyrPlayer = (
     seekTime: 5,
     settings,
   });
+
+  // sources are set only when ABR is not available
+  // in this case, we have to set video sources and also tracks in plyr
+  // because at this time they are still not present in the DOM and plyr will not
+  // build the quality menu.
+  if (sources) {
+    player.source = sources;
+  }
 
   if (isMSESupported()) {
     dash = createDashPlayer(video, videoNode);
