@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Start ABR at a lower level corresponding to 480p
 - Let the user choose video quality when ABR is disabled
+- Initialize xapi module only when all video data are available
 
 ## [3.1.6] - 2019-10-24
 

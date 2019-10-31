@@ -149,62 +149,72 @@ describe('createPlyrPlayer', () => {
     );
     expect(player.on).toHaveBeenNthCalledWith(
       2,
+      'loadedmetadata',
+      expect.any(Function),
+    );
+    expect(player.on).toHaveBeenNthCalledWith(
+      3,
+      'loadeddata',
+      expect.any(Function),
+    );
+    expect(player.on).toHaveBeenNthCalledWith(
+      4,
       'playing',
       expect.any(Function),
     );
-    expect(player.on).toHaveBeenNthCalledWith(3, 'pause', expect.any(Function));
+    expect(player.on).toHaveBeenNthCalledWith(5, 'pause', expect.any(Function));
     expect(player.on).toHaveBeenNthCalledWith(
-      4,
+      6,
       'timeupdate',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      5,
+      7,
       'seeking',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      6,
+      8,
       'seeked',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      7,
+      9,
       'captionsdisabled',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      8,
+      10,
       'captionsenabled',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      9,
+      11,
       'enterfullscreen',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      10,
+      12,
       'exitfullscreen',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      11,
+      13,
       'languagechange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      12,
+      14,
       'qualitychange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      13,
+      15,
       'ratechange',
       expect.any(Function),
     );
     expect(player.on).toHaveBeenNthCalledWith(
-      14,
+      16,
       'volumechange',
       expect.any(Function),
     );

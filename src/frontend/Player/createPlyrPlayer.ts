@@ -172,13 +172,16 @@ export const createPlyrPlayer = (
     }
   };
 
-  // canplay is the event when the video is really initialized and
-  // information can be found in plyr object. Don't use ready event
-  player.on('canplay', event => {
+  const initialize = () => {
+    // if the module is already initalized abort the operation.
     if (true === isInitialized) {
       return;
     }
-    isInitialized = true;
+
+    // if duration is still not available abort the operation.
+    if (player.duration === 0) {
+      return;
+    }
 
     const contextExtensions: InitializedContextExtensions = {
       ccSubtitleEnabled: player.currentTrack === -1 ? false : true,
@@ -196,7 +199,14 @@ export const createPlyrPlayer = (
       }
     }
     xapiStatement.initialized(contextExtensions);
-  });
+    isInitialized = true;
+  };
+
+  // canplay, loadedmetadata or loadeddata are the possible event when the video is really
+  // initialized and information can be found in plyr object. Don't use ready event
+  player.on('canplay', initialize);
+  player.on('loadedmetadata', initialize);
+  player.on('loadeddata', initialize);
 
   player.on('playing', event => {
     xapiStatement.played({
