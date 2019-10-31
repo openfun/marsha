@@ -10,7 +10,7 @@ import {
   InteractedContextExtensions,
 } from '../types/XAPI';
 import { report } from '../utils/errors/report';
-import { isMSESupported } from '../utils/isAbrSupported';
+import { isHlsSupported, isMSESupported } from '../utils/isAbrSupported';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { createDashPlayer } from './createDashPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
@@ -28,7 +28,7 @@ export const createPlyrPlayer = (
   let dash;
   let sources;
   const settings = ['captions', 'speed', 'loop'];
-  if (!isMSESupported()) {
+  if (!isMSESupported() && !isHlsSupported(videoNode)) {
     const timedTextTracks = useTimedTextTrackApi
       .getState()
       .getTimedTextTracks();
