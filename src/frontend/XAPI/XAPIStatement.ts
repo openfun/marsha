@@ -375,6 +375,12 @@ export class XAPIStatement {
   }
 
   private send(data: DataPayload) {
+    // duration is set when initialized is called.
+    // While initialized is not called, no statement should be sent to the xapi server.
+    if (!this.duration) {
+      return;
+    }
+
     fetch(`${XAPI_ENDPOINT}/`, {
       body: JSON.stringify({
         ...data,

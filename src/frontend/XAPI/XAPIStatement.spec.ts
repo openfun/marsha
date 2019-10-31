@@ -126,6 +126,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(1);
       xapiStatement.played({
         time: 42.321,
       });
@@ -426,6 +427,7 @@ describe('XAPIStatement', () => {
         overwriteRoutes: true,
       });
       const xapiStatement = new XAPIStatement('jwt', 'abcd');
+      xapiStatement.setDuration(1);
       xapiStatement.interacted(
         {
           time: 50,
