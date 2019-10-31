@@ -64,12 +64,72 @@ jest.mock('../data/appData', () => ({
 }));
 
 describe('createPlyrPlayer', () => {
+  const video = {
+    description: 'Some description',
+    id: 'video-id',
+    is_ready_to_show: true,
+    show_download: false,
+    thumbnail: null,
+    timed_text_tracks: [
+      {
+        active_stamp: 1549385921,
+        id: 'ttt-1',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-1.vtt',
+      },
+      {
+        active_stamp: 1549385922,
+        id: 'ttt-2',
+        is_ready_to_show: false,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-2.vtt',
+      },
+      {
+        active_stamp: 1549385923,
+        id: 'ttt-3',
+        is_ready_to_show: true,
+        language: 'en',
+        mode: 'cc',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-3.vtt',
+      },
+      {
+        active_stamp: 1549385924,
+        id: 'ttt-4',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'ts',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-4.vtt',
+      },
+    ],
+    title: 'Some title',
+    upload_state: 'ready',
+    urls: {
+      manifests: {
+        dash: 'https://example.com/dash.mpd',
+        hls: 'https://example.com/hls.m3u8',
+      },
+      mp4: {
+        144: 'https://example.com/144p.mp4',
+        1080: 'https://example.com/1080p.mp4',
+      },
+      thumbnails: {
+        720: 'https://example.com/144p.jpg',
+      },
+    },
+  };
   beforeEach(() => {
     jest.clearAllMocks();
   });
   it('creates Plyr player and configure it', () => {
     mockIsMSESupported.mockReturnValue(false);
-    const player = createPlyrPlayer('ref' as any, jest.fn(), {} as Video);
+    const player = createPlyrPlayer('ref' as any, jest.fn(), video as Video);
 
     expect(mockCreateDashPlayer).not.toHaveBeenCalled();
 
@@ -152,9 +212,8 @@ describe('createPlyrPlayer', () => {
   it('creates Plyr player with DashJS', () => {
     mockIsMSESupported.mockReturnValue(true);
 
-    const video = {} as Video;
     const ref = 'ref' as any;
-    createPlyrPlayer(ref, jest.fn(), video);
+    createPlyrPlayer(ref, jest.fn(), video as Video);
 
     expect(mockCreateDashPlayer).toHaveBeenCalledWith(video, ref);
   });
