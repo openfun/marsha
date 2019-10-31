@@ -7,4 +7,5 @@ export const isMSESupported = () =>
   !!MediaSource.isTypeSupported;
 
 export const isHlsSupported = (video: HTMLVideoElement): boolean =>
+  typeof video.canPlayType === 'function' &&
   !!video.canPlayType('application/vnd.apple.mpegurl');
