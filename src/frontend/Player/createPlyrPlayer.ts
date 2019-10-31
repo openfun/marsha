@@ -105,9 +105,7 @@ export const createPlyrPlayer = (
 
   useTranscriptTimeSelectorApi.subscribe(
     time => (player.currentTime = time as number),
-    {
-      selector: state => state.time,
-    },
+    state => state.time,
   );
 
   let xapiStatement: XAPIStatement;
