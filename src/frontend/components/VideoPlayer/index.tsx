@@ -81,6 +81,14 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
         ),
       );
 
+      document.dispatchEvent(
+        new CustomEvent('marsha_player_created', {
+          detail: {
+            videoNode: videoNodeRef.current!,
+          },
+        }),
+      );
+
       /** Make sure to destroy the player on unmount. */
       return () => player && player.destroy();
     }
