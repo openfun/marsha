@@ -223,6 +223,8 @@ class Base(Configuration):
     SUBTITLE_SOURCE_MAX_SIZE = values.Value(2 ** 20)  # 1MB
     THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2 ** 20))  # 10MB
 
+    EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):

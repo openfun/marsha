@@ -70,6 +70,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         return {
             "app_data": json.dumps(app_data),
             "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 
     def _get_app_data(self):
