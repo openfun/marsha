@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Load third party js script using EXTERNAL_JAVASCRIPT_SCRIPTS setting
+
 ## [3.1.7] - 2019-11-05
 
 ### Fixed

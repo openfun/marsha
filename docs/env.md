@@ -103,6 +103,14 @@ Note: should include the value from `TF_VAR_update_state_secret` in `src/aws` fo
 - Required: Yes
 - Default: None
 
+#### DJANGO_EXTERNAL_JAVASCRIPT_SCRIPTS
+
+List of external javascript scripts to load in the LTI template. This list will be loaded after loading the main react script. This setting allows to load scripts hosted on another domain and specific to your project.
+
+- Type: comma-separated list of strings <br> ⚠️ *ITEMS MUST NOT INCLUDE ANY COMMAS* as commas are used to separated items.
+- Required: No
+- Default: Empty list
+
 ### Database-related settings
 
 #### POSTGRES_DB

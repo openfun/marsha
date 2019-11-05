@@ -11,5 +11,8 @@
 
     <div id="marsha-frontend-root"></div>
     <script src='{% static "js/index.js" %}'></script>
+    {% for external_script in external_javascript_scripts %}
+      <script src="{{ external_script }}" ></script>
+    {% endfor %}
   </body>
 </html>
