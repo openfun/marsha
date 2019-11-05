@@ -103,6 +103,33 @@ class VideoLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(EXTERNAL_JAVASCRIPT_SCRIPTS=["https://example.com/test.js"])
+    def test_views_lti_video_with_external_js_sources(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate external js sources are added in the lti template."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "administrator",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        self.assertContains(response, '<script src="https://example.com/test.js" >')
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_video_post_administrator(
         self, mock_get_consumer_site, mock_verify
     ):
