@@ -33,9 +33,9 @@ interface BaseVideoPlayerProps {
 }
 
 const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
-  const [player, setPlayer] = useState(undefined as Maybe<
-    VideoPlayerInterface
-  >);
+  const [player, setPlayer] = useState(
+    undefined as Maybe<VideoPlayerInterface>,
+  );
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
