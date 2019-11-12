@@ -21,6 +21,6 @@ const ActionLinkStyled = styled(Button)`
  * Component. Personalize the color on a plain buttons to make them more useful.
  * @param color Font color for the plain button as defined in the theme globals.
  */
-export const ActionLink = (props: ButtonProps) => (
-  <ActionLinkStyled plain={true} {...(props as any)} />
-);
+export const ActionLink = (
+  props: ButtonProps & JSX.IntrinsicElements['button'],
+) => <ActionLinkStyled plain={true} {...(props as any)} />;
