@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.2.0] - 2019-11-22
+
 ### Added
 
 - Load third party js script using EXTERNAL_JAVASCRIPT_SCRIPTS setting
@@ -435,7 +437,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.1.7...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.2.0...master
+[3.2.0]: https://github.com/openfun/marsha/compare/v3.1.7...v3.2.0
 [3.1.7]: https://github.com/openfun/marsha/compare/v3.1.6...v3.1.7
 [3.1.6]: https://github.com/openfun/marsha/compare/v3.1.5...v3.1.6
 [3.1.5]: https://github.com/openfun/marsha/compare/v3.1.4...v3.1.5
