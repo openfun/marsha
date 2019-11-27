@@ -4,9 +4,7 @@
   "Name": "marsha_cmaf_video_144",
   "Settings": {
     "VideoDescription": {
-      "Width": 256,
       "Height": 144,
-      "ScalingBehavior": "STRETCH_TO_OUTPUT",
       "TimecodeInsertion": "DISABLED",
       "AntiAlias": "ENABLED",
       "Sharpness": 50,

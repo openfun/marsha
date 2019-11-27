@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Videos uploaded in other formats than 16/9 were distorted to fit that
+  ratio. We now do our best to respect their format during encoding and
+  also in the player.
+
 ## [3.2.0] - 2019-11-22
 
 ### Added

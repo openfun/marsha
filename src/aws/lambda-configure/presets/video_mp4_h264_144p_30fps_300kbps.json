@@ -4,9 +4,7 @@
   "Name": "marsha_video_mp4_144",
   "Settings": {
     "VideoDescription": {
-      "Width": 256,
       "Height": 144,
-      "ScalingBehavior": "STRETCH_TO_OUTPUT",
       "VideoPreprocessors": {
         "Deinterlacer": {
           "Algorithm": "INTERPOLATE",
