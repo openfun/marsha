@@ -11,7 +11,7 @@
    * We use this ratio as we base marsha's layout on video display
    */
   width: 100vw;
-  height: 56.25vw;
+  min-height: 56.25vw;
   overflow: hidden;
 }
 
