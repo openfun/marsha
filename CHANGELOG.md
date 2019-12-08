@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- Regenerate frontend yarn lockfile to get new version of vulnerable package
+  `serialize-javascript`.
+
 ## [3.2.1] - 2019-11-28
 
 ### Fixed
