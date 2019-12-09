@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade django-storages to 1.8 and remove the workaround introduced in
+  marsha 2.8.1 to ensure compatibility with ManifestStaticFilesStorage.
+
 ### Security
 
 - Regenerate frontend yarn lockfile to get new version of vulnerable package
