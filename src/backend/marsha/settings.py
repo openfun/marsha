@@ -225,6 +225,8 @@ class Base(Configuration):
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
+    MAINTENANCE_MODE = values.BooleanValue(False)
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):

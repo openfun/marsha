@@ -147,6 +147,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "course": lti.get_course_info(),
                     "locale": locale,
                     "permissions": permissions,
+                    "maintenance": settings.MAINTENANCE_MODE,
                 }
             )
             try:
