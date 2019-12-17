@@ -18,6 +18,7 @@ jest.mock('../../data/appData', () => ({
 describe('<InstructorView />', () => {
   it('renders the instructor controls', () => {
     mockDecodedJwt = {
+      maintenance: false,
       permissions: {
         can_access_dashboard: true,
       },
@@ -40,6 +41,7 @@ describe('<InstructorView />', () => {
   it('removes the button when permissions.can_access_dashboard is set to false', () => {
     mockDecodedJwt = {
       context_id: 'foo+context_id',
+      maintenance: false,
       permissions: {
         can_access_dashboard: false,
       },
@@ -55,6 +57,29 @@ describe('<InstructorView />', () => {
 
     getByText(
       'This video is read-only because it belongs to another course: foo+context_id',
+    );
+    expect(queryByText('Go to Dashboard')).toBeNull();
+  });
+
+  it('removes the button when permissions.maintenance is set to true', () => {
+    mockDecodedJwt = {
+      context_id: 'foo+context_id',
+      maintenance: true,
+      permissions: {
+        can_access_dashboard: true,
+      },
+    };
+
+    const { getByText, queryByText } = render(
+      wrapInIntlProvider(
+        <InstructorView>
+          <div className="some-child" />
+        </InstructorView>,
+      ),
+    );
+
+    getByText(
+      "The dashboard is undergoing maintenance work, it can't be accessed right now.",
     );
     expect(queryByText('Go to Dashboard')).toBeNull();
   });
