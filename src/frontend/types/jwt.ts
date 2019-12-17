@@ -10,4 +10,5 @@ export interface DecodedJwt {
     can_access_dashboard: boolean;
     can_update: boolean;
   };
+  maintenance: boolean;
 }

@@ -22,6 +22,13 @@ const messages = defineMessages({
       'Text explaining that the ivdeo is in read_only mode and the dashboard is not available',
     id: 'components.InstructorView.disabledDashboard',
   },
+  maintenance: {
+    defaultMessage:
+      "The dashboard is undergoing maintenance work, it can't be accessed right now.",
+    description:
+      'Text explaining that the dashboard is not accessible because marsha is in maintenance',
+    id: 'componenets.InstructorView.maintenance',
+  },
   title: {
     defaultMessage: 'Instructor Preview 👆',
     description: `Title for the Instructor View. Describes the area appearing right above, which is a preview
@@ -53,9 +60,13 @@ interface InstructorViewProps {
 }
 
 export const InstructorView = ({ children }: InstructorViewProps) => {
-  const canAccessDashboard = getDecodedJwt().permissions.can_access_dashboard;
+  const canAccessDashboard =
+    getDecodedJwt().permissions.can_access_dashboard &&
+    false === getDecodedJwt().maintenance;
   const message = canAccessDashboard
     ? messages.title
+    : getDecodedJwt().maintenance
+    ? messages.maintenance
     : messages.disabledDashboard;
   const messagePlaceholder = canAccessDashboard
     ? {}

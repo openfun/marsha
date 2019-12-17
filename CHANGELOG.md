@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- New setting MAINTENANCE_MODE to disable the dashboard when Marsha is 
+  in maintenance
+
 ### Changed
 
 - Upgrade django-storages to 1.8 and remove the workaround introduced in
