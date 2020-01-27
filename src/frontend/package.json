@@ -48,7 +48,7 @@
     "css-loader": "3.4.2",
     "fetch-mock": "8.3.2",
     "jest": "25.1.0",
-    "jest-styled-components": "7.0.0",
+    "jest-styled-components": "6.3.4",
     "node-sass": "4.13.1",
     "prettier": "1.19.1",
     "react-intl-po": "2.2.2",
@@ -87,7 +87,7 @@
     "redux": "4.0.5",
     "regenerator-runtime": "0.13.3",
     "reselect": "4.0.0",
-    "styled-components": "5.0.0",
+    "styled-components": "4.4.1",
     "styled-reboot": "4.0.3",
     "uuid": "3.4.0",
     "vtt.js": "0.13.0",
@@ -98,7 +98,8 @@
     "@types/styled-components": "4.4.2",
     "babel-core": "7.0.0-bridge.0",
     "js-yaml": "3.13.1",
-    "styled-components": "5.0.0",
+    "jest-styled-components": "6.3.4",
+    "styled-components": "4.4.1",
     "zustand": "2.2.2"
   }
 }
