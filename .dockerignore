@@ -1,11 +1,11 @@
 # Python
-__pycache__
 *.pyc
 **/__pycache__
 **/*.pyc
+**/.pytest_cache
 *.egg-info
 build
-venv
+**/venv
 
 # System-specific files
 .DS_Store
@@ -24,10 +24,20 @@ docs
 .cache
 .circleci
 .git
+.github
 .vscode
+.ssh
+crowdin
+lib/gitlint
 
 # Assets
 data
+src/backend/marsha/static
+src/frontend/i18n
 
 # Front-end
-node_modules
+**/node_modules
+
+# AWS
+# AWS sources are never used in our docker image
+src/aws
