@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade to Django 3.
+
 ## [3.3.0] - 2019-12-17
 
 ### Added
