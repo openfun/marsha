@@ -10,7 +10,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Upgrade to Django 3.
+- Upgrade to Django 3
+- Upgrade to python 3.8
 
 ## [3.3.0] - 2019-12-17
 
