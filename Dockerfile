@@ -15,7 +15,7 @@
 #
 
 # ---- base image to inherit from ----
-FROM python:3.7-stretch as base
+FROM python:3.8-buster as base
 
 # ---- back-end builder image ----
 FROM base as back-builder
