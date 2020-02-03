@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Upgrade to Django 3
 - Upgrade to python 3.8
+- Set SECURE_REFERRER_POLICY setting to same-origin
 
 ## [3.3.0] - 2019-12-17
 
