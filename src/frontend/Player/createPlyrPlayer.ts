@@ -172,9 +172,18 @@ export const createPlyrPlayer = (
     }
   };
 
-  const initialize = () => {
+  const initialize = (event: Plyr.PlyrEvent) => {
     // if the module is already initalized abort the operation.
     if (true === isInitialized) {
+      // this is a workaround to force the player to stay on the first frame (time code 0)
+      // while the video is not played. Without this, the state seeks a little bit
+      // when loaded and the poster is not displayed.
+      // see: https://github.com/sampotts/plyr/issues/1397
+      // the event "canplay" must be ignored because it can be used by plyr when
+      // it has seeked.
+      if (player.currentTime > 0 && event.type !== 'canplay') {
+        player.currentTime = 0;
+      }
       return;
     }
 
@@ -248,6 +257,7 @@ export const createPlyrPlayer = (
       player.currentTime = 0;
       return;
     }
+
     if (false === hasSeeked) {
       return;
     }
