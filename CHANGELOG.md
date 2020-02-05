@@ -14,6 +14,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Upgrade to python 3.8
 - Set SECURE_REFERRER_POLICY setting to same-origin
 
+### Fixed
+
+- Force thumbnail to be displayed while the video is not played
+
 ## [3.3.0] - 2019-12-17
 
 ### Added
