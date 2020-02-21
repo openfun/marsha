@@ -193,6 +193,8 @@ class VideoAPITest(TestCase):
                         "previews/1533686400_100.jpg"
                     ),
                 },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
 
@@ -255,6 +257,8 @@ class VideoAPITest(TestCase):
                 "timed_text_tracks": [],
                 "thumbnail": None,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
 
@@ -289,6 +293,8 @@ class VideoAPITest(TestCase):
                 "timed_text_tracks": [],
                 "thumbnail": None,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
 

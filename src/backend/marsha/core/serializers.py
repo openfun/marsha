@@ -281,6 +281,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "upload_state",
             "urls",
             "show_download",
+            "should_use_subtitle_as_transcript",
+            "has_transcript",
         )
         read_only_fields = (
             "id",
@@ -288,6 +290,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "is_ready_to_show",
             "upload_state",
             "urls",
+            "has_transcript",
         )
 
     active_stamp = TimestampField(
@@ -299,6 +302,23 @@ class VideoSerializer(serializers.ModelSerializer):
     thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
     urls = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
+    has_transcript = serializers.SerializerMethodField()
+
+    def get_has_transcript(self, obj):
+        """Compute if should_use_subtitle_as_transcript behavior is disabled.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Boolean
+            If there is at least one transcript ready to be shown the method will return True.
+            Returns False otherwise.
+        """
+        return obj.timedtexttracks.filter(mode="ts", uploaded_on__isnull=False).exists()
 
     def get_urls(self, obj):
         """Urls of the video for each type of encoding.
