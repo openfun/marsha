@@ -12,7 +12,7 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..defaults import STATE_CHOICES
+from ..defaults import PENDING, READY, STATE_CHOICES
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
     TimedTextTrackFactory,
@@ -27,6 +27,8 @@ from ..lti import LTI
 
 class VideoLTIViewTestCase(TestCase):
     """Test the video view in the ``core`` app of the Marsha project."""
+
+    maxDiff = None
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
@@ -91,6 +93,8 @@ class VideoLTIViewTestCase(TestCase):
                 "thumbnail": None,
                 "title": video.title,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -188,6 +192,8 @@ class VideoLTIViewTestCase(TestCase):
                 "thumbnail": None,
                 "title": video.title,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -288,6 +294,8 @@ class VideoLTIViewTestCase(TestCase):
                     "previews": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                     "previews/1569309880_100.jpg",
                 },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -397,6 +405,8 @@ class VideoLTIViewTestCase(TestCase):
                     "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                     "previews/1569309880_100.jpg",
                 },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -574,3 +584,131 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(response, '<meta name="public-path" value="/static/js/" />')
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_has_transcript(self, mock_get_consumer_site, mock_verify):
+        """Compute has_transcript when a transcript is uploaded."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        # Create a TimedTextTrack associated with the video to trigger the error
+        transcript = TimedTextTrackFactory(
+            video=video,
+            mode="ts",
+            upload_state=READY,
+            uploaded_on="2019-09-24 07:24:40+00",
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": "pending",
+                "timed_text_tracks": [
+                    {
+                        "active_stamp": "1569309880",
+                        "id": str(transcript.id),
+                        "is_ready_to_show": True,
+                        "mode": "ts",
+                        "language": transcript.language,
+                        "upload_state": "ready",
+                        "url": "https://abc.cloudfront.net/{!s}/timedtext/"
+                        "1569309880_{!s}_ts.vtt".format(video.id, transcript.language),
+                        "video": str(video.id),
+                    }
+                ],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": True,
+            },
+        )
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_has_transcript_false(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Compute has_transcript when a transcript is uploaded and not ready to be shown."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        # Create a TimedTextTrack associated with the video to trigger the error
+        transcript = TimedTextTrackFactory(
+            video=video, mode="ts", upload_state=PENDING,
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": "pending",
+                "timed_text_tracks": [
+                    {
+                        "active_stamp": None,
+                        "id": str(transcript.id),
+                        "is_ready_to_show": False,
+                        "mode": "ts",
+                        "language": transcript.language,
+                        "upload_state": "pending",
+                        "url": None,
+                        "video": str(video.id),
+                    }
+                ],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+            },
+        )
