@@ -139,6 +139,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "thumbnail": None,
                 "title": video.title,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -193,6 +195,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "thumbnail": None,
                 "title": video.title,
                 "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")

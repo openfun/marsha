@@ -15,6 +15,15 @@ class Video(BaseFile):
 
     RESOURCE_NAME = "videos"
 
+    should_use_subtitle_as_transcript = models.BooleanField(
+        default=False,
+        verbose_name=_("use subtitle as transcript"),
+        help_text=_(
+            "When there is at least one subtitle but no transcript this flag allows "
+            "to use subtitles as transcripts."
+        ),
+    )
+
     class Meta:
         """Options for the ``Video`` model."""
 
