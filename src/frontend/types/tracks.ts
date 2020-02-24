@@ -88,6 +88,8 @@ export interface Video extends Resource {
     mp4: urls;
     thumbnails: urls;
   };
+  should_use_subtitle_as_transcript: boolean;
+  has_transcript: boolean;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;

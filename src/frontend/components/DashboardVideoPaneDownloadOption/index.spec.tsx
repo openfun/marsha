@@ -43,6 +43,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
         1080: 'https://example.com/1080p.jpg',
       },
     },
+    should_use_subtitle_as_transcript: false,
   };
 
   it('renders with checkbox not checked', () => {

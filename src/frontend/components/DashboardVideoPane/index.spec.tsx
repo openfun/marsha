@@ -52,6 +52,7 @@ describe('<DashboardVideoPane />', () => {
         1080: 'https://example.com/default_thumbnail/1080',
       },
     },
+    should_use_subtitle_as_transcript: false,
   };
 
   it('redirects to error when it fails to fetch the video', async () => {

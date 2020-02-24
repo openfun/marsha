@@ -73,6 +73,7 @@ describe('<DashboardThumbnail />', () => {
         1080: 'https://example.com/default_thumbnail/1080',
       },
     },
+    should_use_subtitle_as_transcript: false,
   };
 
   it('displays a thumbnail image when the related Thumbnail object is ready', () => {
