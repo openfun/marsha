@@ -200,4 +200,66 @@ describe('VideoPlayer', () => {
       ),
     ).toHaveLength(1);
   });
+
+  it('uses subtitles as transcripts', async () => {
+    mockIsHlsSupported.mockReturnValue(true);
+    appData.video!.should_use_subtitle_as_transcript = true;
+    appData.video!.has_transcript = false;
+
+    useTimedTextTrackStub.returns([
+      {
+        active_stamp: 1549385921,
+        id: 'ttt-1',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-1.vtt',
+      },
+    ]);
+
+    const { container, getByText } = render(
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
+    );
+    await wait();
+
+    getByText('Show a transcript');
+    expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
+  });
+
+  it('displays transcript while should_use_subtitle_as_transcript enabled', async () => {
+    mockIsHlsSupported.mockReturnValue(true);
+    appData.video!.should_use_subtitle_as_transcript = true;
+    appData.video!.has_transcript = true;
+
+    useTimedTextTrackStub.returns([
+      {
+        active_stamp: 1549385921,
+        id: 'ttt-1',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-1.vtt',
+      },
+      {
+        active_stamp: 1549385921,
+        id: 'ttt-2',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'ts',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-2.vtt',
+      },
+    ]);
+
+    const { container, getByText } = render(
+      wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
+    );
+    await wait();
+
+    getByText('Show a transcript');
+    expect(container.querySelector('option[value="ttt-1"]')).toBeNull();
+    expect(container.querySelector('option[value="ttt-2"]')).not.toBeNull();
+  });
 });

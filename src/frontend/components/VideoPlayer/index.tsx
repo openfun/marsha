@@ -101,7 +101,11 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
 
   const transcripts = timedTextTracks
     .filter((track) => track.is_ready_to_show)
-    .filter((track) => timedTextMode.TRANSCRIPT === track.mode);
+    .filter((track) =>
+      video.has_transcript === false && video.should_use_subtitle_as_transcript
+        ? timedTextMode.SUBTITLE === track.mode
+        : timedTextMode.TRANSCRIPT === track.mode,
+    );
 
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
