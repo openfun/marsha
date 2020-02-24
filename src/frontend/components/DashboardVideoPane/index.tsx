@@ -16,6 +16,7 @@ import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
+import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadStatusPicker } from '../UploadStatusPicker';
 
@@ -156,6 +157,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
                 state={video.upload_state}
               />
               <DashboardVideoPaneDownloadOption video={video} />
+              <DashboardVideoPaneTranscriptOption video={video} />
             </Box>
             <Box basis={'1/2'} margin={'small'}>
               <DashboardThumbnail video={video} />
