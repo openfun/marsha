@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Use subtitles as transcript when no transcript has been uploaded
+
 ## [3.6.0] - 2020-04-15
 
 ### Added
