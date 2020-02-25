@@ -1,8 +1,10 @@
 import { render, wait } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import { ImportMock } from 'ts-mock-imports';
 
 import { appData } from '../../data/appData';
+import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { createPlayer } from '../../Player/createPlayer';
 import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -24,6 +26,11 @@ jest.mock('../../Player/createPlayer', () => ({
 
 const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
 
+const useTimedTextTrackStub = ImportMock.mockFunction(
+  useTimedTextTrackModule,
+  'useTimedTextTrack',
+);
+
 jest.mock('../../data/appData', () => ({
   appData: {
     video: {
@@ -32,44 +39,7 @@ jest.mock('../../data/appData', () => ({
       is_ready_to_show: true,
       show_download: false,
       thumbnail: null,
-      timed_text_tracks: [
-        {
-          active_stamp: 1549385921,
-          id: 'ttt-1',
-          is_ready_to_show: true,
-          language: 'fr',
-          mode: 'st',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-1.vtt',
-        },
-        {
-          active_stamp: 1549385922,
-          id: 'ttt-2',
-          is_ready_to_show: false,
-          language: 'fr',
-          mode: 'st',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-2.vtt',
-        },
-        {
-          active_stamp: 1549385923,
-          id: 'ttt-3',
-          is_ready_to_show: true,
-          language: 'en',
-          mode: 'cc',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-3.vtt',
-        },
-        {
-          active_stamp: 1549385924,
-          id: 'ttt-4',
-          is_ready_to_show: true,
-          language: 'fr',
-          mode: 'ts',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-4.vtt',
-        },
-      ],
+      timed_text_tracks: [],
       title: 'Some title',
       upload_state: 'ready',
       urls: {
@@ -122,6 +92,45 @@ describe('VideoPlayer', () => {
     // Simulate a browser that supports MSE and will use DashJS
     mockIsMSESupported.mockReturnValue(true);
     mockIsHlsSupported.mockReturnValue(false);
+
+    useTimedTextTrackStub.returns([
+      {
+        active_stamp: 1549385921,
+        id: 'ttt-1',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-1.vtt',
+      },
+      {
+        active_stamp: 1549385922,
+        id: 'ttt-2',
+        is_ready_to_show: false,
+        language: 'fr',
+        mode: 'st',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-2.vtt',
+      },
+      {
+        active_stamp: 1549385923,
+        id: 'ttt-3',
+        is_ready_to_show: true,
+        language: 'en',
+        mode: 'cc',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-3.vtt',
+      },
+      {
+        active_stamp: 1549385924,
+        id: 'ttt-4',
+        is_ready_to_show: true,
+        language: 'fr',
+        mode: 'ts',
+        upload_state: 'ready',
+        url: 'https://example.com/timedtext/ttt-4.vtt',
+      },
+    ]);
 
     const { container, getByText, queryByText } = render(
       wrapInIntlProvider(<VideoPlayer video={appData.video!} />),
