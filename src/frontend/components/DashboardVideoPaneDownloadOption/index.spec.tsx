@@ -16,6 +16,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
 
   const video = {
     description: 'Some description',
+    has_transcript: false,
     id: '442',
     is_ready_to_show: true,
     show_download: false,
