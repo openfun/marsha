@@ -1,3 +1,4 @@
+import { MediaPlayerClass, MediaPlayerSettingClass } from 'dashjs';
 import Plyr, { SourceInfo } from 'plyr';
 
 import { appData, getDecodedJwt } from '../data/appData';
@@ -11,6 +12,7 @@ import {
 } from '../types/XAPI';
 import { report } from '../utils/errors/report';
 import { isHlsSupported, isMSESupported } from '../utils/isAbrSupported';
+import { Maybe } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { createDashPlayer } from './createDashPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
@@ -25,9 +27,9 @@ export const createPlyrPlayer = (
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
 ): Plyr => {
-  let dash;
+  let dash: Maybe<MediaPlayerClass>;
   let sources;
-  const settings = ['captions', 'speed', 'loop'];
+  const settings = ['captions', 'speed', 'loop', 'quality'];
   if (!isMSESupported() && !isHlsSupported(videoNode)) {
     const timedTextTracks = useTimedTextTrackApi
       .getState()
@@ -54,9 +56,17 @@ export const createPlyrPlayer = (
         })),
       type: 'video',
     } as SourceInfo;
-
-    settings.push('quality');
   }
+
+  const videoSizes: string[] = Object.keys(video.urls.mp4);
+
+  const sizeToBitrateMapping: { [key in videoSize]: number } = {
+    144: 300,
+    240: 600,
+    480: 1600,
+    720: 2400,
+    1080: -1,
+  };
 
   const player = new Plyr(videoNode, {
     captions: {
@@ -108,6 +118,25 @@ export const createPlyrPlayer = (
       volume: intl.formatMessage(i18nMessages.volume),
     },
     iconUrl: appData.static.svg.plyr,
+    quality: {
+      default: '480',
+      forced: true,
+      onChange: (quality: videoSize) => {
+        if (!dash) {
+          return;
+        }
+        dash.updateSettings({
+          streaming: {
+            abr: {
+              maxBitrate: {
+                video: sizeToBitrateMapping[quality] || 1600,
+              },
+            },
+          },
+        } as MediaPlayerSettingClass);
+      },
+      options: videoSizes,
+    },
     seekTime: 5,
     settings,
   });

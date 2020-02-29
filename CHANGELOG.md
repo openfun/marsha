@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Allow to change video quality while using ABR
+
 ## [3.4.0] - 2020-02-06
 
 ### Changed
