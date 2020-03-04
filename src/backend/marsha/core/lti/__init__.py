@@ -175,9 +175,7 @@ class LTI:
         """Find and return the passport targeted by the LTI request or raise an LTIException."""
         consumer_key = self.request.POST.get("oauth_consumer_key", None)
 
-        try:
-            assert consumer_key
-        except AssertionError:
+        if not consumer_key:
             raise LTIException("An oauth consumer key is required.")
 
         # find a passport related to the oauth consumer key

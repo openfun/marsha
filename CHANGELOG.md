@@ -8,6 +8,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Replace `random` with `secrets` to generate random strings
+
+### Fixed
+
+- Remove `assert` statements and prepare codebase for activation of `bandit`
+  linter
+
 ## [3.7.1] - 2020-05-11
 
 ### Fixed

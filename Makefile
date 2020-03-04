@@ -115,7 +115,8 @@ lint: \
 	lint-isort \
 	lint-black \
 	lint-flake8 \
-	lint-pylint
+	lint-pylint \
+	lint-bandit
 .PHONY: lint
 
 lint-black:  ## Run the black tool and update files that need to
@@ -137,6 +138,11 @@ lint-pylint:  ## Run the pylint tool
 	@echo "$(BOLD)Running pylint$(RESET)"
 	@$(COMPOSE_RUN_APP) pylint --rcfile=pylintrc marsha
 .PHONY: lint-pylint
+
+lint-bandit: ## lint back-end python sources with bandit
+	@echo "$(BOLD)Running bandit$(RESET)"
+	@$(COMPOSE_RUN_APP) bandit -c .bandit -qr marsha
+.PHONY: lint-bandit
 
 .PHONY: migrate
 migrate:  ## Run django migration for the marsha project.
