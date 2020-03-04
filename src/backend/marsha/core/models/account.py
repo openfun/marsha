@@ -1,5 +1,5 @@
 """This module holds the models for the marsha project."""
-import random
+import secrets
 import string
 
 from django.contrib.auth.models import AbstractUser
@@ -167,12 +167,12 @@ class LTIPassport(BaseModel):
         self.full_clean()
         if not self.oauth_consumer_key:
             self.oauth_consumer_key = "".join(
-                random.choice(OAUTH_CONSUMER_KEY_CHARS)
+                secrets.choice(OAUTH_CONSUMER_KEY_CHARS)
                 for _ in range(OAUTH_CONSUMER_KEY_SIZE)
             )
         if not self.shared_secret:
             self.shared_secret = "".join(
-                random.choice(SHARED_SECRET_CHARS) for _ in range(SHARED_SECRET_SIZE)
+                secrets.choice(SHARED_SECRET_CHARS) for _ in range(SHARED_SECRET_SIZE)
             )
         super().save(*args, **kwargs)
 
