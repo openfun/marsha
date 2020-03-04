@@ -39,4 +39,6 @@ def rsa_signer(message):
     except FileNotFoundError:
         raise MissingRSAKey()
 
-    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+    # The following line is excluded from bandit security check because cloudfront supports
+    # only sha1 hash for signed URLs.
+    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())  # nosec

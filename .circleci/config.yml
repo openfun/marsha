@@ -181,6 +181,9 @@ jobs:
       - run:
           name: Lint code with pylint
           command: ~/.local/bin/pylint --rcfile=pylintrc marsha
+      - run:
+          name: Lint code with bandit
+          command: ~/.local/bin/bandit -c .bandit -qr marsha
 
 
   test-back:
