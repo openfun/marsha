@@ -12,7 +12,10 @@ export const createDashPlayer = (
     streaming: {
       abr: {
         initialBitrate: {
-          video: 1600,
+          video: 1600, // 480p
+        },
+        maxBitrate: {
+          video: 2400, // 720p
         },
       },
       fastSwitchEnabled: true,
