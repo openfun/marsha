@@ -57,7 +57,7 @@ export interface TimedTextTranscript extends TimedText {
 }
 
 /** Possible sizes for an image, a video or stream. Used as keys in lists of files. */
-export type videoSize = '144' | '240' | '480' | '720' | '1080';
+export type videoSize = 144 | 240 | 480 | 720 | 1080;
 
 /** An URLs property that includes URLs for each possible visual size */
 export type urls = { [key in videoSize]: string };
