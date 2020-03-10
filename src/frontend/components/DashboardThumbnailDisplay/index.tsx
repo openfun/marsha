@@ -32,17 +32,16 @@ export const DashboardThumbnailDisplay = ({
       alt={messages.thumbnailAlt}
       fit={'cover'}
       src={urls[144]}
-      srcSet={(Object.keys(urls) as videoSize[]).reduce(
-        (acc: string, size: videoSize) => {
+      srcSet={Object.keys(urls)
+        .map(size => Number(size) as videoSize)
+        .reduce((acc: string, size: videoSize) => {
           const url = `${urls[size]} ${videoSizeMapping[size]}w`;
           if (acc.length === 0) {
             return url;
           } else {
             return `${acc}, ${url}`;
           }
-        },
-        '',
-      )}
+        }, '')}
     />
   );
 };

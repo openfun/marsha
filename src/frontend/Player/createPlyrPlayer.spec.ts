@@ -239,9 +239,9 @@ describe('createPlyrPlayer', () => {
 
     expect(player.source).toEqual({
       sources: [
-        { size: '144', src: 'https://example.com/144p.mp4', type: 'video/mp4' },
+        { size: 144, src: 'https://example.com/144p.mp4', type: 'video/mp4' },
         {
-          size: '1080',
+          size: 1080,
           src: 'https://example.com/1080p.mp4',
           type: 'video/mp4',
         },
