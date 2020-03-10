@@ -38,6 +38,9 @@ describe('createDash{layer', () => {
           initialBitrate: {
             video: 1600,
           },
+          maxBitrate: {
+            video: 2400,
+          },
         },
         fastSwitchEnabled: true,
       },
