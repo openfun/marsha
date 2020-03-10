@@ -30,13 +30,17 @@ export const createPlyrPlayer = (
   let dash: Maybe<MediaPlayerClass>;
   let sources;
   const settings = ['captions', 'speed', 'loop', 'quality'];
+  const videoSizes = Object.keys(video.urls.mp4).map(
+    size => Number(size) as videoSize,
+  );
+
   if (!isMSESupported() && !isHlsSupported(videoNode)) {
     const timedTextTracks = useTimedTextTrackApi
       .getState()
       .getTimedTextTracks();
 
     sources = {
-      sources: (Object.keys(video.urls.mp4) as videoSize[]).map(size => ({
+      sources: videoSizes.map(size => ({
         size,
         src: video.urls.mp4[size],
         type: 'video/mp4',
@@ -57,8 +61,6 @@ export const createPlyrPlayer = (
       type: 'video',
     } as SourceInfo;
   }
-
-  const videoSizes: string[] = Object.keys(video.urls.mp4);
 
   const sizeToBitrateMapping: { [key in videoSize]: number } = {
     144: 300,
@@ -119,7 +121,7 @@ export const createPlyrPlayer = (
     },
     iconUrl: appData.static.svg.plyr,
     quality: {
-      default: '480',
+      default: 480,
       forced: true,
       onChange: (quality: videoSize) => {
         if (!dash) {

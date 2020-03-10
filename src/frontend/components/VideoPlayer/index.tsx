@@ -126,14 +126,16 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
         )}
         {!!videoNodeRef.current &&
           !isHlsSupported(videoNodeRef.current) &&
-          (Object.keys(video.urls.mp4) as videoSize[]).map(size => (
-            <source
-              key={video.urls.mp4[size]}
-              size={size}
-              src={video.urls.mp4[size]}
-              type="video/mp4"
-            />
-          ))}
+          Object.keys(video.urls.mp4)
+            .map(size => Number(size) as videoSize)
+            .map(size => (
+              <source
+                key={video.urls.mp4[size]}
+                size={`${size}`}
+                src={video.urls.mp4[size]}
+                type="video/mp4"
+              />
+            ))}
 
         {/* This is a workaround to force plyr to load its tracks list once
           instantiated. Without this, captions are not loaded correctly, at least, on firefox.
