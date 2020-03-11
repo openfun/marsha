@@ -105,7 +105,7 @@ declare class Plyr {
    * Gets or sets the quality for the player. The setter accepts a value from the options specified in your config.
    * Remarks: YouTube only. HTML5 will follow.
    */
-  quality: string;
+  quality: string | number;
 
   /**
    * Gets or sets the current loop state of the player.
