@@ -11,8 +11,11 @@ jest.mock('../utils/isAbrSupported', () => ({
 const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 const mockIsHlsSupported = isHlsSupported as jestMockOf<typeof isHlsSupported>;
 
+const mockDashOnListener = jest.fn();
 jest.mock('./createDashPlayer', () => ({
-  createDashPlayer: jest.fn(),
+  createDashPlayer: jest.fn(() => ({
+    on: mockDashOnListener,
+  })),
 }));
 
 const mockCreateDashPlayer = createDashPlayer as jestMockOf<
@@ -229,6 +232,7 @@ describe('createPlyrPlayer', () => {
     createPlyrPlayer(ref, jest.fn(), video as Video);
 
     expect(mockCreateDashPlayer).toHaveBeenCalledWith(video, ref);
+    expect(mockDashOnListener).toHaveBeenCalled();
   });
   it('overrides sources when ABR and HLS is not available', () => {
     mockIsMSESupported.mockReturnValue(false);

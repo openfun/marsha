@@ -113,7 +113,7 @@ export interface InteractedContextExtensions {
   ccSubtitleLanguage?: string;
   frameRate?: number;
   fullScreen?: boolean;
-  quality?: string;
+  quality?: string | number;
   videoPlaybackSize?: string;
   speed?: string;
   track?: string;

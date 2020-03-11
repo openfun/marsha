@@ -29,6 +29,7 @@ export const createPlyrPlayer = (
 ): Plyr => {
   let dash: Maybe<MediaPlayerClass>;
   let sources;
+  let qualityChangedFromDash: Maybe<boolean>;
   const settings = ['captions', 'speed', 'loop', 'quality'];
   const videoSizes = Object.keys(video.urls.mp4).map(
     size => Number(size) as videoSize,
@@ -127,6 +128,12 @@ export const createPlyrPlayer = (
         if (!dash) {
           return;
         }
+
+        if (qualityChangedFromDash) {
+          qualityChangedFromDash = false;
+          return;
+        }
+
         dash.updateSettings({
           streaming: {
             abr: {
@@ -141,6 +148,9 @@ export const createPlyrPlayer = (
     },
     seekTime: 5,
     settings,
+    storage: {
+      enabled: false,
+    },
   });
 
   // sources are set only when ABR is not available
@@ -153,6 +163,19 @@ export const createPlyrPlayer = (
 
   if (isMSESupported()) {
     dash = createDashPlayer(video, videoNode);
+    dash.on('qualityChangeRendered', e => {
+      if (isNaN(e.oldQuality)) {
+        // video is not yet started
+        return;
+      }
+      const newQuality = dash!
+        .getBitrateInfoListFor('video')
+        .find(bitrateInfo => bitrateInfo.qualityIndex === e.newQuality);
+      if (newQuality) {
+        qualityChangedFromDash = true;
+        player.quality = newQuality.height;
+      }
+    });
   }
 
   if (player.elements.buttons.play) {
