@@ -1,6 +1,6 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { DateTime, Interval } from 'luxon';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { XAPI_ENDPOINT } from '../settings';
 import {
@@ -384,7 +384,7 @@ export class XAPIStatement {
     fetch(`${XAPI_ENDPOINT}/`, {
       body: JSON.stringify({
         ...data,
-        id: uuid(),
+        id: uuidv4(),
       }),
       headers: {
         Authorization: `Bearer ${this.jwt}`,
