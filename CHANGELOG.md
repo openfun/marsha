@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.5.1] - 2020-03-30
+
+### Fixed
+
+- update @openfun/subsrt to 1.0.4 to get a bug fix.
+
 ## [3.5.0] - 2020-03-16
 
 ### Added
@@ -480,7 +486,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.5.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.5.1...master
+[3.5.1]: https://github.com/openfun/marsha/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/openfun/marsha/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/openfun/marsha/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/openfun/marsha/compare/v3.2.1...v3.3.0
