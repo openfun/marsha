@@ -39,14 +39,30 @@ def get_or_create_resource(model, lti):
     filter_kwargs = (
         {} if (lti.is_instructor or lti.is_admin) else {"uploaded_on__isnull": False}
     )
+    consumer_site = lti.get_consumer_site()
+    playlist_reachable_from = Playlist.objects.filter(
+        portable_to__lti_id=lti.context_id,
+        portable_to__consumer_site_id=consumer_site.id,
+    )
     try:
         return model.objects.select_related("playlist").get(
-            Q(playlist__lti_id=lti.context_id)
-            | Q(playlist__is_portable_to_playlist=True, uploaded_on__isnull=False),
-            Q(playlist__consumer_site=lti.get_consumer_site())
-            | Q(playlist__is_portable_to_consumer_site=True, uploaded_on__isnull=False)
+            # The resource exists in this playlist on this consumer site
+            Q(playlist__lti_id=lti.context_id, playlist__consumer_site=consumer_site)
+            # The resource exists in another playlist of the same consumer site and is portable
             | Q(
-                playlist__consumer_site__in=lti.get_consumer_site().reachable_from.all(),
+                playlist__is_portable_to_playlist=True,
+                playlist__consumer_site=consumer_site,
+                uploaded_on__isnull=False,
+            )
+            # The resource exists in another consumer site to which it is portable because:
+            # 1. its playlist is portable to all consumer sites
+            | Q(playlist__is_portable_to_consumer_site=True, uploaded_on__isnull=False)
+            # 2. its playlist is portable to the requested playlist
+            | Q(playlist__in=playlist_reachable_from, uploaded_on__isnull=False)
+            # 3. all playlists in the consumer site of the resource are portable to the
+            #    requesting consumer site
+            | Q(
+                playlist__consumer_site__in=consumer_site.reachable_from.all(),
                 uploaded_on__isnull=False,
             ),
             pk=lti.resource_id,

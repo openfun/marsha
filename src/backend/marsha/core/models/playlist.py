@@ -63,8 +63,27 @@ class Playlist(BaseModel):
         verbose_name=_("users"),
         help_text=_("users who have been granted access to this playlist"),
     )
-    is_portable_to_playlist = models.BooleanField(default=True)
-    is_portable_to_consumer_site = models.BooleanField(default=False)
+    is_portable_to_playlist = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Are all resources in this playlist portable to any playlist in this consumer site"
+        ),
+    )
+    is_portable_to_consumer_site = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Are all resources in this playlist portable to any playlist in other consumer sites"
+        ),
+    )
+    portable_to = models.ManyToManyField(
+        to="self",
+        through="PlaylistPortability",
+        verbose_name=_("portable to playlists"),
+        help_text=_("Playlists to which the resources in this playlist are portable."),
+        symmetrical=False,
+        related_name="reachable_from",
+        blank=True,
+    )
 
     class Meta:
         """Options for the ``Playlist`` model."""
@@ -86,6 +105,55 @@ class Playlist(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
+
+
+class PlaylistPortability(BaseModel):
+    """Model representing portability between playlists.
+
+    ``through`` model between ``Playlist.portable_to`` and ``Playlist.reachable_from``.
+
+    """
+
+    # we allow deleting entries in this through table
+    _safedelete_policy = HARD_DELETE
+
+    source_playlist = models.ForeignKey(
+        to=Playlist,
+        related_name="portable_to_links",
+        verbose_name=_("source playlist"),
+        help_text=_("playlist that is portable."),
+        # link is (soft-)deleted if source site is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+    target_playlist = models.ForeignKey(
+        to=Playlist,
+        related_name="reachable_from_links",
+        verbose_name=_("target playlist"),
+        help_text=_("playlist to which portability is automatic."),
+        # link is (soft-)deleted if target site is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``PlaylistPortability`` model."""
+
+        db_table = "Playlist_portability"
+        verbose_name = _("playlist portability")
+        verbose_name_plural = _("playlist portabilities")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source_playlist", "target_playlist"],
+                condition=models.Q(deleted=None),
+                name="playlist_portability_unique_idx",
+            )
+        ]
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        kwargs = {"source": self.source_playlist, "target": self.target_playlist}
+        if self.deleted:
+            return _("{source} was portable to {target}").format(**kwargs)
+        return _("{source} is portable to {target}").format(**kwargs)
 
 
 class PlaylistAccess(BaseModel):
