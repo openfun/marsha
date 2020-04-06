@@ -18,6 +18,7 @@ from marsha.core.models import (
     OrganizationAccess,
     Playlist,
     PlaylistAccess,
+    PlaylistPortability,
     SignTrack,
     TimedTextTrack,
     User,
@@ -294,6 +295,15 @@ class PlaylistAccessesInline(admin.TabularInline):
     verbose_name_plural = _("users accesses")
 
 
+class PlaylistPortabilityInline(admin.TabularInline):
+    """Inline to display playlists to which a playlist is automatically portable."""
+
+    model = PlaylistPortability
+    fk_name = "source_playlist"
+    verbose_name = _("portable to")
+    verbose_name_plural = _("portable to")
+
+
 @admin.register(Document, site=admin_site)
 class DocumentAdmin(BaseFileAdmin):
     """Admin class for the Document model."""
@@ -314,7 +324,12 @@ class PlaylistAdmin(admin.ModelAdmin):
     """Admin class for the Playlist model."""
 
     exclude = ("duplicated_from",)
-    inlines = [DocumentsInline, VideosInline, PlaylistAccessesInline]
+    inlines = [
+        DocumentsInline,
+        VideosInline,
+        PlaylistAccessesInline,
+        PlaylistPortabilityInline,
+    ]
 
     list_display = (
         "id",
@@ -362,6 +377,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "consumer_site__name",
         "organization__name",
         "lti_id",
+        "portable_to",
         "title",
     )
     verbose_name = _("Playlist")

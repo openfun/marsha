@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Allow defining playlist portability to a precise list of other playlists
+
 ## [3.5.1] - 2020-03-30
 
 ### Fixed

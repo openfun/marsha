@@ -195,7 +195,9 @@ class ConsumerSite(BaseModel):
         to="self",
         through="ConsumerSitePortability",
         verbose_name=_("portable to"),
-        help_text=_("consumer sites to which this site is automatically portable."),
+        help_text=_(
+            "consumer sites to which all resources in this consumer site are portable."
+        ),
         symmetrical=False,
         related_name="reachable_from",
         blank=True,
