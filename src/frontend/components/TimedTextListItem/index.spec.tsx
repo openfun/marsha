@@ -228,7 +228,7 @@ describe('<TimedTextListItem />', () => {
         queryByText((content) => content.startsWith('Processing')),
       ).not.toBeTruthy();
       getByText((content) => content.startsWith('Ready'));
-      cleanup();
+      await cleanup();
       fetchMock.restore();
     }
   });
