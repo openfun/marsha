@@ -84,7 +84,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('Error Component: notFound');
   });
 
-  it('redirects users to the player when the video can be shown', () => {
+  it('redirects users to the player when the video can be shown', async () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.VIDEOS;
     mockDocument = null;
@@ -102,11 +102,11 @@ describe('<RedirectOnLoad />', () => {
       );
 
       getByText('video player');
-      cleanup();
+      await cleanup();
     }
   });
 
-  it('redirects users to the player when the document can be shown', () => {
+  it('redirects users to the player when the document can be shown', async () => {
     mockState = appState.SUCCESS;
     mockModelName = modelName.DOCUMENTS;
     mockVideo = null;
@@ -124,7 +124,7 @@ describe('<RedirectOnLoad />', () => {
       );
 
       getByText('document player');
-      cleanup();
+      await cleanup();
     }
   });
 
