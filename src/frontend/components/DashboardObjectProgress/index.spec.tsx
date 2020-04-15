@@ -8,7 +8,7 @@ import { wrapInIntlProvider } from '../../utils/tests/intl';
 describe('<DashboardVideoPaneProgress />', () => {
   let setObjectProgress: any;
   const ControlComponent = () => {
-    setObjectProgress = useObjectProgress(state => state.setObjectProgress);
+    setObjectProgress = useObjectProgress((state) => state.setObjectProgress);
     return null;
   };
 

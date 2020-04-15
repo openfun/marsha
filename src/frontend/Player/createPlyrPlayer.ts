@@ -32,7 +32,7 @@ export const createPlyrPlayer = (
   let qualityChangedFromDash: Maybe<boolean>;
   const settings = ['captions', 'speed', 'loop', 'quality'];
   const videoSizes = Object.keys(video.urls.mp4).map(
-    size => Number(size) as videoSize,
+    (size) => Number(size) as videoSize,
   );
 
   if (!isMSESupported() && !isHlsSupported(videoNode)) {
@@ -41,19 +41,19 @@ export const createPlyrPlayer = (
       .getTimedTextTracks();
 
     sources = {
-      sources: videoSizes.map(size => ({
+      sources: videoSizes.map((size) => ({
         size,
         src: video.urls.mp4[size],
         type: 'video/mp4',
       })),
       tracks: timedTextTracks
-        .filter(track => track.is_ready_to_show)
-        .filter(track =>
+        .filter((track) => track.is_ready_to_show)
+        .filter((track) =>
           [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
             track.mode,
           ),
         )
-        .map(track => ({
+        .map((track) => ({
           kind: trackTextKind[track.mode],
           label: track.language,
           src: track.url,
@@ -163,14 +163,14 @@ export const createPlyrPlayer = (
 
   if (isMSESupported()) {
     dash = createDashPlayer(video, videoNode);
-    dash.on('qualityChangeRendered', e => {
+    dash.on('qualityChangeRendered', (e) => {
       if (isNaN(e.oldQuality)) {
         // video is not yet started
         return;
       }
       const newQuality = dash!
         .getBitrateInfoListFor('video')
-        .find(bitrateInfo => bitrateInfo.qualityIndex === e.newQuality);
+        .find((bitrateInfo) => bitrateInfo.qualityIndex === e.newQuality);
       if (newQuality) {
         qualityChangedFromDash = true;
         player.quality = newQuality.height;
@@ -180,7 +180,7 @@ export const createPlyrPlayer = (
 
   if (player.elements.buttons.play) {
     if (Array.isArray(player.elements.buttons.play)) {
-      player.elements.buttons.play.forEach(button => {
+      player.elements.buttons.play.forEach((button) => {
         // the tabIndex of this play button is set to -1. It must not be
         // focusable when a user navigate with their keyboard. The play button in
         // control bar is enough.
@@ -199,8 +199,8 @@ export const createPlyrPlayer = (
   }
 
   useTranscriptTimeSelectorApi.subscribe(
-    time => (player.currentTime = time as number),
-    state => state.time,
+    (time) => (player.currentTime = time as number),
+    (state) => state.time,
   );
 
   let xapiStatement: XAPIStatement;
@@ -271,7 +271,7 @@ export const createPlyrPlayer = (
   player.on('loadedmetadata', initialize);
   player.on('loadeddata', initialize);
 
-  player.on('playing', event => {
+  player.on('playing', (event) => {
     xapiStatement.played({
       time: player.currentTime,
     });
@@ -279,7 +279,7 @@ export const createPlyrPlayer = (
     changePlayButtonAriaLabel(player.config.i18n.pause);
   });
 
-  player.on('pause', event => {
+  player.on('pause', (event) => {
     xapiStatement.paused({
       time: player.currentTime,
     });
@@ -288,13 +288,13 @@ export const createPlyrPlayer = (
   });
 
   /**************** Seeked statement ***********************/
-  player.on('timeupdate', event => {
+  player.on('timeupdate', (event) => {
     if (true === isInitialized && false === player.seeking) {
       currentTime = player.currentTime;
     }
   });
 
-  player.on('seeking', event => {
+  player.on('seeking', (event) => {
     if (false === isInitialized) {
       return;
     }
@@ -302,7 +302,7 @@ export const createPlyrPlayer = (
     seekingAt = currentTime;
     hasSeeked = true;
   });
-  player.on('seeked', event => {
+  player.on('seeked', (event) => {
     if (false === isInitialized) {
       // this is a workaround to force the player to stay on the first frame (time code 0)
       // while the video is not played. Without this, the state seeks a little bit
@@ -346,23 +346,23 @@ export const createPlyrPlayer = (
     xapiStatement.interacted({ time: player.currentTime }, contextExtensions);
   };
 
-  player.on('captionsdisabled', event => interacted(event));
-  player.on('captionsenabled', event => interacted(event));
-  player.on('enterfullscreen', event => interacted(event));
-  player.on('exitfullscreen', event => interacted(event));
-  player.on('languagechange', event => interacted(event));
-  player.on('qualitychange', event => interacted(event));
-  player.on('ratechange', event => interacted(event));
-  player.on('volumechange', event => interacted(event));
+  player.on('captionsdisabled', (event) => interacted(event));
+  player.on('captionsenabled', (event) => interacted(event));
+  player.on('enterfullscreen', (event) => interacted(event));
+  player.on('exitfullscreen', (event) => interacted(event));
+  player.on('languagechange', (event) => interacted(event));
+  player.on('qualitychange', (event) => interacted(event));
+  player.on('ratechange', (event) => interacted(event));
+  player.on('volumechange', (event) => interacted(event));
   /**************** End interacted event *************************/
 
   /**************** Dispatch time updated ************************/
-  player.on('timeupdate', event => {
+  player.on('timeupdate', (event) => {
     dispatchPlayerTimeUpdate(player.currentTime);
   });
   /**************** End dispatch time updated *********************/
 
-  player.on('ended', event => {
+  player.on('ended', (event) => {
     // change button control aria-label to play.
     changePlayButtonAriaLabel(player.config.i18n.play);
   });

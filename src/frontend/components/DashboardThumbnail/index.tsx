@@ -42,7 +42,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
   const [pollInterval, setPollInterval] = useState(-1);
-  const { addThumbnail, thumbnail } = useThumbnail(state => ({
+  const { addThumbnail, thumbnail } = useThumbnail((state) => ({
     addThumbnail: state.addResource,
     thumbnail: state.getThumbnail(),
   }));

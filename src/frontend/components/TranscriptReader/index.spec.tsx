@@ -25,7 +25,7 @@ jest.mock('vtt.js', () => ({
             startTime: 2.56,
             text: 'Bienvenue dans ce nouveau MOOC\n"Du manager au leader".',
           },
-        ].forEach(cue => this.oncue(cue));
+        ].forEach((cue) => this.oncue(cue));
       }
       parse() {}
       oncue(cue: VTTCue) {}
@@ -58,7 +58,7 @@ const transcript = {
 describe('<TranscriptReader />', () => {
   let setPlayerCurrentTime: (time: number) => void;
   const VideoPlayer = () => {
-    const videoProgress = useVideoProgress(state => state);
+    const videoProgress = useVideoProgress((state) => state);
     setPlayerCurrentTime = videoProgress.setPlayerCurrentTime;
     return null;
   };
@@ -77,7 +77,7 @@ describe('<TranscriptReader />', () => {
     // Both cues are inactive
     getByText('-Bonjour. Bonjour à tous.');
     getByText(
-      content =>
+      (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),
     );
@@ -88,7 +88,7 @@ describe('<TranscriptReader />', () => {
     // Cue 1 is active, cue 2 is inactive
     getByText('Active: -Bonjour. Bonjour à tous.');
     getByText(
-      content =>
+      (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),
     );
@@ -98,7 +98,7 @@ describe('<TranscriptReader />', () => {
     // Cue 1 is inactive, cue 2 is active
     getByText('-Bonjour. Bonjour à tous.');
     getByText(
-      content =>
+      (content) =>
         content.startsWith('Active: Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),
     );

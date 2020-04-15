@@ -89,7 +89,7 @@ describe('<DashboardDocument />', () => {
       Authorization: 'Bearer cool_token_m8',
     });
 
-    getByText(content => content.startsWith('Ready'));
+    getByText((content) => content.startsWith('Ready'));
   });
 
   it('shows the upload button in pending state', () => {
@@ -133,7 +133,7 @@ describe('<DashboardDocument />', () => {
       ),
     );
 
-    getByText(content => content.startsWith('Error'));
+    getByText((content) => content.startsWith('Error'));
     getByText('Replace the document');
   });
 
@@ -164,7 +164,7 @@ describe('<DashboardDocument />', () => {
     );
 
     // document state
-    getByText(content => content.startsWith('Ready'));
+    getByText((content) => content.startsWith('Ready'));
 
     // document filename
     getByText('Filename');

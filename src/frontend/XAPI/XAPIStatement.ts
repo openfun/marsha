@@ -59,9 +59,9 @@ export class XAPIStatement {
 
     const progressLength = segments
       // remove non complete segments
-      .filter(segment => segment.indexOf('[.]') >= 0)
+      .filter((segment) => segment.indexOf('[.]') >= 0)
       // split segments to have begin and end segment in an array
-      .map(segment => segment.split('[.]'))
+      .map((segment) => segment.split('[.]'))
       // cast segment from string to number
       .reduce((acc: number[][], curr: string[]): number[][] => {
         acc.push([Number(curr[0]), Number(curr[1])]);

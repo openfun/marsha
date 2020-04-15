@@ -77,9 +77,11 @@ export const TimedTextCreationForm = ({
   const [newTTUploadId, setNewTTUploadId] = useState('');
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    state => state,
+    (state) => state,
   );
-  const doCreateTimedTextTrack = useTimedTextTrack(state => state.addResource);
+  const doCreateTimedTextTrack = useTimedTextTrack(
+    (state) => state.addResource,
+  );
 
   useEffect(() => {
     getChoices();
@@ -87,7 +89,7 @@ export const TimedTextCreationForm = ({
 
   const availableLanguages =
     choices &&
-    choices.filter(language => !excludedLanguages.includes(language.value));
+    choices.filter((language) => !excludedLanguages.includes(language.value));
 
   const onSelectChange = (
     option: ValueType<SelectOption>,
@@ -128,7 +130,7 @@ export const TimedTextCreationForm = ({
       <Select
         onChange={onSelectChange}
         options={availableLanguages}
-        styles={{ input: styles => ({ ...styles, width: '8rem' }) }}
+        styles={{ input: (styles) => ({ ...styles, width: '8rem' }) }}
       />
       <Button
         color={'brand'}

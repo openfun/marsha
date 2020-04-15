@@ -145,7 +145,7 @@ describe('<DashboardVideoPane />', () => {
         'Your video is currently processing. This may take up to an hour. Please come back later.',
       ),
     ).toEqual(null);
-    getByText(content => content.startsWith('Ready'));
+    getByText((content) => content.startsWith('Ready'));
     getByText('Your video is ready to play.');
   });
 
@@ -180,7 +180,7 @@ describe('<DashboardVideoPane />', () => {
       ),
     );
 
-    getByText(content => content.startsWith('Error'));
+    getByText((content) => content.startsWith('Error'));
     getByText(
       'There was an error with your video. Retry or upload another one.',
     );

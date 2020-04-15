@@ -20,7 +20,7 @@ export const [useTimedTextTrack, useTimedTextTrackApi] = create<
 
   if (appData.video && appData.video.timed_text_tracks.length > 0) {
     appData.video.timed_text_tracks.forEach(
-      timedTextTrack => (timedTextTracks[timedTextTrack.id] = timedTextTrack),
+      (timedTextTrack) => (timedTextTracks[timedTextTrack.id] = timedTextTrack),
     );
   }
 
