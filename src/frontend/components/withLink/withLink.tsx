@@ -15,7 +15,7 @@ export function withLink<P extends object>(
 ) {
   return class extends React.Component<P & WithLinkprops> {
     render() {
-      const InnerWrapper = withRouter(props => (
+      const InnerWrapper = withRouter((props) => (
         <WrappedComponent
           {...this.props}
           onClick={() => props.history.push(this.props.to)}

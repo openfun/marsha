@@ -34,12 +34,12 @@ export const DashboardTimedTextManager = ({
     <DashboardInternalHeading>
       <FormattedMessage {...message} />
     </DashboardInternalHeading>
-    {tracks.map(track => {
+    {tracks.map((track) => {
       return <TimedTextListItem key={track.id} track={track} />;
     })}
     <TimedTextCreationForm
       mode={mode}
-      excludedLanguages={tracks.map(track => track.language)}
+      excludedLanguages={tracks.map((track) => track.language)}
     />
   </DashboardTimedTextManagerStyled>
 );

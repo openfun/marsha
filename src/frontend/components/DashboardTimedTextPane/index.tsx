@@ -43,7 +43,7 @@ export const DashboardTimedTextPane = () => {
   useAsyncEffect(async () => {
     setStatus(await getResourceList(modelName.TIMEDTEXTTRACKS));
   }, []);
-  const timedtexttracks = useTimedTextTrack(state =>
+  const timedtexttracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
 
@@ -53,12 +53,14 @@ export const DashboardTimedTextPane = () => {
 
   return (
     <DashboardTimedTextPaneStyled>
-      {(Object.values(timedTextMode) as timedTextMode[]).map(mode => (
+      {(Object.values(timedTextMode) as timedTextMode[]).map((mode) => (
         <DashboardTimedTextManager
           key={mode}
           message={messages[mode]}
           mode={mode}
-          tracks={timedtexttracks.filter(track => track && track.mode === mode)}
+          tracks={timedtexttracks.filter(
+            (track) => track && track.mode === mode,
+          )}
         />
       ))}
     </DashboardTimedTextPaneStyled>

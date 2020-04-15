@@ -164,7 +164,7 @@ describe('stores/useTimedTextTrack', () => {
     useTimedTextTrackApi
       .getState()
       .getTimedTextTracks()
-      .forEach(timedtext => {
+      .forEach((timedtext) => {
         expect(timedtext).toBeDefined();
       });
   });

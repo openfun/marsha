@@ -33,7 +33,7 @@ export const DashboardThumbnailDisplay = ({
       fit={'cover'}
       src={urls[144]}
       srcSet={Object.keys(urls)
-        .map(size => Number(size) as videoSize)
+        .map((size) => Number(size) as videoSize)
         .reduce((acc: string, size: videoSize) => {
           const url = `${urls[size]} ${videoSizeMapping[size]}w`;
           if (acc.length === 0) {

@@ -48,7 +48,7 @@ interface DashboardDocumentProps {
 }
 
 const DashboardDocument = (props: DashboardDocumentProps) => {
-  const { document } = useDocument(state => ({
+  const { document } = useDocument((state) => ({
     document: state.getDocument(props.document),
   }));
   const intl = useIntl();

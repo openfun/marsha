@@ -26,7 +26,7 @@ export const DashboardObjectProgress = ({
   objectId,
 }: DashboardObjectProgressProps) => {
   const intl = useIntl();
-  const objectProgress = useObjectProgress(state => state.objectProgress);
+  const objectProgress = useObjectProgress((state) => state.objectProgress);
   const progress = objectProgress[objectId] || 0;
 
   // There is a conflict in the type of the `values` prop between `react` and `grommet`

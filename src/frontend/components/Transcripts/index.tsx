@@ -46,14 +46,14 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
   });
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    state => state,
+    (state) => state,
   );
 
-  const options = transcripts.map(transcript => {
+  const options = transcripts.map((transcript) => {
     const language =
       choices &&
       choices.find(
-        languageChoice => languageChoice.value === transcript.language,
+        (languageChoice) => languageChoice.value === transcript.language,
       );
     return {
       label: language ? language.label : transcript.language,
@@ -75,7 +75,7 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
       return disableTranscript();
     }
 
-    const transcript = transcripts.find(ts => ts.id === id);
+    const transcript = transcripts.find((ts) => ts.id === id);
     if (transcript) {
       setSelected({
         language: e.currentTarget.value,
@@ -102,9 +102,9 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
             value={selected.language}
           >
             <FormattedMessage {...messages.transcriptSelectPlaceholder}>
-              {message => <option value={''}>{message}</option>}
+              {(message) => <option value={''}>{message}</option>}
             </FormattedMessage>
-            {options.map(language => (
+            {options.map((language) => (
               <option key={language.value} value={language.value}>
                 {language.label}
               </option>

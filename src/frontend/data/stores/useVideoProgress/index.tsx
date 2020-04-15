@@ -5,7 +5,7 @@ interface State {
   setPlayerCurrentTime: (newTime: number) => void;
 }
 
-export const [useVideoProgress] = create<State>(set => ({
+export const [useVideoProgress] = create<State>((set) => ({
   playerCurrentTime: 0,
-  setPlayerCurrentTime: time => set({ playerCurrentTime: time }),
+  setPlayerCurrentTime: (time) => set({ playerCurrentTime: time }),
 }));

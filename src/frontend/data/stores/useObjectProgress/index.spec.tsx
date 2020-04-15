@@ -6,14 +6,14 @@ import { ObjectProgress, useObjectProgress } from '.';
 describe('stores/useObjectProgress', () => {
   let setObjectProgress: any;
   const ControlComponent = () => {
-    setObjectProgress = useObjectProgress(state => state.setObjectProgress);
+    setObjectProgress = useObjectProgress((state) => state.setObjectProgress);
     return null;
   };
 
   it('manages object progress with react state', () => {
     let objectProgress: ObjectProgress;
     const TestComponent = () => {
-      objectProgress = useObjectProgress(state => state.objectProgress);
+      objectProgress = useObjectProgress((state) => state.objectProgress);
       return <span>{objectProgress['42'] || 0}</span>;
     };
 

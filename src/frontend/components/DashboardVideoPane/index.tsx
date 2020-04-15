@@ -49,7 +49,7 @@ interface DashboardVideoPaneProps {
 
 export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   const [error, setError] = useState(false);
-  const { updateVideo } = useVideo(state => ({
+  const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
   const pollForVideo = async () => {

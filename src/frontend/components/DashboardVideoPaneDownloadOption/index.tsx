@@ -30,7 +30,7 @@ export const DashboardVideoPaneDownloadOption = ({
 }: DashboardVideoPaneDownloadOptionProps) => {
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(video.show_download);
-  const { updateVideo } = useVideo(state => ({
+  const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
 
