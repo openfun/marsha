@@ -16,7 +16,7 @@ export const uploadFile = (
     xhr.addEventListener('error', reject);
     xhr.addEventListener('abort', reject);
 
-    xhr.addEventListener('readystatechange', event => {
+    xhr.addEventListener('readystatechange', (event) => {
       if (xhr.readyState === 4) {
         if (xhr.status === 204) {
           return resolve(true);
@@ -25,7 +25,7 @@ export const uploadFile = (
       }
     });
 
-    xhr.upload.addEventListener('progress', progressEvent => {
+    xhr.upload.addEventListener('progress', (progressEvent) => {
       if (progressEvent.lengthComputable) {
         progressHandler(
           Math.floor((progressEvent.loaded / progressEvent.total) * 100),

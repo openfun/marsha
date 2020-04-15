@@ -39,17 +39,17 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    state => state,
+    (state) => state,
   );
 
-  const video = useVideo(state => state.getVideo(baseVideo));
-  const thumbnail = useThumbnail(state => state.getThumbnail());
-  const timedTextTracks = useTimedTextTrack(state =>
+  const video = useVideo((state) => state.getVideo(baseVideo));
+  const thumbnail = useThumbnail((state) => state.getThumbnail());
+  const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
 
   const setPlayerCurrentTime = useVideoProgress(
-    state => state.setPlayerCurrentTime,
+    (state) => state.setPlayerCurrentTime,
   );
 
   const languages: { [key: string]: string } =
@@ -100,8 +100,8 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
   }
 
   const transcripts = timedTextTracks
-    .filter(track => track.is_ready_to_show)
-    .filter(track => timedTextMode.TRANSCRIPT === track.mode);
+    .filter((track) => track.is_ready_to_show)
+    .filter((track) => timedTextMode.TRANSCRIPT === track.mode);
 
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
@@ -127,8 +127,8 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
         {!!videoNodeRef.current &&
           !isHlsSupported(videoNodeRef.current) &&
           Object.keys(video.urls.mp4)
-            .map(size => Number(size) as videoSize)
-            .map(size => (
+            .map((size) => Number(size) as videoSize)
+            .map((size) => (
               <source
                 key={video.urls.mp4[size]}
                 size={`${size}`}
@@ -142,14 +142,14 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
           */}
         {player &&
           timedTextTracks
-            .filter(track => track.is_ready_to_show)
-            .filter(track =>
+            .filter((track) => track.is_ready_to_show)
+            .filter((track) =>
               [
                 timedTextMode.CLOSED_CAPTIONING,
                 timedTextMode.SUBTITLE,
               ].includes(track.mode),
             )
-            .map(track => (
+            .map((track) => (
               <track
                 key={track.id}
                 src={track.url}

@@ -26,7 +26,7 @@ export const TranscriptSentence = ({
   cue,
   active,
 }: TranscriptSentenceProps) => {
-  const setTime = useTranscriptTimeSelector(state => state.setTime);
+  const setTime = useTranscriptTimeSelector((state) => state.setTime);
 
   const textSentence = () => ({ __html: `${cue.text} ` });
 

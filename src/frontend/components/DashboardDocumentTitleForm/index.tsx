@@ -34,7 +34,7 @@ interface DashboardDocumentTitleFormProps {
 export const DashboardDocumentTitleForm = ({
   document,
 }: DashboardDocumentTitleFormProps) => {
-  const { updateDocument } = useDocument(state => ({
+  const { updateDocument } = useDocument((state) => ({
     updateDocument: state.addResource,
   }));
   const [title, setTitle] = useState(document.title);
@@ -73,7 +73,7 @@ export const DashboardDocumentTitleForm = ({
           <TextInput
             id={'title'}
             maxLength={255}
-            onChange={event => setTitle(event.target.value)}
+            onChange={(event) => setTitle(event.target.value)}
             placeholder="Title"
             required={true}
             size={'medium'}

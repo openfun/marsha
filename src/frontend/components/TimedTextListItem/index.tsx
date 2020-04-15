@@ -68,11 +68,11 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   const [error, setError] = useState('');
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    state => state,
+    (state) => state,
   );
 
   const deleteTimedTextTrackRecord = useTimedTextTrack(
-    state => state.removeResource,
+    (state) => state.removeResource,
   );
 
   // On load, get TTT language choices and start polling if necessary
@@ -95,7 +95,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
 
   const language: Maybe<LanguageChoice> =
     choices &&
-    choices.find(languageChoice => track.language === languageChoice.value);
+    choices.find((languageChoice) => track.language === languageChoice.value);
 
   const deleteTrack = async () => {
     await deleteTimedTextTrack(track);

@@ -102,7 +102,9 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
     setObject(await getResource(objectType, objectId));
   }, []);
 
-  const setObjectProgress = useObjectProgress(state => state.setObjectProgress);
+  const setObjectProgress = useObjectProgress(
+    (state) => state.setObjectProgress,
+  );
 
   const beforeUnload = (event: BeforeUnloadEvent) => {
     if (status === 'uploading') {

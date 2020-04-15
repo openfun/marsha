@@ -41,7 +41,7 @@ export async function pollForTrack<
     } else {
       counter++;
       timer = timer * counter;
-      await new Promise(resolve => window.setTimeout(resolve, 1000 * timer));
+      await new Promise((resolve) => window.setTimeout(resolve, 1000 * timer));
       return await pollForTrack(resourceName, resourceId, timer, counter);
     }
   } catch (error) {

@@ -10,7 +10,7 @@ interface DashboardVideoProps {
 }
 
 const DashboardVideo = (props: DashboardVideoProps) => {
-  const video = useVideo(state => state.getVideo(props.video));
+  const video = useVideo((state) => state.getVideo(props.video));
 
   return (
     <React.Fragment>

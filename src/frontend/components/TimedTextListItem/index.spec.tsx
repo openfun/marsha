@@ -105,7 +105,7 @@ describe('<TimedTextListItem />', () => {
     await wait();
 
     getByText('French');
-    getByText(content => content.startsWith('Ready'));
+    getByText((content) => content.startsWith('Ready'));
     // No polling takes place as the track is already READY
     expect(
       fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
@@ -151,9 +151,9 @@ describe('<TimedTextListItem />', () => {
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
     expect(
-      queryByText(content => content.startsWith('Ready')),
+      queryByText((content) => content.startsWith('Ready')),
     ).not.toBeTruthy();
-    getByText(content => content.startsWith('Processing'));
+    getByText((content) => content.startsWith('Processing'));
 
     let timer: number = 15;
 
@@ -165,9 +165,9 @@ describe('<TimedTextListItem />', () => {
       expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(i);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(
-        queryByText(content => content.startsWith('Ready')),
+        queryByText((content) => content.startsWith('Ready')),
       ).not.toBeTruthy();
-      getByText(content => content.startsWith('Processing'));
+      getByText((content) => content.startsWith('Processing'));
     }
   });
 
@@ -204,7 +204,7 @@ describe('<TimedTextListItem />', () => {
 
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(
-        queryByText(content => content.startsWith('Ready')),
+        queryByText((content) => content.startsWith('Ready')),
       ).not.toBeTruthy();
 
       const updatedTrack = {
@@ -225,9 +225,9 @@ describe('<TimedTextListItem />', () => {
 
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(
-        queryByText(content => content.startsWith('Processing')),
+        queryByText((content) => content.startsWith('Processing')),
       ).not.toBeTruthy();
-      getByText(content => content.startsWith('Ready'));
+      getByText((content) => content.startsWith('Ready'));
       cleanup();
       fetchMock.restore();
     }

@@ -15,7 +15,7 @@ interface DocumentPlayerProps {
 }
 
 const DocumentPlayer = (props: DocumentPlayerProps) => {
-  const document = useDocument(state => state.getDocument(props.document));
+  const document = useDocument((state) => state.getDocument(props.document));
 
   return (
     <Box align="center" justify="center" direction="row">

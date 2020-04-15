@@ -4,7 +4,7 @@
 export const makeFormData = (
   // NB: order of keys is important here, which is why we do not iterate over an object
   // tslint:disable:trailing-comma
-  ...keyValuePairs: Array<[string, string | File]>
+  ...keyValuePairs: [string, string | File][]
 ) => {
   const formData = new FormData();
   keyValuePairs.forEach(([key, value]) => formData.append(key, value));

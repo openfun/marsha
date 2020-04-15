@@ -7,7 +7,7 @@ interface State {
 
 export const [useTranscriptTimeSelector, useTranscriptTimeSelectorApi] = create<
   State
->(set => ({
-  setTime: time => set({ time }),
+>((set) => ({
+  setTime: (time) => set({ time }),
   time: 0,
 }));
