@@ -186,7 +186,7 @@ describe('<DashboardVideoPane />', () => {
     );
   });
 
-  it('shows the buttons only when the video is pending or ready', () => {
+  it('shows the buttons only when the video is pending or ready', async () => {
     for (const state of Object.values(uploadState)) {
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
@@ -217,11 +217,11 @@ describe('<DashboardVideoPane />', () => {
           expect(queryByText('Replace the video')).toEqual(null);
           expect(queryByText('Watch')).toEqual(null);
       }
-      cleanup();
+      await cleanup();
     }
   });
 
-  it('shows the thumbnail only when the video is ready', () => {
+  it('shows the thumbnail only when the video is ready', async () => {
     for (const state of Object.values(uploadState)) {
       const { getByAltText, queryByAltText } = render(
         wrapInIntlProvider(
@@ -241,7 +241,7 @@ describe('<DashboardVideoPane />', () => {
       } else {
         expect(queryByAltText('Video thumbnail preview image.')).toEqual(null);
       }
-      cleanup();
+      await cleanup();
     }
   });
 

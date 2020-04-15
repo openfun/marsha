@@ -10,7 +10,7 @@ import { wrapInRouter } from '../../utils/tests/router';
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 describe('<DashboardPaneButtons />', () => {
-  it('only renders the "Watch" button if the video is ready', () => {
+  it('only renders the "Watch" button if the video is ready', async () => {
     const { getByText } = render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -22,7 +22,7 @@ describe('<DashboardPaneButtons />', () => {
       ),
     );
     getByText('Watch');
-    cleanup();
+    await cleanup();
 
     // Can't watch the video before it's ready and uploaded
     for (const state of [ERROR, PENDING, PROCESSING, UPLOADING]) {
@@ -37,7 +37,7 @@ describe('<DashboardPaneButtons />', () => {
         ),
       );
       expect(queryByText('Watch')).toBeNull();
-      cleanup();
+      await cleanup();
     }
   });
 
