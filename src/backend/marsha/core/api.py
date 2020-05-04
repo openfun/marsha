@@ -22,7 +22,7 @@ from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
 from .utils.s3_utils import get_s3_upload_policy_signature
 from .utils.time_utils import to_timestamp
-from .xapi import XAPI
+from .xapi import XAPI, XAPIStatement
 
 
 logger = logging.getLogger(__name__)
@@ -412,10 +412,20 @@ class XAPIStatementView(APIView):
                 status=501,
             )
 
-        xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
+        # xapi statement sent by the client but incomplete
+        partial_xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
 
-        if not xapi_statement.is_valid():
-            return Response(xapi_statement.errors, status=400)
+        if not partial_xapi_statement.is_valid():
+            return Response(partial_xapi_statement.errors, status=400)
+
+        try:
+            # xapi statement enriched with video and lti_user informations
+            xapi_statement = XAPIStatement(
+                video, partial_xapi_statement.validated_data, lti_user
+            )
+        # pylint: disable=invalid-name
+        except MissingUserIdError:
+            return Response({"status": "Impossible to identify the actor."}, status=400)
 
         xapi = XAPI(
             consumer_site.lrs_url,
@@ -424,7 +434,7 @@ class XAPIStatementView(APIView):
         )
 
         try:
-            xapi.send(video, xapi_statement.validated_data, lti_user)
+            xapi.send(xapi_statement)
         # pylint: disable=invalid-name
         except requests.exceptions.HTTPError as e:
             message = "Impossible to send xAPI request to LRS."
@@ -433,8 +443,5 @@ class XAPIStatementView(APIView):
                 extra={"response": e.response.text, "status": e.response.status_code},
             )
             return Response({"status": message}, status=501)
-        # pylint: disable=invalid-name
-        except MissingUserIdError:
-            return Response({"status": "Impossible to identify the actor."}, status=400)
 
         return Response(status=204)

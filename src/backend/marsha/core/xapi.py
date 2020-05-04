@@ -9,30 +9,13 @@ import requests
 from .exceptions import MissingUserIdError
 
 
-class XAPI:
-    """The XAPI object compute statements and send them to a LRS."""
+class XAPIStatement:
+    """Object to work on a XAPI Statement."""
 
-    def __init__(self, url, auth_token, xapi_version="1.0.3"):
-        """Initialize the XAPI module.
+    statement = None
 
-        Parameters
-        ----------
-        url: string
-            The LRS endpoint to fetch
-
-        auth_token: string
-            The basic_auth token used to authenticate on the LRS
-
-        xapi_version: string
-            The xAPI version used.
-
-        """
-        self.url = url
-        self.auth_token = auth_token
-        self.xapi_version = xapi_version
-
-    def send(self, video, statement, lti_user):
-        """Send the statement to a LRS.
+    def __init__(self, video, statement, lti_user):
+        """Compute a valid xapi satement.
 
         Parameters
         ----------
@@ -62,19 +45,6 @@ class XAPI:
             with LTI
 
         """
-        enrich_statement = self._enrich_statement(statement, video, lti_user)
-        headers = {
-            "Authorization": self.auth_token,
-            "Content-Type": "application/json",
-            "X-Experience-API-Version": self.xapi_version,
-        }
-
-        response = requests.post(self.url, json=enrich_statement, headers=headers)
-
-        response.raise_for_status()
-
-    def _enrich_statement(self, statement, video, lti_user):
-        """Add additionnal information to the existing statement."""
         try:
             user_id = lti_user.user_id
         except AttributeError:
@@ -123,4 +93,51 @@ class XAPI:
         if object_extensions:
             statement["object"]["definition"]["extensions"] = object_extensions
 
-        return statement
+        self.statement = statement
+
+    def get_statement(self):
+        """Return the enriched statement."""
+        return self.statement
+
+
+class XAPI:
+    """The XAPI object compute statements and send them to a LRS."""
+
+    def __init__(self, url, auth_token, xapi_version="1.0.3"):
+        """Initialize the XAPI module.
+
+        Parameters
+        ----------
+        url: string
+            The LRS endpoint to fetch
+
+        auth_token: string
+            The basic_auth token used to authenticate on the LRS
+
+        xapi_version: string
+            The xAPI version used.
+
+        """
+        self.url = url
+        self.auth_token = auth_token
+        self.xapi_version = xapi_version
+
+    def send(self, xapi_statement):
+        """Send the statement to a LRS.
+
+        Parameters
+        ----------
+        statement : Type[.XAPIStatement]
+
+        """
+        headers = {
+            "Authorization": self.auth_token,
+            "Content-Type": "application/json",
+            "X-Experience-API-Version": self.xapi_version,
+        }
+
+        response = requests.post(
+            self.url, json=xapi_statement.get_statement(), headers=headers
+        )
+
+        response.raise_for_status()

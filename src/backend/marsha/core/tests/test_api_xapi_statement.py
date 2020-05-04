@@ -7,7 +7,6 @@ from django.test import TestCase
 import requests
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..exceptions import MissingUserIdError
 from ..factories import VideoFactory
 from ..models import Video
 
@@ -34,8 +33,22 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["course"] = {
+            "school_name": None,
+            "course_name": None,
+            "course_run": None,
+        }
 
-        data = {"foo": "bar"}
+        data = {
+            "verb": {
+                "id": "http://adlnet.gov/expapi/verbs/initialized",
+                "display": {"en-US": "initialized"},
+            },
+            "context": {
+                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
+            },
+        }
 
         response = self.client.post(
             "/xapi/",
@@ -118,6 +131,12 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["course"] = {
+            "school_name": None,
+            "course_name": None,
+            "course_run": None,
+        }
 
         data = {
             "verb": {
@@ -163,6 +182,12 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["course"] = {
+            "school_name": None,
+            "course_name": None,
+            "course_run": None,
+        }
 
         data = {
             "verb": {
@@ -188,8 +213,7 @@ class XAPIStatementApiTest(TestCase):
         self.assertEqual(response.status_code, 204)
 
     @mock.patch("marsha.core.api.Video.objects.get")
-    @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_with_missing_user_id(self, xapi_mock, video_model_mock):
+    def test_xapi_statement_with_missing_user_id(self, video_model_mock):
         """Missing user_id parameter in JWT will fail request to LRS."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -210,8 +234,6 @@ class XAPIStatementApiTest(TestCase):
         }
 
         video_model_mock.return_value = video
-        xapi_instance = xapi_mock.return_value
-        xapi_instance.send.side_effect = MissingUserIdError()
 
         response = self.client.post(
             "/xapi/",
