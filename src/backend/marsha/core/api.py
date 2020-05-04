@@ -1,6 +1,7 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 import hashlib
 import hmac
+import json
 import logging
 from mimetypes import guess_extension
 from os.path import splitext
@@ -406,11 +407,11 @@ class XAPIStatementView(APIView):
 
         consumer_site = video.playlist.consumer_site
 
-        if not consumer_site.lrs_url or not consumer_site.lrs_auth_token:
-            return Response(
-                {"reason": "LRS is not configured. This endpoint is not usable."},
-                status=501,
-            )
+        # xapi statements are sent to a consumer-site-specific logger. We assume that the logger
+        # name respects the following convention: "xapi.[consumer site domain]",
+        # _e.g._ `xapi.foo.education` for the `foo.education` consumer site domain. Note that this
+        # logger should be defined in your settings with an appropriate handler and formatter.
+        xapi_logger = logging.getLogger(f"xapi.{consumer_site.domain}")
 
         # xapi statement sent by the client but incomplete
         partial_xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
@@ -423,9 +424,17 @@ class XAPIStatementView(APIView):
             xapi_statement = XAPIStatement(
                 video, partial_xapi_statement.validated_data, lti_user
             )
-        # pylint: disable=invalid-name
         except MissingUserIdError:
             return Response({"status": "Impossible to identify the actor."}, status=400)
+
+        # Log the statement in the xapi logger
+        xapi_logger.info(json.dumps(xapi_statement.get_statement()))
+
+        if not consumer_site.lrs_url or not consumer_site.lrs_auth_token:
+            return Response(
+                {"reason": "LRS is not configured. This endpoint is not usable."},
+                status=501,
+            )
 
         xapi = XAPI(
             consumer_site.lrs_url,

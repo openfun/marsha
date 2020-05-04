@@ -204,10 +204,10 @@ class Base(Configuration):
                 "console": {
                     "class": "logging.StreamHandler",
                     "stream": "ext://sys.stdout",
-                }
+                },
             },
             "loggers": {
-                "marsha": {"handlers": ["console"], "level": "INFO", "propagate": True}
+                "marsha": {"handlers": ["console"], "level": "INFO", "propagate": True},
             },
         }
     )
@@ -332,18 +332,37 @@ class Development(Base):
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 
+    # Logging
     LOGGING = values.DictValue(
         {
             "version": 1,
             "disable_existing_loggers": False,
+            "formatters": {
+                "gelf": {
+                    "()": "logging_gelf.formatters.GELFFormatter",
+                    "null_character": True,
+                },
+            },
             "handlers": {
                 "console": {
                     "class": "logging.StreamHandler",
                     "stream": "ext://sys.stdout",
-                }
+                },
+                "gelf": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "gelf",
+                },
             },
             "loggers": {
-                "marsha": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+                "marsha": {
+                    "handlers": ["console"],
+                    "level": "DEBUG",
+                    "propagate": True,
+                },
+                # This formatter is here as an example to what is possible to do
+                # with xapi loogers.
+                "xapi": {"handlers": ["gelf"], "level": "INFO", "propagate": True},
             },
         }
     )
