@@ -351,5 +351,5 @@ class LTIUser:
         """
         try:
             return self.token.payload[name]
-        except MultiValueDictKeyError:
+        except KeyError:
             raise AttributeError(name)
