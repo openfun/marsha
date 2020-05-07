@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.http.request import validate_host
 from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
@@ -108,10 +109,14 @@ class LTI:
         # Make sure we only accept requests from domains in which the "top parts" match
         # the URL for the consumer_site associated with the passport.
         # eg. sub.example.com & example.com for an example.com consumer site.
+        # Also referer matching ALLOWED_HOSTS are accepted
         if (
             request_domain
             and request_domain != consumer_site.domain
-            and not request_domain.endswith(".{:s}".format(consumer_site.domain))
+            and not (
+                request_domain.endswith(".{:s}".format(consumer_site.domain))
+                or validate_host(request_domain, settings.ALLOWED_HOSTS)
+            )
         ):
             raise LTIException(
                 "Host domain ({:s}) does not match registered passport ({:s}).".format(

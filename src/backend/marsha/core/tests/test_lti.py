@@ -3,7 +3,7 @@ from unittest import mock
 from urllib.parse import unquote
 import uuid
 
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 
 import oauth2
 from oauthlib import oauth1
@@ -171,6 +171,7 @@ class LTITestCase(TestCase):
             lti.verify()
         self.assertFalse(mock_verify.called)
 
+    @override_settings(ALLOWED_HOSTS=["testserver"])
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_passport_mismatched_referer(self, *_):
         """Launch request with a referer that differs from the consumer_site should fail."""
@@ -203,6 +204,32 @@ class LTITestCase(TestCase):
             oauth_consumer_key="ABC123",
             shared_secret="#Y5$",
             consumer_site__domain="example.com",
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        request = self.factory.post(
+            "/", data, HTTP_REFERER="https://subdomain.example.com/route"
+        )
+        lti = LTI(request, uuid.uuid4())
+        # We just have to make sure verification does not raise an exception
+        lti.verify()
+
+    @override_settings(ALLOWED_HOSTS=[".example.com", "testserver"])
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_passport_allowed_host(self, *_):
+        """Launch request with a referer matching ALLOWED_HOSTS should succeed.
+
+        This may happen with some browser that replace the referer header value by the referred-to
+        and not the referred-from value (see https://bit.ly/35CvPXa).
+        """
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123",
+            shared_secret="#Y5$",
+            consumer_site__domain="other.com",
         )
         data = {
             "resource_link_id": "df7",
