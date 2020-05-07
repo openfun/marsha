@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Referer can match ALLOWED_HOSTS as a valid passport domain name
+
 ## [3.7.0] - 2020-05-05
 
 ### Added
