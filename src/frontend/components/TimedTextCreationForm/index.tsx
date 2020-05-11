@@ -93,7 +93,7 @@ export const TimedTextCreationForm = ({
 
   const onSelectChange = (
     option: ValueType<SelectOption>,
-    { action }: ActionMeta,
+    { action }: ActionMeta<SelectOption>,
   ) => {
     if (action === 'select-option' && option && isSelectOption(option)) {
       setNewTTLanguage(option.value);
