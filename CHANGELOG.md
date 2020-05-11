@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.7.1] - 2020-05-11
+
 ### Fixed
 
 - Referer can match ALLOWED_HOSTS as a valid passport domain name
@@ -503,8 +505,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.7.0...master
-[3.6.0]: https://github.com/openfun/marsha/compare/v3.6.0...v3.7.0
+[unreleased]: https://github.com/openfun/marsha/compare/v3.7.1...master
+[3.7.1]: https://github.com/openfun/marsha/compare/v3.7.0...v3.7.1
+[3.7.0]: https://github.com/openfun/marsha/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/openfun/marsha/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/openfun/marsha/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/openfun/marsha/compare/v3.4.0...v3.5.0
