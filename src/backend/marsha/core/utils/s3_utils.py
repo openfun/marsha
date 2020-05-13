@@ -1,143 +1,68 @@
 """Utils for direct upload to AWS S3."""
-from base64 import b64encode
-from datetime import timedelta
-import hashlib
-import hmac
-import json
-
 from django.conf import settings
 
-
-def sign(key, message):
-    """Return a SHA256 hmac updated with the message.
-
-    Parameters
-    ----------
-    key : string
-        The starting key for the hash.
-    message : string
-        The message being hashed into the hmac object
-
-    Returns
-    -------
-    string
-        The hash value resulting from the SHA256 hash of the message.
-
-    """
-    return hmac.new(key, message.encode("utf-8"), hashlib.sha256).digest()
+import boto3
+from botocore.client import Config
 
 
-def get_signature_key(secret_key, date_stamp, region_name, service_name):
-    """AWS Signature v4 Key derivation function.
-
-    We need an algorithm to generate a signing key to sign our policy document. In signature
-    version 4, the signing key is derived from the secret access key, which improves the security
-    of the secret access key.
-
-    Parameters
-    ----------
-    secret_key : string
-        The key to be signed
-    date_stamp : string
-        The date at which the policy is signed with a format "%Y%m%d"
-    region_name : string
-        The AWS region name
-    service_name : string
-        The AWS service name
-
-    Returns
-    -------
-    string
-        Hash value representing the AWS v4 signature.
-
-    See: http://docs.aws.amazon.com/general/latest/gr/signature-v4-examples.html
-
-    """
-    k_date = sign(("AWS4" + secret_key).encode("utf-8"), date_stamp)
-    k_region = sign(k_date, region_name)
-    k_service = sign(k_region, service_name)
-    k_signing = sign(k_service, "aws4_request")
-    return k_signing
-
-
-def get_s3_upload_policy_signature(now, conditions):
-    """Build a S3 policy to allow uploading a video to our video source bucket.
+def create_presigned_post(conditions, fields, key):
+    """Build the url and the form fields used for a presigned s3 post.
 
     Parameters
     ----------
     conditions : Type[List]
-        A list of extra conditions to impose on the uploaded file on top of the basic conditions
-        that apply to all our objects and hardcoded in the present function.
-        See AWS documentation for more details:
-        https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-HTTPPOSTConstructPolicy.html
+        A list of conditions to include in the policy.
+        Each element can be either a list or a structure. For example:
+        [
+            {"acl": "public-read"},
+            ["content-length-range", 2, 5],
+            ["starts-with", "$success_action_redirect", ""]
+        ]
+        Conditions that are included may pertain to acl, content-length-range, Cache-Control,
+        Content-Type, Content-Disposition, Content-Encoding, Expires, success_action_redirect,
+        redirect, success_action_status, and/or x-amz-meta-.
+        Note that if you include a condition, you must specify the a valid value in the fields
+        dictionary as well.
+        A value will not be added automatically to the fields dictionary based on the conditions.
+
+    fields: Type[Dict]
+        A dictionary of prefilled form fields to build on top of. Elements that may be included
+        are acl, Cache-Control, Content-Type, Content-Disposition, Content-Encoding, Expires,
+        success_action_redirect, redirect, success_action_status, and x-amz-meta-.
+        Note that if a particular element is included in the fields dictionary it will not be
+        automatically added to the conditions list. You must specify a condition for the element
+        as well.
+
+    key: string
+        Key name, optionally add ${filename} to the end to attach the submitted filename.
+        Note that key related conditions and fields are filled out for you and should not be
+        included in the Fields or Conditions parameter.
 
     Returns
     -------
     Dictionary
-        A dictionary including the basic conditions imposed to all our objects and the computed
-        signautre.
+        A dictionary with two elements: url and fields. Url is the url to post to. Fields is a
+        dictionary filled with the form fields and respective values to use when submitting
+        the post.
 
     """
-    acl = "private"
-    expires_at = now + timedelta(seconds=settings.AWS_UPLOAD_EXPIRATION_DELAY)
-    x_amz_algorithm = "AWS4-HMAC-SHA256"
-    x_amz_credential = "{key:s}/{date:%Y%m%d}/{region:s}/s3/aws4_request".format(
-        date=now, key=settings.AWS_ACCESS_KEY_ID, region=settings.AWS_S3_REGION_NAME
-    )
-    x_amz_date = now.strftime("%Y%m%dT%H%M%SZ")
-
-    policy = {
-        "expiration": expires_at.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-        "conditions": [
-            {"acl": acl},
-            {"bucket": settings.AWS_SOURCE_BUCKET_NAME},
-            {"x-amz-credential": x_amz_credential},
-            {"x-amz-algorithm": x_amz_algorithm},
-            {"x-amz-date": x_amz_date},
-        ]
-        + conditions,
-    }
-
-    policy_b64 = b64encode(
-        json.dumps(policy).replace("\n", "").replace("\r", "").encode()
-    )
-
-    signature_key = get_signature_key(
-        settings.AWS_SECRET_ACCESS_KEY,
-        now.strftime("%Y%m%d"),
-        settings.AWS_S3_REGION_NAME,
+    # Configure S3 client using sugnature V4
+    s3_client = boto3.client(
         "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        config=Config(
+            region_name=settings.AWS_S3_REGION_NAME, signature_version="s3v4",
+        ),
     )
 
-    signature = hmac.new(signature_key, policy_b64, hashlib.sha256).hexdigest()
+    acl = "private"
+    fields.update({"acl": acl})
 
-    return {
-        "acl": acl,
-        "bucket": settings.AWS_SOURCE_BUCKET_NAME,
-        "policy": policy_b64,
-        "s3_endpoint": get_s3_endpoint(settings.AWS_S3_REGION_NAME),
-        "x_amz_algorithm": x_amz_algorithm,
-        "x_amz_credential": x_amz_credential,
-        "x_amz_date": x_amz_date,
-        "x_amz_expires": settings.AWS_UPLOAD_EXPIRATION_DELAY,
-        "x_amz_signature": signature,
-    }
-
-
-def get_s3_endpoint(region):
-    """Return the S3 endpoint domain for the region.
-
-    Parameters
-    ----------
-    region : string
-        One of the regions among Amazon AWS hosting regions (e.g. "us-east-1").
-
-    Returns
-    -------
-    string
-        The full domain of the S3 endpoint for the region passed in argument.
-
-    """
-    if region == "us-east-1":
-        return "s3.amazonaws.com"
-    return "s3.{:s}.amazonaws.com".format(region)
+    return s3_client.generate_presigned_post(
+        settings.AWS_SOURCE_BUCKET_NAME,
+        key,
+        Fields=fields,
+        Conditions=[{"acl": acl}] + conditions,
+        ExpiresIn=settings.AWS_UPLOAD_EXPIRATION_DELAY,
+    )

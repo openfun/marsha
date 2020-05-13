@@ -97,15 +97,17 @@ describe('upload', () => {
     fetchMock.mock(
       '/api/videos/video-id/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );
 
     fetchMock.mock('/api/videos/video-id/', 200, { method: 'PUT' });
 
-    xhrMock.post('https://s3.aws.example.com/dev', {
+    xhrMock.post('https://s3.aws.example.com/', {
       body: 'form data body',
       status: 204,
     });
@@ -163,15 +165,17 @@ describe('upload', () => {
     fetchMock.mock(
       '/api/thumbnails/thumb1/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );
 
     fetchMock.mock('/api/thumbnails/thumb1/', 200, { method: 'PUT' });
 
-    xhrMock.post('https://s3.aws.example.com/dev', {
+    xhrMock.post('https://s3.aws.example.com/', {
       body: 'form data body',
       status: 204,
     });
@@ -209,7 +213,7 @@ describe('upload', () => {
       method: 'POST',
     });
 
-    xhrMock.post('https://s3.aws.example.com/dev', () => {
+    xhrMock.post('https://s3.aws.example.com/', () => {
       throw new Error('upload file should not be called');
     });
 
@@ -234,13 +238,15 @@ describe('upload', () => {
     fetchMock.mock(
       '/api/videos/video-id/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );
 
-    xhrMock.post('https://s3.aws.example.com/dev', {
+    xhrMock.post('https://s3.aws.example.com/', {
       status: 400,
     });
 
@@ -274,8 +280,10 @@ describe('upload', () => {
     fetchMock.mock(
       '/api/videos/video-id/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );
@@ -303,8 +311,10 @@ describe('upload', () => {
     fetchMock.mock(
       '/api/videos/video-id/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );

@@ -117,8 +117,10 @@ describe('UploadForm', () => {
     fetchMock.mock(
       '/api/videos/video-id/initiate-upload/',
       {
-        bucket: 'dev',
-        s3_endpoint: 's3.aws.example.com',
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
       },
       { method: 'POST' },
     );

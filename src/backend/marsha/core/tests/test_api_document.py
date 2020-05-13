@@ -1,5 +1,4 @@
 """Tests for the document API."""
-from base64 import b64decode
 from datetime import datetime
 import json
 import random
@@ -20,6 +19,8 @@ from ..factories import DocumentFactory
 
 class DocumentAPITest(TestCase):
     """Test for the Document API."""
+
+    maxDiff = None
 
     def test_api_document_fetch_anonymous(self):
         """Anonymous users should not be able to fetch a document."""
@@ -347,7 +348,10 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 "/api/documents/{!s}/initiate-upload/".format(document.id),
                 json.dumps({"filename": "foo.pdf", "mimetype": "application/pdf"}),
@@ -356,51 +360,38 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-        policy = content.pop("policy")
         self.assertEqual(
-            json.loads(b64decode(policy)),
+            json.loads(response.content),
             {
-                "expiration": "2018-08-09T00:00:00.000Z",
-                "conditions": [
-                    {"acl": "private"},
-                    {"bucket": "test-marsha-source"},
-                    {
-                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
-                    },
-                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
-                    {"x-amz-date": "20180808T000000Z"},
-                    {
-                        "key": (
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/"
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                        )
-                    },
-                    ["content-length-range", 0, 1073741824],
-                ],
-            },
-        )
-        self.assertEqual(
-            content,
-            {
-                "acl": "private",
-                "bucket": "test-marsha-source",
-                "stamp": "1533686400",
-                "key": "{id!s}/document/{id!s}/1533686400.pdf".format(id=document.pk),
-                "max_file_size": 1073741824,
-                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
-                "x_amz_algorithm": "AWS4-HMAC-SHA256",
-                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                "x_amz_date": "20180808T000000Z",
-                "x_amz_expires": 86400,
-                "x_amz_signature": (
-                    "f5b19f6167f076a92f77bcb30fbd5474bdd749093ba7095eaa8e820830859227"
-                ),
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400.pdf"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0"
+                        "MTgyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2Ey"
+                        "M2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3"
+                        "OS00NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAucGRmIn0sIHsieC1hbXotYWxn"
+                        "b3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3"
+                        "cy1hY2Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwg"
+                        "eyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
+                    ),
+                    "x-amz-signature": (
+                        "9ee691c89e2061c5f631b093e01e7faee1ffe71de4c9684fb83d810a3fca799e"
+                    ),
+                },
             },
         )
 
     def test_api_document_initiate_upload_file_without_extension(self):
-        """An extension should be guessed fromt the mimetype."""
+        """An extension should be guessed from the mimetype."""
         document = DocumentFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
@@ -412,7 +403,10 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 "/api/documents/{!s}/initiate-upload/".format(document.id),
                 json.dumps({"filename": "foo", "mimetype": "application/pdf"}),
@@ -421,46 +415,33 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-        policy = content.pop("policy")
         self.assertEqual(
-            json.loads(b64decode(policy)),
+            json.loads(response.content),
             {
-                "expiration": "2018-08-09T00:00:00.000Z",
-                "conditions": [
-                    {"acl": "private"},
-                    {"bucket": "test-marsha-source"},
-                    {
-                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
-                    },
-                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
-                    {"x-amz-date": "20180808T000000Z"},
-                    {
-                        "key": (
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/"
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                        )
-                    },
-                    ["content-length-range", 0, 1073741824],
-                ],
-            },
-        )
-        self.assertEqual(
-            content,
-            {
-                "acl": "private",
-                "bucket": "test-marsha-source",
-                "stamp": "1533686400",
-                "key": "{id!s}/document/{id!s}/1533686400.pdf".format(id=document.pk),
-                "max_file_size": 1073741824,
-                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
-                "x_amz_algorithm": "AWS4-HMAC-SHA256",
-                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                "x_amz_date": "20180808T000000Z",
-                "x_amz_expires": 86400,
-                "x_amz_signature": (
-                    "f5b19f6167f076a92f77bcb30fbd5474bdd749093ba7095eaa8e820830859227"
-                ),
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400.pdf"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MT"
+                        "gyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2EyM2Y"
+                        "1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3OS00"
+                        "NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAucGRmIn0sIHsieC1hbXotYWxnb3Jpd"
+                        "GhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3cy1hY2"
+                        "Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWF"
+                        "tei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
+                    ),
+                    "x-amz-signature": (
+                        "9ee691c89e2061c5f631b093e01e7faee1ffe71de4c9684fb83d810a3fca799e"
+                    ),
+                },
             },
         )
 
@@ -477,7 +458,10 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 "/api/documents/{!s}/initiate-upload/".format(document.id),
                 json.dumps({"filename": "foo", "mimetype": ""}),
@@ -486,45 +470,32 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-        policy = content.pop("policy")
         self.assertEqual(
-            json.loads(b64decode(policy)),
+            json.loads(response.content),
             {
-                "expiration": "2018-08-09T00:00:00.000Z",
-                "conditions": [
-                    {"acl": "private"},
-                    {"bucket": "test-marsha-source"},
-                    {
-                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
-                    },
-                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
-                    {"x-amz-date": "20180808T000000Z"},
-                    {
-                        "key": (
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/"
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
-                        )
-                    },
-                    ["content-length-range", 0, 1073741824],
-                ],
-            },
-        )
-        self.assertEqual(
-            content,
-            {
-                "acl": "private",
-                "bucket": "test-marsha-source",
-                "stamp": "1533686400",
-                "key": "{id!s}/document/{id!s}/1533686400".format(id=document.pk),
-                "max_file_size": 1073741824,
-                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
-                "x_amz_algorithm": "AWS4-HMAC-SHA256",
-                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                "x_amz_date": "20180808T000000Z",
-                "x_amz_expires": 86400,
-                "x_amz_signature": (
-                    "610ebbc09b4d482aa1d4a09133c1561a707abe5bf3cd57a09802c72f0b357571"
-                ),
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MT"
+                        "gyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2EyM2Y"
+                        "1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3OS00"
+                        "NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAifSwgeyJ4LWFtei1hbGdvcml0aG0iO"
+                        "iAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFjY2Vzcy"
+                        "1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWR"
+                        "hdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                    ),
+                    "x-amz-signature": (
+                        "b952d4bcdd88a082e0cae8e01ea7754ef0959475887fd732d79e3a04d672a166"
+                    ),
+                },
             },
         )
