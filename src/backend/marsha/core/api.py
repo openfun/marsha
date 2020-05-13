@@ -21,7 +21,7 @@ from . import defaults, permissions, serializers
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
-from .utils.s3_utils import get_s3_upload_policy_signature
+from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
 from .xapi import XAPI, XAPIStatement
 
@@ -134,27 +134,19 @@ class VideoViewSet(
         video = self.get_object()
         key = video.get_source_s3_key(stamp=stamp)
 
-        policy = get_s3_upload_policy_signature(
-            now,
+        presigned_post = create_presigned_post(
             [
-                {"key": key},
                 ["starts-with", "$Content-Type", "video/"],
                 ["content-length-range", 0, settings.VIDEO_SOURCE_MAX_SIZE],
             ],
-        )
-
-        policy.update(
-            {
-                "key": key,
-                "max_file_size": settings.VIDEO_SOURCE_MAX_SIZE,
-                "stamp": stamp,
-            }
+            {},
+            key,
         )
 
         # Reset the upload state of the video
         Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(policy)
+        return Response(presigned_post)
 
 
 class DocumentViewSet(
@@ -204,26 +196,14 @@ class DocumentViewSet(
         document = self.get_object()
         key = document.get_source_s3_key(stamp=stamp, extension=extension)
 
-        policy = get_s3_upload_policy_signature(
-            now,
-            [
-                {"key": key},
-                ["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE],
-            ],
-        )
-
-        policy.update(
-            {
-                "key": key,
-                "max_file_size": settings.DOCUMENT_SOURCE_MAX_SIZE,
-                "stamp": stamp,
-            }
+        presigned_post = create_presigned_post(
+            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]], {}, key,
         )
 
         # Reset the upload state of the document
         Document.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(policy)
+        return Response(presigned_post)
 
 
 class TimedTextTrackViewSet(
@@ -282,26 +262,14 @@ class TimedTextTrackViewSet(
         timed_text_track = self.get_object()
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
-        policy = get_s3_upload_policy_signature(
-            now,
-            [
-                {"key": key},
-                ["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE],
-            ],
-        )
-
-        policy.update(
-            {
-                "key": key,
-                "max_file_size": settings.SUBTITLE_SOURCE_MAX_SIZE,
-                "stamp": stamp,
-            }
+        presigned_post = create_presigned_post(
+            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]], {}, key,
         )
 
         # Reset the upload state of the timed text track
         TimedTextTrack.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(policy)
+        return Response(presigned_post)
 
 
 class ThumbnailViewSet(
@@ -351,27 +319,19 @@ class ThumbnailViewSet(
         thumbnail = self.get_object()
         key = thumbnail.get_source_s3_key(stamp=stamp)
 
-        policy = get_s3_upload_policy_signature(
-            now,
+        presigned_post = create_presigned_post(
             [
-                {"key": key},
                 ["starts-with", "$Content-Type", "image/"],
                 ["content-length-range", 0, settings.THUMBNAIL_SOURCE_MAX_SIZE],
             ],
-        )
-
-        policy.update(
-            {
-                "key": key,
-                "max_file_size": settings.THUMBNAIL_SOURCE_MAX_SIZE,
-                "stamp": stamp,
-            }
+            {},
+            key,
         )
 
         # Reset the upload state of the thumbnail
         Thumbnail.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(policy)
+        return Response(presigned_post)
 
 
 class XAPIStatementView(APIView):

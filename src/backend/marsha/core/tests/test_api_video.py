@@ -1,5 +1,4 @@
 """Tests for the Video API of the Marsha project."""
-from base64 import b64decode
 from datetime import datetime
 import json
 import random
@@ -56,6 +55,8 @@ ASOu/Da3/eg8PI5Rsh6ubNVlEAMQdDFhL/TpfaHqSwim6mxbrQ==
 
 class VideoAPITest(TestCase):
     """Test the API of the video object."""
+
+    maxDiff = None
 
     def test_api_video_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a video detail."""
@@ -849,54 +850,43 @@ class VideoAPITest(TestCase):
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 "/api/videos/{!s}/initiate-upload/".format(video.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
         self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
-        policy = content.pop("policy")
         self.assertEqual(
-            json.loads(b64decode(policy)),
+            json.loads(response.content),
             {
-                "expiration": "2018-08-09T00:00:00.000Z",
-                "conditions": [
-                    {"acl": "private"},
-                    {"bucket": "test-marsha-source"},
-                    {
-                        "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request"
-                    },
-                    {"x-amz-algorithm": "AWS4-HMAC-SHA256"},
-                    {"x-amz-date": "20180808T000000Z"},
-                    {
-                        "key": (
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/"
-                            "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
-                        )
-                    },
-                    ["starts-with", "$Content-Type", "video/"],
-                    ["content-length-range", 0, 1073741824],
-                ],
-            },
-        )
-        self.assertEqual(
-            content,
-            {
-                "acl": "private",
-                "bucket": "test-marsha-source",
-                "stamp": "1533686400",
-                "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
-                "max_file_size": 1073741824,
-                "s3_endpoint": "s3.eu-west-1.amazonaws.com",
-                "x_amz_algorithm": "AWS4-HMAC-SHA256",
-                "x_amz_credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                "x_amz_date": "20180808T000000Z",
-                "x_amz_expires": 86400,
-                "x_amz_signature": (
-                    "53e506006dd818478ccbe3d9ec87d968782c3ccdd4594d294809d5e06a8010c5"
-                ),
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
+                        "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
+                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
+                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
+                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
+                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
+                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
+                        "OFQwMDAwMDBaIn1dfQ=="
+                    ),
+                    "x-amz-signature": (
+                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                    ),
+                },
             },
         )
 

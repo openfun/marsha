@@ -1,5 +1,5 @@
 import { Status } from '../../../components/UploadForm';
-import { AWSPolicy } from '../../../types/AWSPolicy';
+import { AWSPresignedPost } from '../../../types/AWSPresignedPost';
 import { modelName } from '../../../types/models';
 import { UploadableObject, uploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
@@ -24,9 +24,9 @@ export const upload = (
     return setStatus('not_found_error');
   }
 
-  let policy: AWSPolicy;
+  let presignedPost: AWSPresignedPost;
   try {
-    policy = await initiateUpload(
+    presignedPost = await initiateUpload(
       objectType,
       object.id,
       file!.name,
@@ -39,16 +39,13 @@ export const upload = (
   // Use FormData to meet the requirement of a multi-part POST request for s3
   // NB: order of keys is important here, which is why we do not iterate over an object
   const formData = makeFormData.apply(null, [
-    ['key', policy.key],
-    ['acl', policy.acl],
+    ...Object.keys(presignedPost.fields).map((key) => [
+      key,
+      presignedPost.fields[key],
+    ]),
     ...(([modelName.VIDEOS, modelName.THUMBNAILS].includes(objectType)
       ? [['Content-Type', file!.type]]
       : []) as any),
-    ['X-Amz-Credential', policy.x_amz_credential],
-    ['X-Amz-Algorithm', policy.x_amz_algorithm],
-    ['X-Amz-Date', policy.x_amz_date],
-    ['Policy', policy.policy],
-    ['X-Amz-Signature', policy.x_amz_signature],
     // Add the file after all of the text fields
     ['file', file!],
   ]);
@@ -66,11 +63,7 @@ export const upload = (
     // dashboard with outdated data (a "READY" video, instead of a "PROCESSING"/"UPLOADING" one).
     setStatus('uploading');
 
-    await uploadFile(
-      `https://${policy.s3_endpoint}/${policy.bucket}`,
-      formData,
-      notifyObjectUploadProgress,
-    );
+    await uploadFile(presignedPost.url, formData, notifyObjectUploadProgress);
 
     if (object.hasOwnProperty('title')) {
       // Add the new object with title and upload_state in the store
