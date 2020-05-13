@@ -10,3 +10,10 @@ export interface AWSPolicy {
   x_amz_expires: string;
   x_amz_signature: string;
 }
+
+export interface AWSPresignedPost {
+  fields: {
+    [key: string]: string;
+  };
+  url: string;
+}
