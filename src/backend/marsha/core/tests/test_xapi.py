@@ -1,7 +1,7 @@
 """Tests for the xapi module of the Marsha project."""
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from ..exceptions import MissingUserIdError
 from ..factories import VideoFactory
@@ -22,11 +22,13 @@ class XAPIStatmentTest(TestCase):
         with self.assertRaises(MissingUserIdError):
             XAPIStatement(video, {}, MockLtiUser())
 
+    @override_settings(LANGUAGE_CODE="en-us")
     def test_xapi_statement_enrich_statement(self):
         """XAPI statement sent by the front application should be enriched."""
         video = VideoFactory(
             id="68333c45-4b8c-4018-a195-5d5e1706b838",
             playlist__consumer_site__domain="example.com",
+            title="test video xapi",
         )
 
         mock_token_user = mock.MagicMock()
@@ -91,6 +93,7 @@ class XAPIStatmentTest(TestCase):
                     },
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
+                "name": {"en-US": "test video xapi"},
                 "objectType": "Activity",
             },
         )

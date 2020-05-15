@@ -2,7 +2,9 @@
 import re
 import uuid
 
+from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import to_locale
 
 import requests
 
@@ -70,6 +72,7 @@ class XAPIStatement:
 
         statement["object"] = {
             "definition": {"type": "https://w3id.org/xapi/video/activity-type/video"},
+            "name": {to_locale(settings.LANGUAGE_CODE).replace("_", "-"): video.title},
             "id": "uuid://{id}".format(id=str(video.id)),
             "objectType": "Activity",
         }
