@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Video title in xapi statement
+
 ### Changed
 
 - Replace `random` with `secrets` to generate random strings
