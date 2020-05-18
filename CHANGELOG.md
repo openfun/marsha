@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.8.0] - 2020-05-18
+
 ### Added
 
 - Video title in xapi statement
@@ -518,7 +520,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.7.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.8.0...master
+[3.8.0]: https://github.com/openfun/marsha/compare/v3.7.1...v3.8.0
 [3.7.1]: https://github.com/openfun/marsha/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/openfun/marsha/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/openfun/marsha/compare/v3.5.1...v3.6.0
