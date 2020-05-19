@@ -309,3 +309,133 @@ resource "aws_iam_role_policy_attachment" "lambda_migrate_lambda_invoke_policy_a
   role        = "${aws_iam_role.lambda_migrate_invocation_role.name}"
   policy_arn  = "${aws_iam_policy.lambda_migrate_lambda_invoke_policy.arn}"
 }
+
+# MediaLive role
+#####################
+resource "aws_iam_role" "medialive_access_role" {
+  name = "${terraform.workspace}-marsha-medialive-access-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "medialive.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "ssm_read_only" {
+  name        = "${terraform.workspace}-marsha-medialive-ssm-read-only-policy"
+  path        = "/"
+  description = "IAM policy needed access SSM in read-only mode"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "medialive_ssm_access_policy_attachment" {
+  role        = "${aws_iam_role.medialive_access_role.name}"
+  policy_arn  = "${aws_iam_policy.ssm_read_only.arn}"
+}
+
+
+resource "aws_iam_policy" "medialive_custom_policy" {
+  name        = "${terraform.workspace}-marsha-medialive-custom-policy"
+  path        = "/"
+  description = "IAM policy needed to use medialive"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "mediastore:ListContainers",
+                "mediastore:PutObject",
+                "mediastore:GetObject",
+                "mediastore:DeleteObject",
+                "mediastore:DescribeObject"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "mediaconnect:ManagedDescribeFlow",
+                "mediaconnect:ManagedAddOutput",
+                "mediaconnect:ManagedRemoveOutput"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:describeSubnets",
+                "ec2:describeNetworkInterfaces",
+                "ec2:createNetworkInterface",
+                "ec2:createNetworkInterfacePermission",
+                "ec2:deleteNetworkInterface",
+                "ec2:deleteNetworkInterfacePermission",
+                "ec2:describeSecurityGroups"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "mediapackage:DescribeChannel"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "medialive_custom_policy_attachment" {
+  role        = "${aws_iam_role.medialive_access_role.name}"
+  policy_arn  = "${aws_iam_policy.medialive_custom_policy.arn}"
+}

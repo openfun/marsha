@@ -150,6 +150,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "live_state": None,
+                "live_info": {},
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -210,6 +212,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                     "title": "course-v1:ufr+mathematics+00001",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "live_state": None,
+                "live_info": {},
             },
         )
         self.assertEqual(context.get("modelName"), "videos")

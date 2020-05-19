@@ -220,6 +220,7 @@ class Base(Configuration):
     AWS_BASE_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
+    AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)

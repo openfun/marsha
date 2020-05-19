@@ -21,6 +21,7 @@ from . import defaults, permissions, serializers
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
+from .utils.medialive_utils import create_live_stream
 from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
 from .xapi import XAPI, XAPIStatement
@@ -109,6 +110,14 @@ class VideoViewSet(
         permissions.IsResourceAdmin | permissions.IsResourceInstructor
     ]
 
+    def get_serializer_context(self):
+        """Extra context provided to the serializer class."""
+        context = super().get_serializer_context()
+        # The API is only reachable by admin users.
+        context["can_return_live_info"] = True
+
+        return context
+
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
     def initate_upload(self, request, pk=None):
@@ -149,6 +158,43 @@ class VideoViewSet(
         Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="initiate-live")
+    # pylint: disable=unused-argument
+    def initiate_live(self, request, pk=None):
+        """Create a live stack on AWS ready to stream.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        video = self.get_object()
+        key = f"{video.pk}_{stamp}"
+
+        live_info = create_live_stream(key)
+
+        Video.objects.filter(pk=pk).update(
+            live_info=live_info,
+            upload_state=defaults.PENDING,
+            live_state=defaults.IDLE,
+            uploaded_on=None,
+        )
+
+        video.refresh_from_db()
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data)
 
 
 class DocumentViewSet(
