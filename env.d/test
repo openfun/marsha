@@ -15,6 +15,9 @@ POSTGRES_PASSWORD=pass
 DJANGO_AWS_ACCESS_KEY_ID=aws-access-key-id
 DJANGO_AWS_SECRET_ACCESS_KEY=aws-secret-access-key
 
+# AWS medialive
+DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:arn:role
+
 # AWS
 DJANGO_CLOUDFRONT_DOMAIN=abc.cloudfront.net
 DJANGO_UPDATE_STATE_SHARED_SECRETS=dummy,secret

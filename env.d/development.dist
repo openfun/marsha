@@ -28,6 +28,9 @@ DJANGO_CLOUDFRONT_DOMAIN=yourCloudfrontUrl
 # DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key
 # DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudfrontAccessKeyId
 
+# Medialive ARN role
+DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:arn:role
+
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
 
 # CROWDIN API Credentials

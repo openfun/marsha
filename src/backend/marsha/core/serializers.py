@@ -13,7 +13,15 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from .defaults import ERROR, PROCESSING, READY, STATE_CHOICES
+from .defaults import (
+    ERROR,
+    LIVE_CHOICES,
+    PROCESSING,
+    READY,
+    RUNNING,
+    STATE_CHOICES,
+    STOPPED,
+)
 from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
@@ -291,6 +299,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "should_use_subtitle_as_transcript",
             "has_transcript",
             "playlist",
+            "live_info",
+            "live_state",
         )
         read_only_fields = (
             "id",
@@ -299,6 +309,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "upload_state",
             "urls",
             "has_transcript",
+            "live_info",
+            "live_state",
         )
 
     active_stamp = TimestampField(
@@ -312,6 +324,34 @@ class VideoSerializer(serializers.ModelSerializer):
     urls = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
     has_transcript = serializers.SerializerMethodField()
+    live_info = serializers.SerializerMethodField()
+
+    def get_live_info(self, obj):
+        """Live streaming informations.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Dictionnary
+            A dictionnary containing all info needed to manage a live stream for an admin.
+            For other users, an empty dictionnary is returned.
+        """
+        can_return_live_info = self.context.get("can_return_live_info", False)
+
+        if obj.live_state is None or can_return_live_info is False:
+            return {}
+
+        return {
+            "medialive": {
+                "input": {
+                    "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
+                }
+            }
+        }
 
     def get_has_transcript(self, obj):
         """Compute if should_use_subtitle_as_transcript behavior is disabled.
@@ -345,9 +385,21 @@ class VideoSerializer(serializers.ModelSerializer):
                 - jpeg thumbnails of the video in each resolution
                 - manifest of the DASH encodings of the video
                 - manifest of the HLS encodings of the video
+            For a video in live mode only the HLS url is added
             None if the video is still not uploaded to S3 with success
 
         """
+        if obj.live_state is not None:
+            # Adaptive Bit Rate manifests
+            return {
+                "manifests": {
+                    "hls": obj.live_info["mediapackage"]["endpoints"]["hls"]["url"],
+                    "dash": None,
+                },
+                "mp4": {},
+                "thumbnails": {},
+            }
+
         if obj.uploaded_on is None:
             return None
 
@@ -436,6 +488,14 @@ class UpdateStateSerializer(serializers.Serializer):
         elements = KEY_REGEX.match(self.validated_data["key"]).groupdict()
         elements["uploaded_on"] = time_utils.to_datetime(elements["stamp"])
         return elements
+
+
+class UpdateLiveStateSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UpdateLiveState API endpoint."""
+
+    state = serializers.ChoiceField(
+        tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
+    )
 
 
 class InitiateUploadSerializer(serializers.Serializer):
