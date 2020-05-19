@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Move video title in object.definition property in xapi statement
+
 ## [3.8.0] - 2020-05-18
 
 ### Added
