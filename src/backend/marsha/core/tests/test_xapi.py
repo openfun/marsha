@@ -86,6 +86,7 @@ class XAPIStatmentTest(TestCase):
             {
                 "definition": {
                     "type": "https://w3id.org/xapi/video/activity-type/video",
+                    "name": {"en-US": "test video xapi"},
                     "extensions": {
                         "https://w3id.org/xapi/acrossx/extensions/school": "ufr",
                         "http://adlnet.gov/expapi/activities/course": "mathematics",
@@ -93,7 +94,6 @@ class XAPIStatmentTest(TestCase):
                     },
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "name": {"en-US": "test video xapi"},
                 "objectType": "Activity",
             },
         )
