@@ -171,6 +171,7 @@ jobs:
           DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
           DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
+          DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:arn:role
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -245,6 +246,7 @@ jobs:
           DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
           DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
+          DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:arn:role
       - image: circleci/postgres:10.3-alpine-ram
         auth:
           username: $DOCKER_USER

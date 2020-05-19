@@ -13,7 +13,7 @@ import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 // route to load in the Router
 export const RedirectOnLoad = () => {
   const resource = appData.document || appData.video || null;
-
+  console.log(resource)
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;

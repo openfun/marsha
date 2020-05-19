@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
+import { DashboardVideoStartLiveButton } from '../DashboardVideoStartLiveButton';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
@@ -54,7 +55,7 @@ const messages = {
 };
 
 const BtnWithLink = withLink(Button);
-const DashboardButtonStyled = styled(BtnWithLink)`
+export const dashboardButtonStyles = `
   flex-grow: 1;
   flex-basis: 8rem;
   max-width: 50%;
@@ -67,6 +68,7 @@ const DashboardButtonStyled = styled(BtnWithLink)`
     margin-left: 1rem;
   }
 `;
+const DashboardButtonStyled = styled(BtnWithLink)`${dashboardButtonStyles}`;
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardPaneButtonsProps {
@@ -92,6 +94,13 @@ export const DashboardPaneButtons = ({
       justify={displayWatchBtn ? 'center' : 'end'}
       margin={'small'}
     >
+      {
+        objectType === modelName.VIDEOS &&
+        object.upload_state === uploadState.PENDING &&
+        (object as Video).live_mode === false && (
+          <DashboardVideoStartLiveButton video={object as Video} />
+        )
+      }
       <DashboardButtonStyled
         label={
           <FormattedMessage

@@ -48,8 +48,13 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     def serializer_class(self):
         """Return the serializer used by the view."""
 
-    def get_context_data(self):
+    def get_context_data(self, request):
         """Build context for template rendering of configuration data for the frontend.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
 
         Returns
         -------
@@ -58,7 +63,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         """
         try:
-            app_data = self._get_app_data()
+            app_data = self._get_app_data(request)
         except (LTIException, PortabilityError) as error:
             logger.warning(str(error))
             app_data = {
@@ -73,8 +78,13 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 
-    def _get_app_data(self):
+    def _get_app_data(self, request):
         """Build app data for the frontend with information retrieved from the LTI launch request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
 
         Returns
         -------
@@ -120,7 +130,12 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             }
             app_data = {
                 "modelName": self.model.RESOURCE_NAME,
-                "resource": self.serializer_class(resource).data if resource else None,
+                "resource": self.serializer_class(
+                    resource,
+                    context={"can_return_live_info": lti.is_admin or lti.is_instructor},
+                ).data
+                if resource
+                else None,
                 "state": "success",
                 "sentry_dsn": settings.SENTRY_DSN,
                 "environment": settings.ENVIRONMENT,
@@ -180,7 +195,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             generated from applying the data to the template
 
         """
-        return self.render_to_response(self.get_context_data())
+        return self.render_to_response(self.get_context_data(request))
 
 
 class VideoLTIView(BaseLTIView):
