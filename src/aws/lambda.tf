@@ -6,7 +6,7 @@ resource "aws_lambda_layer_version" "media_info_layer" {
   source_code_hash = "${base64sha256(file("layers/MediaInfo_CLI_20.03.20200523_Lambda.zip"))}"
   layer_name  = "media_info_layer"
 
-  description = "Layer containing mediainfo binary file compatible with AWS lambda servers."
+  description = "Layer containing mediainfo binary file compatible with AWS lambda servers (from https://mediaarea.net/download/snapshots/binary/mediainfo/)"
 }
 
 # Configuration
