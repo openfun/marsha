@@ -1,4 +1,9 @@
 const AWS = require('aws-sdk');
+const util = require('util');
+const execFile = util.promisify(require('child_process').execFile);
+const framerateConverter = require('./utils/framerateConverter');
+
+const s3 = new AWS.S3({ apiVersion: '2006-03-01', signatureVersion: 'v4' });
 
 /**
  * Build the appropriate parameters object using our presets and pass it along
@@ -9,6 +14,37 @@ const AWS = require('aws-sdk');
 module.exports = async (objectKey, sourceBucket) => {
   const envType = process.env.ENV_TYPE;
   const destinationBucket = process.env.S3_DESTINATION_BUCKET;
+
+  const signedUrl = await s3.getSignedUrlPromise(
+    'getObject',
+    {
+      Bucket: sourceBucket,
+      Expires: 1200,
+      Key: objectKey
+    }
+  );
+
+  const { stdout, stderr } = await execFile('mediainfo', [
+    '--full',
+    '--output=JSON',
+    signedUrl
+  ]);
+  
+  // 29.970 fps
+  const framerateSettings = {
+    FramerateDenominator: 1001,
+    FramerateNumerator: 30000
+  }
+
+  if (stdout) {
+    const mediainfos = JSON.parse(stdout);
+
+    const videoInfo = mediainfos.media.track.find(track => track["@type"] === "Video")
+
+    const convertedFramerate = framerateConverter(videoInfo.FrameRate);
+    framerateSettings.FramerateDenominator = convertedFramerate.denominator;
+    framerateSettings.FramerateNumerator = convertedFramerate.numerator;
+  }
 
   let params = {
     Role: process.env.MEDIA_CONVERT_ROLE,
@@ -55,6 +91,14 @@ module.exports = async (objectKey, sourceBucket) => {
           Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
             Preset: `${envType}_marsha_video_mp4_${size}`,
             NameModifier: `_${size}`,
+            VideoDescription: {
+              CodecSettings: {
+                H264Settings: {
+                  FramerateDenominator: framerateSettings.FramerateDenominator,
+                  FramerateNumerator: framerateSettings.FramerateNumerator,
+                }
+              },
+            },
           })),
         },
         {
@@ -78,6 +122,14 @@ module.exports = async (objectKey, sourceBucket) => {
             ...['144', '240', '480', '720', '1080'].map(size => ({
               Preset: `${envType}_marsha_cmaf_video_${size}`,
               NameModifier: `_${size}`,
+              VideoDescription: {
+                CodecSettings: {
+                  H264Settings: {
+                    FramerateDenominator: framerateSettings.FramerateDenominator,
+                    FramerateNumerator: framerateSettings.FramerateNumerator,
+                  }
+                },
+              },
             })),
             ...['64k', '96k', '128k', '160k', '192k'].map(bitrate => ({
               Preset: `${envType}_marsha_cmaf_audio_${bitrate}`,

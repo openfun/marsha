@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Detect original video framerate and use it in lambda encode
+
 ## [3.8.1] - 2020-05-18
 
 ### Fixed
