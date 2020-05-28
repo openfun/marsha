@@ -1,3 +1,14 @@
+# Lambda Layers
+###############
+
+resource "aws_lambda_layer_version" "media_info_layer" {
+  filename    = "layers/MediaInfo_CLI_20.03.20200523_Lambda.zip"
+  source_code_hash = "${base64sha256(file("layers/MediaInfo_CLI_20.03.20200523_Lambda.zip"))}"
+  layer_name  = "media_info_layer"
+
+  description = "Layer containing mediainfo binary file compatible with AWS lambda servers."
+}
+
 # Configuration
 #################
 
@@ -60,6 +71,8 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
   role             = "${aws_iam_role.lambda_invocation_role.arn}"
   memory_size      = "1536"
   timeout          = "90"
+  layers           = ["${aws_lambda_layer_version.media_info_layer.arn}"]
+  depends_on       = ["aws_lambda_layer_version.media_info_layer"]
 
 
   environment {
