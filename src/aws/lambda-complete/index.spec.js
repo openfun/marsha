@@ -25,6 +25,10 @@ describe('lambda', () => {
                 outputFilePaths: [
                   's3://dev-manu-marsha-destination/70795cbb-85b0-4742-bc89-d872fbf9fb5f/mp4/1551969052_144.mp4',
                 ],
+                videoDetails: {
+                  widthInPx: 256,
+                  heightInPx: 144
+                },
               },
             ],
           },
@@ -34,7 +38,7 @@ describe('lambda', () => {
 
     await lambda(event, null, callback);
 
-    expect(mockUpdateState).toHaveBeenCalledWith('some object key', 'ready');
+    expect(mockUpdateState).toHaveBeenCalledWith('some object key', 'ready', { resolutions: [144]});
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -51,7 +55,7 @@ describe('lambda', () => {
 
     await lambda(event, null, callback);
 
-    expect(mockUpdateState).toHaveBeenCalledWith('failed object key', 'error');
+    expect(mockUpdateState).toHaveBeenCalledWith('failed object key', 'error', {});
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -63,6 +67,22 @@ describe('lambda', () => {
           ObjectKey: 'object key that will fail to update',
         },
         status: 'COMPLETE',
+        outputGroupDetails: [
+          {
+            type: 'FILE_GROUP',
+            outputDetails: [
+              {
+                outputFilePaths: [
+                  's3://dev-manu-marsha-destination/70795cbb-85b0-4742-bc89-d872fbf9fb5f/mp4/1551969052_144.mp4',
+                ],
+                videoDetails: {
+                  widthInPx: 256,
+                  heightInPx: 144
+                }
+              },
+            ],
+          },
+        ],
       },
     };
 
@@ -75,6 +95,7 @@ describe('lambda', () => {
     expect(mockUpdateState).toHaveBeenCalledWith(
       'object key that will fail to update',
       'ready',
+      {resolutions: [144]}
     );
     expect(callback).toHaveBeenCalledWith('Failed to updateState!');
   });
