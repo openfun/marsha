@@ -11,8 +11,7 @@
     "aws-sdk": "2.689.0",
     "he": "1.2.0",
     "jimp": "0.12.1",
-    "request": "2.88.2",
-    "request-promise-native": "1.0.8"
+    "update-state": "file:../utils/update-state"
   },
   "repository": {
     "type": "git",

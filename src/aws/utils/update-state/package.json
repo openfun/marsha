@@ -1,11 +1,11 @@
 {
   "author": "France Université Numérique",
-  "name": "aws-marsha-complete",
+  "name": "aws-marsha-update-state",
   "version": "3.8.1",
   "engines": {
     "node": "10"
   },
-  "description": "Tasks to execute when encoding for a video is complete",
+  "description": "Helper to update state on marsha server",
   "repository": {
     "type": "git",
     "url": "https://www.github.com/openfun/marsha"
@@ -14,8 +14,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.689.0",
-    "update-state": "file:../utils/update-state"
+    "request": "2.88.2",
+    "request-promise-native": "1.0.8"
   },
   "devDependencies": {
     "@types/jest": "25.2.3",
