@@ -1,7 +1,7 @@
 'use strict';
 
 const mockUpdateState = jest.fn();
-jest.doMock('./src/updateState', () => mockUpdateState);
+jest.doMock('update-state', () => mockUpdateState);
 
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log').mockReset();

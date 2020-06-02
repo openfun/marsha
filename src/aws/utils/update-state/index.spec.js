@@ -21,16 +21,13 @@ describe('lambda/update_state/src/updateState()', () => {
   });
 
   it('calculates the signature and posts the new state to the server', async () => {
-    const updateState = require('./updateState');
+    const updateState = require('./');
 
     await updateState('successful object key', 'ready');
 
     const anteLogArgument = mockConsoleLog.mock.calls[0][0];
     expect(anteLogArgument).toContain(`Updating state: POST ${endpoint}`);
     expect(anteLogArgument).toContain('successful object key');
-    expect(anteLogArgument).toContain(
-      'c39021355124558ee9300e4874c357c68dad40374b299eab747d5449b7572308',
-    );
     expect(anteLogArgument).toContain('ready');
 
     const postLogArgument = mockConsoleLog.mock.calls[1][0];
@@ -40,10 +37,13 @@ describe('lambda/update_state/src/updateState()', () => {
 
     expect(requestStub).toHaveBeenCalledWith({
       body: {
+        extraParameters: {},
         key: 'successful object key',
-        signature:
-          'c39021355124558ee9300e4874c357c68dad40374b299eab747d5449b7572308',
         state: 'ready',
+      },
+      headers: {
+        'X-Marsha-Signature': 
+          '4eafb44626868a63e882d96a9493476887beb30c06b6f9fe2a4ce35830a1b253',
       },
       json: true,
       method: 'POST',
@@ -54,16 +54,19 @@ describe('lambda/update_state/src/updateState()', () => {
 
   it('disables SSL when DISABLE_SSL_VALIDATION is truthy', async () => {
     process.env.DISABLE_SSL_VALIDATION = 'true';
-    const updateState = require('./updateState');
+    const updateState = require('./');
 
     await updateState('unsecure object key', 'ready');
 
     expect(requestStub).toHaveBeenCalledWith({
       body: {
+        extraParameters: {},
         key: 'unsecure object key',
-        signature:
-          '5206d32540bb479dbca49728cb8f9394fff6b32224b74c46eb59872f9ea3d60b',
         state: 'ready',
+      },
+      headers: {
+        'X-Marsha-Signature': 
+          '4d1750baf02c77e32951794f7c1826f2ee07a2d9769cd49230dc2f2a0272c2d4',
       },
       json: true,
       method: 'POST',
@@ -75,7 +78,9 @@ describe('lambda/update_state/src/updateState()', () => {
   });
 
   it('rejects when the request fails', async () => {
-    const updateState = require('./updateState');
+    process.env.DISABLE_SSL_VALIDATION = 'true';
+    const updateState = require('./');
+
     requestStub.mockImplementation(
       () => new Promise((resolve, reject) => reject('Failed!')),
     );
@@ -84,12 +89,26 @@ describe('lambda/update_state/src/updateState()', () => {
       'Failed!',
     );
 
+    expect(requestStub).toHaveBeenCalledWith({
+      body: {
+        extraParameters: {},
+        key: 'failed object key',
+        state: 'ready',
+      },
+      headers: {
+        'X-Marsha-Signature': 
+          '8aff7aa52ed9a2203469a32eb2ad6f54f354f233d809bc3f7a6adbd8d760bb56',
+      },
+      json: true,
+      method: 'POST',
+      strictSSL: false,
+      uri: endpoint,
+    });
+
     const anteLogArgument = mockConsoleLog.mock.calls[0][0];
     expect(anteLogArgument).toContain(`Updating state: POST ${endpoint}`);
     expect(anteLogArgument).toContain('failed object key');
-    expect(anteLogArgument).toContain(
-      '59e04fa0b3b72bb529d88d40d96bd6c306d8d7a6963d9ae9b912da5fdba6f25f',
-    );
     expect(anteLogArgument).toContain('ready');
+    process.env.DISABLE_SSL_VALIDATION = 'false';
   });
 });

@@ -1,8 +1,9 @@
 'use strict';
 
+const updateState = require('update-state');
+
 const encodeTimedTextTrack = require('./src/encodeTimedTextTrack');
 const encodeVideo = require('./src/encodeVideo');
-const updateState = require('./src/updateState');
 const resizeThumbnails = require('./src/resizeThumbnails');
 const copyDocument = require('./src/copyDocument');
 
