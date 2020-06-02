@@ -35,11 +35,17 @@ module.exports = async (objectKey, sourceBucket) => {
     FramerateDenominator: 1001,
     FramerateNumerator: 30000
   }
+  let videoSizes = [144, 240, 480, 720, 1080];
+  let audioBirates = [64000, 960000, 128000, 160000, 192000];
 
   if (stdout) {
     const mediainfos = JSON.parse(stdout);
 
-    const videoInfo = mediainfos.media.track.find(track => track["@type"] === "Video")
+    const videoInfo = mediainfos.media.track.find(track => track["@type"] === "Video");
+    const audioInfo = mediainfos.media.track.find(track => track["@type"] === "Audio");
+
+    videoSizes = videoSizes.filter(size => size <= videoInfo.Height);
+    audioBirates = audioBirates.filter(bitrate => bitrate <= audioInfo.BitRate);
 
     const convertedFramerate = framerateConverter(videoInfo.FrameRate);
     framerateSettings.FramerateDenominator = convertedFramerate.denominator;
@@ -88,7 +94,7 @@ module.exports = async (objectKey, sourceBucket) => {
               )}`,
             },
           },
-          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+          Outputs: videoSizes.map(size => ({
             Preset: `${envType}_marsha_video_mp4_${size}`,
             NameModifier: `_${size}`,
             VideoDescription: {
@@ -119,7 +125,7 @@ module.exports = async (objectKey, sourceBucket) => {
             },
           },
           Outputs: [
-            ...['144', '240', '480', '720', '1080'].map(size => ({
+            ...videoSizes.map(size => ({
               Preset: `${envType}_marsha_cmaf_video_${size}`,
               NameModifier: `_${size}`,
               VideoDescription: {
@@ -131,10 +137,14 @@ module.exports = async (objectKey, sourceBucket) => {
                 },
               },
             })),
-            ...['64k', '96k', '128k', '160k', '192k'].map(bitrate => ({
-              Preset: `${envType}_marsha_cmaf_audio_${bitrate}`,
-              NameModifier: `_${bitrate}`,
-            })),
+            ...audioBirates.map(bitrate => {
+              const bitratePreset = bitrate/1000;
+
+              return {
+                Preset: `${envType}_marsha_cmaf_audio_${bitratePreset}k`,
+                NameModifier: `_${bitratePreset}k`,
+              }
+            }),
           ],
         },
         {
@@ -149,7 +159,7 @@ module.exports = async (objectKey, sourceBucket) => {
               )}`,
             },
           },
-          Outputs: ['144', '240', '480', '720', '1080'].map(size => ({
+          Outputs: videoSizes.map(size => ({
             Preset: `${envType}_marsha_thumbnail_jpeg_${size}`,
             NameModifier: `_${size}`,
           })),
