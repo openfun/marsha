@@ -8,6 +8,14 @@ exports.handler = async (event, context, callback) => {
   const key = event.detail.userMetadata.ObjectKey;
   const state = event.detail.status === 'COMPLETE' ? 'ready' : 'error';
   let extraParameters = {};
+  if (event.detail.status === 'COMPLETE') {
+    const resolutions = event
+      .detail
+      .outputGroupDetails.find(outputGroupDetail => outputGroupDetail.type === "FILE_GROUP")
+      .outputDetails.map(outputDetail => outputDetail.videoDetails.heightInPx);
+
+    extraParameters = {resolutions}
+  }
 
   try {
     await updateState(key, state, extraParameters);

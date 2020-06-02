@@ -44,6 +44,6 @@ test:
 	@for lambda_name in migrate configure encode complete; do \
 		cd ./lambda-$$lambda_name ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 bash -c "rm -rf node_modules; yarn install --frozen-lockfile" ; \
-		yarn test; \
+		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 yarn test ; \
 		cd - ; \
 	done
