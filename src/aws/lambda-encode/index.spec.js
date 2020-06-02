@@ -11,7 +11,7 @@ const mockEncodeVideo = jest.fn();
 jest.doMock('./src/encodeVideo', () => mockEncodeVideo);
 
 const mockUpdateState = jest.fn();
-jest.doMock('./src/updateState', () => mockUpdateState);
+jest.doMock('update-state', () => mockUpdateState);
 
 const mockResizeThumbnails = jest.fn();
 jest.doMock('./src/resizeThumbnails', () => mockResizeThumbnails);
