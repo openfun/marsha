@@ -39,6 +39,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             playlist__consumer_site__domain="example.com",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[144, 240],
         )
         # There is no need to provide an "oauth_consumer_key"
         data = {

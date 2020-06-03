@@ -106,10 +106,12 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user(self):
         """Instructors should be able to read the detail of their video."""
+        resolutions = [144, 240, 480, 720, 1080]
         video = VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            resolutions=resolutions,
             playlist__title="foo bar",
         )
         timed_text_track = TimedTextTrackFactory(
@@ -137,8 +139,8 @@ class VideoAPITest(TestCase):
             "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
-            str(rate): thumbnails_template.format(video.pk, rate)
-            for rate in [144, 240, 480, 720, 1080]
+            str(resolution): thumbnails_template.format(video.pk, resolution)
+            for resolution in resolutions
         }
 
         mp4_template = (
@@ -146,8 +148,8 @@ class VideoAPITest(TestCase):
             "?response-content-disposition=attachment%3B+filename%3Dfoo-bar_1533686400.mp4"
         )
         mp4_dict = {
-            str(rate): mp4_template.format(video.pk, rate)
-            for rate in [144, 240, 480, 720, 1080]
+            str(resolution): mp4_template.format(video.pk, resolution)
+            for resolution in resolutions
         }
 
         self.assertEqual(
@@ -310,6 +312,7 @@ class VideoAPITest(TestCase):
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            resolutions=[144],
             playlist__title="foo",
         )
         jwt_token = AccessToken()
@@ -386,6 +389,7 @@ class VideoAPITest(TestCase):
             pk="38a91911-9aee-41e2-94dd-573abda6f48f",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            resolutions=[144, 240, 480, 720, 1080],
         )
         thumbnail = ThumbnailFactory(
             video=video,
