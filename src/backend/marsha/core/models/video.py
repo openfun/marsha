@@ -4,10 +4,9 @@ from django.db import models
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import PENDING, STATE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .base import AbstractImage, BaseModel
-from .file import BaseFile
+from .file import BaseFile, UploadableFileMixin
 
 
 class Video(BaseFile):
@@ -62,7 +61,7 @@ class Video(BaseFile):
         return "{pk!s}/video/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
 
 
-class BaseTrack(BaseModel):
+class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""
 
     video = models.ForeignKey(
@@ -78,19 +77,6 @@ class BaseTrack(BaseModel):
         choices=lazy(lambda: settings.ALL_LANGUAGES, tuple)(),
         verbose_name=_("language"),
         help_text=_("language of this track"),
-    )
-    uploaded_on = models.DateTimeField(
-        verbose_name=_("uploaded on"),
-        help_text=_("datetime at which the active version of the video was uploaded."),
-        null=True,
-        blank=True,
-    )
-    upload_state = models.CharField(
-        max_length=20,
-        verbose_name=_("upload state"),
-        help_text=_("state of the upload and transcoding pipeline in AWS."),
-        choices=STATE_CHOICES,
-        default=PENDING,
     )
 
     class Meta:

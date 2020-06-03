@@ -32,12 +32,12 @@ class UpdateStateSerializerTest(TestCase):
         ]
         for key in valid_keys:
             state = random.choice(("ready", "error"))
-            valid_data = {"key": key, "state": state, "signature": "123abc"}
+            valid_data = {"key": key, "state": state, "extraParameters": {"foo": "bar"}}
             serializer = UpdateStateSerializer(data=valid_data)
             self.assertTrue(serializer.is_valid())
             self.assertEqual(
                 dict(serializer.validated_data),
-                {"key": key, "state": state, "signature": "123abc"},
+                {"key": key, "state": state, "extraParameters": {"foo": "bar"}},
             )
 
     def test_serializers_update_state_missing_field(self):
@@ -45,7 +45,7 @@ class UpdateStateSerializerTest(TestCase):
         valid_data = {
             "key": "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
             "state": random.choice(("ready", "error")),
-            "signature": "123abc",
+            "extraParameters": {"foo": "bar"},
         }
         for field in valid_data:
             invalid_data = valid_data.copy()
@@ -75,7 +75,11 @@ class UpdateStateSerializerTest(TestCase):
             ]
         )
         for key in invalid_keys:
-            invalid_data = {"key": key, "state": "ready", "signature": "123abc"}
+            invalid_data = {
+                "key": key,
+                "state": "ready",
+                "extraParameters": {"foo": "bar"},
+            }
             serializer = UpdateStateSerializer(data=invalid_data)
             self.assertFalse(serializer.is_valid())
             self.assertEqual(
@@ -93,7 +97,7 @@ class UpdateStateSerializerTest(TestCase):
             invalid_data = {
                 "key": "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
                 "state": state,
-                "signature": "123abc",
+                "extraParameters": {"foo": "bar"},
             }
             serializer = UpdateStateSerializer(data=invalid_data)
             self.assertFalse(serializer.is_valid())
@@ -105,7 +109,7 @@ class UpdateStateSerializerTest(TestCase):
         valid_data = {
             "key": "{!s}/video/{!s}/1533686400".format(resource_id, object_id),
             "state": "ready",
-            "signature": "123abc",
+            "extraParameters": {"foo": "bar"},
         }
         serializer = UpdateStateSerializer(data=valid_data)
 
@@ -127,7 +131,7 @@ class UpdateStateSerializerTest(TestCase):
         valid_data = {
             "key": "{!s}/document/{!s}/1533686400.pdf".format(resource_id, object_id),
             "state": "ready",
-            "signature": "123abc",
+            "extraParameters": {"foo": "bar"},
         }
         serializer = UpdateStateSerializer(data=valid_data)
 

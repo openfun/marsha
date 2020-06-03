@@ -9,7 +9,51 @@ from .base import BaseModel
 from .playlist import Playlist
 
 
-class BaseFile(BaseModel):
+class UploadableFileMixin(models.Model):
+    """Mixin adding fields related to upload management."""
+
+    uploaded_on = models.DateTimeField(
+        verbose_name=_("uploaded on"),
+        help_text=_("datetime at which the active version of the file was uploaded."),
+        null=True,
+        blank=True,
+    )
+    upload_state = models.CharField(
+        max_length=20,
+        verbose_name=_("upload state"),
+        help_text=_("state of the upload in AWS."),
+        choices=STATE_CHOICES,
+        default=PENDING,
+    )
+
+    class Meta:
+        """Options for the ``UploadableFileMixin`` model."""
+
+        abstract = True
+
+    # pylint: disable=unused-argument
+    def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
+        """Manage upload state.
+
+        Parameters
+        ----------
+        upload_state: Type[string]
+            state of the upload in AWS.
+
+        uploaded_on: Type[DateTime]
+            datetime at which the active version of the file was uploaded.
+
+        extra_paramters: Type[Dict]
+            Dictionnary containing arbitrary data sent from AWS lambda.
+        """
+        self.upload_state = upload_state
+        if uploaded_on:
+            self.uploaded_on = uploaded_on
+
+        self.save()
+
+
+class BaseFile(UploadableFileMixin, BaseModel):
     """Base file model used by all our File based models."""
 
     title = models.CharField(
@@ -47,19 +91,6 @@ class BaseFile(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-    )
-    uploaded_on = models.DateTimeField(
-        verbose_name=_("uploaded on"),
-        help_text=_("datetime at which the active version of the file was uploaded."),
-        null=True,
-        blank=True,
-    )
-    upload_state = models.CharField(
-        max_length=20,
-        verbose_name=_("upload state"),
-        help_text=_("state of the upload in AWS."),
-        choices=STATE_CHOICES,
-        default=PENDING,
     )
     show_download = models.BooleanField(default=True)
     description = models.TextField(
@@ -165,3 +196,20 @@ class Document(BaseFile):
         return "{pk!s}/document/{pk!s}/{stamp:s}{extension:s}".format(
             pk=self.pk, stamp=stamp, extension=extension
         )
+
+    def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
+        """Manage upload state.
+
+        Parameters
+        ----------
+        upload_state: Type[string]
+            state of the upload in AWS.
+
+        uploaded_on: Type[DateTime]
+            datetime at which the active version of the file was uploaded.
+
+        extra_paramters: Type[Dict]
+            Dictionnary containing arbitrary data sent from AWS lambda.
+        """
+        self.extension = extra_parameters.get("extension")
+        super().update_upload_state(upload_state, uploaded_on, **extra_parameters)

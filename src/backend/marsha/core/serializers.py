@@ -420,7 +420,7 @@ class UpdateStateSerializer(serializers.Serializer):
     state = serializers.ChoiceField(
         tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR))
     )
-    signature = serializers.CharField(max_length=200)
+    extraParameters = serializers.DictField()
 
     def get_key_elements(self):
         """Use a regex to parse elements from the key."""
