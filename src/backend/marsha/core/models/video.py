@@ -1,5 +1,6 @@
 """This module holds the models for the marsha project."""
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
@@ -21,6 +22,13 @@ class Video(BaseFile):
             "When there is at least one subtitle but no transcript this flag allows "
             "to use subtitles as transcripts."
         ),
+    )
+    resolutions = ArrayField(
+        models.IntegerField(),
+        null=True,
+        blank=True,
+        verbose_name=_("video sizes"),
+        help_text=_("List of available sizes for this video"),
     )
 
     class Meta:
@@ -59,6 +67,25 @@ class Video(BaseFile):
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
         return "{pk!s}/video/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
+
+    def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
+        """Manage upload state.
+
+        Parameters
+        ----------
+        upload_state: Type[string]
+            state of the upload in AWS.
+
+        uploaded_on: Type[DateTime]
+            datetime at which the active version of the file was uploaded.
+
+        extra_paramters: Type[Dict]
+            Dictionnary containing arbitrary data sent from AWS lambda.
+        """
+        if "resolutions" in extra_parameters:
+            self.resolutions = extra_parameters.get("resolutions")
+
+        super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
 
 class BaseTrack(UploadableFileMixin, BaseModel):

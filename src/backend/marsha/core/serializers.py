@@ -368,7 +368,7 @@ class VideoSerializer(serializers.ModelSerializer):
         filename = "{playlist_title:s}_{stamp:s}.mp4".format(
             playlist_title=slugify(obj.playlist.title), stamp=stamp
         )
-        for resolution in settings.VIDEO_RESOLUTIONS:
+        for resolution in obj.resolutions:
             # MP4
             mp4_url = (
                 "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4"

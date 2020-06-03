@@ -17,7 +17,7 @@ class UpdateStateAPITest(TestCase):
         """Confirming the successful upload of a video using the sole existing secret."""
         video = VideoFactory(id="f87b5f26-da60-49f2-9d71-a816e68a207f")
         data = {
-            "extraParameters": {},
+            "extraParameters": {"resolutions": [144, 240, 480]},
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
         }
@@ -26,7 +26,7 @@ class UpdateStateAPITest(TestCase):
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=(
-                "eb6f4052d2b8dfe6ce8986e13dbd0b264ad8abb9b4fe84b29f2c053172eb5ec6"
+                "4336d782e449fe7eae0b21bb621ef7da66fa1043ea1b1ea373d91f6c37a64606"
             ),
         )
         video.refresh_from_db()
@@ -35,6 +35,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
         self.assertEqual(video.upload_state, "ready")
+        self.assertEqual(video.resolutions, [144, 240, 480])
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video_processing(self):
@@ -59,6 +60,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "processing")
+        self.assertEqual(video.resolutions, None)
 
     @override_settings(
         UPDATE_STATE_SHARED_SECRETS=["previous secret", "current secret"]
