@@ -17,11 +17,18 @@ class UpdateStateAPITest(TestCase):
         """Confirming the successful upload of a video using the sole existing secret."""
         video = VideoFactory(id="f87b5f26-da60-49f2-9d71-a816e68a207f")
         data = {
+            "extraParameters": {},
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
-            "signature": "a5b2027808061d1ed558be62bc8626c7af0aa516b0fd7852595d61e810a0b118",
         }
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "eb6f4052d2b8dfe6ce8986e13dbd0b264ad8abb9b4fe84b29f2c053172eb5ec6"
+            ),
+        )
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -34,11 +41,18 @@ class UpdateStateAPITest(TestCase):
         """Setting a video's `upload_state` to processing should not affect its `uploaded_on`."""
         video = VideoFactory(id="9eeef843-bc43-4e01-825d-658aa5bca49f")
         data = {
+            "extraParameters": {},
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "processing",
-            "signature": "581add41c12fb39d6144d90e9051b6d600df074effcb0fa33e15b97152d2aaba",
         }
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "97ae90866e2699a0a6e4fcfd9f24bcc7aa0af39bfb95ca0d2a6fbf24e5dee108"
+            ),
+        )
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -53,13 +67,19 @@ class UpdateStateAPITest(TestCase):
         """Confirming the failed upload of a video using the any of the existing secrets."""
         video = VideoFactory(id="c804e019-c622-4b76-aa43-33f2317bdc7e")
         data = {
+            "extraParameters": {},
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "error",
-            # Signature generated using "current secret"
-            "signature": "8ade282229856ef892e757b51e5644916812053682c8e7354cd6b90e81af8ada",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "b472ad5a2e7fb8246d8d5dd20e7bd92bf1b3e1f288f7071d3e09ada1892cbcca"
+            ),
+        )
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -75,14 +95,21 @@ class UpdateStateAPITest(TestCase):
             video__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
         )
         data = {
+            "extraParameters": {},
             "key": "{!s}/timedtexttrack/{!s}/1533686400_fr_cc".format(
                 timed_text_track.video.pk, timed_text_track.id
             ),
             "state": "ready",
-            "signature": "7d3701b28d3bc7bcec1c846e1c932b9e79b4aff053ea9168898e2504e53ca03d",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "696e101c154911186763ec3d71f60bb16bcf4d444e810f8a5cdee2afcd997517"
+            ),
+        )
         timed_text_track.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -96,15 +123,22 @@ class UpdateStateAPITest(TestCase):
     def test_api_update_state_unknown_video(self):
         """Trying to update the state of a video that does not exist should return a 404."""
         data = {
+            "extraParameters": {},
             "key": "{!s}/video/{!s}/1533686400".format(
                 "9f14ad28-dd35-49b1-a723-84d57884e4cb",
                 "1ed1b113-2b87-42af-863a-11232f7bf88f",
             ),
             "state": "ready",
-            "signature": "a4288e9bf1596841e943a4050e9f67e79632ebdcfabbee951d4a1bad680f5a70",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "4fa1bd84afcc81fe35b6dbb6af7872deae7d025501adc8a3070fcbc1f803a7ea"
+            ),
+        )
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(json.loads(response.content), {"success": False})
@@ -133,13 +167,18 @@ class UpdateStateAPITest(TestCase):
         """Trying to update the state of an upload with an unexpected signature."""
         video = VideoFactory(id="4b8cb66c-4de4-4112-8be4-470db992a19e")
         data = {
+            "extraParameters": {},
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
-            # Expected signature: cecaea9d8aed12e927f5c6861b0132375b96ff4e907fdc12e5f6629b719300e4
-            "signature": "invalid signature",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            # Expected signature: 51c2f6b3dbfaf7f1e675550e4c5bae3e729201c51544760d41e7d5c05fec6372
+            HTTP_X_MARSHA_SIGNATURE="invalid signature",
+        )
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 403)
@@ -154,12 +193,19 @@ class UpdateStateAPITest(TestCase):
         )
 
         data = {
+            "extraParameters": {},
             "key": "{doc!s}/document/{doc!s}/1533686400.pdf".format(doc=document.pk),
             "state": "ready",
-            "signature": "f6cd0e57f5dd34c4794cb4549a4494933c44c4c0af8effe8c92f74f57e193d5d",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "dc2a02957f6859e89836dc6e0a0308f48d3c4a1e04d91723621b358ee8608cb9"
+            ),
+        )
 
         document.refresh_from_db()
 
@@ -176,12 +222,19 @@ class UpdateStateAPITest(TestCase):
         )
 
         data = {
+            "extraParameters": {},
             "key": "{doc!s}/document/{doc!s}/1533686400".format(doc=document.pk),
             "state": "ready",
-            "signature": "8034de111ed5164383903ee211fc27ee215f99c0444bf9b8e0e9598e1b29c0ec",
         }
 
-        response = self.client.post("/api/update-state", data)
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "70d2382a1adce903845d02b97a1f0bf7c772d68e1268d7e711137d2d7bea362e"
+            ),
+        )
 
         document.refresh_from_db()
 
