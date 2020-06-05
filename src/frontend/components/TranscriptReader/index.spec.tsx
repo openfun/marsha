@@ -1,4 +1,4 @@
-import { act, render, wait } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { VTTCue } from 'vtt.js';
@@ -6,6 +6,7 @@ import 'vtt.js/lib/vttcue';
 
 import { TranscriptReader } from '.';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
+import { Deferred } from '../../utils/tests/Deferred';
 import { timedTextMode, uploadState } from '../../types/tracks';
 
 jest.mock('vtt.js', () => ({
@@ -64,15 +65,17 @@ describe('<TranscriptReader />', () => {
   };
 
   beforeEach(jest.clearAllMocks);
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('fetches a transcript and renders its sentences, activating them when the player reaches them', async () => {
-    fetchMock.mock(transcript.url, 'OK');
+    const deferred = new Deferred();
+    fetchMock.mock(transcript.url, deferred.promise);
 
     const { getByText } = render(<TranscriptReader transcript={transcript} />);
-    await wait();
+    await act(async () => deferred.resolve('OK'));
 
-    expect(fetchMock.calls(transcript.url).length).toEqual(1);
+    expect(fetchMock.calls(transcript.url).length).toEqual(1),
+
 
     // Both cues are inactive
     getByText('-Bonjour. Bonjour à tous.');

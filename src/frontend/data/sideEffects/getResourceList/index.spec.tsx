@@ -39,7 +39,7 @@ describe('sideEffects/getResourceList', () => {
     upload_state: uploadState.READY,
   } as Video;
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
   afterEach(jest.resetAllMocks);
 
   it('requests the resource list, handles the response and resolves with a success', async () => {

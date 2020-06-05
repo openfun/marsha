@@ -6,7 +6,7 @@ import { modelName } from '../../../types/models';
 jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('sideEffects/initiateUpload', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('makes a POST request on the initiate-upload route & returns the policy', async () => {
     fetchMock.mock(

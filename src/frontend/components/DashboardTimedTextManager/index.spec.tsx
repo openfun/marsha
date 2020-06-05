@@ -1,4 +1,4 @@
-import { render, wait } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { defineMessages } from 'react-intl';
@@ -58,17 +58,7 @@ describe('<DashboardTimedTextManager />', () => {
       } as TimedText,
     ];
 
-    const state = {
-      jwt: 'jwt-token',
-      video: {
-        id: 'dd44',
-        thumbnail: null,
-        timed_text_tracks: tracks,
-        upload_state: uploadState.READY,
-      },
-    } as any;
-
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardTimedTextManager
@@ -80,10 +70,9 @@ describe('<DashboardTimedTextManager />', () => {
       ),
     );
 
-    await wait();
+    screen.getByText('Our title')
 
-    getByText('Our title');
-    getByText('French');
-    getByText('English');
+    await screen.findByText('French');
+    screen.getByText('English');
   });
 });

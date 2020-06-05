@@ -1,7 +1,7 @@
 import {
   getByText as getByTextInContainer,
   render,
-  wait,
+  screen,
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
@@ -44,7 +44,7 @@ describe('<DashboardTimedTextPane />', () => {
   );
 
   afterEach(jest.resetAllMocks);
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   const video = {
     description: '',
@@ -113,16 +113,15 @@ describe('<DashboardTimedTextPane />', () => {
       },
     ]);
 
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)),
     );
 
-    await wait();
-    const closedCaptions = getByText('Closed captions');
+    const closedCaptions = await screen.findByText('Closed captions');
     getByTextInContainer(closedCaptions.parentElement!, 'French');
-    const subtitles = getByText('Subtitles');
+    const subtitles = screen.getByText('Subtitles');
     getByTextInContainer(subtitles.parentElement!, 'English');
-    getByText('Transcripts');
+    screen.getByText('Transcripts');
   });
 
   it('redirects to the error view when the timedtexttrack list request fails', async () => {
@@ -143,8 +142,7 @@ describe('<DashboardTimedTextPane />', () => {
       ),
     );
 
-    await wait();
-    getByText('Error Component: notFound');
+    await screen.findByText('Error Component: notFound');
     expect(report).toBeCalledWith(new Error('Failed!'));
   });
 });

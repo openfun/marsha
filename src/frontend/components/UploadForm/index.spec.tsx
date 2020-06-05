@@ -1,4 +1,4 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -97,20 +97,19 @@ describe('UploadForm', () => {
 
   beforeEach(jest.resetAllMocks);
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('renders the form by default', async () => {
     mockGetResource.mockResolvedValue(object);
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
         ),
       ),
     );
-    await wait();
 
-    getByText('Create a new video');
+    await screen.findByText('Create a new video');
   });
 
   it('gets the policy from the API and uses it to upload the file', async () => {
@@ -128,7 +127,7 @@ describe('UploadForm', () => {
     mockUploadFile.mockResolvedValue(true);
     mockGetResource.mockResolvedValue(object);
 
-    const { container, getByText } = render(
+    const { container } = render(
       wrapInIntlProvider(
         wrapInRouter(
           <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
@@ -141,26 +140,28 @@ describe('UploadForm', () => {
         ),
       ),
     );
-    await wait();
+    await screen.findByText('Create a new video');
 
     fireEvent.drop(container.querySelector('input[type="file"]')!, {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
     });
-    await wait();
-    expect(
-      fetchMock.called('/api/videos/video-id/initiate-upload/', {
-        method: 'POST',
-      }),
-    ).toBe(true);
-    await wait();
-    expect(fetchMock.called('/api/videos/video-id/', { method: 'PUT' })).toBe(
-      true,
+    await waitFor(() =>
+      expect(
+        fetchMock.called('/api/videos/video-id/initiate-upload/', {
+          method: 'POST',
+        }),
+      ).toBe(true),
+    );
+    await waitFor(() =>
+      expect(fetchMock.called('/api/videos/video-id/', { method: 'PUT' })).toBe(
+        true,
+      ),
     );
     expect(mockUploadFile).toHaveBeenCalled();
     // redirected to the dashboard
-    getByText('dashboard');
+    screen.getByText('dashboard');
   });
 
   it('redirects to /errors/policy when it fails to trigger initiate-upload', async () => {
@@ -169,7 +170,7 @@ describe('UploadForm', () => {
     });
     mockGetResource.mockResolvedValue(object);
 
-    const { container, getByText } = render(
+    const { container } = render(
       wrapInIntlProvider(
         wrapInRouter(
           <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
@@ -182,22 +183,23 @@ describe('UploadForm', () => {
         ),
       ),
     );
-    await wait();
+    await screen.findByText('Create a new video');
 
     fireEvent.change(container.querySelector('input[type="file"]')!, {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
     });
-    await wait();
-    expect(
-      fetchMock.calls('/api/videos/video-id/initiate-upload/', {
-        method: 'POST',
-      }),
-    ).toHaveLength(1);
-    await wait();
+    await waitFor(() =>
+      expect(
+        fetchMock.calls('/api/videos/video-id/initiate-upload/', {
+          method: 'POST',
+        }),
+      ).toHaveLength(1),
+    );
+    await waitFor(() => {});
     expect(mockUploadFile).not.toHaveBeenCalled();
     // redirected to the dashboard
-    getByText('error policy');
+    screen.getByText('error policy');
   });
 });
