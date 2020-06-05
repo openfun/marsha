@@ -110,6 +110,9 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
     video.urls.thumbnails;
+  const resolutions = Object.keys(video.urls.mp4).map(
+    (size) => Number(size) as videoSize,
+  );
 
   return (
     <Box>
@@ -118,7 +121,7 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
-        poster={thumbnailUrls[720]}
+        poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
         tabIndex={-1}
       >
         {!!videoNodeRef.current && isHlsSupported(videoNodeRef.current) && (
@@ -130,16 +133,14 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
         )}
         {!!videoNodeRef.current &&
           !isHlsSupported(videoNodeRef.current) &&
-          Object.keys(video.urls.mp4)
-            .map((size) => Number(size) as videoSize)
-            .map((size) => (
-              <source
-                key={video.urls.mp4[size]}
-                size={`${size}`}
-                src={video.urls.mp4[size]}
-                type="video/mp4"
-              />
-            ))}
+          resolutions.map((size) => (
+            <source
+              key={video.urls.mp4[size]}
+              size={`${size}`}
+              src={video.urls.mp4[size]}
+              type="video/mp4"
+            />
+          ))}
 
         {/* This is a workaround to force plyr to load its tracks list once
           instantiated. Without this, captions are not loaded correctly, at least, on firefox.

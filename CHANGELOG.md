@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Detect original video framerate and use it in lambda encode
+- Limit video encoding resolution to that of the source 
 
 ## [3.8.1] - 2020-05-18
 
