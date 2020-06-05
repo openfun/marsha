@@ -31,7 +31,7 @@ export const createPlyrPlayer = (
   let sources;
   let qualityChangedFromDash: Maybe<boolean>;
   const settings = ['captions', 'speed', 'loop', 'quality'];
-  const videoSizes = Object.keys(video.urls.mp4).map(
+  const resolutions = Object.keys(video.urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
 
@@ -41,7 +41,7 @@ export const createPlyrPlayer = (
       .getTimedTextTracks();
 
     sources = {
-      sources: videoSizes.map((size) => ({
+      sources: resolutions.map((size) => ({
         size,
         src: video.urls.mp4[size],
         type: 'video/mp4',
@@ -144,7 +144,7 @@ export const createPlyrPlayer = (
           },
         } as MediaPlayerSettingClass);
       },
-      options: videoSizes,
+      options: resolutions,
     },
     seekTime: 5,
     settings,
