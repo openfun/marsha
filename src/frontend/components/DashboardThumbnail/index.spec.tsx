@@ -1,4 +1,4 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { ImportMock } from 'ts-mock-imports';
@@ -6,6 +6,7 @@ import { ImportMock } from 'ts-mock-imports';
 import { DashboardThumbnail } from '.';
 import * as useThumbnailModule from '../../data/stores/useThumbnail';
 import { uploadState } from '../../types/tracks';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 jest.mock('react-router-dom', () => ({
@@ -246,7 +247,8 @@ describe('<DashboardThumbnail />', () => {
   });
 
   it('creates a new thumbnail and redirects the user to the upload form they click on the replace button', async () => {
-    fetchMock.mock('/api/thumbnails/', JSON.stringify(video.thumbnail), {
+    const deferred = new Deferred();
+    fetchMock.mock('/api/thumbnails/', deferred.promise, {
       method: 'POST',
     });
     const videoWithoutThumbnail = {
@@ -270,7 +272,7 @@ describe('<DashboardThumbnail />', () => {
       },
     });
 
-    const { debug, getByAltText, getByText } = render(
+    const { getByAltText, getByText } = render(
       wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
     );
 
@@ -279,8 +281,9 @@ describe('<DashboardThumbnail />', () => {
     ).toEqual('https://example.com/default_thumbnail/144');
 
     fireEvent.click(getByText('Replace this thumbnail'));
-    await wait();
+    await act(async () => deferred.resolve(JSON.stringify(video.thumbnail)));
     expect(fetchMock.calls()).toHaveLength(1);
+
     expect(fetchMock.lastCall()![0]).toEqual('/api/thumbnails/');
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',

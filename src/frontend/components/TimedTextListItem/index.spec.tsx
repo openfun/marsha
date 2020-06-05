@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -36,7 +36,7 @@ describe('<TimedTextListItem />', () => {
     ),
   );
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   const video = {
     description: '',
@@ -83,7 +83,7 @@ describe('<TimedTextListItem />', () => {
   };
 
   it('renders a track, showing its language and status', async () => {
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <TimedTextListItem
@@ -102,10 +102,9 @@ describe('<TimedTextListItem />', () => {
         ),
       ),
     );
-    await wait();
 
-    getByText('French');
-    getByText((content) => content.startsWith('Ready'));
+    await screen.findByText('French');
+    screen.getByText((content) => content.startsWith('Ready'));
     // No polling takes place as the track is already READY
     expect(
       fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
@@ -128,7 +127,7 @@ describe('<TimedTextListItem />', () => {
       method: 'GET',
     });
 
-    const { getByText, queryByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(<TimedTextListItem track={track} />, [
           {
@@ -141,33 +140,31 @@ describe('<TimedTextListItem />', () => {
       ),
     );
 
+    await screen.findByText('French');
     expect(
       fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
     ).not.toBeTruthy();
 
     // first backend call
     jest.advanceTimersByTime(1000 * 10 + 200);
-    await wait();
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
+    );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
-    expect(
-      queryByText((content) => content.startsWith('Ready')),
-    ).not.toBeTruthy();
-    getByText((content) => content.startsWith('Processing'));
+    expect(screen.queryByText('Ready')).toBeNull();
+    screen.getByText('Processing');
 
     let timer: number = 15;
 
     for (let i = 2; i <= 20; i++) {
       timer = timer * i;
       jest.advanceTimersByTime(1000 * timer + 200);
-      await wait();
+      await waitFor(() => {});
 
       expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(i);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
-      expect(
-        queryByText((content) => content.startsWith('Ready')),
-      ).not.toBeTruthy();
-      getByText((content) => content.startsWith('Processing'));
+      expect(screen.queryByText('Ready')).toBeNull();
+      screen.getByText('Processing');
     }
   });
 
@@ -200,9 +197,10 @@ describe('<TimedTextListItem />', () => {
 
       // first backend call
       jest.advanceTimersByTime(1000 * 10 + 200);
-      await wait();
+      await waitFor(() =>
+        expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
+      );
 
-      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(
         queryByText((content) => content.startsWith('Ready')),
       ).not.toBeTruthy();
@@ -216,7 +214,7 @@ describe('<TimedTextListItem />', () => {
 
       // Second backend call
       jest.advanceTimersByTime(1000 * 30 + 200);
-      await wait();
+      await waitFor(() => {});
       rerender(
         wrapInIntlProvider(
           wrapInRouter(<TimedTextListItem track={updatedTrack} />),
@@ -257,10 +255,10 @@ describe('<TimedTextListItem />', () => {
       );
 
       fireEvent.click(getByText('Delete'));
-      await wait();
-
-      expect(
-        fetchMock.called('/api/timedtexttracks/42/', { method: 'DELETE' }),
+      await waitFor(() =>
+        expect(
+          fetchMock.called('/api/timedtexttracks/42/', { method: 'DELETE' }),
+        ),
       );
       // TODO: check store deletion when we have a way to do so
     });

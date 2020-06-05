@@ -1,10 +1,11 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 
 import { DashboardVideoPaneDownloadOption } from '.';
 import { uploadState } from '../../types/tracks';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 jest.mock('../../data/appData', () => ({
@@ -12,7 +13,7 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<DashboardVideoPaneDownloadOption />', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   const video = {
     description: 'Some description',
@@ -64,9 +65,10 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
   });
 
   it('updates the checkbox and the video record when the user clicks the checkbox', async () => {
+    const deferred = new Deferred();
     fetchMock.mock(
       '/api/videos/442/',
-      { ...video, show_download: true },
+      deferred.promise,
       { method: 'PUT' },
     );
     const { getByLabelText } = render(
@@ -83,10 +85,10 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
       false,
     );
 
-    act(() => {
+    await act(async () => {
       fireEvent.click(getByLabelText('Allow video download'));
+      return deferred.resolve({ ...video, show_download: true });
     });
-    await wait();
 
     expect(getByLabelText('Allow video download')).toHaveProperty(
       'checked',

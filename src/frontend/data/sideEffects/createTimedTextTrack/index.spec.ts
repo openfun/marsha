@@ -8,7 +8,7 @@ jest.mock('../../appData', () => ({
 }));
 
 describe('sideEffects/createTimedTextTrack()', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('creates a new timedtexttrack and returns its id', async () => {
     fetchMock.mock('/api/timedtexttracks/', {

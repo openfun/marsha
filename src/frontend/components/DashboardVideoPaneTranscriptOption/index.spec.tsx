@@ -1,4 +1,4 @@
-import { fireEvent, render, wait } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
@@ -7,6 +7,7 @@ import { ImportMock } from 'ts-mock-imports';
 import { DashboardVideoPaneTranscriptOption } from '.';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { timedTextMode, uploadState } from '../../types/tracks';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
@@ -119,9 +120,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('updates the checkbox and the video record when the user clicks the checkbox', async () => {
+    const deferred = new Deferred();
     fetchMock.mock(
       '/api/videos/443/',
-      { ...video, should_use_subtitle_as_transcript: true },
+      deferred.promise,
       { method: 'PUT' },
     );
 
@@ -143,10 +145,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
       false,
     );
 
-    act(() => {
+    await act(async () => {
       fireEvent.click(getByLabelText('Use subtitles as transcripts'));
+      return deferred.resolve({ ...video, should_use_subtitle_as_transcript: true });
     });
-    await wait();
 
     expect(getByLabelText('Use subtitles as transcripts')).toHaveProperty(
       'checked',

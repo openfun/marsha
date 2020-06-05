@@ -9,7 +9,7 @@ jest.mock('../../appData', () => ({
 }));
 
 describe('sideEffects/createThumbnail', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('creates a new thumbnail and return it', async () => {
     fetchMock.mock('/api/thumbnails/', {

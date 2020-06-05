@@ -1,4 +1,4 @@
-import { wait } from '@testing-library/react';
+import { wait, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
 import { pollForTrack } from '.';
@@ -16,7 +16,7 @@ jest.mock('../../appData', () => ({
 describe('sideEffects/pollForTrack', () => {
   jest.useFakeTimers();
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('polls the track, backing off until it is ready and resolves with a success', async () => {
     fetchMock.mock(
@@ -30,17 +30,17 @@ describe('sideEffects/pollForTrack', () => {
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
     ).toEqual(1);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
     ).toEqual(2);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
@@ -52,18 +52,18 @@ describe('sideEffects/pollForTrack', () => {
       { method: 'GET', overwriteRoutes: true },
     );
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
     ).toEqual(4);
     expect(await promise).toEqual(requestStatus.SUCCESS);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     // No new calls have been issued
     expect(
@@ -83,17 +83,17 @@ describe('sideEffects/pollForTrack', () => {
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
     ).toEqual(1);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
     ).toEqual(2);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
@@ -105,18 +105,18 @@ describe('sideEffects/pollForTrack', () => {
       { method: 'GET', overwriteRoutes: true },
     );
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
     ).toEqual(4);
     expect(await promise).toEqual(requestStatus.SUCCESS);
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     // No new calls have been issued
     expect(
@@ -146,9 +146,9 @@ describe('sideEffects/pollForTrack', () => {
       },
     );
 
-    await wait();
+    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await wait();
+    await waitFor(() => {});
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,

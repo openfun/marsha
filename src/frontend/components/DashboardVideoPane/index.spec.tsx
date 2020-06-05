@@ -1,10 +1,11 @@
-import { cleanup, render, wait } from '@testing-library/react';
+import { cleanup, render, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { DashboardVideoPane } from '.';
 import { uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -20,7 +21,7 @@ const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
 describe('<DashboardVideoPane />', () => {
   beforeEach(() => jest.useFakeTimers());
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
   afterEach(jest.resetAllMocks);
 
   const video = {
@@ -60,7 +61,7 @@ describe('<DashboardVideoPane />', () => {
     fetchMock.mock('/api/videos/43/', () => {
       throw new Error('Failed request');
     });
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
@@ -77,17 +78,14 @@ describe('<DashboardVideoPane />', () => {
     );
 
     jest.advanceTimersByTime(1000 * 60 + 200);
-    await wait();
+    await screen.findByText('Error Component: notFound');
 
     expect(report).toHaveBeenCalledWith(new Error('Failed request'));
-    getByText('Error Component: notFound');
   });
 
   it('renders & starts polling for the video', async () => {
-    fetchMock.mock(
-      '/api/videos/43/',
-      JSON.stringify({ ...video, upload_state: PROCESSING }),
-    );
+    let deferred = new Deferred();
+    fetchMock.mock('/api/videos/43/', deferred.promise);
 
     const { getByText, queryByText, rerender } = render(
       wrapInIntlProvider(
@@ -106,7 +104,9 @@ describe('<DashboardVideoPane />', () => {
 
     // First backend call: the video is still processing
     jest.advanceTimersByTime(1000 * 60 + 200);
-    await wait();
+    await act(async () =>
+      deferred.resolve(JSON.stringify({ ...video, upload_state: PROCESSING })),
+    );
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/43/');
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
@@ -119,14 +119,14 @@ describe('<DashboardVideoPane />', () => {
 
     // The video will be ready in further responses
     fetchMock.restore();
-    fetchMock.mock(
-      '/api/videos/43/',
-      JSON.stringify({ ...video, upload_state: READY }),
-    );
+    deferred = new Deferred();
+    fetchMock.mock('/api/videos/43/', deferred.promise);
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 60 + 200);
-    await wait();
+    await act(async () =>
+      deferred.resolve(JSON.stringify({ ...video, upload_state: READY })),
+    );
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/43/');
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
