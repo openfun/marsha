@@ -34,34 +34,40 @@ const StatusInfo = styled.span`
   cursor: pointer;
 `;
 
-type downloadableSize = Extract<videoSize, '1080' | '720' | '480'>;
+type downloadableSize = Extract<videoSize, 1080 | 720 | 480>;
 
 export const DownloadVideo = ({ video }: { video: Video }) => {
-  const elements: JSX.Element[] = [];
-
-  return (
-    <Box align="center" justify="start" direction="row" pad="small">
-      <FormattedMessage {...messages.downloadVideo} />
-      &nbsp;
-      {(['1080', '720', '480'] as downloadableSize[])
-        .reduce((acc: JSX.Element[], size: downloadableSize) => {
-          acc.push(
-            <Fragment key={`fragment-${size}`}>
-              <a href={video.urls.mp4[size]}>{size}p</a>
-              &nbsp;
-              <Tooltip
-                overlay={<FormattedMessage {...messages[size]} />}
-                placement="bottom"
-              >
-                <StatusInfo>&#9432;</StatusInfo>
-              </Tooltip>
-            </Fragment>,
-          );
-          acc.push(<span key={`span-${size}`}>&nbsp;/&nbsp;</span>);
-
-          return acc;
-        }, elements)
-        .slice(0, elements.length - 1)}
-    </Box>
+  const resolutions = Object.keys(video.urls.mp4).map(
+    (size) => Number(size) as videoSize,
   );
+  const elements: JSX.Element[] = ([1080, 720, 480] as downloadableSize[])
+    .filter((size) => resolutions.includes(size))
+    .reduce((acc: JSX.Element[], size: downloadableSize) => {
+      acc.push(
+        <Fragment key={`fragment-${size}`}>
+          <a href={video.urls.mp4[size]}>{size}p</a>
+          &nbsp;
+          <Tooltip
+            overlay={<FormattedMessage {...messages[size]} />}
+            placement="bottom"
+          >
+            <StatusInfo>&#9432;</StatusInfo>
+          </Tooltip>
+        </Fragment>,
+      );
+      acc.push(<span key={`span-${size}`}>&nbsp;/&nbsp;</span>);
+      return acc;
+    }, []);
+
+  if (elements.length > 0) {
+    return (
+      <Box align="center" justify="start" direction="row" pad="small">
+        <FormattedMessage {...messages.downloadVideo} />
+        &nbsp;
+        {elements.slice(0, elements.length - 1)}
+      </Box>
+    );
+  }
+
+  return null;
 };

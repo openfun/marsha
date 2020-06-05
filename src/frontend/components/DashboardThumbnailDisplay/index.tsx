@@ -27,21 +27,22 @@ export const DashboardThumbnailDisplay = ({
     thumbnail && thumbnail.is_ready_to_show
       ? thumbnail.urls
       : video.urls.thumbnails;
+  const resolutions = Object.keys(urls).map(
+    (size) => Number(size) as videoSize,
+  );
   return (
     <ImageIntlAlt
       alt={messages.thumbnailAlt}
       fit={'cover'}
-      src={urls[144]}
-      srcSet={Object.keys(urls)
-        .map((size) => Number(size) as videoSize)
-        .reduce((acc: string, size: videoSize) => {
-          const url = `${urls[size]} ${videoSizeMapping[size]}w`;
-          if (acc.length === 0) {
-            return url;
-          } else {
-            return `${acc}, ${url}`;
-          }
-        }, '')}
+      src={urls[resolutions[0]]}
+      srcSet={resolutions.reduce((acc: string, size: videoSize) => {
+        const url = `${urls[size]} ${videoSizeMapping[size]}w`;
+        if (acc.length === 0) {
+          return url;
+        } else {
+          return `${acc}, ${url}`;
+        }
+      }, '')}
     />
   );
 };
