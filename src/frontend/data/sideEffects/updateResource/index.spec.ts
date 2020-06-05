@@ -7,7 +7,7 @@ import { Video } from '../../../types/tracks';
 jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
 
 describe('sideEffects/updateResource', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   const video = {
     description: 'Some description',

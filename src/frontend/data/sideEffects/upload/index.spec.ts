@@ -88,7 +88,7 @@ describe('upload', () => {
   beforeEach(jest.resetAllMocks);
   beforeEach(() => xhrMock.setup());
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
   afterEach(() => xhrMock.teardown());
 
   it('gets the policy from the API and uses it to upload the file', async () => {

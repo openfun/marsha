@@ -1,10 +1,11 @@
-import { render, wait } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import React from 'react';
 
 import DashboardDocument from '.';
 import { uploadState } from '../../types/tracks';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -19,10 +20,11 @@ jest.mock('../../data/appData', () => ({
 describe('<DashboardDocument />', () => {
   beforeEach(() => jest.useFakeTimers());
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
   afterEach(jest.resetAllMocks);
 
   it('starts polling when the document is in pending, uploading and processing', async () => {
+    let deferred = new Deferred();
     const document = {
       description: '',
       extension: 'pdf',
@@ -35,19 +37,12 @@ describe('<DashboardDocument />', () => {
       url: 'https://example.com/document/44',
     };
 
-    fetchMock.mock(
-      '/api/documents/44/',
-      JSON.stringify({
-        ...document,
-        is_ready_to_show: false,
-        upload_state: uploadState.PROCESSING,
-      }),
-    );
+    fetchMock.mock('/api/documents/44/', deferred.promise);
 
     // wrap the component in a grommet provider to have a valid theme.
     // Without it, the FormField component fail to render because it is a composed
     // component using property in the theme.
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <Grommet>
@@ -56,40 +51,51 @@ describe('<DashboardDocument />', () => {
         ),
       ),
     );
-    getByText('Processing');
+    screen.getByText('Processing');
     expect(fetchMock.called()).not.toBeTruthy();
 
     // First backend call: the document is still processing
     jest.advanceTimersByTime(1000 * 10 + 200);
-    await wait();
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/');
-    expect(fetchMock.lastCall()![1]!.headers).toEqual({
-      Authorization: 'Bearer cool_token_m8',
-    });
-    getByText('Processing');
+    await act(async () =>
+      deferred.resolve(
+        JSON.stringify({
+          ...document,
+          is_ready_to_show: false,
+          upload_state: uploadState.PROCESSING,
+        }),
+      ),
+    );
+
+    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
+      expect(fetchMock.lastCall()![1]!.headers).toEqual({
+        Authorization: 'Bearer cool_token_m8',
+      });
+    screen.getByText('Processing');
 
     // The document will be ready in further responses
     fetchMock.restore();
-    fetchMock.mock(
-      '/api/documents/44/',
-      JSON.stringify({
-        ...document,
-        is_ready_to_show: true,
-        upload_state: uploadState.READY,
-      }),
-    );
+    deferred = new Deferred();
+    fetchMock.mock('/api/documents/44/', deferred.promise);
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 30 + 200);
-    await wait();
+    await act(async () =>
+      deferred.resolve(
+        JSON.stringify({
+          ...document,
+          is_ready_to_show: true,
+          upload_state: uploadState.READY,
+        }),
+      ),
+    );
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/');
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
 
-    getByText((content) => content.startsWith('Ready'));
+    screen.getByText((content) => content.startsWith('Ready'));
   });
 
   it('shows the upload button in pending state', () => {
@@ -105,13 +111,13 @@ describe('<DashboardDocument />', () => {
       url: 'https://example.com/document/45',
     };
 
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(<DashboardDocument document={document} />),
       ),
     );
 
-    getByText('Upload a document');
+    screen.getByText('Upload a document');
   });
 
   it('shows the replace button in error state', () => {
@@ -127,14 +133,14 @@ describe('<DashboardDocument />', () => {
       url: 'https://example.com/document/45',
     };
 
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(<DashboardDocument document={document} />),
       ),
     );
 
-    getByText((content) => content.startsWith('Error'));
-    getByText('Replace the document');
+    screen.getByText((content) => content.startsWith('Error'));
+    screen.getByRole('button', {name: /Replace the document/i})
   });
 
   it('renders in ready state', () => {
@@ -192,13 +198,13 @@ describe('<DashboardDocument />', () => {
       url: 'https://example.com/document/45',
     };
 
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(<DashboardDocument document={document} />),
       ),
     );
 
-    getByText('Uploading');
-    getByText('0%');
+    screen.getByText('Uploading');
+    screen.getByText('0%');
   });
 });

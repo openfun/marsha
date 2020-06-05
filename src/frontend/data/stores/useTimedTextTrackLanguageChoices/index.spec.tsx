@@ -29,7 +29,7 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
     useTimedTextTrackLanguageChoicesApi.setState({ choices: undefined });
   });
 
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('gets the choices the first time getChoices is called and makes them available', async () => {
     fetchMock.mock(

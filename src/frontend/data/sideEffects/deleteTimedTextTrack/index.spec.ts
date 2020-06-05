@@ -6,7 +6,7 @@ import { TimedText } from '../../../types/tracks';
 jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('sideEffects/deleteTimedTextTrack', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
 
   it('issues a DELETE request for the relevant timedtexttrack', async () => {
     fetchMock.mock('/api/timedtexttracks/42/', 204, { method: 'DELETE' });
