@@ -18,7 +18,7 @@ jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
 const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
 
 describe('<DashboardVideoPane />', () => {
-  beforeEach(jest.useFakeTimers);
+  beforeEach(() => jest.useFakeTimers());
 
   afterEach(fetchMock.restore);
   afterEach(jest.resetAllMocks);

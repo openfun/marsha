@@ -17,7 +17,7 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<DashboardDocument />', () => {
-  beforeEach(jest.useFakeTimers);
+  beforeEach(() => jest.useFakeTimers());
 
   afterEach(fetchMock.restore);
   afterEach(jest.resetAllMocks);
