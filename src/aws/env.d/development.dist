@@ -9,7 +9,9 @@ TF_VAR_cloudfront_trusted_signer_id=888888888888
 TF_VAR_aws_region=eu-west-1
 TF_VAR_update_state_disable_ssl_validation=false
 TF_VAR_update_state_secret=YourUpdateStateSecret
-TF_VAR_update_state_endpoint=https://example.com/update-state
+TF_VAR_marsha_base_url=https://your.marsha.tld
+TF_VAR_update_state_endpoint=/api/update-state
+TF_VAR_update_live_state_endpoint=https://example.com/update-live-state
 TF_VAR_migrations=0001_encode_timed_text_tracks
 
 # Terraform variables
