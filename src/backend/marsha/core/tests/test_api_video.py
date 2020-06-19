@@ -1343,8 +1343,8 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
-            upload_state=LIVE,
-            live_state=LIVE,
+            upload_state=PENDING,
+            live_state=RUNNING,
             live_info={
                 "medialive": {
                     "input": {
@@ -1390,7 +1390,7 @@ class VideoAPITest(TestCase):
                 "active_stamp": None,
                 "is_ready_to_show": False,
                 "show_download": True,
-                "upload_state": "live",
+                "upload_state": PENDING,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "urls": {
@@ -1425,7 +1425,7 @@ class VideoAPITest(TestCase):
         """An instructor should not stop a video when not in live mode."""
         video = VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
-            upload_state=random.choice([s[0] for s in STATE_CHOICES if s[0] != "live"]),
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1444,7 +1444,7 @@ class VideoAPITest(TestCase):
         """An instructor should not stop a video when not in live state."""
         video = VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
-            upload_state=LIVE,
+            upload_state=PENDING,
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
         )
         jwt_token = AccessToken()
