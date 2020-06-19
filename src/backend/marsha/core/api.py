@@ -21,7 +21,11 @@ from . import defaults, permissions, serializers
 from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
-from .utils.medialive_utils import create_live_stream
+from .utils.medialive_utils import (
+    create_live_stream,
+    start_live_channel,
+    stop_medialive_channel,
+)
 from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
 from .xapi import XAPI, XAPIStatement
@@ -192,6 +196,48 @@ class VideoViewSet(
         )
 
         video.refresh_from_db()
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data)
+
+    @action(methods=["post"], detail=True, url_path="start-live")
+    # pylint: disable=unused-argument
+    def start_live(self, request, pk=None):
+        """Start a medialive channel on AWS.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+
+        if video.live_state is None:
+            return Response({"error": "Call initiate-live before starting a live"}, 400)
+
+        if video.live_state != defaults.IDLE:
+            return Response(
+                {
+                    "error": (
+                        f"Impossible to start live video. Current status is {video.live_state}"
+                    )
+                },
+                400,
+            )
+
+        start_live_channel(
+            video.live_info.get("medialive").get("channel").get("id")
+        )
+
+        video.live_state = defaults.STARTING
+        video.save()
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
