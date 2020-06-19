@@ -1465,7 +1465,7 @@ class VideoAPITest(TestCase):
         """Confirm update video live state."""
         video = VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
-            upload_state=LIVE,
+            upload_state=PENDING,
             live_state=IDLE,
         )
         data = {
@@ -1490,7 +1490,7 @@ class VideoAPITest(TestCase):
         """Live state update with an invalid signature should fails."""
         video = VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
-            upload_state=LIVE,
+            upload_state=PENDING,
             live_state=IDLE,
         )
         data = {
@@ -1511,7 +1511,7 @@ class VideoAPITest(TestCase):
         """Live state update with an invalid state should fails."""
         video = VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
-            upload_state=LIVE,
+            upload_state=PENDING,
             live_state=IDLE,
         )
         invalid_state = random.choice(
