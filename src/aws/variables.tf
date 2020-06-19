@@ -21,6 +21,10 @@ variable "update_state_disable_ssl_validation" {
   default = "false"
 }
 
+variable "marsha_base_url" {
+  type    = "string"
+}
+
 variable "update_state_endpoint" {
   type    = "string"
 }

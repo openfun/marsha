@@ -1,0 +1,25 @@
+{
+  "author": "France Université Numérique",
+  "name": "aws-marsha-medialive",
+  "version": "3.9.0",
+  "engines": {
+    "node": "10"
+  },
+  "description": "Tasks to execute when a medialive event is fired",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/openfun/marsha"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "26.0.0",
+    "@types/request-promise-native": "1.0.17",
+    "jest": "26.0.1"
+  },
+  "dependencies": {
+    "aws-sdk": "2.696.0",
+    "update-state": "file:../utils/update-state"
+  }
+}

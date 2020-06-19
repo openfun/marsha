@@ -439,3 +439,54 @@ resource "aws_iam_role_policy_attachment" "medialive_custom_policy_attachment" {
   role        = "${aws_iam_role.medialive_access_role.name}"
   policy_arn  = "${aws_iam_policy.medialive_custom_policy.arn}"
 }
+
+
+resource "aws_iam_role" "lambda_medialive_invocation_role" {
+  name = "${terraform.workspace}-marsha-lambda-medialive-invocation-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_medialive_logging_policy_attachment" {
+  role       = "${aws_iam_role.lambda_medialive_invocation_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+}
+
+
+resource "aws_iam_policy" "lambda_medialive_access_policy" {
+  name        = "${terraform.workspace}-marsha-medialive-access-policy"
+  path        = "/"
+  description = "IAM policy needed by lambda-medialive to access medialive"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["medialive:describeChannel"],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_medialive_access_policy_attachment" {
+  role       = "${aws_iam_role.lambda_medialive_invocation_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_medialive_access_policy.arn}"
+}

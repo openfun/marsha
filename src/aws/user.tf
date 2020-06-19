@@ -99,3 +99,76 @@ resource "aws_s3_bucket_policy" "marsha_static_bucket_policy" {
 }
 EOF
 }
+
+# Grant user to manage live streaming. Affects medialive, mediapackage and sns.
+resource "aws_iam_user_policy" "live-streaming-policies" {
+  name = "${terraform.workspace}-marsha-live-streaming-policies"
+  user = "${aws_iam_user.marsha_user.name}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "MediaLive",
+      "Action": [
+        "medialive:UpdateInput",
+        "medialive:DeleteChannel",
+        "medialive:UpdateChannel",
+        "medialive:StartChannel",
+        "medialive:StopChannel",
+        "medialive:CreateTags",
+        "medialive:CreateInput",
+        "medialive:DescribeInput",
+        "medialive:UpdateChannelClass",
+        "medialive:DeleteInput",
+        "medialive:CreateChannel",
+        "medialive:CreateInputSecurityGroup",
+        "medialive:DescribeChannel",
+        "medialive:ListInputs",
+        "medialive:TagResource",
+        "medialive:ListInputSecurityGroups",
+        "medialive:ListChannels"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "MediaPackage",
+      "Effect": "Allow",
+      "Action": [
+        "mediapackage:DeleteChannel",
+        "mediapackage:DeleteOriginEndpoint",
+        "mediapackage:CreateOriginEndpoint",
+        "mediapackage:DescribeOriginEndpoint",
+        "mediapackage:UpdateChannel",
+        "mediapackage:ListOriginEndpoints",
+        "mediapackage:DescribeChannel",
+        "mediapackage:CreateChannel",
+        "mediapackage:ListChannels",
+        "mediapackage:UpdateOriginEndpoint"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "IAMPassRole",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "${aws_iam_role.medialive_access_role.arn}"
+    },
+    {
+      "Sid": "SSM",
+      "Effect": "Allow",
+      "Action": "ssm:PutParameter",
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "*"
+    }
+  ]
+}
+POLICY
+}
