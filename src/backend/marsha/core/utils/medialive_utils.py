@@ -248,3 +248,7 @@ def start_live_channel(channel_id):
     """Start an existing medialive channel."""
     medialive_client.start_channel(ChannelId=channel_id)
 
+
+def stop_live_channel(channel_id):
+    """Stop an existing medialive channel."""
+    medialive_client.stop_channel(ChannelId=channel_id)
