@@ -6,7 +6,13 @@ import { H2 } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
 
 export interface ErrorComponentProps {
-  code: 'lti' | 'notFound' | 'policy' | 'upload';
+  code:
+    | 'lti'
+    | 'notFound'
+    | 'policy'
+    | 'upload'
+    | 'liveIncompatible'
+    | 'liveInit';
 }
 
 const ErrorComponentStyled = styled(LayoutMainArea)`
@@ -79,6 +85,32 @@ const messages = {
       id: 'components.ErrorComponent.upload.title',
     },
   }),
+  liveIncompatible: defineMessages({
+    text: {
+      defaultMessage:
+        'You can try again later. You may want to check your Internet connection quality.',
+      description: 'Helpful text for the Upload error page',
+      id: 'components.ErrorComponent.upload.text',
+    },
+    title: {
+      defaultMessage: 'Live mode incompatible with this object',
+      description: 'Title when the object is incompatible with live mode',
+      id: 'components.ErrorComponent.liveIncompatible.title',
+    },
+  }),
+  liveInit: {
+    text: {
+      defaultMessage:
+        'We could not make sure you are allowed to modify a live. Please check your settings and/or try again.',
+      description: 'Title for the live permission error page',
+      id: 'components.ErrorComponent.liveInit.text',
+    },
+    title: {
+      defaultMessage: 'Failed to authenticate your permission to modify a live',
+      description: 'Helpful text for the upload permission error page',
+      id: 'components.ErrorComponent.liveInit.title',
+    },
+  },
 };
 
 export const ErrorComponent = (props: ErrorComponentProps) => {
