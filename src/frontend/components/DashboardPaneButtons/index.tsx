@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
-import { DashboardVideoStartLiveButton } from '../DashboardVideoStartLiveButton';
+import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
@@ -54,8 +54,7 @@ const messages = {
   }),
 };
 
-const BtnWithLink = withLink(Button);
-export const dashboardButtonStyles = `
+export const DashboardButton = styled(Button)`
   flex-grow: 1;
   flex-basis: 8rem;
   max-width: 50%;
@@ -68,7 +67,7 @@ export const dashboardButtonStyles = `
     margin-left: 1rem;
   }
 `;
-const DashboardButtonStyled = styled(BtnWithLink)`${dashboardButtonStyles}`;
+export const DashboardButtonWithLink = withLink(DashboardButton);
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardPaneButtonsProps {
@@ -94,14 +93,11 @@ export const DashboardPaneButtons = ({
       justify={displayWatchBtn ? 'center' : 'end'}
       margin={'small'}
     >
-      {
-        objectType === modelName.VIDEOS &&
-        object.upload_state === uploadState.PENDING &&
-        (object as Video).live_mode === false && (
-          <DashboardVideoStartLiveButton video={object as Video} />
-        )
-      }
-      <DashboardButtonStyled
+      {objectType === modelName.VIDEOS &&
+        object.upload_state === uploadState.PENDING && (
+          <DashboardVideoLiveConfigureButton video={object as Video} />
+        )}
+      <DashboardButtonWithLink
         label={
           <FormattedMessage
             {...(object.upload_state === uploadState.PENDING
@@ -113,7 +109,7 @@ export const DashboardPaneButtons = ({
         to={UPLOAD_FORM_ROUTE(objectType, object.id)}
       />
       {displayWatchBtn ? (
-        <DashboardButtonStyled
+        <DashboardButtonWithLink
           label={<FormattedMessage {...messages[objectType].btnPlay} />}
           primary={displayWatchBtn}
           to={PLAYER_ROUTE(objectType)}

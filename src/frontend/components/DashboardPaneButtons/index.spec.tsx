@@ -10,6 +10,12 @@ import { wrapInRouter } from '../../utils/tests/router';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
+jest.mock('../../data/appData', () => ({
+  appData: {
+    video: {},
+  },
+}));
+
 describe('<DashboardPaneButtons />', () => {
   it('only renders the "Watch" button if the video is ready', async () => {
     const { getByText } = render(
