@@ -28,6 +28,13 @@ export enum uploadState {
   UPLOADING = 'uploading',
 }
 
+export enum liveState {
+  IDLE = 'idle',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  STOPPED = 'stopped',
+}
+
 /** Possible modes for a timed text track.
  *
  * We're using modes instead of different objects to represent subtitles, transcripts and closed captions
@@ -90,12 +97,20 @@ export interface Video extends Resource {
       dash: string;
       hls: string;
     };
-    mp4: urls;
-    thumbnails: urls;
+    mp4: Partial<urls>;
+    thumbnails: Partial<urls>;
   };
   should_use_subtitle_as_transcript: boolean;
   has_transcript: boolean;
   playlist: Playlist;
+  live_state: Nullable<liveState>;
+  live_info: {
+    medialive?: {
+      input: {
+        endpoints: string[];
+      };
+    };
+  };
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;
