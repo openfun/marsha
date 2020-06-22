@@ -128,57 +128,7 @@ describe('<RedirectOnLoad />', () => {
     }
   });
 
-  it('redirects users to /form when video is pending, not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockVideo = {
-      id: '42',
-      is_ready_to_show: false,
-      upload_state: uploadState.PENDING,
-    };
-    mockModelName = modelName.VIDEOS;
-    mockDocument = null;
-    mockCanUpdate = true;
-
-    const { getByText } = render(
-      wrapInRouter(<RedirectOnLoad />, [
-        {
-          path: UPLOAD_FORM_ROUTE(),
-          render: ({ match }) => (
-            <span>{`objectType: ${match.params.objectType} and objectId: ${match.params.objectId}`}</span>
-          ),
-        },
-      ]),
-    );
-
-    getByText('objectType: videos and objectId: 42');
-  });
-
-  it('redirects users to /form when document is pending, not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockDocument = {
-      id: '42',
-      is_ready_to_show: false,
-      upload_state: uploadState.PENDING,
-    };
-    mockModelName = modelName.DOCUMENTS;
-    mockVideo = null;
-    mockCanUpdate = true;
-
-    const { getByText } = render(
-      wrapInRouter(<RedirectOnLoad />, [
-        {
-          path: UPLOAD_FORM_ROUTE(),
-          render: ({ match }) => (
-            <span>{`objectType: ${match.params.objectType} and objectId: ${match.params.objectId}`}</span>
-          ),
-        },
-      ]),
-    );
-
-    getByText('objectType: documents and objectId: 42');
-  });
-
-  it('redirects users to /dashboard when video is not pending, not ready to be shown and it has permissions to upadte it', () => {
+  it('redirects users to /dashboard when video is not ready to be shown and it has permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockVideo = {
       is_ready_to_show: false,
@@ -202,7 +152,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('dashboard videos');
   });
 
-  it('redirects users to /dashboard when document is not pending, not ready to be shown and it has permissions to upadte it', () => {
+  it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockDocument = {
       is_ready_to_show: false,

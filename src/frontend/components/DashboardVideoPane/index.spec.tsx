@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { DashboardVideoPane } from '.';
-import { uploadState } from '../../types/tracks';
+import { liveState, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
@@ -22,8 +22,10 @@ const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
 describe('<DashboardVideoPane />', () => {
   beforeEach(() => jest.useFakeTimers());
 
-  afterEach(() => fetchMock.restore());
-  afterEach(jest.resetAllMocks);
+  afterEach(() => {
+    fetchMock.restore();
+    jest.resetAllMocks();
+  });
 
   it('redirects to error when it fails to fetch the video', async () => {
     fetchMock.mock('/api/videos/43/', () => {
@@ -238,6 +240,41 @@ describe('<DashboardVideoPane />', () => {
         getByText('0%');
       } else {
         expect(queryByText('0%')).toEqual(null);
+      }
+      cleanup();
+    }
+  });
+
+  it('shows the video live dashboard when the video is live', () => {
+    for (const state of Object.values(uploadState)) {
+      const { getByText, queryByText } = render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <DashboardVideoPane
+              video={videoMockFactory({
+                is_ready_to_show: false,
+                upload_state: state,
+                live_state: liveState.IDLE,
+                live_info: {
+                  medialive: {
+                    input: {
+                      endpoints: [
+                        'https://live_endpoint1',
+                        'https://live_endpoint2',
+                      ],
+                    },
+                  },
+                },
+              })}
+            />,
+          ),
+        ),
+      );
+
+      if (state === PENDING) {
+        getByText('Streaming link');
+      } else {
+        expect(queryByText('Streaming link')).not.toBeInTheDocument();
       }
       cleanup();
     }
