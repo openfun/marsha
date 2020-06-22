@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { UploadStatusPicker } from '.';
@@ -9,11 +9,9 @@ const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
 describe('<UploadStatusPicker />', () => {
   it('renders the status list for PENDING', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<UploadStatusPicker state={PENDING} />),
-    );
+    render(wrapInIntlProvider(<UploadStatusPicker state={PENDING} />));
 
-    getByText('Missing ❌');
+    screen.getByText('Missing ❌');
   });
 
   it('renders the status list for UPLOADING', () => {
@@ -25,26 +23,20 @@ describe('<UploadStatusPicker />', () => {
   });
 
   it('renders the status list for PROCESSING', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<UploadStatusPicker state={PROCESSING} />),
-    );
+    render(wrapInIntlProvider(<UploadStatusPicker state={PROCESSING} />));
 
-    getByText('Processing');
+    screen.getByText('Processing');
   });
 
   it('renders the status list for READY', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<UploadStatusPicker state={READY} />),
-    );
+    render(wrapInIntlProvider(<UploadStatusPicker state={READY} />));
 
-    getByText('Ready ✔️');
+    screen.getByText('Ready ✔️');
   });
 
   it('renders the status list for ERROR', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<UploadStatusPicker state={ERROR} />),
-    );
+    render(wrapInIntlProvider(<UploadStatusPicker state={ERROR} />));
 
-    getByText('Error ❌');
+    screen.getByText('Error ❌');
   });
 });
