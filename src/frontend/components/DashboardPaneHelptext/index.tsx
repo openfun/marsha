@@ -41,7 +41,7 @@ const videoMessages = defineMessages({
   },
 });
 
-const videoDocuments = defineMessages({
+const documentMessages = defineMessages({
   [ERROR]: {
     defaultMessage:
       'There was an error with your document. Retry or upload another one.',
@@ -81,7 +81,7 @@ const videoDocuments = defineMessages({
 // fails to parse it to extract them at build time.
 const messages = {
   [modelName.VIDEOS]: videoMessages,
-  [modelName.DOCUMENTS]: videoDocuments,
+  [modelName.DOCUMENTS]: documentMessages,
 };
 
 /** Props shape for the DashboardVideoPaneHelptext component. */

@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
