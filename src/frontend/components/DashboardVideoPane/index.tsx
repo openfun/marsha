@@ -8,13 +8,14 @@ import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { liveState, uploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import { DashboardThumbnail } from '../DashboardThumbnail';
+import { DashboardVideoLive } from '../DashboardVideoLive';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -111,17 +112,34 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
 
   switch (video.upload_state) {
     case PENDING:
-      return (
-        <DashboardVideoPaneInnerContainer>
-          {commonStatusLine}
-          <DashboardPaneHelptext
-            objectType={modelName.VIDEOS}
-            state={video.upload_state}
-          />
-          <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
-        </DashboardVideoPaneInnerContainer>
-      );
-
+      if (video.live_state !== null) {
+        return (
+          <DashboardVideoPaneInnerContainer>
+            <Box direction={'row'}>
+              <Box basis={'1/2'} margin={'small'}>
+                {commonStatusLine}
+              </Box>
+              <Box basis={'1/2'} margin={'small'}>
+                <DashboardVideoLive video={video} />
+              </Box>
+            </Box>
+          </DashboardVideoPaneInnerContainer>
+        );
+      } else {
+        return (
+          <DashboardVideoPaneInnerContainer>
+            {commonStatusLine}
+            <DashboardPaneHelptext
+              objectType={modelName.VIDEOS}
+              state={video.upload_state}
+            />
+            <DashboardPaneButtons
+              object={video}
+              objectType={modelName.VIDEOS}
+            />
+          </DashboardVideoPaneInnerContainer>
+        );
+      }
     case UPLOADING:
       return (
         <DashboardVideoPaneInnerContainer>

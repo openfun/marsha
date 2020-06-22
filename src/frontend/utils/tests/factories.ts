@@ -1,5 +1,5 @@
 import { Document } from '../../types/file';
-import { uploadState, Video } from '../../types/tracks';
+import { liveState, uploadState, Video } from '../../types/tracks';
 
 export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
   description: '',
@@ -36,6 +36,8 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
     title: 'foo',
     lti_id: 'foo+context_id',
   },
+  live_state: null,
+  live_info: {},
   ...video,
 });
 

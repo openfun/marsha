@@ -15,7 +15,7 @@ const DashboardVideo = (props: DashboardVideoProps) => {
   return (
     <React.Fragment>
       <DashboardVideoPane video={video} />
-      <DashboardTimedTextPane />
+      {video.live_state === null && <DashboardTimedTextPane />}
     </React.Fragment>
   );
 };
