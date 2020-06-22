@@ -4,17 +4,29 @@ import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
 
-const LoaderStyled = styled.div`
+const Preloader = styled.div`
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  position: fixed;
+  z-index: 99999;
+  background-color: rgba(255, 255, 255, 0.4);
+`;
+
+const Spinner = styled.div`
+  position: absolute;
+  top: calc(50% - 3.5px);
+  left: calc(50% - 3.5px);
+
   border: 0.125rem solid transparent;
   border-left-color: ${normalizeColor('brand', theme)};
   border-top-color: ${normalizeColor('brand', theme)};
   border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
+  width: 31px;
+  height: 31px;
   animation: spin 0.8s linear infinite;
   display: inline-block;
-  margin-left: 0.5rem;
-  vertical-align: baseline;
+  margin: 0 auto;
 
   @keyframes spin {
     0% {
@@ -28,5 +40,7 @@ const LoaderStyled = styled.div`
 
 /** Component. Displays a rotating CSS loader. */
 export const Loader = () => (
-  <LoaderStyled aria-busy="true" aria-live="polite" />
+  <Preloader>
+    <Spinner aria-busy="true" aria-live="polite" />
+  </Preloader>
 );

@@ -5,9 +5,9 @@ import { Loader } from '.';
 
 describe('<Loader />', () => {
   it('renders', () => {
-    const { container, debug } = render(<Loader />);
+    const { container } = render(<Loader />);
 
-    const divSelector = container.querySelector('div')!;
+    const divSelector = container.querySelector('div[aria-busy]')!;
     expect(divSelector.getAttribute('aria-busy')).toEqual('true');
     expect(divSelector.getAttribute('aria-live')).toEqual('polite');
   });
