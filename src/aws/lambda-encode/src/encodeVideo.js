@@ -36,7 +36,7 @@ module.exports = async (objectKey, sourceBucket) => {
     FramerateNumerator: 30000
   }
   let videoSizes = [144, 240, 480, 720, 1080];
-  let audioBirates = [64000, 960000, 128000, 160000, 192000];
+  let audioBirates = [64000, 96000, 128000, 160000, 192000];
 
   if (stdout) {
     const mediainfos = JSON.parse(stdout);
