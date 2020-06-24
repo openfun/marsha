@@ -44,8 +44,13 @@ module.exports = async (objectKey, sourceBucket) => {
     const videoInfo = mediainfos.media.track.find(track => track["@type"] === "Video");
     const audioInfo = mediainfos.media.track.find(track => track["@type"] === "Audio");
 
-    videoSizes = videoSizes.filter(size => size <= videoInfo.Height);
-    audioBirates = audioBirates.filter(bitrate => bitrate <= audioInfo.BitRate);
+    if (videoInfo.hasOwnProperty('Height')) {
+      videoSizes = videoSizes.filter(size => size <= videoInfo.Height);
+    }
+
+    if (audioInfo.hasOwnProperty('BitRate')) {
+      audioBirates = audioBirates.filter(bitrate => bitrate <= audioInfo.BitRate);
+    }
 
     const convertedFramerate = framerateConverter(videoInfo.FrameRate);
     framerateSettings.FramerateDenominator = convertedFramerate.denominator;

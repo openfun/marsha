@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fallback on default audio bitrate when absent in mediainfo
+
 ## [3.9.0] - 2020-06-08
 
 ### Added
