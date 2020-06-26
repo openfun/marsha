@@ -70,7 +70,7 @@ describe('<DashboardTimedTextManager />', () => {
       ),
     );
 
-    screen.getByText('Our title')
+    screen.getByText('Our title');
 
     await screen.findByText('French');
     screen.getByText('English');

@@ -45,7 +45,7 @@ describe('<TimedTextCreationForm />', () => {
         />,
       ),
     );
-    await screen.findByText('Add a language')
+    await screen.findByText('Add a language');
 
     screen.getByText('Select...');
     expect(
@@ -87,7 +87,7 @@ describe('<TimedTextCreationForm />', () => {
         ),
       ),
     );
-    await screen.findByText('Add a language')
+    await screen.findByText('Add a language');
 
     screen.getByText('Select...');
     const input = screen.getByRole('textbox');
@@ -95,7 +95,7 @@ describe('<TimedTextCreationForm />', () => {
     fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
     fireEvent.click(screen.getByText('French'));
 
-    const button = screen.getByRole('button', {name: /Upload the file/i});
+    const button = screen.getByRole('button', { name: /Upload the file/i });
     fireEvent.click(button);
 
     expect(
@@ -111,7 +111,7 @@ describe('<TimedTextCreationForm />', () => {
       },
       method: 'POST',
     });
-    await screen.findByText('Upload form: timedtexttracks 42')
+    await screen.findByText('Upload form: timedtexttracks 42');
   });
 
   it('shows an error message and reports the error when it fails to create a timedtexttrack', async () => {
@@ -142,7 +142,7 @@ describe('<TimedTextCreationForm />', () => {
     fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
     fireEvent.click(screen.getByText('French'));
 
-    const button = screen.getByRole('button', {name: /Upload the file/i});
+    const button = screen.getByRole('button', { name: /Upload the file/i });
     fireEvent.click(button);
 
     await screen.findByText('There was an error during track creation.');

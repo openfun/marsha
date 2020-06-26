@@ -30,21 +30,21 @@ describe('sideEffects/pollForTrack', () => {
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
     ).toEqual(1);
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
-    ).toEqual(2);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
+      ).toEqual(2);
+    });
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
-    ).toEqual(3);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
+      ).toEqual(3);
+    });
 
     fetchMock.mock(
       '/api/videos/42/',
@@ -52,23 +52,24 @@ describe('sideEffects/pollForTrack', () => {
       { method: 'GET', overwriteRoutes: true },
     );
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
-    ).toEqual(4);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
+      ).toEqual(4);
+    });
+
     expect(await promise).toEqual(requestStatus.SUCCESS);
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    // No new calls have been issued
-    expect(
-      fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
-    ).toEqual(4);
+    await waitFor(() => {
+      // No new calls have been issued
+      expect(
+        fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
+      ).toEqual(4);
+    });
   });
 
   it('polls a document, backing off until it is ready and resolves with a success', async () => {
@@ -83,21 +84,21 @@ describe('sideEffects/pollForTrack', () => {
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
     ).toEqual(1);
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
-    ).toEqual(2);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
+      ).toEqual(2);
+    });
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
-    ).toEqual(3);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
+      ).toEqual(3);
+    });
 
     fetchMock.mock(
       '/api/documents/42/',
@@ -105,23 +106,24 @@ describe('sideEffects/pollForTrack', () => {
       { method: 'GET', overwriteRoutes: true },
     );
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
-    ).toEqual(4);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
+      ).toEqual(4);
+    });
+
     expect(await promise).toEqual(requestStatus.SUCCESS);
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
     // No new calls have been issued
-    expect(
-      fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
-    ).toEqual(4);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
+      ).toEqual(4);
+    });
   });
 
   it('resolves with a failure and reports it when it fails to poll the track', async () => {
@@ -146,13 +148,13 @@ describe('sideEffects/pollForTrack', () => {
       },
     );
 
-    await waitFor(() => {});
     jest.advanceTimersByTime(2 * 15 * 1000 + 200);
-    await waitFor(() => {});
 
-    expect(
-      fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
-    ).toEqual(2);
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
+      ).toEqual(2);
+    });
     expect(await promise).toEqual(requestStatus.FAILURE);
     expect(report).toHaveBeenCalledWith(new Error('Failed to get the track'));
   });

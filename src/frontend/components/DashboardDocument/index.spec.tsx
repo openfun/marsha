@@ -140,7 +140,7 @@ describe('<DashboardDocument />', () => {
     );
 
     screen.getByText((content) => content.startsWith('Error'));
-    screen.getByRole('button', {name: /Replace the document/i})
+    screen.getByRole('button', { name: /Replace the document/i });
   });
 
   it('renders in ready state', () => {

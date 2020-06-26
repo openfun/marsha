@@ -73,9 +73,7 @@ describe('<Transcripts />', () => {
   afterEach(() => fetchMock.restore());
 
   it('displays a list of available transcripts', async () => {
-    render(
-      wrapInIntlProvider(<Transcripts transcripts={transcripts} />),
-    );
+    render(wrapInIntlProvider(<Transcripts transcripts={transcripts} />));
     await screen.findByText('Choose a language');
 
     expect(screen.getByText('French').tagName).toEqual('OPTION');
