@@ -113,9 +113,7 @@ describe('<DashboardTimedTextPane />', () => {
       },
     ]);
 
-    render(
-      wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)),
-    );
+    render(wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)));
 
     const closedCaptions = await screen.findByText('Closed captions');
     getByTextInContainer(closedCaptions.parentElement!, 'French');

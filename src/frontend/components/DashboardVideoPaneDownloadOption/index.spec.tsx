@@ -66,11 +66,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
 
   it('updates the checkbox and the video record when the user clicks the checkbox', async () => {
     const deferred = new Deferred();
-    fetchMock.mock(
-      '/api/videos/442/',
-      deferred.promise,
-      { method: 'PUT' },
-    );
+    fetchMock.mock('/api/videos/442/', deferred.promise, { method: 'PUT' });
     const { getByLabelText } = render(
       wrapInIntlProvider(
         <React.Fragment>

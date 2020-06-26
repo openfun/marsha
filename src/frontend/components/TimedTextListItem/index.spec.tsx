@@ -1,4 +1,11 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -6,6 +13,7 @@ import { TimedTextListItem } from '.';
 import { ERROR_COMPONENT_ROUTE } from '../../components/ErrorComponent/route';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('../../data/appData', () => ({
@@ -37,50 +45,6 @@ describe('<TimedTextListItem />', () => {
   );
 
   afterEach(() => fetchMock.restore());
-
-  const video = {
-    description: '',
-    id: '43',
-    is_ready_to_show: true,
-    show_download: true,
-    thumbnail: {
-      active_stamp: 128748302847,
-      id: '42',
-      is_ready_to_show: true,
-      upload_state: uploadState.READY,
-      urls: {
-        144: 'https://example.com/thumbnail/144',
-        240: 'https://example.com/thumbnail/240',
-        480: 'https://example.com/thumbnail/480',
-        720: 'https://example.com/thumbnail/720',
-        1080: 'https://example.com/thumbnail/1080',
-      },
-      video: '43',
-    },
-    timed_text_tracks: [],
-    title: '',
-    upload_state: uploadState.READY,
-    urls: {
-      manifests: {
-        dash: 'https://example.com/dash',
-        hls: 'https://example.com/hls',
-      },
-      mp4: {
-        144: 'https://example.com/mp4/144',
-        240: 'https://example.com/mp4/240',
-        480: 'https://example.com/mp4/480',
-        720: 'https://example.com/mp4/720',
-        1080: 'https://example.com/mp4/1080',
-      },
-      thumbnails: {
-        144: 'https://example.com/default_thumbnail/144',
-        240: 'https://example.com/default_thumbnail/240',
-        480: 'https://example.com/default_thumbnail/480',
-        720: 'https://example.com/default_thumbnail/720',
-        1080: 'https://example.com/default_thumbnail/1080',
-      },
-    },
-  };
 
   it('renders a track, showing its language and status', async () => {
     render(
@@ -123,45 +87,58 @@ describe('<TimedTextListItem />', () => {
       url: 'https://example.com/timedtexttrack/1',
       video: '142',
     };
-    fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track), {
-      method: 'GET',
-    });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<TimedTextListItem track={track} />, [
-          {
-            path: ERROR_COMPONENT_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ]),
-      ),
-    );
+    {
+      const deferred = new Deferred();
+      fetchMock.mock('/api/timedtexttracks/1/', deferred.promise, {
+        method: 'GET',
+      });
 
-    await screen.findByText('French');
-    expect(
-      fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
-    ).not.toBeTruthy();
+      render(
+        wrapInIntlProvider(
+          wrapInRouter(<TimedTextListItem track={track} />, [
+            {
+              path: ERROR_COMPONENT_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ]),
+        ),
+      );
 
-    // first backend call
-    jest.advanceTimersByTime(1000 * 10 + 200);
-    await waitFor(() =>
-      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
-    );
+      await screen.findByText('French');
+      expect(
+        fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
+      ).not.toBeTruthy();
 
-    expect(screen.queryByText('Ready')).toBeNull();
-    screen.getByText('Processing');
+      // first backend call
+      jest.advanceTimersByTime(1000 * 10 + 200);
+      await waitFor(() =>
+        expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
+      );
+      await act(async () => deferred.resolve(JSON.stringify(track)));
+
+      expect(screen.queryByText('Ready')).toBeNull();
+      screen.getByText('Processing');
+    }
 
     let timer: number = 15;
 
     for (let i = 2; i <= 20; i++) {
+      fetchMock.restore();
+      const deferred = new Deferred();
+      fetchMock.mock('/api/timedtexttracks/1/', deferred.promise, {
+        method: 'GET',
+      });
+
       timer = timer * i;
       jest.advanceTimersByTime(1000 * timer + 200);
-      await waitFor(() => {});
-
-      expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(i);
+      await waitFor(() => {
+        // Expect only 1 call since we restore the mock before each one
+        expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(1);
+      });
+      await act(async () => deferred.resolve(JSON.stringify(track)));
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(screen.queryByText('Ready')).toBeNull();
       screen.getByText('Processing');
@@ -214,14 +191,15 @@ describe('<TimedTextListItem />', () => {
 
       // Second backend call
       jest.advanceTimersByTime(1000 * 30 + 200);
-      await waitFor(() => {});
       rerender(
         wrapInIntlProvider(
           wrapInRouter(<TimedTextListItem track={updatedTrack} />),
         ),
       );
 
-      expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
+      await waitFor(() => {
+        expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
+      });
       expect(
         queryByText((content) => content.startsWith('Processing')),
       ).not.toBeTruthy();

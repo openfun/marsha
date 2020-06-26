@@ -121,11 +121,7 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
 
   it('updates the checkbox and the video record when the user clicks the checkbox', async () => {
     const deferred = new Deferred();
-    fetchMock.mock(
-      '/api/videos/443/',
-      deferred.promise,
-      { method: 'PUT' },
-    );
+    fetchMock.mock('/api/videos/443/', deferred.promise, { method: 'PUT' });
 
     useTimedTextTrackStub.returns([
       {
@@ -147,7 +143,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
 
     await act(async () => {
       fireEvent.click(getByLabelText('Use subtitles as transcripts'));
-      return deferred.resolve({ ...video, should_use_subtitle_as_transcript: true });
+      return deferred.resolve({
+        ...video,
+        should_use_subtitle_as_transcript: true,
+      });
     });
 
     expect(getByLabelText('Use subtitles as transcripts')).toHaveProperty(
