@@ -75,10 +75,8 @@ describe('<TranscriptReader />', () => {
     await act(async () => deferred.resolve('OK'));
 
     expect(fetchMock.calls(transcript.url).length).toEqual(1),
-
-
-    // Both cues are inactive
-    getByText('-Bonjour. Bonjour à tous.');
+      // Both cues are inactive
+      getByText('-Bonjour. Bonjour à tous.');
     getByText(
       (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
