@@ -1,5 +1,5 @@
 import { Box, Paragraph } from 'grommet';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
@@ -31,8 +31,22 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
     parser.flush();
   }, []);
 
+  const transcriptWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!transcriptWrapperRef.current) return;
+
+    transcriptWrapperRef.current
+      .querySelector(`.sentence-active`)
+      ?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+  }, [playerCurrentTime]);
+
   return (
     <Box
+      ref={transcriptWrapperRef}
       align="start"
       direction="row"
       pad="medium"

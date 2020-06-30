@@ -10,11 +10,11 @@ const Sentence = styled(Text)`
   :hover {
     text-decoration: underline;
   }
-`;
 
-const ActiveSentence = styled(Sentence)`
-  background-color: rgba(242, 94, 35, 0.25);
-  outline: 1px solid rgba(242, 94, 35, 0.5);
+  &.sentence-active {
+    background-color: rgba(242, 94, 35, 0.25);
+    outline: 1px solid rgba(242, 94, 35, 0.5);
+  }
 `;
 
 interface TranscriptSentenceProps {
@@ -30,19 +30,11 @@ export const TranscriptSentence = ({
 
   const textSentence = () => ({ __html: `${cue.text} ` });
 
-  if (active) {
-    return (
-      <ActiveSentence
-        onClick={() => setTime(cue.startTime)}
-        dangerouslySetInnerHTML={textSentence()}
-      />
-    );
-  } else {
-    return (
-      <Sentence
-        onClick={() => setTime(cue.startTime)}
-        dangerouslySetInnerHTML={textSentence()}
-      />
-    );
-  }
+  return (
+    <Sentence
+      className={active ? 'sentence-active' : ''}
+      onClick={() => setTime(cue.startTime)}
+      dangerouslySetInnerHTML={textSentence()}
+    />
+  );
 };
