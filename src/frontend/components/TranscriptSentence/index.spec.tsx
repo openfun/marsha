@@ -41,14 +41,25 @@ describe('<TranscriptSentence />', () => {
       text: 'Lorem ipsum dolor sit amet.',
     };
 
-    const { getByText } = render(
+    const { getByText, asFragment } = render(
       <TranscriptSentence cue={cue} active={true} />,
     );
 
     const sentence = getByText('Lorem ipsum dolor sit amet.');
+    const child = asFragment().firstElementChild;
 
-    expect(sentence).toHaveStyleRule('background-color', /rgba(.*)/);
-    expect(sentence).toHaveStyleRule('outline', /1px solid rgba(.*)/);
+    if (!child) {
+      fail('Component does not render as expected');
+    }
+
+    const computedStyle = window.getComputedStyle(child);
+
+    expect(computedStyle.getPropertyValue('background-color')).toMatch(
+      /rgba(.*)/,
+    );
+    expect(computedStyle.getPropertyValue('outline')).toMatch(
+      /1px solid rgba(.*)/,
+    );
 
     fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(20);
