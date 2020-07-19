@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       await import('@formatjs/intl-relativetimeformat');
       // Get `react-intl`/`formatjs` lang specific parameters and data
       await import(
-        `@formatjs/intl-relativetimeformat/dist/locale-data/${localeCode}`
+        `@formatjs/intl-relativetimeformat/locale-data/${localeCode}`
       );
     }
   } catch (e) {
