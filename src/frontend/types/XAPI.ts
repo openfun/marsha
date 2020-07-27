@@ -1,3 +1,5 @@
+import { Nullable } from '../utils/types';
+
 export interface DataPayload {
   context?: {
     extensions: {
@@ -23,7 +25,7 @@ export interface CompletedDataPlayload extends DataPayload {
       [key: string]: string | boolean | number | undefined;
     };
     completion: boolean;
-    duration: string;
+    duration: Nullable<string>;
   };
 }
 
