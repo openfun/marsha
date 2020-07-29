@@ -13,7 +13,7 @@ jest.mock('dashjs', () => ({
   }),
 }));
 
-describe('createDash{layer', () => {
+describe('createDashPlayer', () => {
   afterEach(jest.clearAllMocks);
 
   it('instantiate, configure and return a dash instance', () => {
