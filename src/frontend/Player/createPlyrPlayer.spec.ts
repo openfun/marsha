@@ -1,7 +1,10 @@
+import Hls from 'hls.js';
+
 import { Video } from '../types/tracks';
 import { isHlsSupported, isMSESupported } from '../utils/isAbrSupported';
 import { jestMockOf } from '../utils/types';
 import { createDashPlayer } from './createDashPlayer';
+import { createHlsPlayer } from './createHlsPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
 
 jest.mock('../utils/isAbrSupported', () => ({
@@ -20,6 +23,14 @@ jest.mock('./createDashPlayer', () => ({
 
 const mockCreateDashPlayer = createDashPlayer as jestMockOf<
   typeof createDashPlayer
+>;
+
+jest.mock('./createHlsPlayer', () => ({
+  createHlsPlayer: jest.fn(),
+}));
+
+const mockCreateHlsPlayer = createHlsPlayer as jestMockOf<
+  typeof createHlsPlayer
 >;
 
 jest.mock('plyr', () => {
@@ -115,6 +126,7 @@ describe('createPlyrPlayer', () => {
     ],
     title: 'Some title',
     upload_state: 'ready',
+    live_state: null,
     urls: {
       manifests: {
         dash: 'https://example.com/dash.mpd',
@@ -253,5 +265,20 @@ describe('createPlyrPlayer', () => {
       tracks: [],
       type: 'video',
     });
+  });
+  it('creates Plyr player and configure hls if video in live mode', () => {
+    mockIsMSESupported.mockReturnValue(false);
+    mockIsHlsSupported.mockReturnValue(false);
+    jest.spyOn(Hls, 'isSupported').mockReturnValue(true);
+
+    const ref = 'ref' as any;
+    const player = createPlyrPlayer(ref, jest.fn(), {
+      ...video,
+      upload_state: 'pending',
+      live_state: 'idle',
+    } as Video);
+
+    expect(mockCreateHlsPlayer).toHaveBeenCalled();
+    expect(mockCreateDashPlayer).not.toHaveBeenCalled();
   });
 });
