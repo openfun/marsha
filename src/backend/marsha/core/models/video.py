@@ -6,8 +6,8 @@ from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
 from ..utils.time_utils import to_timestamp
-from .base import AbstractImage, BaseModel
-from .file import BaseFile, UploadableFileMixin
+from .base import BaseModel
+from .file import AbstractImage, BaseFile, UploadableFileMixin
 
 
 class Video(BaseFile):
