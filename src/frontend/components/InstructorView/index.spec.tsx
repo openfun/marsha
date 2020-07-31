@@ -20,7 +20,7 @@ describe('<InstructorView />', () => {
     mockDecodedJwt = {
       maintenance: false,
       permissions: {
-        can_access_dashboard: true,
+        can_update: true,
       },
     };
 
@@ -38,12 +38,12 @@ describe('<InstructorView />', () => {
     getByText('Go to Dashboard');
   });
 
-  it('removes the button when permissions.can_access_dashboard is set to false', () => {
+  it('removes the button when permissions.can_update is set to false', () => {
     mockDecodedJwt = {
       context_id: 'foo+context_id',
       maintenance: false,
       permissions: {
-        can_access_dashboard: false,
+        can_update: false,
       },
     };
 
@@ -66,7 +66,7 @@ describe('<InstructorView />', () => {
       context_id: 'foo+context_id',
       maintenance: true,
       permissions: {
-        can_access_dashboard: true,
+        can_update: true,
       },
     };
 

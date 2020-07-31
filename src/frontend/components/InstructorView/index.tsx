@@ -61,7 +61,7 @@ interface InstructorViewProps {
 
 export const InstructorView = ({ children }: InstructorViewProps) => {
   const canAccessDashboard =
-    getDecodedJwt().permissions.can_access_dashboard &&
+    getDecodedJwt().permissions.can_update &&
     false === getDecodedJwt().maintenance;
   const message = canAccessDashboard
     ? messages.title
