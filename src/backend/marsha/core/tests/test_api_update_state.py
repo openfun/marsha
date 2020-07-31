@@ -6,7 +6,12 @@ from django.test import TestCase, override_settings
 
 import pytz
 
-from ..factories import DocumentFactory, TimedTextTrackFactory, VideoFactory
+from ..factories import (
+    DocumentFactory,
+    ThumbnailFactory,
+    TimedTextTrackFactory,
+    VideoFactory,
+)
 
 
 class UpdateStateAPITest(TestCase):
@@ -244,3 +249,32 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(document.upload_state, "ready")
         self.assertEqual(document.extension, None)
         self.assertEqual(document.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_thumbnail(self):
+        """Confirming the successful upload of a thumbnail."""
+        thumbnail = ThumbnailFactory(
+            id="d60d7971-5929-4f10-8e9c-06c5d15818ce",
+            video__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
+        )
+
+        data = {
+            "extraParameters": {},
+            "key": f"{thumbnail.video.pk}/thumbnail/{thumbnail.pk}/1533686400",
+            "state": "ready",
+        }
+
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "1a37bbad75e6311d0ae32d3581ad2b6c14fabd1261c9d0aef28ade5e3865e12e"
+            ),
+        )
+
+        thumbnail.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(thumbnail.upload_state, "ready")
+        self.assertEqual(thumbnail.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))

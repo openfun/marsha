@@ -12,8 +12,6 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
-from ..defaults import PENDING, STATE_CHOICES
-
 
 CHECKED_APPS = {"core"}
 
@@ -228,37 +226,3 @@ class BaseModel(SafeDeleteModel):
         errors.extend(cls._check_through_models())
 
         return errors
-
-
-class AbstractImage(BaseModel):
-    """Abstract model for images."""
-
-    uploaded_on = models.DateTimeField(
-        verbose_name=_("uploaded on"),
-        help_text=_(
-            "datetime at which the active version of the resource was uploaded."
-        ),
-        null=True,
-        blank=True,
-    )
-    upload_state = models.CharField(
-        max_length=20,
-        verbose_name=_("upload state"),
-        help_text=_("state of the upload in AWS."),
-        choices=STATE_CHOICES,
-        default=PENDING,
-    )
-
-    class Meta:
-        """Options for the ``AbstractImage`` model."""
-
-        abstract = True
-
-    @property
-    def is_ready_to_show(self):
-        """Whether the file is ready to display (ie) has been sucessfully uploaded.
-
-        The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
-        """
-        return self.uploaded_on is not None

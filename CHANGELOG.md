@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Synchronize scroll with active transcript sentence
 
+### Fixed
+
+- Use `UploadableFileMixin` on `AbstractImage` model
+
 ## [3.9.1] - 2020-06-24
 
 ### Fixed
