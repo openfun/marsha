@@ -8,7 +8,7 @@ interface InstructorWrapperProps {
 }
 
 export const InstructorWrapper = ({ children }: InstructorWrapperProps) => {
-  if (getDecodedJwt().permissions.can_update) {
+  if (getDecodedJwt().permissions.can_access_dashboard) {
     return <InstructorView>{children}</InstructorView>;
   } else {
     return <React.Fragment>{children}</React.Fragment>;

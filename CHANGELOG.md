@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Use `UploadableFileMixin` on `AbstractImage` model
+- Fix how permissions are used to display dashboard
 
 ## [3.9.1] - 2020-06-24
 
