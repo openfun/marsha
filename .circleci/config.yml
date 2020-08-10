@@ -153,7 +153,7 @@ jobs:
       # Generate and persist the translations base file
       - run:
           name: Generate a POT file from strings extracted from the project
-          command: python manage.py makemessages --keep-pot
+          command: python manage.py makemessages --keep-pot --all
       - persist_to_workspace:
           root: ~/marsha
           paths:
