@@ -28,7 +28,7 @@ export const AppRoutes = () => (
           render={({ match }) => {
             if (match.params.objectType === modelName.VIDEOS && appData.video) {
               return (
-                <InstructorWrapper>
+                <InstructorWrapper resource={appData.video}>
                   <VideoPlayer video={appData.video} />
                 </InstructorWrapper>
               );
@@ -39,7 +39,7 @@ export const AppRoutes = () => (
               appData.document
             ) {
               return (
-                <InstructorWrapper>
+                <InstructorWrapper resource={appData.document}>
                   <DocumentPlayer document={appData.document} />
                 </InstructorWrapper>
               );

@@ -30,6 +30,10 @@ describe('DashboardDocumentTitleForm', () => {
       title: 'document title',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     const { container } = render(
@@ -57,6 +61,10 @@ describe('DashboardDocumentTitleForm', () => {
       title: 'foo.pdf',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
@@ -103,6 +111,10 @@ describe('DashboardDocumentTitleForm', () => {
       title: 'document title',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/47',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     fetchMock.mock('/api/documents/47/', deferred.promise, { method: 'PUT' });

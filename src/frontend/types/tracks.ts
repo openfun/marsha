@@ -40,6 +40,11 @@ export enum timedTextMode {
   CLOSED_CAPTIONING = 'cc',
 }
 
+export interface Playlist {
+  title: string;
+  lti_id: string;
+}
+
 /** A timed text track record as it exists on the backend. */
 export interface TimedText extends Resource {
   active_stamp: Nullable<number>;
@@ -90,6 +95,7 @@ export interface Video extends Resource {
   };
   should_use_subtitle_as_transcript: boolean;
   has_transcript: boolean;
+  playlist: Playlist;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;

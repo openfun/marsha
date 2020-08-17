@@ -76,6 +76,10 @@ describe('<DashboardThumbnail />', () => {
       },
     },
     should_use_subtitle_as_transcript: false,
+    playlist: {
+      title: 'foo',
+      lti_id: 'foo+context_id',
+    },
   };
 
   it('displays a thumbnail image when the related Thumbnail object is ready', () => {

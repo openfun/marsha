@@ -8,6 +8,8 @@ import { appData, getDecodedJwt } from '../../data/appData';
 import { theme } from '../../utils/theme/theme';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { withLink } from '../withLink/withLink';
+import { Document } from '../../types/file';
+import { Video } from '../../types/tracks';
 
 const messages = defineMessages({
   btnDashboard: {
@@ -17,7 +19,7 @@ const messages = defineMessages({
   },
   disabledDashboard: {
     defaultMessage:
-      'This video is read-only because it belongs to another course: {context_id}',
+      'This video is read-only because it belongs to another course: {lti_id}',
     description:
       'Text explaining that the ivdeo is in read_only mode and the dashboard is not available',
     id: 'components.InstructorView.disabledDashboard',
@@ -57,9 +59,10 @@ const BtnWithLink = withLink(Button);
 
 interface InstructorViewProps {
   children: React.ReactNode;
+  resource: Video | Document;
 }
 
-export const InstructorView = ({ children }: InstructorViewProps) => {
+export const InstructorView = ({ children, resource }: InstructorViewProps) => {
   const canAccessDashboard =
     getDecodedJwt().permissions.can_update &&
     false === getDecodedJwt().maintenance;
@@ -70,7 +73,7 @@ export const InstructorView = ({ children }: InstructorViewProps) => {
     : messages.disabledDashboard;
   const messagePlaceholder = canAccessDashboard
     ? {}
-    : { context_id: getDecodedJwt().context_id };
+    : { lti_id: resource.playlist.lti_id };
   return (
     <React.Fragment>
       <PreviewWrapper>

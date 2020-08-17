@@ -16,6 +16,10 @@ jest.mock('../../data/appData', () => ({
       title: 'foo.pdf',
       upload_state: 'ready',
       url: 'https://example.com/document/42',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     },
   },
 }));
@@ -32,6 +36,10 @@ describe('<DocumentPlayer />', () => {
       title: 'foo.pdf',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/42',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
     const { getByText, container } = render(
       <DocumentPlayer document={document} />,
@@ -52,6 +60,10 @@ describe('<DocumentPlayer />', () => {
       title: 'bar.pdf',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/43',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
     const { getByText, container } = render(
       <DocumentPlayer document={document} />,
