@@ -14,7 +14,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import ERROR, PROCESSING, READY, STATE_CHOICES
-from .models import Document, Thumbnail, TimedTextTrack, Video
+from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils import cloudfront_utils, time_utils
 
 
@@ -265,6 +265,15 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         return None
 
 
+class PlaylistSerializer(serializers.ModelSerializer):
+    """A serializer to display a Playlist resource."""
+
+    class Meta:  # noqa
+        model = Playlist
+        fields = ("title", "lti_id")
+        read_only_fields = ("title", "lti_id")
+
+
 class VideoSerializer(serializers.ModelSerializer):
     """Serializer to display a video model with all its resolution options."""
 
@@ -283,6 +292,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "show_download",
             "should_use_subtitle_as_transcript",
             "has_transcript",
+            "playlist",
         )
         read_only_fields = (
             "id",
@@ -300,6 +310,7 @@ class VideoSerializer(serializers.ModelSerializer):
         source="timedtexttracks", many=True, read_only=True
     )
     thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
+    playlist = PlaylistSerializer(read_only=True)
     urls = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
     has_transcript = serializers.SerializerMethodField()
@@ -486,6 +497,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             "upload_state",
             "url",
             "show_download",
+            "playlist",
         )
         read_only_fields = (
             "active_stamp",
@@ -503,6 +515,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
+    playlist = PlaylistSerializer(read_only=True)
 
     def _get_extension_string(self, obj):
         """Document extension with the leading dot.
