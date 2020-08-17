@@ -1,4 +1,4 @@
-import { Resource, uploadState } from './tracks';
+import { Playlist, Resource, uploadState } from './tracks';
 
 export interface Document extends Resource {
   description: string;
@@ -9,4 +9,5 @@ export interface Document extends Resource {
   upload_state: uploadState;
   url: string;
   show_download: boolean;
+  playlist: Playlist;
 }

@@ -4,6 +4,7 @@ import React from 'react';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { InstructorView } from './';
+import { Video } from '../../types/tracks';
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -16,6 +17,13 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<InstructorView />', () => {
+  const video = {
+    id: 'bc5b2a9a-4963-4a55-bb79-b94489a8164f',
+    playlist: {
+      title: 'foo',
+      lti_id: 'foo+context_id',
+    },
+  } as Video;
   it('renders the instructor controls', () => {
     mockDecodedJwt = {
       maintenance: false,
@@ -27,7 +35,7 @@ describe('<InstructorView />', () => {
     const { getByText } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <InstructorView>
+          <InstructorView resource={video}>
             <div className="some-child" />
           </InstructorView>,
         ),
@@ -40,7 +48,6 @@ describe('<InstructorView />', () => {
 
   it('removes the button when permissions.can_update is set to false', () => {
     mockDecodedJwt = {
-      context_id: 'foo+context_id',
       maintenance: false,
       permissions: {
         can_update: false,
@@ -49,7 +56,7 @@ describe('<InstructorView />', () => {
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(
-        <InstructorView>
+        <InstructorView resource={video}>
           <div className="some-child" />
         </InstructorView>,
       ),
@@ -63,7 +70,6 @@ describe('<InstructorView />', () => {
 
   it('removes the button when permissions.maintenance is set to true', () => {
     mockDecodedJwt = {
-      context_id: 'foo+context_id',
       maintenance: true,
       permissions: {
         can_update: true,
@@ -72,7 +78,7 @@ describe('<InstructorView />', () => {
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(
-        <InstructorView>
+        <InstructorView resource={video}>
           <div className="some-child" />
         </InstructorView>,
       ),

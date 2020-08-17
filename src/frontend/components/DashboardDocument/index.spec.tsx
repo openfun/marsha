@@ -35,6 +35,10 @@ describe('<DashboardDocument />', () => {
       title: 'foo.pdf',
       upload_state: uploadState.PROCESSING,
       url: 'https://example.com/document/44',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     fetchMock.mock('/api/documents/44/', deferred.promise);
@@ -109,6 +113,10 @@ describe('<DashboardDocument />', () => {
       title: 'foo.pdf',
       upload_state: uploadState.PENDING,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     render(
@@ -131,6 +139,10 @@ describe('<DashboardDocument />', () => {
       title: 'foo.pdf',
       upload_state: uploadState.ERROR,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     render(
@@ -154,6 +166,10 @@ describe('<DashboardDocument />', () => {
       title: 'foo',
       upload_state: uploadState.READY,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     // wrap the component in a grommet provider to have a valid theme.
@@ -196,6 +212,10 @@ describe('<DashboardDocument />', () => {
       title: 'foo.pdf',
       upload_state: uploadState.UPLOADING,
       url: 'https://example.com/document/45',
+      playlist: {
+        title: 'foo',
+        lti_id: 'foo+context_id',
+      },
     };
 
     render(

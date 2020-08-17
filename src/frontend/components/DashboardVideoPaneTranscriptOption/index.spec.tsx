@@ -54,6 +54,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
       },
     },
     should_use_subtitle_as_transcript: false,
+    playlist: {
+      title: 'foo',
+      lti_id: 'foo+context_id',
+    },
   };
 
   it('renders nothing if there is no timed text track', () => {
