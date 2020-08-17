@@ -52,6 +52,15 @@ class UploadableFileMixin(models.Model):
 
         self.save()
 
+    @property
+    def is_ready_to_show(self):
+        """Whether the file is ready to display (ie) has been sucessfully uploaded.
+
+        The value of this field seems to be trivially derived from the value of the
+        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
+        """
+        return self.uploaded_on is not None
+
 
 class BaseFile(UploadableFileMixin, BaseModel):
     """Base file model used by all our File based models."""
@@ -116,15 +125,6 @@ class BaseFile(UploadableFileMixin, BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
-
-    @property
-    def is_ready_to_show(self):
-        """Whether the file is ready to display (ie) has been sucessfully uploaded.
-
-        The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
-        """
-        return self.uploaded_on is not None
 
     @property
     def consumer_site(self):
@@ -222,12 +222,3 @@ class AbstractImage(UploadableFileMixin, BaseModel):
         """Options for the ``AbstractImage`` model."""
 
         abstract = True
-
-    @property
-    def is_ready_to_show(self):
-        """Whether the file is ready to display (ie) has been sucessfully uploaded.
-
-        The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
-        """
-        return self.uploaded_on is not None
