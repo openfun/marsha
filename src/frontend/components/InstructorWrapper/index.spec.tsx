@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { InstructorWrapper } from './index';
+import { InstructorWrapper } from './';
+import { Video } from '../../types/tracks';
 
 jest.mock('../InstructorView/index', () => {
   return {
@@ -24,10 +25,17 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<InstructorWrapper />', () => {
+  const video = {
+    id: 'bc5b2a9a-4963-4a55-bb79-b94489a8164f',
+    playlist: {
+      title: 'foo',
+      lti_id: 'foo+context_id',
+    },
+  } as Video;
   it('wraps its children in an instructor view if the current user is an instructor', () => {
     mockCanAccessDashboard = true;
     const { getByText, getByTitle } = render(
-      <InstructorWrapper>
+      <InstructorWrapper resource={video}>
         <div title="some-child" />
       </InstructorWrapper>,
     );
@@ -39,7 +47,7 @@ describe('<InstructorWrapper />', () => {
   it('just renders the children if the current user is not an instructor', () => {
     mockCanAccessDashboard = false;
     const { getByTitle, queryByText } = render(
-      <InstructorWrapper>
+      <InstructorWrapper resource={video}>
         <div title="some-child" />
       </InstructorWrapper>,
     );

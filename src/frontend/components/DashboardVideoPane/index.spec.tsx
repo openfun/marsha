@@ -55,6 +55,10 @@ describe('<DashboardVideoPane />', () => {
       },
     },
     should_use_subtitle_as_transcript: false,
+    playlist: {
+      title: 'foo',
+      lti_id: 'foo+context_id',
+    },
   };
 
   it('redirects to error when it fails to fetch the video', async () => {
