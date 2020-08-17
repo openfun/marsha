@@ -61,6 +61,7 @@ class DocumentAPITest(TestCase):
             upload_state="ready",
             extension="pdf",
             playlist__title="foo",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
             title="bar baz",
         )
 
@@ -89,6 +90,10 @@ class DocumentAPITest(TestCase):
                 "document/1533686400.pdf"
                 "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
                 "show_download": True,
+                "playlist": {
+                    "title": "foo",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
 

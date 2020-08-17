@@ -39,6 +39,7 @@ class VideoLTIViewTestCase(TestCase):
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
             playlist__consumer_site=passport.consumer_site,
         )
         data = {
@@ -95,6 +96,10 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -141,6 +146,7 @@ class VideoLTIViewTestCase(TestCase):
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
             playlist__consumer_site=passport.consumer_site,
         )
         data = {
@@ -194,6 +200,10 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -214,6 +224,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__is_portable_to_playlist=True,
             playlist__is_portable_to_consumer_site=True,
             playlist__title="playlist-003",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
@@ -297,6 +308,10 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "playlist-003",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -306,7 +321,7 @@ class VideoLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_video_restristed_resolutions_list(
+    def test_views_lti_video_restricted_resolutions_list(
         self, mock_get_consumer_site, mock_verify
     ):
         """Urls list should contains resolutions from resolutions field."""
@@ -399,6 +414,10 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -511,6 +530,10 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -695,7 +718,11 @@ class VideoLTIViewTestCase(TestCase):
     def test_views_lti_video_has_transcript(self, mock_get_consumer_site, mock_verify):
         """Compute has_transcript when a transcript is uploaded."""
         passport = ConsumerSiteLTIPassportFactory()
-        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        video = VideoFactory(
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
         # Create a TimedTextTrack associated with the video to trigger the error
         transcript = TimedTextTrackFactory(
             video=video,
@@ -752,6 +779,10 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": True,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
 
@@ -762,7 +793,11 @@ class VideoLTIViewTestCase(TestCase):
     ):
         """Compute has_transcript when a transcript is uploaded and not ready to be shown."""
         passport = ConsumerSiteLTIPassportFactory()
-        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        video = VideoFactory(
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
         # Create a TimedTextTrack associated with the video to trigger the error
         transcript = TimedTextTrackFactory(
             video=video, mode="ts", upload_state=PENDING,
@@ -815,5 +850,9 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )

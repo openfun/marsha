@@ -88,7 +88,11 @@ class DevelopmentLTIViewTestCase(TestCase):
     @override_settings(BYPASS_LTI_VERIFICATION=True)
     def test_views_lti_development_post_bypass_lti_instructor(self):
         """In development, passport creation and LTI verif can be bypassed for a instructor."""
-        video = VideoFactory(playlist__consumer_site__domain="example.com")
+        video = VideoFactory(
+            playlist__consumer_site__domain="example.com",
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
@@ -124,7 +128,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         )
         self.assertDictEqual(
             jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
@@ -142,6 +146,10 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -198,6 +206,10 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "course-v1:ufr+mathematics+00001",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
