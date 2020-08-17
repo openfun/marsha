@@ -111,15 +111,6 @@ class BaseTrack(UploadableFileMixin, BaseModel):
 
         abstract = True
 
-    @property
-    def is_ready_to_show(self):
-        """Whether the file is ready to display (ie) has been sucessfully uploaded.
-
-        The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
-        """
-        return self.uploaded_on is not None
-
 
 class AudioTrack(BaseTrack):
     """Model representing an additional audio track for a video."""
