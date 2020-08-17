@@ -113,6 +113,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
         timed_text_track = TimedTextTrackFactory(
             video=video,
@@ -198,6 +199,10 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
 
@@ -232,7 +237,11 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
-        video = VideoFactory(uploaded_on=None)
+        video = VideoFactory(
+            uploaded_on=None,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -262,6 +271,10 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
 
@@ -269,7 +282,12 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user_not_sucessfully_uploaded(self):
         """A video that has never been uploaded successfully should have no url."""
         state = random.choice(["pending", "error", "ready"])
-        video = VideoFactory(uploaded_on=None, upload_state=state)
+        video = VideoFactory(
+            uploaded_on=None,
+            upload_state=state,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -298,6 +316,10 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
             },
         )
 

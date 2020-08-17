@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Synchronize scroll with active transcript sentence
+- Sideload Playlist in Video and Document resources
 
 ### Fixed
 
