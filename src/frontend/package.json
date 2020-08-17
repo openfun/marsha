@@ -43,7 +43,7 @@
     "@types/uuid": "8.3.0",
     "babel-jest": "26.3.0",
     "babel-loader": "8.1.0",
-    "babel-plugin-react-intl": "8.1.1",
+    "babel-plugin-react-intl": "7.9.1",
     "babel-preset-react": "7.0.0-beta.3",
     "css-loader": "4.2.1",
     "fetch-mock": "9.10.7",
