@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.10.0] - 2020-08-18
+
 ### Added
 
 - Synchronize scroll with active transcript sentence
@@ -550,7 +552,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.9.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.10.0...master
+[3.10.0]: https://github.com/openfun/marsha/compare/v3.9.1...v3.10.0
 [3.9.1]: https://github.com/openfun/marsha/compare/v3.9.0...v3.9.1
 [3.9.0]: https://github.com/openfun/marsha/compare/v3.8.1...v3.9.0
 [3.8.1]: https://github.com/openfun/marsha/compare/v3.8.0...v3.8.1
