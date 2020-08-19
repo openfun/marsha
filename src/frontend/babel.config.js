@@ -3,7 +3,9 @@ module.exports = {
     [
       'react-intl',
       {
-        messagesDir: './i18n',
+        extractFromFormatMessageCall: true,
+        idInterpolationPattern: '[sha512:contenthash:base64:6]',
+        ast: true,
       },
     ],
     '@babel/proposal-class-properties',
