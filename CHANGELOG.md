@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Use formatjs/cli to manage message extraction and don't
+  rely anymore on babel react-intl plugin.
+
 ## [3.10.0] - 2020-08-18
 
 ### Added

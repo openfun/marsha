@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn build",
-    "generate-l10n-template": "rip json2pot 'i18n/**/*.json' -o i18n/frontend.pot",
+    "extract-translations": "formatjs extract \"./**/*.ts*\" --out-file i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format react-intl-transformer.js",
+    "generate-l10n-template": "yarn extract-translations && rip json2pot './i18n/frontend.json' -o i18n/frontend.pot",
     "generate-translations": "rip po2json './translations/*.po' -o './translations' -m './i18n/**/*.json'",
     "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
     "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
