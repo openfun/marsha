@@ -36,7 +36,7 @@ RESET := \033[0m
 COMPOSE              = docker-compose
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
-COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin -c crowdin/config.yml
+COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
 COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 YARN                 = $(COMPOSE_RUN_NODE) yarn
 
@@ -184,11 +184,11 @@ watch-front: ## Build front application and activate watch mode
 # -- Internationalization
 
 crowdin-download: ## Download translated message from crowdin
-	@$(COMPOSE_RUN_CROWDIN) download translations
+	@$(COMPOSE_RUN_CROWDIN) download translations -c crowdin/config.yml
 .PHONY: crowdin-download
 
 crowdin-upload: ## Upload source translations to crowdin
-	@$(COMPOSE_RUN_CROWDIN) upload sources
+	@$(COMPOSE_RUN_CROWDIN) upload sources -c crowdin/config.yml
 .PHONY: crowdin-upload
 
 i18n-compile: ## Compile translated messages to be used by all applications
