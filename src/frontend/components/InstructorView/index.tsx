@@ -29,7 +29,7 @@ const messages = defineMessages({
       "The dashboard is undergoing maintenance work, it can't be accessed right now.",
     description:
       'Text explaining that the dashboard is not accessible because marsha is in maintenance',
-    id: 'componenets.InstructorView.maintenance',
+    id: 'components.InstructorView.maintenance',
   },
   title: {
     defaultMessage: 'Instructor Preview 👆',
