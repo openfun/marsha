@@ -29,9 +29,6 @@ resource "aws_cloudwatch_event_rule" "marsha_medialive_channel_state_change" {
 {
   "source": [
     "aws.medialive"
-  ],
-  "detail-type": [
-    "MediaLive Channel State Change"
   ]
 }
 PATTERN

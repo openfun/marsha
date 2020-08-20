@@ -302,6 +302,11 @@ class VideoViewSet(
 
         video = self.get_object()
         video.live_state = serializer.validated_data["state"]
+        live_info = video.live_info
+        live_info.update(
+            {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
+        )
+        video.live_info = live_info
         video.save()
 
         return Response({"success": True})

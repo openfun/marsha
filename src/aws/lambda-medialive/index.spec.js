@@ -35,11 +35,15 @@ describe('lambda', () => {
       }
     };
 
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
     mockChannelStateChanged.mockResolvedValue();
 
-    await lambda(event, {}, callback);
+    await lambda(event, context, callback);
 
-    expect(mockChannelStateChanged).toHaveBeenCalledWith(event);
+    expect(mockChannelStateChanged).toHaveBeenCalledWith(event, context);
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -63,7 +67,11 @@ describe('lambda', () => {
       }
     };
 
-    await lambda(event, {}, callback);
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
+    await lambda(event, context, callback);
 
     expect(mockChannelStateChanged).not.toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith('Unknown medialive event');
@@ -90,11 +98,15 @@ describe('lambda', () => {
       }
     };
 
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
     mockChannelStateChanged.mockRejectedValue('it fails');
 
-    await lambda(event, {}, callback);
+    await lambda(event, context, callback);
 
-    expect(mockChannelStateChanged).toHaveBeenCalledWith(event);
+    expect(mockChannelStateChanged).toHaveBeenCalledWith(event, context);
     expect(callback).toHaveBeenCalledWith('it fails');
     expect(callback).toHaveBeenCalledTimes(1);
   });
