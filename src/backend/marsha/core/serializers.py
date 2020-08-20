@@ -496,6 +496,7 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     state = serializers.ChoiceField(
         tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
     )
+    logGroupName = serializers.CharField()
 
 
 class InitiateUploadSerializer(serializers.Serializer):

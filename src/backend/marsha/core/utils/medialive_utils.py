@@ -233,7 +233,10 @@ def create_live_stream(key):
                     medialive_input["Input"]["Destinations"][1]["Url"],
                 ],
             },
-            "channel": {"id": medialive_channel["Channel"]["Id"]},
+            "channel": {
+                "arn": medialive_channel["Channel"]["Arn"],
+                "id": medialive_channel["Channel"]["Id"],
+            },
         },
         "mediapackage": {
             "channel": {"id": mediapackage_channel["Id"]},
