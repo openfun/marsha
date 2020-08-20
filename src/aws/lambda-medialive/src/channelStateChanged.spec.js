@@ -46,8 +46,12 @@ describe('src/channel_state_changed', () => {
       }
     };
 
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
     try {
-      await channelStateChanged(event);
+      await channelStateChanged(event, context);
     } catch (error) {
       expect(error.message).toEqual('Expected status are RUNNING and STOPPED. STARTING received');
     }
@@ -77,14 +81,21 @@ describe('src/channel_state_changed', () => {
       }
     };
 
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
     mockDescribeChannel.mockReturnValue({
       promise: () =>
         new Promise(resolve => resolve({ Name: 'video-id_stamp' })),
     });
     mockComputeSignature.mockReturnValue('foo');
-    const expectedBody = {state: 'running'};
+    const expectedBody = {
+      logGroupName: '/aws/lambda/dev-test-marsha-medialive',
+      state: 'running',
+    };
 
-    await channelStateChanged(event);
+    await channelStateChanged(event, context);
 
     expect(mockComputeSignature).toHaveBeenCalledWith(
       'some secret', 
@@ -121,14 +132,21 @@ describe('src/channel_state_changed', () => {
       }
     };
 
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
     mockDescribeChannel.mockReturnValue({
       promise: () =>
         new Promise(resolve => resolve({ Name: 'video-id_stamp' })),
     });
     mockComputeSignature.mockReturnValue('foo');
-    const expectedBody = {state: 'stopped'};
+    const expectedBody = {
+      logGroupName: '/aws/lambda/dev-test-marsha-medialive',
+      state: 'stopped',
+    };
 
-    await channelStateChanged(event);
+    await channelStateChanged(event, context);
 
     expect(mockComputeSignature).toHaveBeenCalledWith(
       'some secret', 

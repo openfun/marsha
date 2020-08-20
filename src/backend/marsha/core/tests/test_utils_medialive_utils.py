@@ -366,7 +366,10 @@ class MediaLiveUtilsTestCase(TestCase):
                 },
             }
             mock_medialive_channel.return_value = {
-                "Channel": {"Id": "medialive_channel1"}
+                "Channel": {
+                    "Arn": "/aws/lambda/dev-test-marsha-medialive",
+                    "Id": "medialive_channel1",
+                }
             }
 
             response = medialive_utils.create_live_stream(key)
@@ -382,7 +385,10 @@ class MediaLiveUtilsTestCase(TestCase):
                             "rtmp://destination2/video-key-secondary",
                         ],
                     },
-                    "channel": {"id": "medialive_channel1"},
+                    "channel": {
+                        "arn": "/aws/lambda/dev-test-marsha-medialive",
+                        "id": "medialive_channel1",
+                    },
                 },
                 "mediapackage": {
                     "channel": {"id": "channel1"},

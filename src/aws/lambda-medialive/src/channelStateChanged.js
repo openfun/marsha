@@ -4,7 +4,7 @@ const { DISABLE_SSL_VALIDATION, MARSHA_URL, SHARED_SECRET } = process.env;
 
 const mediaLive = new AWS.MediaLive({ apiVersion: '2017-10-14' });
 
-module.exports = async (event) => {
+module.exports = async (event, context) => {
   const status = event.detail.state;
 
   if (!["RUNNING", "STOPPED"].includes(status)) {
@@ -22,6 +22,7 @@ module.exports = async (event) => {
 
   const videoId = channel.Name.split("_")[0];
   const body = {
+    logGroupName: context.logGroupName,
     state: status.toLowerCase(),
   };
 

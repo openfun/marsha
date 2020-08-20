@@ -24,11 +24,6 @@ def validate_signature(signature, message):
     Boolean
         Return true if the signature is valid. False otherwise.
     """
-    print(
-        hmac.new(
-            "shared secret".encode("utf-8"), msg=message, digestmod=hashlib.sha256
-        ).hexdigest()
-    )
     return any(
         signature
         == hmac.new(

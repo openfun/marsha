@@ -1467,8 +1467,10 @@ class VideoAPITest(TestCase):
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
+            live_info={},
         )
         data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
         response = self.client.patch(
@@ -1476,7 +1478,7 @@ class VideoAPITest(TestCase):
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=(
-                "6ec2b079cc80ecbbdbc4228d117fd2433affd439629561b34c0d33fae1ff6321"
+                "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
             ),
         )
         video.refresh_from_db()
@@ -1484,6 +1486,10 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.live_state, RUNNING)
+        self.assertEqual(
+            video.live_info,
+            {"cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"}},
+        )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
@@ -1494,6 +1500,7 @@ class VideoAPITest(TestCase):
             live_state=IDLE,
         )
         data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
         response = self.client.patch(
@@ -1518,6 +1525,7 @@ class VideoAPITest(TestCase):
             [s[0] for s in LIVE_CHOICES if s[0] not in [RUNNING, STOPPED]]
         )
         data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": invalid_state,
         }
         response = self.client.patch(
@@ -1541,6 +1549,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_live_state_unknown_video(self):
         """Live state update with an unknown video should fails."""
         data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
         response = self.client.patch(
@@ -1548,7 +1557,7 @@ class VideoAPITest(TestCase):
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=(
-                "6ec2b079cc80ecbbdbc4228d117fd2433affd439629561b34c0d33fae1ff6321"
+                "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
             ),
         )
 

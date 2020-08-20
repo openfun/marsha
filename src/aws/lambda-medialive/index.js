@@ -9,7 +9,7 @@ exports.handler = async (event, context, callback) => {
   switch(type) {
     case 'MediaLive Channel State Change':
       try {
-        await channelStateChanged(event);
+        await channelStateChanged(event, context);
         callback();
       } catch (error) {
         callback(error);
