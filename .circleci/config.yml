@@ -374,7 +374,7 @@ jobs:
   # translation management tool
   i18n:
     docker:
-      - image: fundocker/crowdin:2.0.31
+      - image: crowdin/cli:3.2.1
     working_directory: ~/marsha
     steps:
       - checkout:
@@ -383,7 +383,7 @@ jobs:
           at: ~/marsha
       - run:
           name: upload files to crowdin
-          command: crowdin -c crowdin/config.yml upload sources
+          command: crowdin upload sources -c crowdin/config.yml
 
   # ---- DockerHub publication job ----
   hub:
