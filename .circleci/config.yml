@@ -107,15 +107,14 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-back-dependencies-{{ .Revision }}
-            - v3-back-dependencies
+            - v4-back-dependencies-{{ .Revision }}
       - run:
           name: Install development dependencies
           command: pip install --user .[dev]
       - save_cache:
           paths:
             - ~/.local
-          key: v3-back-dependencies-{{ .Revision }}
+          key: v4-back-dependencies-{{ .Revision }}
 
   # Build backend translations
   build-back-i18n:
@@ -142,7 +141,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-back-dependencies-{{ .Revision }}
+            - v4-back-dependencies-{{ .Revision }}
       - run:
           name: Install gettext (required to make messages)
           command: sudo apt-get install -y gettext
@@ -168,10 +167,10 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-back-dependencies-{{ .Revision }}
+            - v4-back-dependencies-{{ .Revision }}
       - run:
           name: Lint code with isort
-          command: ~/.local/bin/isort --recursive --check-only marsha
+          command: ~/.local/bin/isort --check-only marsha
       - run:
           name: Lint code with black
           command: ~/.local/bin/black --check marsha
@@ -215,7 +214,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-back-dependencies-{{ .Revision }}
+            - v4-back-dependencies-{{ .Revision }}
       # Run back-end (Django) test suite
       #
       # Nota bene: to run the django test suite, we need to ensure that the
