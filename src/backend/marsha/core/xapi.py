@@ -49,8 +49,8 @@ class XAPIStatement:
         """
         try:
             user_id = lti_user.user_id
-        except AttributeError:
-            raise MissingUserIdError()
+        except AttributeError as err:
+            raise MissingUserIdError() from err
 
         homepage = video.playlist.consumer_site.domain
 

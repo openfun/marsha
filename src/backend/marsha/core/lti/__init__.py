@@ -168,8 +168,8 @@ class LTI:
         """
         try:
             return self.request.POST[name]
-        except MultiValueDictKeyError:
-            raise AttributeError(name)
+        except MultiValueDictKeyError as err:
+            raise AttributeError(name) from err
 
     def get_passport(self):
         """Find and return the passport targeted by the LTI request or raise an LTIException."""
@@ -183,12 +183,12 @@ class LTI:
             return LTIPassport.objects.get(
                 oauth_consumer_key=consumer_key, is_enabled=True
             )
-        except LTIPassport.DoesNotExist:
+        except LTIPassport.DoesNotExist as err:
             raise LTIException(
                 "Could not find a valid passport for this oauth consumer key: {:s}.".format(
                     consumer_key
                 )
-            )
+            ) from err
 
     def get_course_info(self):
         """Retrieve course info in the LTI request.
@@ -354,5 +354,5 @@ class LTIUser:
         """
         try:
             return self.token.payload[name]
-        except KeyError:
-            raise AttributeError(name)
+        except KeyError as err:
+            raise AttributeError(name) from err
