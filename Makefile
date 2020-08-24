@@ -131,7 +131,7 @@ lint-flake8:  ## Run the flake8 tool
 
 lint-isort:  ## automatically re-arrange python imports in code base
 	@echo "$(BOLD)Running isort$(RESET)"
-	@$(COMPOSE_RUN_APP) isort marsha --recursive --atomic
+	@$(COMPOSE_RUN_APP) isort marsha --atomic
 .PHONY: lint-isort
 
 lint-pylint:  ## Run the pylint tool

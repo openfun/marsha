@@ -73,11 +73,9 @@ class TimestampField(serializers.DateTimeField):
 
         """
         try:
-            return super(TimestampField, self).to_internal_value(
-                time_utils.to_datetime(value)
-            )
+            return super().to_internal_value(time_utils.to_datetime(value))
         except OverflowError as error:
-            raise ValidationError(error)
+            raise ValidationError(error) from error
 
 
 class TimedTextTrackSerializer(serializers.ModelSerializer):
