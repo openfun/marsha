@@ -8,6 +8,7 @@ import uuid
 
 from django.core import checks
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
@@ -82,7 +83,7 @@ class BaseModel(SafeDeleteModel):
     created_on = models.DateTimeField(
         verbose_name=_("created on"),
         help_text=_("date and time at which a record was created"),
-        auto_now_add=True,
+        default=timezone.now,
         editable=False,
     )
     updated_on = models.DateTimeField(
