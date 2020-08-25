@@ -47,6 +47,37 @@ describe('lambda', () => {
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
+  it('call the callback when an alert is added', async () => {
+    const event = {
+      "version": "0",
+      "id": "0495e5eb-9b99-56f2-7849-96389238fb55",
+      "detail-type": "MediaLive Channel Alert",
+      "source": "aws.medialive",
+      "account": "account_id",
+      "time": "2020-06-15T15:18:29Z",
+      "region": "eu-west-1",
+      "resources": [
+        "arn:aws:medialive:eu-west-1:account_id:channel:1234567"
+      ],
+      "detail": {
+        "alarm_state": "CLEARED",
+        "alarm_id": "f4d3c12657a5229762740ef2f2113afa1cd04cb1",
+        "alert_type": "Video Not Detected",
+        "pipeline": "0",
+        "channel_arn": "arn:aws:medialive:eu-west-1:account_id:channel:1234567",
+        "message": "[VideoBuffer[1]] Video not detected: Check input signal"
+      }
+    };
+
+    const context = {
+      "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+    };
+
+    await lambda(event, context, callback);
+
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
   it('reports an error when the event type is not handled', async () => {
     const event = {
       "version": "0",
