@@ -35,8 +35,11 @@ module.exports = async (objectKey, sourceBucket) => {
     FramerateDenominator: 1001,
     FramerateNumerator: 30000
   }
-  let videoSizes = [144, 240, 480, 720, 1080];
-  let audioBirates = [64000, 96000, 128000, 160000, 192000];
+  const videoSizesDefinition = [144, 240, 480, 720, 1080];
+  const audioBitratesDefinition = [64000, 96000, 128000, 160000, 192000];
+
+  let videoSizes = videoSizesDefinition;
+  let audioBitrates = audioBitratesDefinition;
 
   if (stdout) {
     const mediainfos = JSON.parse(stdout);
@@ -44,17 +47,27 @@ module.exports = async (objectKey, sourceBucket) => {
     const videoInfo = mediainfos.media.track.find(track => track["@type"] === "Video");
     const audioInfo = mediainfos.media.track.find(track => track["@type"] === "Audio");
 
-    if (videoInfo.hasOwnProperty('Height')) {
-      videoSizes = videoSizes.filter(size => size <= videoInfo.Height);
+    if (videoInfo) {
+      if (videoInfo.hasOwnProperty('Height')) {
+        videoSizes = videoSizesDefinition.filter(size => size <= videoInfo.Height);
+        if (videoSizes.length === 0) {
+          videoSizes.push(videoSizesDefinition[0]);
+        }
+      }
+
+      if(videoInfo.hasOwnProperty('FrameRate')) {
+        const convertedFramerate = framerateConverter(videoInfo.FrameRate);
+        framerateSettings.FramerateDenominator = convertedFramerate.denominator;
+        framerateSettings.FramerateNumerator = convertedFramerate.numerator;
+      }
     }
 
-    if (audioInfo.hasOwnProperty('BitRate')) {
-      audioBirates = audioBirates.filter(bitrate => bitrate <= audioInfo.BitRate);
+    if (audioInfo && audioInfo.hasOwnProperty('BitRate')) {
+      audioBitrates = audioBitratesDefinition.filter(bitrate => bitrate <= audioInfo.BitRate);
+      if(audioBitrates.length === 0) {
+        audioBitrates.push(audioBitratesDefinition[0]);
+      }
     }
-
-    const convertedFramerate = framerateConverter(videoInfo.FrameRate);
-    framerateSettings.FramerateDenominator = convertedFramerate.denominator;
-    framerateSettings.FramerateNumerator = convertedFramerate.numerator;
   }
 
   let params = {
@@ -142,7 +155,7 @@ module.exports = async (objectKey, sourceBucket) => {
                 },
               },
             })),
-            ...audioBirates.map(bitrate => {
+            ...audioBitrates.map(bitrate => {
               const bitratePreset = bitrate/1000;
 
               return {
