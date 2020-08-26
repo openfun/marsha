@@ -106,12 +106,12 @@ export const i18nMessages = defineMessages({
     id: 'plyr.controls.exitFullscreen',
   },
   fastForward: {
-    defaultMessage: 'Forward {seektime}s',
+    defaultMessage: "Forward '{seektime}'s",
     description: 'Video control forward button',
     id: 'plyr.controls.forward',
   },
   frameTitle: {
-    defaultMessage: 'Player for {title}',
+    defaultMessage: "Player for '{title}'",
     description:
       'Title set to an iframe when the video is loaded in an iframe as parent element',
     id: 'plyr.ui.frameTitle',
@@ -170,7 +170,7 @@ export const i18nMessages = defineMessages({
     id: 'plyr.controls.restart',
   },
   rewind: {
-    defaultMessage: 'Rewind {seektime}s',
+    defaultMessage: "Rewind '{seektime}'s",
     description: 'Video control rewind button',
     id: 'plyr.controls.rewind',
   },
@@ -180,7 +180,7 @@ export const i18nMessages = defineMessages({
     id: 'plyr.controls.seek',
   },
   seekLabel: {
-    defaultMessage: '{currentTime} of {duration}',
+    defaultMessage: "'{currentTime}' of '{duration}'",
     description: 'Video seek progress bar used as polyfill for webkit',
     id: 'plyr.controls.rangeFill.seek',
   },
