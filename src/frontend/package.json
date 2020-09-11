@@ -51,7 +51,7 @@
     "fetch-mock": "9.10.7",
     "jest": "26.4.0",
     "jest-styled-components": "7.0.2",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "node-sass": "4.14.1",
     "prettier": "2.0.5",
     "react-intl-po": "2.2.2",
