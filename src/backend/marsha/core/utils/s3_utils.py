@@ -52,7 +52,8 @@ def create_presigned_post(conditions, fields, key):
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
         config=Config(
-            region_name=settings.AWS_S3_REGION_NAME, signature_version="s3v4",
+            region_name=settings.AWS_S3_REGION_NAME,
+            signature_version="s3v4",
         ),
     )
 

@@ -199,7 +199,9 @@ class DocumentViewSet(
         key = document.get_source_s3_key(stamp=stamp, extension=extension)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]], {}, key,
+            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
+            {},
+            key,
         )
 
         # Reset the upload state of the document
@@ -265,7 +267,9 @@ class TimedTextTrackViewSet(
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]], {}, key,
+            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]],
+            {},
+            key,
         )
 
         # Reset the upload state of the timed text track
