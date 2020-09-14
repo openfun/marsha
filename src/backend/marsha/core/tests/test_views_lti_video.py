@@ -800,7 +800,9 @@ class VideoLTIViewTestCase(TestCase):
         )
         # Create a TimedTextTrack associated with the video to trigger the error
         transcript = TimedTextTrackFactory(
-            video=video, mode="ts", upload_state=PENDING,
+            video=video,
+            mode="ts",
+            upload_state=PENDING,
         )
 
         data = {
