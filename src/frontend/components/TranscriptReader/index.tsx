@@ -36,12 +36,20 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
   useEffect(() => {
     if (!transcriptWrapperRef.current) return;
 
-    transcriptWrapperRef.current
-      .querySelector(`.sentence-active`)
-      ?.scrollIntoView({
+    const target = transcriptWrapperRef.current.querySelector(
+      `.sentence-active`,
+    ) as HTMLSpanElement;
+
+    if (target) {
+      // Follow active sentence to be always visible.
+      transcriptWrapperRef.current.scrollTo({
+        top:
+          target.offsetTop -
+          (transcriptWrapperRef.current.offsetTop +
+            transcriptWrapperRef.current.offsetHeight / 2),
         behavior: 'smooth',
-        block: 'center',
       });
+    }
   }, [playerCurrentTime]);
 
   return (
