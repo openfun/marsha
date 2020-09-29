@@ -51,6 +51,7 @@ bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
 	build \
+	run \
 	migrate \
 	i18n-compile-back
 .PHONY: bootstrap
@@ -144,11 +145,13 @@ lint-bandit: ## lint back-end python sources with bandit
 	@$(COMPOSE_RUN_APP) bandit -c .bandit -qr marsha
 .PHONY: lint-bandit
 
-.PHONY: migrate
+
 migrate:  ## Run django migration for the marsha project.
 	@echo "$(BOLD)Running migrations$(RESET)"
+	@$(COMPOSE) up -d db
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 	@$(COMPOSE_RUN_APP) python manage.py migrate
+.PHONY: migrate
 
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
