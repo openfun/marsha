@@ -1,13 +1,11 @@
 import create from 'zustand';
 
-interface State {
+type State = {
   time: number;
   setTime: (time: number) => void;
-}
+};
 
-export const [useTranscriptTimeSelector, useTranscriptTimeSelectorApi] = create<
-  State
->((set) => ({
+export const useTranscriptTimeSelector = create<State>((set) => ({
   setTime: (time) => set({ time }),
   time: 0,
 }));
