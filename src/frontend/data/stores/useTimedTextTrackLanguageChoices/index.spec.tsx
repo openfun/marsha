@@ -2,10 +2,7 @@ import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import {
-  useTimedTextTrackLanguageChoices,
-  useTimedTextTrackLanguageChoicesApi,
-} from '.';
+import { useTimedTextTrackLanguageChoices } from '.';
 import { requestStatus } from '../../../types/api';
 import { report } from '../../../utils/errors/report';
 
@@ -26,7 +23,7 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
   };
 
   beforeEach(() => {
-    useTimedTextTrackLanguageChoicesApi.setState({ choices: undefined });
+    useTimedTextTrackLanguageChoices.setState({ choices: undefined });
   });
 
   afterEach(() => fetchMock.restore());

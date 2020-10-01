@@ -7,14 +7,14 @@ import { Nullable } from '../../../utils/types';
 import { appData } from '../../appData';
 import { addMultipleResources, addResource, removeResource } from '../actions';
 
-interface VideoState extends StoreState<Video> {
+type VideoState = StoreState<Video> & {
   getVideo: (video: Nullable<Video>) => Video;
   [modelName.VIDEOS]: {
     [id: string]: Video;
   };
-}
+};
 
-export const [useVideo, useVideoApi] = create<VideoState>((set, get) => ({
+export const useVideo = create<VideoState>((set, get) => ({
   addMultipleResources: (videosToAdd: Video[]) =>
     set(addMultipleResources(get(), modelName.VIDEOS, videosToAdd)),
   addResource: (video: Video) =>

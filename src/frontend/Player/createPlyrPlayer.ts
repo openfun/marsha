@@ -2,8 +2,8 @@ import { MediaPlayerClass, MediaPlayerSettingClass } from 'dashjs';
 import Plyr, { SourceInfo } from 'plyr';
 
 import { appData, getDecodedJwt } from '../data/appData';
-import { useTimedTextTrackApi } from '../data/stores/useTimedTextTrack';
-import { useTranscriptTimeSelectorApi } from '../data/stores/useTranscriptTimeSelector';
+import { useTimedTextTrack } from '../data/stores/useTimedTextTrack';
+import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
 import { intl } from '../index';
 import { timedTextMode, Video, videoSize } from '../types/tracks';
 import {
@@ -36,9 +36,7 @@ export const createPlyrPlayer = (
   );
 
   if (!isMSESupported() && !isHlsSupported(videoNode)) {
-    const timedTextTracks = useTimedTextTrackApi
-      .getState()
-      .getTimedTextTracks();
+    const timedTextTracks = useTimedTextTrack.getState().getTimedTextTracks();
 
     sources = {
       sources: resolutions.map((size) => ({
@@ -198,7 +196,7 @@ export const createPlyrPlayer = (
     }
   }
 
-  useTranscriptTimeSelectorApi.subscribe(
+  useTranscriptTimeSelector.subscribe(
     (time) => (player.currentTime = time as number),
     (state) => state.time,
   );

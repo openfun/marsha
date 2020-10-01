@@ -4,17 +4,17 @@ import { UploadableObject } from '../../types/tracks';
 const getStore = async (objectType: modelName) => {
   switch (objectType) {
     case modelName.THUMBNAILS:
-      const { useThumbnailApi } = await import('./useThumbnail');
-      return useThumbnailApi;
+      const { useThumbnail } = await import('./useThumbnail');
+      return useThumbnail;
     case modelName.TIMEDTEXTTRACKS:
-      const { useTimedTextTrackApi } = await import('./useTimedTextTrack');
-      return useTimedTextTrackApi;
+      const { useTimedTextTrack } = await import('./useTimedTextTrack');
+      return useTimedTextTrack;
     case modelName.VIDEOS:
-      const { useVideoApi } = await import('./useVideo');
-      return useVideoApi;
+      const { useVideo } = await import('./useVideo');
+      return useVideo;
     case modelName.DOCUMENTS:
-      const { useDocumentApi } = await import('./useDocument');
-      return useDocumentApi;
+      const { useDocument } = await import('./useDocument');
+      return useDocument;
   }
 };
 
