@@ -6,16 +6,14 @@ import { TimedText } from '../../../types/tracks';
 import { appData } from '../../appData';
 import { addMultipleResources, addResource, removeResource } from '../actions';
 
-interface TimedTextTrackState extends StoreState<TimedText> {
+type TimedTextTrackState = StoreState<TimedText> & {
   getTimedTextTracks: () => TimedText[];
   [modelName.TIMEDTEXTTRACKS]: {
     [id: string]: TimedText;
   };
-}
+};
 
-export const [useTimedTextTrack, useTimedTextTrackApi] = create<
-  TimedTextTrackState
->((set, get) => {
+export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
   const timedTextTracks: { [id: string]: TimedText } = {};
 
   if (appData.video && appData.video.timed_text_tracks.length > 0) {

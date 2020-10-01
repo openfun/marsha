@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { useThumbnail, useThumbnailApi } from '.';
+import { useThumbnail } from '.';
 import { modelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
@@ -73,37 +73,37 @@ describe('stores/useThumbnail', () => {
   });
 
   it('returns null when there is no thumbnail', () => {
-    useThumbnailApi.setState({
+    useThumbnail.setState({
       [modelName.THUMBNAILS]: {},
     });
 
-    expect(useThumbnailApi.getState().getThumbnail()).toBeNull();
+    expect(useThumbnail.getState().getThumbnail()).toBeNull();
   });
 
   it('adds a resource to the store', () => {
-    useThumbnailApi.getState().addResource({ id: 'newResource' } as any);
+    useThumbnail.getState().addResource({ id: 'newResource' } as any);
 
-    expect(
-      useThumbnailApi.getState()[modelName.THUMBNAILS].newResource,
-    ).toEqual({ id: 'newResource' });
+    expect(useThumbnail.getState()[modelName.THUMBNAILS].newResource).toEqual({
+      id: 'newResource',
+    });
   });
 
   it('removes an existing resource', () => {
-    useThumbnailApi.getState().addResource({ id: 'toDelete' } as any);
+    useThumbnail.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].toDelete).toEqual({
+    expect(useThumbnail.getState()[modelName.THUMBNAILS].toDelete).toEqual({
       id: 'toDelete',
     });
 
-    useThumbnailApi.getState().removeResource({ id: 'toDelete' } as any);
+    useThumbnail.getState().removeResource({ id: 'toDelete' } as any);
 
     expect(
-      useThumbnailApi.getState()[modelName.THUMBNAILS].toDelete,
+      useThumbnail.getState()[modelName.THUMBNAILS].toDelete,
     ).toBeUndefined();
   });
 
   it('adds multiple resources to the store', () => {
-    useThumbnailApi
+    useThumbnail
       .getState()
       .addMultipleResources([
         { id: 'multi1' } as any,
@@ -111,13 +111,13 @@ describe('stores/useThumbnail', () => {
         { id: 'multi3' } as any,
       ]);
 
-    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi1).toEqual({
+    expect(useThumbnail.getState()[modelName.THUMBNAILS].multi1).toEqual({
       id: 'multi1',
     });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi2).toEqual({
+    expect(useThumbnail.getState()[modelName.THUMBNAILS].multi2).toEqual({
       id: 'multi2',
     });
-    expect(useThumbnailApi.getState()[modelName.THUMBNAILS].multi3).toEqual({
+    expect(useThumbnail.getState()[modelName.THUMBNAILS].multi3).toEqual({
       id: 'multi3',
     });
   });

@@ -1,8 +1,8 @@
 import { modelName } from '../../types/models';
 import { addMultipleResources, addResource, getResource } from './generics';
-import { useThumbnailApi } from './useThumbnail';
-import { useTimedTextTrackApi } from './useTimedTextTrack';
-import { useVideoApi } from './useVideo';
+import { useThumbnail } from './useThumbnail';
+import { useTimedTextTrack } from './useTimedTextTrack';
+import { useVideo } from './useVideo';
 
 jest.mock('../../data/appData', () => ({
   appData: {},
@@ -11,13 +11,13 @@ jest.mock('../../data/appData', () => ({
 describe('stores/generics', () => {
   afterEach(() => {
     // restore the state of each store.
-    useVideoApi.setState({
+    useVideo.setState({
       [modelName.VIDEOS]: {},
     });
-    useThumbnailApi.setState({
+    useThumbnail.setState({
       [modelName.THUMBNAILS]: {},
     });
-    useTimedTextTrackApi.setState({
+    useTimedTextTrack.setState({
       [modelName.TIMEDTEXTTRACKS]: {},
     });
   });
@@ -26,7 +26,7 @@ describe('stores/generics', () => {
     it('adds a thumbnail resource', async () => {
       await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
-      const state = useThumbnailApi.getState();
+      const state = useThumbnail.getState();
       expect(state[modelName.THUMBNAILS].thumbnail).toEqual({
         id: 'thumbnail',
       });
@@ -36,7 +36,7 @@ describe('stores/generics', () => {
         id: 'timedTextTrack',
       } as any);
 
-      const state = useTimedTextTrackApi.getState();
+      const state = useTimedTextTrack.getState();
       expect(state[modelName.TIMEDTEXTTRACKS].timedTextTrack).toEqual({
         id: 'timedTextTrack',
       });
@@ -44,7 +44,7 @@ describe('stores/generics', () => {
     it('adds a video resource', async () => {
       await addResource(modelName.VIDEOS, { id: 'video' } as any);
 
-      const state = useVideoApi.getState();
+      const state = useVideo.getState();
       expect(state[modelName.VIDEOS].video).toEqual({ id: 'video' });
     });
   });
@@ -94,7 +94,7 @@ describe('stores/generics', () => {
         { id: 'multi3' } as any,
       ]);
 
-      const state = useThumbnailApi.getState();
+      const state = useThumbnail.getState();
 
       expect(state[modelName.THUMBNAILS].multi1).toEqual({ id: 'multi1' });
       expect(state[modelName.THUMBNAILS].multi2).toEqual({ id: 'multi2' });
@@ -107,7 +107,7 @@ describe('stores/generics', () => {
         { id: 'multi3' } as any,
       ]);
 
-      const state = useTimedTextTrackApi.getState();
+      const state = useTimedTextTrack.getState();
 
       expect(state[modelName.TIMEDTEXTTRACKS].multi1).toEqual({ id: 'multi1' });
       expect(state[modelName.TIMEDTEXTTRACKS].multi2).toEqual({ id: 'multi2' });
@@ -120,7 +120,7 @@ describe('stores/generics', () => {
         { id: 'multi3' } as any,
       ]);
 
-      const state = useVideoApi.getState();
+      const state = useVideo.getState();
 
       expect(state[modelName.VIDEOS].multi1).toEqual({ id: 'multi1' });
       expect(state[modelName.VIDEOS].multi2).toEqual({ id: 'multi2' });

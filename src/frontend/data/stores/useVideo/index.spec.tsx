@@ -3,7 +3,7 @@ import React from 'react';
 
 import { appData } from '../../appData';
 
-import { useVideo, useVideoApi } from '.';
+import { useVideo } from '.';
 import { modelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
@@ -92,25 +92,25 @@ describe('stores/useVideo', () => {
     expect(state.getVideo({ id: 'video-id' })).toEqual(appData.video);
   });
   it('adds a resource to the store', () => {
-    useVideoApi.getState().addResource({ id: 'newResource' } as any);
+    useVideo.getState().addResource({ id: 'newResource' } as any);
 
-    expect(useVideoApi.getState()[modelName.VIDEOS].newResource).toEqual({
+    expect(useVideo.getState()[modelName.VIDEOS].newResource).toEqual({
       id: 'newResource',
     });
   });
   it('removes an existing resource', () => {
-    useVideoApi.getState().addResource({ id: 'toDelete' } as any);
+    useVideo.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useVideoApi.getState()[modelName.VIDEOS].toDelete).toEqual({
+    expect(useVideo.getState()[modelName.VIDEOS].toDelete).toEqual({
       id: 'toDelete',
     });
 
-    useVideoApi.getState().removeResource({ id: 'toDelete' } as any);
+    useVideo.getState().removeResource({ id: 'toDelete' } as any);
 
-    expect(useVideoApi.getState()[modelName.VIDEOS].toDelete).toBeUndefined();
+    expect(useVideo.getState()[modelName.VIDEOS].toDelete).toBeUndefined();
   });
   it('adds multiple resources to the store', () => {
-    useVideoApi
+    useVideo
       .getState()
       .addMultipleResources([
         { id: 'multi1' } as any,
@@ -118,13 +118,13 @@ describe('stores/useVideo', () => {
         { id: 'multi3' } as any,
       ]);
 
-    expect(useVideoApi.getState()[modelName.VIDEOS].multi1).toEqual({
+    expect(useVideo.getState()[modelName.VIDEOS].multi1).toEqual({
       id: 'multi1',
     });
-    expect(useVideoApi.getState()[modelName.VIDEOS].multi2).toEqual({
+    expect(useVideo.getState()[modelName.VIDEOS].multi2).toEqual({
       id: 'multi2',
     });
-    expect(useVideoApi.getState()[modelName.VIDEOS].multi3).toEqual({
+    expect(useVideo.getState()[modelName.VIDEOS].multi3).toEqual({
       id: 'multi3',
     });
   });

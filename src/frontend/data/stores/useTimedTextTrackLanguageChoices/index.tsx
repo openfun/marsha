@@ -10,15 +10,12 @@ import { report } from '../../../utils/errors/report';
 import { Maybe } from '../../../utils/types';
 import { appData } from '../../appData';
 
-interface State {
+type State = {
   choices: Maybe<LanguageChoice[]>;
   getChoices: () => Promise<requestStatus>;
-}
+};
 
-export const [
-  useTimedTextTrackLanguageChoices,
-  useTimedTextTrackLanguageChoicesApi,
-] = create<State>((set, get) => ({
+export const useTimedTextTrackLanguageChoices = create<State>((set, get) => ({
   choices: undefined,
   getChoices: async () => {
     const jwt = appData.jwt;
