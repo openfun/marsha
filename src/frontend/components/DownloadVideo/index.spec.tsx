@@ -2,17 +2,18 @@ import { render } from '@testing-library/react';
 import * as React from 'react';
 
 import { DownloadVideo } from '.';
-import { Video } from '../../types/tracks';
+import { uploadState } from '../../types/tracks';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 describe('<DownloadVideo />', () => {
   it('renders all video links', () => {
-    const video = {
+    const video = videoMockFactory({
       description: 'Some description',
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: 'ready',
+      upload_state: uploadState.READY,
       urls: {
         manifests: {
           dash: 'https://example.com/dash.mpd',
@@ -27,7 +28,7 @@ describe('<DownloadVideo />', () => {
           720: 'https://example.com/144p.jpg',
         },
       },
-    } as Video;
+    });
 
     const { getByText } = render(
       wrapInIntlProvider(<DownloadVideo video={video} />),
@@ -39,12 +40,12 @@ describe('<DownloadVideo />', () => {
   });
 
   it('renders video links available from resolutions field', () => {
-    const video = {
+    const video = videoMockFactory({
       description: 'Some description',
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: 'ready',
+      upload_state: uploadState.READY,
       urls: {
         manifests: {
           dash: 'https://example.com/dash.mpd',
@@ -58,7 +59,7 @@ describe('<DownloadVideo />', () => {
           720: 'https://example.com/144p.jpg',
         },
       },
-    } as Video;
+    });
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(<DownloadVideo video={video} />),
@@ -69,12 +70,12 @@ describe('<DownloadVideo />', () => {
     getByText('480p');
   });
   it('returns nothing if there is no compatible resolutions', () => {
-    const video = {
+    const video = videoMockFactory({
       description: 'Some description',
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: 'ready',
+      upload_state: uploadState.READY,
       urls: {
         manifests: {
           dash: 'https://example.com/dash.mpd',
@@ -88,7 +89,7 @@ describe('<DownloadVideo />', () => {
           240: 'https://example.com/240p.jpg',
         },
       },
-    } as Video;
+    });
 
     const { container } = render(
       wrapInIntlProvider(<DownloadVideo video={video} />),

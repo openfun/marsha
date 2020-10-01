@@ -9,7 +9,8 @@ jest.mock('../../data/sideEffects/uploadFile', () => ({
 import { uploadFile } from '../../data/sideEffects/uploadFile';
 import { getResource } from '../../data/stores/generics';
 import { modelName } from '../../types/models';
-import { timedTextMode, uploadState, Video } from '../../types/tracks';
+import { timedTextMode, uploadState } from '../../types/tracks';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { jestMockOf } from '../../utils/types';
@@ -34,12 +35,8 @@ const mockUploadFile: jestMockOf<typeof uploadFile> = uploadFile as any;
 const mockGetResource = getResource as jestMockOf<typeof getResource>;
 
 describe('UploadForm', () => {
-  const object = {
-    description: 'Some description',
+  const object = videoMockFactory({
     id: 'video-id',
-    is_ready_to_show: true,
-    show_download: false,
-    thumbnail: null,
     timed_text_tracks: [
       {
         active_stamp: 1549385921,
@@ -49,6 +46,8 @@ describe('UploadForm', () => {
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-1.vtt',
+        title: 'ttt1',
+        video: 'video-id',
       },
       {
         active_stamp: 1549385922,
@@ -58,6 +57,8 @@ describe('UploadForm', () => {
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-2.vtt',
+        title: 'ttt2',
+        video: 'video-id',
       },
       {
         active_stamp: 1549385923,
@@ -67,6 +68,8 @@ describe('UploadForm', () => {
         mode: timedTextMode.CLOSED_CAPTIONING,
         upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-3.vtt',
+        title: 'ttt3',
+        video: 'video-id',
       },
       {
         active_stamp: 1549385924,
@@ -76,10 +79,12 @@ describe('UploadForm', () => {
         mode: timedTextMode.TRANSCRIPT,
         upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-4.vtt',
+        title: 'ttt4',
+        video: 'video-id',
       },
     ],
     title: 'Some title',
-    upload_state: 'pending',
+    upload_state: uploadState.PENDING,
     urls: {
       manifests: {
         dash: 'https://example.com/dash.mpd',
@@ -93,7 +98,7 @@ describe('UploadForm', () => {
         720: 'https://example.com/144p.jpg',
       },
     },
-  } as Video;
+  });
 
   beforeEach(jest.resetAllMocks);
 

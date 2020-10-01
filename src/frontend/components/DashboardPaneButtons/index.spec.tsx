@@ -3,7 +3,8 @@ import React from 'react';
 
 import { DashboardPaneButtons } from '.';
 import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { uploadState } from '../../types/tracks';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -15,7 +16,7 @@ describe('<DashboardPaneButtons />', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardPaneButtons
-            object={{ id: 'vid1', upload_state: READY } as Video}
+            object={videoMockFactory({ id: 'vid1', upload_state: READY })}
             objectType={modelName.VIDEOS}
           />,
         ),
@@ -30,7 +31,7 @@ describe('<DashboardPaneButtons />', () => {
         wrapInIntlProvider(
           wrapInRouter(
             <DashboardPaneButtons
-              object={{ id: 'vid1', upload_state: state } as Video}
+              object={videoMockFactory({ id: 'vid1', upload_state: state })}
               objectType={modelName.VIDEOS}
             />,
           ),
@@ -46,7 +47,7 @@ describe('<DashboardPaneButtons />', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardPaneButtons
-            object={{ id: 'vid1', upload_state: PENDING } as Video}
+            object={videoMockFactory({ id: 'vid1', upload_state: PENDING })}
             objectType={modelName.VIDEOS}
           />,
         ),
@@ -59,7 +60,7 @@ describe('<DashboardPaneButtons />', () => {
         wrapInIntlProvider(
           wrapInRouter(
             <DashboardPaneButtons
-              object={{ id: 'vid1', upload_state: state } as Video}
+              object={videoMockFactory({ id: 'vid1', upload_state: state })}
               objectType={modelName.VIDEOS}
             />,
           ),

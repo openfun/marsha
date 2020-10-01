@@ -9,6 +9,7 @@ import React from 'react';
 import { DashboardTimedTextPane } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -46,12 +47,10 @@ describe('<DashboardTimedTextPane />', () => {
   afterEach(jest.resetAllMocks);
   afterEach(() => fetchMock.restore());
 
-  const video = {
-    description: '',
+  const video = videoMockFactory({
     id: '43',
     is_ready_to_show: true,
     show_download: true,
-    thumbnail: null,
     timed_text_tracks: [
       // We put only one out of two tracks here to make sure the request response is used
       {
@@ -63,31 +62,11 @@ describe('<DashboardTimedTextPane />', () => {
         upload_state: uploadState.READY,
         url: 'https://example.com/ttt/142',
         video: '43',
+        title: 'foo',
       },
     ],
-    title: '',
     upload_state: uploadState.READY,
-    urls: {
-      manifests: {
-        dash: 'https://example.com/dash',
-        hls: 'https://example.com/hls',
-      },
-      mp4: {
-        144: 'https://example.com/mp4/144',
-        240: 'https://example.com/mp4/240',
-        480: 'https://example.com/mp4/480',
-        720: 'https://example.com/mp4/720',
-        1080: 'https://example.com/mp4/1080',
-      },
-      thumbnails: {
-        144: 'https://example.com/default_thumbnail/144',
-        240: 'https://example.com/default_thumbnail/240',
-        480: 'https://example.com/default_thumbnail/480',
-        720: 'https://example.com/default_thumbnail/720',
-        1080: 'https://example.com/default_thumbnail/1080',
-      },
-    },
-  };
+  });
 
   it('gets the list of timedtexttracks and displays them by mode', async () => {
     fetchMock.get('/api/timedtexttracks/?limit=20&offset=0', [
