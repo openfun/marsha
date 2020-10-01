@@ -3,44 +3,25 @@ import React from 'react';
 
 import DocumentPlayer from '.';
 import { uploadState } from '../../types/tracks';
+import { documentMockFactory } from '../../utils/tests/factories';
 
+const mockDocument = documentMockFactory({
+  id: '42',
+  title: 'foo.pdf',
+  upload_state: uploadState.READY,
+});
 jest.mock('../../data/appData', () => ({
   appData: {
-    document: {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '42',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: 'ready',
-      url: 'https://example.com/document/42',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    },
+    document: mockDocument,
   },
 }));
 
 describe('<DocumentPlayer />', () => {
   it('renders', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
+    const document = documentMockFactory({
       id: '42',
-      is_ready_to_show: true,
-      show_download: true,
       title: 'foo.pdf',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/42',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
+    });
     const { getByText, container } = render(
       <DocumentPlayer document={document} />,
     );
@@ -50,21 +31,10 @@ describe('<DocumentPlayer />', () => {
   });
 
   it('defaults to the document from props', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
+    const document = documentMockFactory({
       id: '43',
-      is_ready_to_show: true,
-      show_download: true,
       title: 'bar.pdf',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/43',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
+    });
     const { getByText, container } = render(
       <DocumentPlayer document={document} />,
     );

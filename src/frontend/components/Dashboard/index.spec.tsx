@@ -4,6 +4,10 @@ import React, { Suspense } from 'react';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
+import {
+  documentMockFactory,
+  videoMockFactory,
+} from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Loader } from '../Loader';
 import Dashboard from './index';
@@ -34,12 +38,12 @@ jest.mock('../../data/appData', () => ({
 describe('<Dashboard />', () => {
   describe('video', () => {
     it('renders', async () => {
-      const mockVideo: any = {
+      const mockVideo = videoMockFactory({
         id: 'dd44',
         thumbnail: null,
         timed_text_tracks: [],
         upload_state: uploadState.PROCESSING,
-      };
+      });
 
       render(
         wrapInIntlProvider(
@@ -55,12 +59,12 @@ describe('<Dashboard />', () => {
 
   describe('document', () => {
     it('renders', async () => {
-      const mockDocument: any = {
+      const mockDocument = documentMockFactory({
         id: 'doc1',
         upload_state: uploadState.PROCESSING,
-      };
+      });
 
-      const { getByText, getByTitle } = render(
+      render(
         wrapInIntlProvider(
           <Suspense fallback={<Loader />}>
             <Dashboard

@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { InstructorView } from './';
-import { Video } from '../../types/tracks';
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -17,13 +17,13 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<InstructorView />', () => {
-  const video = {
+  const video = videoMockFactory({
     id: 'bc5b2a9a-4963-4a55-bb79-b94489a8164f',
     playlist: {
       title: 'foo',
       lti_id: 'foo+context_id',
     },
-  } as Video;
+  });
   it('renders the instructor controls', () => {
     mockDecodedJwt = {
       maintenance: false,
