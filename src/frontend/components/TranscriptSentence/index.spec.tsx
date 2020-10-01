@@ -26,8 +26,7 @@ describe('<TranscriptSentence />', () => {
 
     const sentence = getByText('Lorem ipsum dolor sit amet.');
 
-    expect(sentence).not.toHaveStyleRule('background-color');
-    expect(sentence).not.toHaveStyleRule('outline');
+    expect(sentence).not.toHaveClass('sentence-active');
 
     fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(10);
@@ -41,25 +40,13 @@ describe('<TranscriptSentence />', () => {
       text: 'Lorem ipsum dolor sit amet.',
     };
 
-    const { getByText, asFragment } = render(
+    const { getByText } = render(
       <TranscriptSentence cue={cue} active={true} />,
     );
 
     const sentence = getByText('Lorem ipsum dolor sit amet.');
-    const child = asFragment().firstElementChild;
 
-    if (!child) {
-      fail('Component does not render as expected');
-    }
-
-    const computedStyle = window.getComputedStyle(child);
-
-    expect(computedStyle.getPropertyValue('background-color')).toMatch(
-      /rgba(.*)/,
-    );
-    expect(computedStyle.getPropertyValue('outline')).toMatch(
-      /1px solid rgba(.*)/,
-    );
+    expect(sentence).toHaveClass('sentence-active');
 
     fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(20);
