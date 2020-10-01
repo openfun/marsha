@@ -7,6 +7,7 @@ import DashboardDocument from '.';
 import { uploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { documentMockFactory } from '../../utils/tests/factories';
 import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -25,21 +26,11 @@ describe('<DashboardDocument />', () => {
 
   it('starts polling when the document is in pending, uploading and processing', async () => {
     let deferred = new Deferred();
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
+    const document = documentMockFactory({
       id: '44',
       is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
       upload_state: uploadState.PROCESSING,
-      url: 'https://example.com/document/44',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
+    });
 
     fetchMock.mock('/api/documents/44/', deferred.promise);
 
@@ -103,25 +94,17 @@ describe('<DashboardDocument />', () => {
   });
 
   it('shows the upload button in pending state', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '45',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: uploadState.PENDING,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
-
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardDocument document={document} />),
+        wrapInRouter(
+          <DashboardDocument
+            document={documentMockFactory({
+              id: '45',
+              is_ready_to_show: true,
+              upload_state: uploadState.PENDING,
+            })}
+          />,
+        ),
       ),
     );
 
@@ -129,25 +112,17 @@ describe('<DashboardDocument />', () => {
   });
 
   it('shows the replace button in error state', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '45',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: uploadState.ERROR,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
-
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardDocument document={document} />),
+        wrapInRouter(
+          <DashboardDocument
+            document={documentMockFactory({
+              id: '45',
+              upload_state: uploadState.ERROR,
+              is_ready_to_show: true,
+            })}
+          />,
+        ),
       ),
     );
 
@@ -156,22 +131,6 @@ describe('<DashboardDocument />', () => {
   });
 
   it('renders in ready state', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '45',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
-
     // wrap the component in a grommet provider to have a valid theme.
     // Without it, the FormField component fail to render because it is a composed
     // component using property in the theme.
@@ -179,7 +138,18 @@ describe('<DashboardDocument />', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <Grommet>
-            <DashboardDocument document={document} />
+            <DashboardDocument
+              document={documentMockFactory({
+                id: '45',
+                is_ready_to_show: true,
+                upload_state: uploadState.READY,
+                title: 'foo',
+                playlist: {
+                  title: 'foo',
+                  lti_id: 'foo+context_id',
+                },
+              })}
+            />
           </Grommet>,
         ),
       ),
@@ -202,25 +172,16 @@ describe('<DashboardDocument />', () => {
   });
 
   it('shows the progress bar when the document is uploading', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '45',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'foo.pdf',
-      upload_state: uploadState.UPLOADING,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
-
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardDocument document={document} />),
+        wrapInRouter(
+          <DashboardDocument
+            document={documentMockFactory({
+              id: '45',
+              upload_state: uploadState.UPLOADING,
+            })}
+          />,
+        ),
       ),
     );
 

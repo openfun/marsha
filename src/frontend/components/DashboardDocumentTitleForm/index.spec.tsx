@@ -6,6 +6,7 @@ import React from 'react';
 import { DashboardDocumentTitleForm } from '.';
 import { uploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
+import { documentMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -20,26 +21,16 @@ describe('DashboardDocumentTitleForm', () => {
   afterEach(() => fetchMock.restore());
 
   it('shows the title form', () => {
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '46',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'document title',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
-
     const { container } = render(
       wrapInIntlProvider(
         <Grommet>
-          <DashboardDocumentTitleForm document={document} />
+          <DashboardDocumentTitleForm
+            document={documentMockFactory({
+              id: '46',
+              title: 'document title',
+              upload_state: uploadState.READY,
+            })}
+          />
         </Grommet>,
       ),
     );
@@ -51,21 +42,11 @@ describe('DashboardDocumentTitleForm', () => {
 
   it('successfully update document title', async () => {
     const deferred = new Deferred();
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
+    const document = documentMockFactory({
       id: '46',
-      is_ready_to_show: true,
-      show_download: true,
       title: 'foo.pdf',
       upload_state: uploadState.READY,
-      url: 'https://example.com/document/45',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
+    });
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
 
@@ -101,28 +82,18 @@ describe('DashboardDocumentTitleForm', () => {
 
   it('fails to update document title', async () => {
     const deferred = new Deferred();
-    const document = {
-      description: '',
-      extension: 'pdf',
-      filename: 'bar_foo.pdf',
-      id: '47',
-      is_ready_to_show: true,
-      show_download: true,
-      title: 'document title',
-      upload_state: uploadState.READY,
-      url: 'https://example.com/document/47',
-      playlist: {
-        title: 'foo',
-        lti_id: 'foo+context_id',
-      },
-    };
 
     fetchMock.mock('/api/documents/47/', deferred.promise, { method: 'PUT' });
 
     const { container, getByText } = render(
       wrapInIntlProvider(
         <Grommet>
-          <DashboardDocumentTitleForm document={document} />
+          <DashboardDocumentTitleForm
+            document={documentMockFactory({
+              id: '47',
+              title: 'document title',
+            })}
+          />
         </Grommet>,
       ),
     );

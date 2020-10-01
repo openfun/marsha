@@ -8,6 +8,7 @@ import { DashboardVideoPaneTranscriptOption } from '.';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
@@ -23,42 +24,12 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   afterEach(jest.resetAllMocks);
 
   afterAll(useTimedTextTrackStub.restore);
-  const video = {
-    description: 'Some description',
-    has_transcript: false,
+  const video = videoMockFactory({
     id: '443',
-    is_ready_to_show: true,
-    show_download: false,
-    thumbnail: null,
     timed_text_tracks: [],
-    title: 'Some title',
     upload_state: uploadState.READY,
-    urls: {
-      manifests: {
-        dash: 'https://example.com/dash.mpd',
-        hls: 'https://example.com/hls.m3u8',
-      },
-      mp4: {
-        144: 'https://example.com/144p.mp4',
-        240: 'https://example.com/240p.mp4',
-        480: 'https://example.com/480p.mp4',
-        720: 'https://example.com/720p.mp4',
-        1080: 'https://example.com/1080p.mp4',
-      },
-      thumbnails: {
-        144: 'https://example.com/144p.jpg',
-        240: 'https://example.com/240p.jpg',
-        480: 'https://example.com/480p.jpg',
-        720: 'https://example.com/720p.jpg',
-        1080: 'https://example.com/1080p.jpg',
-      },
-    },
     should_use_subtitle_as_transcript: false,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
-  };
+  });
 
   it('renders nothing if there is no timed text track', () => {
     useTimedTextTrackStub.returns([]);
