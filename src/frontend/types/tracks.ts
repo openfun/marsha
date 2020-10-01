@@ -65,7 +65,7 @@ export interface TimedTextTranscript extends TimedText {
 export type videoSize = 144 | 240 | 480 | 720 | 1080;
 
 /** An URLs property that includes URLs for each possible visual size */
-export type urls = { [key in videoSize]: string };
+export type urls = { [key in videoSize]?: string };
 
 /** A Thumbnail record as it exists on the backend. */
 export interface Thumbnail extends Resource {
