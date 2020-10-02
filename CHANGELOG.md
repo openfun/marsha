@@ -12,6 +12,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Remove usage of react-intl-po
 - Rework front i18n workflow
+- Customize permission to also allow staff user for GET request
+
+### Added
+
+- Add drf api token backend
+- Add a new make target to generate user api token
 
 ### Fixed
 
@@ -45,7 +51,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Use `UploadableFileMixin` on `AbstractImage` model
-- Fix dashboard read versus update permissions in situations 
+- Fix dashboard read versus update permissions in situations
   of playlist portability
 
 ## [3.9.1] - 2020-06-24
@@ -59,7 +65,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Detect original video framerate and use it in lambda encode
-- Limit video encoding resolution to that of the source 
+- Limit video encoding resolution to that of the source
 
 ## [3.8.1] - 2020-05-18
 
@@ -129,7 +135,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- New setting MAINTENANCE_MODE to disable the dashboard when Marsha is 
+- New setting MAINTENANCE_MODE to disable the dashboard when Marsha is
   in maintenance
 
 ### Changed
@@ -579,7 +585,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.10.2...master
+[Unreleased]: https://github.com/openfun/marsha/compare/v3.10.2...master
 [3.10.2]: https://github.com/openfun/marsha/compare/v3.10.1...v3.10.2
 [3.10.1]: https://github.com/openfun/marsha/compare/v3.10.0...v3.10.1
 [3.10.0]: https://github.com/openfun/marsha/compare/v3.9.1...v3.10.0
