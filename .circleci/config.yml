@@ -249,17 +249,17 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: Compile translations
-          command: yarn generate-translations
+          command: yarn compile-translations
       - run:
           name: Build front-end application
           command: yarn build
       - run:
-          name: Use react-intl-po to generate our frontend.pot file
-          command: yarn generate-l10n-template
+          name: Use formatjs cli to generate frontend.json file
+          command: yarn extract-translations
       - persist_to_workspace:
           root: ~/marsha
           paths:
-            - src/frontend/i18n/frontend.pot
+            - src/frontend/i18n/frontend.json
       - save_cache:
           paths:
             - ./node_modules
@@ -369,7 +369,7 @@ jobs:
             - ./node_modules
           key: v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
 
-  # Restore django and front POT files containing strings to translate and upload them to our
+  # Restore django POT and front json files containing strings to translate and upload them to our
   # translation management tool
   i18n:
     docker:
