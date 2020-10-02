@@ -33,7 +33,7 @@ lib/gitlint
 # Assets
 data
 src/backend/marsha/static/js
-src/frontend/i18n
+src/frontend/i18n/frontend.json
 
 # Front-end
 **/node_modules

@@ -38,8 +38,7 @@ WORKDIR /app
 COPY ./src/frontend /app/
 
 RUN yarn install --frozen-lockfile && \
-    yarn build -o /dev/null && \
-    yarn generate-translations && \
+    yarn compile-translations && \
     yarn node-sass --include-path node_modules scss/_main.scss --output-style compressed /app/marsha/static/css/main.css && \
     yarn build --mode=production --output-path /app/marsha/static/js/
 

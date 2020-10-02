@@ -124,7 +124,7 @@ venv.bak/
 
 # Front
 node_modules
-src/frontend/i18n
+src/frontend/i18n/frontend.json
 src/backend/marsha/static/css
 src/backend/marsha/static/js
 

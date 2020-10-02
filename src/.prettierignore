@@ -1,4 +1,4 @@
-i18n/**/*.json
+frontend/i18n/*.json
 node_modules
-translations/*.json
-public-path.js
+frontend/translations/*.json
+frontend/public-path.js

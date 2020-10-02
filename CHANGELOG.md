@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Remove usage of react-intl-po
+- Rework front i18n workflow
+
 ## [3.10.2] - 2020-09-29
 
 ### Fixed
