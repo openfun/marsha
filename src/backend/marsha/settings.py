@@ -111,6 +111,7 @@ class Base(Configuration):
         "django_extensions",
         "dockerflow.django",
         "rest_framework",
+        "rest_framework.authtoken",
         "marsha.core.apps.CoreConfig",
     ]
 
@@ -150,6 +151,7 @@ class Base(Configuration):
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
             "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
+            "rest_framework.authentication.TokenAuthentication",
         )
     }
 

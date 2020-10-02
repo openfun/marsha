@@ -106,7 +106,9 @@ class VideoViewSet(
     queryset = Video.objects.all()
     serializer_class = serializers.VideoSerializer
     permission_classes = [
-        permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        permissions.IsResourceAdmin
+        | permissions.IsResourceInstructor
+        | permissions.StaffUserVideoPermission
     ]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")

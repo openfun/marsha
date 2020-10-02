@@ -163,6 +163,10 @@ test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
 	bin/pytest
 
+token-create:  ## create a token for user=<user> (ie: make token-create user=foo)
+	@$(COMPOSE_RUN_APP) python manage.py drf_create_token $(user)
+.PHONY: token-create
+
 ## -- Front-end
 
 build-front: ## Build front application

@@ -134,6 +134,18 @@ Now that your `Docker` services are ready to be used, start the application by r
 
 You should be able to view the development view at [localhost:8060/development/](http://localhost:8060/development/).
 
+#### Getting video detail from API
+
+If you ever need to get detail from a video but don't want to forge extra jwt token, the backend API can be used.
+To do so:
+- Create a user in the Django Backend (lets call it `foo` for this example)
+- Make sure to tick the "staff" checkbox
+- Now, generate a API token and retrieve it for this user `make create-token user=foo`
+- You can now make api call to get your video detail: `curl http://127.0.0.1:8060/api/videos/<video-id>/ -H 'Authorization: Token <the-api-token>'`
+- Once you have finished to get your data, you can remove the user or simply untick the staff status*
+
+*For extra security those API calls only works with a GET method and for staff user.
+
 ### The `React` frontend
 
 All tasks related to the `React` frontend are run from the `./src/frontend` directory.

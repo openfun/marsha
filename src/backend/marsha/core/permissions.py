@@ -172,3 +172,61 @@ class IsVideoToken(permissions.IsAuthenticated):
             return True
 
         return super().has_permission(request, view)
+
+
+class StaffUserVideoPermission(permissions.BasePermission):
+    """A custom permission class for API Tokens related to objects linked to a video.
+
+    This permission allow GET request from a staff user and deny for other methods or
+    non-staff users.
+
+    """
+
+    def has_permission(self, request, view):
+        """Allow staff api GET requests and postpone further check to the object permission check.
+
+        Parameters
+        ----------
+        request : Type[rest_framework.request]
+            The request that holds the authenticated user
+        view : Type[restframework.viewsets or restframework.views]
+            The API view for which permissions are being checked
+
+        Returns
+        -------
+        boolean
+            True if the request is authorized, False otherwise
+
+        """
+        if request.user.is_staff and request.method == "GET":
+            return True
+
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        """Add a check to allow GET request for staff users identified via an API token.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request that holds the authenticated user
+        view : Type[restframework.viewsets or restframework.views]
+            The API view for which permissions are being checked
+        obj: Type[models.Model]
+            The object for which object permissions are being checked
+
+        Raises
+        ------
+        PermissionDenied
+            Raised if the request is not authorized
+
+        Returns
+        -------
+        boolean
+            True if authorized, False otherwise
+
+        """
+        if request.user.is_staff and request.method == "GET":
+            return True
+
+        return False
