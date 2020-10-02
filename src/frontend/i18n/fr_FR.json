@@ -1,0 +1,462 @@
+{
+  "component.DashboardVideoPaneDownloadOption.allowDownload": {
+    "description": "",
+    "message": "Autoriser le téléchargement de la vidéo"
+  },
+  "component.DashboardVideoPaneDownloadOption.updateVideoFail": {
+    "description": "Failed to update download permission on your video.",
+    "message": "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
+  },
+  "component.DashboardVideoPaneTranscriptOption.updateVideoFail": {
+    "description": "Failed to update download permission on your video.",
+    "message": "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
+  },
+  "component.DashboardVideoPaneTranscriptOption.useTranscript": {
+    "description": "",
+    "message": "Utiliser les sous-titres comme transcrit"
+  },
+  "components.Dashboard.DashboardPaneButtons.documents.btnPlay": {
+    "description": "Dashboard button to display the existing document, if there is one.",
+    "message": "Afficher"
+  },
+  "components.Dashboard.DashboardPaneButtons.documents.btnReplace": {
+    "description": "Dashboard button to upload a document to replace the existing one, when there *is* an existing document.",
+    "message": "Remplacer le document"
+  },
+  "components.Dashboard.DashboardPaneButtons.documents.btnUploadFirst": {
+    "description": "Dashboard button to upload a document, when there is no existing document.",
+    "message": "Téléverser un document"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.btnPlay": {
+    "description": "Dashboard button to play the existing video, if there is one.",
+    "message": "Regarder"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.btnReplace": {
+    "description": "Dashboard button to upload a video to replace the existing one, when there *is* an existing video.",
+    "message": "Remplacer la vidéo"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst": {
+    "description": "Dashboard button to upload a video, when there is no existing video.",
+    "message": "Téléverser une vidéo"
+  },
+  "components.Dashboard.DashboardPaneHelptext.documents.helptextError": {
+    "description": "Dashboard helptext for when the document failed to upload or get processed.",
+    "message": "Une erreur s'est produite avec ce document. Merci de réessayer ou de téléverser un autre document."
+  },
+  "components.Dashboard.DashboardPaneHelptext.documents.helptextPending": {
+    "description": "Dashboard helptext for the case when there is no existing document nor anything in progress.",
+    "message": "Il n'y a pas encore de document à afficher."
+  },
+  "components.Dashboard.DashboardPaneHelptext.documents.helptextProcessing": {
+    "description": "Dashboard helptext to warn users document is processing.",
+    "message": "Votre document est en cours de traitement. Cela peut prendre quelques minutes."
+  },
+  "components.Dashboard.DashboardPaneHelptext.documents.helptextReady": {
+    "description": "Dashboard helptext for ready-to-display documents.",
+    "message": "Votre document est prêt à être affiché."
+  },
+  "components.Dashboard.DashboardPaneHelptext.documents.helptextUploading": {
+    "description": "Dashboard helptext to warn user not to navigate away during document upload.",
+    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
+  },
+  "components.Dashboard.DashboardPaneHelptext.videos.helptextError": {
+    "description": "Dashboard helptext for when the video failed to upload or get processed.",
+    "message": "Une erreur s'est produite avec cette vidéo. Merci de réessayer ou de téléverser une autre vidéo."
+  },
+  "components.Dashboard.DashboardPaneHelptext.videos.helptextPending": {
+    "description": "Dashboard helptext for the case when there is no existing video nor anything in progress.",
+    "message": "Il n'y a pas encore de vidéo à afficher."
+  },
+  "components.Dashboard.DashboardPaneHelptext.videos.helptextProcessing": {
+    "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
+    "message": "Votre vidéo est en cours de traitement. Le traitement peut prendre jusqu'à une heure. Nous vous conseillons de revenir plus tard."
+  },
+  "components.Dashboard.DashboardPaneHelptext.videos.helptextReady": {
+    "description": "Dashboard helptext for ready-to-play videos.",
+    "message": "Votre vidéo est prête à être visionnée."
+  },
+  "components.Dashboard.DashboardPaneHelptext.videos.helptextUploading": {
+    "description": "Dashboard helptext to warn user not to navigate away during video upload.",
+    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
+  },
+  "components.Dashboard.title": {
+    "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
+    "message": "Tableau de bord"
+  },
+  "components.DashboardDocument.filename": {
+    "description": "Document filename.",
+    "message": "Nom de fichier"
+  },
+  "components.DashboardDocument.title": {
+    "description": "Document upload status.",
+    "message": "Statut du document"
+  },
+  "components.DashboardDocumentTitleForm.form.label.error": {
+    "description": "Error message to warn the user that a title update failed and ask them to try again later.",
+    "message": "Impossible de mettre à jour le titre. Merci de réessayer plus tard."
+  },
+  "components.DashboardDocumentTitleForm.form.label.title": {
+    "description": "Label informing the user they can change the document title.",
+    "message": "Modifier le titre du document"
+  },
+  "components.DashboardDocumentTitleForm.form.success": {
+    "description": "message display when the title is successfully updated",
+    "message": "Titre mis à jour"
+  },
+  "components.DashboardThumbnail.error": {
+    "description": "Generic error message when we fail to create a thumbnail.",
+    "message": "Une erreur s'est produite durant la création de la vignette."
+  },
+  "components.DashboardThumbnail.helptextProcessing": {
+    "description": "Thumbnail help text informing that the thumbnail is processing and will be available soon.",
+    "message": "Votre vignette est en cours de traitement. Le traitement peut prendre quelques minutes. La vignette apparaîtra une fois le traitement terminé."
+  },
+  "components.DashboardTimedTextPane.closedCaptions": {
+    "description": "Title for the closed captions management in the dashboard.",
+    "message": "Sous-titres codés (sourds et malentendants)"
+  },
+  "components.DashboardTimedTextPane.subtitles": {
+    "description": "Title for the subtitles management in the dashboard.",
+    "message": "Sous-titres"
+  },
+  "components.DashboardTimedTextPane.transcripts": {
+    "description": "Title for the transcripts management in the dashboard.",
+    "message": "Transcripts"
+  },
+  "components.DashboardVideoPane.thumbnailAlt": {
+    "description": "Accessibility text for the video thumbnail in the Dashboard.",
+    "message": "Vignette de prévisualisation de la vidéo."
+  },
+  "components.DashboardVideoPane.title": {
+    "description": "Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).",
+    "message": "Statut de la vidéo"
+  },
+  "components.DashboardVideoPaneProgress.progressLabel": {
+    "description": "Accessibility message for the upload progress bar.",
+    "message": "Progression du téléversement"
+  },
+  "components.DownloadVideo.1080": {
+    "description": "High quality video",
+    "message": "1080p: FullHD (haute qualité)"
+  },
+  "components.DownloadVideo.480": {
+    "description": "Mobile quality video",
+    "message": "480p: SD (mobile)"
+  },
+  "components.DownloadVideo.720": {
+    "description": "Normal quality video",
+    "message": "720p: HD (normal)"
+  },
+  "components.DownloadVideo.downloadVideo": {
+    "description": "Text to download the video",
+    "message": "Télécharger cette vidéo :"
+  },
+  "components.ErrorComponent.lti.text": {
+    "description": "Helpful text for the LTI error page",
+    "message": "Nous ne pouvons vérifier vos droits pour accéder à cette vidéo. Merci de prendre contact avec votre instructeur. Si vous êtes l'instructeur, merci de vérifier vos paramètres."
+  },
+  "components.ErrorComponent.lti.title": {
+    "description": "Title for the LTI error page",
+    "message": "Une erreur s'est produite pendant le chargement de la vidéo"
+  },
+  "components.ErrorComponent.notFound.text": {
+    "description": "Helpful text for the 404 Not Found error page",
+    "message": "La vidéo n'existe pas ou n'a pas encore été publiée. Si vous êtes un instructeur assurez vous d'être correctement authentifié."
+  },
+  "components.ErrorComponent.notFound.title": {
+    "description": "Title for the 404 Not Found error page",
+    "message": "Cette vidéo n'est pas disponible"
+  },
+  "components.ErrorComponent.policy.text": {
+    "description": "Title for the upload permission error page",
+    "message": "Nous ne pouvons vérifier si vous avez les droits nécessaires pour téléverser un fichier. Vérifiez vos paramètres et/ou réessayez."
+  },
+  "components.ErrorComponent.policy.title": {
+    "description": "Helpful text for the upload permission error page",
+    "message": "Impossible de vérifier vos droits pour téléverser le fichier"
+  },
+  "components.ErrorComponent.upload.text": {
+    "description": "Helpful text for the Upload error page",
+    "message": "Vous pouvez réessayer dans quelques instants. Vous devriez vérifier la qualité de votre connexion internet."
+  },
+  "components.ErrorComponent.upload.title": {
+    "description": "Title for the video upload error page",
+    "message": "Erreur lors du téléversement du fichier vidéo"
+  },
+  "components.InstructorView.btnDashboard": {
+    "description": "Text for the button in the instructor view that allows the instructor to go to the dashboard.",
+    "message": "Aller au tableau de bord"
+  },
+  "components.InstructorView.disabledDashboard": {
+    "description": "Text explaining that the ivdeo is in read_only mode and the dashboard is not available",
+    "message": "Cette vidéo est en lecture seule car elle appartient au cours : {lti_id}"
+  },
+  "components.InstructorView.maintenance": {
+    "description": "Text explaining that the dashboard is not accessible because marsha is in maintenance",
+    "message": "Le tableau de bord est en cours de maintenance, il ne peut pas être utilisé pour le moment."
+  },
+  "components.InstructorView.title": {
+    "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
+    "message": "Aperçu instructeur 👆"
+  },
+  "components.TimedTextCreationForm.addTrackBtn": {
+    "description": "Text for the button in the dashboard to go upload a new timed text file.",
+    "message": "Téléverser le fichier"
+  },
+  "components.TimedTextCreationForm.addTrackLabel": {
+    "description": "Label for the form that lets the instructor add a new timed text track.",
+    "message": "Ajouter une langue"
+  },
+  "components.TimedTextCreationForm.error": {
+    "description": "Generic error message when we fail to create a subtitle/transcript/caption track.",
+    "message": "Une erreur s'est produite pendant la création de cette piste."
+  },
+  "components.TimedTextListItem.delete": {
+    "description": "Link text to delete a subtitle/transcript/captions item.",
+    "message": "Supprimer"
+  },
+  "components.TimedTextListItem.replace": {
+    "description": "Link text to replace a subtitle/transcript/captions item with a new file (for the same language).",
+    "message": "Remplacer"
+  },
+  "components.TimedTextListItem.upload": {
+    "description": "Link text to upload a missing subtitle/transcript/captions item file.",
+    "message": "Téléverser"
+  },
+  "components.Transcripts.hideTranscript": {
+    "description": "Text to hide a displayed transcript",
+    "message": "Masquer le transcript"
+  },
+  "components.Transcripts.transcriptLabel": {
+    "description": "Text indicated to choose an available transcript language",
+    "message": "Choisir un transcript"
+  },
+  "components.Transcripts.transcriptSelect": {
+    "description": "Placeholder for the transcript select box",
+    "message": "Choisir une langue"
+  },
+  "components.UploadForm.dropzoneButtonPick": {
+    "description": "File upload dropzone: button to choose a file to upload,\n      has the drag text next to it (components.UploadForm.dropzoneDragText)",
+    "message": "Sélectionner un fichier à téléverser"
+  },
+  "components.UploadForm.dropzoneDragText": {
+    "description": "File upload dropzone: helptext on the dropzone,\n      goes along with the button (components.UploadForm.dropzoneButtonPick)",
+    "message": "ou le glisser ici"
+  },
+  "components.UploadForm.linkToDashboard": {
+    "description": "Text for the link to the dashboard in the upload form.",
+    "message": "Revenir au tableau de bord"
+  },
+  "components.UploadForm.title-document": {
+    "description": "Title for the document upload form",
+    "message": "Téléverser un nouveau document"
+  },
+  "components.UploadForm.title-thumbnail": {
+    "description": "Title for the thumbnail upload form",
+    "message": "Téléverser une nouvelle vignette"
+  },
+  "components.UploadForm.title-timedtexttracks-cc": {
+    "description": "Title for the timed text file upload form",
+    "message": "Téléverser un nouveau fichier de sous-titres codés (sourds et malentendants)"
+  },
+  "components.UploadForm.title-timedtexttracks-st": {
+    "description": "Title for the timed text file upload form",
+    "message": "Téléverser un nouveau fichier de sous-titres"
+  },
+  "components.UploadForm.title-timedtexttracks-ts": {
+    "description": "Title for the timed text file upload form",
+    "message": "Téléverser un nouveau transcript"
+  },
+  "components.UploadForm.title-videos": {
+    "description": "Title for the video upload form",
+    "message": "Créer une nouvelle vidéo"
+  },
+  "components.UploadStatusPicker.ERROR": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Erreur"
+  },
+  "components.UploadStatusPicker.PENDING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Absent"
+  },
+  "components.UploadStatusPicker.PROCESSING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "En cours de traitement"
+  },
+  "components.UploadStatusPicker.READY": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Disponible"
+  },
+  "components.UploadStatusPicker.UPLOADING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Téléversement en cours"
+  },
+  "components.dashboardThumbnail.replaceThumbnailButton": {
+    "description": "",
+    "message": "Remplacer cette vignette"
+  },
+  "message.key": {
+    "description": "",
+    "message": "Titre"
+  },
+  "plyr.controls.captions.menu.disabled": {
+    "description": "label used in the captions menu list to select the disabled option and then disable captions if selected",
+    "message": "Désactivé"
+  },
+  "plyr.controls.captions.menu.enabled": {
+    "description": "label used in the captions menu list if captions are enabled and the selected caption has no language nor label",
+    "message": "activé"
+  },
+  "plyr.controls.currentTime": {
+    "description": "Indicates the current time in the video.",
+    "message": "Heure actuelle"
+  },
+  "plyr.controls.disableCaptions": {
+    "description": "Button to disable captions",
+    "message": "Désactiver les sous-titres"
+  },
+  "plyr.controls.download": {
+    "description": "Download button",
+    "message": "Télécharger"
+  },
+  "plyr.controls.enableCaptions": {
+    "description": "Button to enable captions",
+    "message": "Activer les sous-titres"
+  },
+  "plyr.controls.enterFullscreen": {
+    "description": "Button to activate the fullscreen mode",
+    "message": "Passer en plein écran"
+  },
+  "plyr.controls.exitFullscreen": {
+    "description": "Button to exit fullscreen mode",
+    "message": "Quitter le mode plein écran"
+  },
+  "plyr.controls.forward": {
+    "description": "Video control forward button",
+    "message": "Avancer de '{seektime}'s"
+  },
+  "plyr.controls.loop": {
+    "description": "Loop is commented in Plyr's code, it is a feature allowing users to play in loop a video section",
+    "message": "Boucle"
+  },
+  "plyr.controls.loop.all": {
+    "description": "When loop is activated, loop over all the video",
+    "message": "Tout"
+  },
+  "plyr.controls.loop.end": {
+    "description": "When loop is activated, this the time where the loop should end at",
+    "message": "Fin"
+  },
+  "plyr.controls.loop.reset": {
+    "description": "When loop is activated, button to reset the loop configuration",
+    "message": "Réinitialiser"
+  },
+  "plyr.controls.loop.start": {
+    "description": "When loop is activated, this the time where the loop should start at",
+    "message": "Démarrer"
+  },
+  "plyr.controls.mute": {
+    "description": "Mute button",
+    "message": "Couper le son"
+  },
+  "plyr.controls.pause": {
+    "description": "Video control pause button",
+    "message": "Pause"
+  },
+  "plyr.controls.play": {
+    "description": "Video control play button",
+    "message": "Lecture"
+  },
+  "plyr.controls.progress.buffered": {
+    "description": "Used to indicate the % of buffered video",
+    "message": "Mis en mémoire"
+  },
+  "plyr.controls.progress.played": {
+    "description": "Used to indicate the % of video played",
+    "message": "Lu"
+  },
+  "plyr.controls.quality.badge.1080": {
+    "description": "Label associatied to the 1080px quality badge",
+    "message": "HD"
+  },
+  "plyr.controls.quality.badge.1440": {
+    "description": "Label associatied to the 1440px quality badge",
+    "message": "HD"
+  },
+  "plyr.controls.quality.badge.2160": {
+    "description": "Label associatied to the 2160px quality badge",
+    "message": "4K"
+  },
+  "plyr.controls.quality.badge.480": {
+    "description": "Label associatied to the 480px quality badge",
+    "message": "SD"
+  },
+  "plyr.controls.quality.badge.576": {
+    "description": "Label associatied to the 576px quality badge",
+    "message": "SD"
+  },
+  "plyr.controls.quality.badge.720": {
+    "description": "Label associatied to the 720px quality badge",
+    "message": "HD"
+  },
+  "plyr.controls.rangeFill.seek": {
+    "description": "Video seek progress bar used as polyfill for webkit",
+    "message": "'{currentTime}' sur '{duration}'"
+  },
+  "plyr.controls.restart": {
+    "description": "Video control restart button",
+    "message": "Recommencer"
+  },
+  "plyr.controls.rewind": {
+    "description": "Video control rewind button",
+    "message": "Reculer de '{seektime}'s"
+  },
+  "plyr.controls.seek": {
+    "description": "Video control seek slider",
+    "message": "Avancer"
+  },
+  "plyr.controls.unmute": {
+    "description": "Unmute button",
+    "message": "Remettre le son"
+  },
+  "plyr.controls.volume": {
+    "description": "Indicates the zone where the volume is managed in the plyr interface",
+    "message": "Volume"
+  },
+  "plyr.pluging.ad": {
+    "description": "When Ad plugin is used, a countdown is display and this label is used to indicated the remaining time before viewing the video. Eg: Ad - 0:08",
+    "message": "Annonce"
+  },
+  "plyr.ui.display.duration": {
+    "description": "Display the total video duration",
+    "message": "Durée"
+  },
+  "plyr.ui.frameTitle": {
+    "description": "Title set to an iframe when the video is loaded in an iframe as parent element",
+    "message": "Lecteur pour '{title}'"
+  },
+  "plyr.ui.menuBack": {
+    "description": "When a setting menu is open, this label is added to the button responsible to go back to the previous menu",
+    "message": "Revenir au menu précédent"
+  },
+  "plyr.ui.setting.quality": {
+    "description": "Label used in the menu to open quality setting",
+    "message": "Qualité"
+  },
+  "plyr.ui.setting.speed": {
+    "description": "Label used in the menu to open speed setting",
+    "message": "Vitesse"
+  },
+  "plyr.ui.setting.speed.normal": {
+    "description": "Value used in the speed setting, corresponding to a 1x speed",
+    "message": "Normale"
+  },
+  "plyr.ui.settings": {
+    "description": "Label used to indicate settings menu",
+    "message": "Réglages"
+  },
+  "plyr.ui.settings.captions": {
+    "description": "Label used in the setting menu to access captions choices",
+    "message": "Sous-titres"
+  }
+}

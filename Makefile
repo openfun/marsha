@@ -176,7 +176,7 @@ build-sass: ## Build Sass file to CSS
 .PHONY: build-sass
 
 build-ts: ### Build TypeScript application
-	@$(YARN) generate-translations
+	@$(YARN) compile-translations
 	@$(YARN) build
 .PHONY: build-ts
 
@@ -187,7 +187,7 @@ watch-front: ## Build front application and activate watch mode
 # -- Internationalization
 
 crowdin-download: ## Download translated message from crowdin
-	@$(COMPOSE_RUN_CROWDIN) download translations -c crowdin/config.yml
+	@$(COMPOSE_RUN_CROWDIN) download -c crowdin/config.yml
 .PHONY: crowdin-download
 
 crowdin-upload: ## Upload source translations to crowdin
@@ -205,7 +205,7 @@ i18n-compile-back:
 .PHONY: i18n-compile-back
 
 i18n-compile-front:
-	@$(YARN) generate-translations
+	@$(YARN) compile-translations
 .PHONY: i18n-compile-front
 
 i18n-generate: ## Generate source translations files for all applications
@@ -220,7 +220,7 @@ i18n-generate-back:
 
 i18n-generate-front:
 	@$(YARN) build
-	@$(YARN) generate-l10n-template
+	@$(YARN) extract-translations
 .PHONY: i18n-generate-front
 
 
