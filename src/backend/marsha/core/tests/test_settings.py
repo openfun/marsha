@@ -3,7 +3,9 @@ from unittest import mock
 
 from django.test import TestCase
 
-from marsha.settings import get_release
+from sentry_sdk.integrations.django import DjangoIntegration
+
+from marsha.settings import Base, get_release
 
 
 # pylint: disable=unused-argument
@@ -25,3 +27,15 @@ class SettingsTestCase(TestCase):
         """Attempt (and fail) to get release from a broken version.json file."""
         with self.assertRaises(KeyError):
             get_release()
+
+    @mock.patch("marsha.settings.sentry_sdk.init")
+    def test_init_sentry_sdk(self, sentry_sdk_mock):
+        """Configure sentry sdk in post_setup function."""
+        Base.SENTRY_DSN = "https://foo.sentry.io"
+        Base.post_setup()
+        sentry_sdk_mock.assert_called_once()
+        init_parameters = sentry_sdk_mock.call_args.kwargs
+        self.assertEqual(init_parameters.get("dsn"), "https://foo.sentry.io")
+        self.assertEqual(init_parameters.get("environment"), "base")
+        self.assertEqual(init_parameters.get("release"), "NA")
+        self.assertIsInstance(init_parameters.get("integrations")[0], DjangoIntegration)

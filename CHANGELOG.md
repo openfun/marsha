@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fix admin video search
+- Rework sentry configuration to have environment and version info
 
 ## [3.10.2] - 2020-09-29
 

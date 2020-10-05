@@ -291,11 +291,16 @@ class Base(Configuration):
         """
         return get_release()
 
+    @classmethod
+    def _get_environment(cls):
+        """Environment in which the application is launched."""
+        return cls.__name__.lower()
+
     # pylint: disable=invalid-name
     @property
     def ENVIRONMENT(self):
         """Environment in which the application is launched."""
-        return self.__class__.__name__.lower()
+        return self._get_environment()
 
     @classmethod
     def post_setup(cls):
@@ -311,8 +316,8 @@ class Base(Configuration):
         if cls.SENTRY_DSN is not None:
             sentry_sdk.init(
                 dsn=cls.SENTRY_DSN,
-                environment=cls.ENVIRONMENT,
-                release=cls.RELEASE,
+                environment=cls._get_environment(),
+                release=get_release(),
                 integrations=[DjangoIntegration()],
             )
             with sentry_sdk.configure_scope() as scope:
