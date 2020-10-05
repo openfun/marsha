@@ -19,6 +19,9 @@ jobs:
   lint-git:
     docker:
       - image: circleci/python:3.8-buster
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -43,6 +46,9 @@ jobs:
   check-changelog:
     docker:
       - image: circleci/buildpack-deps:stretch-scm
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -55,6 +61,9 @@ jobs:
   lint-changelog:
     docker:
       - image: debian:stretch
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -70,6 +79,9 @@ jobs:
   build-docker:
     docker:
       - image: circleci/buildpack-deps:stretch
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -101,6 +113,9 @@ jobs:
   build-back:
     docker:
       - image: circleci/python:3.8-buster
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -120,6 +135,9 @@ jobs:
   build-back-i18n:
     docker:
       - image: circleci/python:3.8-buster
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
         environment:
           DJANGO_SETTINGS_MODULE: marsha.settings
           PYTHONPATH: /home/circleci/marsha/src/backend
@@ -161,6 +179,9 @@ jobs:
   lint-back:
     docker:
       - image: circleci/python:3.8-buster
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -188,6 +209,9 @@ jobs:
   test-back:
     docker:
       - image: circleci/python:3.8-buster
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
         environment:
           DJANGO_SETTINGS_MODULE: marsha.settings
           PYTHONPATH: /home/circleci/marsha/src/backend
@@ -204,6 +228,9 @@ jobs:
           DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
       - image: circleci/postgres:10.3-alpine-ram
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
         environment:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
@@ -234,6 +261,9 @@ jobs:
   build-front:
     docker:
       - image: circleci/node:10
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -268,6 +298,9 @@ jobs:
   lint-front:
     docker:
       - image: circleci/node:10
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -285,6 +318,9 @@ jobs:
   test-front:
     docker:
       - image: circleci/node:10
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -300,6 +336,9 @@ jobs:
   test-lambda-configure:
     docker:
       - image: circleci/node:10.16.3
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-configure
@@ -324,6 +363,9 @@ jobs:
   test-lambda-encode:
     docker:
       - image: circleci/node:10.16.3
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-encode
@@ -348,6 +390,9 @@ jobs:
   test-lambda-complete:
     docker:
       - image: circleci/node:10.16.3
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-complete
@@ -374,6 +419,9 @@ jobs:
   i18n:
     docker:
       - image: crowdin/cli:3.2.1
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       - checkout:
@@ -388,6 +436,9 @@ jobs:
   hub:
     docker:
       - image: circleci/buildpack-deps:stretch
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     working_directory: ~/marsha
     steps:
       - checkout
