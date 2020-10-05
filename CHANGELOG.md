@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove usage of react-intl-po
 - Rework front i18n workflow
 
+### Fixed
+
+- Fix admin video search
+
 ## [3.10.2] - 2020-09-29
 
 ### Fixed

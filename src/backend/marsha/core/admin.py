@@ -377,7 +377,9 @@ class PlaylistAdmin(admin.ModelAdmin):
         "consumer_site__name",
         "organization__name",
         "lti_id",
-        "portable_to",
+        "portable_to__title",
+        "portable_to__lti_id",
+        "portable_to__id",
         "title",
     )
     verbose_name = _("Playlist")
