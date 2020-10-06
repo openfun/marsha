@@ -1,3 +1,20 @@
+# CircleCI's configuration for Marsha
+#
+# Reference: https://circleci.com/docs/2.0/configuration-reference/
+
+aliases:
+  - &docker_login
+    # Login to DockerHub
+    #
+    # Nota bene: you'll need to define the following secrets environment vars
+    # in CircleCI interface:
+    #
+    #   - DOCKER_USER
+    #   - DOCKER_PASS
+    run:
+      name: Login to DockerHub
+      command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
 # Configuration file anchors
 generate-version-file: &generate-version-file
   run:
@@ -91,6 +108,7 @@ jobs:
       # Activate docker-in-docker (with layers caching enabled)
       - setup_remote_docker:
           docker_layer_caching: true
+      - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
@@ -447,23 +465,13 @@ jobs:
       # Activate docker-in-docker (with layers caching enabled)
       - setup_remote_docker:
           docker_layer_caching: true
+      - *docker_login
       - run:
           name: Build production image (using cached layers)
           command: |
             docker build \
               -t marsha:${CIRCLE_SHA1} \
-              .
-
-      # Login to DockerHub to Publish new images
-      #
-      # Nota bene: you'll need to define the following secrets environment vars
-      # in CircleCI interface:
-      #
-      #   - DOCKER_USER
-      #   - DOCKER_PASS
-      - run:
-          name: Login to DockerHub
-          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+              .      
 
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
