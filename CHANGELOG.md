@@ -8,10 +8,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.11.0] - 2020-10-08
+
 ### Changed
 
-- Remove usage of react-intl-po
 - Rework front i18n workflow
+
+### Removed
+
+- Remove usage of react-intl-po
 
 ### Fixed
 
@@ -579,7 +584,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.10.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.11.0...master
+[3.11.0]: https://github.com/openfun/marsha/compare/v3.10.2...v3.11.0
 [3.10.2]: https://github.com/openfun/marsha/compare/v3.10.1...v3.10.2
 [3.10.1]: https://github.com/openfun/marsha/compare/v3.10.0...v3.10.1
 [3.10.0]: https://github.com/openfun/marsha/compare/v3.9.1...v3.10.0
