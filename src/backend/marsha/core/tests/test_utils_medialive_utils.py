@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 
 from botocore.stub import ANY, Stubber
 
+from ..factories import VideoFactory
 from ..utils import medialive_utils
 
 
@@ -409,3 +410,52 @@ class MediaLiveUtilsTestCase(TestCase):
                 },
             },
         )
+
+    def test_delete_aws_elemental_stack(self):
+        """Should delete all resources used during a live."""
+        video = VideoFactory(
+            live_info={
+                "medialive": {
+                    "input": {"id": "medialive_input1"},
+                    "channel": {"id": "medialive_channel1"},
+                },
+                "mediapackage": {
+                    "endpoints": {
+                        "hls": {"id": "mediapackage_endpoint1"},
+                    },
+                    "channel": {"id": "mediapackage_channel1"},
+                },
+            }
+        )
+
+        with Stubber(medialive_utils.medialive_client) as medialive_stubber, Stubber(
+            medialive_utils.mediapackage_client
+        ) as mediapackage_stubber:
+            mediapackage_stubber.add_response(
+                "delete_origin_endpoint",
+                expected_params={"Id": "mediapackage_endpoint1"},
+                service_response={},
+            )
+            mediapackage_stubber.add_response(
+                "delete_channel",
+                expected_params={"Id": "mediapackage_channel1"},
+                service_response={},
+            )
+            medialive_stubber.add_response(
+                "delete_channel",
+                expected_params={"ChannelId": "medialive_channel1"},
+                service_response={},
+            )
+            medialive_stubber.add_response(
+                "describe_input",
+                expected_params={"InputId": "medialive_input1"},
+                service_response={"State": "DETACHED"},
+            )
+            medialive_stubber.add_response(
+                "delete_input",
+                expected_params={"InputId": "medialive_input1"},
+                service_response={},
+            )
+
+            medialive_utils.delete_aws_element_stack(video)
+            mediapackage_stubber.assert_no_pending_responses()

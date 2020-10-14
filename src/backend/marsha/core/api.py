@@ -22,6 +22,7 @@ from .models import Document, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
     create_live_stream,
+    delete_aws_element_stack,
     start_live_channel,
     stop_live_channel,
 )
@@ -307,6 +308,10 @@ class VideoViewSet(
             {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
         )
         video.live_info = live_info
+
+        if video.live_state == defaults.STOPPED:
+            delete_aws_element_stack(video)
+
         video.save()
 
         return Response({"success": True})

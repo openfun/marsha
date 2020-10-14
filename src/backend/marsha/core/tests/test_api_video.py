@@ -1492,6 +1492,42 @@ class VideoAPITest(TestCase):
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_video_update_live_state_stopped(self):
+        """Updating state to stopped should delete all the AWS elemental stack."""
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            upload_state=PENDING,
+            live_state=RUNNING,
+            live_info={},
+        )
+        data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "state": "stopped",
+        }
+
+        with mock.patch(
+            "marsha.core.api.delete_aws_element_stack"
+        ) as delete_aws_element_stack_mock:
+            response = self.client.patch(
+                "/api/videos/{!s}/update-live-state/".format(video.id),
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=(
+                    "6b551203cd79200fe9f02e20e69bb75a583dfe833c997a849b8cf59802185199"
+                ),
+            )
+            delete_aws_element_stack_mock.assert_called_once()
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        self.assertEqual(video.live_state, STOPPED)
+        self.assertEqual(
+            video.live_info,
+            {"cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"}},
+        )
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
         """Live state update with an invalid signature should fails."""
         video = VideoFactory(

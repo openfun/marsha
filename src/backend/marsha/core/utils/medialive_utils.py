@@ -269,3 +269,35 @@ def start_live_channel(channel_id):
 def stop_live_channel(channel_id):
     """Stop an existing medialive channel."""
     medialive_client.stop_channel(ChannelId=channel_id)
+
+
+def delete_aws_element_stack(video):
+    """Delete all AWS elemental.
+
+    Instances used:
+        - medialive input and channel
+        - mediapackage channel and endpoints
+    """
+    # Mediapackage
+    # First delete mediapackage endpoint
+    mediapackage_client.delete_origin_endpoint(
+        Id=video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
+    )
+
+    # Then delete channel
+    mediapackage_client.delete_channel(
+        Id=video.live_info.get("mediapackage").get("channel").get("id")
+    )
+
+    # Medialive
+    # First delete the channel
+    medialive_client.delete_channel(
+        ChannelId=video.live_info.get("medialive").get("channel").get("id")
+    )
+
+    # Once channel deleted we have to wait until input is detached
+    input_waiter = medialive_client.get_waiter("input_detached")
+    input_waiter.wait(InputId=video.live_info.get("medialive").get("input").get("id"))
+    medialive_client.delete_input(
+        InputId=video.live_info.get("medialive").get("input").get("id")
+    )
