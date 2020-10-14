@@ -124,13 +124,14 @@ class MediaLiveUtilsTestCase(TestCase):
 
         self.assertEqual("tagged_security_group", security_group_id)
 
+    @override_settings(AWS_BASE_NAME="test")
     def test_create_mediapackage_channel(self):
         """Create an AWS mediapackage channel."""
         key = "video-key"
 
         ssm_response = {"Version": 1, "Tier": "Standard"}
         mediapackage_create_channel_response = {
-            "Id": "channel1",
+            "Id": f"test_{key}",
             "HlsIngest": {
                 "IngestEndpoints": [
                     {
@@ -159,35 +160,37 @@ class MediaLiveUtilsTestCase(TestCase):
             mediapackage_stubber.add_response(
                 "create_channel",
                 service_response=mediapackage_create_channel_response,
-                expected_params={"Id": key},
+                expected_params={"Id": f"test_{key}", "Tags": {"environment": "test"}},
             )
             ssm_stubber.add_response(
                 "put_parameter",
                 service_response=ssm_response,
                 expected_params={
-                    "Name": "user1",
+                    "Name": "test_user1",
                     "Description": "video-key MediaPackage Primary Ingest Username",
                     "Value": "password1",
                     "Type": "String",
+                    "Tags": [{"Key": "environment", "Value": "test"}],
                 },
             )
             ssm_stubber.add_response(
                 "put_parameter",
                 service_response=ssm_response,
                 expected_params={
-                    "Name": "user2",
+                    "Name": "test_user2",
                     "Description": "video-key MediaPackage Secondary Ingest Username",
                     "Value": "password2",
                     "Type": "String",
+                    "Tags": [{"Key": "environment", "Value": "test"}],
                 },
             )
             mediapackage_stubber.add_response(
                 "create_origin_endpoint",
                 service_response=mediapackage_create_hls_origin_endpoint_response,
                 expected_params={
-                    "ChannelId": "channel1",
-                    "Id": "channel1-hls",
-                    "ManifestName": "channel1-hls",
+                    "ChannelId": f"test_{key}",
+                    "Id": "test_video-key_hls",
+                    "ManifestName": "test_video-key_hls",
                     "StartoverWindowSeconds": 86400,
                     "TimeDelaySeconds": 0,
                     "HlsPackage": {
@@ -198,6 +201,7 @@ class MediaLiveUtilsTestCase(TestCase):
                         "ProgramDateTimeIntervalSeconds": 0,
                         "SegmentDurationSeconds": 1,
                     },
+                    "Tags": {"environment": "test"},
                 },
             )
 
@@ -209,6 +213,7 @@ class MediaLiveUtilsTestCase(TestCase):
         self.assertEqual(channel, mediapackage_create_channel_response)
         self.assertEqual(hls_endpoint, mediapackage_create_hls_origin_endpoint_response)
 
+    @override_settings(AWS_BASE_NAME="test")
     def test_create_medialive_input(self):
         """Create and return an AWS medialive input."""
         key = "video-key"
@@ -235,12 +240,13 @@ class MediaLiveUtilsTestCase(TestCase):
                 service_response=medialive_create_input_response,
                 expected_params={
                     "InputSecurityGroups": ["security_group_1"],
-                    "Name": key,
+                    "Name": f"test_{key}",
                     "Type": "RTMP_PUSH",
                     "Destinations": [
                         {"StreamName": "video-key-primary"},
                         {"StreamName": "video-key-secondary"},
                     ],
+                    "Tags": {"environment": "test"},
                 },
             )
 
@@ -250,6 +256,7 @@ class MediaLiveUtilsTestCase(TestCase):
         self.assertEqual(response, medialive_create_input_response)
 
     @override_settings(AWS_MEDIALIVE_ROLE_ARN="medialive:role:arn")
+    @override_settings(AWS_BASE_NAME="test")
     def test_create_medialive_channel(self):
         """Create an AWS medialive channel."""
         key = "video-key"
@@ -294,21 +301,22 @@ class MediaLiveUtilsTestCase(TestCase):
                             "Id": "destination1",
                             "Settings": [
                                 {
-                                    "PasswordParam": "user1",
+                                    "PasswordParam": "test_user1",
                                     "Url": "https://endpoint1/channel",
                                     "Username": "user1",
                                 },
                                 {
-                                    "PasswordParam": "user2",
+                                    "PasswordParam": "test_user2",
                                     "Url": "https://endpoint2/channel",
                                     "Username": "user2",
                                 },
                             ],
                         }
                     ],
-                    "Name": key,
+                    "Name": f"test_{key}",
                     "RoleArn": "medialive:role:arn",
                     "EncoderSettings": ANY,
+                    "Tags": {"environment": "test"},
                 },
             )
 
