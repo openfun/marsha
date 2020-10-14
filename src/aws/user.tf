@@ -146,7 +146,8 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
         "mediapackage:DescribeChannel",
         "mediapackage:CreateChannel",
         "mediapackage:ListChannels",
-        "mediapackage:UpdateOriginEndpoint"
+        "mediapackage:UpdateOriginEndpoint",
+        "mediapackage:TagResource"
       ],
       "Resource": "*"
     },
@@ -159,7 +160,10 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
     {
       "Sid": "SSM",
       "Effect": "Allow",
-      "Action": "ssm:PutParameter",
+      "Action": [
+        "ssm:PutParameter",
+        "ssm:AddTagsToResource"
+      ],
       "Resource": "*"
     },
     {

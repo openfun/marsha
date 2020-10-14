@@ -41,29 +41,34 @@ def create_mediapackage_channel(key):
 
     """
     # Create mediapackage channel
-    channel = mediapackage_client.create_channel(Id=key)
+    channel = mediapackage_client.create_channel(
+        Id=f"{settings.AWS_BASE_NAME}_{key}",
+        Tags={"environment": settings.AWS_BASE_NAME},
+    )
 
     # Add primary U/P to SSM parameter store
     ssm_client.put_parameter(
-        Name=channel["HlsIngest"]["IngestEndpoints"][0]["Username"],
+        Name=f"{settings.AWS_BASE_NAME}_{channel['HlsIngest']['IngestEndpoints'][0]['Username']}",
         Description=f"{key} MediaPackage Primary Ingest Username",
         Value=channel["HlsIngest"]["IngestEndpoints"][0]["Password"],
         Type="String",
+        Tags=[{"Key": "environment", "Value": settings.AWS_BASE_NAME}],
     )
 
     # Add Secondary U/P to SSM Parameter store
     ssm_client.put_parameter(
-        Name=channel["HlsIngest"]["IngestEndpoints"][1]["Username"],
+        Name=f"{settings.AWS_BASE_NAME}_{channel['HlsIngest']['IngestEndpoints'][1]['Username']}",
         Description=f"{key} MediaPackage Secondary Ingest Username",
         Value=channel["HlsIngest"]["IngestEndpoints"][1]["Password"],
         Type="String",
+        Tags=[{"Key": "environment", "Value": settings.AWS_BASE_NAME}],
     )
 
     # Create an endpoint. This endpoint will be used to watch the stream.
     hls_endpoint = mediapackage_client.create_origin_endpoint(
         ChannelId=channel["Id"],
-        Id=f"{channel['Id']}-hls",
-        ManifestName=f"{channel['Id']}-hls",
+        Id=f"{channel['Id']}_hls",
+        ManifestName=f"{channel['Id']}_hls",
         StartoverWindowSeconds=86400,
         TimeDelaySeconds=0,
         HlsPackage={
@@ -74,6 +79,7 @@ def create_mediapackage_channel(key):
             "ProgramDateTimeIntervalSeconds": 0,
             "SegmentDurationSeconds": 1,
         },
+        Tags={"environment": settings.AWS_BASE_NAME},
     )
 
     return [channel, hls_endpoint]
@@ -121,12 +127,13 @@ def create_medialive_input(key):
     """
     medialive_input = medialive_client.create_input(
         InputSecurityGroups=[get_or_create_input_security_group()],
-        Name=key,
+        Name=f"{settings.AWS_BASE_NAME}_{key}",
         Type="RTMP_PUSH",
         Destinations=[
             {"StreamName": f"{key}-primary"},
             {"StreamName": f"{key}-secondary"},
         ],
+        Tags={"environment": settings.AWS_BASE_NAME},
     )
 
     return medialive_input
@@ -171,9 +178,12 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
                 "Id": "destination1",
                 "Settings": [
                     {
-                        "PasswordParam": mediapackage_channel["HlsIngest"][
-                            "IngestEndpoints"
-                        ][0]["Username"],
+                        "PasswordParam": "{environment}_{username}".format(
+                            environment=settings.AWS_BASE_NAME,
+                            username=mediapackage_channel["HlsIngest"][
+                                "IngestEndpoints"
+                            ][0]["Username"],
+                        ),
                         "Url": mediapackage_channel["HlsIngest"]["IngestEndpoints"][0][
                             "Url"
                         ],
@@ -182,9 +192,12 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
                         ][0]["Username"],
                     },
                     {
-                        "PasswordParam": mediapackage_channel["HlsIngest"][
-                            "IngestEndpoints"
-                        ][1]["Username"],
+                        "PasswordParam": "{environment}_{username}".format(
+                            environment=settings.AWS_BASE_NAME,
+                            username=mediapackage_channel["HlsIngest"][
+                                "IngestEndpoints"
+                            ][1]["Username"],
+                        ),
                         "Url": mediapackage_channel["HlsIngest"]["IngestEndpoints"][1][
                             "Url"
                         ],
@@ -195,9 +208,10 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
                 ],
             }
         ],
-        Name=key,
+        Name=f"{settings.AWS_BASE_NAME}_{key}",
         RoleArn=settings.AWS_MEDIALIVE_ROLE_ARN,
         EncoderSettings=encoder_settings,
+        Tags={"environment": settings.AWS_BASE_NAME},
     )
 
     return medialive_channel
