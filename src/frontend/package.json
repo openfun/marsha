@@ -61,7 +61,7 @@
     "ts-mock-imports": "1.3.0",
     "tslint": "6.1.3",
     "typescript": "4.0.3",
-    "webpack": "5.1.0",
+    "webpack": "4.44.2",
     "webpack-cli": "4.0.0",
     "xhr-mock": "2.5.1"
   },
