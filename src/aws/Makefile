@@ -29,7 +29,7 @@ init:
 lambda: ## Zip and copy source files to dist/
 	@echo "Zip and copy source files to dist/"
 	@rm -rf dist && mkdir dist
-	@for lambda_name in migrate configure encode complete medialive; do \
+	@for lambda_name in migrate configure encode complete medialive medialive-routing; do \
 		cd ./lambda-$$lambda_name ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 bash -c "rm -rf node_modules; yarn install --frozen-lockfile --production=true" ; \
 		zip -q -r9 ../dist/marsha_$$lambda_name.zip *; \
@@ -39,7 +39,7 @@ lambda: ## Zip and copy source files to dist/
 
 test: ## test all lambda packages
 	@echo "Test all lambda packages"
-	@for lambda_name in migrate configure encode complete medialive; do \
+	@for lambda_name in migrate configure encode complete medialive medialive-routing; do \
 		cd ./lambda-$$lambda_name ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 bash -c "rm -rf node_modules; yarn install --frozen-lockfile" ; \
 		docker run --rm -it -v "${PWD}:/app" -w "/app/lambda-$$lambda_name" node:10 yarn test ; \
