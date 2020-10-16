@@ -448,8 +448,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
-            - v3-lambdas-complete-dependencies-
+            - v3-lambdas-medialive-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
@@ -459,7 +458,33 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-complete-dependencies-{{ checksum "yarn.lock" }}
+          key: v3-lambdas-medialive-dependencies-{{ checksum "yarn.lock" }}
+
+  test-lambda-medialive-routing:
+    docker:
+      - image: circleci/node:10.16.3
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
+    working_directory: ~/marsha/src/aws/lambda-medialive-routing
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v3-lambdas-medialive-routing-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install complete lambda dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Run medialive routing lambda tests
+          command: yarn test
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v3-lambdas-medialive-routing-dependencies-{{ checksum "yarn.lock" }}
 
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
@@ -590,6 +615,10 @@ workflows:
             tags:
               only: /.*/
       - test-lambda-medialive:
+          filters:
+            tags:
+              only: /.*/
+      - test-lambda-medialive-routing:
           filters:
             tags:
               only: /.*/

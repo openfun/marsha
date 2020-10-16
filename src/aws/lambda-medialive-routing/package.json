@@ -1,11 +1,11 @@
 {
   "author": "France Université Numérique",
-  "name": "aws-marsha-medialive",
+  "name": "aws-marsha-medialive-routing",
   "version": "3.9.0",
   "engines": {
     "node": "10"
   },
-  "description": "Tasks to execute when a medialive event is fired",
+  "description": "Routing tasks to execute when a medialive event is fired to the lambda in the target environment",
   "repository": {
     "type": "git",
     "url": "https://www.github.com/openfun/marsha"
@@ -19,6 +19,6 @@
     "jest": "26.5.3"
   },
   "dependencies": {
-    "update-state": "file:../utils/update-state"
+    "aws-sdk": "2.771.0"
   }
 }

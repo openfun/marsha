@@ -440,7 +440,8 @@ resource "aws_iam_role_policy_attachment" "medialive_custom_policy_attachment" {
   policy_arn  = "${aws_iam_policy.medialive_custom_policy.arn}"
 }
 
-
+# Medialive lambda role
+#####################
 resource "aws_iam_role" "lambda_medialive_invocation_role" {
   name = "${terraform.workspace}-marsha-lambda-medialive-invocation-role"
 
@@ -466,18 +467,48 @@ resource "aws_iam_role_policy_attachment" "lambda_medialive_logging_policy_attac
   policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
 }
 
+# Medialive routing role
+#####################
+resource "aws_iam_role" "lambda_medialive_routing_invocation_role" {
+  name = "marsha-lambda-medialive-routing-invocation-role"
 
-resource "aws_iam_policy" "lambda_medialive_access_policy" {
-  name        = "${terraform.workspace}-marsha-medialive-access-policy"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_logging_policy_attachment" {
+  role       = "${aws_iam_role.lambda_medialive_routing_invocation_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+}
+
+resource "aws_iam_policy" "lambda_medialive_routing_access_policy" {
+  name        = "marsha-medialive-routing-access-policy"
   path        = "/"
-  description = "IAM policy needed by lambda-medialive to access medialive"
+  description = "IAM policy needed by lambda-medialive-routing to access medialive and lambda functions"
 
   policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": ["medialive:describeChannel"],
+      "Action": [
+        "medialive:describeChannel",
+        "lambda:invokeAsync",
+        "lambda:invokeFunction"
+      ],
       "Effect": "Allow",
       "Resource": "*"
     }
@@ -486,7 +517,7 @@ resource "aws_iam_policy" "lambda_medialive_access_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_medialive_access_policy_attachment" {
-  role       = "${aws_iam_role.lambda_medialive_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_medialive_access_policy.arn}"
+resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_access_policy_attachment" {
+  role       = "${aws_iam_role.lambda_medialive_routing_invocation_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_medialive_routing_access_policy.arn}"
 }
