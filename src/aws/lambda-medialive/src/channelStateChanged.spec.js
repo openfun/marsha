@@ -11,14 +11,6 @@ jest.doMock('update-state/utils', () => ({
   sendRequest: mockSendRequest,
 }));
 
-// Mock the AWS SDK calls used in encodeTimedTextTrack
-const mockDescribeChannel = jest.fn();
-jest.mock('aws-sdk', () => ({
-  MediaLive: function() {
-    this.describeChannel = mockDescribeChannel;
-  },
-}));
-
 const channelStateChanged = require('./channelStateChanged');
 
 describe('src/channel_state_changed', () => {
@@ -50,13 +42,14 @@ describe('src/channel_state_changed', () => {
       "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
     };
 
+    const channel = { Name: 'test_video-id_stamp' };
+
     try {
-      await channelStateChanged(event, context);
+      await channelStateChanged(channel, event, context);
     } catch (error) {
       expect(error.message).toEqual('Expected status are RUNNING and STOPPED. STARTING received');
     }
 
-    expect(mockDescribeChannel).not.toHaveBeenCalled();
     expect(mockComputeSignature).not.toHaveBeenCalled();
     expect(mockSendRequest).not.toHaveBeenCalled();
   });
@@ -81,21 +74,19 @@ describe('src/channel_state_changed', () => {
       }
     };
 
+    const channel = { Name: 'test_video-id_stamp' };
+
     const context = {
       "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
     };
 
-    mockDescribeChannel.mockReturnValue({
-      promise: () =>
-        new Promise(resolve => resolve({ Name: 'video-id_stamp' })),
-    });
     mockComputeSignature.mockReturnValue('foo');
     const expectedBody = {
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
       state: 'running',
     };
 
-    await channelStateChanged(event, context);
+    await channelStateChanged(channel, event, context);
 
     expect(mockComputeSignature).toHaveBeenCalledWith(
       'some secret', 
@@ -108,8 +99,6 @@ describe('src/channel_state_changed', () => {
       `${marshaUrl}/api/videos/video-id/update-live-state/`,
       'PATCH'
     )
-    expect(mockDescribeChannel).toHaveBeenCalledWith({ ChannelId: '1234567' });
-
   });
 
   it('receives a STOPPED event and updates live state', async () => {
@@ -136,17 +125,15 @@ describe('src/channel_state_changed', () => {
       "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
     };
 
-    mockDescribeChannel.mockReturnValue({
-      promise: () =>
-        new Promise(resolve => resolve({ Name: 'video-id_stamp' })),
-    });
+    const channel = { Name: 'test_video-id_stamp' };
+
     mockComputeSignature.mockReturnValue('foo');
     const expectedBody = {
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
       state: 'stopped',
     };
 
-    await channelStateChanged(event, context);
+    await channelStateChanged(channel, event, context);
 
     expect(mockComputeSignature).toHaveBeenCalledWith(
       'some secret', 
@@ -159,7 +146,5 @@ describe('src/channel_state_changed', () => {
       `${marshaUrl}/api/videos/video-id/update-live-state/`,
       'PATCH'
     )
-    expect(mockDescribeChannel).toHaveBeenCalledWith({ ChannelId: '1234567' });
-
   });
 });

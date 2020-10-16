@@ -36,3 +36,8 @@ variable "update_state_secret" {
 variable "migrations" {
   type    = "string"
 }
+
+variable "medialive_lambda_name" {
+  type    = "string"
+  default = "marsha-medialive"
+}
