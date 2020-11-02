@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   // Disable production-specific optimizations by default
   // They can be re-enabled by running the cli with `--mode=production` or making a separate
@@ -21,7 +23,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: __dirname + '/../backend/marsha/static/js',
-    chunkFilename: '[id].[hash].index.js',
+    chunkFilename: '[id].[fullhash].index.js',
   },
 
   // Enable sourcemaps for debugging webpack's output.
@@ -30,6 +32,10 @@ module.exports = {
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    fallback: {
+      buffer: require.resolve('buffer/'),
+      stream: require.resolve('stream-browserify'),
+    },
   },
 
   module: {
@@ -47,7 +53,12 @@ module.exports = {
         ],
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: [path.join(__dirname, './node_modules/file-selector')],
+        loader: 'source-map-loader',
+      },
     ],
   },
 };
