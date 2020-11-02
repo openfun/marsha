@@ -172,7 +172,7 @@ build-front: \
 .PHONY: build-front
 
 build-sass: ## Build Sass file to CSS
-	@$(YARN) sass
+	@$(YARN) build-sass
 .PHONY: build-sass
 
 build-ts: ### Build TypeScript application
