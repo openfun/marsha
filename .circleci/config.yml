@@ -35,6 +35,7 @@ jobs:
   # Check that the git history is clean and complies with our expectations
   lint-git:
     docker:
+      # stay in python 3.8
       - image: circleci/python:3.8-buster
         auth:
           username: $DOCKER_USER
@@ -130,7 +131,7 @@ jobs:
   # Build backend development environment
   build-back:
     docker:
-      - image: circleci/python:3.8-buster
+      - image: cimg/python:3.9
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -152,7 +153,7 @@ jobs:
   # Build backend translations
   build-back-i18n:
     docker:
-      - image: circleci/python:3.8-buster
+      - image: cimg/python:3.9
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -181,7 +182,9 @@ jobs:
             - v4-back-dependencies-{{ .Revision }}
       - run:
           name: Install gettext (required to make messages)
-          command: sudo apt-get install -y gettext
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y gettext
       # Compile translation messages already present in the project
       - run:
           name: Generate a POT file from strings extracted from the project
@@ -197,7 +200,7 @@ jobs:
 
   lint-back:
     docker:
-      - image: circleci/python:3.8-buster
+      - image: cimg/python:3.9
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -227,7 +230,7 @@ jobs:
 
   test-back:
     docker:
-      - image: circleci/python:3.8-buster
+      - image: cimg/python:3.9
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
