@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Manage live streaming using AWS Elemental
 - Download timed text track in video dashboard
+- Create shared resources between terraform workspaces
 
 ### Changed
 
