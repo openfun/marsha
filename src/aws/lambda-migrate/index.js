@@ -7,15 +7,7 @@ exports.handler = async (event, context, callback) => {
     basePath = 'stubs'
   }
   let errors = [];
-  (process.env.MIGRATIONS || '')
-    .split(",")
-    .reduce((acc, migration) => {
-      if (migration.length > 0) {
-        acc.push(migration.trim());
-      }
-
-      return acc;
-    }, [])
+  (event.migrations || [])
     .map(migration => `./${basePath}/migrations/${migration}.js`)
     .map(async (migration) => {
       let toMigrate;

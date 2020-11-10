@@ -29,7 +29,9 @@ variable "update_state_secret" {
 }
 
 variable "migrations" {
-  type    = string
+  type    = list(string)
+
+  default = []
 }
 
 variable "medialive_lambda_name" {
