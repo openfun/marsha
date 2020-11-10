@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Rework front i18n workflow
+- docker image use python 3.9
 
 ### Removed
 
