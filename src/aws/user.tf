@@ -4,12 +4,12 @@ resource "aws_iam_user" "marsha_user" {
 }
 
 resource "aws_iam_access_key" "marsha_access_key" {
-  user = "${aws_iam_user.marsha_user.name}"
+  user = aws_iam_user.marsha_user.name
 }
 
 # Grant user access to the source bucket
 resource "aws_s3_bucket_policy" "marsha_source_bucket_policy" {
-  bucket = "${aws_s3_bucket.marsha_source.id}"
+  bucket = aws_s3_bucket.marsha_source.id
 
   policy = <<EOF
 {
@@ -34,7 +34,7 @@ EOF
 
 # Grant user access to the destination bucket
 resource "aws_s3_bucket_policy" "marsha_destination_bucket_policy" {
-  bucket = "${aws_s3_bucket.marsha_destination.id}"
+  bucket = aws_s3_bucket.marsha_destination.id
 
   policy = <<EOF
 {
@@ -68,7 +68,7 @@ EOF
 
 # Grant user access to the static bucket
 resource "aws_s3_bucket_policy" "marsha_static_bucket_policy" {
-  bucket = "${aws_s3_bucket.marsha_static.id}"
+  bucket = aws_s3_bucket.marsha_static.id
 
   policy = <<EOF
 {
@@ -103,7 +103,7 @@ EOF
 # Grant user to manage live streaming. Affects medialive, mediapackage and sns.
 resource "aws_iam_user_policy" "live-streaming-policies" {
   name = "${terraform.workspace}-marsha-live-streaming-policies"
-  user = "${aws_iam_user.marsha_user.name}"
+  user = aws_iam_user.marsha_user.name
 
   policy = <<POLICY
 {

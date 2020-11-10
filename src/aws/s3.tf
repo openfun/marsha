@@ -2,7 +2,6 @@
 resource "aws_s3_bucket" "marsha_source" {
   bucket = "${terraform.workspace}-marsha-source"
   acl    = "private"
-  region = "${var.aws_region}"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -11,9 +10,9 @@ resource "aws_s3_bucket" "marsha_source" {
     max_age_seconds = 3600
   }
 
-  tags {
+  tags = {
     Name        = "marsha-source"
-    Environment = "${terraform.workspace}"
+    Environment = terraform.workspace
   }
 }
 
@@ -21,7 +20,6 @@ resource "aws_s3_bucket" "marsha_source" {
 resource "aws_s3_bucket" "marsha_destination" {
   bucket = "${terraform.workspace}-marsha-destination"
   acl    = "private"
-  region = "${var.aws_region}"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -30,9 +28,9 @@ resource "aws_s3_bucket" "marsha_destination" {
     max_age_seconds = 3600
   }
 
-  tags {
+  tags = {
     Name        = "marsha-destination"
-    Environment = "${terraform.workspace}"
+    Environment = terraform.workspace
   }
 }
 
@@ -40,7 +38,6 @@ resource "aws_s3_bucket" "marsha_destination" {
 resource "aws_s3_bucket" "marsha_static" {
   bucket = "${terraform.workspace}-marsha-static"
   acl    = "private"
-  region = "${var.aws_region}"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -49,19 +46,19 @@ resource "aws_s3_bucket" "marsha_static" {
     max_age_seconds = 3600
   }
 
-  tags {
+  tags = {
     Name        = "marsha-static"
-    Environment = "${terraform.workspace}"
+    Environment = terraform.workspace
   }
 }
 
 # Add notification invoking Lambda to convert video files each time a video is
 # uploaded to the source bucket.
 resource "aws_s3_bucket_notification" "marsha_source_bucket_notification" {
-  bucket = "${aws_s3_bucket.marsha_source.id}"
+  bucket = aws_s3_bucket.marsha_source.id
 
   lambda_function {
-    lambda_function_arn = "${aws_lambda_function.marsha_encode_lambda.arn}"
+    lambda_function_arn = aws_lambda_function.marsha_encode_lambda.arn
     events              = ["s3:ObjectCreated:*"]
   }
 }

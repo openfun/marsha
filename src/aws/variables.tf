@@ -1,11 +1,6 @@
 
-variable "aws_region" {
-  type    = "string"
-  default = "eu-west-1"
-}
-
 variable "cloudfront_price_class" {
-  type = "map"
+  type = map(string)
 
   default = {
     production = "PriceClass_All"
@@ -13,31 +8,31 @@ variable "cloudfront_price_class" {
 }
 
 variable "cloudfront_trusted_signer_id" {
-  type = "string"
+  type = string
 }
 
 variable "update_state_disable_ssl_validation" {
-  type    = "string"
+  type    = string
   default = "false"
 }
 
 variable "marsha_base_url" {
-  type    = "string"
+  type    = string
 }
 
 variable "update_state_endpoint" {
-  type    = "string"
+  type    = string
 }
 
 variable "update_state_secret" {
-  type    = "string"
+  type    = string
 }
 
 variable "migrations" {
-  type    = "string"
+  type    = string
 }
 
 variable "medialive_lambda_name" {
-  type    = "string"
+  type    = string
   default = "marsha-medialive"
 }
