@@ -145,7 +145,6 @@ resource "aws_lambda_function" "marsha_migrate_lambda" {
   environment {
     variables = {
       S3_SOURCE_BUCKET        = aws_s3_bucket.marsha_source.id
-      MIGRATIONS              = var.migrations
       LAMBDA_ENCODE_NAME      = aws_lambda_function.marsha_encode_lambda.function_name
       NODE_ENV                = "production"
     }
@@ -159,7 +158,9 @@ data "aws_lambda_invocation" "invoke_migration" {
     aws_lambda_function.marsha_encode_lambda
   ]
   function_name     = aws_lambda_function.marsha_migrate_lambda.function_name
-  input = "{}"
+  input             = jsonencode({
+    "migrations" = var.migrations
+  })
 }
 
 # MediaLive

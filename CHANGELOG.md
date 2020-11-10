@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Manage live streaming using AWS Elemental
 - Download timed text track in video dashboard
 
+### Changed
+
+- use input to execute lambda_migrate intead of env var
+
 ## [3.11.0] - 2020-10-08
 
 ### Changed
