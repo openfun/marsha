@@ -35,7 +35,6 @@
     "@types/hls.js": "0.13.2",
     "@types/iframe-resizer": "3.5.8",
     "@types/jest": "26.0.15",
-    "@types/jwt-decode": "2.2.1",
     "@types/luxon": "1.25.0",
     "@types/rc-tooltip": "3.7.3",
     "@types/react": "16.9.56",
