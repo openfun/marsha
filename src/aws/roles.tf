@@ -44,8 +44,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logging_policy_attachment" {
-  role       = "${aws_iam_role.lambda_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+  role       = aws_iam_role.lambda_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_media_convert_policy" {
@@ -74,8 +74,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_media_convert_policy_attachment" {
-  role       = "${aws_iam_role.lambda_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_media_convert_policy.arn}"
+  role       = aws_iam_role.lambda_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_media_convert_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_pass_role_policy" {
@@ -98,8 +98,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_pass_role_policy_attachment" {
-  role       = "${aws_iam_role.lambda_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_pass_role_policy.arn}"
+  role       = aws_iam_role.lambda_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_pass_role_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_s3_access_policy" {
@@ -129,8 +129,8 @@ EOF
 # `lambda-encode` needs read access to the source bucket and write access to the destination
 # bucket to read timed text files from the former and write them to the latter.
 resource "aws_iam_role_policy_attachment" "lambda_s3_access_policy_attachment" {
-  role        = "${aws_iam_role.lambda_invocation_role.name}"
-  policy_arn  = "${aws_iam_policy.lambda_s3_access_policy.arn}"
+  role        = aws_iam_role.lambda_invocation_role.name
+  policy_arn  = aws_iam_policy.lambda_s3_access_policy.arn
 }
 
 # Media Convert role
@@ -180,8 +180,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "media_convert_s3_policy_attachment" {
-  role       = "${aws_iam_role.media_convert_role.name}"
-  policy_arn = "${aws_iam_policy.media_convert_s3_policy.arn}"
+  role       = aws_iam_role.media_convert_role.name
+  policy_arn = aws_iam_policy.media_convert_s3_policy.arn
 }
 
 # Event rule role
@@ -228,8 +228,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "event_rule_lambda_invoke_policy_attachment" {
-  role       = "${aws_iam_role.event_rule_role.name}"
-  policy_arn = "${aws_iam_policy.event_rule_lambda_invoke_policy.arn}"
+  role       = aws_iam_role.event_rule_role.name
+  policy_arn = aws_iam_policy.event_rule_lambda_invoke_policy.arn
 }
 
 # Migrate lambda role
@@ -255,8 +255,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_migrate_logging_policy_attachment" {
-  role       = "${aws_iam_role.lambda_migrate_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+  role       = aws_iam_role.lambda_migrate_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_migrate_s3_access_policy" {
@@ -279,8 +279,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_migrate_s3_access_policy_attachment" {
-  role        = "${aws_iam_role.lambda_migrate_invocation_role.name}"
-  policy_arn  = "${aws_iam_policy.lambda_migrate_s3_access_policy.arn}"
+  role        = aws_iam_role.lambda_migrate_invocation_role.name
+  policy_arn  = aws_iam_policy.lambda_migrate_s3_access_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_migrate_lambda_invoke_policy" {
@@ -306,8 +306,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_migrate_lambda_invoke_policy_attachment" {
-  role        = "${aws_iam_role.lambda_migrate_invocation_role.name}"
-  policy_arn  = "${aws_iam_policy.lambda_migrate_lambda_invoke_policy.arn}"
+  role        = aws_iam_role.lambda_migrate_invocation_role.name
+  policy_arn  = aws_iam_policy.lambda_migrate_lambda_invoke_policy.arn
 }
 
 # MediaLive role
@@ -355,8 +355,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "medialive_ssm_access_policy_attachment" {
-  role        = "${aws_iam_role.medialive_access_role.name}"
-  policy_arn  = "${aws_iam_policy.ssm_read_only.arn}"
+  role        = aws_iam_role.medialive_access_role.name
+  policy_arn  = aws_iam_policy.ssm_read_only.arn
 }
 
 
@@ -436,8 +436,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "medialive_custom_policy_attachment" {
-  role        = "${aws_iam_role.medialive_access_role.name}"
-  policy_arn  = "${aws_iam_policy.medialive_custom_policy.arn}"
+  role        = aws_iam_role.medialive_access_role.name
+  policy_arn  = aws_iam_policy.medialive_custom_policy.arn
 }
 
 # Medialive lambda role
@@ -463,8 +463,8 @@ EOF
 
 
 resource "aws_iam_role_policy_attachment" "lambda_medialive_logging_policy_attachment" {
-  role       = "${aws_iam_role.lambda_medialive_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+  role       = aws_iam_role.lambda_medialive_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
 # Medialive routing role
@@ -490,8 +490,8 @@ EOF
 
 
 resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_logging_policy_attachment" {
-  role       = "${aws_iam_role.lambda_medialive_routing_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_medialive_routing_access_policy" {
@@ -518,6 +518,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_access_policy_attachment" {
-  role       = "${aws_iam_role.lambda_medialive_routing_invocation_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_medialive_routing_access_policy.arn}"
+  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_medialive_routing_access_policy.arn
 }
