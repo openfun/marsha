@@ -214,6 +214,19 @@ class Document(BaseFile):
         self.extension = extra_parameters.get("extension")
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
+    @staticmethod
+    def get_ready_clause():
+        """Clause used in lti.utils.get_or_create_resource to filter the documents.
+
+        Only show documents that have successfully gone through the upload process.
+
+        Returns
+        -------
+        models.Q
+            A condition added to a QuerySet
+        """
+        return models.Q(uploaded_on__isnull=False)
+
 
 class AbstractImage(UploadableFileMixin, BaseModel):
     """Abstract model for images."""
