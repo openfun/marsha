@@ -12,7 +12,7 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..defaults import IDLE, PENDING, READY, STATE_CHOICES
+from ..defaults import IDLE, PENDING, READY, RUNNING, STATE_CHOICES
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
     TimedTextTrackFactory,
@@ -248,7 +248,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__title="foo bar",
             playlist__consumer_site=passport.consumer_site,
-            live_state=IDLE,
+            live_state=RUNNING,
             live_info={
                 "medialive": {
                     "input": {
@@ -271,7 +271,6 @@ class VideoLTIViewTestCase(TestCase):
                 },
             },
             upload_state=PENDING,
-            uploaded_on="2019-09-24 07:24:40+00",
         )
         data = {
             "resource_link_id": video.lti_id,
@@ -315,7 +314,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
-                "active_stamp": "1569309880",
+                "active_stamp": None,
                 "is_ready_to_show": True,
                 "show_download": True,
                 "description": video.description,
@@ -338,7 +337,7 @@ class VideoLTIViewTestCase(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
-                "live_state": IDLE,
+                "live_state": RUNNING,
                 "live_info": {},
             },
         )

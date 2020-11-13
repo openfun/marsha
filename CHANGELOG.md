@@ -18,6 +18,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - use input to execute lambda_migrate intead of env var
 
+### Fixed
+
+- manage ready clauses in LTI resource finder
+
 ## [3.11.0] - 2020-10-08
 
 ### Changed

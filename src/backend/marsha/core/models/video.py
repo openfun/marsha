@@ -111,6 +111,22 @@ class Video(BaseFile):
         """
         return self.uploaded_on is not None or self.live_state == RUNNING
 
+    @staticmethod
+    def get_ready_clause():
+        """Clause used in lti.utils.get_or_create_resource to filter the videos.
+
+        Only show videos that have successfully gone through the upload process,
+        or live streams that are in the running state.
+
+        Returns
+        -------
+        models.Q
+            A condition added to a QuerySet
+        """
+        return models.Q(uploaded_on__isnull=False, live_state__isnull=True) | models.Q(
+            live_state="running"
+        )
+
 
 class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""
