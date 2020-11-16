@@ -37,6 +37,11 @@ const messages = defineMessages({
       'Link text to upload a missing subtitle/transcript/captions item file.',
     id: 'components.TimedTextListItem.upload',
   },
+  download: {
+    defaultMessage: 'Download',
+    description: 'Link text to download a subtitle/transcript/captions item.',
+    id: 'components.TimedTextListItem.download',
+  },
 });
 
 const TimedTextListItemStyled = styled.div`
@@ -122,6 +127,14 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
               : messages.replace)}
           />
         </Link>
+        {track.upload_state === uploadState.READY && (
+          <React.Fragment>
+            &nbsp;/&nbsp;
+            <a href={track.url} download>
+              <FormattedMessage {...messages.download} />
+            </a>
+          </React.Fragment>
+        )}
       </TimedTextListItemActions>
     </TimedTextListItemStyled>
   );

@@ -147,6 +147,7 @@ class TimedTextTrackAPITest(TestCase):
         """A token user associated to a video can read a timed text track related to this video."""
         timed_text_track = TimedTextTrackFactory(
             video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__playlist__title="foo",
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -177,7 +178,8 @@ class TimedTextTrackAPITest(TestCase):
                 "upload_state": "ready",
                 "url": (
                     "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
-                    "timedtext/1533686400_fr_cc.vtt"
+                    "timedtext/1533686400_fr_cc.vtt?response-content-disposition="
+                    "attachment%3B+filename%3Dfoo_1533686400.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
             },
@@ -198,6 +200,7 @@ class TimedTextTrackAPITest(TestCase):
         """Admin user associated to a video can read a timed text track related to this video."""
         timed_text_track = TimedTextTrackFactory(
             video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__playlist__title="foo",
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -227,8 +230,9 @@ class TimedTextTrackAPITest(TestCase):
                 "language": "fr",
                 "upload_state": "ready",
                 "url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
-                    "timedtext/1533686400_fr_cc.vtt"
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                    "1533686400_fr_cc.vtt?response-content-disposition=attachment%3B+filename"
+                    "%3Dfoo_1533686400.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
             },
@@ -311,6 +315,7 @@ class TimedTextTrackAPITest(TestCase):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         timed_text_track = TimedTextTrackFactory(
             video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__playlist__title="foo",
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
@@ -336,12 +341,13 @@ class TimedTextTrackAPITest(TestCase):
             content["url"],
             (
                 "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
-                "1533686400_fr_cc.vtt?Expires=1533693600&Signature=CWr09YDiSe-j2sKML3f29nKfjCdF8n"
-                "UMUeL1~yHPkMkQpxDXGc5mnKDKkelvzLyAhIUmEi1CtZgG18siFD4RzDVCNufOINxKCWzKYmVjN67PJA"
-                "itNi2nUazFhOA-QODJ03gEpCPgea7ntwgJemOtqkd1uj7kgay~HeslK1L2HEIRHjbjaYEoCldCISC8l2"
-                "FIh~fFryFv9Ptu9ajm4OfIrpc2~oDqe5QkGotQ7IrcZlq8MqMte1tbDaGkaQD-NpURCj7rmkt8vkqpWi"
-                "j-IkWxzNWyX38SL1bg2Co762Ab~YKpdiS8jf-WppVS31cCehf1bPdsqypBzSFMCqORZvEBtw__&"
-                "Key-Pair-Id=cloudfront-access-key-id"
+                "1533686400_fr_cc.vtt?response-content-disposition=attachment%3B+filename"
+                "%3Dfoo_1533686400.vtt&Expires=1533693600&Signature=Bl70TVxFrmTA679uVTj5q"
+                "4XsggG8qp64wPIkutDrAJ81~lpH5T-~P6uuzma298uKZrbUlI7TCx-Qz1dI9ntvfGWwQ8vvf"
+                "7TOzqL2sqWerN6hwvt-0P559pFADKBdwQqoH5E6jG6TmgON164RTUpNnbfzO1d0QQrJXFigq"
+                "BPRTrAQUM-Mw6GYgW8--ttjgeG~Yli6vf6r9npYHcZIEQ8kycD1Wd~vkEeKmaUw55Mwsi2Nv"
+                "vJcqBwKiNVGvxOQ5-SiNXMPARwRxAoFn-i94zwuknWRqs2MuvD4uXQoW-bSuWVhyRvGyVk1p"
+                "oprMvtvZHwYTcesd3FsDlN6q1gRT9IKtg__&Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
 
