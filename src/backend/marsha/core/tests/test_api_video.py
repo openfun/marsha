@@ -176,7 +176,8 @@ class VideoAPITest(TestCase):
                         "upload_state": "ready",
                         "url": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "timedtext/1533686400_fr_cc.vtt"
+                            "timedtext/1533686400_fr_cc.vtt?response-content-disposition="
+                            "attachment%3B+filename%3Dfoo-bar_1533686400.vtt"
                         ),
                         "video": str(video.id),
                     }

@@ -1017,8 +1017,12 @@ class VideoLTIViewTestCase(TestCase):
                         "mode": "ts",
                         "language": transcript.language,
                         "upload_state": "ready",
-                        "url": "https://abc.cloudfront.net/{!s}/timedtext/"
-                        "1569309880_{!s}_ts.vtt".format(video.id, transcript.language),
+                        "url": (
+                            "https://abc.cloudfront.net/{!s}/timedtext/"
+                            "1569309880_{!s}_ts.vtt?"
+                            "response-content-disposition=attachment%3B+filename%3D"
+                            "foo-bar_1569309880.vtt"
+                        ).format(video.id, transcript.language),
                         "video": str(video.id),
                     }
                 ],

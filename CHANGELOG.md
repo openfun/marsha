@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Manage live streaming using AWS Elemental
+- Download timed text track in video dashboard
 
 ## [3.11.0] - 2020-10-08
 
