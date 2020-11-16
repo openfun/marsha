@@ -163,11 +163,19 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
                 cloudfront=settings.CLOUDFRONT_DOMAIN,
                 video=obj.video.pk,
             )
-            url = "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt".format(
+            stamp = time_utils.to_timestamp(obj.uploaded_on)
+            filename = "{playlist_title:s}_{stamp:s}.vtt".format(
+                playlist_title=slugify(obj.video.playlist.title), stamp=stamp
+            )
+            url = (
+                "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt?"
+                "response-content-disposition={content_disposition:s}"
+            ).format(
                 base=base,
-                stamp=time_utils.to_timestamp(obj.uploaded_on),
+                stamp=stamp,
                 language=obj.language,
                 mode="_{:s}".format(obj.mode) if obj.mode else "",
+                content_disposition=quote_plus("attachment; filename=" + filename),
             )
 
             # Sign the url only if the functionality is activated
@@ -425,7 +433,6 @@ class VideoSerializer(serializers.ModelSerializer):
         date_less_than = timezone.now() + timedelta(
             seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
         )
-        stamp = time_utils.to_timestamp(obj.uploaded_on)
         filename = "{playlist_title:s}_{stamp:s}.mp4".format(
             playlist_title=slugify(obj.playlist.title), stamp=stamp
         )
