@@ -166,6 +166,9 @@ describe('lambda', () => {
     };
 
     it('delegates to encodeTimedTextTrack and calls updateState when it succeeds', async () => {
+      mockEncodeTimedTextTrack.mockImplementation(
+        () => Promise.resolve('srt'),
+      );
       await lambda(event, null, callback);
 
       expect(mockEncodeTimedTextTrack).toHaveBeenCalledWith(
@@ -176,6 +179,7 @@ describe('lambda', () => {
       expect(mockUpdateState).toHaveBeenCalledWith(
         '630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st',
         'ready',
+        { extension: 'srt' }
       );
     });
 
