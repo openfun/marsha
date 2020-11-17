@@ -976,6 +976,7 @@ class VideoLTIViewTestCase(TestCase):
             mode="ts",
             upload_state=READY,
             uploaded_on="2019-09-24 07:24:40+00",
+            extension="srt",
         )
 
         data = {
@@ -1016,11 +1017,14 @@ class VideoLTIViewTestCase(TestCase):
                         "mode": "ts",
                         "language": transcript.language,
                         "upload_state": "ready",
+                        "source_url": (
+                            "https://abc.cloudfront.net/{!s}/"
+                            "timedtext/source/1569309880_{!s}_ts?response-content-disposition="
+                            "attachment%3B+filename%3Dfoo-bar_1569309880.srt"
+                        ).format(video.id, transcript.language),
                         "url": (
                             "https://abc.cloudfront.net/{!s}/timedtext/"
-                            "1569309880_{!s}_ts.vtt?"
-                            "response-content-disposition=attachment%3B+filename%3D"
-                            "foo-bar_1569309880.vtt"
+                            "1569309880_{!s}_ts.vtt"
                         ).format(video.id, transcript.language),
                         "video": str(video.id),
                     }
@@ -1096,6 +1100,7 @@ class VideoLTIViewTestCase(TestCase):
                         "mode": "ts",
                         "language": transcript.language,
                         "upload_state": "pending",
+                        "source_url": None,
                         "url": None,
                         "video": str(video.id),
                     }

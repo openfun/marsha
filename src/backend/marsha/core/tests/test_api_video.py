@@ -123,6 +123,7 @@ class VideoAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            extension="srt",
         )
 
         jwt_token = AccessToken()
@@ -174,10 +175,14 @@ class VideoAPITest(TestCase):
                         "id": str(timed_text_track.id),
                         "language": "fr",
                         "upload_state": "ready",
+                        "source_url": (
+                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
+                            "ttachment%3B+filename%3Dfoo-bar_1533686400.srt"
+                        ),
                         "url": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "timedtext/1533686400_fr_cc.vtt?response-content-disposition="
-                            "attachment%3B+filename%3Dfoo-bar_1533686400.vtt"
+                            "timedtext/1533686400_fr_cc.vtt"
                         ),
                         "video": str(video.id),
                     }
