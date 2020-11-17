@@ -81,8 +81,8 @@ exports.handler = async (event, context, callback) => {
 
     case 'timedtexttrack':
       try {
-        await encodeTimedTextTrack(objectKey, sourceBucket, extendedStamp);
-        await updateState(objectKey, READY);
+        const extension = await encodeTimedTextTrack(objectKey, sourceBucket, extendedStamp);
+        await updateState(objectKey, READY, { extension });
       } catch (error) {
         return callback(error);
       }
