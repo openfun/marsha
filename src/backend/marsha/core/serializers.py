@@ -99,6 +99,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             "language",
             "upload_state",
             "url",
+            "source_url",
             "video",
         )
         read_only_fields = (
@@ -114,6 +115,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         source="uploaded_on", required=False, allow_null=True, read_only=True
     )
     url = serializers.SerializerMethodField()
+    source_url = serializers.SerializerMethodField()
     # Make sure video UUID is converted to a string during serialization
     video = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
@@ -141,6 +143,103 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             validated_data["video_id"] = user.id
         return super().create(validated_data)
 
+    def _sign_url(self, url):
+        """Generate a presigned cloudfront url.
+
+        Parameters
+        ----------
+        url: string
+            The url to sign
+
+        Returns:
+        string
+            The signed url
+
+        """
+        date_less_than = timezone.now() + timedelta(
+            seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
+        )
+        cloudfront_signer = CloudFrontSigner(
+            settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+        )
+        return cloudfront_signer.generate_presigned_url(
+            url, date_less_than=date_less_than
+        )
+
+    def _generate_url(self, obj, object_path, extension=None, content_disposition=None):
+        """Generate an url to fetch a timed text track file depending on argument passed.
+
+        Parameters:
+        obj : Type[models.TimedTextTrack]
+            The timed text track that we want to serialize
+
+        object_patch: string
+            The path in the path the timed text track is stored
+
+        extension: string or None
+            If the timed text track need an extension in the url, add it to the end
+
+        content_disposition: string or None
+            Add a response-content-disposition query string to url if present
+        """
+        base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
+            protocol=settings.AWS_S3_URL_PROTOCOL,
+            cloudfront=settings.CLOUDFRONT_DOMAIN,
+            video=obj.video.pk,
+        )
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        url = "{base:s}/{object_path}/{stamp:s}_{language:s}{mode:s}".format(
+            base=base,
+            stamp=stamp,
+            language=obj.language,
+            mode="_{:s}".format(obj.mode) if obj.mode else "",
+            object_path=object_path,
+        )
+        if extension:
+            url = "{url:s}.{extension:s}".format(url=url, extension=extension)
+
+        if content_disposition:
+            url = "{url:s}?response-content-disposition={content_disposition:s}".format(
+                url=url, content_disposition=content_disposition
+            )
+        return url
+
+    def get_source_url(self, obj):
+        """Source url of the timed text track, signed with a CloudFront key if activated.
+
+        This is the url of the uploaded file without any modification.
+
+        Parameters
+        ----------
+        obj : Type[models.TimedTextTrack]
+            The timed text track that we want to serialize
+
+        Returns
+        -------
+        string or None
+            The url for the timed text track uploaded without modification.
+            None if the timed text track is still not uploaded to S3 with success.
+
+        """
+        if obj.uploaded_on:
+            stamp = time_utils.to_timestamp(obj.uploaded_on)
+            filename = "{playlist_title:s}_{stamp:s}.{extension:s}".format(
+                playlist_title=slugify(obj.video.playlist.title),
+                stamp=stamp,
+                extension=obj.extension,
+            )
+            url = self._generate_url(
+                obj,
+                "timedtext/source",
+                content_disposition=quote_plus("attachment; filename=" + filename),
+            )
+
+            # Sign the url only if the functionality is activated
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                url = self._sign_url(url)
+            return url
+        return None
+
     def get_url(self, obj):
         """Url of the timed text track, signed with a CloudFront key if activated.
 
@@ -158,37 +257,11 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         """
         if obj.uploaded_on:
 
-            base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
-                protocol=settings.AWS_S3_URL_PROTOCOL,
-                cloudfront=settings.CLOUDFRONT_DOMAIN,
-                video=obj.video.pk,
-            )
-            stamp = time_utils.to_timestamp(obj.uploaded_on)
-            filename = "{playlist_title:s}_{stamp:s}.vtt".format(
-                playlist_title=slugify(obj.video.playlist.title), stamp=stamp
-            )
-            url = (
-                "{base:s}/timedtext/{stamp:s}_{language:s}{mode:s}.vtt?"
-                "response-content-disposition={content_disposition:s}"
-            ).format(
-                base=base,
-                stamp=stamp,
-                language=obj.language,
-                mode="_{:s}".format(obj.mode) if obj.mode else "",
-                content_disposition=quote_plus("attachment; filename=" + filename),
-            )
+            url = self._generate_url(obj, "timedtext", extension="vtt")
 
             # Sign the url only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                date_less_than = timezone.now() + timedelta(
-                    seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-                )
-                cloudfront_signer = CloudFrontSigner(
-                    settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
-                )
-                url = cloudfront_signer.generate_presigned_url(
-                    url, date_less_than=date_less_than
-                )
+                url = self._sign_url(url)
             return url
         return None
 

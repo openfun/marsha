@@ -197,6 +197,15 @@ class TimedTextTrack(BaseTrack):
         default=SUBTITLE,
     )
 
+    extension = models.CharField(
+        blank=True,
+        default=None,
+        help_text=_("timed text track extension"),
+        max_length=10,
+        null=True,
+        verbose_name=_("extension"),
+    )
+
     class Meta:
         """Options for the ``TimedTextTrack`` model."""
 
@@ -241,6 +250,25 @@ class TimedTextTrack(BaseTrack):
             language=self.language,
             mode="_{:s}".format(self.mode) if self.mode else "",
         )
+
+    def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
+        """Manage upload state.
+
+        Parameters
+        ----------
+        upload_state: Type[string]
+            state of the upload in AWS.
+
+        uploaded_on: Type[DateTime]
+            datetime at which the active version of the file was uploaded.
+
+        extra_paramters: Type[Dict]
+            Dictionnary containing arbitrary data sent from AWS lambda.
+        """
+        if "extension" in extra_parameters:
+            self.extension = extra_parameters["extension"]
+
+        super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
 
 class SignTrack(BaseTrack):

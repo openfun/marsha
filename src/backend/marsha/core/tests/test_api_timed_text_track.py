@@ -152,6 +152,7 @@ class TimedTextTrackAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            extension="srt",
         )
 
         jwt_token = AccessToken()
@@ -176,10 +177,14 @@ class TimedTextTrackAPITest(TestCase):
                 "mode": "cc",
                 "language": "fr",
                 "upload_state": "ready",
+                "source_url": (
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
+                    "ttachment%3B+filename%3Dfoo_1533686400.srt"
+                ),
                 "url": (
                     "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
-                    "timedtext/1533686400_fr_cc.vtt?response-content-disposition="
-                    "attachment%3B+filename%3Dfoo_1533686400.vtt"
+                    "timedtext/1533686400_fr_cc.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
             },
@@ -205,6 +210,7 @@ class TimedTextTrackAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            extension="srt",
         )
 
         jwt_token = AccessToken()
@@ -229,10 +235,14 @@ class TimedTextTrackAPITest(TestCase):
                 "mode": "cc",
                 "language": "fr",
                 "upload_state": "ready",
+                "source_url": (
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                    "source/1533686400_fr_cc?response-content-disposition=attachment%3B+filenam"
+                    "e%3Dfoo_1533686400.srt"
+                ),
                 "url": (
                     "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
-                    "1533686400_fr_cc.vtt?response-content-disposition=attachment%3B+filename"
-                    "%3Dfoo_1533686400.vtt"
+                    "1533686400_fr_cc.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
             },
@@ -320,6 +330,7 @@ class TimedTextTrackAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
+            extension="srt",
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
@@ -340,14 +351,26 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(
             content["url"],
             (
-                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
-                "1533686400_fr_cc.vtt?response-content-disposition=attachment%3B+filename"
-                "%3Dfoo_1533686400.vtt&Expires=1533693600&Signature=Bl70TVxFrmTA679uVTj5q"
-                "4XsggG8qp64wPIkutDrAJ81~lpH5T-~P6uuzma298uKZrbUlI7TCx-Qz1dI9ntvfGWwQ8vvf"
-                "7TOzqL2sqWerN6hwvt-0P559pFADKBdwQqoH5E6jG6TmgON164RTUpNnbfzO1d0QQrJXFigq"
-                "BPRTrAQUM-Mw6GYgW8--ttjgeG~Yli6vf6r9npYHcZIEQ8kycD1Wd~vkEeKmaUw55Mwsi2Nv"
-                "vJcqBwKiNVGvxOQ5-SiNXMPARwRxAoFn-i94zwuknWRqs2MuvD4uXQoW-bSuWVhyRvGyVk1p"
-                "oprMvtvZHwYTcesd3FsDlN6q1gRT9IKtg__&Key-Pair-Id=cloudfront-access-key-id"
+                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
+                "/1533686400_fr_cc.vtt?Expires=1533693600&Signature=CWr09YDiSe-j2sKML3f29n"
+                "KfjCdF8nUMUeL1~yHPkMkQpxDXGc5mnKDKkelvzLyAhIUmEi1CtZgG18siFD4RzDVCNufOINx"
+                "KCWzKYmVjN67PJAitNi2nUazFhOA-QODJ03gEpCPgea7ntwgJemOtqkd1uj7kgay~HeslK1L2"
+                "HEIRHjbjaYEoCldCISC8l2FIh~fFryFv9Ptu9ajm4OfIrpc2~oDqe5QkGotQ7IrcZlq8MqMte"
+                "1tbDaGkaQD-NpURCj7rmkt8vkqpWij-IkWxzNWyX38SL1bg2Co762Ab~YKpdiS8jf-WppVS31"
+                "cCehf1bPdsqypBzSFMCqORZvEBtw__&Key-Pair-Id=cloudfront-access-key-id"
+            ),
+        )
+        self.assertEqual(
+            content["source_url"],
+            (
+                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
+                "/source/1533686400_fr_cc?response-content-disposition=attachment%3B+filen"
+                "ame%3Dfoo_1533686400.srt&Expires=1533693600&Signature=Fcb5y9wuTPBPQ2PETBZ"
+                "qAnlMYKTHWkv9fCm5uItq4t28GMMtITGKjpjzlnnUmRvlP0DI6IUjDKXWkZEFN8mM70z4oSn9"
+                "NSh9OLIOG0mAyXRq3XNPh4P0UG8RBkbq2JLSJHgzsDy~AS06LS6i14IQonXoTLsvXGoELNVuN"
+                "sIImqHh2jeH0qaOo34pTWc~GXROYKwwYGEhkmuI1LhX5tJ14aFAEq9ggcm1YRu-aFabQj6yin"
+                "ZkZAgfEqIOScVyG78h5NNDWdU4JbPoQgUr-r97uN91FuoZYn2nJDTxYS0wQQVAc5LGNFB4pjq"
+                "57uxu-aKIRDzKaxOiTrOn75GztmV4OA__&Key-Pair-Id=cloudfront-access-key-id"
             ),
         )
 
@@ -441,6 +464,7 @@ class TimedTextTrackAPITest(TestCase):
                 "mode": "st",
                 "language": "fr",
                 "upload_state": "pending",
+                "source_url": None,
                 "url": None,
                 "video": "f8c30d0d-2bb4-440d-9e8d-f4b231511f1f",
             },
