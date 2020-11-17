@@ -1,12 +1,14 @@
-process.env.S3_DESTINATION_BUCKET = 'destination bucket';
+process.env.S3_DESTINATION_BUCKET = 'destination_bucket';
 
 // Mock the AWS SDK calls used in encodeTimedTextTrack
 const mockGetObject = jest.fn();
 const mockPutObject = jest.fn();
+const mockCopyObject = jest.fn();
 jest.mock('aws-sdk', () => ({
   S3: function() {
     this.getObject = mockGetObject;
     this.putObject = mockPutObject;
+    this.copyObject = mockCopyObject;
   },
 }));
 
@@ -33,18 +35,28 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     mockPutObject.mockReturnValue({
       promise: () => new Promise(resolve => resolve()),
     });
+    mockCopyObject.mockReturnValue({
+      promise: () => new Promise(resolve => resolve()),
+    });
 
-    await encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar_ts');
+    const extension = await encodeTimedTextTrack('uuid/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_ts');
+
+    expect(extension).toEqual("srt");
 
     expect(mockGetObject).toHaveBeenCalledWith({
-      Bucket: 'source bucket',
-      Key: 'some key',
+      Bucket: 'source_bucket',
+      Key: 'uuid/timedtexttrack/some_key',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
-      Bucket: 'destination bucket',
+      Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: 'some key.vtt'
+      Key: 'uuid/timedtext/some_key.vtt'
+    });
+    expect(mockCopyObject).toHaveBeenCalledWith({
+      Bucket: 'destination_bucket',
+      Key: 'uuid/timedtext/source/some_key',
+      CopySource: 'source_bucket/uuid/timedtexttrack/some_key'
     });
   });
 
@@ -61,17 +73,17 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
       promise: () => new Promise(resolve => resolve()),
     });
 
-    await encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar');
+    await encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar');
 
     expect(mockGetObject).toHaveBeenCalledWith({
-      Bucket: 'source bucket',
-      Key: 'some key',
+      Bucket: 'source_bucket',
+      Key: '/timedtexttrack/some_key',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
-      Bucket: 'destination bucket',
+      Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: 'some key.vtt'
+      Key: '/timedtext/some_key.vtt'
     });
   });
 
@@ -88,17 +100,17 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
       promise: () => new Promise(resolve => resolve()),
     });
 
-    await encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar_st');
+    await encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st');
 
     expect(mockGetObject).toHaveBeenCalledWith({
-      Bucket: 'source bucket',
-      Key: 'some key',
+      Bucket: 'source_bucket',
+      Key: '/timedtexttrack/some_key',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
-      Bucket: 'destination bucket',
+      Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: 'some key.vtt'
+      Key: '/timedtext/some_key.vtt'
     });
   });
 
@@ -112,8 +124,8 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar_st'),
-    ).rejects.toEqual(new Error('Invalid timed text format for some key.'));
+      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
+    ).rejects.toEqual(new Error('Invalid timed text format for /timedtexttrack/some_key.'));
   });
 
   it('throws when it fails to get the timed text file from the source bucket', async () => {
@@ -123,7 +135,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar_st'),
+      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
     ).rejects.toEqual(new Error('Failed!'));
   });
 
@@ -140,7 +152,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('some key', 'source bucket', '1557479487_ar_st'),
+      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
     ).rejects.toEqual(new Error('Failed!'));
   });
 });
