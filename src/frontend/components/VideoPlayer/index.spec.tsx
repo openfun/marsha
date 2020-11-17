@@ -103,6 +103,7 @@ describe('VideoPlayer', () => {
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
+        origin_url: 'https://example.com/timedtext/ttt-1',
         url: 'https://example.com/timedtext/ttt-1.vtt',
       },
       {
@@ -112,6 +113,7 @@ describe('VideoPlayer', () => {
         language: 'fr',
         mode: 'st',
         upload_state: 'ready',
+        origin_url: 'https://example.com/timedtext/ttt-2',
         url: 'https://example.com/timedtext/ttt-2.vtt',
       },
       {
@@ -121,6 +123,7 @@ describe('VideoPlayer', () => {
         language: 'en',
         mode: 'cc',
         upload_state: 'ready',
+        origin_url: 'https://example.com/timedtext/ttt-3',
         url: 'https://example.com/timedtext/ttt-3.vtt',
       },
       {
@@ -130,6 +133,7 @@ describe('VideoPlayer', () => {
         language: 'fr',
         mode: 'ts',
         upload_state: 'ready',
+        origin_url: 'https://example.com/timedtext/ttt-4',
         url: 'https://example.com/timedtext/ttt-4.vtt',
       },
     ]);

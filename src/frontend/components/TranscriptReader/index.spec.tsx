@@ -52,6 +52,7 @@ const transcript = {
   mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
   title: 'foo',
   upload_state: uploadState.READY,
+  source_url: 'https://example.com/vtt/fr',
   url: 'https://example.com/vtt/fr.vtt',
   video: '42',
 };
