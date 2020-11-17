@@ -130,7 +130,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
         {track.upload_state === uploadState.READY && (
           <React.Fragment>
             &nbsp;/&nbsp;
-            <a href={track.url} download>
+            <a href={track.source_url}>
               <FormattedMessage {...messages.download} />
             </a>
           </React.Fragment>

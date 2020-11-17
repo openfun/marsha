@@ -59,7 +59,8 @@ describe('<TimedTextListItem />', () => {
               mode: timedTextMode.SUBTITLE,
               title: 'foo',
               upload_state: uploadState.READY,
-              url: 'https://example.com/timedtexttrack/42',
+              source_url: 'https://example.com/timedtext/source/42',
+              url: 'https://example.com/timedtext/42.vtt',
               video: '142',
             }}
           />,
@@ -69,6 +70,10 @@ describe('<TimedTextListItem />', () => {
 
     await screen.findByText('French');
     screen.getByText((content) => content.startsWith('Ready'));
+    const downloadLink = screen.getByRole('link', { name: 'Download' });
+    expect(downloadLink.getAttribute('href')).toEqual(
+      'https://example.com/timedtext/source/42',
+    );
     // No polling takes place as the track is already READY
     expect(
       fetchMock.called('/api/timedtexttracks/1/', { method: 'GET' }),
@@ -84,7 +89,8 @@ describe('<TimedTextListItem />', () => {
       mode: timedTextMode.SUBTITLE,
       title: 'foo',
       upload_state: uploadState.PROCESSING,
-      url: 'https://example.com/timedtexttrack/1',
+      source_url: 'https://example.com/timedtext/source/1',
+      url: 'https://example.com/timedtexttrack/1.vtt',
       video: '142',
     };
 
@@ -159,7 +165,8 @@ describe('<TimedTextListItem />', () => {
         mode: timedTextMode.SUBTITLE,
         title: 'foo',
         upload_state: state,
-        url: 'https://example.com/timedtexttrack/1',
+        source_url: 'https://example.com/timedtext/source/1',
+        url: 'https://example.com/timedtext/1.vtt',
         video: '142',
       };
       fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track));
@@ -224,7 +231,8 @@ describe('<TimedTextListItem />', () => {
                 mode: timedTextMode.SUBTITLE,
                 title: 'foo',
                 upload_state: uploadState.READY,
-                url: 'https://example.com/timedtexttrack/42',
+                source_url: 'https://example.com/timedtext/source/42',
+                url: 'https://example.com/timedtext/42.vtt',
                 video: '142',
               }}
             />,
