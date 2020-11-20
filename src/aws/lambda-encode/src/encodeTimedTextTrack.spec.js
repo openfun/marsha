@@ -18,6 +18,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
   beforeEach(() => {
     mockGetObject.mockReset();
     mockPutObject.mockReset();
+    mockCopyObject.mockReset();
   });
 
   const eol = '\r\n';
@@ -39,24 +40,24 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
       promise: () => new Promise(resolve => resolve()),
     });
 
-    const extension = await encodeTimedTextTrack('uuid/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_ts');
+    const extension = await encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts', 'source_bucket', '1605887889_fr_ts');
 
     expect(extension).toEqual("srt");
 
     expect(mockGetObject).toHaveBeenCalledWith({
       Bucket: 'source_bucket',
-      Key: 'uuid/timedtexttrack/some_key',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
       Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: 'uuid/timedtext/some_key.vtt'
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/1605887889_fr_ts.vtt'
     });
     expect(mockCopyObject).toHaveBeenCalledWith({
       Bucket: 'destination_bucket',
-      Key: 'uuid/timedtext/source/some_key',
-      CopySource: 'source_bucket/uuid/timedtexttrack/some_key'
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/source/1605887889_fr_ts',
+      CopySource: 'source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts'
     });
   });
 
@@ -72,18 +73,26 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     mockPutObject.mockReturnValue({
       promise: () => new Promise(resolve => resolve()),
     });
+    mockCopyObject.mockReturnValue({
+      promise: () => new Promise(resolve => resolve()),
+    });
 
-    await encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar');
+    await encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr', 'source_bucket', '1605887889_fr');
 
     expect(mockGetObject).toHaveBeenCalledWith({
       Bucket: 'source_bucket',
-      Key: '/timedtexttrack/some_key',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
       Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: '/timedtext/some_key.vtt'
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/1605887889_fr.vtt'
+    });
+    expect(mockCopyObject).toHaveBeenCalledWith({
+      Bucket: 'destination_bucket',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/source/1605887889_fr',
+      CopySource: 'source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr'
     });
   });
 
@@ -99,18 +108,26 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     mockPutObject.mockReturnValue({
       promise: () => new Promise(resolve => resolve()),
     });
+    mockCopyObject.mockReturnValue({
+      promise: () => new Promise(resolve => resolve()),
+    });
 
-    await encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st');
+    await encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st', 'source_bucket', '1605887889_fr_st');
 
     expect(mockGetObject).toHaveBeenCalledWith({
       Bucket: 'source_bucket',
-      Key: '/timedtexttrack/some_key',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st',
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: expectedEncodedSubtitles,
       Bucket: 'destination_bucket',
       ContentType: 'text/vtt',
-      Key: '/timedtext/some_key.vtt'
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/1605887889_fr_st.vtt'
+    });
+    expect(mockCopyObject).toHaveBeenCalledWith({
+      Bucket: 'destination_bucket',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtext/source/1605887889_fr_st',
+      CopySource: 'source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st'
     });
   });
 
@@ -124,8 +141,8 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
-    ).rejects.toEqual(new Error('Invalid timed text format for /timedtexttrack/some_key.'));
+      encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st', 'source_bucket', '1605887889_fr_st')
+    ).rejects.toEqual(new Error('Invalid timed text format for a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st.'));
   });
 
   it('throws when it fails to get the timed text file from the source bucket', async () => {
@@ -135,7 +152,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
+      encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st', 'source_bucket', '1605887889_fr_st')
     ).rejects.toEqual(new Error('Failed!'));
   });
 
@@ -152,7 +169,7 @@ describe('lambda-encode/src/encodeTimedTextTrack', () => {
     });
 
     await expect(
-      encodeTimedTextTrack('/timedtexttrack/some_key', 'source_bucket', '1557479487_ar_st'),
+      encodeTimedTextTrack('a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st', 'source_bucket', '1605887889_fr_st')
     ).rejects.toEqual(new Error('Failed!'));
   });
 });
