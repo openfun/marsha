@@ -41,14 +41,14 @@ module.exports = async (objectKey, sourceBucket, filename) => {
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr
       // 👆 becomes 👇
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtext/1542967735_fr.vtt
-      Key: `${objectKey.replace('/timedtexttrack/', '/timedtext/')}.vtt`,
+      Key: `${objectKey.replace(/\/timedtexttrack\/.*\//, '/timedtext/')}.vtt`,
     })
     .promise();
 
   await s3.
     copyObject({
       Bucket: destinationBucket,
-      Key: `${objectKey.replace('/timedtexttrack/', '/timedtext/source/')}`,
+      Key: `${objectKey.replace(/\/timedtexttrack\/.*\//, '/timedtext/source/')}`,
       CopySource: `${sourceBucket}/${objectKey}`
     })
     .promise();
