@@ -475,7 +475,7 @@ class VideoSerializer(serializers.ModelSerializer):
             return {
                 "manifests": {
                     "hls": obj.live_info["mediapackage"]["endpoints"]["hls"]["url"],
-                    "dash": None,
+                    "dash": obj.live_info["mediapackage"]["endpoints"]["dash"]["url"],
                 },
                 "mp4": {},
                 "thumbnails": {},
