@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - manage ready clauses in LTI resource finder
+- Change preset container by CMFC
 
 ## [3.11.0] - 2020-10-08
 
