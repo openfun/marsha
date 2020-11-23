@@ -266,13 +266,13 @@ describe('createPlyrPlayer', () => {
       type: 'video',
     });
   });
-  it('creates Plyr player and configure hls if video in live mode', () => {
+  it('creates Plyr player and configures hls if video in live mode and dash is not available', () => {
     mockIsMSESupported.mockReturnValue(false);
     mockIsHlsSupported.mockReturnValue(false);
     jest.spyOn(Hls, 'isSupported').mockReturnValue(true);
 
     const ref = 'ref' as any;
-    const player = createPlyrPlayer(ref, jest.fn(), {
+    createPlyrPlayer(ref, jest.fn(), {
       ...video,
       upload_state: 'pending',
       live_state: 'idle',
@@ -280,5 +280,19 @@ describe('createPlyrPlayer', () => {
 
     expect(mockCreateHlsPlayer).toHaveBeenCalled();
     expect(mockCreateDashPlayer).not.toHaveBeenCalled();
+  });
+  it('creates Plyr player and configures dash if video in live mode and dash is available', () => {
+    mockIsMSESupported.mockReturnValue(true);
+    mockIsHlsSupported.mockReturnValue(false);
+
+    const ref = 'ref' as any;
+    createPlyrPlayer(ref, jest.fn(), {
+      ...video,
+      upload_state: 'pending',
+      live_state: 'idle',
+    } as Video);
+
+    expect(mockCreateHlsPlayer).not.toHaveBeenCalled();
+    expect(mockCreateDashPlayer).toHaveBeenCalled();
   });
 });
