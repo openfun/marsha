@@ -51,7 +51,7 @@
       "ColorMetadata": "INSERT"
     },
     "ContainerSettings": {
-      "Container": "MPD"
+      "Container": "CMFC"
     }
   }
 }
