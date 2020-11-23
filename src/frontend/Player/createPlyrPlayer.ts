@@ -161,11 +161,7 @@ export const createPlyrPlayer = (
     player.source = sources;
   }
 
-  if (video.live_state !== null && Hls.isSupported()) {
-    createHlsPlayer(video, videoNode);
-  }
-
-  if (video.live_state === null && isMSESupported()) {
+  if (isMSESupported()) {
     dash = createDashPlayer(video, videoNode);
     dash.on('qualityChangeRendered', (e) => {
       if (isNaN(e.oldQuality)) {
@@ -180,6 +176,8 @@ export const createPlyrPlayer = (
         player.quality = newQuality.height;
       }
     });
+  } else if (video.live_state !== null && Hls.isSupported()) {
+    createHlsPlayer(video, videoNode);
   }
 
   if (player.elements.buttons.play) {

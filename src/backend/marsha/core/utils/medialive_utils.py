@@ -297,7 +297,10 @@ def delete_aws_element_stack(video):
     # First delete mediapackage endpoints
     for endpoint in ["hls", "dash"]:
         mediapackage_client.delete_origin_endpoint(
-            Id=video.live_info.get("mediapackage").get("endpoints").get(endpoint).get("id")
+            Id=video.live_info.get("mediapackage")
+            .get("endpoints")
+            .get(endpoint)
+            .get("id")
         )
 
     # Then delete channel
