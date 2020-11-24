@@ -7,17 +7,12 @@ module.exports = async (objectKey, sourceBucket) => {
 
   console.log(`Copying document ${objectKey} to destination bucket.`);
 
-  const sourceDocument = await s3
-    .getObject({ Bucket: sourceBucket, Key: objectKey })
-    .promise();
-
-
   const parts = objectKey.split('/');
-  await s3
-    .putObject({
-      Body: sourceDocument.Body,
+  return s3.
+    copyObject({
       Bucket: destinationBucket,
       Key: `${parts[0]}/document/${parts[3]}`,
+      CopySource: `${sourceBucket}/${objectKey}`
     })
     .promise();
 };
