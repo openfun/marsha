@@ -8,12 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.12.0] - 2020-11-24
+
 ### Added
 
 - Manage live streaming using AWS Elemental
 - Download timed text track in video dashboard
 - Create shared resources between terraform workspaces
-- Add dash endpoint to mediapackage channel
 
 ### Changed
 
@@ -602,7 +603,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.11.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.12.0...master
+[3.12.0]: https://github.com/openfun/marsha/compare/v3.11.0...v3.12.0
 [3.11.0]: https://github.com/openfun/marsha/compare/v3.10.2...v3.11.0
 [3.10.2]: https://github.com/openfun/marsha/compare/v3.10.1...v3.10.2
 [3.10.1]: https://github.com/openfun/marsha/compare/v3.10.0...v3.10.1
