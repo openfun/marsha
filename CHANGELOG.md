@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - use input to execute lambda_migrate intead of env var
+- copy document from s3 source to s3 destination in lambda copying document
 
 ### Fixed
 
