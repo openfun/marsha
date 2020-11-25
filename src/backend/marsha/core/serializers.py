@@ -221,7 +221,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             None if the timed text track is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on:
+        if obj.uploaded_on and obj.extension:
             stamp = time_utils.to_timestamp(obj.uploaded_on)
             filename = "{playlist_title:s}_{stamp:s}.{extension:s}".format(
                 playlist_title=slugify(obj.video.playlist.title),
