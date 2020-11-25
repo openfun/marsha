@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Allow to serialize a timed text track without extension
+
 ## [3.12.0] - 2020-11-24
 
 ### Added
