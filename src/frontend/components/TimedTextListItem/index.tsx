@@ -127,7 +127,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
               : messages.replace)}
           />
         </Link>
-        {track.upload_state === uploadState.READY && (
+        {track.upload_state === uploadState.READY && track.source_url && (
           <React.Fragment>
             &nbsp;/&nbsp;
             <a href={track.source_url}>

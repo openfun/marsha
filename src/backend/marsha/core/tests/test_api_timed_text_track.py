@@ -16,7 +16,7 @@ from .test_api_video import RSA_KEY_MOCK
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,too-many-lines
 
 
 class TimedTextTrackAPITest(TestCase):
@@ -182,6 +182,59 @@ class TimedTextTrackAPITest(TestCase):
                     "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
                     "ttachment%3B+filename%3Dfoo_1533686400.srt"
                 ),
+                "url": (
+                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "timedtext/1533686400_fr_cc.vtt"
+                ),
+                "video": str(timed_text_track.video.id),
+            },
+        )
+
+        # Try getting another timed_text_track
+        other_timed_text_track = TimedTextTrackFactory()
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 404)
+        content = json.loads(response.content)
+        self.assertEqual(content, {"detail": "Not found."})
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_timed_text_track_without_extension_read_detail_token_user(self):
+        """A timed text track without extension should return empty source url."""
+        timed_text_track = TimedTextTrackFactory(
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            video__playlist__title="foo",
+            mode="cc",
+            language="fr",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # Get the timed text track using the JWT token
+        response = self.client.get(
+            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "active_stamp": "1533686400",
+                "is_ready_to_show": True,
+                "id": str(timed_text_track.id),
+                "mode": "cc",
+                "language": "fr",
+                "upload_state": "ready",
+                "source_url": None,
                 "url": (
                     "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
                     "timedtext/1533686400_fr_cc.vtt"
