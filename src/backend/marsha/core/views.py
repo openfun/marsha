@@ -141,6 +141,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "environment": settings.ENVIRONMENT,
                 "release": settings.RELEASE,
                 "static": {"svg": {"plyr": static("svg/plyr.svg")}},
+                "player": settings.VIDEO_PLAYER,
             }
             if lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
