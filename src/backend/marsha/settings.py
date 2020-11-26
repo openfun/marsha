@@ -247,6 +247,8 @@ class Base(Configuration):
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
+    VIDEO_PLAYER = values.Value("plyr")
+
     MAINTENANCE_MODE = values.BooleanValue(False)
 
     # pylint: disable=invalid-name

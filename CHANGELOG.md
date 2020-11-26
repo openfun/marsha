@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Choose video player with the setting VIDEO_PLAYER
+
 ## [3.12.1] - 2020-11-25
 
 ### Fixed
