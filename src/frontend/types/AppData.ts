@@ -22,4 +22,5 @@ export interface AppData {
       plyr: string;
     };
   };
+  player?: string;
 }

@@ -29,7 +29,10 @@ export const AppRoutes = () => (
             if (match.params.objectType === modelName.VIDEOS && appData.video) {
               return (
                 <InstructorWrapper resource={appData.video}>
-                  <VideoPlayer video={appData.video} />
+                  <VideoPlayer
+                    video={appData.video}
+                    playerType={appData.player!}
+                  />
                 </InstructorWrapper>
               );
             }

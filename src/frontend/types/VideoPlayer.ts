@@ -1,6 +1,5 @@
+import { Maybe } from 'utils/types';
 import { Video } from './tracks';
-
-type VideoPlayerType = 'plyr';
 
 export interface VideoPlayerInterface {
   /** Destroy the instance and garbage collect any elements. */
@@ -8,8 +7,8 @@ export interface VideoPlayerInterface {
 }
 
 export type VideoPlayerCreator = (
-  type: VideoPlayerType,
+  type: string,
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
-) => VideoPlayerInterface;
+) => Maybe<VideoPlayerInterface>;
