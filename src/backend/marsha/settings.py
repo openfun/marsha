@@ -247,7 +247,7 @@ class Base(Configuration):
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
-    VIDEO_PLAYER = values.Value("plyr")
+    VIDEO_PLAYER = values.Value("videojs")
 
     MAINTENANCE_MODE = values.BooleanValue(False)
 
