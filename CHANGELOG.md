@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Choose video player with the setting VIDEO_PLAYER
+- New player videojs as a alternative to plyr
 
 ## [3.12.1] - 2020-11-25
 

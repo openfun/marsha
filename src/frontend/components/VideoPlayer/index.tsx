@@ -16,7 +16,7 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
-import { isHlsSupported } from '../../utils/isAbrSupported';
+import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -30,9 +30,13 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 
 interface BaseVideoPlayerProps {
   video: Nullable<Video>;
+  playerType: string;
 }
 
-const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
+const VideoPlayer = ({
+  video: baseVideo,
+  playerType,
+}: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState(
     undefined as Maybe<VideoPlayerInterface>,
   );
@@ -74,7 +78,7 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
       // Instantiate Plyr and keep the instance in state
       setPlayer(
         createPlayer(
-          'plyr',
+          playerType,
           videoNodeRef.current!,
           setPlayerCurrentTime,
           video,
@@ -124,45 +128,47 @@ const VideoPlayer = ({ video: baseVideo }: BaseVideoPlayerProps) => {
         poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
         tabIndex={-1}
       >
+        {isMSESupported() && (
+          <source
+            src={video.urls.manifests.dash}
+            size="auto"
+            type="application/dash+xml"
+          />
+        )}
+
         {!!videoNodeRef.current && isHlsSupported(videoNodeRef.current) && (
           <source
             src={video.urls.manifests.hls}
             size="auto"
-            type="application/vnd.apple.mpegURL"
+            type="application/x-mpegURL"
           />
         )}
-        {!!videoNodeRef.current &&
-          !isHlsSupported(videoNodeRef.current) &&
-          resolutions.map((size) => (
-            <source
-              key={video.urls.mp4[size]}
-              size={`${size}`}
-              src={video.urls.mp4[size]}
-              type="video/mp4"
+
+        {resolutions.map((size) => (
+          <source
+            key={video.urls.mp4[size]}
+            size={`${size}`}
+            src={video.urls.mp4[size]}
+            type="video/mp4"
+          />
+        ))}
+
+        {timedTextTracks
+          .filter((track) => track.is_ready_to_show)
+          .filter((track) =>
+            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+              track.mode,
+            ),
+          )
+          .map((track) => (
+            <track
+              key={track.id}
+              src={track.url}
+              srcLang={track.language}
+              kind={trackTextKind[track.mode]}
+              label={languages[track.language] || track.language}
             />
           ))}
-
-        {/* This is a workaround to force plyr to load its tracks list once
-          instantiated. Without this, captions are not loaded correctly, at least, on firefox.
-          */}
-        {player &&
-          timedTextTracks
-            .filter((track) => track.is_ready_to_show)
-            .filter((track) =>
-              [
-                timedTextMode.CLOSED_CAPTIONING,
-                timedTextMode.SUBTITLE,
-              ].includes(track.mode),
-            )
-            .map((track) => (
-              <track
-                key={track.id}
-                src={track.url}
-                srcLang={track.language}
-                kind={trackTextKind[track.mode]}
-                label={languages[track.language] || track.language}
-              />
-            ))}
       </video>
       {video.show_download && <DownloadVideo video={video} />}
       {transcripts.length > 0 && (
