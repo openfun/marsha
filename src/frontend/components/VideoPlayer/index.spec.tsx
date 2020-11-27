@@ -90,8 +90,8 @@ describe('VideoPlayer', () => {
   afterEach(() => fetchMock.restore());
   afterEach(jest.clearAllMocks);
 
-  it('starts up the player with DashJS and renders all the relevant sources', async () => {
-    // Simulate a browser that supports MSE and will use DashJS
+  it('starts up the player with dash source and renders all the relevant sources', async () => {
+    // Simulate a browser that supports MSE
     mockIsMSESupported.mockReturnValue(true);
     mockIsHlsSupported.mockReturnValue(false);
 
@@ -139,12 +139,14 @@ describe('VideoPlayer', () => {
     ]);
 
     const { container, getByText, queryByText } = render(
-      wrapInIntlProvider(<VideoPlayer video={mockVideo} />),
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
     );
     await waitFor(() =>
       // The player is created and initialized with DashJS for adaptive bitrate
       expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'plyr',
+        'videojs',
         expect.any(Element),
         expect.anything(),
         mockVideo,
@@ -153,6 +155,9 @@ describe('VideoPlayer', () => {
 
     expect(queryByText(/Download this video/i)).toBeNull();
     getByText('Show a transcript');
+    expect(
+      container.querySelector('source[type="application/dash+xml"]'),
+    ).not.toBeNull();
     expect(container.querySelectorAll('track')).toHaveLength(2);
     expect(
       container.querySelector('source[src="https://example.com/144p.mp4"]'),
@@ -168,24 +173,31 @@ describe('VideoPlayer', () => {
 
   it('allows video download when the video object specifies it', async () => {
     mockIsMSESupported.mockReturnValue(false);
+    mockIsHlsSupported.mockReturnValue(false);
     mockVideo.show_download = true;
 
-    render(wrapInIntlProvider(<VideoPlayer video={mockVideo} />));
+    render(
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
+    );
 
     await screen.findByText(/Download this video/i);
     screen.getByText('Show a transcript');
   });
 
-  it('does not use DashJS when MSE are not supported', async () => {
+  it('does not use dash source when MSE are not supported', async () => {
     // Simulate a browser that does not support MSE
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
-      wrapInIntlProvider(<VideoPlayer video={mockVideo} />),
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
     );
     await waitFor(() =>
       // The player is created and initialized with DashJS for adaptive bitrate
       expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'plyr',
+        'videojs',
         expect.any(Element),
         expect.anything(),
         mockVideo,
@@ -195,25 +207,34 @@ describe('VideoPlayer', () => {
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
+    expect(
+      container.querySelector('source[type="application/dash+xml"]'),
+    ).toBeNull();
   });
 
   it('uses HLS source when browser support it', async () => {
     mockIsHlsSupported.mockReturnValue(true);
+    mockIsMSESupported.mockReturnValue(false);
 
     const { container } = render(
-      wrapInIntlProvider(<VideoPlayer video={mockVideo} />),
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
     );
     await waitFor(() =>
       expect(
         container.querySelectorAll(
-          'source[type="application/vnd.apple.mpegURL"]',
+          'source[type="application/x-mpegURL"]',
         ),
       ).toHaveLength(1),
     );
 
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      0,
+      2,
     );
+    expect(
+      container.querySelector('source[type="application/dash+xml"]'),
+    ).toBeNull();
   });
 
   it('uses subtitles as transcripts', async () => {
@@ -234,7 +255,9 @@ describe('VideoPlayer', () => {
     ]);
 
     const { container } = render(
-      wrapInIntlProvider(<VideoPlayer video={mockVideo} />),
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
     );
 
     await screen.findByText('Show a transcript');
@@ -267,8 +290,10 @@ describe('VideoPlayer', () => {
       },
     ]);
 
-    const { container, getByText } = render(
-      wrapInIntlProvider(<VideoPlayer video={mockVideo} />),
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
     );
 
     await screen.findByText('Show a transcript');
