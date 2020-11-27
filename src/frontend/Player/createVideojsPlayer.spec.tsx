@@ -5,7 +5,7 @@ import { mocked } from 'ts-jest/utils';
 import VideoPlayer from '../components/VideoPlayer';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
-import { timedTextMode, uploadState } from '../types/tracks';
+import { liveState, timedTextMode, uploadState } from '../types/tracks';
 import { isMSESupported } from '../utils/isAbrSupported';
 import { videoMockFactory } from '../utils/tests/factories';
 import { jestMockOf } from '../utils/types';
@@ -138,10 +138,34 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.liveui).toBe(false);
     expect(player.options_.plugins).toEqual({
       httpSourceSelector: {
-        default: 'low',
+        default: 'auto',
       },
     });
     expect(player.options_.responsive).toBe(true);
+  });
+
+  it('configures for a live video', () => {
+    mockIsMSESupported.mockReturnValue(true);
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={{ ...mockVideo, live_state: liveState.RUNNING }}
+          playerType={'videojs'}
+        />,
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(videoElement!, jest.fn(), {
+      ...mockVideo,
+      live_state: liveState.RUNNING,
+    });
+
+    expect(player.currentSources()).toEqual([
+      { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
+    ]);
+    expect(player.options_.liveui).toBe(true);
   });
 
   it('sends xapi events', () => {
