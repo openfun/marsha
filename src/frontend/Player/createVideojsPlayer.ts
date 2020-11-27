@@ -23,20 +23,31 @@ export const createVideojsPlayer = (
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
-  const player = videojs(videoNode, {
+  const options: videojs.PlayerOptions = {
     controls: true,
     debug: false,
     fluid: true,
     language: intl.locale,
-    liveui: video.live_state === liveState.RUNNING,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins: {
       httpSourceSelector: {
-        default: 'low',
+        default: 'auto',
       },
     },
     responsive: true,
-  });
+  };
+
+  if (video.live_state !== null) {
+    options.liveui = true;
+    options.sources = [
+      {
+        src: video.urls.manifests.hls,
+        type: 'application/x-mpegURL',
+      },
+    ];
+  }
+
+  const player = videojs(videoNode, options);
   player.httpSourceSelector();
   const qualityLevels = player.qualityLevels();
   const tracks = player.remoteTextTracks();

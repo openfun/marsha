@@ -223,9 +223,7 @@ describe('VideoPlayer', () => {
     );
     await waitFor(() =>
       expect(
-        container.querySelectorAll(
-          'source[type="application/x-mpegURL"]',
-        ),
+        container.querySelectorAll('source[type="application/x-mpegURL"]'),
       ).toHaveLength(1),
     );
 
