@@ -13,7 +13,10 @@ import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('../../data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
+  appData: {
+    jwt: 'cool_token_m8',
+    flags: {},
+  },
 }));
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
 
