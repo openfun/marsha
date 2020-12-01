@@ -5,7 +5,9 @@ import styled from 'styled-components';
 
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
+import { flags } from '../../types/AppData';
 import { uploadState, Video } from '../../types/tracks';
+import { isFeatureEnabled } from '../../utils/isFeatureEnabled';
 import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -94,7 +96,8 @@ export const DashboardPaneButtons = ({
       margin={'small'}
     >
       {objectType === modelName.VIDEOS &&
-        object.upload_state === uploadState.PENDING && (
+        object.upload_state === uploadState.PENDING &&
+        isFeatureEnabled(flags.VIDEO_LIVE) && (
           <DashboardVideoLiveConfigureButton video={object as Video} />
         )}
       <DashboardButtonWithLink
