@@ -8,6 +8,10 @@ export enum appState {
   SUCCESS = 'success',
 }
 
+export enum flags {
+  VIDEO_LIVE = 'video_live',
+}
+
 export interface AppData {
   jwt?: string;
   state: appState;
@@ -23,4 +27,7 @@ export interface AppData {
     };
   };
   player?: string;
+  flags: {
+    [key in flags]?: boolean;
+  };
 }
