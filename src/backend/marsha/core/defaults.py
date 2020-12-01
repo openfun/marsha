@@ -25,3 +25,6 @@ LIVE_CHOICES = (
     (RUNNING, _("running")),
     (STOPPED, _("stopped")),
 )
+
+# FLAGS
+VIDEO_LIVE = "video_live"

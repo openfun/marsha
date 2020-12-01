@@ -11,8 +11,9 @@ from django.test import TestCase, override_settings
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
+from waffle.testutils import override_switch
 
-from ..defaults import IDLE, PENDING, READY, RUNNING, STATE_CHOICES
+from ..defaults import IDLE, PENDING, READY, RUNNING, STATE_CHOICES, VIDEO_LIVE
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
     TimedTextTrackFactory,
@@ -35,6 +36,7 @@ class VideoLTIViewTestCase(TestCase):
     @override_settings(SENTRY_DSN="https://sentry.dsn")
     @override_settings(RELEASE="1.2.3")
     @override_settings(VIDEO_PLAYER="videojs")
+    @override_switch(VIDEO_LIVE, active=True)
     def test_views_lti_video_post_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -110,6 +112,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
+        self.assertEqual(context.get("flags"), {"video_live": True})
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
