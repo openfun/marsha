@@ -16,7 +16,9 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
+from waffle import switch_is_active
 
+from .defaults import VIDEO_LIVE
 from .lti import LTI
 from .lti.utils import PortabilityError, get_or_create_resource
 from .models import Document, Video
@@ -63,7 +65,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         """
         try:
-            app_data = self._get_app_data(request)
+            app_data = self._get_app_data()
         except (LTIException, PortabilityError) as error:
             logger.warning(str(error))
             app_data = {
@@ -78,7 +80,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 
-    def _get_app_data(self, request):
+    def _get_app_data(self):
         """Build app data for the frontend with information retrieved from the LTI launch request.
 
         Parameters
@@ -129,17 +131,18 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 and resource.playlist.lti_id == lti.context_id,
             }
             app_data = {
+                "environment": settings.ENVIRONMENT,
+                "flags": {VIDEO_LIVE: switch_is_active(VIDEO_LIVE)},
                 "modelName": self.model.RESOURCE_NAME,
+                "release": settings.RELEASE,
                 "resource": self.serializer_class(
                     resource,
                     context={"can_return_live_info": lti.is_admin or lti.is_instructor},
                 ).data
                 if resource
                 else None,
-                "state": "success",
                 "sentry_dsn": settings.SENTRY_DSN,
-                "environment": settings.ENVIRONMENT,
-                "release": settings.RELEASE,
+                "state": "success",
                 "static": {"svg": {"plyr": static("svg/plyr.svg")}},
                 "player": settings.VIDEO_PLAYER,
             }

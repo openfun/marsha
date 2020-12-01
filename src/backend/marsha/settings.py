@@ -110,6 +110,7 @@ class Base(Configuration):
         "django.contrib.staticfiles",
         "django_extensions",
         "dockerflow.django",
+        "waffle",
         "rest_framework",
         "marsha.core.apps.CoreConfig",
     ]
@@ -123,6 +124,7 @@ class Base(Configuration):
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "dockerflow.django.middleware.DockerflowMiddleware",
+        "waffle.middleware.WaffleMiddleware",
     ]
 
     ROOT_URLCONF = "marsha.urls"
@@ -152,6 +154,9 @@ class Base(Configuration):
             "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
         )
     }
+
+    # WAFFLE
+    WAFFLE_CREATE_MISSING_SWITCHES = True
 
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

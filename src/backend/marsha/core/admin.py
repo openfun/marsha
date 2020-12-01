@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from waffle import admin as waffle_admin
+
 from marsha.core.models import (
     AudioTrack,
     ConsumerSite,
@@ -158,6 +160,10 @@ class MarshaAdminSite(admin.AdminSite):
 
 
 admin_site = MarshaAdminSite(name="admin")
+
+admin_site.register(waffle_admin.Flag, waffle_admin.FlagAdmin)
+admin_site.register(waffle_admin.Sample, waffle_admin.SampleAdmin)
+admin_site.register(waffle_admin.Switch, waffle_admin.SwitchAdmin)
 
 
 class UserOrganizationsInline(admin.TabularInline):
