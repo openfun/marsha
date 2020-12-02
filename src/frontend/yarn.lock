@@ -5035,6 +5035,11 @@ mux.js@5.6.7:
   resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.6.7.tgz#d39fc85cded5a1257de9f6eeb5cf1578c4a63eb8"
   integrity sha512-YSr6B8MUgE4S18MptbY2XM+JKGbw9JDkgs7YkuE/T2fpDKjOhZfb/nD6vmsVxvLYOExWNaQn1UGBp6PGsnTtew==
 
+mux.js@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.7.0.tgz#0d49ea653d25dcb256080c21c1bac4ef85e82605"
+  integrity sha512-SINb/qE0iN7YdpbGHtcj8JoHAJWXITUcN9ZCmakThZ8pVGvWukBMCDfJbEVmY2+GqmmrUkLkwUN9Ec2YLUSbuA==
+
 nanoid@^3.1.16:
   version "3.1.16"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.16.tgz#b21f0a7d031196faf75314d7c65d36352beeef64"
