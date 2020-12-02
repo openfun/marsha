@@ -5,11 +5,11 @@
   },
   "component.DashboardVideoPaneDownloadOption.updateVideoFail": {
     "description": "Failed to update download permission on your video.",
-    "message": "Failed to update your video. Please try again later."
+    "message": "Error al actualizar el vídeo. Por favor, inténtelo de nuevo más tarde."
   },
   "component.DashboardVideoPaneTranscriptOption.updateVideoFail": {
     "description": "Failed to update download permission on your video.",
-    "message": "Failed to update your video. Please try again later."
+    "message": "Error al actualizar el vídeo. Por favor, inténtelo de nuevo más tarde."
   },
   "component.DashboardVideoPaneTranscriptOption.useTranscript": {
     "description": "",
@@ -21,19 +21,23 @@
   },
   "components.Dashboard.DashboardPaneButtons.documents.btnReplace": {
     "description": "Dashboard button to upload a document to replace the existing one, when there *is* an existing document.",
-    "message": "Replace the document"
+    "message": "Reemplazar documento"
   },
   "components.Dashboard.DashboardPaneButtons.documents.btnUploadFirst": {
     "description": "Dashboard button to upload a document, when there is no existing document.",
-    "message": "Upload a document"
+    "message": "Cargar un documento"
   },
   "components.Dashboard.DashboardPaneButtons.videos.btnPlay": {
     "description": "Dashboard button to play the existing video, if there is one.",
-    "message": "Watch"
+    "message": "Ver"
   },
   "components.Dashboard.DashboardPaneButtons.videos.btnReplace": {
     "description": "Dashboard button to upload a video to replace the existing one, when there *is* an existing video.",
-    "message": "Replace the video"
+    "message": "Reemplazar este vídeo"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.btnStartLive": {
+    "description": "Dashboard button to configure a live streaming",
+    "message": "Configure a live streaming"
   },
   "components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst": {
     "description": "Dashboard button to upload a video, when there is no existing video.",
@@ -123,6 +127,38 @@
     "description": "Title for the transcripts management in the dashboard.",
     "message": "Transcripts"
   },
+  "components.DashboardVideoLive.liveStarting": {
+    "description": "Helptext explainig to wait until the live is ready.",
+    "message": "Live streaming is starting. Wait before starting your stream."
+  },
+  "components.DashboardVideoLive.showLive": {
+    "description": "button to redirect use to video player.",
+    "message": "show live"
+  },
+  "components.DashboardVideoLive.startLive": {
+    "description": "Start a video streaming.",
+    "message": "start streaming"
+  },
+  "components.DashboardVideoLive.streamKey": {
+    "description": "Video key streaming.",
+    "message": "stream key"
+  },
+  "components.DashboardVideoLive.streamLink": {
+    "description": "link to use to stream a video.",
+    "message": "Stream link"
+  },
+  "components.DashboardVideoLive.title": {
+    "description": "DashboardVideoLive main title.",
+    "message": "Streaming link"
+  },
+  "components.DashboardVideoLive.url": {
+    "description": "Video url streaming.",
+    "message": "url"
+  },
+  "components.DashboardVideoLiveStopButton.startLive": {
+    "description": "Stop a video streaming.",
+    "message": "stop streaming"
+  },
   "components.DashboardVideoPane.thumbnailAlt": {
     "description": "Accessibility text for the video thumbnail in the Dashboard.",
     "message": "Video thumbnail preview image."
@@ -150,6 +186,10 @@
   "components.DownloadVideo.downloadVideo": {
     "description": "Text to download the video",
     "message": "Download this video:"
+  },
+  "components.ErrorComponent.liveIncompatible.title": {
+    "description": "Title when the object is incompatible with live mode",
+    "message": "Live mode incompatible with this object"
   },
   "components.ErrorComponent.lti.text": {
     "description": "Helpful text for the LTI error page",
@@ -214,6 +254,10 @@
   "components.TimedTextListItem.delete": {
     "description": "Link text to delete a subtitle/transcript/captions item.",
     "message": "Delete"
+  },
+  "components.TimedTextListItem.download": {
+    "description": "Link text to download a subtitle/transcript/captions item.",
+    "message": "Download"
   },
   "components.TimedTextListItem.replace": {
     "description": "Link text to replace a subtitle/transcript/captions item with a new file (for the same language).",
