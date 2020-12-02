@@ -108,6 +108,7 @@
     "@types/styled-components": "5.1.4",
     "babel-core": "7.0.0-bridge.0",
     "js-yaml": "3.14.0",
+    "@videojs/http-streaming/mux.js": "5.7.0",
     "zustand": "3.2.0"
   }
 }
