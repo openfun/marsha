@@ -128,6 +128,24 @@ jobs:
           name: Test statics location in production image
           command: ./docker/tests/statics.sh marsha ${CIRCLE_SHA1}
 
+  build-lambda-docker:
+    machine:
+      image: ubuntu-2004:202010-01
+    working_directory: ~/marsha
+    steps:
+      # Checkout repository sources
+      - checkout
+      - *docker_login
+      # Each image is tagged with the current git commit sha1 to avoid
+      # collisions in parallel builds.
+      - run: 
+          name: Build production image
+          command: ./bin/lambda build ${CIRCLE_SHA1}
+
+      - run:
+          name: Check built image availability
+          command: docker image ls "${LAMBDA_IMAGE_NAME}:${CIRCLE_SHA1}"
+
   # Build backend development environment
   build-back:
     docker:
@@ -358,7 +376,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -385,7 +403,7 @@ jobs:
 
   test-lambda-encode:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -412,7 +430,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -439,7 +457,7 @@ jobs:
 
   test-lambda-medialive:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -465,7 +483,7 @@ jobs:
 
   test-lambda-medialive-routing:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:12.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -571,6 +589,59 @@ jobs:
               docker push fundocker/marsha:latest
             fi
 
+  lambda-publish:
+    machine:
+      image: ubuntu-2004:202010-01
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+      # Activate docker-in-docker (with layers caching enabled)
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - *docker_login
+      - run:
+          name: Build production image (using cached layers)
+          command: ./bin/lambda build ${CIRCLE_SHA1}
+      # Tag docker images with the same pattern used in Git (Semantic Versioning)
+      #
+      # Git tag: v1.0.1
+      # Docker tag: 1.0.1(-dev)
+      - run:
+          name: Tag images
+          command: |
+            docker image ls "${LAMBDA_IMAGE_NAME}:production"
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
+            ./bin/lambda tag ${DOCKER_TAG} ${CIRCLE_SHA1}
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              ./bin/lambda tag latest ${CIRCLE_SHA1}
+            fi
+            docker image ls ${LAMBDA_IMAGE_NAME}
+
+      # Publish images to ECR
+      - run:
+          name: Publish images
+          command: |
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
+            ./bin/lambda publish ${DOCKER_TAG}
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              ./bin/lambda publish latest
+            fi
+        
+
 workflows:
   version: 2
 
@@ -605,6 +676,10 @@ workflows:
               only: /.*/
 
       # Lambda related jobs
+      - build-lambda-docker:
+          filters:
+            tags:
+              only: /.*/
       - test-lambda-configure:
           filters:
             tags:
@@ -682,6 +757,20 @@ workflows:
           requires:
             - build-docker
             - test-back
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
+
+      - lambda-publish:
+          requires:
+            - build-lambda-docker
+            - test-lambda-complete
+            - test-lambda-configure
+            - test-lambda-encode
+            - test-lambda-medialive
+            - test-lambda-medialive-routing
           filters:
             branches:
               only: master
