@@ -1,7 +1,8 @@
 import Hls from 'hls.js';
 
-import { Video } from '../types/tracks';
+import { timedTextMode, uploadState, Video } from '../types/tracks';
 import { isHlsSupported, isMSESupported } from '../utils/isAbrSupported';
+import { videoMockFactory } from '../utils/tests/factories';
 import { jestMockOf } from '../utils/types';
 import { createDashPlayer } from './createDashPlayer';
 import { createHlsPlayer } from './createHlsPlayer';
@@ -80,53 +81,62 @@ jest.mock('../data/appData', () => ({
 }));
 
 describe('createPlyrPlayer', () => {
-  const video = {
+  const video = videoMockFactory({
     description: 'Some description',
     id: 'video-id',
     is_ready_to_show: true,
-    show_download: false,
-    thumbnail: null,
     timed_text_tracks: [
       {
         active_stamp: 1549385921,
         id: 'ttt-1',
         is_ready_to_show: true,
         language: 'fr',
-        mode: 'st',
-        upload_state: 'ready',
+        mode: timedTextMode.SUBTITLE,
+        upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-1.vtt',
+        source_url: 'https://example.com/timedtext/ttt-1.vtt',
+        video: 'video-id',
+        title: 'foo',
       },
       {
         active_stamp: 1549385922,
         id: 'ttt-2',
         is_ready_to_show: false,
         language: 'fr',
-        mode: 'st',
-        upload_state: 'ready',
+        mode: timedTextMode.SUBTITLE,
+        upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-2.vtt',
+        source_url: 'https://example.com/timedtext/ttt-2.vtt',
+        video: 'video-id',
+        title: 'foo',
       },
       {
         active_stamp: 1549385923,
         id: 'ttt-3',
         is_ready_to_show: true,
         language: 'en',
-        mode: 'cc',
-        upload_state: 'ready',
+        mode: timedTextMode.CLOSED_CAPTIONING,
+        upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-3.vtt',
+        source_url: 'https://example.com/timedtext/ttt-3.vtt',
+        video: 'video-id',
+        title: 'foo',
       },
       {
         active_stamp: 1549385924,
         id: 'ttt-4',
         is_ready_to_show: true,
         language: 'fr',
-        mode: 'ts',
-        upload_state: 'ready',
+        mode: timedTextMode.SUBTITLE,
+        upload_state: uploadState.READY,
         url: 'https://example.com/timedtext/ttt-4.vtt',
+        source_url: 'https://example.com/timedtext/ttt-4.vtt',
+        video: 'video-id',
+        title: 'foo',
       },
     ],
     title: 'Some title',
-    upload_state: 'ready',
-    live_state: null,
+    upload_state: uploadState.READY,
     urls: {
       manifests: {
         dash: 'https://example.com/dash.mpd',
@@ -140,7 +150,7 @@ describe('createPlyrPlayer', () => {
         720: 'https://example.com/144p.jpg',
       },
     },
-  };
+  });
   beforeEach(() => {
     jest.clearAllMocks();
   });
