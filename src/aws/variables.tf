@@ -38,3 +38,16 @@ variable "medialive_lambda_name" {
   type    = string
   default = "marsha-medialive"
 }
+
+variable "lambda_image_name" {
+  type    = string
+}
+
+variable "lambda_image_tag" {
+  type    = string
+  default = "master"
+}
+
+variable "ecr_lambda_marsha_arn" {
+  type    = string
+}

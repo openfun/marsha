@@ -1,3 +1,28 @@
+
+# Global policy added to all lambda to access ECR image
+resource "aws_iam_policy" "lambda_ecr_access_policy" {
+  name        = "${terraform.workspace}-marsha-lambda-ecr-access-policy"
+  path        = "/"
+  description = "IAM policy needed by all lambda to access ECR"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecr:SetRepositoryPolicy",
+        "ecr:GetRepositoryPolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "${var.ecr_lambda_marsha_arn}/"
+    }
+  ]
+}
+EOF
+}
+
+
 # Lambda invocation role
 #########################
 
@@ -18,6 +43,11 @@ resource "aws_iam_role" "lambda_invocation_role" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_invocation_ecr_policy_attachment" {
+  role       = aws_iam_role.lambda_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_ecr_access_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_logging_policy" {
@@ -259,6 +289,11 @@ resource "aws_iam_role_policy_attachment" "lambda_migrate_logging_policy_attachm
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_migrate_ecr_policy_attachment" {
+  role       = aws_iam_role.lambda_migrate_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_ecr_access_policy.arn
+}
+
 resource "aws_iam_policy" "lambda_migrate_s3_access_policy" {
   name        = "${terraform.workspace}-marsha-migrate-lambda-s3-access-policy"
   path        = "/"
@@ -465,4 +500,9 @@ EOF
 resource "aws_iam_role_policy_attachment" "lambda_medialive_logging_policy_attachment" {
   role       = aws_iam_role.lambda_medialive_invocation_role.name
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_medialive_access_ecr_policy_attachment" {
+  role       = aws_iam_role.lambda_medialive_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_ecr_access_policy.arn
 }

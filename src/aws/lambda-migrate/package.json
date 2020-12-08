@@ -3,7 +3,7 @@
   "name": "aws-marsha-migrate",
   "version": "3.13.0",
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "description": "Tasks to run when we want to execute a migration on AWS services",
   "repository": {
