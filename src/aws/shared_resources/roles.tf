@@ -75,3 +75,30 @@ resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_access_polic
   role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
   policy_arn = aws_iam_policy.lambda_medialive_routing_access_policy.arn
 }
+
+resource "aws_iam_policy" "lambda_medialive_routing_ecr_access_policy" {
+  name        = "marsha-medialive-routing-ecr-access-policy"
+  path        = "/"
+  description = "IAM policy needed by lambda-medialive-routing to access ECR"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecr:SetRepositoryPolicy",
+        "ecr:GetRepositoryPolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_ecr_repository.marsha_lambda.arn}/"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_ecr_access_policy_attachment" {
+  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_medialive_routing_ecr_access_policy.arn
+}

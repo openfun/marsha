@@ -3,7 +3,7 @@
   "name": "aws-marsha-medialive",
   "version": "3.13.0",
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "description": "Tasks to execute when a medialive event is fired",
   "repository": {
