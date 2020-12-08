@@ -1,4 +1,4 @@
-version: "3"
+version: "3.4"
 
 services:
   db:
@@ -54,3 +54,98 @@ services:
 
   dockerize:
     image: jwilder/dockerize
+
+  lambda_base:
+    build:
+      context: ./src/aws/
+      target: development
+    image: marsha/lambda:dev
+    # Override the default command so that the container exists immediately when
+    # it is run (no server).
+    entrypoint: ""
+    command: echo "I should exit now. Bye."
+
+  lambda_encode:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-encode
+    command: ["/var/task/lambda-encode/index.handler"]
+    ports:
+      - 9000:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-encode:/var/task/lambda-encode"
+      - "./src/aws/utils:/var/task/utils"
+    depends_on:
+      - lambda_base
+
+  lambda_complete:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-complete
+    command: ["/var/task/lambda-complete/index.handler"]
+    ports:
+      - 9001:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-complete:/var/task/lambda-complete"
+      - "./src/aws/utils:/var/task/utils"
+    depends_on:
+      - lambda_base
+
+  lambda_configure:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-configure
+    command: ["/var/task/lambda-configure/index.handler"]
+    ports:
+      - 9002:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-configure:/var/task/lambda-configure"
+    depends_on:
+      - lambda_base
+
+  lambda_medialive:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-medialive
+    command: ["/var/task/lambda-medialive/index.handler"]
+    ports:
+      - 9003:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-medialive:/var/task/lambda-medialive"
+      - "./src/aws/utils:/var/task/utils"
+    depends_on:
+      - lambda_base
+
+  lambda_medialive_routing:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-medialive-routing
+    command: ["/var/task/lambda-medialive-routing/index.handler"]
+    ports:
+      - 9004:8080
+    env_file:
+      - env.d/lambda
+    environment:
+      - MEDIALIVE_LAMBDA_NAME=marsha-medialive
+    volumes:
+      - "./src/aws/lambda-medialive-routing:/var/task/lambda-medialive-routing"
+      - "./src/aws/utils:/var/task/utils"
+    depends_on:
+      - lambda_base
+
+  lambda_migrate:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-migrate
+    command: ["/var/task/lambda-migrate/index.handler"]
+    ports:
+      - 9005:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-migrate:/var/task/lambda-migrate"
+      - "./src/aws/utils:/var/task/utils"
+    depends_on:
+      - lambda_base

@@ -37,6 +37,7 @@ COMPOSE              = docker-compose
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
+COMPOSE_RUN_LAMBDA   = $(COMPOSE_RUN) --entrypoint "" # disable lambda entrypoint to run command in container
 COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 YARN                 = $(COMPOSE_RUN_NODE) yarn
 
@@ -51,6 +52,7 @@ bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
 	build \
+	build-lambda-dev \
 	run \
 	migrate \
 	i18n-compile-back
@@ -63,6 +65,10 @@ build: ## build the app container
 	@$(COMPOSE) build app;
 .PHONY: build
 
+build-lambda-dev: ## build all aws lambda
+	@$(COMPOSE) build lambda_base
+.PHONY: build-lambda-dev
+
 down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
 .PHONY: down
@@ -72,7 +78,7 @@ logs: ## display app logs (follow mode)
 .PHONY: logs
 
 run: ## start the development server using Docker
-	@$(COMPOSE) up -d
+	@$(COMPOSE) up -d app
 	@echo "Wait for postgresql to be up..."
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 .PHONY: run
@@ -183,6 +189,76 @@ build-ts: ### Build TypeScript application
 watch-front: ## Build front application and activate watch mode
 	@$(YARN) build --watch
 .PHONY: watch-front
+
+## -- AWS
+
+lambda-install-dev-dependencies: ## Install all lambda dependencies
+lambda-install-dev-dependencies: \
+	lambda-install-dev-dependencies-complete \
+	lambda-install-dev-dependencies-configure \
+	lambda-install-dev-dependencies-encode \
+	lambda-install-dev-dependencies-medialive \
+	lambda-install-dev-dependencies-medialive-routing \
+	lambda-install-dev-dependencies-migrate
+.PHONY: lambda-install-dev-dependencies
+
+lambda-install-dev-dependencies-complete: ## Install dependencies for lambda complete
+	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn install
+.PHONY: lambda-install-dev-dependencies-encode
+
+lambda-install-dev-dependencies-configure: ## Install dependencies for lambda configure
+	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn install
+.PHONY: lambda-install-dev-dependencies-configure
+
+lambda-install-dev-dependencies-encode: ## Install dependencies for lambda encode
+	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn install
+.PHONY: lambda-install-dev-dependencies-encode
+
+lambda-install-dev-dependencies-medialive: ## Install dependencies for lambda medialive
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn install
+.PHONY: lambda-install-dev-dependencies-medialive
+
+lambda-install-dev-dependencies-medialive-routing: ## Install dependencies for lambda medialive
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn install
+.PHONY: lambda-install-dev-dependencies-medialive-routing
+
+lambda-install-dev-dependencies-migrate: ## Install dependencies for lambda medialive
+	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn install
+.PHONY: lambda-install-dev-dependencies-migrate
+
+test-lambda: ## Run all aws lambda tests
+test-lambda: \
+	test-lambda-complete \
+	test-lambda-configure \
+	test-lambda-encode \
+	test-lambda-medialive \
+	test-lambda-medialive-routing \
+	test-lambda-migrate
+.PHONY: test-lambda
+
+test-lambda-complete: ## test aws lambda complete
+	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn test
+.PHONY: test-lambda-complete
+
+test-lambda-configure: ## test aws lambda configure
+	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn test
+.PHONY: test-lambda-configure
+
+test-lambda-encode: ## test aws lambda encode
+	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn test
+.PHONY: test-lambda-encode
+
+test-lambda-medialive: ## test aws lambda medialive
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn test
+.PHONY: test-lambda-medialive
+
+test-lambda-medialive-routing: ## test aws lambda medialive routing
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn test
+.PHONY: test-lambda-medialive-routing
+
+test-lambda-migrate: ## test aws lambda migrate
+	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn test
+.PHONY: test-lambda-migrate
 
 # -- Internationalization
 

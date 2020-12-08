@@ -16,6 +16,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - New player videojs as an alternative to plyr
 - Add a fleature flag to control video live streams activation
 
+### Changed
+
+- Dockerize lambda functions
+
 ## [3.12.1] - 2020-11-25
 
 ### Fixed
