@@ -62,7 +62,7 @@ interface TimedTextCreationFormProps {
 }
 
 const isSelectOption = (
-  option: ValueType<SelectOption>,
+  option: ValueType<SelectOption, false>,
 ): option is SelectOption => (option as SelectOption).value !== undefined;
 
 /**
@@ -92,7 +92,7 @@ export const TimedTextCreationForm = ({
     choices.filter((language) => !excludedLanguages.includes(language.value));
 
   const onSelectChange = (
-    option: ValueType<SelectOption>,
+    option: ValueType<SelectOption, false>,
     { action }: ActionMeta<SelectOption>,
   ) => {
     if (action === 'select-option' && option && isSelectOption(option)) {
