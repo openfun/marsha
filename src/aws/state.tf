@@ -1,5 +1,5 @@
 provider "aws" {
-  version = "~> 3.14"
+  version = "~> 3.20"
 }
 
 terraform {

@@ -3,7 +3,7 @@
   "name": "aws-marsha-medialive-routing",
   "version": "3.13.0",
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "description": "Routing tasks to execute when a medialive event is fired to the lambda in the target environment",
   "repository": {

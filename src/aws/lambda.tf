@@ -1,30 +1,19 @@
-# Lambda Layers
-###############
-
-resource "aws_lambda_layer_version" "media_info_layer" {
-  filename    = "layers/MediaInfo_CLI_20.03.20200523_Lambda.zip"
-  source_code_hash = filebase64sha256("layers/MediaInfo_CLI_20.03.20200523_Lambda.zip")
-  layer_name  = "media_info_layer"
-
-  description = "Layer containing mediainfo binary file compatible with AWS lambda servers (from https://mediaarea.net/download/snapshots/binary/mediainfo/)"
-}
-
 # Configuration
 #################
 
 resource "aws_lambda_function" "marsha_configure_lambda" {
   function_name    = "${terraform.workspace}-marsha-configure"
-  handler          = "index.handler"
-  # Run on the highest version of node available on AWS lambda
-  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-  runtime          = "nodejs10.x"
-  filename         = "dist/marsha_configure.zip"
-  source_code_hash = filebase64sha256("dist/marsha_configure.zip")
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
   role             = aws_iam_role.lambda_invocation_role.arn
 
   # The configuration lambda is invocated by Terraform upon deployment and may take
   # some time (for example when creating all the media convert presets from scratch)
   timeout = 60
+
+  image_config {
+    command = ["/var/task/lambda-configure/index.handler"]
+  }
 
   environment {
     variables = {
@@ -43,38 +32,20 @@ data "aws_lambda_invocation" "configure_lambda_endpoint" {
 EOF
 }
 
-# Call the configuration lambda to create Media Convert presets
-# Passing as argument the endpoint url that we just retrieved
-data "aws_lambda_invocation" "configure_lambda_presets" {
-  depends_on    = [
-    aws_lambda_function.marsha_configure_lambda,
-    data.aws_lambda_invocation.configure_lambda_endpoint
-  ]
-  function_name = aws_lambda_function.marsha_configure_lambda.function_name
-
-  input = jsonencode({
-    "Resource": "MediaConvertPresets",
-    "EndPoint": jsondecode(data.aws_lambda_invocation.configure_lambda_endpoint.result)["EndpointUrl"]
-  })
-}
-
 # Encoding
 ############
 
 resource "aws_lambda_function" "marsha_encode_lambda" {
   function_name    = "${terraform.workspace}-marsha-encode"
-  handler          = "index.handler"
-  # Run on the highest version of node available on AWS lambda
-  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-  runtime          = "nodejs10.x"
-  filename         = "dist/marsha_encode.zip"
-  source_code_hash = filebase64sha256("dist/marsha_encode.zip")
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
   role             = aws_iam_role.lambda_invocation_role.arn
   memory_size      = "1536"
   timeout          = "90"
-  layers           = [aws_lambda_layer_version.media_info_layer.arn]
-  depends_on       = [aws_lambda_layer_version.media_info_layer]
 
+  image_config {
+    command = ["/var/task/lambda-encode/index.handler"]
+  }
 
   environment {
     variables = {
@@ -102,13 +73,13 @@ resource "aws_lambda_permission" "allow_bucket" {
 
 resource "aws_lambda_function" "marsha_complete_lambda" {
   function_name    = "${terraform.workspace}-marsha-complete"
-  handler          = "index.handler"
-  # Run on the highest version of node available on AWS lambda
-  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-  runtime          = "nodejs10.x"
-  filename         = "dist/marsha_complete.zip"
-  source_code_hash = filebase64sha256("dist/marsha_complete.zip")
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
   role             = aws_iam_role.lambda_invocation_role.arn
+
+  image_config {
+    command = ["/var/task/lambda-complete/index.handler"]
+  }
 
   environment {
     variables = {
@@ -132,15 +103,15 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 ################
 resource "aws_lambda_function" "marsha_migrate_lambda" {
   function_name    = "${terraform.workspace}-marsha-migrate"
-  handler          = "index.handler"
-  # Run on the highest version of node available on AWS lambda
-  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-  runtime          = "nodejs10.x"
-  filename         = "dist/marsha_migrate.zip"
-  source_code_hash = filebase64sha256("dist/marsha_migrate.zip")
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
   role             = aws_iam_role.lambda_migrate_invocation_role.arn
 
   timeout = 900
+
+  image_config {
+    command = ["/var/task/lambda-migrate/index.handler"]
+  }
 
   environment {
     variables = {
@@ -168,13 +139,13 @@ data "aws_lambda_invocation" "invoke_migration" {
 
 resource "aws_lambda_function" "marsha_medialive_lambda" {
   function_name    = "${terraform.workspace}-${var.medialive_lambda_name}"
-  handler          = "index.handler"
-  # Run on the highest version of node available on AWS lambda
-  # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-  runtime          = "nodejs10.x"
-  filename         = "dist/marsha_medialive.zip"
-  source_code_hash = filebase64sha256("dist/marsha_medialive.zip")
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
   role             = aws_iam_role.lambda_medialive_invocation_role.arn
+
+  image_config {
+    command = ["/var/task/lambda-medialive/index.handler"]
+  }
 
   environment {
     variables = {
