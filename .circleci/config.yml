@@ -597,9 +597,6 @@ jobs:
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
-      - setup_remote_docker:
-          docker_layer_caching: true
       - *docker_login
       - run:
           name: Build production image (using cached layers)
