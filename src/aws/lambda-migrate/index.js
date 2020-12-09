@@ -1,14 +1,13 @@
 exports.handler = async (event, context, callback) => {
-
-  let basePath = ''
+  let basePath = '';
   if (process.env.NODE_ENV === 'production') {
     basePath = 'src';
   } else {
-    basePath = 'stubs'
+    basePath = 'stubs';
   }
   let errors = [];
   (event.migrations || [])
-    .map(migration => `./${basePath}/migrations/${migration}.js`)
+    .map((migration) => `./${basePath}/migrations/${migration}.js`)
     .map(async (migration) => {
       let toMigrate;
       try {
@@ -22,10 +21,10 @@ exports.handler = async (event, context, callback) => {
       try {
         console.log(`executing migration ${migration}`);
         await toMigrate();
-        console.log(`end migration ${migration}`)
-      } catch (e){
+        console.log(`end migration ${migration}`);
+      } catch (e) {
         errors.push(e);
-        console.error(e)
+        console.error(e);
       }
     });
 

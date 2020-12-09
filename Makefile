@@ -260,6 +260,40 @@ test-lambda-migrate: ## test aws lambda migrate
 	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn test
 .PHONY: test-lambda-migrate
 
+lint-lambda: ## Run linter an all lambda functions
+lint-lambda: \
+	lint-lambda-complete \
+	lint-lambda-configure \
+	lint-lambda-encode \
+	lint-lambda-medialive \
+	lint-lambda-medialive-routing \
+	lint-lambda-migrate
+.PHONY: lint-lambda
+
+lint-lambda-complete: ## run linter on lambda complete function
+	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn lint
+.PHONY: lint-lambda-complete
+
+lint-lambda-configure: ## run linter on lambda configure function
+	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn lint
+.PHONY: lint-lambda-configure
+
+lint-lambda-encode: ## run linter on lambda encode function
+	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn lint
+.PHONY: lint-lambda-encode
+
+lint-lambda-medialive: ## run linter on lambda medialive function
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn lint
+.PHONY: lint-lambda-medialive
+
+lint-lambda-medialive-routing: ## run linter on lambda medialive routing function
+	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn lint
+.PHONY: lint-lambda-medialive-routing
+
+lint-lambda-migrate: ## run linter on lambda complete function
+	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn lint
+.PHONY: lint-lambda-migrate
+
 # -- Internationalization
 
 crowdin-download: ## Download translated message from crowdin

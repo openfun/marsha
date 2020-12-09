@@ -11,12 +11,14 @@
     "url": "https://www.github.com/openfun/marsha"
   },
   "scripts": {
+    "lint": "prettier --write --list-different '**/*.+(json|js)'",
     "test": "jest"
   },
   "dependencies": {
     "aws-sdk": "2.805.0"
   },
   "devDependencies": {
-    "jest": "26.6.3"
+    "jest": "26.6.3",
+    "prettier": "2.2.1"
   }
 }

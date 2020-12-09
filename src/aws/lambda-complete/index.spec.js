@@ -27,7 +27,7 @@ describe('lambda', () => {
                 ],
                 videoDetails: {
                   widthInPx: 256,
-                  heightInPx: 144
+                  heightInPx: 144,
                 },
               },
             ],
@@ -38,7 +38,9 @@ describe('lambda', () => {
 
     await lambda(event, null, callback);
 
-    expect(mockUpdateState).toHaveBeenCalledWith('some object key', 'ready', { resolutions: [144]});
+    expect(mockUpdateState).toHaveBeenCalledWith('some object key', 'ready', {
+      resolutions: [144],
+    });
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -55,7 +57,11 @@ describe('lambda', () => {
 
     await lambda(event, null, callback);
 
-    expect(mockUpdateState).toHaveBeenCalledWith('failed object key', 'error', {});
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      'failed object key',
+      'error',
+      {},
+    );
     expect(callback).toHaveBeenCalledWith();
   });
 
@@ -77,8 +83,8 @@ describe('lambda', () => {
                 ],
                 videoDetails: {
                   widthInPx: 256,
-                  heightInPx: 144
-                }
+                  heightInPx: 144,
+                },
               },
             ],
           },
@@ -95,7 +101,9 @@ describe('lambda', () => {
     expect(mockUpdateState).toHaveBeenCalledWith(
       'object key that will fail to update',
       'ready',
-      {resolutions: [144]}
+      {
+        resolutions: [144],
+      },
     );
     expect(callback).toHaveBeenCalledWith('Failed to updateState!');
   });
