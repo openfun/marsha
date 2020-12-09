@@ -4,11 +4,13 @@ const { DISABLE_SSL_VALIDATION, MARSHA_URL, SHARED_SECRET } = process.env;
 module.exports = async (channel, event, context) => {
   const status = event.detail.state;
 
-  if (!["RUNNING", "STOPPED"].includes(status)) {
-    throw new Error(`Expected status are RUNNING and STOPPED. ${status} received`);
+  if (!['RUNNING', 'STOPPED'].includes(status)) {
+    throw new Error(
+      `Expected status are RUNNING and STOPPED. ${status} received`,
+    );
   }
 
-  const videoId = channel.Name.split("_")[1];
+  const videoId = channel.Name.split('_')[1];
   const body = {
     logGroupName: context.logGroupName,
     state: status.toLowerCase(),
@@ -21,7 +23,6 @@ module.exports = async (channel, event, context) => {
     signature,
     DISABLE_SSL_VALIDATION ? false : true,
     `${MARSHA_URL}/api/videos/${videoId}/update-live-state/`,
-    'PATCH'
-  );  
+    'PATCH',
+  );
 };
-

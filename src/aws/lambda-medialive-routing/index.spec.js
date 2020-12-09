@@ -9,11 +9,11 @@ process.env.MEDIALIVE_LAMBDA_NAME = 'medialive-lambda';
 const mockDescribeChannel = jest.fn();
 const mockInvokeAsync = jest.fn();
 jest.mock('aws-sdk', () => ({
-  MediaLive: function() {
+  MediaLive: function () {
     this.describeChannel = mockDescribeChannel;
   },
-  Lambda: function() {
-    this.invokeAsync = mockInvokeAsync
+  Lambda: function () {
+    this.invokeAsync = mockInvokeAsync;
   },
 }));
 
@@ -26,32 +26,32 @@ describe('lambda', () => {
 
   it('invokes a medialive lambda', async () => {
     const event = {
-      "version": "0",
-      "id": "0495e5eb-9b99-56f2-7849-96389238fb55",
-      "detail-type": "MediaLive Channel State Change",
-      "source": "aws.medialive",
-      "account": "account_id",
-      "time": "2020-06-15T15:18:29Z",
-      "region": "eu-west-1",
-      "resources": [
-        "arn:aws:medialive:eu-west-1:account_id:channel:1234567"
-      ],
-      "detail": {
-        "channel_arn": "arn:aws:medialive:eu-west-1:account_id:channel:1234567",
-        "state": "STARTING",
-        "message": "Created channel",
-        "pipelines_running_count": 0
-      }
+      version: '0',
+      id: '0495e5eb-9b99-56f2-7849-96389238fb55',
+      'detail-type': 'MediaLive Channel State Change',
+      source: 'aws.medialive',
+      account: 'account_id',
+      time: '2020-06-15T15:18:29Z',
+      region: 'eu-west-1',
+      resources: ['arn:aws:medialive:eu-west-1:account_id:channel:1234567'],
+      detail: {
+        channel_arn: 'arn:aws:medialive:eu-west-1:account_id:channel:1234567',
+        state: 'STARTING',
+        message: 'Created channel',
+        pipelines_running_count: 0,
+      },
     };
 
     mockDescribeChannel.mockReturnValue({
       promise: () =>
-        new Promise(resolve => resolve({
-          Name: 'medialive-name',
-          Tags: { 
-            environment: 'test' 
-          }, 
-        })),
+        new Promise((resolve) =>
+          resolve({
+            Name: 'medialive-name',
+            Tags: {
+              environment: 'test',
+            },
+          }),
+        ),
     });
 
     mockInvokeAsync.mockReturnValue({
@@ -66,12 +66,12 @@ describe('lambda', () => {
       InvokeArgs: JSON.stringify({
         channel: {
           Name: 'medialive-name',
-          Tags: { 
-            environment: 'test' 
-          }, 
+          Tags: {
+            environment: 'test',
+          },
         },
-        event_origin: event
-      })
-    })
+        event_origin: event,
+      }),
+    });
   });
 });

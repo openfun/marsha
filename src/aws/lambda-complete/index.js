@@ -9,12 +9,13 @@ exports.handler = async (event, context, callback) => {
   const state = event.detail.status === 'COMPLETE' ? 'ready' : 'error';
   let extraParameters = {};
   if (event.detail.status === 'COMPLETE') {
-    const resolutions = event
-      .detail
-      .outputGroupDetails.find(outputGroupDetail => outputGroupDetail.type === "FILE_GROUP")
-      .outputDetails.map(outputDetail => outputDetail.videoDetails.heightInPx);
+    const resolutions = event.detail.outputGroupDetails
+      .find((outputGroupDetail) => outputGroupDetail.type === 'FILE_GROUP')
+      .outputDetails.map(
+        (outputDetail) => outputDetail.videoDetails.heightInPx,
+      );
 
-    extraParameters = {resolutions}
+    extraParameters = { resolutions };
   }
 
   try {
