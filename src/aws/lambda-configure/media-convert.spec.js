@@ -19,7 +19,7 @@ describe('Media Convert', () => {
       Endpoints: [{ Url: 'https://test.mediaconvert.eu-west-1.amazonaws.com' }],
     };
 
-    AWS.mock('MediaConvert', 'describeEndpoints', callback =>
+    AWS.mock('MediaConvert', 'describeEndpoints', (callback) =>
       callback(null, data),
     );
 

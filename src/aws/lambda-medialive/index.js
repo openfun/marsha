@@ -7,7 +7,7 @@ exports.handler = async (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event_origin));
   const type = event_origin['detail-type'];
 
-  switch(type) {
+  switch (type) {
     case 'MediaLive Channel State Change':
       try {
         await channelStateChanged(event.channel, event_origin, context);

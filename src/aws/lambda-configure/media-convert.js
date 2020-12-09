@@ -50,7 +50,7 @@ let createPreset = (preset, url) => {
     // Supplement the preset name with the environment
     params.Name = process.env.ENV_TYPE + '_' + params.Name;
 
-    mediaconvert.getPreset({ Name: params.Name }, function(error, data) {
+    mediaconvert.getPreset({ Name: params.Name }, function (error, data) {
       if (error) {
         // the preset does not exist, let's create it
         mediaconvert.createPreset(params, (error, data) => {
@@ -74,7 +74,7 @@ let createPreset = (preset, url) => {
   });
 };
 
-let createPresets = event => {
+let createPresets = (event) => {
   if (!process.env.ENV_TYPE) {
     const message = 'You must set the ENV_TYPE environment variable.';
     console.log(message);
@@ -85,9 +85,9 @@ let createPresets = event => {
     let promises = [];
     let url = event.EndPoint;
 
-    presets.forEach(preset => promises.push(createPreset(preset, url)));
+    presets.forEach((preset) => promises.push(createPreset(preset, url)));
     Promise.all(promises)
-      .then(data => {
+      .then((data) => {
         // Return a list of the names of the presets that we created
         resolve({
           Presets: data.reduce((list, item) => {
@@ -96,7 +96,7 @@ let createPresets = event => {
           }, []),
         });
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 

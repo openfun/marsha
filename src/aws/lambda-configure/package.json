@@ -11,6 +11,7 @@
     "url": "https://www.github.com/openfun/marsha"
   },
   "scripts": {
+    "lint": "prettier --write --list-different '**/*.+(json|js)'",
     "test": "jest"
   },
   "dependencies": {
@@ -19,7 +20,8 @@
   "devDependencies": {
     "@types/jest": "26.0.17",
     "aws-sdk-mock": "5.1.0",
-    "jest": "26.6.3"
+    "jest": "26.6.3",
+    "prettier": "2.2.1"
   },
   "resolutions": {
     "merge": "^2.0.0",
