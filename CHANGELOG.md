@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Enable videojs override native feature except on safari
+
 ## [3.13.0] - 2020-12-02
 
 ### Added

@@ -27,6 +27,11 @@ export const createVideojsPlayer = (
     controls: true,
     debug: false,
     fluid: true,
+    html5: {
+      vhs: {
+        overrideNative: !videojs.browser.IS_SAFARI,
+      },
+    },
     language: intl.locale,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins: {
