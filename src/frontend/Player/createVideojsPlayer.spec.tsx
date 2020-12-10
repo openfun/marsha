@@ -142,6 +142,11 @@ describe('createVideoJsPlayer', () => {
       },
     });
     expect(player.options_.responsive).toBe(true);
+    expect(player.options_.html5).toEqual({
+      vhs: {
+        overrideNative: true,
+      },
+    });
   });
 
   it('configures for a live video', () => {
