@@ -146,6 +146,12 @@ class Document(BaseFile):
         verbose_name=_("extension"),
     )
 
+    is_public = models.BooleanField(
+        default=False,
+        verbose_name=_("is document public"),
+        help_text=_("Is the document publicly accessible?"),
+    )
+
     class Meta:
         """Options for the ``Document`` model."""
 
