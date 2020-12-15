@@ -46,6 +46,12 @@ class Video(BaseFile):
         blank=True,
     )
 
+    is_public = models.BooleanField(
+        default=False,
+        verbose_name=_("is video public"),
+        help_text=_("Is the video publicly accessible?"),
+    )
+
     class Meta:
         """Options for the ``Video`` model."""
 

@@ -22,10 +22,10 @@ from ..lti import LTI
 class CacheLTIViewTestCase(TestCase):
     """Test caching in LTI views."""
 
-    def _post_lti_request(self, url, data):
+    def _fetch_lti_request(self, url, data=None):
         """Not a test but utility method to make an LTI request and test cache behavior."""
         started_at = time.time()
-        response = self.client.post(url, data)
+        response = self.client.post(url, data) if data else self.client.get(url)
         elapsed = time.time() - started_at
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
@@ -60,38 +60,38 @@ class CacheLTIViewTestCase(TestCase):
         }
 
         with self.assertNumQueries(5):
-            elapsed, resource_origin = self._post_lti_request(url, data)
+            elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
         self.assertTrue(elapsed < 0.1)
 
         # Calling the same resource a second time with the same LTI parameters
         # should hit the cache and be ultra fast
         with self.assertNumQueries(0):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertTrue(elapsed < 0.01)
 
         # The cache should not be hit on first call if we change the playlist id
         data["context_id"] = "other_playlist"
         with self.assertNumQueries(4):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertTrue(elapsed < 0.1)
 
         with self.assertNumQueries(0):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertTrue(elapsed < 0.01)
 
         # The cache should not be hit on first call if we change the domain
         mock_get_consumer_site.return_value = ConsumerSiteFactory()
         with self.assertNumQueries(4):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertTrue(elapsed < 0.1)
 
         with self.assertNumQueries(0):
-            elapsed, resource = self._post_lti_request(
+            elapsed, resource = self._fetch_lti_request(
                 url, {**data, "context_id": "other_playlist"}
             )
         self.assertEqual(resource, resource_origin)
@@ -100,19 +100,19 @@ class CacheLTIViewTestCase(TestCase):
         # The cache should not be hit on first call if we change the resource id
         url = "/lti/videos/{!s}".format(video2.pk)
         with self.assertNumQueries(4):
-            elapsed, resource_video2 = self._post_lti_request(url, data)
+            elapsed, resource_video2 = self._fetch_lti_request(url, data)
         self.assertEqual(resource_video2["id"], str(video2.id))
         self.assertTrue(elapsed < 0.1)
 
         with self.assertNumQueries(0):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_video2)
         self.assertTrue(elapsed < 0.01)
 
         # The cache should STILL be hit if the user changes
         data["user_id"] = "222"
         with self.assertNumQueries(0):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_video2)
         self.assertTrue(elapsed < 0.01)
 
@@ -138,13 +138,34 @@ class CacheLTIViewTestCase(TestCase):
         }
 
         with self.assertNumQueries(5):
-            elapsed, resource_origin = self._post_lti_request(url, data)
+            elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertTrue(elapsed < 0.1)
 
         # Calling the same resource a second time with the same LTI parameters
         # should not hit the cache
         with self.assertNumQueries(4):
-            elapsed, resource = self._post_lti_request(url, data)
+            elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
+        self.assertTrue(elapsed < 0.1)
+
+    @override_switch(VIDEO_LIVE, active=True)
+    def test_views_public_resource(self):
+        """Validate that response for public resources are cached."""
+        video = VideoFactory(
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[144, 240],
+            is_public=True,
+        )
+        url = "/videos/{!s}".format(video.pk)
+
+        with self.assertNumQueries(5):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+        self.assertEqual(resource_origin["id"], str(video.id))
+        self.assertTrue(elapsed < 0.1)
+
+        with self.assertNumQueries(0):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+        self.assertEqual(resource_origin["id"], str(video.id))
         self.assertTrue(elapsed < 0.1)
