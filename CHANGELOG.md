@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.13.1] - 2020-12-15
+
 ### Fixed
 
 - Enable videojs override native feature except on safari
@@ -625,7 +627,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.13.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.13.1...master
+[3.13.1]: https://github.com/openfun/marsha/compare/v3.13.0...v3.13.1
 [3.13.0]: https://github.com/openfun/marsha/compare/v3.12.1...v3.13.0
 [3.12.1]: https://github.com/openfun/marsha/compare/v3.12.0...v3.12.1
 [3.12.0]: https://github.com/openfun/marsha/compare/v3.11.0...v3.12.0
