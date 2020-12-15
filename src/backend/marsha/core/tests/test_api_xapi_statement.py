@@ -1,6 +1,7 @@
 """Tests for the xAPI statement API of the marsha project."""
 import json
 from unittest import mock
+import uuid
 
 from django.test import TestCase
 
@@ -170,10 +171,7 @@ class XAPIStatementApiTest(TestCase):
         )
 
     @mock.patch("marsha.core.api.Video.objects.get")
-    @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_with_request_to_lrs_successful(
-        self, xapi_mock, video_model_mock
-    ):
+    def test_xapi_statement_with_request_to_lrs_successful(self, video_model_mock):
         """Successful request should return a 204 status code."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -200,15 +198,14 @@ class XAPIStatementApiTest(TestCase):
         }
 
         video_model_mock.return_value = video
-        xapi_instance = xapi_mock.return_value
-        xapi_instance.send.return_value = None
 
-        response = self.client.post(
-            "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            data=json.dumps(data),
-            content_type="application/json",
-        )
+        with mock.patch("marsha.core.api.XAPI.send", return_value=None):
+            response = self.client.post(
+                "/xapi/",
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                data=json.dumps(data),
+                content_type="application/json",
+            )
 
         self.assertEqual(response.status_code, 204)
 
@@ -221,7 +218,13 @@ class XAPIStatementApiTest(TestCase):
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["session_id"] = str(uuid.uuid4())
         jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["course"] = {
+            "school_name": None,
+            "course_name": None,
+            "course_run": None,
+        }
 
         data = {
             "verb": {
@@ -234,15 +237,12 @@ class XAPIStatementApiTest(TestCase):
         }
 
         video_model_mock.return_value = video
+        with mock.patch("marsha.core.api.XAPI.send", return_value=None):
+            response = self.client.post(
+                "/xapi/",
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                data=json.dumps(data),
+                content_type="application/json",
+            )
 
-        response = self.client.post(
-            "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
-            data=json.dumps(data),
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json().get("status"), "Impossible to identify the actor."
-        )
+        self.assertEqual(response.status_code, 204)
