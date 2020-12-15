@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Publicly access video or document, bypassing LTI check
+
 ## [3.13.1] - 2020-12-15
 
 ### Fixed

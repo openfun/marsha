@@ -22,6 +22,7 @@ from .defaults import VIDEO_LIVE
 from .lti import LTI
 from .lti.utils import PortabilityError, get_or_create_resource
 from .models import Document, Video
+from .models.account import NONE
 from .serializers import DocumentSerializer, VideoSerializer
 from .utils.react_locales_utils import react_locale
 
@@ -31,14 +32,14 @@ logger = getLogger(__name__)
 
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
-class BaseLTIView(ABC, TemplateResponseMixin, View):
-    """Base view called by an LTI launch request.
+class BaseView(ABC, TemplateResponseMixin, View):
+    """Base view called to serve a resource and how to use it by the front application.
 
     It is designed to work as a React single page application.
 
     """
 
-    template_name = "core/lti.html"
+    template_name = "core/resource.html"
 
     @property
     @abstractmethod
@@ -50,13 +51,8 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     def serializer_class(self):
         """Return the serializer used by the view."""
 
-    def get_context_data(self, request):
+    def get_context_data(self):
         """Build context for template rendering of configuration data for the frontend.
-
-        Parameters
-        ----------
-        request : Request
-            passed by Django
 
         Returns
         -------
@@ -64,15 +60,31 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             context with configuration data for the frontend
 
         """
-        try:
-            app_data = self._get_app_data()
-        except (LTIException, PortabilityError) as error:
+
+        def _manage_exception(error):
             logger.warning(str(error))
-            app_data = {
+            return {
                 "state": "error",
                 "modelName": self.model.RESOURCE_NAME,
                 "resource": None,
             }
+
+        lti = LTI(self.request, self.kwargs["uuid"])
+        try:
+            lti.verify()
+        except LTIException as error:
+            app_data = _manage_exception(error)
+        else:
+            cache_key = "app_data|{model:s}|{domain:s}|{context:s}|{resource!s}".format(
+                model=self.model.__name__,
+                domain=lti.get_consumer_site().domain,
+                context=lti.context_id,
+                resource=lti.resource_id,
+            )
+            try:
+                app_data = self._get_app_data(cache_key=cache_key, lti=lti)
+            except PortabilityError as error:
+                app_data = _manage_exception(error)
 
         return {
             "app_data": json.dumps(app_data),
@@ -80,13 +92,8 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 
-    def _get_app_data(self):
+    def _get_app_data(self, cache_key, lti=None, resource_id=None):
         """Build app data for the frontend with information retrieved from the LTI launch request.
-
-        Parameters
-        ----------
-        request : Request
-            passed by Django
 
         Returns
         -------
@@ -108,28 +115,24 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 used for authentication and authorization on the API.
 
         """
-        lti = LTI(self.request, self.kwargs["uuid"])
-        lti.verify()
-
         app_data = None
-        if lti.is_student:
-            cache_key = "app_data|{model:s}|{domain:s}|{context:s}|{resource!s}".format(
-                model=self.model.__name__,
-                domain=lti.get_consumer_site().domain,
-                context=lti.context_id,
-                resource=lti.resource_id,
-            )
-
+        if lti is None or lti.is_student:
             app_data = cache.get(cache_key)
-            permissions = {"can_access_dashboard": False, "can_update": False}
 
-        if not app_data:
-            resource = get_or_create_resource(self.model, lti)
-            permissions = {
-                "can_access_dashboard": lti.is_instructor or lti.is_admin,
-                "can_update": (lti.is_instructor or lti.is_admin)
-                and resource.playlist.lti_id == lti.context_id,
-            }
+        permissions = {"can_access_dashboard": False, "can_update": False}
+
+        if app_data is None:
+            resource = (
+                get_or_create_resource(self.model, lti)
+                if lti
+                else self._get_public_resource(resource_id)
+            )
+            if lti:
+                permissions = {
+                    "can_access_dashboard": lti.is_instructor or lti.is_admin,
+                    "can_update": (lti.is_instructor or lti.is_admin)
+                    and resource.playlist.lti_id == lti.context_id,
+                }
             app_data = {
                 "environment": settings.ENVIRONMENT,
                 "flags": {VIDEO_LIVE: switch_is_active(VIDEO_LIVE)},
@@ -137,7 +140,11 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "release": settings.RELEASE,
                 "resource": self.serializer_class(
                     resource,
-                    context={"can_return_live_info": lti.is_admin or lti.is_instructor},
+                    context={
+                        "can_return_live_info": lti.is_admin or lti.is_instructor
+                        if lti
+                        else False
+                    },
                 ).data
                 if resource
                 else None,
@@ -146,41 +153,102 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "static": {"svg": {"plyr": static("svg/plyr.svg")}},
                 "player": settings.VIDEO_PLAYER,
             }
-            if lti.is_student:
+            if lti is None or lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
             try:
-                locale = react_locale(lti.launch_presentation_locale)
+                locale = (
+                    react_locale(lti.launch_presentation_locale)
+                    if lti
+                    else settings.REACT_LOCALES[0]
+                )
             except ImproperlyConfigured:
-                locale = "en_US"
+                locale = settings.REACT_LOCALES[0]
 
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
             jwt_token.payload.update(
                 {
                     "session_id": str(uuid.uuid4()),
-                    "context_id": lti.context_id,
-                    "resource_id": str(lti.resource_id),
-                    "roles": lti.roles,
-                    "course": lti.get_course_info(),
+                    "context_id": lti.context_id
+                    if lti
+                    else app_data["resource"]["playlist"]["lti_id"],
+                    "resource_id": str(lti.resource_id)
+                    if lti
+                    else app_data["resource"]["id"],
+                    "roles": lti.roles if lti else [NONE],
+                    "course": lti.get_course_info() if lti else {},
                     "locale": locale,
                     "permissions": permissions,
                     "maintenance": settings.MAINTENANCE_MODE,
                 }
             )
-            try:
-                jwt_token.payload["user_id"] = lti.user_id
-            except AttributeError:
-                pass
+
+            if lti:
+                try:
+                    jwt_token.payload["user_id"] = lti.user_id
+                except AttributeError:
+                    pass
 
             app_data["jwt"] = str(jwt_token)
 
         return app_data
 
+    def _get_public_resource(self, resource_id):
+        """Fetch a resource publicly accessible.
+
+        Parameters
+        ----------
+        resource_id: string
+            The resource primary key to fetch
+
+        Raises
+        ------
+        model.DoesNotExist
+            Exception raised if the resource is not found
+
+        Returns
+        -------
+        An instance of the model
+        """
+        return self.model.objects.select_related("playlist").get(
+            self.model.get_ready_clause(),
+            is_public=True,
+            pk=resource_id,
+        )
+
+    def get_public_data(self):
+        """Build app data for the frontend for a resource publicly accessible.
+
+        Returns
+        -------
+        dictionary
+            context with configuration data for the frontend
+        """
+        cache_key = "app_data|public|{model:s}|{resource_id:s}".format(
+            model=self.model.__name__, resource_id=str(self.kwargs["uuid"])
+        )
+        try:
+            app_data = self._get_app_data(
+                cache_key=cache_key, resource_id=self.kwargs["uuid"]
+            )
+        except self.model.DoesNotExist:
+            app_data = {
+                "state": "error",
+                "modelName": self.model.RESOURCE_NAME,
+                "resource": None,
+            }
+
+        return {
+            "app_data": json.dumps(app_data),
+            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
+        }
+
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
-        """Respond to POST requests with the LTI template.
+        """Respond to POST request.
 
         Populated with context retrieved by get_context_data in the LTI launch request.
 
@@ -199,18 +267,41 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             generated from applying the data to the template
 
         """
-        return self.render_to_response(self.get_context_data(request))
+        return self.render_to_response(self.get_context_data())
+
+    # pylint: disable=unused-argument
+    def get(self, request, *args, **kwargs):
+        """Respond to GET request.
+
+        Only publicly accessible resources can be fetched
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response(self.get_public_data())
 
 
-class VideoLTIView(BaseLTIView):
-    """Video view called by an LTI launch request."""
+class VideoView(BaseView):
+    """Video view."""
 
     model = Video
     serializer_class = VideoSerializer
 
 
-class DocumentLTIView(BaseLTIView):
-    """Document view called by an LTI launch request."""
+class DocumentView(BaseView):
+    """Document view."""
 
     model = Document
     serializer_class = DocumentSerializer

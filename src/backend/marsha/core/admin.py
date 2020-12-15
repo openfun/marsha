@@ -281,6 +281,8 @@ class SignTrackInline(admin.TabularInline):
 class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
+    fields = BaseFileAdmin.fields + ("is_public",)
+    list_display = BaseFileAdmin.list_display + ("is_public",)
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")
 
@@ -314,6 +316,8 @@ class PlaylistPortabilityInline(admin.TabularInline):
 class DocumentAdmin(BaseFileAdmin):
     """Admin class for the Document model."""
 
+    fields = BaseFileAdmin.fields + ("is_public",)
+    list_display = BaseFileAdmin.list_display + ("is_public",)
     verbose_name = _("Document")
 
 
