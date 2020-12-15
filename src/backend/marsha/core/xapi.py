@@ -8,8 +8,6 @@ from django.utils.translation import to_locale
 
 import requests
 
-from .exceptions import MissingUserIdError
-
 
 class XAPIStatement:
     """Object to work on a XAPI Statement."""
@@ -49,8 +47,8 @@ class XAPIStatement:
         """
         try:
             user_id = lti_user.user_id
-        except AttributeError as err:
-            raise MissingUserIdError() from err
+        except AttributeError:
+            user_id = lti_user.session_id
 
         homepage = video.playlist.consumer_site.domain
 
@@ -82,17 +80,17 @@ class XAPIStatement:
         }
 
         object_extensions = {}
-        if lti_user.course["school_name"] is not None:
+        if lti_user.course.get("school_name") is not None:
             object_extensions[
                 "https://w3id.org/xapi/acrossx/extensions/school"
             ] = lti_user.course["school_name"]
 
-        if lti_user.course["course_name"] is not None:
+        if lti_user.course.get("course_name") is not None:
             object_extensions[
                 "http://adlnet.gov/expapi/activities/course"
             ] = lti_user.course["course_name"]
 
-        if lti_user.course["course_run"] is not None:
+        if lti_user.course.get("course_run") is not None:
             object_extensions[
                 "http://adlnet.gov/expapi/activities/module"
             ] = lti_user.course["course_run"]
