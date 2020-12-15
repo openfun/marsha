@@ -16,7 +16,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
 from . import defaults, permissions, serializers
-from .exceptions import MissingUserIdError
 from .lti import LTIUser
 from .models import Document, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
@@ -549,17 +548,13 @@ class XAPIStatementView(APIView):
 
         # xapi statement sent by the client but incomplete
         partial_xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
-
         if not partial_xapi_statement.is_valid():
             return Response(partial_xapi_statement.errors, status=400)
 
-        try:
-            # xapi statement enriched with video and lti_user informations
-            xapi_statement = XAPIStatement(
-                video, partial_xapi_statement.validated_data, lti_user
-            )
-        except MissingUserIdError:
-            return Response({"status": "Impossible to identify the actor."}, status=400)
+        # xapi statement enriched with video and lti_user informations
+        xapi_statement = XAPIStatement(
+            video, partial_xapi_statement.validated_data, lti_user
+        )
 
         # Log the statement in the xapi logger
         xapi_logger.info(json.dumps(xapi_statement.get_statement()))
