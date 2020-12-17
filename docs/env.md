@@ -332,14 +332,13 @@ A key ID + secret pair for an AWS IAM account with administrative access to the 
 - Required: Yes
 - Default: None
 
-#### TF_VAR_aws_region
+#### AWS_DEFAULT_REGION
 
-The Amazon Web Services region where we deployed or want to deploy our serverless stack.
+The default region used by the AWS provider. All resources managed by terraform will be created on this region.
 
 - Type: string
-- Required: No
-- Default: `"eu-west-1"`
-- Choices: Any valid AWS region name.
+- Required: Yes
+- Default: eu-west-1
 
 #### TF_VAR_cloudfront_trusted_signer_id
 
@@ -359,11 +358,21 @@ Note: should be included in the list of values declared in `DJANGO_UPDATE_STATE_
 - Required: Yes
 - Default: None
 
+#### TF_VAR_marsha_base_url
+
+The marsha backend url. This url will be used in the lambda as base url to build all the url called from all lambdas.
+
+Example: `marsha.education`
+
+- Type: string
+- Required: Yes
+- Default: None
+
 #### TF_VAR_update_state_endpoint
 
-URL of the endpoint in Marsha to which our lambdas should POST state updates when they process files.
+The endpoint in Marsha to which our lambdas should POST state updates when they process files.
 
-Example: `https://example.com/api/update-state`.
+Example: `/api/update-state`.
 
 - Type: string
 - Required: Yes
@@ -379,9 +388,45 @@ Whether SSL certificate validation in requests made by the AWS lambdas should be
 
 #### TF_VAR_migrations
 
-A comma separated list of migrations to execute by the migration lambda without the extension (`.js`). List of migrations are available in `src/aws/lambda-migrate/src/migrations`.
+A list of migrations to execute by the migration lambda without the extension (`.js`). List of migrations are available in `src/aws/lambda-migrate/src/migrations`.
 To execute the migration `0001_encode_timed_text_tracks.js` set this variable with `0001_encode_timed_text_tracks`
 
-- Type: string
+Example: ["0001_encode_timed_text_tracks"]
+
+- Type: list of strings
 - Required: No
+- Default: []
+
+#### TF_VAR_lambda_image_name
+
+The [ECR](https://aws.amazon.com/ecr/) image name you want to use. All lambdas are built in one docker image and hosted in this repository
+
+- Type: string
+- Required: Yes
 - Default: None
+
+#### TF_VAR_lambda_image_tag
+
+The lambda docker image tag used by all the lambdas
+
+- Type: string
+- Required: Yes
+- Default: None
+
+#### TF_VAR_ecr_lambda_marsha_arn
+
+The [arn](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) associated with the ECR image name.
+This value can be found in the shared_resources terraform output.
+
+- Type: string
+- Required: Yes
+- Default: None
+
+#### TF_VAR_medialive_lambda_name
+
+This variable is used by the medialive routing lambda. This lambda will use the variable to determine on which lambda
+the event should be routed. 
+
+- Type: string
+- Required: Yes
+- Default: marsha-medialive
