@@ -82,10 +82,10 @@ Make sure you have a recent version of Docker and
 
 ```bash
 $ docker -v
-  Docker version 18.09.0, build 4d60db4
+  Docker version 19.03.6, build 369ce74a3c
 
 $ docker-compose --version
-  docker-compose version 1.23.2, build 1110ad01
+  docker-compose version 1.24.1, build 4667896b
 ```
 
 ⚠️ You may need to run the following commands with `sudo` but this can be avoided by assigning your user to the `docker` group.
@@ -100,21 +100,47 @@ All tasks related to this environment are run from the `./src/aws` directory. We
 
 Create the shared state bucket where `Terraform` will keep all the information on your deployments so different developers/machines/CI processes can interact with them:
 
-    $ make state-create
+    $ ./bin/state init
+    $ ./bin/state apply
 
 Initialize your `Terraform` config:
 
     $ make init
 
-Build the lambdas (using `yarn`) and automatically configure the infrastructure (this will start incurring billing on `AWS`):
+The `make init` command will also create an [ECR](https://aws.amazon.com/ecr/) repository. Before going further you have to build and publish the lambda docker image. Unfortunately AWS doesn't allow to use a public image, so you have to host this one on a private ECR instance. Copy the output of the `init` command, you will use them in the next step.
 
-    $ make deploy
+#### Build and publish the lambda image
+
+For this step, we cooked a script to help you build, tag and deploy images. All the scripts are run from the marsha root directory.
+
+🔧 **Before you go further**, you need to create `./env.d/lambda` and replace the relevant values with your own. The `ECR` url is available in the `shared_resources` terraform output you copied earlier. You can use this command to create the file from the existing model:
+
+    $ cp ./env.d/lambda.dist ./env.d/lambda
+
+You have to successively run these commands : 
+
+Build the image:
+
+    $ ./bin/lambda build
+
+Tag the image:
+
+    $ ./bin/lambda tag
+
+And then publish it:
+
+    $ ./bin/lambda publish
+
+#### Apply all terraform plans
+
+Terraform is split in two parts. The main one, directly in `src/aws` can work on multiple [`Terraform` workspaces](https://www.terraform.io/docs/state/workspaces.html). You will use this feature if you want separate environments (development, staging, preprod and production). We also need some resources available across all workspaces. For this we have an other terraform in `src/aws/shared_resources`.
+To apply all plans at once run this command in the `src/aws` directory.
+
+    $ make apply-all
 
 Everything should be set up! You can check on your `AWS` management console.
 
 You may have noticed that the `AWS` development environment requires a URL where the `Django` backend is running. You can easily get a URL that points to your locally running `Django` app using a tool such as [`ngrok`](https://ngrok.com).
-
-If you run several environments of Marsha, we suggest you take a look at [`Terraform` workspaces](https://www.terraform.io/docs/state/workspaces.html).
 
 ### The `Django` Backend
 
