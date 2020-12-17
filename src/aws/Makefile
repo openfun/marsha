@@ -25,6 +25,7 @@ init: env.d/development ## Initialize Terraform
 init:
 	bin/terraform init
 	bin/shared-resources init
+	bin/shared-resources apply -target aws_ecr_repository.marsha_lambda
 .PHONY: init
 
 help:  ## Show this help
