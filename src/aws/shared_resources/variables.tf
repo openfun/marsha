@@ -3,7 +3,7 @@ variable "medialive_lambda_name" {
   default = "marsha-medialive"
 }
 
-variable "medialive_routing_image_tag" {
+variable "lambda_image_tag" {
   type    = string
   default = "production"
 }
