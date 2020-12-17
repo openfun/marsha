@@ -3,7 +3,7 @@ resource "aws_lambda_function" "marsha_medialive_routing_lambda" {
   # Run on the highest version of node available on AWS lambda
   # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
   package_type     = "Image"
-  image_uri        = "${aws_ecr_repository.marsha_lambda.repository_url}:${var.medialive_routing_image_tag}"
+  image_uri        = "${aws_ecr_repository.marsha_lambda.repository_url}:${var.lambda_image_tag}"
   role             = aws_iam_role.lambda_medialive_routing_invocation_role.arn
 
   image_config {
