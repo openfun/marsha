@@ -51,6 +51,7 @@ default: help
 bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
+	env.d/lambda \
 	build \
 	build-lambda-dev \
 	run \
@@ -350,6 +351,9 @@ i18n-download-and-compile: \
 
 env.d/development:
 	cp env.d/development.dist env.d/development
+
+env.d/lambda:
+	cp env.d/lambda.dist env.d/lambda
 
 help:  ## Show this help
 	@echo "$(BOLD)Marsha Makefile$(RESET)"
