@@ -32,6 +32,21 @@ data "aws_lambda_invocation" "configure_lambda_endpoint" {
 EOF
 }
 
+# Call the configuration lambda to create Media Convert presets
+# Passing as argument the endpoint url that we just retrieved
+data "aws_lambda_invocation" "configure_lambda_presets" {
+  depends_on    = [
+    aws_lambda_function.marsha_configure_lambda,
+    data.aws_lambda_invocation.configure_lambda_endpoint
+  ]
+  function_name = aws_lambda_function.marsha_configure_lambda.function_name
+
+  input = jsonencode({
+    "Resource": "MediaConvertPresets",
+    "EndPoint": jsondecode(data.aws_lambda_invocation.configure_lambda_endpoint.result)["EndpointUrl"]
+  })
+}
+
 # Encoding
 ############
 
