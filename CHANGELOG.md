@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - revert removal of mediaconvert presets configuration
+- use absolute path to register presets in lambda-configure function
 
 ## [3.13.1] - 2020-12-15
 
