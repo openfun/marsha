@@ -14,5 +14,5 @@ TF_VAR_update_state_endpoint=/api/update-state
 TF_VAR_migrations=["0001_encode_timed_text_tracks"]
 
 TF_VAR_lambda_image_name=your.ecr.image.name
-TF_VAR_lambda_image_tag=dev
+TF_VAR_lambda_image_tag=3.14.0
 TF_VAR_ecr_lambda_marsha_arn=your.ecr.image.arn
