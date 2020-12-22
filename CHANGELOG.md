@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Switch to QVBR rate control mode in live profiles
+
 ### Removed
 
 - Useless medialive profiles
