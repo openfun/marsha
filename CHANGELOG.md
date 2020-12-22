@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.14.0] - 2020-12-22
+
 ### Added
 
 - Publicly access video or document, bypassing LTI check
@@ -636,7 +638,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.13.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.14.0...master
+[3.14.0]: https://github.com/openfun/marsha/compare/v3.13.1...v3.14.0
 [3.13.1]: https://github.com/openfun/marsha/compare/v3.13.0...v3.13.1
 [3.13.0]: https://github.com/openfun/marsha/compare/v3.12.1...v3.13.0
 [3.12.1]: https://github.com/openfun/marsha/compare/v3.12.0...v3.12.1
