@@ -227,7 +227,8 @@
       "CodecSettings": {
         "H264Settings": {
           "AdaptiveQuantization": "HIGH",
-          "Bitrate": 200000,
+          "Bitrate": 350000,
+          "MaxBitrate": 350000,
           "ColorMetadata": "INSERT",
           "EntropyEncoding": "CAVLC",
           "FlickerAq": "ENABLED",
@@ -242,7 +243,8 @@
           "LookAheadRateControl": "HIGH",
           "ParControl": "INITIALIZE_FROM_SOURCE",
           "Profile": "MAIN",
-          "RateControlMode": "CBR",
+          "RateControlMode": "QVBR",
+          "QvbrQualityLevel": 7,
           "SceneChangeDetect": "ENABLED",
           "SpatialAq": "ENABLED",
           "Syntax": "DEFAULT",
@@ -263,7 +265,8 @@
       "CodecSettings": {
         "H264Settings": {
           "AdaptiveQuantization": "HIGH",
-          "Bitrate": 800000,
+          "Bitrate": 700000,
+          "MaxBitrate": 700000,
           "ColorMetadata": "INSERT",
           "EntropyEncoding": "CABAC",
           "FlickerAq": "ENABLED",
@@ -278,7 +281,8 @@
           "LookAheadRateControl": "HIGH",
           "ParControl": "INITIALIZE_FROM_SOURCE",
           "Profile": "MAIN",
-          "RateControlMode": "CBR",
+          "RateControlMode": "QVBR",
+          "QvbrQualityLevel": 7,
           "SceneChangeDetect": "ENABLED",
           "SpatialAq": "ENABLED",
           "Syntax": "DEFAULT",
@@ -299,7 +303,8 @@
       "CodecSettings": {
         "H264Settings": {
           "AdaptiveQuantization": "HIGH",
-          "Bitrate": 2200000,
+          "Bitrate": 2000000,
+          "MaxBitrate": 2000000,
           "ColorMetadata": "INSERT",
           "EntropyEncoding": "CABAC",
           "FlickerAq": "ENABLED",
@@ -314,7 +319,8 @@
           "LookAheadRateControl": "HIGH",
           "ParControl": "INITIALIZE_FROM_SOURCE",
           "Profile": "HIGH",
-          "RateControlMode": "CBR",
+          "RateControlMode": "QVBR",
+          "QvbrQualityLevel": 7,
           "SceneChangeDetect": "ENABLED",
           "SpatialAq": "ENABLED",
           "Syntax": "DEFAULT",
@@ -336,6 +342,7 @@
         "H264Settings": {
           "AdaptiveQuantization": "HIGH",
           "Bitrate": 3300000,
+          "MaxBitrate": 4000000,
           "ColorMetadata": "INSERT",
           "EntropyEncoding": "CABAC",
           "FlickerAq": "ENABLED",
@@ -350,7 +357,8 @@
           "LookAheadRateControl": "HIGH",
           "ParControl": "INITIALIZE_FROM_SOURCE",
           "Profile": "HIGH",
-          "RateControlMode": "CBR",
+          "RateControlMode": "QVBR",
+          "QvbrQualityLevel": 8,
           "SceneChangeDetect": "ENABLED",
           "SpatialAq": "ENABLED",
           "Syntax": "DEFAULT",
