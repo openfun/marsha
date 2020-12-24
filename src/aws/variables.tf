@@ -22,6 +22,7 @@ variable "marsha_base_url" {
 
 variable "update_state_endpoint" {
   type    = string
+  default = "/api/update-state"
 }
 
 variable "update_state_secret" {
