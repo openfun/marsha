@@ -132,6 +132,7 @@ src/backend/marsha/static/js
 .terraform
 *.tfstate
 *.tfstate.backup
+src/aws/**/state.tf
 
 # Lambda build
 dist
