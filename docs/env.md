@@ -340,6 +340,14 @@ The default region used by the AWS provider. All resources managed by terraform 
 - Required: Yes
 - Default: eu-west-1
 
+#### TF_VAR_s3_bucket_unique_suffix
+
+A unique suffix added to all S3 bucket names. You choose this suffix once and can't change it afterwards as it is not allowed to rename a bucket (terraform would delete the current bucket and create a new one. All your data would be lost for ever). This suffix is needed because a bucket name is unique accross all existing AWS accounts: https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
+A suffix can be your company name or any random string. If you don't add this variable, you will not be able to create any s3 bucket in your project.
+
+- Type: string
+- Required: Yes
+
 #### TF_VAR_cloudfront_trusted_signer_id
 
 The ID of the AWS master account (not its access key!) with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
