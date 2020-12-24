@@ -94,17 +94,26 @@ $ docker-compose --version
 
 All tasks related to this environment are run from the `./src/aws` directory. We use `Terraform` to keep this infrastructure configuration as code and easily manage several independent deployments of the whole `AWS` infrastructure.
 
-🔧 **Before you go further**, you need to create `./src/aws/env.d/development` and replace the relevant values with your own. You can take a look at the [environment documentation](https://github.com/openfun/marsha/blob/master/docs/env.md#2-environment-to-deploy-marsha-to-aws) for more details on this topic. You can use this command to create the file from the existing model:
+There are 2 Terraform projects in Marsha with two different purposes:
+
+- `./src/aws/shared_resources`: this project manages resources common to all marsha environments on the same AWS account. These resources must not live in different workspaces so you must work in the `default` workspace. To ease the use of this project, a dedicated script is available in `./src/aws/bin/shared-resources` which uses and configures the `Terraform` docker image. You have to run a Terraform command as if you were using the terraform cli. (eg: `./bin/shared-resources plan` will execute Terraform's "plan" command).
+- `./src/aws`: this is the main project we use, most of the infrastructure is managed here (in all `*.tf` files). This project must use [`Terraform` workspaces](https://www.terraform.io/docs/state/workspaces.html) and we highly recommand you to not use the default one. With multiple workspaces, you can manage multiple environments for your Marsha instance with a single AWS account. To ease the use of this project, a dedicated script is available in `./src/aws/bin/terraform` which uses and configures the `Terraform` docker image. You have to run a Terraform command as if you were using the terraform cli. (eg: `./bin/terraform plan` will execute Terraform's "plan" command).
+
+#### Terraform state management
+
+Terraform manages a [state](https://www.terraform.io/docs/state/index.html) of your infrastructure. By default this state is stored locally on your machine but it is highly recommanded to use a [remote backend](https://www.terraform.io/docs/state/remote.html).
+
+You will find all you need to configure a remote backend in the Terraform documentation: https://www.terraform.io/docs/configuration/blocks/backends/index.html
+
+⚠ You must configure your state management before running any of the commands hereafter. The first `init` will initiate your state and after that you will have to deal with state migration if you want to modify it. You can create a file `src/aws/state.tf` and `src/aws/shared-resources/state.tf` to configure a backend, there is an example in each project (`state.tf.dist` file).
+
+🔧 **Before you go further**, you need to create `./src/aws/env.d/development` and replace the relevant values with your own. You can take a look at the [environment documentation](https://github.com/openfun/marsha/blob/master/docs/env.md#2-environment-to-deploy-marsha-to-aws) for more details on this topic. You should use this command to create the file from the existing model:
 
     $ cp ./src/aws/env.d/development.dist ./src/aws/env.d/development
 
-Create the shared state bucket where `Terraform` will keep all the information on your deployments so different developers/machines/CI processes can interact with them:
-
-    $ ./bin/state init
-    $ ./bin/state apply
-
 Initialize your `Terraform` config:
 
+    $ cd src/aws
     $ make init
 
 The `make init` command will also create an [ECR](https://aws.amazon.com/ecr/) repository. Before going further you have to build and publish the lambda docker image. Unfortunately AWS doesn't allow to use a public image, so you have to host this one on a private ECR instance. Copy the output of the `init` command, you will use them in the next step.
@@ -113,7 +122,7 @@ The `make init` command will also create an [ECR](https://aws.amazon.com/ecr/) r
 
 For this step, we cooked a script to help you build, tag and deploy images. All the scripts are run from the marsha root directory.
 
-🔧 **Before you go further**, you need to create `./env.d/lambda` and replace the relevant values with your own. The `ECR` url is available in the `shared_resources` terraform output you copied earlier. You can use this command to create the file from the existing model:
+🔧 **Before you go further**, you need to create `./env.d/lambda` and replace the relevant values with your own. The `ECR` url is available in the `shared_resources` terraform output you copied earlier. You should use this command to create the file from the existing model:
 
     $ cp ./env.d/lambda.dist ./env.d/lambda
 
