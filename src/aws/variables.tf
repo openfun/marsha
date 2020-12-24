@@ -51,3 +51,7 @@ variable "lambda_image_tag" {
 variable "ecr_lambda_marsha_arn" {
   type    = string
 }
+
+variable "s3_bucket_unique_suffix" {
+  type = string
+}

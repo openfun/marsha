@@ -7,3 +7,7 @@ variable "lambda_image_tag" {
   type    = string
   default = "production"
 }
+
+variable "s3_bucket_unique_suffix" {
+  type = string
+}
