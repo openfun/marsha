@@ -82,21 +82,7 @@ def create_mediapackage_channel(key):
         Tags={"environment": settings.AWS_BASE_NAME},
     )
 
-    # Create a DASH endpoint. This endpoint will be used to watch the stream.
-    dash_endpoint = mediapackage_client.create_origin_endpoint(
-        ChannelId=channel["Id"],
-        Id=f"{channel['Id']}_dash",
-        ManifestName=f"{channel['Id']}_dash",
-        StartoverWindowSeconds=86400,
-        TimeDelaySeconds=0,
-        DashPackage={
-            "ManifestWindowSeconds": 2,
-            "SegmentDurationSeconds": 1,
-        },
-        Tags={"environment": settings.AWS_BASE_NAME},
-    )
-
-    return [channel, hls_endpoint, dash_endpoint]
+    return [channel, hls_endpoint]
 
 
 def get_or_create_input_security_group():
@@ -245,7 +231,7 @@ def create_live_stream(key):
         Dictionary containing all information to store in order to manage
         a live stream life cycle.
     """
-    mediapackage_channel, hls_endpoint, dash_endpoint = create_mediapackage_channel(key)
+    mediapackage_channel, hls_endpoint = create_mediapackage_channel(key)
     medialive_input = create_medialive_input(key)
 
     medialive_channel = create_medialive_channel(
@@ -270,7 +256,6 @@ def create_live_stream(key):
             "channel": {"id": mediapackage_channel["Id"]},
             "endpoints": {
                 "hls": {"id": hls_endpoint["Id"], "url": hls_endpoint["Url"]},
-                "dash": {"id": dash_endpoint["Id"], "url": dash_endpoint["Url"]},
             },
         },
     }
@@ -295,13 +280,9 @@ def delete_aws_element_stack(video):
     """
     # Mediapackage
     # First delete mediapackage endpoints
-    for endpoint in ["hls", "dash"]:
-        mediapackage_client.delete_origin_endpoint(
-            Id=video.live_info.get("mediapackage")
-            .get("endpoints")
-            .get(endpoint)
-            .get("id")
-        )
+    mediapackage_client.delete_origin_endpoint(
+        Id=video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
+    )
 
     # Then delete channel
     mediapackage_client.delete_channel(
