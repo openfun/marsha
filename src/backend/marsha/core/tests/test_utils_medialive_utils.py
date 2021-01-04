@@ -155,11 +155,7 @@ class MediaLiveUtilsTestCase(TestCase):
             "Url": "https://endpoint1/channel.m3u8",
             "Id": "enpoint1",
         }
-        mediapackage_create_dash_origin_endpoint_response = {
-            "ChannelId": "channel1",
-            "Url": "https://endpoint1/channel.mpd",
-            "Id": "enpoint1",
-        }
+
         with Stubber(
             medialive_utils.mediapackage_client
         ) as mediapackage_stubber, Stubber(medialive_utils.ssm_client) as ssm_stubber:
@@ -210,27 +206,10 @@ class MediaLiveUtilsTestCase(TestCase):
                     "Tags": {"environment": "test"},
                 },
             )
-            mediapackage_stubber.add_response(
-                "create_origin_endpoint",
-                service_response=mediapackage_create_dash_origin_endpoint_response,
-                expected_params={
-                    "ChannelId": f"test_{key}",
-                    "Id": "test_video-key_dash",
-                    "ManifestName": "test_video-key_dash",
-                    "StartoverWindowSeconds": 86400,
-                    "TimeDelaySeconds": 0,
-                    "DashPackage": {
-                        "ManifestWindowSeconds": 2,
-                        "SegmentDurationSeconds": 1,
-                    },
-                    "Tags": {"environment": "test"},
-                },
-            )
 
             [
                 channel,
                 hls_endpoint,
-                dash_endpoint,
             ] = medialive_utils.create_mediapackage_channel(key)
 
             mediapackage_stubber.assert_no_pending_responses()
@@ -238,9 +217,6 @@ class MediaLiveUtilsTestCase(TestCase):
 
         self.assertEqual(channel, mediapackage_create_channel_response)
         self.assertEqual(hls_endpoint, mediapackage_create_hls_origin_endpoint_response)
-        self.assertEqual(
-            dash_endpoint, mediapackage_create_dash_origin_endpoint_response
-        )
 
     @override_settings(AWS_BASE_NAME="test")
     def test_create_medialive_input(self):
@@ -392,11 +368,6 @@ class MediaLiveUtilsTestCase(TestCase):
                     "Url": "https://endpoint1/channel.m3u8",
                     "Id": "endpoint1",
                 },
-                {
-                    "ChannelId": "channel1",
-                    "Url": "https://endpoint2/channel.mpd",
-                    "Id": "endpoint2",
-                },
             ]
             mock_medialive_input.return_value = {
                 "Input": {
@@ -439,10 +410,6 @@ class MediaLiveUtilsTestCase(TestCase):
                             "id": "endpoint1",
                             "url": "https://endpoint1/channel.m3u8",
                         },
-                        "dash": {
-                            "id": "endpoint2",
-                            "url": "https://endpoint2/channel.mpd",
-                        },
                     },
                 },
             },
@@ -459,7 +426,6 @@ class MediaLiveUtilsTestCase(TestCase):
                 "mediapackage": {
                     "endpoints": {
                         "hls": {"id": "mediapackage_endpoint1"},
-                        "dash": {"id": "mediapackage_endpoint2"},
                     },
                     "channel": {"id": "mediapackage_channel1"},
                 },
@@ -472,11 +438,6 @@ class MediaLiveUtilsTestCase(TestCase):
             mediapackage_stubber.add_response(
                 "delete_origin_endpoint",
                 expected_params={"Id": "mediapackage_endpoint1"},
-                service_response={},
-            )
-            mediapackage_stubber.add_response(
-                "delete_origin_endpoint",
-                expected_params={"Id": "mediapackage_endpoint2"},
                 service_response={},
             )
             mediapackage_stubber.add_response(
