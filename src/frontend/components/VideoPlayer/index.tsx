@@ -128,7 +128,7 @@ const VideoPlayer = ({
         poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
         tabIndex={-1}
       >
-        {isMSESupported() && (
+        {video.urls.manifests.dash && isMSESupported() && (
           <source
             src={video.urls.manifests.dash}
             size="auto"
