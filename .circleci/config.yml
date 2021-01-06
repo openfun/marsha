@@ -481,7 +481,7 @@ jobs:
             - ./node_modules
           key: v3-lambdas-medialive-dependencies-{{ checksum "yarn.lock" }}
 
-  test-lambda-medialive-routing:
+  test-lambda-elemental-routing:
     docker:
       - image: circleci/node:12.20
         auth:
@@ -489,7 +489,7 @@ jobs:
           password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-    working_directory: ~/marsha/src/aws/lambda-medialive-routing
+    working_directory: ~/marsha/src/aws/lambda-elemental-routing
     steps:
       - checkout:
           path: ~/marsha
@@ -595,7 +595,7 @@ jobs:
           name: lint code
           command: yarn prettier --write --list-different '**/*.+(json|js)'
 
-  lint-lambda-medialive-routing:
+  lint-lambda-elemental-routing:
     docker:
       - image: circleci/node:12.20
         auth:
@@ -603,13 +603,13 @@ jobs:
           password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-    working_directory: ~/marsha/src/aws/lambda-medialive-routing
+    working_directory: ~/marsha/src/aws/lambda-elemental-routing
     steps:
       - checkout:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-medialive-routing-dependencies-{{ checksum "yarn.lock" }}
+            - v3-lambdas-elemental-routing-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
@@ -803,7 +803,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-lambda-medialive-routing:
+      - test-lambda-elemental-routing:
           filters:
             tags:
               only: /.*/
@@ -831,9 +831,9 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - lint-lambda-medialive-routing:
+      - lint-lambda-elemental-routing:
           requires:
-            - test-lambda-medialive-routing
+            - test-lambda-elemental-routing
           filters:
             tags:
               only: /.*/
@@ -907,7 +907,7 @@ workflows:
             - test-lambda-configure
             - test-lambda-encode
             - test-lambda-medialive
-            - test-lambda-medialive-routing
+            - test-lambda-elemental-routing
           filters:
             branches:
               only: master
