@@ -1,4 +1,4 @@
-# Medialive routing role
+# Elemental routing role
 #####################
 resource "aws_iam_policy" "lambda_logging_policy" {
   name        = "marsha-lambda-logging-policy"
@@ -23,8 +23,8 @@ resource "aws_iam_policy" "lambda_logging_policy" {
 EOF
 }
 
-resource "aws_iam_role" "lambda_medialive_routing_invocation_role" {
-  name = "marsha-lambda-medialive-routing-invocation-role"
+resource "aws_iam_role" "lambda_elemental_routing_invocation_role" {
+  name = "marsha-lambda-elemental-routing-invocation-role"
 
   assume_role_policy = <<EOF
 {
@@ -43,15 +43,15 @@ EOF
 }
 
 
-resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_logging_policy_attachment" {
-  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
+resource "aws_iam_role_policy_attachment" "lambda_elemental_routing_logging_policy_attachment" {
+  role       = aws_iam_role.lambda_elemental_routing_invocation_role.name
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
-resource "aws_iam_policy" "lambda_medialive_routing_access_policy" {
-  name        = "marsha-medialive-routing-access-policy"
+resource "aws_iam_policy" "lambda_elemental_routing_access_policy" {
+  name        = "marsha-elemental-routing-access-policy"
   path        = "/"
-  description = "IAM policy needed by lambda-medialive-routing to access medialive and lambda functions"
+  description = "IAM policy needed by lambda-elemental-routing to access medialive and lambda functions"
 
   policy = <<EOF
 {
@@ -71,15 +71,15 @@ resource "aws_iam_policy" "lambda_medialive_routing_access_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_access_policy_attachment" {
-  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
-  policy_arn = aws_iam_policy.lambda_medialive_routing_access_policy.arn
+resource "aws_iam_role_policy_attachment" "lambda_elemental_routing_access_policy_attachment" {
+  role       = aws_iam_role.lambda_elemental_routing_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_elemental_routing_access_policy.arn
 }
 
-resource "aws_iam_policy" "lambda_medialive_routing_ecr_access_policy" {
-  name        = "marsha-medialive-routing-ecr-access-policy"
+resource "aws_iam_policy" "lambda_elemental_routing_ecr_access_policy" {
+  name        = "marsha-elemental-routing-ecr-access-policy"
   path        = "/"
-  description = "IAM policy needed by lambda-medialive-routing to access ECR"
+  description = "IAM policy needed by lambda-elemental-routing to access ECR"
 
   policy = <<EOF
 {
@@ -98,7 +98,7 @@ resource "aws_iam_policy" "lambda_medialive_routing_ecr_access_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_medialive_routing_ecr_access_policy_attachment" {
-  role       = aws_iam_role.lambda_medialive_routing_invocation_role.name
-  policy_arn = aws_iam_policy.lambda_medialive_routing_ecr_access_policy.arn
+resource "aws_iam_role_policy_attachment" "lambda_elemental_routing_ecr_access_policy_attachment" {
+  role       = aws_iam_role.lambda_elemental_routing_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_elemental_routing_ecr_access_policy.arn
 }
