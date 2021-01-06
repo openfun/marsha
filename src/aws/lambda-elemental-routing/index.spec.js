@@ -7,13 +7,13 @@ process.env.MEDIALIVE_LAMBDA_NAME = 'medialive-lambda';
 
 // Mock the AWS SDK calls used in encodeTimedTextTrack
 const mockDescribeChannel = jest.fn();
-const mockInvokeAsync = jest.fn();
+const mockInvoke = jest.fn();
 jest.mock('aws-sdk', () => ({
   MediaLive: function () {
     this.describeChannel = mockDescribeChannel;
   },
   Lambda: function () {
-    this.invokeAsync = mockInvokeAsync;
+    this.invoke = mockInvoke;
   },
 }));
 
@@ -54,16 +54,17 @@ describe('lambda', () => {
         ),
     });
 
-    mockInvokeAsync.mockReturnValue({
+    mockInvoke.mockReturnValue({
       promise: () => jest.fn(),
     });
 
     await lambda(event);
 
     expect(mockDescribeChannel).toHaveBeenCalledWith({ ChannelId: '1234567' });
-    expect(mockInvokeAsync).toHaveBeenCalledWith({
+    expect(mockInvoke).toHaveBeenCalledWith({
       FunctionName: 'test-medialive-lambda',
-      InvokeArgs: JSON.stringify({
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
         channel: {
           Name: 'medialive-name',
           Tags: {
