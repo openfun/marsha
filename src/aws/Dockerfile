@@ -15,9 +15,9 @@ COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
 # LAMBDA_TASK_ROOT is defined in base image and its value is /var/task
 COPY lambda-complete ${LAMBDA_TASK_ROOT}/lambda-complete/
 COPY lambda-configure ${LAMBDA_TASK_ROOT}/lambda-configure/
+COPY lambda-elemental-routing ${LAMBDA_TASK_ROOT}/lambda-elemental-routing/
 COPY lambda-encode ${LAMBDA_TASK_ROOT}/lambda-encode/
 COPY lambda-medialive ${LAMBDA_TASK_ROOT}/lambda-medialive/
-COPY lambda-medialive-routing ${LAMBDA_TASK_ROOT}/lambda-medialive-routing/
 COPY lambda-migrate ${LAMBDA_TASK_ROOT}/lambda-migrate/
 COPY utils ${LAMBDA_TASK_ROOT}/utils/
 
@@ -31,7 +31,7 @@ RUN cd lambda-complete && yarn install
 RUN cd lambda-configure && yarn install
 RUN cd lambda-encode && yarn install
 RUN cd lambda-medialive && yarn install
-RUN cd lambda-medialive-routing && yarn install
+RUN cd lambda-elemental-routing && yarn install
 RUN cd lambda-migrate && yarn install
 
 CMD [ "index.handler" ]
@@ -43,7 +43,7 @@ RUN cd lambda-complete && yarn install --frozen-lockfile --production=true
 RUN cd lambda-configure && yarn install --frozen-lockfile --production=true
 RUN cd lambda-encode && yarn install --frozen-lockfile --production=true
 RUN cd lambda-medialive && yarn install --frozen-lockfile --production=true
-RUN cd lambda-medialive-routing && yarn install --frozen-lockfile --production=true
+RUN cd lambda-elemental-routing && yarn install --frozen-lockfile --production=true
 RUN cd lambda-migrate && yarn install --frozen-lockfile --production=true
 
 CMD [ "index.handler" ]
