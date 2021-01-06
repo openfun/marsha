@@ -199,7 +199,7 @@ lambda-install-dev-dependencies: \
 	lambda-install-dev-dependencies-configure \
 	lambda-install-dev-dependencies-encode \
 	lambda-install-dev-dependencies-medialive \
-	lambda-install-dev-dependencies-medialive-routing \
+	lambda-install-dev-dependencies-elemental-routing \
 	lambda-install-dev-dependencies-migrate
 .PHONY: lambda-install-dev-dependencies
 
@@ -219,11 +219,11 @@ lambda-install-dev-dependencies-medialive: ## Install dependencies for lambda me
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn install
 .PHONY: lambda-install-dev-dependencies-medialive
 
-lambda-install-dev-dependencies-medialive-routing: ## Install dependencies for lambda medialive
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn install
-.PHONY: lambda-install-dev-dependencies-medialive-routing
+lambda-install-dev-dependencies-elemental-routing: ## Install dependencies for lambda elemental routing
+	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn install
+.PHONY: lambda-install-dev-dependencies-elemental-routing
 
-lambda-install-dev-dependencies-migrate: ## Install dependencies for lambda medialive
+lambda-install-dev-dependencies-migrate: ## Install dependencies for lambda migrate
 	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn install
 .PHONY: lambda-install-dev-dependencies-migrate
 
@@ -233,7 +233,7 @@ test-lambda: \
 	test-lambda-configure \
 	test-lambda-encode \
 	test-lambda-medialive \
-	test-lambda-medialive-routing \
+	test-lambda-elemental-routing \
 	test-lambda-migrate
 .PHONY: test-lambda
 
@@ -253,9 +253,9 @@ test-lambda-medialive: ## test aws lambda medialive
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn test
 .PHONY: test-lambda-medialive
 
-test-lambda-medialive-routing: ## test aws lambda medialive routing
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn test
-.PHONY: test-lambda-medialive-routing
+test-lambda-elemental-routing: ## test aws lambda elemental routing
+	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn test
+.PHONY: test-lambda-elemental-routing
 
 test-lambda-migrate: ## test aws lambda migrate
 	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn test
@@ -267,7 +267,7 @@ lint-lambda: \
 	lint-lambda-configure \
 	lint-lambda-encode \
 	lint-lambda-medialive \
-	lint-lambda-medialive-routing \
+	lint-lambda-elemental-routing \
 	lint-lambda-migrate
 .PHONY: lint-lambda
 
@@ -287,9 +287,9 @@ lint-lambda-medialive: ## run linter on lambda medialive function
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn lint
 .PHONY: lint-lambda-medialive
 
-lint-lambda-medialive-routing: ## run linter on lambda medialive routing function
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive_routing yarn lint
-.PHONY: lint-lambda-medialive-routing
+lint-lambda-elemental-routing: ## run linter on lambda medialive routing function
+	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn lint
+.PHONY: lint-lambda-elemental-routing
 
 lint-lambda-migrate: ## run linter on lambda complete function
 	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn lint

@@ -123,10 +123,10 @@ services:
     depends_on:
       - lambda_base
 
-  lambda_medialive_routing:
+  lambda_elemental_routing:
     image: marsha/lambda:dev
-    working_dir: /var/task/lambda-medialive-routing
-    command: ["/var/task/lambda-medialive-routing/index.handler"]
+    working_dir: /var/task/lambda-elemental-routing
+    command: ["/var/task/lambda-elemental-routing/index.handler"]
     ports:
       - 9004:8080
     env_file:
@@ -134,7 +134,7 @@ services:
     environment:
       - MEDIALIVE_LAMBDA_NAME=marsha-medialive
     volumes:
-      - "./src/aws/lambda-medialive-routing:/var/task/lambda-medialive-routing"
+      - "./src/aws/lambda-elemental-routing:/var/task/lambda-elemental-routing"
       - "./src/aws/utils:/var/task/utils"
       - "./src/.prettierrc:/var/task/.prettierrc"
     depends_on:
