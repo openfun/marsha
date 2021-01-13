@@ -18,7 +18,7 @@ const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const VideoPlayer = lazy(() => import('../VideoPlayer'));
 
-export const AppRoutes = () => (
+export const Routes = () => (
   <MemoryRouter>
     <Suspense fallback={<Loader />}>
       <Switch>
