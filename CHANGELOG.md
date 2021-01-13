@@ -13,6 +13,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Create a videojs plugin to manage MP4 selection
+- Create a CRUD video management site for Marsha, only open
+  in development until release.
 
 ### Changed
 
@@ -130,7 +132,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Use `UploadableFileMixin` on `AbstractImage` model
-- Fix dashboard read versus update permissions in situations 
+- Fix dashboard read versus update permissions in situations
   of playlist portability
 
 ## [3.9.1] - 2020-06-24
@@ -144,7 +146,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Detect original video framerate and use it in lambda encode
-- Limit video encoding resolution to that of the source 
+- Limit video encoding resolution to that of the source
 
 ## [3.8.1] - 2020-05-18
 
@@ -214,7 +216,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- New setting MAINTENANCE_MODE to disable the dashboard when Marsha is 
+- New setting MAINTENANCE_MODE to disable the dashboard when Marsha is
   in maintenance
 
 ### Changed

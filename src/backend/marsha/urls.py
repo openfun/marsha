@@ -17,7 +17,7 @@ from marsha.core.api import (
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import DevelopmentLTIView, DocumentView, VideoView
+from marsha.core.views import DevelopmentLTIView, DocumentView, SiteView, VideoView
 
 
 router = DefaultRouter()
@@ -48,6 +48,7 @@ urlpatterns = [
     ),
     path("api/", include(router.urls)),
     path("xapi/", XAPIStatementView.as_view(), name="xapi"),
+    path("", SiteView.as_view(), name="site"),
 ]
 
 if settings.DEBUG:

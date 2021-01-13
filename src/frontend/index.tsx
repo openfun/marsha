@@ -11,7 +11,6 @@ import {
   RawIntlProvider,
 } from 'react-intl';
 
-import { AppRoutes } from './components/AppRoutes';
 import { appData, getDecodedJwt } from './data/appData';
 import { report } from './utils/errors/report';
 // Load our style reboot into the DOM
@@ -87,11 +86,21 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     cache,
   );
 
+  let App: () => JSX.Element;
+  try {
+    const { Routes } = await import(`./components/${appData.frontend}Routes`);
+    App = Routes;
+  } catch (e) {
+    throw new Error(
+      `${appData.frontend} is not an expected value for appData.frontend`,
+    );
+  }
+
   // Render our actual component tree
   ReactDOM.render(
     <RawIntlProvider value={intl}>
       <Grommet theme={theme}>
-        <AppRoutes />
+        <App />
         <GlobalStyles />
       </Grommet>
     </RawIntlProvider>,
