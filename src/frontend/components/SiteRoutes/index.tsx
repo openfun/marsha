@@ -1,8 +1,19 @@
+import { Heading, Main } from 'grommet';
 import React from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+import { SiteLayout } from '../SiteLayout';
 
 export const Routes = () => (
   <BrowserRouter>
-    <Switch></Switch>
+    <SiteLayout>
+      <Switch>
+        <Route>
+          <Main>
+            <Heading margin="medium">The main content</Heading>
+          </Main>
+        </Route>
+      </Switch>
+    </SiteLayout>
   </BrowserRouter>
 );

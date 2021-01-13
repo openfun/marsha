@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   // Render our actual component tree
   ReactDOM.render(
     <RawIntlProvider value={intl}>
-      <Grommet theme={theme}>
+      <Grommet theme={theme} style={{ height: '100%' }}>
         <App />
         <GlobalStyles />
       </Grommet>

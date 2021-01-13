@@ -1,15 +1,15 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html style="height: 100%;">
   <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
     <meta name="public-path" value="{{ static_base_url }}" />
   </head>
-  <body>
+  <body style="height: 100%;">
     <div id="marsha-frontend-data" data-context="{{ app_data }}"></div>
 
-    <div id="marsha-frontend-root"></div>
+    <div id="marsha-frontend-root" style="height: 100%;"></div>
     <script src='{% static "js/index.js" %}'></script>
     {% for external_script in external_javascript_scripts %}
     <script src="{{ external_script }}"></script>
