@@ -75,4 +75,27 @@ describe('lambda', () => {
       }),
     });
   });
+
+  it('invokes an unknown source', async () => {
+    const event = {
+      version: '0',
+      id: '0495e5eb-9b99-56f2-7849-96389238fb55',
+      'detail-type': 'MediaLive Channel State Change',
+      source: 'unknown',
+      account: 'account_id',
+      time: '2020-06-15T15:18:29Z',
+      region: 'eu-west-1',
+      resources: ['arn:aws:medialive:eu-west-1:account_id:channel:1234567'],
+      detail: {
+        channel_arn: 'arn:aws:medialive:eu-west-1:account_id:channel:1234567',
+        state: 'STARTING',
+        message: 'Created channel',
+        pipelines_running_count: 0,
+      },
+    };
+
+    await expect(lambda(event)).rejects.toThrow(
+      'Source "unknown" not managed by this lambda',
+    );
+  });
 });

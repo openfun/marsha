@@ -13,6 +13,7 @@ resource "aws_lambda_function" "marsha_elemental_routing_lambda" {
   environment {
     variables = {
       MEDIALIVE_LAMBDA_NAME = var.medialive_lambda_name
+      MEDIAPACKAGE_LAMBDA_NAME = var.mediapackage_lambda_name
     }
   }
 }

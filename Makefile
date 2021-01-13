@@ -302,7 +302,7 @@ lint-lambda-mediapackage: ## run linter on lambda mediapackage function
 	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn lint
 .PHONY: lint-lambda-mediapackage
 
-lint-lambda-elemental-routing: ## run linter on lambda medialive routing function
+lint-lambda-elemental-routing: ## run linter on lambda elemental routing function
 	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn lint
 .PHONY: lint-lambda-elemental-routing
 
