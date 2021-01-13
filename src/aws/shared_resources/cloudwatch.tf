@@ -5,7 +5,8 @@ resource "aws_cloudwatch_event_rule" "marsha_elemental_routing_channel_state_cha
   event_pattern = <<PATTERN
 {
   "source": [
-    "aws.medialive"
+    "aws.medialive",
+    "aws.mediapackage"
   ]
 }
 PATTERN
