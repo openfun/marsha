@@ -31,8 +31,9 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     }
   }
 
-  enabled         = true
-  is_ipv6_enabled = true
+  enabled             = true
+  is_ipv6_enabled     = true
+  wait_for_deployment = false
 
   # Destination bucket: allow public access by default
   default_cache_behavior {

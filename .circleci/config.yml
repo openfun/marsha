@@ -511,6 +511,32 @@ jobs:
             - ./node_modules
           key: v3-lambdas-medialive-dependencies-{{ checksum "yarn.lock" }}
 
+  test-lambda-mediapackage:
+    docker:
+      - image: circleci/node:12.20
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
+    working_directory: ~/marsha/src/aws/lambda-mediapackage
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v3-lambdas-mediapackage-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install complete lambda dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Run medialive lambda tests
+          command: yarn test
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v3-lambdas-mediapackage-dependencies-{{ checksum "yarn.lock" }}
+
   test-lambda-elemental-routing:
     docker:
       - image: circleci/node:12.20
@@ -618,6 +644,28 @@ jobs:
       - restore_cache:
           keys:
             - v3-lambdas-medialive-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install complete lambda dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: lint code
+          command: yarn prettier --write --list-different '**/*.+(json|js)'
+
+  lint-lambda-mediapackage:
+    docker:
+      - image: circleci/node:12.20
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      # Run on the highest version of node available on AWS Lambda
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
+    working_directory: ~/marsha/src/aws/lambda-mediapackage
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v3-lambdas-mediapackage-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
@@ -898,6 +946,10 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - test-lambda-mediapackage:
+          filters:
+            tags:
+              only: /.*/
       - test-lambda-elemental-routing:
           filters:
             tags:
@@ -923,6 +975,12 @@ workflows:
       - lint-lambda-medialive:
           requires:
             - test-lambda-medialive
+          filters:
+            tags:
+              only: /.*/
+      - lint-lambda-mediapackage:
+          requires:
+            - test-lambda-mediapackage
           filters:
             tags:
               only: /.*/
@@ -1015,6 +1073,7 @@ workflows:
             - test-lambda-configure
             - test-lambda-encode
             - test-lambda-medialive
+            - test-lambda-mediapackage
             - test-lambda-elemental-routing
           filters:
             branches:

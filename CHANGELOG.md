@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Create a new lambda (lamba-mediapackage) called when an harvest job is done
+- Create a harvest job when a live is ended
+- Component to switch a live to VOD
+
 ## [3.16.1] - 2021-02-23
 
 ### Fixed

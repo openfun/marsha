@@ -157,6 +157,7 @@ resource "aws_lambda_function" "marsha_medialive_lambda" {
   image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
   package_type     = "Image"
   role             = aws_iam_role.lambda_medialive_invocation_role.arn
+  timeout          = 120
 
   image_config {
     command = ["/var/task/lambda-medialive/index.handler"]
@@ -167,6 +168,39 @@ resource "aws_lambda_function" "marsha_medialive_lambda" {
       DISABLE_SSL_VALIDATION = var.update_state_disable_ssl_validation
       MARSHA_URL = var.marsha_base_url
       SHARED_SECRET = var.update_state_secret
+    }
+  }
+}
+
+# Mediapackage
+
+data "aws_region" "current" {}
+
+resource "aws_lambda_function" "marsha_mediapackage_lambda" {
+  function_name    = "${terraform.workspace}-${var.mediapackage_lambda_name}"
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
+  role             = aws_iam_role.lambda_mediapackage_invocation_role.arn
+  timeout          = 90
+
+  image_config {
+    command = ["/var/task/lambda-mediapackage/index.handler"]
+  }
+
+  environment {
+    variables = {
+      CLOUDFRONT_ENDPOINT = aws_cloudfront_distribution.marsha_cloudfront_distribution.domain_name
+      CONTAINER_NAME = "${terraform.workspace}-marsha-ffmpeg-transmux"
+      DESTINATION_BUCKET_NAME = aws_s3_bucket.marsha_destination.bucket
+      DESTINATION_BUCKET_REGION = data.aws_region.current.name
+      DISABLE_SSL_VALIDATION = var.update_state_disable_ssl_validation
+      ECS_CLUSTER = aws_ecs_cluster.marsha_ffmpeg_transmux_cluster.arn
+      ECS_TASK_DEFINITION = aws_ecs_task_definition.marsha_ffmpeg_transmux_definition.arn
+      ENDPOINT = "${var.marsha_base_url}${var.update_state_endpoint}"
+      SECURITY_GROUP = aws_security_group.fargate_ffmpeg_transmux_security_group.id
+      SHARED_SECRET = var.update_state_secret
+      VPC_SUBNET1 = aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1.id
+      VPC_SUBNET2 = aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet2.id
     }
   }
 }
