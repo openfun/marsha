@@ -20,6 +20,7 @@ export interface AppData {
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
   sentry_dsn: Nullable<string>;
   environment: string;
+  frontend: string;
   release: string;
   static: {
     svg: {

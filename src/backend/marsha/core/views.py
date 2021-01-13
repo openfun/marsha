@@ -21,7 +21,7 @@ from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.tokens import AccessToken
-from waffle import switch_is_active
+from waffle import mixins, switch_is_active
 
 from .defaults import VIDEO_LIVE
 from .lti import LTI
@@ -55,9 +55,30 @@ def exception_handler(exc, context):
     return drf_exception_handler(exc, context)
 
 
+class SiteView(mixins.WaffleSwitchMixin, TemplateView):
+    """
+    View called to serve the first site pages a user lands on, wherever they come from.
+
+    It is designed to work as a React single page application. Once the user lands and the
+    frontend loads, frontend navigation takes over.
+    """
+
+    template_name = "core/site.html"
+    waffle_switch = "site"
+
+    def get_context_data(self, **kwargs):
+        """Build the context necessary to run the frontend app for the site."""
+        app_data = {"frontend": "Site"}
+        return {
+            "app_data": json.dumps(app_data),
+            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
+            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+        }
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
-class BaseView(ABC, TemplateResponseMixin, View):
+class BaseLTIView(ABC, TemplateResponseMixin, View):
     """Base view called to serve a resource and how to use it by the front application.
 
     It is designed to work as a React single page application.
@@ -160,6 +181,7 @@ class BaseView(ABC, TemplateResponseMixin, View):
                 }
             app_data = {
                 "environment": settings.ENVIRONMENT,
+                "frontend": "LTI",
                 "flags": {VIDEO_LIVE: switch_is_active(VIDEO_LIVE)},
                 "modelName": self.model.RESOURCE_NAME,
                 "release": settings.RELEASE,
@@ -238,9 +260,7 @@ class BaseView(ABC, TemplateResponseMixin, View):
         An instance of the model
         """
         return self.model.objects.select_related("playlist").get(
-            self.model.get_ready_clause(),
-            is_public=True,
-            pk=resource_id,
+            self.model.get_ready_clause(), is_public=True, pk=resource_id,
         )
 
     def get_public_data(self):
@@ -318,14 +338,14 @@ class BaseView(ABC, TemplateResponseMixin, View):
         return self.render_to_response(self.get_public_data())
 
 
-class VideoView(BaseView):
+class VideoView(BaseLTIView):
     """Video view."""
 
     model = Video
     serializer_class = VideoSerializer
 
 
-class DocumentView(BaseView):
+class DocumentView(BaseLTIView):
     """Document view."""
 
     model = Document
