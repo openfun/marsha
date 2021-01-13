@@ -1472,14 +1472,17 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
-        response = self.client.patch(
-            "/api/videos/{!s}/update-live-state/".format(video.id),
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
-            ),
-        )
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.patch(
+                "/api/videos/{!s}/update-live-state/".format(video.id),
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=(
+                    "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
+                ),
+            )
+
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -1487,7 +1490,10 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.live_state, RUNNING)
         self.assertEqual(
             video.live_info,
-            {"cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"}},
+            {
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
@@ -1504,9 +1510,12 @@ class VideoAPITest(TestCase):
             "state": "stopped",
         }
 
-        with mock.patch(
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.core.api.delete_aws_element_stack"
-        ) as delete_aws_element_stack_mock:
+        ) as delete_aws_element_stack_mock, mock.patch(
+            "marsha.core.api.create_mediapackage_harvest_job"
+        ) as create_mediapackage_harvest_job_mock:
             response = self.client.patch(
                 "/api/videos/{!s}/update-live-state/".format(video.id),
                 data,
@@ -1516,6 +1525,8 @@ class VideoAPITest(TestCase):
                 ),
             )
             delete_aws_element_stack_mock.assert_called_once()
+            create_mediapackage_harvest_job_mock.assert_called_once()
+
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -1523,7 +1534,10 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.live_state, STOPPED)
         self.assertEqual(
             video.live_info,
-            {"cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"}},
+            {
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "stopped_at": "1533686400",
+            },
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])

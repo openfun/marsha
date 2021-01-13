@@ -29,7 +29,8 @@ DJANGO_CLOUDFRONT_DOMAIN=yourCloudfrontUrl
 # DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudfrontAccessKeyId
 
 # Medialive ARN role
-DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:arn:role
+DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:medialive:arn:role
+DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
 
