@@ -202,6 +202,7 @@ describe('harvest', () => {
     expect(updateState).toHaveBeenCalledWith(
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/1610546271',
       'ready',
+      { resolutions: [720] }
     );
   });
 });
