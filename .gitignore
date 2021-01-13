@@ -138,5 +138,8 @@ src/aws/**/state.tf
 dist
 node_modules
 
+# Lambda
+transmuxed_video
+
 # Ssh keys
 .ssh
