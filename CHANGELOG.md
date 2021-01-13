@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- create a new lambda (lamba-mediapackage) called when an harvest job is done
+
 ### Changed
 
 - Switch to QVBR rate control mode in live profiles

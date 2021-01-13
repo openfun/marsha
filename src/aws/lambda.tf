@@ -170,3 +170,46 @@ resource "aws_lambda_function" "marsha_medialive_lambda" {
     }
   }
 }
+
+# Mediapackage
+
+resource "aws_lambda_function" "marsha_mediapackage_lambda" {
+  function_name    = "${terraform.workspace}-${var.mediapackage_lambda_name}"
+  image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
+  package_type     = "Image"
+  role             = aws_iam_role.lambda_mediapackage_invocation_role.arn
+  timeout          = 900
+  memory_size      = 3008
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.lambda_mediapackage_vpc_private_subnet.id
+    ]
+    security_group_ids = [aws_vpc.lamda_mediapackage_vpc.default_security_group_id]
+  }
+
+  file_system_config {
+    # EFS file system access point ARN
+    arn = aws_efs_access_point.marsha_efs_to_mediapckage_lambda_access_point.arn
+
+    # Local mount path inside the lambda function. Must start with '/mnt/'.
+    local_mount_path = "/mnt/transcoded_video"
+  }
+
+  image_config {
+    command = ["/var/task/lambda-mediapackage/index.handler"]
+  }
+
+  environment {
+    variables = {
+      DISABLE_SSL_VALIDATION = var.update_state_disable_ssl_validation
+      ENDPOINT = "${var.marsha_base_url}${var.update_state_endpoint}"
+      SHARED_SECRET = var.update_state_secret
+      CLOUDFRONT_ENDPOINT = aws_cloudfront_distribution.marsha_cloudfront_distribution.domain_name
+    }
+  }
+
+  # Explicitly declare dependency on EFS mount target.
+  # When creating or updating Lambda functions, mount target must be in 'available' lifecycle state.
+  depends_on = [aws_efs_mount_target.marsha_efs_to_mediapckage_lambda]
+}

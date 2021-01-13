@@ -425,3 +425,177 @@ resource "aws_iam_role_policy_attachment" "lambda_medialive_access_ecr_policy_at
   role       = aws_iam_role.lambda_medialive_invocation_role.name
   policy_arn = aws_iam_policy.lambda_ecr_access_policy.arn
 }
+
+# Mediapackage harvest job role
+
+resource "aws_iam_role" "mediapackage_harvest_job_s3_role" {
+  name = "${terraform.workspace}-marsha-mediapackage-harvest-job-s3-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "mediapackage.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "mediapackage_harvest_job_s3_access_policy" {
+  name        = "${terraform.workspace}-marsha-mediapackage-harvest-job-s3-access-policy"
+  path        = "/"
+  description = "IAM policy to write in destination bucket from a mediapackage harvest job"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.marsha_destination.bucket}/*",
+        "arn:aws:s3:::${aws_s3_bucket.marsha_destination.bucket}"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "mediapackage_harvest_job_s3_policy_attachment" {
+  role       = aws_iam_role.mediapackage_harvest_job_s3_role.name
+  policy_arn = aws_iam_policy.mediapackage_harvest_job_s3_access_policy.arn
+}
+
+
+# Mediapackage lambda role
+#####################
+resource "aws_iam_role" "lambda_mediapackage_invocation_role" {
+  name = "${terraform.workspace}-marsha-lambda-mediapackage-invocation-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_logging_policy_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_access_ecr_policy_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_ecr_access_policy.arn
+}
+
+
+resource "aws_iam_policy" "lambda_mediapackage_s3_policy" {
+  name        = "${terraform.workspace}-mediapackage-s3-access-policy"
+  path        = "/"
+  description = "IAM policy to write in destination bucket from mediapackage lambda"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.marsha_destination.bucket}/*"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_s3_policy_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_mediapackage_s3_policy.arn
+}
+
+resource "aws_iam_policy" "lambda_mediapackage_access_policy" {
+  name        = "${terraform.workspace}-mediapackage-access-policy"
+  path        = "/"
+  description = "IAM policy to write in destination bucket from mediapackage lambda"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "mediapackage:DeleteChannel",
+        "mediapackage:DeleteOriginEndpoint",
+        "mediapackage:DescribeOriginEndpoint"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_access_policy_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_mediapackage_access_policy.arn
+}
+
+resource "aws_iam_policy" "lambda_mediapackage_vpc_access_execution_policy" {
+  name        = "${terraform.workspace}-mediapackage-vpc-access-execution-policy"
+  path        = "/"
+  description = "IAM policy to access vpc in mediapackage lambda"
+
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "ec2:AssignPrivateIpAddresses",
+        "ec2:UnassignPrivateIpAddresses"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_vpc_access_execution_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_mediapackage_vpc_access_execution_policy.arn
+}

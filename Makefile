@@ -199,6 +199,7 @@ lambda-install-dev-dependencies: \
 	lambda-install-dev-dependencies-configure \
 	lambda-install-dev-dependencies-encode \
 	lambda-install-dev-dependencies-medialive \
+	lambda-install-dev-dependencies-mediapackage \
 	lambda-install-dev-dependencies-elemental-routing \
 	lambda-install-dev-dependencies-migrate
 .PHONY: lambda-install-dev-dependencies
@@ -219,6 +220,10 @@ lambda-install-dev-dependencies-medialive: ## Install dependencies for lambda me
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn install
 .PHONY: lambda-install-dev-dependencies-medialive
 
+lambda-install-dev-dependencies-mediapackage: ## Install dependencies for lambda mediapackage
+	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn install
+.PHONY: lambda-install-dev-dependencies-mediapackage
+
 lambda-install-dev-dependencies-elemental-routing: ## Install dependencies for lambda elemental routing
 	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn install
 .PHONY: lambda-install-dev-dependencies-elemental-routing
@@ -233,6 +238,7 @@ test-lambda: \
 	test-lambda-configure \
 	test-lambda-encode \
 	test-lambda-medialive \
+	test-lambda-mediapackage \
 	test-lambda-elemental-routing \
 	test-lambda-migrate
 .PHONY: test-lambda
@@ -253,6 +259,10 @@ test-lambda-medialive: ## test aws lambda medialive
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn test
 .PHONY: test-lambda-medialive
 
+test-lambda-mediapackage: ## test aws lambda mediapackage
+	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn test
+.PHONY: test-lambda-mediapackage
+
 test-lambda-elemental-routing: ## test aws lambda elemental routing
 	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn test
 .PHONY: test-lambda-elemental-routing
@@ -267,6 +277,7 @@ lint-lambda: \
 	lint-lambda-configure \
 	lint-lambda-encode \
 	lint-lambda-medialive \
+	lint-lambda-mediapackage \
 	lint-lambda-elemental-routing \
 	lint-lambda-migrate
 .PHONY: lint-lambda
@@ -286,6 +297,10 @@ lint-lambda-encode: ## run linter on lambda encode function
 lint-lambda-medialive: ## run linter on lambda medialive function
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn lint
 .PHONY: lint-lambda-medialive
+
+lint-lambda-mediapackage: ## run linter on lambda mediapackage function
+	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn lint
+.PHONY: lint-lambda-mediapackage
 
 lint-lambda-elemental-routing: ## run linter on lambda medialive routing function
 	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn lint
