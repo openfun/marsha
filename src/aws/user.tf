@@ -147,7 +147,8 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
         "mediapackage:CreateChannel",
         "mediapackage:ListChannels",
         "mediapackage:UpdateOriginEndpoint",
-        "mediapackage:TagResource"
+        "mediapackage:TagResource",
+        "mediapackage:CreateHarvestJob"
       ],
       "Resource": "*"
     },
@@ -156,6 +157,12 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": "${aws_iam_role.medialive_access_role.arn}"
+    },
+    {
+      "Sid": "IAMPassRoleMediapackage",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "${aws_iam_role.mediapackage_harvest_job_s3_role.arn}"
     },
     {
       "Sid": "SSM",

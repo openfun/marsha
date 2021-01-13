@@ -271,24 +271,35 @@ def stop_live_channel(channel_id):
     medialive_client.stop_channel(ChannelId=channel_id)
 
 
+def create_mediapackage_harvest_job(video):
+    """Create a mediapackage harvest job."""
+    hls_endpoint = (
+        video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
+    )
+    channel_id = video.live_info.get("mediapackage").get("channel").get("id")
+
+    # split channel id to take the stamp in it {env}_{pk}_{stamp}
+    elements = channel_id.split("_")
+
+    mediapackage_client.create_harvest_job(
+        Id=channel_id,
+        StartTime=video.live_info.get("started_at"),
+        EndTime=video.live_info.get("stopped_at"),
+        OriginEndpointId=hls_endpoint,
+        S3Destination={
+            "BucketName": settings.AWS_DESTINATION_BUCKET_NAME,
+            "ManifestKey": f"{video.pk}/cmaf/{elements[2]}.m3u8",
+            "RoleArn": settings.AWS_MEDIAPACKAGE_HARVEST_JOB_ARN,
+        },
+    )
+
+
 def delete_aws_element_stack(video):
     """Delete all AWS elemental.
 
     Instances used:
         - medialive input and channel
-        - mediapackage channel and endpoints
     """
-    # Mediapackage
-    # First delete mediapackage endpoints
-    mediapackage_client.delete_origin_endpoint(
-        Id=video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
-    )
-
-    # Then delete channel
-    mediapackage_client.delete_channel(
-        Id=video.live_info.get("mediapackage").get("channel").get("id")
-    )
-
     # Medialive
     # First delete the channel
     medialive_client.delete_channel(
