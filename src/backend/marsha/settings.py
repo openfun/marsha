@@ -229,6 +229,7 @@ class Base(Configuration):
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
     AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
+    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.SecretValue()
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
@@ -269,6 +270,19 @@ class Base(Configuration):
         """
         return os.environ.get(
             "DJANGO_AWS_SOURCE_BUCKET_NAME", f"{self.AWS_BASE_NAME}-marsha-source"
+        )
+
+    # pylint: disable=invalid-name
+    @property
+    def AWS_DESTINATION_BUCKET_NAME(self):
+        """Destination bucket name.
+
+        If this setting is set in an environment variable we use it. Otherwise
+        the value is computed with the AWS_BASE_NAME value.
+        """
+        return os.environ.get(
+            "DJANGO_AWS_DESTINATION_BUCKET_NAME",
+            f"{self.AWS_BASE_NAME}-marsha-destination",
         )
 
     # pylint: disable=invalid-name

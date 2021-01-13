@@ -24,6 +24,7 @@ from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
     create_live_stream,
+    create_mediapackage_harvest_job,
     delete_aws_element_stack,
     start_live_channel,
     stop_live_channel,
@@ -484,6 +485,8 @@ class VideoViewSet(viewsets.ModelViewSet):
             HttpResponse acknowledging the success or failure of the live state update operation.
 
         """
+        now = timezone.now()
+        stamp = to_timestamp(now)
         msg = request.body
         serializer = serializers.UpdateLiveStateSerializer(data=request.data)
 
@@ -500,9 +503,15 @@ class VideoViewSet(viewsets.ModelViewSet):
         live_info.update(
             {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
         )
-        video.live_info = live_info
+
+        if video.live_state == defaults.RUNNING:
+            live_info.update({"started_at": stamp})
+            video.live_info = live_info
 
         if video.live_state == defaults.STOPPED:
+            live_info.update({"stopped_at": stamp})
+            video.live_info = live_info
+            create_mediapackage_harvest_job(video)
             delete_aws_element_stack(video)
 
         video.save()

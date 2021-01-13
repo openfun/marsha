@@ -415,6 +415,46 @@ class MediaLiveUtilsTestCase(TestCase):
             },
         )
 
+    @override_settings(AWS_MEDIAPACKAGE_HARVEST_JOB_ARN="mediapackage:role:arn")
+    def test_create_mediapackage_harvest_job(self):
+        """Should create a mediapackage harvest job."""
+        VideoFactory(
+            id="e19f1058-0bde-4f29-a5d8-e0b4ddf92b74",
+            live_info={
+                "medialive": {
+                    "input": {"id": "medialive_input1"},
+                    "channel": {"id": "medialive_channel1"},
+                },
+                "mediapackage": {
+                    "endpoints": {
+                        "hls": {"id": "mediapackage_endpoint1"},
+                    },
+                    "channel": {
+                        "id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880"
+                    },
+                },
+                "started_at": "1569309880",
+                "ended_at": "1569310880",
+            },
+        )
+
+        with Stubber(medialive_utils.mediapackage_client) as mediapackage_stubber:
+            mediapackage_stubber.add_response(
+                "create_harvest_job",
+                expected_params={
+                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880",
+                    "StartTime": "1569309880",
+                    "EndTime": "1569310880",
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                },
+                service_response={},
+            )
+
     def test_delete_aws_elemental_stack(self):
         """Should delete all resources used during a live."""
         video = VideoFactory(
@@ -432,19 +472,7 @@ class MediaLiveUtilsTestCase(TestCase):
             }
         )
 
-        with Stubber(medialive_utils.medialive_client) as medialive_stubber, Stubber(
-            medialive_utils.mediapackage_client
-        ) as mediapackage_stubber:
-            mediapackage_stubber.add_response(
-                "delete_origin_endpoint",
-                expected_params={"Id": "mediapackage_endpoint1"},
-                service_response={},
-            )
-            mediapackage_stubber.add_response(
-                "delete_channel",
-                expected_params={"Id": "mediapackage_channel1"},
-                service_response={},
-            )
+        with Stubber(medialive_utils.medialive_client) as medialive_stubber:
             medialive_stubber.add_response(
                 "delete_channel",
                 expected_params={"ChannelId": "medialive_channel1"},
@@ -462,4 +490,3 @@ class MediaLiveUtilsTestCase(TestCase):
             )
 
             medialive_utils.delete_aws_element_stack(video)
-            mediapackage_stubber.assert_no_pending_responses()
