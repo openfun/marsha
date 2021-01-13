@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- create a new lambda (lamba-mediapackage) called when an harvest job is done
+
 ## [3.15.0] - 2021-02-04
 
 ### Changed

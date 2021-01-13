@@ -21,3 +21,7 @@ output "iam_secret_access_key" {
 output "medialive_role_arn" {
   value = aws_iam_role.medialive_access_role.arn
 }
+
+output "mediapackage_harvest_job_role_arn" {
+  value = aws_iam_role.mediapackage_harvest_job_s3_role.arn
+}

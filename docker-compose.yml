@@ -123,6 +123,22 @@ services:
     depends_on:
       - lambda_base
 
+  lambda_mediapackage:
+    image: marsha/lambda:dev
+    working_dir: /var/task/lambda-mediapackage
+    command: ["/var/task/lambda-mediapackage/index.handler"]
+    ports:
+      - 9006:8080
+    env_file:
+      - env.d/lambda
+    volumes:
+      - "./src/aws/lambda-mediapackage:/var/task/lambda-mediapackage"
+      - "./src/aws/utils:/var/task/utils"
+      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./transmuxed_video:/mnt/transmuxed_video"
+    depends_on:
+      - lambda_base
+
   lambda_elemental_routing:
     image: marsha/lambda:dev
     working_dir: /var/task/lambda-elemental-routing

@@ -7,6 +7,14 @@ variable "cloudfront_price_class" {
   }
 }
 
+variable "efs_performace_mode" {
+  type = map(string)
+
+  default = {
+    production = "maxIO"
+  }
+}
+
 variable "cloudfront_trusted_signer_id" {
   type = string
 }
@@ -38,6 +46,11 @@ variable "migrations" {
 variable "medialive_lambda_name" {
   type    = string
   default = "marsha-medialive"
+}
+
+variable "mediapackage_lambda_name" {
+  type    = string
+  default = "marsha-mediapackage"
 }
 
 variable "lambda_image_name" {
