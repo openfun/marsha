@@ -3,6 +3,11 @@ variable "medialive_lambda_name" {
   default = "marsha-medialive"
 }
 
+variable "mediapackage_lambda_name" {
+  type    = string
+  default = "marsha-mediapackage"
+}
+
 variable "lambda_image_tag" {
   type    = string
   default = "production"
