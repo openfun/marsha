@@ -523,7 +523,9 @@ resource "aws_iam_policy" "lambda_mediapackage_s3_policy" {
   "Statement": [
     {
       "Action": [
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:getObject",
+        "s3:ListBucket"
       ],
       "Effect": "Allow",
       "Resource": [
@@ -569,25 +571,18 @@ resource "aws_iam_role_policy_attachment" "lambda_mediapackage_access_policy_att
   policy_arn = aws_iam_policy.lambda_mediapackage_access_policy.arn
 }
 
-resource "aws_iam_policy" "lambda_mediapackage_vpc_access_execution_policy" {
-  name        = "${terraform.workspace}-mediapackage-vpc-access-execution-policy"
+resource "aws_iam_policy" "lambda_mediapackage_ecs_policy" {
+  name        = "${terraform.workspace}-marsha-mediapackage-ecs-policy"
   path        = "/"
-  description = "IAM policy to access vpc in mediapackage lambda"
-
+  description = "IAM policy needed by lambda-mediapackage to run taks on ECS"
 
   policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Action": "ecs:RunTask",
       "Effect": "Allow",
-      "Action": [
-        "ec2:CreateNetworkInterface",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:DeleteNetworkInterface",
-        "ec2:AssignPrivateIpAddresses",
-        "ec2:UnassignPrivateIpAddresses"
-      ],
       "Resource": "*"
     }
   ]
