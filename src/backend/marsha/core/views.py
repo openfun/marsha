@@ -68,7 +68,12 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """Build the context necessary to run the frontend app for the site."""
-        app_data = {"frontend": "Site"}
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(self.request.user.id)
+        jwt_token.payload["user_id"] = str(self.request.user.id)
+
+        app_data = {"frontend": "Site", "jwt": str(jwt_token)}
+
         return {
             "app_data": json.dumps(app_data),
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,

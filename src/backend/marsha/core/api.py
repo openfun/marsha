@@ -6,6 +6,7 @@ from os.path import splitext
 
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 import requests
@@ -31,6 +32,39 @@ from .xapi import XAPI, XAPIStatement
 
 
 logger = logging.getLogger(__name__)
+
+
+class UserViewSet(viewsets.GenericViewSet):
+    """ViewSet for all user-related interactions."""
+
+    serializer_class = serializers.UserSerializer
+
+    @action(detail=False, permission_classes=[])
+    def whoami(self, request):
+        """
+        Get information on the current user.
+
+        This is the only implemented user-related endpoint.
+        """
+        # If the user is not logged in, the request has no object. Return a 401 so the caller
+        # knows they need to log in first.
+        if not request.user.is_authenticated:
+            return Response(status=401)
+
+        # Get an actual user object from the TokenUser id
+        # pylint: disable=invalid-name
+        User = get_user_model()
+        try:
+            user = (
+                User.objects
+                .prefetch_related(
+                    "organization_accesses", "organization_accesses__organization"
+                ).get(id=request.user.id)
+            )
+        except User.DoesNotExist:
+            return Response(status=401)
+
+        return Response(data=self.get_serializer(user).data)
 
 
 @api_view(["POST"])
