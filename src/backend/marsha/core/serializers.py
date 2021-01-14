@@ -5,6 +5,7 @@ from urllib.parse import quote_plus
 import uuid
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.text import slugify
@@ -22,7 +23,14 @@ from .defaults import (
     STATE_CHOICES,
     STOPPED,
 )
-from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
+from .models import (
+    Document,
+    OrganizationAccess,
+    Playlist,
+    Thumbnail,
+    TimedTextTrack,
+    Video,
+)
 from .utils import cloudfront_utils, time_utils
 
 
@@ -40,6 +48,63 @@ KEY_PATTERN = (
     r"(\.(?P<extension>{extension:s}))?$"
 ).format(uuid=UUID_REGEX, tt_ex=TIMED_TEXT_EXTENSIONS, extension=EXTENSION_REGEX)
 KEY_REGEX = re.compile(KEY_PATTERN)
+
+
+class OrganizationAccessSerializer(serializers.ModelSerializer):
+    """
+    Organization access serializer.
+
+    Represents the link between a user and an organization, with a role that grants a specific
+    level of access.
+    """
+
+    organization_name = serializers.SerializerMethodField()
+
+    class Meta:
+        """Meta for OrganizationAccessSerializer."""
+
+        model = OrganizationAccess
+        fields = [
+            "organization",
+            "organization_name",
+            "role",
+            "user",
+        ]
+
+    def get_organization_name(self, organization_access):
+        """
+        Get field for Serializer Method.
+
+        Add the organization name on organization accesses directly, to avoid nesting an
+        additional object just for one string.
+        """
+        return organization_access.organization.name
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Regular user serializer.
+
+    Allowlist fields as user objects contain a lot more information
+    than we'd like to expose on the API.
+    """
+
+    organization_accesses = OrganizationAccessSerializer(many=True)
+
+    class Meta:
+        """Meta for UserSerializer."""
+
+        model = get_user_model()
+        fields = [
+            "date_joined",
+            "email",
+            "first_name",
+            "id",
+            "is_staff",
+            "is_superuser",
+            "last_name",
+            "organization_accesses",
+        ]
 
 
 class TimestampField(serializers.DateTimeField):

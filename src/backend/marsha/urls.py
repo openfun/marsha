@@ -13,6 +13,7 @@ from marsha.core.api import (
     DocumentViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
+    UserViewSet,
     VideoViewSet,
     XAPIStatementView,
     update_state,
@@ -29,6 +30,7 @@ router.register(
     basename="timed_text_tracks",
 )
 router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
+router.register("users", UserViewSet, basename="users")
 
 urlpatterns = [
     # Admin
