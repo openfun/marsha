@@ -18,12 +18,10 @@ module.exports = async (key, state, extraParameters={}) => {
 
   console.log(`Updating state: POST ${ENDPOINT} \n ${JSON.stringify(body)}`);
 
-  await sendRequest(
+  return sendRequest(
     body,
     signature,
     DISABLE_SSL_VALIDATION ? false : true,
     ENDPOINT
   );
-
-  console.log(`Updated ${key}. New state is (${state}).`);
 };

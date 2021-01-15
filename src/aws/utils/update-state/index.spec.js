@@ -30,11 +30,6 @@ describe('lambda/update_state/src/updateState()', () => {
     expect(anteLogArgument).toContain('successful object key');
     expect(anteLogArgument).toContain('ready');
 
-    const postLogArgument = mockConsoleLog.mock.calls[1][0];
-    expect(postLogArgument).toEqual(
-      `Updated successful object key. New state is (ready).`,
-    );
-
     expect(requestStub).toHaveBeenCalledWith({
       body: {
         extraParameters: {},
