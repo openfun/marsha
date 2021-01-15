@@ -135,7 +135,7 @@ services:
       - "./src/aws/lambda-mediapackage:/var/task/lambda-mediapackage"
       - "./src/aws/utils:/var/task/utils"
       - "./src/.prettierrc:/var/task/.prettierrc"
-      - "./transcoded_video:/mnt/transcoded_video"
+      - "./transmuxed_video:/mnt/transmuxed_video"
     depends_on:
       - lambda_base
 

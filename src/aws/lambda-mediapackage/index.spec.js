@@ -7,6 +7,9 @@ jest.spyOn(console, 'log');
 const mockHarvest = jest.fn();
 jest.doMock('./src/harvest', () => mockHarvest);
 
+const mockTransmux = jest.fn();
+jest.doMock('./src/transmux', () => mockTransmux);
+
 const lambda = require('./index.js').handler;
 
 describe('lambda mediapackage', () => {
@@ -67,9 +70,33 @@ describe('lambda mediapackage', () => {
         },
       },
     };
+    const context = {
+      functionName: 'test-lambda-mediapackage',
+    };
+
+    await lambda(event, context);
+
+    expect(mockHarvest).toHaveBeenCalledWith(event, 'test-lambda-mediapackage');
+  });
+
+  it('executes transmux module', async () => {
+    const event = {
+      'detail-type': 'transmux',
+      resolution: 720,
+      playlistUri:
+        'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_1610458282_hls_2.m3u8',
+      transcodedVideoFilename: '/mnt/transcoded_video/1610712269954_720.mp4',
+      thumbnailFilename: '/mnt/transcoded_video/1610712269954_720.jpg',
+      destinationBucketName: 'test-marsha-destination',
+      elements: [
+        'dev-manu',
+        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19',
+        '1610458282',
+      ],
+    };
 
     await lambda(event);
 
-    expect(mockHarvest).toHaveBeenCalledTimes(1);
+    expect(mockTransmux).toHaveBeenCalledWith(event);
   });
 });

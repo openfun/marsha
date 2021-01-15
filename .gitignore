@@ -139,7 +139,7 @@ dist
 node_modules
 
 # Lambda
-transcoded_video
+transmuxed_video
 
 # Ssh keys
 .ssh

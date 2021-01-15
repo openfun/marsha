@@ -3,35 +3,29 @@
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log');
 
-const fs = require('fs');
-const child_process = require('child_process');
-
 jest.mock('node-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('node-fetch');
 
 process.env.CLOUDFRONT_ENDPOINT = 'distribution_id.cloudfront.net';
 
-// Mock the AWS SDK calls used in encodeTimedTextTrack
-const mockPutObject = jest.fn();
+// Mock the AWS SDK calls
 const mockDescribeOriginEndpoint = jest.fn();
 const mockDeleteOriginEndpoint = jest.fn();
 const mockDeleteChannel = jest.fn();
+const mockInvoke = jest.fn();
 jest.mock('aws-sdk', () => ({
-  S3: function () {
-    this.putObject = mockPutObject;
-  },
   MediaPackage: function () {
     this.describeOriginEndpoint = mockDescribeOriginEndpoint;
     this.deleteOriginEndpoint = mockDeleteOriginEndpoint;
     this.deleteChannel = mockDeleteChannel;
   },
+  Lambda: function () {
+    this.invoke = mockInvoke;
+  },
 }));
 
 const mockUpdateState = jest.fn();
 jest.doMock('update-state', () => mockUpdateState);
-
-jest.mock('fs');
-jest.mock('child_process');
 
 const harvest = require('./harvest');
 const updateState = require('update-state');
@@ -76,7 +70,7 @@ describe('harvest', () => {
     );
   });
 
-  it('transcodes a video', async () => {
+  it('transmuxes a video', async () => {
     const event = {
       id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce',
       'detail-type': 'MediaPackage HarvestJob Notification',
@@ -117,27 +111,8 @@ describe('harvest', () => {
       #EXT-X-STREAM-INF:BANDWIDTH=5364510,AVERAGE-BANDWIDTH=2310036,RESOLUTION=960x540,FRAME-RATE=29.970,CODECS="avc1.640029,mp4a.40.2"
       dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8
       #EXT-X-STREAM-INF:BANDWIDTH=9410222,AVERAGE-BANDWIDTH=4510036,RESOLUTION=1280x720,FRAME-RATE=29.970,CODECS="avc1.640029,mp4a.40.2"
-      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8
-      #EXT-X-STREAM-INF:BANDWIDTH=983818,AVERAGE-BANDWIDTH=460543,RESOLUTION=416x236,FRAME-RATE=14.985,CODECS="avc1.4D401E,mp4a.40.2"
-      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_3.m3u8
-      #EXT-X-STREAM-INF:BANDWIDTH=1907215,AVERAGE-BANDWIDTH=845561,RESOLUTION=640x360,FRAME-RATE=29.970,CODECS="avc1.4D401E,mp4a.40.2"
-      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_4.m3u8`,
+      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8`,
     );
-
-    const mockedExecFile = child_process.execFile.mockImplementation(
-      (command, args, options, callback) =>
-        callback(null, { stdout: 'ffmpeg ended' }),
-    );
-    const mockedReadFile = fs.readFile.mockImplementation((path, callback) =>
-      callback(null, 'mp4 file content'),
-    );
-    const mockedUnlink = fs.unlink.mockImplementation((path, callback) =>
-      callback(null),
-    );
-
-    mockPutObject.mockReturnValue({
-      promise: () => new Promise((resolve) => resolve()),
-    });
 
     mockDescribeOriginEndpoint.mockReturnValue({
       promise: () =>
@@ -152,42 +127,11 @@ describe('harvest', () => {
     mockDeleteChannel.mockReturnValue({
       promise: () => Promise.resolve(),
     });
-
-    await harvest(event);
-
-    const transcodedVideoPath = new RegExp(
-      '^/mnt/transcoded_video/[0-9]*_720.mp4$',
-    );
-
-    expect(mockedExecFile).toHaveBeenCalledWith(
-      'ffmpeg',
-      [
-        '-i',
-        'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8',
-        '-codec',
-        'copy',
-        '-f',
-        'mp4',
-        expect.stringMatching(transcodedVideoPath),
-      ],
-      { maxBuffer: 104857600 },
-      expect.anything(),
-    );
-    expect(mockedReadFile).toHaveBeenCalledWith(
-      expect.stringMatching(transcodedVideoPath),
-      expect.anything(),
-    );
-    expect(mockedUnlink).toHaveBeenCalledWith(
-      expect.stringMatching(transcodedVideoPath),
-      expect.anything(),
-    );
-
-    expect(mockPutObject).toHaveBeenCalledWith({
-      Body: 'mp4 file content',
-      Bucket: 'test-marsha-destination',
-      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/mp4/1610546271_720.mp4',
-      ContentType: 'video/mp4',
+    mockInvoke.mockReturnValue({
+      promise: () => Promise.resolve(),
     });
+
+    await harvest(event, 'test-lambda-mediapackage');
 
     expect(mockDescribeOriginEndpoint).toHaveBeenCalledWith({
       Id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
@@ -199,10 +143,12 @@ describe('harvest', () => {
       Id: 'mediapackage_channel_id',
     });
 
-    expect(updateState).toHaveBeenCalledWith(
+    expect(
+      updateState,
+    ).toHaveBeenCalledWith(
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/1610546271',
       'ready',
-      { resolutions: [720] }
+      { resolutions: [540, 720] },
     );
   });
 });

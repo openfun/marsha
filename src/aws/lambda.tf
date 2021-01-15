@@ -193,7 +193,7 @@ resource "aws_lambda_function" "marsha_mediapackage_lambda" {
     arn = aws_efs_access_point.marsha_efs_to_mediapckage_lambda_access_point.arn
 
     # Local mount path inside the lambda function. Must start with '/mnt/'.
-    local_mount_path = "/mnt/transcoded_video"
+    local_mount_path = "/mnt/transmuxed_video"
   }
 
   image_config {

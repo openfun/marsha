@@ -599,3 +599,31 @@ resource "aws_iam_role_policy_attachment" "lambda_mediapackage_vpc_access_execut
   role       = aws_iam_role.lambda_mediapackage_invocation_role.name
   policy_arn = aws_iam_policy.lambda_mediapackage_vpc_access_execution_policy.arn
 }
+
+
+resource "aws_iam_policy" "lambda_mediapackage_lambda_invoke_policy" {
+  name        = "${terraform.workspace}-marsha-mediapackage-lambda-invoke-policy"
+  path        = "/"
+  description = "IAM policy needed by lambda-mediapackage to invoke itself"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "lambda:invokeAsync",
+        "lambda:invokeFunction"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:lambda:*:*:function:${aws_lambda_function.marsha_mediapackage_lambda.function_name}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_mediapackage_invoke_lambda_attachment" {
+  role       = aws_iam_role.lambda_mediapackage_invocation_role.name
+  policy_arn = aws_iam_policy.lambda_mediapackage_lambda_invoke_policy.arn
+}
