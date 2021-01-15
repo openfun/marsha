@@ -26,19 +26,6 @@
       "AudioTypeControl": "FOLLOW_INPUT",
       "CodecSettings": {
         "AacSettings": {
-          "Bitrate": 64000,
-          "RawFormat": "NONE",
-          "Spec": "MPEG4"
-        }
-      },
-      "LanguageCodeControl": "FOLLOW_INPUT",
-      "Name": "audio_2_aac64"
-    },
-    {
-      "AudioSelectorName": "default",
-      "AudioTypeControl": "FOLLOW_INPUT",
-      "CodecSettings": {
-        "AacSettings": {
           "Bitrate": 96000,
           "RawFormat": "NONE",
           "Spec": "MPEG4"
@@ -130,7 +117,7 @@
               "NameModifier": "_960x540_2000k"
             }
           },
-          "VideoDescriptionName": "video_960_540"
+          "VideoDescriptionName": "video_854_480"
         },
         {
           "AudioDescriptionNames": ["audio_2_aac96"],
@@ -158,7 +145,7 @@
               "NameModifier": "_1280x720_3300k"
             }
           },
-          "VideoDescriptionName": "video_1280_720_1"
+          "VideoDescriptionName": "video_1280_720"
         },
         {
           "AudioDescriptionNames": ["audio_1_aac64"],
@@ -186,35 +173,7 @@
               "NameModifier": "_416x234_200k"
             }
           },
-          "VideoDescriptionName": "video_416_234"
-        },
-        {
-          "AudioDescriptionNames": ["audio_2_aac64"],
-          "CaptionDescriptionNames": [],
-          "OutputSettings": {
-            "HlsOutputSettings": {
-              "HlsSettings": {
-                "StandardHlsSettings": {
-                  "AudioRenditionSets": "PROGRAM_AUDIO",
-                  "M3u8Settings": {
-                    "AudioFramesPerPes": 4,
-                    "AudioPids": "492-498",
-                    "EcmPid": "8182",
-                    "PcrControl": "PCR_EVERY_PES_PACKET",
-                    "PmtPid": "480",
-                    "ProgramNum": 1,
-                    "Scte35Behavior": "PASSTHROUGH",
-                    "Scte35Pid": "500",
-                    "TimedMetadataPid": "502",
-                    "TimedMetadataBehavior": "NO_PASSTHROUGH",
-                    "VideoPid": "481"
-                  }
-                }
-              },
-              "NameModifier": "_640x360_800k"
-            }
-          },
-          "VideoDescriptionName": "video_640_360"
+          "VideoDescriptionName": "video_426_240"
         }
       ]
     }
@@ -254,10 +213,10 @@
           "AfdSignaling": "NONE"
         }
       },
-      "Height": 236,
-      "Name": "video_416_234",
+      "Height": 240,
+      "Name": "video_426_240",
       "ScalingBehavior": "DEFAULT",
-      "Width": 416,
+      "Width": 426,
       "RespondToAfd": "NONE",
       "Sharpness": 50
     },
@@ -265,46 +224,8 @@
       "CodecSettings": {
         "H264Settings": {
           "AdaptiveQuantization": "HIGH",
-          "Bitrate": 700000,
-          "MaxBitrate": 700000,
-          "ColorMetadata": "INSERT",
-          "EntropyEncoding": "CABAC",
-          "FlickerAq": "ENABLED",
-          "FramerateControl": "SPECIFIED",
-          "FramerateDenominator": 1001,
-          "FramerateNumerator": 30000,
-          "GopBReference": "ENABLED",
-          "GopNumBFrames": 2,
-          "GopSize": 1,
-          "GopSizeUnits": "SECONDS",
-          "Level": "H264_LEVEL_3",
-          "LookAheadRateControl": "HIGH",
-          "ParControl": "INITIALIZE_FROM_SOURCE",
-          "Profile": "MAIN",
-          "RateControlMode": "QVBR",
-          "QvbrQualityLevel": 7,
-          "SceneChangeDetect": "ENABLED",
-          "SpatialAq": "ENABLED",
-          "Syntax": "DEFAULT",
-          "TemporalAq": "ENABLED",
-          "TimecodeInsertion": "DISABLED",
-          "NumRefFrames": 1,
-          "AfdSignaling": "NONE"
-        }
-      },
-      "Height": 360,
-      "Name": "video_640_360",
-      "ScalingBehavior": "DEFAULT",
-      "Width": 640,
-      "RespondToAfd": "NONE",
-      "Sharpness": 50
-    },
-    {
-      "CodecSettings": {
-        "H264Settings": {
-          "AdaptiveQuantization": "HIGH",
-          "Bitrate": 2000000,
-          "MaxBitrate": 2000000,
+          "Bitrate": 1000000,
+          "MaxBitrate": 1000000,
           "ColorMetadata": "INSERT",
           "EntropyEncoding": "CABAC",
           "FlickerAq": "ENABLED",
@@ -330,10 +251,10 @@
           "AfdSignaling": "NONE"
         }
       },
-      "Height": 540,
-      "Name": "video_960_540",
+      "Height": 480,
+      "Name": "video_854_480",
       "ScalingBehavior": "DEFAULT",
-      "Width": 960,
+      "Width": 854,
       "RespondToAfd": "NONE",
       "Sharpness": 50
     },
@@ -369,7 +290,7 @@
         }
       },
       "Height": 720,
-      "Name": "video_1280_720_1",
+      "Name": "video_1280_720",
       "ScalingBehavior": "DEFAULT",
       "Width": 1280,
       "RespondToAfd": "NONE",
