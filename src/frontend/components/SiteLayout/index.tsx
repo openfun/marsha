@@ -1,10 +1,8 @@
-import { Anchor, Box, Grid, Nav, Sidebar } from 'grommet';
+import { Box, Grid } from 'grommet';
 import React from 'react';
 
 import { SiteHeader } from '../SiteHeader';
-import { withLink } from '../withLink/withLink';
-
-const SidebarLink = withLink(Anchor);
+import { SiteSidebar } from '../SiteSidebar';
 
 export const SiteLayout: React.FC = ({ children }) => (
   <Grid
@@ -18,16 +16,7 @@ export const SiteLayout: React.FC = ({ children }) => (
     ]}
   >
     <SiteHeader />
-    <Sidebar gridArea="sidebar" background="dark-3" width="medium">
-      <Nav>
-        <SidebarLink
-          to="/"
-          margin={{ horizontal: 'medium', vertical: 'small' }}
-        >
-          My organization
-        </SidebarLink>
-      </Nav>
-    </Sidebar>
+    <SiteSidebar />
     <Box gridArea="main" justify="start" align="start">
       {children}
     </Box>
