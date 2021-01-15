@@ -2,6 +2,7 @@
 from rest_framework import permissions
 from rest_framework_simplejwt.models import TokenUser
 
+from . import models
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 
 
@@ -184,3 +185,31 @@ class IsVideoToken(permissions.IsAuthenticated):
             return True
 
         return super().has_permission(request, view)
+
+
+class IsParamsOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user provides the ID for an existing organization,
+    and is a member of this organization with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the organization from the params of body of the request exists
+        and the current logged in user is one of its administrators.
+        """
+        organization_id = request.data.get("organization") or request.query_params.get(
+            "organization"
+        )
+        try:
+            return models.OrganizationAccess.objects.filter(
+                role=ADMINISTRATOR,
+                organization__id=organization_id,
+                user__id=request.user.id,
+            ).exists()
+        except models.OrganizationAccess.DoesNotExist:
+            return False

@@ -439,6 +439,10 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "users",
         ]
 
+    def create(self, validated_data):
+        """Create the Playlist object with the passed data."""
+        return Playlist.objects.create(**validated_data)
+
 
 class PlaylistLiteSerializer(serializers.ModelSerializer):
     """A serializer to display a Playlist resource."""

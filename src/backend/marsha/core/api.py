@@ -79,7 +79,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["list"]:
+        if self.action in ["create"]:
+            permission_classes = [permissions.IsParamsOrganizationAdmin]
+        elif self.action in ["list"]:
             permission_classes = [IsAuthenticated]
         else:
             try:
