@@ -8,7 +8,7 @@ const computeSignature = (secret, message) => {
 };
 
 const sendRequest = async (body, signature, strictSSL, uri, method = 'POST') => {
-  await request({
+  return request({
     body,
     headers: {
       'X-Marsha-Signature': signature,
