@@ -1,9 +1,8 @@
-import { Anchor, Box, Button, Grid, Header, Nav, Sidebar, Text } from 'grommet';
+import { Anchor, Box, Grid, Nav, Sidebar } from 'grommet';
 import React from 'react';
 
+import { SiteHeader } from '../SiteHeader';
 import { withLink } from '../withLink/withLink';
-
-const TitleLink = withLink(Anchor);
 
 const SidebarLink = withLink(Anchor);
 
@@ -18,19 +17,7 @@ export const SiteLayout: React.FC = ({ children }) => (
       { name: 'main', start: [1, 1], end: [1, 1] },
     ]}
   >
-    <Header
-      gridArea="header"
-      direction="row"
-      align="center"
-      justify="between"
-      pad={{ horizontal: 'medium', vertical: 'small' }}
-      background="dark-2"
-    >
-      <TitleLink to="/" size="large" color="white">
-        marsha.education
-      </TitleLink>
-      <Text>user@example.com</Text>
-    </Header>
+    <SiteHeader />
     <Sidebar gridArea="sidebar" background="dark-3" width="medium">
       <Nav>
         <SidebarLink
