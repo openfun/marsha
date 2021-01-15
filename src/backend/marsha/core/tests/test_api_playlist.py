@@ -1,13 +1,157 @@
 """Tests for the Playlist API of the Marsha project."""
+import uuid
+
 from django.test import TestCase
 
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .. import factories
+from .. import factories, models
 
 
 class PlaylistAPITest(TestCase):
     """Test the API for playlist objects."""
+
+    def test_create_playlist_by_anonymous_user(self):
+        """Anonymous users cannot create playlists."""
+        org = factories.OrganizationFactory()
+        consumer_site = factories.ConsumerSiteFactory()
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": str(consumer_site.id),
+                "lti_id": "playlist_twenty",
+                "organization": str(org.id),
+                "title": "Some playlist",
+            },
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_playlist_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot create playlists for organizations they have no role in.
+        """
+        user = factories.UserFactory()
+        org = factories.OrganizationFactory()
+        consumer_site = factories.ConsumerSiteFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": str(consumer_site.id),
+                "lti_id": "playlist_twenty",
+                "organization": str(org.id),
+                "title": "Some playlist",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_playlist_by_random_logged_in_user_for_nonexistent_organization(
+        self,
+    ):
+        """
+        Fails to create a playlist.
+
+        Attempts to create a playlist for an organization that does not exist result in
+        an error response.
+        """
+        user = factories.UserFactory()
+        random_uuid = uuid.uuid4()
+        consumer_site = factories.ConsumerSiteFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": str(consumer_site.id),
+                "lti_id": "playlist_twenty",
+                "organization": random_uuid,
+                "title": "Some playlist",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_playlist_by_organization_instructor(self):
+        """Organization instructors cannot create playlists."""
+        user = factories.UserFactory()
+        org = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=org, user=user
+        )
+        consumer_site = factories.ConsumerSiteFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": str(consumer_site.id),
+                "lti_id": "playlist_twenty",
+                "organization": str(org.id),
+                "title": "Some playlist",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_playlist_by_organization_administrator(self):
+        """Organization administrators can create playlists."""
+        user = factories.UserFactory()
+        org = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=org, user=user
+        )
+        consumer_site = factories.ConsumerSiteFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Playlist.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": str(consumer_site.id),
+                "lti_id": "playlist_twenty",
+                "organization": str(org.id),
+                "title": "Some playlist",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(),
+            {
+                "consumer_site": str(consumer_site.id),
+                "created_by": None,
+                "duplicated_from": None,
+                "id": str(models.Playlist.objects.first().id),
+                "is_portable_to_playlist": False,
+                "is_portable_to_consumer_site": False,
+                "is_public": False,
+                "lti_id": "playlist_twenty",
+                "organization": str(org.id),
+                "portable_to": [],
+                "title": "Some playlist",
+                "users": [],
+            },
+        )
 
     def test_list_playlists_by_anonymous_user(self):
         """Anonymous users cannot make list requests for playlists."""
