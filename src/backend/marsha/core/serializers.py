@@ -418,6 +418,29 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
+    """Serializer to display a complete Playlist resource."""
+
+    class Meta:
+        """Meta for Playlistserializer."""
+
+        model = Playlist
+        fields = [
+            "consumer_site",
+            "created_by",
+            "duplicated_from",
+            "id",
+            "is_portable_to_playlist",
+            "is_portable_to_consumer_site",
+            "is_public",
+            "lti_id",
+            "organization",
+            "portable_to",
+            "title",
+            "users",
+        ]
+
+
+class PlaylistLiteSerializer(serializers.ModelSerializer):
     """A serializer to display a Playlist resource."""
 
     class Meta:  # noqa
@@ -466,7 +489,7 @@ class VideoSerializer(serializers.ModelSerializer):
         source="timedtexttracks", many=True, read_only=True
     )
     thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
-    playlist = PlaylistSerializer(read_only=True)
+    playlist = PlaylistLiteSerializer(read_only=True)
     urls = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
     has_transcript = serializers.SerializerMethodField()
@@ -716,7 +739,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
-    playlist = PlaylistSerializer(read_only=True)
+    playlist = PlaylistLiteSerializer(read_only=True)
 
     def _get_extension_string(self, obj):
         """Document extension with the leading dot.

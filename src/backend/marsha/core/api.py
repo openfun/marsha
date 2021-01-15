@@ -12,13 +12,14 @@ from django.utils import timezone
 import requests
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action, api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
 from . import defaults, permissions, serializers
 from .lti import LTIUser
-from .models import Document, Thumbnail, TimedTextTrack, Video
+from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
     create_live_stream,
@@ -55,16 +56,62 @@ class UserViewSet(viewsets.GenericViewSet):
         # pylint: disable=invalid-name
         User = get_user_model()
         try:
-            user = (
-                User.objects
-                .prefetch_related(
-                    "organization_accesses", "organization_accesses__organization"
-                ).get(id=request.user.id)
-            )
+            user = User.objects.prefetch_related(
+                "organization_accesses", "organization_accesses__organization"
+            ).get(id=request.user.id)
         except User.DoesNotExist:
             return Response(status=401)
 
         return Response(data=self.get_serializer(user).data)
+
+
+class PlaylistViewSet(viewsets.ModelViewSet):
+    """ViewSet for all playlist-related interactions."""
+
+    permission_classes = [permissions.NotAllowed]
+    queryset = Playlist.objects.all()
+    serializer_class = serializers.PlaylistSerializer
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the actions' self defined permissions if applicable or
+        to the ViewSet's default permissions.
+        """
+        if self.action in ["list"]:
+            permission_classes = [IsAuthenticated]
+        else:
+            try:
+                permission_classes = getattr(self, self.action).kwargs.get(
+                    "permission_classes"
+                )
+            except AttributeError:
+                permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+        """
+        Return a list of playlists.
+
+        By default, filtered to only return to the user what
+        playlists they have access to.
+        """
+        queryset = self.get_queryset().filter(
+            organization__users__id=self.request.user.id
+        )
+
+        organization_id = self.request.query_params.get("organization")
+        if organization_id:
+            queryset = queryset.filter(organization__id=organization_id)
+
+        page = self.paginate_queryset(queryset.order_by("title"))
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset.order_by("title"), many=True)
+        return Response(serializer.data)
 
 
 @api_view(["POST"])
