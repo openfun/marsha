@@ -5,6 +5,18 @@ from rest_framework_simplejwt.models import TokenUser
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 
 
+class NotAllowed(permissions.BasePermission):
+    """
+    Utility permission class denies all requests.
+
+    This is used as a default to close requests to unsupported actions.
+    """
+
+    def has_permission(self, request, view):
+        """Deny permission always."""
+        return False
+
+
 class BaseResourcePermission(permissions.BasePermission):
     """Base permission class for JWT Tokens related to a resource object.
 

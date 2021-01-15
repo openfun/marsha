@@ -154,6 +154,8 @@ class Base(Configuration):
             "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
         ),
         "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
+        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+        "PAGE_SIZE": 50,
     }
 
     # WAFFLE
