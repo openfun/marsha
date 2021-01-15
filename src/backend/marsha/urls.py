@@ -11,6 +11,7 @@ from marsha.core import models
 from marsha.core.admin import admin_site
 from marsha.core.api import (
     DocumentViewSet,
+    PlaylistViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
     UserViewSet,
@@ -30,6 +31,7 @@ router.register(
     basename="timed_text_tracks",
 )
 router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
+router.register("playlists", PlaylistViewSet, basename="playlists")
 router.register("users", UserViewSet, basename="users")
 
 urlpatterns = [
