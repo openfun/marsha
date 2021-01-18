@@ -176,16 +176,34 @@ def update_state(request):
     return Response({"success": True})
 
 
-class VideoViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
-):
+class VideoViewSet(viewsets.ModelViewSet):
     """Viewset for the API of the video object."""
 
     queryset = Video.objects.all()
     serializer_class = serializers.VideoSerializer
-    permission_classes = [
-        permissions.IsResourceAdmin | permissions.IsResourceInstructor
-    ]
+    permission_classes = [permissions.NotAllowed]
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the actions' self defined permissions if applicable or
+        to the ViewSet's default permissions.
+        """
+        if self.action in ["retrieve", "partial_update", "update"]:
+            permission_classes = [
+                permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            ]
+        else:
+            try:
+                permission_classes = (
+                    getattr(self, self.action).kwargs.get("permission_classes")
+                    if self.action
+                    else self.permission_classes
+                )
+            except AttributeError:
+                permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
@@ -195,7 +213,14 @@ class VideoViewSet(
 
         return context
 
-    @action(methods=["post"], detail=True, url_path="initiate-upload")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="initiate-upload",
+        permission_classes=[
+            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        ],
+    )
     # pylint: disable=unused-argument
     def initate_upload(self, request, pk=None):
         """Get an upload policy for a video.
@@ -236,9 +261,18 @@ class VideoViewSet(
 
         return Response(presigned_post)
 
-    @action(methods=["post"], detail=True, url_path="initiate-live")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="initiate-live",
+        permission_classes=[
+            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        ],
+    )
     # pylint: disable=unused-argument
-    def initiate_live(self, request, pk=None):
+    def initiate_live(
+        self, request, pk=None,
+    ):
         """Create a live stack on AWS ready to stream.
 
         Parameters
@@ -273,7 +307,14 @@ class VideoViewSet(
 
         return Response(serializer.data)
 
-    @action(methods=["post"], detail=True, url_path="start-live")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="start-live",
+        permission_classes=[
+            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        ],
+    )
     # pylint: disable=unused-argument
     def start_live(self, request, pk=None):
         """Start a medialive channel on AWS.
@@ -313,7 +354,14 @@ class VideoViewSet(
 
         return Response(serializer.data)
 
-    @action(methods=["post"], detail=True, url_path="stop-live")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="stop-live",
+        permission_classes=[
+            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        ],
+    )
     # pylint: disable=unused-argument
     def stop_live(self, request, pk=None):
         """Stop a medialive channel on AWS.
@@ -358,7 +406,9 @@ class VideoViewSet(
         permission_classes=[],
     )
     # pylint: disable=unused-argument
-    def update_live_state(self, request, pk=None):
+    def update_live_state(
+        self, request, pk=None,
+    ):
         """View handling AWS POST request to update the video live state.
 
         Parameters
@@ -449,9 +499,7 @@ class DocumentViewSet(
         key = document.get_source_s3_key(stamp=stamp, extension=extension)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
-            {},
-            key,
+            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]], {}, key,
         )
 
         # Reset the upload state of the document
@@ -510,9 +558,7 @@ class TimedTextTrackViewSet(viewsets.ModelViewSet):
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]],
-            {},
-            key,
+            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]], {}, key,
         )
 
         # Reset the upload state of the timed text track
