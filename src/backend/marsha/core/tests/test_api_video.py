@@ -400,7 +400,7 @@ class VideoAPITest(TestCase):
         """Anonymous users should not be able to read a list of videos."""
         VideoFactory()
         response = self.client.get("/api/videos/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_video_read_list_token_user(self):
         """A token user associated to a video should not be able to read a list of videos."""
@@ -412,7 +412,7 @@ class VideoAPITest(TestCase):
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_with_a_thumbnail(self):
@@ -487,12 +487,12 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             VideoFactory()
             response = self.client.get("/api/videos/")
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.status_code, 401)
 
     def test_api_video_create_anonymous(self):
         """Anonymous users should not be able to create a new video."""
         response = self.client.post("/api/videos/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         self.assertFalse(Video.objects.exists())
 
     def test_api_video_create_token_user_playlist_preexists(self):
@@ -501,7 +501,7 @@ class VideoAPITest(TestCase):
         response = self.client.post(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         self.assertFalse(Video.objects.exists())
 
     def test_api_video_create_staff_or_user(self):
@@ -509,7 +509,7 @@ class VideoAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             response = self.client.post("/api/videos/")
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.status_code, 401)
             self.assertFalse(Video.objects.exists())
 
     def test_api_video_update_detail_anonymous(self):
@@ -774,9 +774,7 @@ class VideoAPITest(TestCase):
                 "/api/videos/{!s}/".format(video.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
-            self.assertEqual(response.status_code, 405)
-            content = json.loads(response.content)
-            self.assertEqual(content, {"detail": 'Method "DELETE" not allowed.'})
+            self.assertEqual(response.status_code, 403)
             self.assertTrue(Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_detail_staff_or_user(self):
@@ -814,7 +812,7 @@ class VideoAPITest(TestCase):
 
         response = self.client.delete("/api/videos/")
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_token_user(self):
@@ -827,7 +825,7 @@ class VideoAPITest(TestCase):
         response = self.client.delete(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_staff_or_user(self):
@@ -838,7 +836,7 @@ class VideoAPITest(TestCase):
 
             response = self.client.delete("/api/videos/")
 
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.status_code, 401)
         self.assertTrue(Video.objects.filter(id=video.id).exists())
 
     def test_api_video_initiate_upload_anonymous_user(self):
