@@ -3,9 +3,18 @@
 const AWS = require('aws-sdk');
 const { Parser } = require('m3u8-parser');
 const fetch = require('node-fetch');
-const updateState = require('update-state');
+const util = require('util');
+const fs = require('fs');
+const open = util.promisify(fs.open);
+const write = util.promisify(fs.write);
+const close = util.promisify(fs.close);
+const mkdir = util.promisify(fs.mkdir);
+const rmdir = util.promisify(fs.rmdir);
+const os = require('os');
 
-const { CLOUDFRONT_ENDPOINT } = process.env;
+const { CLOUDFRONT_ENDPOINT, CHUNK_DURATION: raw_chunk } = process.env;
+const CHUNK_DURATION = parseInt(raw_chunk);
+
 const mediapackage = new AWS.MediaPackage({ apiVersion: '2017-10-12' });
 const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 
@@ -43,7 +52,7 @@ module.exports = async (event, lambdaFunctionName) => {
 
   // The harvest id has this pattern : {environment}_{pk}_{stamp}
   // splitting it give us the information we need
-  const elements = event.detail.harvest_job.id.split('_');
+  const elements = harvestJob.id.split('_');
   // build the hls manifest url
   const manifestUrl = `https://${CLOUDFRONT_ENDPOINT}/${harvestJob.s3_destination.manifest_key}`;
 
@@ -58,38 +67,108 @@ module.exports = async (event, lambdaFunctionName) => {
 
   const parsedManifest = hlsParser.manifest;
 
-  return Promise.all(
+  const startTime = new Date(harvestJob.start_time);
+  const endTime = new Date(harvestJob.end_time);
+  const duration = parseInt((endTime.getTime() - startTime.getTime()) / 1000);
+
+  // split duration in chunck of x seconds
+  const numberOfChunks = Math.floor(duration / CHUNK_DURATION); // find number of plain chunk
+  const lastChunkDuration = duration - numberOfChunks * CHUNK_DURATION; // compute last chunk duration
+
+  // create an array of this form [[start, end], [start, end]]
+  const chunks = Array(numberOfChunks)
+    .fill(null)
+    .reduce((acc, curr, index) => {
+      const lastChunk = acc[index - 1] || [0, 0];
+      acc.push([lastChunk[1], lastChunk[1] + CHUNK_DURATION]);
+      return acc;
+    }, []);
+  chunks.push([
+    (chunks[chunks.length - 1] || [0, 0])[1],
+    (chunks[chunks.length - 1] || [0, 0])[1] + lastChunkDuration,
+  ]);
+  // /mnt/transmuxed_video/{pk}
+  const workingDir = `/mnt/transmuxed_video/${elements[1]}`;
+  // delete working dir if already exists. Thi can happen when a previous lambda failed and didn't complete.
+  await rmdir(workingDir, { recursive: true });
+
+  // create the working directory
+  await mkdir(workingDir, { recursive: true });
+
+  // resolution file contains all the directories for all resolutions available
+  // ex :
+  //    /mnt/transmuxed_video/{pk}/320
+  //    /mnt/transmuxed_video/{pk}/480
+  //    /mnt/transmuxed_video/{pk}/720
+  const resolutionsFilePath = `${workingDir}/resolutions.txt`;
+
+  const resolutionFileDescriptor = await open(resolutionsFilePath, 'w');
+
+  // using Promise.all allow us to invoke the lambda non asynchronously,
+  // chunks will be generated randomly. It's the transmux function to check when all are done.
+  await Promise.all(
     parsedManifest.playlists.map(async (playlist) => {
       const resolution = playlist.attributes.RESOLUTION.height;
       const playlistUri = `https://${CLOUDFRONT_ENDPOINT}/${elements[1]}/cmaf/${playlist.uri}`;
+      const currentResolutionDir = `${workingDir}/${resolution}`;
 
-      const workingDir = '/mnt/transmuxed_video';
+      // the list file contains all the chunks generated in a form FFMPEG can read
+      const currentResolutionFilePath = `${currentResolutionDir}/list.txt`;
 
-      const transmuxedVideoFilename = `${workingDir}/${Date.now()}_${resolution}.mp4`;
-      const thumbnailFilename = `${workingDir}/${Date.now()}_${resolution}.jpg`;
+      // create the resolution directory
+      await mkdir(currentResolutionDir, { recursive: true });
 
-      await lambda
-        .invoke({
-          FunctionName: lambdaFunctionName,
-          InvocationType: 'Event',
-          Payload: JSON.stringify({
-            'detail-type': 'transmux',
-            resolution,
-            playlistUri,
-            transmuxedVideoFilename,
-            thumbnailFilename,
-            destinationBucketName: harvestJob.s3_destination.bucket_name,
-            video_id: elements[1],
-            video_stamp: elements[2],
-          }),
-        })
-        .promise();
+      // write in the resolution file the current resolution directory path
+      await write(
+        resolutionFileDescriptor,
+        `${currentResolutionFilePath}${os.EOL}`,
+      );
 
-      return resolution;
-    }),
-  ).then((resolutions) =>
-    updateState(`${elements[1]}/video/${elements[1]}/${elements[2]}`, 'ready', {
-      resolutions,
+      // open the list file for the current directory in write mode.
+      const currentResolutionFileDescriptor = await open(
+        currentResolutionFilePath,
+        'w',
+      );
+
+      let i = 0;
+      for (const chunk of chunks) {
+        const transmuxedVideoChunkFilename = `${currentResolutionDir}/fragment${i}.mp4`;
+
+        // write in the list file the current fragment path
+        await write(
+          currentResolutionFileDescriptor,
+          `file '${transmuxedVideoChunkFilename}'${os.EOL}`,
+        );
+
+        // invoke the lambda for the current chunk
+        await lambda
+          .invoke({
+            FunctionName: lambdaFunctionName,
+            InvocationType: 'Event',
+            Payload: JSON.stringify({
+              'detail-type': 'transmux',
+              resolution,
+              playlistUri,
+              transmuxedVideoChunkFilename,
+              from: chunk[0],
+              to: chunk[1],
+              destinationBucketName: harvestJob.s3_destination.bucket_name,
+              videoId: elements[1],
+              videoStamp: elements[2],
+              resolutionsFilePath,
+              resolutionListPath: currentResolutionFilePath,
+            }),
+          })
+          .promise();
+
+        i++;
+      }
+
+      // close the list file and return a promise
+      return close(currentResolutionFileDescriptor);
     }),
   );
+
+  // close the resolution file and return a promise
+  return close(resolutionFileDescriptor);
 };

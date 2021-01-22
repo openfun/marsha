@@ -1,72 +1,113 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const crypto = require('crypto');
 const util = require('util');
+const fs = require('fs');
+const readline = require('readline');
 const execFile = util.promisify(require('child_process').execFile);
-const readFile = util.promisify(require('fs').readFile);
-const unlink = util.promisify(require('fs').unlink);
+const rename = util.promisify(fs.rename);
+const access = util.promisify(fs.access);
+const dirname = require('path').dirname;
 
-const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 
-module.exports = async (event) => {
+module.exports = async (event, lambdaFunctionName) => {
+  // test if the chunk already exists, if yes do not regenerate it
+  try {
+    await access(event.transmuxedVideoChunkFilename, fs.constants.F_OK);
+
+    console.log(`chunk ${event.transmuxedVideoChunkFilename} already exists`);
+    return Promise.resolve(
+      `chunk ${event.transmuxedVideoChunkFilename} already exists`,
+    );
+  } catch (error) {
+    console.log(
+      `chunk ${event.transmuxedVideoChunkFilename} doest not exists`,
+      error,
+    );
+  }
+
+  const resolutiondirname = dirname(event.resolutionListPath);
+  // create a temporary file. We use a temporary file because ffmpeg will create the file when it starts,
+  // the checkChunksByResolution function will detect this file and think FFMPEG has ended this chunk
+  const hash = crypto.createHash('sha1');
+  hash.update(event.transmuxedVideoChunkFilename);
+  const tmpFile = `${resolutiondirname}/${hash.digest('hex')}`;
+  //generate chunk
   const transmuxedLogs = await execFile(
     'ffmpeg',
-    ['-i', event.playlistUri, '-codec', 'copy', '-f', 'mp4', event.transmuxedVideoFilename],
+    [
+      '-y', // replace the output file if already exists. Prevent to block the lambda
+      '-v', // change verbosity
+      'error', // less verbose, we want only errors
+      '-ss', // seek segment
+      event.from, // seeking video from
+      '-i', // input
+      event.playlistUri, // the hls endpoint for the current resolution
+      '-t', // to
+      event.to, // sseking video to
+      '-codec', // encoder codec
+      'copy', // copy the audio and video codec as it. This a transmux, not a transcode.
+      '-copyts', // keep origin timestamp
+      '-avoid_negative_ts',
+      1, // avoid negative timestamp for further muxer usage
+      '-f', // output format, must be set becaus FFMPEG can't guess it fronm the file name
+      'mp4', // mp4 output format
+      tmpFile, //output file
+    ],
     {
-      maxBuffer: 100 * 1024 * 1024,
+      maxBuffer: 100 * 1024 * 1024, // configure a big output to not block the lambda.
     },
   );
   console.log(
     `transmuxing terminated for resolution ${event.resolution}`,
     JSON.stringify(transmuxedLogs),
   );
+  // once chunk generated rename it with the wanted name
+  await rename(tmpFile, event.transmuxedVideoChunkFilename);
 
-  // generate a thumbnail from the MP4 from the first second of the video
-  console.log(`generating thumbnail for resolution ${event.resolution}`);
-  const thumbnailLogs = await execFile('ffmpeg', [
-    '-i',
-    event.transmuxedVideoFilename,
-    '-ss',
-    '00:00:01.000',
-    '-vframes',
-    '1',
-    event.thumbnailFilename,
-  ]);
-  console.log(
-    `thumbnail generated for resolution ${event.resolution}`,
-    JSON.stringify(thumbnailLogs),
-  );
+  try {
+    // check if all chunks are generated
+    await checkChunksByResolution(event.resolutionListPath);
+  } catch (error) {
+    console.log(error);
+    // all files are not generated, stop the lambda but without error
+    return Promise.resolve('missing files to concat');
+  }
+  console.log('all chunks are generated, calling concat lambda');
 
-  console.log(
-    'starting uploading MP4 for resolution ${resolution} to s3 bucket',
-  );
-  await s3
-    .putObject({
-      Body: await readFile(event.transmuxedVideoFilename),
-      Bucket: event.destinationBucketName,
-      Key: `${event.video_id}/mp4/${event.video_stamp}_${event.resolution}.mp4`,
-      ContentType: 'video/mp4',
+  // all chunks are generated, concat them
+  return lambda
+    .invoke({
+      FunctionName: lambdaFunctionName,
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
+        'detail-type': 'concat',
+        resolution: event.resolution,
+        destinationBucketName: event.destinationBucketName,
+        videoId: event.videoId,
+        videoStamp: event.videoStamp,
+        resolutionsFilePath: event.resolutionsFilePath,
+        resolutionListPath: event.resolutionListPath,
+      }),
     })
     .promise();
-  console.log(`MP4 upload for resolution ${event.resolution} terminated`);
+};
 
-  // delete transmuxed video
-  await unlink(event.transmuxedVideoFilename);
+const checkChunksByResolution = async (resolutionListPath) => {
+  const resolutionFileStream = fs.createReadStream(resolutionListPath);
+  const resolutionReadline = readline.createInterface({
+    input: resolutionFileStream,
+    crlfDelay: Infinity,
+  });
 
-  // upload thumbnail
-  console.log(
-    `starting uploading thumbnail for resolution ${event.resolution} to s3 bucket`,
-  );
-  await s3
-    .putObject({
-      Body: await readFile(event.thumbnailFilename),
-      Bucket:event. destinationBucketName,
-      Key: `${event.video_id}/thumbnails/${event.video_stamp}_${event.resolution}.0000000.jpg`,
-      ContentType: 'image/jpeg',
-    })
-    .promise();
-  console.log(`thumbnail upload for resolution ${event.resolution} terminated`);
-
-  // delete thumbnail
-  return unlink(event.thumbnailFilename);
+  const filenameRegex = /^file '(.*)'$/;
+  // read line by line the list file to check if all the chunks are generated
+  for await (const line of resolutionReadline) {
+    console.log(line);
+    const result = filenameRegex.exec(line);
+    // don't catch error, let it bubble
+    await access(`${result[1]}`, fs.constants.F_OK);
+  }
 };

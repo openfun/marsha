@@ -206,6 +206,7 @@ resource "aws_lambda_function" "marsha_mediapackage_lambda" {
       ENDPOINT = "${var.marsha_base_url}${var.update_state_endpoint}"
       SHARED_SECRET = var.update_state_secret
       CLOUDFRONT_ENDPOINT = aws_cloudfront_distribution.marsha_cloudfront_distribution.domain_name
+      CHUNK_DURATION = var.video_chunk_duration
     }
   }
 

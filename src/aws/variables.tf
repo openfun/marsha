@@ -69,3 +69,8 @@ variable "ecr_lambda_marsha_arn" {
 variable "s3_bucket_unique_suffix" {
   type = string
 }
+
+variable "video_chunk_duration" {
+  type = number
+  default = 1200
+}

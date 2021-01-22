@@ -3,10 +3,14 @@
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log');
 
+const fs = require('fs');
+const os = require('os');
+
 jest.mock('node-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('node-fetch');
 
 process.env.CLOUDFRONT_ENDPOINT = 'distribution_id.cloudfront.net';
+process.env.CHUNK_DURATION = '1200';
 
 // Mock the AWS SDK calls
 const mockDescribeOriginEndpoint = jest.fn();
@@ -24,17 +28,17 @@ jest.mock('aws-sdk', () => ({
   },
 }));
 
-const mockUpdateState = jest.fn();
-jest.doMock('update-state', () => mockUpdateState);
+jest.mock('fs');
 
 const harvest = require('./harvest');
-const updateState = require('update-state');
 
 describe('harvest', () => {
-  afterEach(() => {
+  beforeEach(() => {
+    console.log.mockReset();
+    jest.resetAllMocks();
     fetchMock.restore();
-    jest.clearAllMocks();
   });
+
   it('throws an error when the job status is not succeeded', async () => {
     const event = {
       id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce',
@@ -70,7 +74,7 @@ describe('harvest', () => {
     );
   });
 
-  it('transmuxes a video', async () => {
+  it('receives an event and invoke the lambda', async () => {
     const event = {
       id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce',
       'detail-type': 'MediaPackage HarvestJob Notification',
@@ -109,9 +113,9 @@ describe('harvest', () => {
       #EXT-X-VERSION:3
       #EXT-X-INDEPENDENT-SEGMENTS
       #EXT-X-STREAM-INF:BANDWIDTH=5364510,AVERAGE-BANDWIDTH=2310036,RESOLUTION=960x540,FRAME-RATE=29.970,CODECS="avc1.640029,mp4a.40.2"
-      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8
+      test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8
       #EXT-X-STREAM-INF:BANDWIDTH=9410222,AVERAGE-BANDWIDTH=4510036,RESOLUTION=1280x720,FRAME-RATE=29.970,CODECS="avc1.640029,mp4a.40.2"
-      dev-manu_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8`,
+      test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8`,
     );
 
     mockDescribeOriginEndpoint.mockReturnValue({
@@ -131,6 +135,25 @@ describe('harvest', () => {
       promise: () => Promise.resolve(),
     });
 
+    const mockedRmdir = fs.rmdir.mockImplementation((path, options, callback) =>
+      callback(null),
+    );
+    const mockedMkdir = fs.mkdir.mockImplementation((path, options, callback) =>
+      callback(null, true),
+    );
+    const mockedOpenResolution = fs.open.mockImplementationOnce(
+      (path, flags, callback) => callback(null, 'resolution-fd'),
+    );
+    const mockedOpenList = fs.open.mockImplementation((path, flags, callback) =>
+      callback(null, 'list-fd'),
+    );
+    const mockedWrite = fs.write.mockImplementation((fd, data, callback) =>
+      callback(null),
+    );
+    const mockedClose = fs.close.mockImplementation((fd, callback) =>
+      callback(null),
+    );
+
     await harvest(event, 'test-lambda-mediapackage');
 
     expect(mockDescribeOriginEndpoint).toHaveBeenCalledWith({
@@ -143,12 +166,172 @@ describe('harvest', () => {
       Id: 'mediapackage_channel_id',
     });
 
-    expect(
-      updateState,
-    ).toHaveBeenCalledWith(
-      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/1610546271',
-      'ready',
-      { resolutions: [540, 720] },
+    expect(mockedRmdir).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      { recursive: true },
+      expect.anything(),
+    );
+    expect(mockedMkdir).toHaveBeenNthCalledWith(
+      1,
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      { recursive: true },
+      expect.anything(),
+    );
+    expect(mockedOpenResolution).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/resolutions.txt',
+      'w',
+      expect.anything(),
+    );
+
+    // 540p
+    expect(mockedMkdir).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540',
+      { recursive: true },
+      expect.anything(),
+    );
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'resolution-fd',
+      `/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/list.txt${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockedOpenList).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/list.txt',
+      'w',
+      expect.anything(),
+    );
+    //540p, first chunk
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'list-fd',
+      `file '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/fragment0.mp4'${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockInvoke).toHaveBeenCalledWith({
+      FunctionName: 'test-lambda-mediapackage',
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
+        'detail-type': 'transmux',
+        resolution: 540,
+        playlistUri:
+          'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8',
+        transmuxedVideoChunkFilename:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/fragment0.mp4',
+        from: 0,
+        to: 1200,
+        destinationBucketName: 'test-marsha-destination',
+        videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+        videoStamp: '1610546271',
+        resolutionsFilePath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/resolutions.txt',
+        resolutionListPath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/list.txt',
+      }),
+    });
+    //540p, second chunk
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'list-fd',
+      `file '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/fragment1.mp4'${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockInvoke).toHaveBeenCalledWith({
+      FunctionName: 'test-lambda-mediapackage',
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
+        'detail-type': 'transmux',
+        resolution: 540,
+        playlistUri:
+          'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8',
+        transmuxedVideoChunkFilename:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/fragment1.mp4',
+        from: 1200,
+        to: 1800,
+        destinationBucketName: 'test-marsha-destination',
+        videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+        videoStamp: '1610546271',
+        resolutionsFilePath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/resolutions.txt',
+        resolutionListPath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/540/list.txt',
+      }),
+    });
+
+    expect(mockedClose).toHaveBeenCalledWith('list-fd', expect.anything());
+
+    // 720p
+    expect(mockedMkdir).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720',
+      { recursive: true },
+      expect.anything(),
+    );
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'resolution-fd',
+      `/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/list.txt${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockedOpenList).toHaveBeenCalledWith(
+      '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/list.txt',
+      'w',
+      expect.anything(),
+    );
+    //720p, first chunk
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'list-fd',
+      `file '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/fragment0.mp4'${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockInvoke).toHaveBeenCalledWith({
+      FunctionName: 'test-lambda-mediapackage',
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
+        'detail-type': 'transmux',
+        resolution: 720,
+        playlistUri:
+          'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8',
+        transmuxedVideoChunkFilename:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/fragment0.mp4',
+        from: 0,
+        to: 1200,
+        destinationBucketName: 'test-marsha-destination',
+        videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+        videoStamp: '1610546271',
+        resolutionsFilePath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/resolutions.txt',
+        resolutionListPath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/list.txt',
+      }),
+    });
+    // 720p, second chunk
+    expect(mockedWrite).toHaveBeenCalledWith(
+      'list-fd',
+      `file '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/fragment1.mp4'${os.EOL}`,
+      expect.anything(),
+    );
+    expect(mockInvoke).toHaveBeenCalledWith({
+      FunctionName: 'test-lambda-mediapackage',
+      InvocationType: 'Event',
+      Payload: JSON.stringify({
+        'detail-type': 'transmux',
+        resolution: 720,
+        playlistUri:
+          'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8',
+        transmuxedVideoChunkFilename:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/fragment1.mp4',
+        from: 1200,
+        to: 1800,
+        destinationBucketName: 'test-marsha-destination',
+        videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+        videoStamp: '1610546271',
+        resolutionsFilePath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/resolutions.txt',
+        resolutionListPath:
+          '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/720/list.txt',
+      }),
+    });
+
+    expect(mockedClose).toHaveBeenCalledWith('list-fd', expect.anything());
+
+    expect(mockedClose).toHaveBeenCalledWith(
+      'resolution-fd',
+      expect.anything(),
     );
   });
 });

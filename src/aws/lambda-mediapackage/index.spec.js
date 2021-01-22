@@ -10,9 +10,20 @@ jest.doMock('./src/harvest', () => mockHarvest);
 const mockTransmux = jest.fn();
 jest.doMock('./src/transmux', () => mockTransmux);
 
+const mockConcat = jest.fn();
+jest.doMock('./src/concat', () => mockConcat);
+
+const mockUpload = jest.fn();
+jest.doMock('./src/upload', () => mockUpload);
+
 const lambda = require('./index.js').handler;
 
 describe('lambda mediapackage', () => {
+  beforeEach(() => {
+    console.log.mockReset();
+    jest.resetAllMocks();
+  });
+
   it('throws an error when the event type is not managed', async () => {
     const event = {
       id: '81e896e4-d9e5-ec79-f82a-b4cf3246c567',
@@ -88,15 +99,110 @@ describe('lambda mediapackage', () => {
       transcodedVideoFilename: '/mnt/transcoded_video/1610712269954_720.mp4',
       thumbnailFilename: '/mnt/transcoded_video/1610712269954_720.jpg',
       destinationBucketName: 'test-marsha-destination',
-      elements: [
-        'dev-manu',
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19',
-        '1610458282',
-      ],
+      elements: ['test', 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19', '1610458282'],
+    };
+    const context = {
+      functionName: 'test-lambda-mediapackage',
     };
 
-    await lambda(event);
+    await lambda(event, context);
 
-    expect(mockTransmux).toHaveBeenCalledWith(event);
+    expect(mockTransmux).toHaveBeenCalledWith(
+      event,
+      'test-lambda-mediapackage',
+    );
+  });
+
+  it('executes concat module', async () => {
+    const event = {
+      'detail-type': 'concat',
+      resolution: 540,
+      destinationBucketName: 'test-marsha-destination',
+      videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19',
+      videoStamp: '1610458282',
+      resolutionsFilePath:
+        '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/resolutions.txt',
+      resolutionListPath:
+        '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/540/list.txt',
+    };
+    const context = {
+      functionName: 'test-lambda-mediapackage',
+    };
+
+    await lambda(event, context);
+
+    expect(mockConcat).toHaveBeenCalledWith(event, 'test-lambda-mediapackage');
+  });
+
+  it('executes upload module', async () => {
+    const event = {
+      'detail-type': 'upload',
+      filesToProcess: {
+        236: {
+          video: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/236/1610458282_236.mp4',
+            key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/1610458282_236.mp4',
+          },
+          thumbnail: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/236/1610458282_236.0000000.jpg',
+            key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/1610458282_236.0000000.jpg',
+          },
+        },
+        360: {
+          video: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/360/1610458282_360.mp4',
+            key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/1610458282_360.mp4',
+          },
+          thumbnail: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/360/1610458282_360.0000000.jpg',
+            key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/1610458282_360.0000000.jpg',
+          },
+        },
+        540: {
+          video: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/540/1610458282_540.mp4',
+            key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/1610458282_540.mp4',
+          },
+          thumbnail: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/540/1610458282_540.0000000.jpg',
+            key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/1610458282_540.0000000.jpg',
+          },
+        },
+        720: {
+          video: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/720/1610458282_720.mp4',
+            key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/1610458282_720.mp4',
+          },
+          thumbnail: {
+            filename:
+              '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/720/1610458282_720.0000000.jpg',
+            key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/1610458282_720.0000000.jpg',
+          },
+        },
+      },
+      destinationBucketName: 'test-marsha-destination',
+      videoBaseDirectory:
+        '/mnt/transmuxed_video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19',
+      videoId: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19',
+      videoStamp: '1610458282',
+    };
+    const context = {
+      functionName: 'test-lambda-mediapackage',
+    };
+
+    await lambda(event, context);
+
+    expect(mockUpload).toHaveBeenCalledWith(event);
   });
 });
