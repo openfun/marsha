@@ -7,6 +7,7 @@ from os.path import splitext
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.utils import timezone
 
 import requests
@@ -194,6 +195,8 @@ class VideoViewSet(viewsets.ModelViewSet):
             permission_classes = [
                 permissions.IsResourceAdmin | permissions.IsResourceInstructor
             ]
+        elif self.action in ["list"]:
+            permission_classes = [IsAuthenticated]
         else:
             try:
                 permission_classes = (
@@ -212,6 +215,48 @@ class VideoViewSet(viewsets.ModelViewSet):
         context["can_return_live_info"] = True
 
         return context
+
+<<<<<<< HEAD
+    def list(self, request, *args, **kwargs):
+=======
+    def create(self, request, *args, **kwargs):
+        """Create one video based on the request payload."""
+        try:
+            form = forms.VideoForm(request.data)
+            video = form.save()
+        except ValueError:
+            return Response({"errors": [dict(form.errors)]}, status=400)
+
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data, status=201)
+
+>>>>>>> fb06e205... wip
+        """List videos through the API."""
+        # Limit the queryset to the playlists the user has access directly or through
+        # an access they have to an organization
+        queryset = self.get_queryset().filter(
+            Q(playlist__user_accesses__user__id=request.user.id)
+            | Q(playlist__organization__user_accesses__user__id=request.user.id)
+        )
+
+        playlist = request.query_params.get("playlist")
+        if playlist is not None:
+            queryset = queryset.filter(playlist__id=playlist)
+
+        organization = request.query_params.get("organization")
+        if organization is not None:
+            queryset = queryset.filter(playlist__organization__id=organization)
+
+        queryset = queryset.order_by("title")
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(
         methods=["post"],

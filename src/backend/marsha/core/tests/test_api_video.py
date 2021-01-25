@@ -13,6 +13,10 @@ from .. import api
 from ..api import timezone
 from ..defaults import IDLE, LIVE_CHOICES, PENDING, RUNNING, STATE_CHOICES, STOPPED
 from ..factories import (
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
     ThumbnailFactory,
     TimedTextTrackFactory,
     UserFactory,
@@ -403,7 +407,12 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_api_video_read_list_token_user(self):
-        """A token user associated to a video should not be able to read a list of videos."""
+        """
+        Token user lists videos.
+
+        A token user associated to a video should be able to read a list of videos.
+        It should however be empty as they have no rights on lists of videos.
+        """
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -412,7 +421,479 @@ class VideoAPITest(TestCase):
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_user_with_no_access(self):
+        """
+        Token user lists videos.
+
+        A user with a user token, with no playlist or organization access should not
+        get any videos in response to video list requests.
+        """
+        user = UserFactory()
+        # An organization with a playlist and one video
+        organization = OrganizationFactory()
+        organization_playlist = PlaylistFactory(organization=organization)
+        VideoFactory(playlist=organization_playlist)
+        # A playlist with a video but no organization
+        other_playlist = PlaylistFactory()
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_user_with_playlist_access(self):
+        """
+        Token user with playlist access lists videos.
+
+        A user with a user token, with access to a playlist should get only videos from that
+        playlist, and not from other playlists, even if they are from the same organization.
+        """
+        user = UserFactory()
+        # An organization where the user has no access
+        organization = OrganizationFactory()
+        # In this organization, a playlist where the user has access
+        organization_playlist_1 = PlaylistFactory(organization=organization)
+        video = VideoFactory(playlist=organization_playlist_1)
+        PlaylistAccessFactory(user=user, playlist=organization_playlist_1)
+        # In the same organization, a playlist where the user has no access
+        organization_playlist_2 = PlaylistFactory(organization=organization)
+        VideoFactory(playlist=organization_playlist_2)
+        # An unrelated playlist where the user has no access
+        other_playlist = PlaylistFactory()
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video.description,
+                        "has_transcript": False,
+                        "id": str(video.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": organization_playlist_1.lti_id,
+                            "title": organization_playlist_1.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    }
+                ],
+            },
+        )
+
+    def test_api_video_read_list_user_with_organization_access(self):
+        """
+        Token user with organization access lists videos.
+
+        A user with a user token, with access to an organization should get only videos from
+        that organization no matter the playlist they are in, and not from other playlists or
+        organizations.
+        """
+        user = UserFactory()
+        # An organization where the user has access
+        organization_1 = OrganizationFactory()
+        OrganizationAccessFactory(user=user, organization=organization_1)
+        # In this organization, two playlists where the user has no direct access
+        organization_1_playlist_1 = PlaylistFactory(organization=organization_1)
+        video_1 = VideoFactory(playlist=organization_1_playlist_1, title="First video")
+        organization_1_playlist_2 = PlaylistFactory(organization=organization_1)
+        video_2 = VideoFactory(playlist=organization_1_playlist_2, title="Second video")
+        # An unrelated organization with a playlist where the user has no access
+        organization_2 = OrganizationFactory()
+        other_playlist = PlaylistFactory(organization=organization_2)
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 2,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video_1.description,
+                        "has_transcript": False,
+                        "id": str(video_1.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": organization_1_playlist_1.lti_id,
+                            "title": organization_1_playlist_1.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video_1.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    },
+                    {
+                        "active_stamp": None,
+                        "description": video_2.description,
+                        "has_transcript": False,
+                        "id": str(video_2.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": organization_1_playlist_2.lti_id,
+                            "title": organization_1_playlist_2.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video_2.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    },
+                ],
+            },
+        )
+
+    def test_api_video_read_list_by_playlist_user_with_no_access(self):
+        """
+        Token user lists videos by playlist.
+
+        A user with a user token, with no playlist or organization access should not
+        get any videos in response to requests to list videos by playlist.
+        """
+        user = UserFactory()
+        # A playlist, where the user has no access, with a video
+        playlist = PlaylistFactory()
+        VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?playlist={playlist.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_by_playlist_user_with_playlist_access(self):
+        """
+        Token user with playlist access lists videos by playlist.
+
+        A user with a user token, with a playlist access, can list videos for this playlist.
+        """
+        user = UserFactory()
+        # A playlist where the user has access, with a video
+        first_playlist = PlaylistFactory()
+        video = VideoFactory(playlist=first_playlist)
+        PlaylistAccessFactory(user=user, playlist=first_playlist)
+        # Another one where the user has no access, with a video
+        other_playlist = PlaylistFactory()
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?playlist={first_playlist.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video.description,
+                        "has_transcript": False,
+                        "id": str(video.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": first_playlist.lti_id,
+                            "title": first_playlist.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    }
+                ],
+            },
+        )
+
+    def test_api_video_read_list_by_playlist_user_with_org_access(self):
+        """
+        Token user with organization access lists videos by playlist.
+
+        A user with a user token, with an organization access, can list videos
+        for a playlist that belongs to that organization.
+        """
+        user = UserFactory()
+        # An organization where the user has access, with a playlist with a video
+        first_organization = OrganizationFactory()
+        first_playlist = PlaylistFactory(organization=first_organization)
+        video = VideoFactory(playlist=first_playlist)
+        OrganizationAccessFactory(user=user, organization=first_organization)
+        # Another one where the user has no access, with a video
+        other_organization = OrganizationFactory()
+        other_playlist = PlaylistFactory(organization=other_organization)
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?playlist={first_playlist.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video.description,
+                        "has_transcript": False,
+                        "id": str(video.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": first_playlist.lti_id,
+                            "title": first_playlist.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    }
+                ],
+            },
+        )
+
+    def test_api_video_read_list_by_org_user_with_no_access(self):
+        """
+        Token user lists videos by organization.
+
+        A user with a user token, with no playlist or organization access should not
+        get any videos in response to requests to list videos by organization.
+        """
+        user = UserFactory()
+        # An organization where the user has no access, with a playlist and a video
+        organization = OrganizationFactory()
+        playlist = PlaylistFactory(organization=organization)
+        VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?organization={organization.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_by_org_user_with_playlist_access(self):
+        """
+        Token user with playlist access lists videos by organization.
+
+        A user with a user token, with a playlist access, can list videos for the organization
+        linked to the playlist, and get only those they have access to, and not videos for
+        other organization playlists.
+        """
+        user = UserFactory()
+        # The organization for both our playlists
+        organization = OrganizationFactory()
+        # A playlist where the user has access, with a video
+        first_playlist = PlaylistFactory(organization=organization)
+        video = VideoFactory(playlist=first_playlist)
+        PlaylistAccessFactory(user=user, playlist=first_playlist)
+        # Another one where the user has no access, with a video
+        other_playlist = PlaylistFactory(organization=organization)
+        VideoFactory(playlist=other_playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?organization={organization.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video.description,
+                        "has_transcript": False,
+                        "id": str(video.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": first_playlist.lti_id,
+                            "title": first_playlist.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    }
+                ],
+            },
+        )
+
+    def test_api_video_read_list_by_org_user_with_org_access(self):
+        """
+        Token user with organization access lists videos by organization.
+
+        A user with a user token, with an organization access, can list videos for the
+        organization, no matter the playlist they belong to.
+        """
+        user = UserFactory()
+        # The organization for both our playlists
+        organization = OrganizationFactory()
+        OrganizationAccessFactory(organization=organization, user=user)
+        # Two separate playlists for the organization, with a video each
+        playlist_1 = PlaylistFactory(organization=organization)
+        video_1 = VideoFactory(playlist=playlist_1, title="First video")
+        playlist_2 = PlaylistFactory(organization=organization)
+        video_2 = VideoFactory(playlist=playlist_2, title="Second video")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/?organization={organization.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 2,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video_1.description,
+                        "has_transcript": False,
+                        "id": str(video_1.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": playlist_1.lti_id,
+                            "title": playlist_1.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video_1.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    },
+                    {
+                        "active_stamp": None,
+                        "description": video_2.description,
+                        "has_transcript": False,
+                        "id": str(video_2.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "playlist": {
+                            "lti_id": playlist_2.lti_id,
+                            "title": playlist_2.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video_2.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                    },
+                ],
+            },
+        )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_with_a_thumbnail(self):
