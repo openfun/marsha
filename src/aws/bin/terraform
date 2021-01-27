@@ -9,5 +9,5 @@ docker run --rm -it \
     -v "${PWD}/:/app" \
     -w "/app" \
     --env-file ./env.d/development \
-    "hashicorp/terraform:0.13.5" \
+    "hashicorp/terraform:0.14.5" \
     "$@"
