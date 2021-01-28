@@ -20,3 +20,15 @@ resource "aws_cloudwatch_event_target" "marsha_encode_complete_target" {
   target_id = "check_foo"
   arn       = aws_lambda_function.marsha_complete_lambda.arn
 }
+
+# FARGATE LOG GROUP
+###################
+
+resource "aws_cloudwatch_log_group" "fargate_ffmpeg_transmux" {
+  name = "/ecs/${terraform.workspace}-fargate-ffmpeg-transmux"
+
+  tags = {
+    Environment = terraform.workspace
+    Application = "serviceA"
+  }
+}
