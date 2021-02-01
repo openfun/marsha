@@ -213,3 +213,59 @@ class IsParamsOrganizationAdmin(permissions.BasePermission):
             ).exists()
         except models.OrganizationAccess.DoesNotExist:
             return False
+
+
+class IsParamsPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    playlist, and has an access to this playlist with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the playlist from the params of body of the request exists
+        and the current logged in user is one of its administrators.
+        """
+        playlist_id = request.data.get("playlist") or request.query_params.get(
+            "playlist"
+        )
+        try:
+            return models.PlaylistAccess.objects.filter(
+                role=ADMINISTRATOR,
+                playlist__id=playlist_id,
+                user__id=request.user.id,
+            ).exists()
+        except models.PlaylistAccess.DoesNotExist:
+            return False
+
+
+class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    playlist, and has an access to this playlist's parent organization with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the playlist from the params of body of the request exists
+        and the current logged in user is one of the administrators of its parent organization.
+        """
+        playlist_id = request.data.get("playlist") or request.query_params.get(
+            "playlist"
+        )
+        try:
+            return models.OrganizationAccess.objects.filter(
+                role=ADMINISTRATOR,
+                organization__playlists__id=playlist_id,
+                user__id=request.user.id,
+            ).exists()
+        except models.OrganizationAccess.DoesNotExist:
+            return False
