@@ -206,6 +206,10 @@ class VideoViewSet(viewsets.ModelViewSet):
                 permissions.IsParamsPlaylistAdmin
                 | permissions.IsParamsPlaylistAdminThroughOrganization
             ]
+        elif self.action in ["destroy"]:
+            permission_classes = [
+                permissions.IsVideoPlaylistAdmin | permissions.IsVideoOrganizationAdmin
+            ]
         else:
             try:
                 permission_classes = (
@@ -322,7 +326,9 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     # pylint: disable=unused-argument
     def initiate_live(
-        self, request, pk=None,
+        self,
+        request,
+        pk=None,
     ):
         """Create a live stack on AWS ready to stream.
 
@@ -458,7 +464,9 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     # pylint: disable=unused-argument
     def update_live_state(
-        self, request, pk=None,
+        self,
+        request,
+        pk=None,
     ):
         """View handling AWS POST request to update the video live state.
 
@@ -550,7 +558,9 @@ class DocumentViewSet(
         key = document.get_source_s3_key(stamp=stamp, extension=extension)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]], {}, key,
+            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
+            {},
+            key,
         )
 
         # Reset the upload state of the document
@@ -609,7 +619,9 @@ class TimedTextTrackViewSet(viewsets.ModelViewSet):
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]], {}, key,
+            [["content-length-range", 0, settings.SUBTITLE_SOURCE_MAX_SIZE]],
+            {},
+            key,
         )
 
         # Reset the upload state of the timed text track

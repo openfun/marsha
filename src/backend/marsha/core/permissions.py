@@ -269,3 +269,56 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
             ).exists()
         except models.OrganizationAccess.DoesNotExist:
             return False
+
+
+class IsVideoPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the video is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a video id in the path of the request, which exists,
+        and if the current user is an admin for the playlist this video is a part of.
+        """
+        try:
+            return models.PlaylistAccess.objects.filter(
+                role=ADMINISTRATOR,
+                # Avoid making extra requests to get the video or playlist id through get_object
+                playlist__videos__id=request.path.split("/")[3],
+                user__id=request.user.id,
+            ).exists()
+        except (models.PlaylistAccess.DoesNotExist, IndexError):
+            return False
+
+
+class IsVideoOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the organization
+    linked to the playlist the video is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a video id in the path of the request, which exists,
+        and if the current user is an admin for the organization linked to the playlist this video
+        is a part of.
+        """
+        try:
+            return models.OrganizationAccess.objects.filter(
+                role=ADMINISTRATOR,
+                # Avoid making extra requests to get the video/playlist/org id through get_object
+                organization__playlists__videos__id=request.path.split("/")[3],
+                user__id=request.user.id,
+            ).exists()
+        except (models.OrganizationAccess.DoesNotExist, IndexError):
+            return False
