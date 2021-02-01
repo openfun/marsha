@@ -3,26 +3,16 @@ from datetime import datetime
 import json
 import random
 from unittest import mock
+import uuid
 
 from django.test import TestCase, override_settings
 
 import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .. import api
+from .. import api, factories, models
 from ..api import timezone
 from ..defaults import IDLE, LIVE_CHOICES, PENDING, RUNNING, STATE_CHOICES, STOPPED
-from ..factories import (
-    OrganizationAccessFactory,
-    OrganizationFactory,
-    PlaylistAccessFactory,
-    PlaylistFactory,
-    ThumbnailFactory,
-    TimedTextTrackFactory,
-    UserFactory,
-    VideoFactory,
-)
-from ..models import Video
 
 
 RSA_KEY_MOCK = b"""
@@ -66,7 +56,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a video detail."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         response = self.client.get("/api/videos/{!s}/".format(video.id))
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -76,7 +66,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_detail_student(self):
         """Student users should not be allowed to read a video detail."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -95,7 +85,7 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_admin_token_user(self):
         """Administrator should be able to read detail of a video."""
-        video = VideoFactory(upload_state="pending")
+        video = factories.VideoFactory(upload_state="pending")
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -113,7 +103,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user(self):
         """Instructors should be able to read the detail of their video."""
         resolutions = [144, 240, 480, 720, 1080]
-        video = VideoFactory(
+        video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
@@ -121,7 +111,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        timed_text_track = TimedTextTrackFactory(
+        timed_text_track = factories.TimedTextTrackFactory(
             video=video,
             mode="cc",
             language="fr",
@@ -217,7 +207,7 @@ class VideoAPITest(TestCase):
         )
 
         # Try getting another video
-        other_video = VideoFactory()
+        other_video = factories.VideoFactory()
         response = self.client.get(
             "/api/videos/{!s}/".format(other_video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
@@ -230,7 +220,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_detail_as_instructor_in_read_only(self):
         """An instructor with read_only set to True should not be able to read the video."""
-        video = VideoFactory(upload_state="ready")
+        video = factories.VideoFactory(upload_state="ready")
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -247,7 +237,7 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             uploaded_on=None,
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -294,7 +284,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_token_user_not_sucessfully_uploaded(self):
         """A video that has never been uploaded successfully should have no url."""
         state = random.choice(["pending", "error", "ready"])
-        video = VideoFactory(
+        video = factories.VideoFactory(
             uploaded_on=None,
             upload_state=state,
             playlist__title="foo bar",
@@ -344,7 +334,7 @@ class VideoAPITest(TestCase):
     @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
     def test_api_video_read_detail_token_user_signed_urls(self, mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
@@ -390,9 +380,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_detail_staff_or_user(self):
         """Users authenticated via a session should not be allowed to read a video detail."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+            video = factories.VideoFactory()
             response = self.client.get("/api/videos/{!s}/".format(video.id))
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
@@ -402,7 +392,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_list_anonymous(self):
         """Anonymous users should not be able to read a list of videos."""
-        VideoFactory()
+        factories.VideoFactory()
         response = self.client.get("/api/videos/")
         self.assertEqual(response.status_code, 401)
 
@@ -413,7 +403,7 @@ class VideoAPITest(TestCase):
         A token user associated to a video should be able to read a list of videos.
         It should however be empty as they have no rights on lists of videos.
         """
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -433,14 +423,14 @@ class VideoAPITest(TestCase):
         A user with a user token, with no playlist or organization access should not
         get any videos in response to video list requests.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # An organization with a playlist and one video
-        organization = OrganizationFactory()
-        organization_playlist = PlaylistFactory(organization=organization)
-        VideoFactory(playlist=organization_playlist)
+        organization = factories.OrganizationFactory()
+        organization_playlist = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=organization_playlist)
         # A playlist with a video but no organization
-        other_playlist = PlaylistFactory()
-        VideoFactory(playlist=other_playlist)
+        other_playlist = factories.PlaylistFactory()
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -461,19 +451,19 @@ class VideoAPITest(TestCase):
         A user with a user token, with access to a playlist should get only videos from that
         playlist, and not from other playlists, even if they are from the same organization.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # An organization where the user has no access
-        organization = OrganizationFactory()
+        organization = factories.OrganizationFactory()
         # In this organization, a playlist where the user has access
-        organization_playlist_1 = PlaylistFactory(organization=organization)
-        video = VideoFactory(playlist=organization_playlist_1)
-        PlaylistAccessFactory(user=user, playlist=organization_playlist_1)
+        organization_playlist_1 = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=organization_playlist_1)
+        factories.PlaylistAccessFactory(user=user, playlist=organization_playlist_1)
         # In the same organization, a playlist where the user has no access
-        organization_playlist_2 = PlaylistFactory(organization=organization)
-        VideoFactory(playlist=organization_playlist_2)
+        organization_playlist_2 = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=organization_playlist_2)
         # An unrelated playlist where the user has no access
-        other_playlist = PlaylistFactory()
-        VideoFactory(playlist=other_playlist)
+        other_playlist = factories.PlaylistFactory()
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -522,19 +512,27 @@ class VideoAPITest(TestCase):
         that organization no matter the playlist they are in, and not from other playlists or
         organizations.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # An organization where the user has access
-        organization_1 = OrganizationFactory()
-        OrganizationAccessFactory(user=user, organization=organization_1)
+        organization_1 = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(user=user, organization=organization_1)
         # In this organization, two playlists where the user has no direct access
-        organization_1_playlist_1 = PlaylistFactory(organization=organization_1)
-        video_1 = VideoFactory(playlist=organization_1_playlist_1, title="First video")
-        organization_1_playlist_2 = PlaylistFactory(organization=organization_1)
-        video_2 = VideoFactory(playlist=organization_1_playlist_2, title="Second video")
+        organization_1_playlist_1 = factories.PlaylistFactory(
+            organization=organization_1
+        )
+        video_1 = factories.VideoFactory(
+            playlist=organization_1_playlist_1, title="First video"
+        )
+        organization_1_playlist_2 = factories.PlaylistFactory(
+            organization=organization_1
+        )
+        video_2 = factories.VideoFactory(
+            playlist=organization_1_playlist_2, title="Second video"
+        )
         # An unrelated organization with a playlist where the user has no access
-        organization_2 = OrganizationFactory()
-        other_playlist = PlaylistFactory(organization=organization_2)
-        VideoFactory(playlist=other_playlist)
+        organization_2 = factories.OrganizationFactory()
+        other_playlist = factories.PlaylistFactory(organization=organization_2)
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -602,10 +600,10 @@ class VideoAPITest(TestCase):
         A user with a user token, with no playlist or organization access should not
         get any videos in response to requests to list videos by playlist.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # A playlist, where the user has no access, with a video
-        playlist = PlaylistFactory()
-        VideoFactory(playlist=playlist)
+        playlist = factories.PlaylistFactory()
+        factories.VideoFactory(playlist=playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -626,14 +624,14 @@ class VideoAPITest(TestCase):
 
         A user with a user token, with a playlist access, can list videos for this playlist.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # A playlist where the user has access, with a video
-        first_playlist = PlaylistFactory()
-        video = VideoFactory(playlist=first_playlist)
-        PlaylistAccessFactory(user=user, playlist=first_playlist)
+        first_playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=first_playlist)
+        factories.PlaylistAccessFactory(user=user, playlist=first_playlist)
         # Another one where the user has no access, with a video
-        other_playlist = PlaylistFactory()
-        VideoFactory(playlist=other_playlist)
+        other_playlist = factories.PlaylistFactory()
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -682,16 +680,16 @@ class VideoAPITest(TestCase):
         A user with a user token, with an organization access, can list videos
         for a playlist that belongs to that organization.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # An organization where the user has access, with a playlist with a video
-        first_organization = OrganizationFactory()
-        first_playlist = PlaylistFactory(organization=first_organization)
-        video = VideoFactory(playlist=first_playlist)
-        OrganizationAccessFactory(user=user, organization=first_organization)
+        first_organization = factories.OrganizationFactory()
+        first_playlist = factories.PlaylistFactory(organization=first_organization)
+        video = factories.VideoFactory(playlist=first_playlist)
+        factories.OrganizationAccessFactory(user=user, organization=first_organization)
         # Another one where the user has no access, with a video
-        other_organization = OrganizationFactory()
-        other_playlist = PlaylistFactory(organization=other_organization)
-        VideoFactory(playlist=other_playlist)
+        other_organization = factories.OrganizationFactory()
+        other_playlist = factories.PlaylistFactory(organization=other_organization)
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -740,11 +738,11 @@ class VideoAPITest(TestCase):
         A user with a user token, with no playlist or organization access should not
         get any videos in response to requests to list videos by organization.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # An organization where the user has no access, with a playlist and a video
-        organization = OrganizationFactory()
-        playlist = PlaylistFactory(organization=organization)
-        VideoFactory(playlist=playlist)
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -767,16 +765,16 @@ class VideoAPITest(TestCase):
         linked to the playlist, and get only those they have access to, and not videos for
         other organization playlists.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # The organization for both our playlists
-        organization = OrganizationFactory()
+        organization = factories.OrganizationFactory()
         # A playlist where the user has access, with a video
-        first_playlist = PlaylistFactory(organization=organization)
-        video = VideoFactory(playlist=first_playlist)
-        PlaylistAccessFactory(user=user, playlist=first_playlist)
+        first_playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=first_playlist)
+        factories.PlaylistAccessFactory(user=user, playlist=first_playlist)
         # Another one where the user has no access, with a video
-        other_playlist = PlaylistFactory(organization=organization)
-        VideoFactory(playlist=other_playlist)
+        other_playlist = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=other_playlist)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -825,15 +823,15 @@ class VideoAPITest(TestCase):
         A user with a user token, with an organization access, can list videos for the
         organization, no matter the playlist they belong to.
         """
-        user = UserFactory()
+        user = factories.UserFactory()
         # The organization for both our playlists
-        organization = OrganizationFactory()
-        OrganizationAccessFactory(organization=organization, user=user)
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(organization=organization, user=user)
         # Two separate playlists for the organization, with a video each
-        playlist_1 = PlaylistFactory(organization=organization)
-        video_1 = VideoFactory(playlist=playlist_1, title="First video")
-        playlist_2 = PlaylistFactory(organization=organization)
-        video_2 = VideoFactory(playlist=playlist_2, title="Second video")
+        playlist_1 = factories.PlaylistFactory(organization=organization)
+        video_1 = factories.VideoFactory(playlist=playlist_1, title="First video")
+        playlist_2 = factories.PlaylistFactory(organization=organization)
+        video_2 = factories.VideoFactory(playlist=playlist_2, title="Second video")
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
@@ -898,13 +896,13 @@ class VideoAPITest(TestCase):
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_with_a_thumbnail(self):
         """A video with a custom thumbnail should have it in its payload."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             pk="38a91911-9aee-41e2-94dd-573abda6f48f",
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
             resolutions=[144, 240, 480, 720, 1080],
         )
-        thumbnail = ThumbnailFactory(
+        thumbnail = factories.ThumbnailFactory(
             video=video,
             uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
             upload_state="ready",
@@ -964,9 +962,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_read_list_staff_or_user(self):
         """Users authenticated via a session should not be able to read a list of videos."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            VideoFactory()
+            factories.VideoFactory()
             response = self.client.get("/api/videos/")
             self.assertEqual(response.status_code, 401)
 
@@ -974,7 +972,7 @@ class VideoAPITest(TestCase):
         """Anonymous users should not be able to create a new video."""
         response = self.client.post("/api/videos/")
         self.assertEqual(response.status_code, 401)
-        self.assertFalse(Video.objects.exists())
+        self.assertFalse(models.Video.objects.exists())
 
     def test_api_video_create_token_user_playlist_preexists(self):
         """A token user should not be able to create a video."""
@@ -983,19 +981,245 @@ class VideoAPITest(TestCase):
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
         self.assertEqual(response.status_code, 401)
-        self.assertFalse(Video.objects.exists())
+        self.assertFalse(models.Video.objects.exists())
 
     def test_api_video_create_staff_or_user(self):
         """Users authenticated via a session should not be able to create videos."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             response = self.client.post("/api/videos/")
             self.assertEqual(response.status_code, 401)
-            self.assertFalse(Video.objects.exists())
+            self.assertFalse(models.Video.objects.exists())
+
+    def test_api_video_create_by_playlist_admin(self):
+        """
+        Create video with playlist admin access.
+
+        Users with an administrator role on a playlist should be able to create videos
+        for it.
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some video",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "description": "",
+                "has_transcript": False,
+                "id": str(models.Video.objects.get().id),
+                "is_ready_to_show": False,
+                "live_info": {},
+                "live_state": None,
+                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": "Some video",
+                "upload_state": "pending",
+                "urls": None,
+            },
+        )
+
+    def test_api_video_create_for_nonexistent_playlist(self):
+        """
+        Create video for nonexistet playlist.
+
+        Requests with a UUID that does not match an existing playlist should fail.
+        """
+        user = factories.UserFactory()
+        some_uuid = uuid.uuid4()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {"lti_id": "video_one", "playlist": some_uuid, "title": "Some video"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_create_by_playlist_admin_missing_lti_id(self):
+        """
+        Create video with missing parameter.
+
+        Requests from an authorized user with a missing property should result in an
+        error message.
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {"playlist": str(playlist.id), "title": "Some video"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"errors": [{"lti_id": ["This field is required."]}]},
+        )
+
+    def test_api_video_create_by_playlist_instructor(self):
+        """
+        Create video with playlist instructor access.
+
+        Users with an instructor role on a playlist should not be able to create videos
+        for it.
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some video",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_create_by_organization_admin(self):
+        """
+        Create video with organization admin access.
+
+        Users with an administrator role on an organization should be able to create videos
+        for playlists linked to that organization.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some video",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "description": "",
+                "has_transcript": False,
+                "id": str(models.Video.objects.get().id),
+                "is_ready_to_show": False,
+                "live_info": {},
+                "live_state": None,
+                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": "Some video",
+                "upload_state": "pending",
+                "urls": None,
+            },
+        )
+
+    def test_api_video_create_by_organization_instructor(self):
+        """
+        Create video with organization instructor access.
+
+        Users with an instructor role on an organization should not be able to create videos
+        for playlists linked to that organization.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some video",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_video_update_detail_anonymous(self):
         """Anonymous users should not be allowed to update a video through the API."""
-        video = VideoFactory(title="my title")
+        video = factories.VideoFactory(title="my title")
         data = {"title": "my new title"}
         response = self.client.put(
             "/api/videos/{!s}/".format(video.id),
@@ -1008,7 +1232,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_title(self):
         """Token users should be able to update the title of their video through the API."""
-        video = VideoFactory(title="my title")
+        video = factories.VideoFactory(title="my title")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1026,7 +1250,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_description(self):
         """Token users should be able to update the description of their video through the API."""
-        video = VideoFactory(description="my description")
+        video = factories.VideoFactory(description="my description")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1050,7 +1274,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_uploaded_on(self):
         """Token users trying to update "uploaded_on" through the API should be ignored."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1076,7 +1300,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_upload_state(self):
         """Token users trying to update "upload_state" through the API should be ignored."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1102,7 +1326,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_update_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to update the video."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1120,7 +1344,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_patch_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to patch the video."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1141,7 +1365,7 @@ class VideoAPITest(TestCase):
 
         These 2 fields can only be updated by AWS via the separate update-state API endpoint.
         """
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1165,7 +1389,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         original_id = video.id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1191,8 +1415,8 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_other_video(self):
         """Token users should not be allowed to update another video through the API."""
-        video_token = VideoFactory()
-        video_update = VideoFactory(title="my title")
+        video_token = factories.VideoFactory()
+        video_update = factories.VideoFactory(title="my title")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video_token.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1212,7 +1436,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_patch_detail_token_user_description(self):
         """Token users should be able to patch fields on their video through the API."""
-        video = VideoFactory(description="my description")
+        video = factories.VideoFactory(description="my description")
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1232,18 +1456,18 @@ class VideoAPITest(TestCase):
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         response = self.client.delete("/api/videos/{!s}/".format(video.id))
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
-        self.assertTrue(Video.objects.filter(id=video.id).exists())
+        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_detail_token_user(self):
         """A token user associated to a video should not be able to delete it or any other."""
-        videos = VideoFactory.create_batch(2)
+        videos = factories.VideoFactory.create_batch(2)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(videos[0].id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1256,12 +1480,12 @@ class VideoAPITest(TestCase):
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
             self.assertEqual(response.status_code, 403)
-            self.assertTrue(Video.objects.filter(id=video.id).exists())
+            self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_detail_staff_or_user(self):
         """Users authenticated via a session should not be able to delete a video."""
-        video = VideoFactory()
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        video = factories.VideoFactory()
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
 
             response = self.client.delete("/api/videos/{!s}/".format(video.id))
@@ -1271,11 +1495,11 @@ class VideoAPITest(TestCase):
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
-        self.assertTrue(Video.objects.filter(id=video.id).exists())
+        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_instructor_delete_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to delete the video."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1289,16 +1513,16 @@ class VideoAPITest(TestCase):
 
     def test_api_video_delete_list_anonymous(self):
         """Anonymous users should not be able to delete a list of videos."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
 
         response = self.client.delete("/api/videos/")
 
         self.assertEqual(response.status_code, 401)
-        self.assertTrue(Video.objects.filter(id=video.id).exists())
+        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_token_user(self):
         """A token user associated to a video should not be able to delete a list of videos."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1307,22 +1531,22 @@ class VideoAPITest(TestCase):
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
         self.assertEqual(response.status_code, 403)
-        self.assertTrue(Video.objects.filter(id=video.id).exists())
+        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_staff_or_user(self):
         """Users authenticated via a session should not be able to delete a list of videos."""
-        video = VideoFactory()
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        video = factories.VideoFactory()
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
 
             response = self.client.delete("/api/videos/")
 
             self.assertEqual(response.status_code, 401)
-        self.assertTrue(Video.objects.filter(id=video.id).exists())
+        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_initiate_upload_anonymous_user(self):
         """Anonymous users are not allowed to initiate an upload."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
 
         response = self.client.post(
             "/api/videos/{!s}/initiate-upload/".format(video.id)
@@ -1336,7 +1560,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_initiate_upload_in_read_only(self):
         """An instructor with read_only set to true should not be able to initiate an upload."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1350,7 +1574,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_initiate_upload_token_user(self):
         """A token user associated to a video should be able to retrieve an upload policy."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
         )
@@ -1360,7 +1584,9 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # Create another video to check that its upload state is unaffected
-        other_video = VideoFactory(upload_state=random.choice(["ready", "error"]))
+        other_video = factories.VideoFactory(
+            upload_state=random.choice(["ready", "error"])
+        )
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -1426,9 +1652,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_initiate_upload_staff_or_user(self):
         """Users authenticated via a session should not be able to retrieve an upload policy."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+            video = factories.VideoFactory()
 
             response = self.client.post(
                 "/api/videos/{!s}/initiate-upload/".format(video.id)
@@ -1441,7 +1667,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_initiate_live_anonymous_user(self):
         """Anonymous users are not allowed to initiate a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
 
         response = self.client.post("/api/videos/{!s}/initiate-live/".format(video.id))
 
@@ -1453,7 +1679,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_initiate_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to initiate a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1467,7 +1693,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_student_initiate_live(self):
         """A student should not be able to initiate a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -1485,9 +1711,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_initiate_live_staff_or_user(self):
         """Users authenticated via a session should not be able to initiate a live."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+            video = factories.VideoFactory()
 
             response = self.client.post(
                 "/api/videos/{!s}/initiate-live/".format(video.id)
@@ -1500,7 +1726,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_initiate_live(self):
         """An instructor should be able to initiate a live."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -1582,7 +1808,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_start_live_anonymous_user(self):
         """Anonymous users are not allowed to start a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
 
         response = self.client.post("/api/videos/{!s}/start-live/".format(video.id))
 
@@ -1594,7 +1820,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_start_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to start a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1608,7 +1834,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_student_start_live(self):
         """A student should not be able to start a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -1626,9 +1852,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_start_live_staff_or_user(self):
         """Users authenticated via a session should not be able to start a live."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+            video = factories.VideoFactory()
 
             response = self.client.post("/api/videos/{!s}/start-live/".format(video.id))
             self.assertEqual(response.status_code, 401)
@@ -1639,7 +1865,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_start_live(self):
         """An instructor should be able to start a live."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -1722,7 +1948,7 @@ class VideoAPITest(TestCase):
 
     def test_api_instructor_start_non_live_video(self):
         """An instructor should not start a video when not in live mode."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
@@ -1741,7 +1967,7 @@ class VideoAPITest(TestCase):
 
     def test_api_instructor_start_non_idle_live(self):
         """An instructor should not start a video when not in live mode."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=PENDING,
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "idle"]),
@@ -1761,7 +1987,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_stop_live_anonymous_user(self):
         """Anonymous users are not allowed to stop a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
 
         response = self.client.post("/api/videos/{!s}/stop-live/".format(video.id))
 
@@ -1773,7 +1999,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_stop_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to stop a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1787,7 +2013,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_student_stop_live(self):
         """A student should not be able to stop a live."""
-        video = VideoFactory()
+        video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
@@ -1805,9 +2031,9 @@ class VideoAPITest(TestCase):
 
     def test_api_video_stop_live_staff_or_user(self):
         """Users authenticated via a session should not be able to stop a live."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            video = VideoFactory()
+            video = factories.VideoFactory()
 
             response = self.client.post("/api/videos/{!s}/stop-live/".format(video.id))
             self.assertEqual(response.status_code, 401)
@@ -1818,7 +2044,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_instructor_stop_live(self):
         """An instructor should be able to stop a live."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -1901,7 +2127,7 @@ class VideoAPITest(TestCase):
 
     def test_api_instructor_stop_non_live_video(self):
         """An instructor should not stop a video when not in live mode."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
@@ -1920,7 +2146,7 @@ class VideoAPITest(TestCase):
 
     def test_api_instructor_stop_non_running_live(self):
         """An instructor should not stop a video when not in live state."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=PENDING,
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
@@ -1941,7 +2167,7 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state(self):
         """Confirm update video live state."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
@@ -1972,7 +2198,7 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_stopped(self):
         """Updating state to stopped should delete all the AWS elemental stack."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=RUNNING,
@@ -2008,7 +2234,7 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
         """Live state update with an invalid signature should fails."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
@@ -2030,7 +2256,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_live_state_invalid_state(self):
         """Live state update with an invalid state should fails."""
-        video = VideoFactory(
+        video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,

@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from . import defaults, permissions, serializers
+from . import defaults, forms, permissions, serializers
 from .lti import LTIUser
 from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
@@ -50,7 +50,11 @@ class UserViewSet(viewsets.GenericViewSet):
         """
         # If the user is not logged in, the request has no object. Return a 401 so the caller
         # knows they need to log in first.
-        if not request.user.is_authenticated:
+        if (
+            not request.user.is_authenticated
+            or (request.user.id is None)
+            or (request.user.id == "None")
+        ):
             return Response(status=401)
 
         # Get an actual user object from the TokenUser id
@@ -197,6 +201,11 @@ class VideoViewSet(viewsets.ModelViewSet):
             ]
         elif self.action in ["list"]:
             permission_classes = [IsAuthenticated]
+        elif self.action in ["create"]:
+            permission_classes = [
+                permissions.IsParamsPlaylistAdmin
+                | permissions.IsParamsPlaylistAdminThroughOrganization
+            ]
         else:
             try:
                 permission_classes = (
@@ -216,9 +225,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return context
 
-<<<<<<< HEAD
-    def list(self, request, *args, **kwargs):
-=======
     def create(self, request, *args, **kwargs):
         """Create one video based on the request payload."""
         try:
@@ -231,7 +237,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=201)
 
->>>>>>> fb06e205... wip
+    def list(self, request, *args, **kwargs):
         """List videos through the API."""
         # Limit the queryset to the playlists the user has access directly or through
         # an access they have to an organization
