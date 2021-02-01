@@ -265,7 +265,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         An instance of the model
         """
         return self.model.objects.select_related("playlist").get(
-            self.model.get_ready_clause(), is_public=True, pk=resource_id,
+            self.model.get_ready_clause(),
+            is_public=True,
+            pk=resource_id,
         )
 
     def get_public_data(self):

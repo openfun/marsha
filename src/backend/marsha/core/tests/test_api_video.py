@@ -1497,6 +1497,118 @@ class VideoAPITest(TestCase):
             )
         self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
+    def test_api_video_delete_by_playlist_admin(self):
+        """
+        Delete video by playlist admin.
+
+        Users with an administrator role on a playlist should be able to delete videos.
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 204)
+
+    def test_api_video_delete_by_playlist_instructor(self):
+        """
+        Delete video by playlist instructor.
+
+        Users with an instructor role on a playlist should not be able to delete videos.
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_delete_by_organization_admin(self):
+        """
+        Delete video by organization admin.
+
+        Users with an administrator role on an organization should be able to
+        delete videos from playlists linked to that organization.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 204)
+
+    def test_api_video_delete_by_organization_instructor(self):
+        """
+        Delete video by organization instructor.
+
+        Users with an instructor role on an organization should not be able to
+        delete videos from playlists linked to that organization.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        self.assertEqual(models.Video.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 403)
+
     def test_api_video_instructor_delete_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to delete the video."""
         video = factories.VideoFactory()
