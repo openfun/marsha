@@ -512,7 +512,7 @@ declare namespace Plyr {
   export interface QualityOptions {
     default: number;
     forced: boolean;
-    onChange: (quality: videoSize) => void;
+    onChange?: (quality: videoSize) => void;
     options: videoSize[];
   }
 

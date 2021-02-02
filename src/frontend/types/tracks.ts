@@ -95,7 +95,6 @@ export interface Video extends Resource {
   upload_state: uploadState;
   urls: {
     manifests: {
-      dash: string;
       hls: string;
     };
     mp4: Partial<urls>;

@@ -16,7 +16,6 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
-import { isHlsSupported, isMSESupported } from '../../utils/isAbrSupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -128,21 +127,11 @@ const VideoPlayer = ({
         poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
         tabIndex={-1}
       >
-        {video.urls.manifests.dash && isMSESupported() && (
-          <source
-            src={video.urls.manifests.dash}
-            size="auto"
-            type="application/dash+xml"
-          />
-        )}
-
-        {!!videoNodeRef.current && isHlsSupported(videoNodeRef.current) && (
-          <source
-            src={video.urls.manifests.hls}
-            size="auto"
-            type="application/x-mpegURL"
-          />
-        )}
+        <source
+          src={video.urls.manifests.hls}
+          size="auto"
+          type="application/x-mpegURL"
+        />
 
         {resolutions.map((size) => (
           <source

@@ -18,7 +18,6 @@ describe('sideEffects/updateResource', () => {
     upload_state: 'ready',
     urls: {
       manifests: {
-        dash: 'https://example.com/dash.mpd',
         hls: 'https://example.com/hls.m3u8',
       },
       mp4: {
