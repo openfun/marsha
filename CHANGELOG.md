@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Dash endpoint in mediapackage channel
 - Useless medialive profiles
+- All dash usage
 
 ## [3.14.0] - 2020-12-22
 
