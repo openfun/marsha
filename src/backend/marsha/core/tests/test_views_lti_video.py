@@ -13,7 +13,15 @@ from pylti.common import LTIException
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle.testutils import override_switch
 
-from ..defaults import IDLE, PENDING, READY, RUNNING, STATE_CHOICES, VIDEO_LIVE
+from ..defaults import (
+    HARVESTED,
+    IDLE,
+    PENDING,
+    READY,
+    RUNNING,
+    STATE_CHOICES,
+    VIDEO_LIVE,
+)
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
     TimedTextTrackFactory,
@@ -471,7 +479,9 @@ class VideoLTIViewTestCase(TestCase):
             playlist__is_portable_to_consumer_site=True,
             playlist__title="playlist-003",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
-            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+            ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
         )
@@ -577,7 +587,9 @@ class VideoLTIViewTestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
             playlist__title="playlist-002",
-            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+            ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480],
         )
@@ -673,6 +685,112 @@ class VideoLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_harvested_upload_state(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """upload_state harvested should return urls and is_ready_to_show False."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            id="59c0fc7a-0f64-46c0-993f-bdf47ecd837f",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="playlist-002",
+            upload_state=HARVESTED,
+            uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[240, 480, 720],
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
+
+        self.assertEqual(context.get("state"), "success")
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": "1569309880",
+                "is_ready_to_show": False,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": video.upload_state,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "mp4": {
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                    },
+                    "manifests": {
+                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "cmaf/1569309880.m3u8",
+                    },
+                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews/1569309880_100.jpg",
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": None,
+                "live_info": {},
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_video_post_student_with_video(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -683,7 +801,9 @@ class VideoLTIViewTestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
             playlist__title="playlist-002",
-            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+            ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
         )
