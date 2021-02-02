@@ -12,7 +12,15 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from .. import api, factories, models
 from ..api import timezone
-from ..defaults import IDLE, LIVE_CHOICES, PENDING, RUNNING, STATE_CHOICES, STOPPED
+from ..defaults import (
+    HARVESTING,
+    IDLE,
+    LIVE_CHOICES,
+    PENDING,
+    RUNNING,
+    STATE_CHOICES,
+    STOPPED,
+)
 
 
 RSA_KEY_MOCK = b"""
@@ -2349,6 +2357,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.live_state, STOPPED)
+        self.assertEqual(video.upload_state, HARVESTING)
         self.assertEqual(
             video.live_info,
             {
