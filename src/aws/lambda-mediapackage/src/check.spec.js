@@ -134,7 +134,7 @@ describe('check', () => {
 
     expect(mockUpdateState).toHaveBeenCalledWith(
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/video/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/1610458282',
-      'pending_live',
+      'harvested',
       {
         resolutions: [540, 720],
       },
