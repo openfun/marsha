@@ -510,6 +510,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         if video.live_state == defaults.STOPPED:
             live_info.update({"stopped_at": stamp})
+            video.upload_state = defaults.HARVESTING
             video.live_info = live_info
             create_mediapackage_harvest_job(video)
             delete_aws_element_stack(video)
