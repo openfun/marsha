@@ -174,7 +174,7 @@ def update_state(request):
     object_instance.update_upload_state(
         upload_state=serializer.validated_data["state"],
         uploaded_on=key_elements.get("uploaded_on")
-        if serializer.validated_data["state"] == defaults.READY
+        if serializer.validated_data["state"] in [defaults.READY, defaults.HARVESTED]
         else None,
         **extra_parameters,
     )

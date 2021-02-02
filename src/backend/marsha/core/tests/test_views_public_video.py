@@ -9,7 +9,7 @@ from django.test import TestCase
 
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..defaults import STATE_CHOICES
+from ..defaults import HARVESTED, STATE_CHOICES
 from ..factories import VideoFactory
 
 
@@ -30,7 +30,9 @@ class VideoPublicViewTestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             is_public=True,
             resolutions=[144, 240, 480, 720, 1080],
-            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+            ),
             uploaded_on="2019-09-24 07:24:40+00",
         )
 
