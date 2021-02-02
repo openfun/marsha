@@ -191,10 +191,6 @@ class VideoAPITest(TestCase):
                     "mp4": mp4_dict,
                     "thumbnails": thumbnails_dict,
                     "manifests": {
-                        "dash": (
-                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "cmaf/1533686400.mpd"
-                        ),
                         "hls": (
                             "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                             "cmaf/1533686400.m3u8"
@@ -1081,7 +1077,6 @@ class VideoAPITest(TestCase):
                 "urls": {
                     "manifests": {
                         "hls": "https://channel_endpoint1/live.m3u8",
-                        "dash": None,
                     },
                     "mp4": {},
                     "thumbnails": {},
@@ -1222,7 +1217,6 @@ class VideoAPITest(TestCase):
                 "urls": {
                     "manifests": {
                         "hls": "https://channel_endpoint1/live.m3u8",
-                        "dash": None,
                     },
                     "mp4": {},
                     "thumbnails": {},
@@ -1402,7 +1396,6 @@ class VideoAPITest(TestCase):
                 "urls": {
                     "manifests": {
                         "hls": "https://channel_endpoint1/live.m3u8",
-                        "dash": None,
                     },
                     "mp4": {},
                     "thumbnails": {},

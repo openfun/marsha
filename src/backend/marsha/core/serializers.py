@@ -464,7 +464,6 @@ class VideoSerializer(serializers.ModelSerializer):
             A dictionary of all urls for:
                 - mp4 encodings of the video in each resolution
                 - jpeg thumbnails of the video in each resolution
-                - manifest of the DASH encodings of the video
                 - manifest of the HLS encodings of the video
             For a video in live mode only the HLS url is added
             None if the video is still not uploaded to S3 with success
@@ -475,7 +474,6 @@ class VideoSerializer(serializers.ModelSerializer):
             return {
                 "manifests": {
                     "hls": obj.live_info["mediapackage"]["endpoints"]["hls"]["url"],
-                    "dash": None,
                 },
                 "mp4": {},
                 "thumbnails": {},
@@ -542,7 +540,6 @@ class VideoSerializer(serializers.ModelSerializer):
 
         # Adaptive Bit Rate manifests
         urls["manifests"] = {
-            "dash": "{base:s}/cmaf/{stamp:s}.mpd".format(base=base, stamp=stamp),
             "hls": "{base:s}/cmaf/{stamp:s}.m3u8".format(base=base, stamp=stamp),
         }
 

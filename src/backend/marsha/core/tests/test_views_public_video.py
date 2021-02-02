@@ -95,8 +95,6 @@ class VideoPublicViewTestCase(TestCase):
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "dash": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "cmaf/1569309880.mpd",
                         "hls": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "cmaf/1569309880.m3u8",
                     },
