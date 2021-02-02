@@ -19,7 +19,6 @@ from ..defaults import (
     RUNNING,
     STATE_CHOICES,
     STOPPED,
-    PROCESSING_LIVE_TO_VOD,
 )
 from ..factories import (
     ThumbnailFactory,
