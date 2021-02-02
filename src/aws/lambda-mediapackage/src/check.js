@@ -35,7 +35,7 @@ module.exports = async (event) => {
   }
 
   // update state
-  return updateState(event.videoEndpoint, 'pending_live', {
+  return updateState(event.videoEndpoint, 'harvested', {
     resolutions: expectedFiles.resolutions.map(Number), // force casting resolutions in number
   });
 };
