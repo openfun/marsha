@@ -16,7 +16,6 @@ describe('<DownloadVideo />', () => {
       upload_state: uploadState.READY,
       urls: {
         manifests: {
-          dash: 'https://example.com/dash.mpd',
           hls: 'https://example.com/hls.m3u8',
         },
         mp4: {
@@ -48,7 +47,6 @@ describe('<DownloadVideo />', () => {
       upload_state: uploadState.READY,
       urls: {
         manifests: {
-          dash: 'https://example.com/dash.mpd',
           hls: 'https://example.com/hls.m3u8',
         },
         mp4: {
@@ -78,7 +76,6 @@ describe('<DownloadVideo />', () => {
       upload_state: uploadState.READY,
       urls: {
         manifests: {
-          dash: 'https://example.com/dash.mpd',
           hls: 'https://example.com/hls.m3u8',
         },
         mp4: {

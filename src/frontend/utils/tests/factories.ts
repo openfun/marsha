@@ -13,7 +13,6 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
   upload_state: uploadState.READY,
   urls: {
     manifests: {
-      dash: 'https://example.com/dash',
       hls: 'https://example.com/hls',
     },
     mp4: {

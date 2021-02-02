@@ -68,7 +68,6 @@ describe('upload', () => {
     upload_state: 'pending',
     urls: {
       manifests: {
-        dash: 'https://example.com/dash.mpd',
         hls: 'https://example.com/hls.m3u8',
       },
       mp4: {

@@ -73,7 +73,6 @@
     "buffer": "6.0.3",
     "core-js": "3.8.3",
     "custom-event-polyfill": "1.0.7",
-    "dashjs": "3.2.0",
     "grommet": "2.16.2",
     "hls.js": "0.14.17",
     "iframe-resizer": "4.3.1",

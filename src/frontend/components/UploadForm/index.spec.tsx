@@ -91,7 +91,6 @@ describe('UploadForm', () => {
     upload_state: uploadState.PENDING,
     urls: {
       manifests: {
-        dash: 'https://example.com/dash.mpd',
         hls: 'https://example.com/hls.m3u8',
       },
       mp4: {
