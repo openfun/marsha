@@ -1,4 +1,3 @@
-import { MediaPlayerClass, MediaPlayerSettingClass } from 'dashjs';
 import Hls from 'hls.js';
 import Plyr, { SourceInfo } from 'plyr';
 
@@ -12,10 +11,7 @@ import {
   InteractedContextExtensions,
 } from '../types/XAPI';
 import { report } from '../utils/errors/report';
-import { isHlsSupported, isMSESupported } from '../utils/isAbrSupported';
-import { Maybe } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
-import { createDashPlayer } from './createDashPlayer';
 import { createHlsPlayer } from './createHlsPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
 
@@ -29,15 +25,13 @@ export const createPlyrPlayer = (
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
 ): Plyr => {
-  let dash: Maybe<MediaPlayerClass>;
   let sources;
-  let qualityChangedFromDash: Maybe<boolean>;
   const settings = ['captions', 'speed', 'loop', 'quality'];
   const resolutions = Object.keys(video.urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
 
-  if (!isMSESupported() && !isHlsSupported(videoNode)) {
+  if (!Hls.isSupported()) {
     const timedTextTracks = useTimedTextTrack.getState().getTimedTextTracks();
 
     sources = {
@@ -124,26 +118,6 @@ export const createPlyrPlayer = (
     quality: {
       default: 480,
       forced: true,
-      onChange: (quality: videoSize) => {
-        if (!dash) {
-          return;
-        }
-
-        if (qualityChangedFromDash) {
-          qualityChangedFromDash = false;
-          return;
-        }
-
-        dash.updateSettings({
-          streaming: {
-            abr: {
-              maxBitrate: {
-                video: sizeToBitrateMapping[quality] || 1600,
-              },
-            },
-          },
-        } as MediaPlayerSettingClass);
-      },
       options: resolutions,
     },
     seekTime: 5,
@@ -161,25 +135,8 @@ export const createPlyrPlayer = (
     player.source = sources;
   }
 
-  if (video.live_state !== null && Hls.isSupported()) {
+  if (Hls.isSupported()) {
     createHlsPlayer(video, videoNode);
-  }
-
-  if (video.live_state === null && isMSESupported()) {
-    dash = createDashPlayer(video, videoNode);
-    dash.on('qualityChangeRendered', (e) => {
-      if (isNaN(e.oldQuality)) {
-        // video is not yet started
-        return;
-      }
-      const newQuality = dash!
-        .getBitrateInfoListFor('video')
-        .find((bitrateInfo) => bitrateInfo.qualityIndex === e.newQuality);
-      if (newQuality) {
-        qualityChangedFromDash = true;
-        player.quality = newQuality.height;
-      }
-    });
   }
 
   if (player.elements.buttons.play) {

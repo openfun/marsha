@@ -6,9 +6,7 @@ import VideoPlayer from '../components/VideoPlayer';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { liveState, timedTextMode, uploadState } from '../types/tracks';
-import { isMSESupported } from '../utils/isAbrSupported';
 import { videoMockFactory } from '../utils/tests/factories';
-import { jestMockOf } from '../utils/types';
 import { wrapInIntlProvider } from '../utils/tests/intl';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
@@ -69,11 +67,6 @@ jest.mock('../index', () => ({
   },
 }));
 
-jest.mock('../utils/isAbrSupported', () => ({
-  isMSESupported: jest.fn(),
-}));
-const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
-
 describe('createVideoJsPlayer', () => {
   const XAPIStatementMocked = mocked(XAPIStatement);
   beforeEach(() => {
@@ -81,7 +74,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('creates videojs player and configure it', () => {
-    mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
         <VideoPlayer video={mockVideo} playerType={'videojs'} />,
@@ -93,7 +85,7 @@ describe('createVideoJsPlayer', () => {
     const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
 
     expect(player.currentSources()).toEqual([
-      { type: 'application/dash+xml', src: 'https://example.com/dash' },
+      { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
       {
         type: 'video/mp4',
         src: 'https://example.com/mp4/144',
@@ -150,22 +142,23 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('configures for a live video', () => {
-    mockIsMSESupported.mockReturnValue(true);
+    const video = videoMockFactory({
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      live_state: liveState.RUNNING,
+    });
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={{ ...mockVideo, live_state: liveState.RUNNING }}
-          playerType={'videojs'}
-        />,
-      ),
+      wrapInIntlProvider(<VideoPlayer video={video} playerType={'videojs'} />),
     );
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), {
-      ...mockVideo,
-      live_state: liveState.RUNNING,
-    });
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -174,7 +167,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('sends xapi events', () => {
-    mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
         <VideoPlayer video={mockVideo} playerType={'videojs'} />,

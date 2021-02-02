@@ -4,7 +4,7 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 
 import { appData, getDecodedJwt } from '../data/appData';
-import { liveState, Video } from '../types/tracks';
+import { Video } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -23,7 +23,7 @@ export const createVideojsPlayer = (
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
-  const options: videojs.PlayerOptions = {
+  const player = videojs(videoNode, {
     controls: true,
     debug: false,
     fluid: true,
@@ -33,6 +33,7 @@ export const createVideojsPlayer = (
       },
     },
     language: intl.locale,
+    liveui: video.live_state !== null,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins: {
       httpSourceSelector: {
@@ -40,19 +41,7 @@ export const createVideojsPlayer = (
       },
     },
     responsive: true,
-  };
-
-  if (video.live_state !== null) {
-    options.liveui = true;
-    options.sources = [
-      {
-        src: video.urls.manifests.hls,
-        type: 'application/x-mpegURL',
-      },
-    ];
-  }
-
-  const player = videojs(videoNode, options);
+  });
   player.httpSourceSelector();
   const qualityLevels = player.qualityLevels();
   const tracks = player.remoteTextTracks();
