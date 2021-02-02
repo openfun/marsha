@@ -6,6 +6,7 @@ from django.test import TestCase, override_settings
 
 import pytz
 
+from ..defaults import HARVESTED, PENDING, STOPPED
 from ..factories import (
     DocumentFactory,
     ThumbnailFactory,
@@ -66,6 +67,58 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "processing")
         self.assertEqual(video.resolutions, None)
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_video_harvested(self):
+        """Video `upload_state` to `harvested` should reset live state and live info."""
+        video = VideoFactory(
+            id="1c5a998a-5bb9-41ea-836e-22be0cdeb834",
+            upload_state=PENDING,
+            live_state=STOPPED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+        data = {
+            "extraParameters": {"resolutions": [240, 480, 720]},
+            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "state": "harvested",
+        }
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "ae2b2a39ee220c05ce6a3b09c0139235a7eea7698879000da1faa098896a2271"
+            ),
+        )
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.upload_state, HARVESTED)
+        self.assertEqual(video.resolutions, [240, 480, 720])
+        self.assertIsNone(video.live_state)
+        self.assertIsNone(video.live_info)
 
     @override_settings(
         UPDATE_STATE_SHARED_SECRETS=["previous secret", "current secret"]

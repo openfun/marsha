@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import LIVE_CHOICES, RUNNING
+from ..defaults import HARVESTED, LIVE_CHOICES, RUNNING
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
@@ -106,6 +106,11 @@ class Video(BaseFile):
         if "resolutions" in extra_parameters:
             self.resolutions = extra_parameters.get("resolutions")
 
+        if upload_state == HARVESTED:
+            # reset live state and info
+            self.live_state = None
+            self.live_info = None
+
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
     @property
@@ -115,7 +120,9 @@ class Video(BaseFile):
         The value of this field seems to be trivially derived from the value of the
         `uploaded_on` field but it is necessary for conveniency and clarity in the client.
         """
-        return self.uploaded_on is not None or self.live_state == RUNNING
+        return (
+            self.uploaded_on is not None and self.upload_state != HARVESTED
+        ) or self.live_state == RUNNING
 
     @staticmethod
     def get_ready_clause():

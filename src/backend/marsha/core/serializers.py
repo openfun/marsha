@@ -15,6 +15,7 @@ from rest_framework_simplejwt.models import TokenUser
 
 from .defaults import (
     ERROR,
+    HARVESTED,
     LIVE_CHOICES,
     PROCESSING,
     READY,
@@ -556,7 +557,7 @@ class UpdateStateSerializer(serializers.Serializer):
 
     key = serializers.RegexField(KEY_REGEX)
     state = serializers.ChoiceField(
-        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR))
+        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR, HARVESTED))
     )
     extraParameters = serializers.DictField()
 
