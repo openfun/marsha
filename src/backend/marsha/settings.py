@@ -257,6 +257,7 @@ class Base(Configuration):
     VIDEO_PLAYER = values.Value("videojs")
 
     MAINTENANCE_MODE = values.BooleanValue(False)
+    NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
 
     # pylint: disable=invalid-name
     @property
