@@ -245,6 +245,28 @@ class ThumbnailApiTest(TestCase):
             },
         )
 
+    def test_api_thumbnail_create_already_existing_instructor(self):
+        """Creating a thumbnail should fail when a thumbnail already exists for the video."""
+        video = VideoFactory()
+        ThumbnailFactory(video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.post(
+            "/api/thumbnails/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {"video": ["Thumbnail with this Video already exists."]},
+        )
+
     def test_api_thumbnail_instructor_create_in_read_only(self):
         """Instructor should not be able to create thumbnails in a read_only mode."""
         thumbnail = ThumbnailFactory()
