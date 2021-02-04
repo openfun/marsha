@@ -377,14 +377,7 @@ class DocumentViewSet(
         return Response(presigned_post)
 
 
-class TimedTextTrackViewSet(
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
-):
+class TimedTextTrackViewSet(viewsets.ModelViewSet):
     """Viewset for the API of the TimedTextTrack object."""
 
     serializer_class = serializers.TimedTextTrackSerializer
