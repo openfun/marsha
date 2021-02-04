@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Switch to QVBR rate control mode in live profiles
 
+### Fixed
+
+- Handle Django ValidationError as an accepted exception
+
 ### Removed
 
 - Dash endpoint in mediapackage channel
