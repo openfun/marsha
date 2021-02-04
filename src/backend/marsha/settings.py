@@ -152,7 +152,8 @@ class Base(Configuration):
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
             "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
-        )
+        ),
+        "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
     }
 
     # WAFFLE
