@@ -19,7 +19,7 @@ import { DashboardVideoLive } from '../DashboardVideoLive';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
-import { UploadStatusPicker } from '../UploadStatusPicker';
+import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
@@ -106,7 +106,10 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       <DashboardVideoPaneInternalHeading>
         <FormattedMessage {...messages.title} />
       </DashboardVideoPaneInternalHeading>
-      <UploadStatusPicker state={video.upload_state} />
+      <ObjectStatusPicker
+        state={video.upload_state}
+        liveState={video.live_state}
+      />
     </Box>
   );
 

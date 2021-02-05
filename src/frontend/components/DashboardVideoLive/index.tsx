@@ -46,6 +46,13 @@ const messages = defineMessages({
     description: 'Helptext explainig to wait until the live is ready.',
     id: 'components.DashboardVideoLive.liveStarting',
   },
+  liveStopped: {
+    defaultMessage:
+      'Live streaming is ended. The process to transform the live in VOD will begin soon.',
+    description:
+      'Helptext explaining that the live is ended and the live to VOD process will start.',
+    id: 'components.DashboardVideoLive.liveStopped',
+  },
 });
 
 interface DashboardVideoLiveProps {
@@ -129,6 +136,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
             />
             <DashboardVideoLiveStopButton video={video} />
           </React.Fragment>
+        )}
+        {video.live_state === liveState.STOPPED && (
+          <Text>
+            <FormattedMessage {...messages.liveStopped} />
+          </Text>
         )}
       </Box>
     </Box>
