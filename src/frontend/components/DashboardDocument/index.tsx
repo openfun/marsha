@@ -15,7 +15,7 @@ import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import DocumentPlayer from '../DocumentPlayer';
-import { UploadStatusPicker } from '../UploadStatusPicker';
+import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
 const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
 
@@ -67,7 +67,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       <DashboardDocumentInternalHeading>
         {intl.formatMessage(messages.title)}
       </DashboardDocumentInternalHeading>
-      <UploadStatusPicker state={document.upload_state} />
+      <ObjectStatusPicker state={document.upload_state} />
     </Box>
   );
 
