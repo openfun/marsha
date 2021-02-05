@@ -15,7 +15,7 @@ import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { UploadStatusPicker } from '../UploadStatusPicker';
+import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
 const { PENDING, PROCESSING, UPLOADING } = uploadState;
 
@@ -60,7 +60,7 @@ const TimedTextListItemLanguage = styled.div`
   flex-basis: 10rem;
 `;
 
-const UploadStatusPickerStyled = styled(UploadStatusPicker)`
+const ObjectStatusPickerStyled = styled(ObjectStatusPicker)`
   flex-basis: 6rem;
 `;
 
@@ -112,7 +112,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
       <TimedTextListItemLanguage>
         {language ? language.label : track.language}
       </TimedTextListItemLanguage>
-      <UploadStatusPickerStyled state={track.upload_state} />
+      <ObjectStatusPickerStyled state={track.upload_state} />
       <TimedTextListItemActions>
         <ActionLink
           color={'status-critical'}
