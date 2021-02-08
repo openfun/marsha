@@ -468,12 +468,15 @@ class TimedTextTrackAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         timed_text_track_list = json.loads(response.content)
-        self.assertEqual(len(timed_text_track_list), 2)
+        self.assertEqual(len(timed_text_track_list["results"]), 2)
+        self.assertEqual(timed_text_track_list["count"], 2)
         self.assertTrue(
-            str(timed_text_track_one.id) in (ttt["id"] for ttt in timed_text_track_list)
+            str(timed_text_track_one.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
         )
         self.assertTrue(
-            str(timed_text_track_two.id) in (ttt["id"] for ttt in timed_text_track_list)
+            str(timed_text_track_two.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
         )
 
     def test_api_timed_text_track_read_list_staff_or_user(self):
