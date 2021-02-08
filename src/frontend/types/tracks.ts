@@ -21,7 +21,10 @@ export interface Resource {
  * track representations and whenever we might need to pass such state information around.
  */
 export enum uploadState {
+  DELETED = 'deleted',
   ERROR = 'error',
+  HARVESTED = 'harvested',
+  HARVESTING = 'harvesting',
   PENDING = 'pending',
   PROCESSING = 'processing',
   READY = 'ready',
