@@ -70,30 +70,35 @@ describe('<DashboardTimedTextPane />', () => {
   });
 
   it('gets the list of timedtexttracks and displays them by mode', async () => {
-    fetchMock.get('/api/timedtexttracks/?limit=20&offset=0', [
-      {
-        active_stamp: 2094219242,
-        id: '142',
-        is_ready_to_show: true,
-        language: 'en',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
-        source_url: 'https://example.com/ttt/142',
-        url: 'https://example.com/ttt/142.vtt',
-        video: '43',
-      },
-      {
-        active_stamp: 2094219242,
-        id: '144',
-        is_ready_to_show: true,
-        language: 'fr',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
-        source_url: 'https://example.com/ttt/144',
-        url: 'https://example.com/ttt/144.vtt',
-        video: '43',
-      },
-    ]);
+    fetchMock.get('/api/timedtexttracks/?limit=20&offset=0', {
+      count: 2,
+      next: null,
+      previous: null,
+      results: [
+        {
+          active_stamp: 2094219242,
+          id: '142',
+          is_ready_to_show: true,
+          language: 'en',
+          mode: timedTextMode.SUBTITLE,
+          upload_state: uploadState.READY,
+          source_url: 'https://example.com/ttt/142',
+          url: 'https://example.com/ttt/142.vtt',
+          video: '43',
+        },
+        {
+          active_stamp: 2094219242,
+          id: '144',
+          is_ready_to_show: true,
+          language: 'fr',
+          mode: timedTextMode.CLOSED_CAPTIONING,
+          upload_state: uploadState.READY,
+          source_url: 'https://example.com/ttt/144',
+          url: 'https://example.com/ttt/144.vtt',
+          video: '43',
+        },
+      ],
+    });
 
     render(wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)));
 

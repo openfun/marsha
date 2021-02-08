@@ -39,8 +39,8 @@ export const getResourceList = async (
       );
     }
 
-    const resources = await response.json();
-    await addMultipleResources(resourceName, resources);
+    const resourcesResponse = await response.json();
+    await addMultipleResources(resourceName, resourcesResponse.results);
     return requestStatus.SUCCESS;
   } catch (error) {
     report(error);
