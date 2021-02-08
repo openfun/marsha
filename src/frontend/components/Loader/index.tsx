@@ -1,10 +1,13 @@
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
 
 import { theme } from '../../utils/theme/theme';
+import { Offscreen } from '../Offscreen';
 
-const Preloader = styled.div`
+const Preloader = styled(Box)`
   width: 100%;
   height: 100%;
   top: 0px;
@@ -13,17 +16,27 @@ const Preloader = styled.div`
   background-color: rgba(255, 255, 255, 0.4);
 `;
 
-const Spinner = styled.div`
-  position: absolute;
-  top: calc(50% - 3.5px);
-  left: calc(50% - 3.5px);
+interface SpinnerLookProps {
+  size?: 'small' | 'medium' | 'large';
+}
 
+const SpinnerLook = styled.div<SpinnerLookProps>`
   border: 0.125rem solid transparent;
   border-left-color: ${normalizeColor('brand', theme)};
   border-top-color: ${normalizeColor('brand', theme)};
   border-radius: 50%;
-  width: 31px;
-  height: 31px;
+  width: ${(props) =>
+    props.size === 'small'
+      ? '1rem'
+      : props.size === 'medium'
+      ? '2rem'
+      : '3rem'};
+  height: ${(props) =>
+    props.size === 'small'
+      ? '1rem'
+      : props.size === 'medium'
+      ? '2rem'
+      : '3rem'};
   animation: spin 0.8s linear infinite;
   display: inline-block;
   margin: 0 auto;
@@ -38,9 +51,55 @@ const Spinner = styled.div`
   }
 `;
 
-/** Component. Displays a rotating CSS loader. */
-export const Loader = () => (
-  <Preloader>
-    <Spinner aria-busy="true" aria-live="polite" />
-  </Preloader>
-);
+interface SpinnerProps extends SpinnerLookProps {
+  'aria-hidden'?: boolean;
+  role?: 'alert' | 'status';
+}
+
+/**
+ * Displays a rotating CSS loader
+ * @param aria-hidden Passthrough to remove the whole spinner from accessible tree.
+ * @param role The role of the aria region. Informs aria-live. Defaults to "status".
+ * @param size Set of available sizes for the spinner. Defaults to "medium".
+ */
+export const Spinner: React.FC<SpinnerProps> = (props) => {
+  const { children } = props;
+  const ariaHidden = props['aria-hidden'] || false;
+  const role = props.role || 'status';
+  const size = props.size || 'medium';
+
+  const [uniqueID] = useState(uuidv4());
+
+  return (
+    <Box
+      role={role}
+      aria-live={role === 'alert' ? 'assertive' : 'polite'}
+      aria-labelledby={uniqueID}
+      aria-hidden={ariaHidden}
+      margin="none"
+      pad="none"
+    >
+      <SpinnerLook size={size} />
+      <Offscreen id={uniqueID}>{children}</Offscreen>
+    </Box>
+  );
+};
+
+// tslint:disable:no-empty-interface
+interface LoaderProps extends SpinnerProps {}
+
+/**
+ * Displays a full-page, fixed transparent gray overlay with a rotating CSS loader.
+ * @param aria-hidden Passthrough to remove the whole spinner from accessible tree.
+ * @param role The role of the aria region. Informs aria-live. Defaults to "status".
+ * @param size Set of available sizes for the spinner. Defaults to "medium".
+ */
+export const Loader: React.FC<LoaderProps> = (props) => {
+  const ariaHidden = props['aria-hidden'] || false;
+
+  return (
+    <Preloader justify="center" aria-hidden={ariaHidden}>
+      <Spinner {...props} />
+    </Preloader>
+  );
+};

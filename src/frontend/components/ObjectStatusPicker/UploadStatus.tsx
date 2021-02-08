@@ -1,6 +1,7 @@
+import { Box } from 'grommet';
 import React from 'react';
 
-import { Loader } from '../Loader';
+import { Spinner } from '../Loader';
 
 /** Available icon names for statusIcon on the UploadStatus component. */
 export enum statusIconKey {
@@ -21,13 +22,13 @@ export interface UploadStatusProps {
  */
 export const UploadStatus = ({
   children,
-  className,
+  className = '',
   statusIcon,
 }: UploadStatusProps) => {
   let icon;
   switch (statusIcon) {
     case statusIconKey.LOADER:
-      icon = <Loader />;
+      icon = <Spinner size="small" />;
       break;
 
     case statusIconKey.TICK:
@@ -40,10 +41,10 @@ export const UploadStatus = ({
   }
 
   return (
-    <div className={className || ''}>
+    <Box direction="row" margin="none" pad="none" className={className}>
       {children}
       &nbsp;
       {icon}
-    </div>
+    </Box>
   );
 };
