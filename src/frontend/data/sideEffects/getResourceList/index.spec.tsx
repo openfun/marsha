@@ -46,7 +46,12 @@ describe('sideEffects/getResourceList', () => {
   it('requests the resource list, handles the response and resolves with a success', async () => {
     fetchMock.mock(
       '/api/videos/?limit=2&offset=43',
-      JSON.stringify([video42, video43]),
+      JSON.stringify({
+        count: 2,
+        next: null,
+        previous: null,
+        results: [video42, video43],
+      }),
     );
 
     const status = await getResourceList(modelName.VIDEOS, {
