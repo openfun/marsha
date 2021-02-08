@@ -39,6 +39,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Enable videojs useDevicePixelRatio VHS option
+- Update the frontend <Loader /> with a <Spinner /> sidekick and
+  make some accessibility improvements.
 
 ## [3.15.0] - 2021-02-04
 
