@@ -1,7 +1,6 @@
 import { Box } from 'grommet';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
@@ -13,7 +12,6 @@ import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading'
 import { DashboardDocumentTitleForm } from '../DashboardDocumentTitleForm';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
-import { DashboardPaneHelptext } from '../DashboardPaneHelptext';
 import DocumentPlayer from '../DocumentPlayer';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
@@ -29,6 +27,37 @@ const messages = defineMessages({
     defaultMessage: 'Document status',
     description: 'Document upload status.',
     id: 'components.DashboardDocument.title',
+  },
+  [ERROR]: {
+    defaultMessage:
+      'There was an error with your document. Retry or upload another one.',
+    description:
+      'Dashboard helptext for when the document failed to upload or get processed.',
+    id: 'components.DashboardDocument.helptextError',
+  },
+  [PENDING]: {
+    defaultMessage: 'There is currently no document to display.',
+    description:
+      'Dashboard helptext for the case when there is no existing document nor anything in progress.',
+    id: 'components.DashboardDocument.helptextPending',
+  },
+  [PROCESSING]: {
+    defaultMessage:
+      'Your document is currently processing. This may take some minutes.',
+    description: 'Dashboard helptext to warn users document is processing.',
+    id: 'components.DashboardDocument.helptextProcessing',
+  },
+  [READY]: {
+    defaultMessage: 'Your document is ready to display.',
+    description: 'Dashboard helptext for ready-to-display documents.',
+    id: 'components.DashboardDocument.helptextReady',
+  },
+  [UPLOADING]: {
+    defaultMessage:
+      'Upload in progress... Please do not close or reload this page.',
+    description:
+      'Dashboard helptext to warn user not to navigate away during document upload.',
+    id: 'components.DashboardDocument.helptextUploading',
   },
 });
 
@@ -62,7 +91,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     }
   }, []);
 
-  const commonStatusLine = (
+  const CommonStatusLine = () => (
     <Box align={'center'} direction={'row'}>
       <DashboardDocumentInternalHeading>
         {intl.formatMessage(messages.title)}
@@ -72,24 +101,10 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   );
 
   switch (document.upload_state) {
-    case PENDING:
-      return (
-        <DashboardDocumentInnerContainer>
-          {commonStatusLine}
-          <DashboardPaneHelptext
-            objectType={modelName.DOCUMENTS}
-            state={document.upload_state}
-          />
-          <DashboardPaneButtons
-            object={document}
-            objectType={modelName.DOCUMENTS}
-          />
-        </DashboardDocumentInnerContainer>
-      );
     case UPLOADING:
       return (
         <DashboardDocumentInnerContainer>
-          {commonStatusLine}
+          <CommonStatusLine />
           <DashboardObjectProgress objectId={document.id} />
           <DashboardPaneButtons
             object={document}
@@ -101,7 +116,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     case PROCESSING:
       return (
         <DashboardDocumentInnerContainer>
-          {commonStatusLine}
+          <CommonStatusLine />
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}
@@ -113,11 +128,8 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
         <DashboardDocumentInnerContainer>
           <Box direction={'row'}>
             <Box basis={'1/2'} margin={'small'}>
-              {commonStatusLine}
-              <DashboardPaneHelptext
-                objectType={modelName.DOCUMENTS}
-                state={document.upload_state}
-              />
+              <CommonStatusLine />
+              {intl.formatMessage(messages[READY])}
               <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
                 <DashboardDocumentInternalHeading>
                   {intl.formatMessage(messages.filename)}
@@ -132,6 +144,18 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <Box margin={'small'}>
             <DashboardDocumentTitleForm document={document} />
           </Box>
+          <DashboardPaneButtons
+            object={document}
+            objectType={modelName.DOCUMENTS}
+          />
+        </DashboardDocumentInnerContainer>
+      );
+    default:
+      return (
+        <DashboardDocumentInnerContainer>
+          <CommonStatusLine />
+          {document.upload_state === PENDING &&
+            intl.formatMessage(messages[PENDING])}
           <DashboardPaneButtons
             object={document}
             objectType={modelName.DOCUMENTS}

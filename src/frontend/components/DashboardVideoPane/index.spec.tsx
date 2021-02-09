@@ -75,7 +75,7 @@ describe('<DashboardVideoPane />', () => {
     // DashboardVideoPane shows the video as PROCESSING
     getByText('Processing');
     getByText(
-      'Your video is currently processing. This may take up to an hour. Please come back later.',
+      'Your video is currently processing. This may take up to an hour. You can close the window and come back later.',
     );
     expect(fetchMock.called()).not.toBeTruthy();
 
@@ -93,7 +93,7 @@ describe('<DashboardVideoPane />', () => {
     });
     getByText('Processing');
     getByText(
-      'Your video is currently processing. This may take up to an hour. Please come back later.',
+      'Your video is currently processing. This may take up to an hour. You can close the window and come back later.',
     );
 
     // The video will be ready in further responses
@@ -118,7 +118,7 @@ describe('<DashboardVideoPane />', () => {
     expect(queryByText('Processing')).toEqual(null);
     expect(
       queryByText(
-        'Your video is currently processing. This may take up to an hour. Please come back later.',
+        'Your video is currently processing. This may take up to an hour. You can close the window and come back later.',
       ),
     ).toEqual(null);
     getByText((content) => content.startsWith('Ready'));
