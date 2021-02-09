@@ -5,14 +5,38 @@ import { liveState as liveStateTrack, uploadState } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { statusIconKey, UploadStatus } from './UploadStatus';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
+const {
+  DELETED,
+  ERROR,
+  HARVESTED,
+  HARVESTING,
+  PENDING,
+  PROCESSING,
+  READY,
+  UPLOADING,
+} = uploadState;
 const { IDLE, STARTING, RUNNING, STOPPED } = liveStateTrack;
 
 const messages = defineMessages({
+  [DELETED]: {
+    defaultMessage: 'Deleted',
+    description: 'Status information for a video/audio/timed text track',
+    id: 'components.ObjectStatusPicker.DELETED',
+  },
   [ERROR]: {
     defaultMessage: 'Error',
     description: 'Status information for a video/audio/timed text track',
     id: 'components.ObjectStatusPicker.ERROR',
+  },
+  [HARVESTED]: {
+    defaultMessage: 'Waiting VOD publication',
+    description: 'Status information for a video/audio/timed text track',
+    id: 'components.ObjectStatusPicker.HARVESTED',
+  },
+  [HARVESTING]: {
+    defaultMessage: 'Transforming live in VOD',
+    description: 'Status information for a video/audio/timed text track',
+    id: 'components.ObjectStatusPicker.HARVESTING',
   },
   [PENDING]: {
     defaultMessage: 'Missing',
@@ -74,20 +98,19 @@ export const ObjectStatusPicker = ({
 }: ObjectStatusPickerProps) => {
   if (liveState) {
     return <FormattedMessage {...messages[liveState]} />;
-  } else {
-    return (
-      <UploadStatus
-        className={className}
-        statusIcon={
-          [PROCESSING, UPLOADING].includes(state)
-            ? statusIconKey.LOADER
-            : [ERROR, PENDING].includes(state)
-            ? statusIconKey.X
-            : statusIconKey.TICK
-        }
-      >
-        <FormattedMessage {...messages[state]} />
-      </UploadStatus>
-    );
   }
+  return (
+    <UploadStatus
+      className={className}
+      statusIcon={
+        [PROCESSING, UPLOADING, HARVESTING].includes(state)
+          ? statusIconKey.LOADER
+          : [DELETED, ERROR, PENDING].includes(state)
+          ? statusIconKey.X
+          : statusIconKey.TICK
+      }
+    >
+      <FormattedMessage {...messages[state]} />
+    </UploadStatus>
+  );
 };

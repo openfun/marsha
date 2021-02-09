@@ -5,7 +5,16 @@ import { ObjectStatusPicker } from '.';
 import { liveState, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
+const {
+  DELETED,
+  ERROR,
+  HARVESTED,
+  HARVESTING,
+  PENDING,
+  PROCESSING,
+  READY,
+  UPLOADING,
+} = uploadState;
 const { IDLE, STARTING, RUNNING, STOPPED } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
@@ -39,6 +48,24 @@ describe('<ObjectStatusPicker />', () => {
     render(wrapInIntlProvider(<ObjectStatusPicker state={ERROR} />));
 
     screen.getByText('Error ❌');
+  });
+
+  it('renders the status list for upload state DELETED', () => {
+    render(wrapInIntlProvider(<ObjectStatusPicker state={DELETED} />));
+
+    screen.getByText('Deleted ❌');
+  });
+
+  it('renders the status list for upload state HARVESTING', () => {
+    render(wrapInIntlProvider(<ObjectStatusPicker state={HARVESTING} />));
+
+    screen.getByText('Transforming live in VOD');
+  });
+
+  it('renders the status list for upload state HARVESTED', () => {
+    render(wrapInIntlProvider(<ObjectStatusPicker state={HARVESTED} />));
+
+    screen.getByText('Waiting VOD publication ✔️');
   });
 
   it('renders the status list for live state IDLE', () => {

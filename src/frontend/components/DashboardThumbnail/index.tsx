@@ -11,7 +11,6 @@ import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 const messages = defineMessages({
@@ -134,8 +133,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
           </Text>
         </Box>
       );
-    case uploadState.PENDING:
-    case uploadState.READY:
+    default:
       return (
         <Box direction={'column'}>
           <Box>
