@@ -480,7 +480,6 @@ class VideoSerializer(serializers.ModelSerializer):
             "id",
             "active_stamp",
             "is_ready_to_show",
-            "upload_state",
             "urls",
             "has_transcript",
             "live_info",
