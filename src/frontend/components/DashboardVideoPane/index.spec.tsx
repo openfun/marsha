@@ -282,4 +282,17 @@ describe('<DashboardVideoPane />', () => {
       cleanup();
     }
   });
+
+  it('shows the video harvested dashboard when the video is in HARVESTED state', () => {
+    const video = videoMockFactory({
+      upload_state: uploadState.HARVESTED,
+    });
+
+    render(
+      wrapInIntlProvider(wrapInRouter(<DashboardVideoPane video={video} />)),
+    );
+
+    screen.getByRole('button', { name: 'watch' });
+    screen.getByRole('button', { name: 'publish the video' });
+  });
 });

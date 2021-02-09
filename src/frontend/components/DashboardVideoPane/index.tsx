@@ -14,6 +14,7 @@ import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading'
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardThumbnail } from '../DashboardThumbnail';
+import { DashboardVideoHarvested } from '../DashboardVideoHarvested';
 import { DashboardVideoLive } from '../DashboardVideoLive';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
@@ -160,7 +161,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
   }
 
-  const commonStatusLine = (
+  const CommonStatusLine = () => (
     <Box align={'center'} direction={'row'}>
       <DashboardVideoPaneInternalHeading>
         {intl.formatMessage(messages.title)}
@@ -179,7 +180,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
           <DashboardVideoPaneInnerContainer>
             <Box direction={'row'}>
               <Box basis={'1/2'} margin={'small'}>
-                {commonStatusLine}
+                <CommonStatusLine />
               </Box>
               <Box basis={'1/2'} margin={'small'}>
                 <DashboardVideoLive video={video} />
@@ -190,7 +191,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       } else {
         return (
           <DashboardVideoPaneInnerContainer>
-            {commonStatusLine}
+            <CommonStatusLine />
             {intl.formatMessage(messages[PENDING])}
             <DashboardPaneButtons
               object={video}
@@ -202,7 +203,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     case UPLOADING:
       return (
         <DashboardVideoPaneInnerContainer>
-          {commonStatusLine}
+          <CommonStatusLine />
           <DashboardObjectProgress objectId={video.id} />
           {intl.formatMessage(messages[UPLOADING])}
         </DashboardVideoPaneInnerContainer>
@@ -210,9 +211,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
 
     case PROCESSING:
     case ERROR:
+    case DELETED:
+    case HARVESTING:
       return (
         <DashboardVideoPaneInnerContainer>
-          {commonStatusLine}
+          <CommonStatusLine />
           {intl.formatMessage(messages[video.upload_state])}
         </DashboardVideoPaneInnerContainer>
       );
@@ -222,7 +225,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
         <DashboardVideoPaneInnerContainer>
           <Box direction={'row'}>
             <Box basis={'1/2'} margin={'small'}>
-              {commonStatusLine}
+              <CommonStatusLine />
               {intl.formatMessage(messages[READY])}
               <DashboardVideoPaneDownloadOption video={video} />
               <DashboardVideoPaneTranscriptOption video={video} />
@@ -232,6 +235,21 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
             </Box>
           </Box>
           <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
+        </DashboardVideoPaneInnerContainer>
+      );
+
+    case HARVESTED:
+      return (
+        <DashboardVideoPaneInnerContainer>
+          <Box direction={'column'}>
+            <Box basis={'1/2'} margin={'small'}>
+              <CommonStatusLine />
+              {intl.formatMessage(messages[video.upload_state])}
+            </Box>
+            <Box basis={'1/2'} margin={'small'}>
+              <DashboardVideoHarvested video={video} />
+            </Box>
+          </Box>
         </DashboardVideoPaneInnerContainer>
       );
   }
