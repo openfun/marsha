@@ -602,7 +602,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.uploaded_on, None)
 
     def test_api_video_update_detail_token_user_upload_state(self):
-        """Token users trying to update "upload_state" through the API should be ignored."""
+        """Token users should be able to update "upload_state" of their video through the API.."""
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -625,7 +625,7 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.upload_state, "pending")
+        self.assertEqual(video.upload_state, "ready")
 
     def test_api_video_instructor_update_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to update the video."""
@@ -663,20 +663,19 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_video_patch_detail_token_user_stamp_and_state(self):
-        """Token users should not be able to patch upload state and active stamp.
+    def test_api_video_patch_detail_token_user_stamp(self):
+        """Token users should not be able to patch active stamp.
 
-        These 2 fields can only be updated by AWS via the separate update-state API endpoint.
+        this field can only be updated by AWS via the separate update-state API endpoint.
         """
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        self.assertEqual(video.upload_state, "pending")
         self.assertIsNone(video.uploaded_on)
 
-        data = {"active_stamp": "1533686400", "upload_state": "ready"}
+        data = {"active_stamp": "1533686400"}
 
         response = self.client.patch(
             "/api/videos/{!s}/".format(video.id),
@@ -688,7 +687,6 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertIsNone(video.uploaded_on)
-        self.assertEqual(video.upload_state, "pending")
 
     def test_api_video_update_detail_token_user_id(self):
         """Token users trying to update the ID of a video they own should be ignored."""
