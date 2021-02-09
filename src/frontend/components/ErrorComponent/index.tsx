@@ -12,7 +12,8 @@ export interface ErrorComponentProps {
     | 'policy'
     | 'upload'
     | 'liveIncompatible'
-    | 'liveInit';
+    | 'liveInit'
+    | 'liveToVod';
 }
 
 const ErrorComponentStyled = styled(LayoutMainArea)`
@@ -109,6 +110,19 @@ const messages = {
       defaultMessage: 'Failed to authenticate your permission to modify a live',
       description: 'Helpful text for the upload permission error page',
       id: 'components.ErrorComponent.liveInit.title',
+    },
+  },
+  liveToVod: {
+    text: {
+      defaultMessage: 'Failed to publish a VOD',
+      description: 'Error title when publish a live to VOD fails.',
+      id: 'components.ErrorComponent.liveToVod.title',
+    },
+    title: {
+      defaultMessage:
+        'We could not publish this video as a VOD. Please retry later',
+      description: 'Error message when publish a live to VOD fails.',
+      id: 'components.ErrorComponent.liveToVod.text',
     },
   },
 };
