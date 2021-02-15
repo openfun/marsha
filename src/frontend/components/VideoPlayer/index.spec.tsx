@@ -6,18 +6,23 @@ import { ImportMock } from 'ts-mock-imports';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { createPlayer } from '../../Player/createPlayer';
 import { uploadState } from '../../types/tracks';
+import { isMSESupported } from '../../utils/isMSESupported';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { jestMockOf } from '../../utils/types';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
+jest.mock('../../utils/isMSESupported', () => ({
+  isMSESupported: jest.fn(),
+}));
 
 jest.mock('../../Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
 const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
+const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
   useTimedTextTrackModule,
@@ -81,7 +86,7 @@ describe('VideoPlayer', () => {
   afterEach(() => fetchMock.restore());
   afterEach(jest.clearAllMocks);
 
-  it('starts up the player with dash source and renders all the relevant sources', async () => {
+  it('starts up the player with HLS source and renders all the relevant sources', async () => {
     useTimedTextTrackStub.returns([
       {
         active_stamp: 1549385921,
@@ -125,6 +130,8 @@ describe('VideoPlayer', () => {
       },
     ]);
 
+    mockIsMSESupported.mockReturnValue(true);
+
     const { container, getByText, queryByText } = render(
       wrapInIntlProvider(
         <VideoPlayer video={mockVideo} playerType={'videojs'} />,
@@ -145,6 +152,42 @@ describe('VideoPlayer', () => {
     expect(
       container.querySelector('source[type="application/x-mpegURL"]'),
     ).not.toBeNull();
+    expect(container.querySelectorAll('track')).toHaveLength(2);
+    expect(
+      container.querySelector('source[src="https://example.com/144p.mp4"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('source[src="https://example.com/1080p.mp4"]'),
+    ).not.toBeNull();
+    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
+      2,
+    );
+    expect(container.querySelector('video')!.tabIndex).toEqual(-1);
+  });
+
+  it('renders without HLS sources but with MP4 ones', async () => {
+    mockIsMSESupported.mockReturnValue(false);
+
+    const { container, getByText, queryByText } = render(
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
+    );
+    await waitFor(() =>
+      // The player is created and initialized with DashJS for adaptive bitrate
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        mockVideo,
+      ),
+    );
+
+    expect(queryByText(/Download this video/i)).toBeNull();
+    getByText('Show a transcript');
+    expect(
+      container.querySelector('source[type="application/x-mpegURL"]'),
+    ).toBeNull();
     expect(container.querySelectorAll('track')).toHaveLength(2);
     expect(
       container.querySelector('source[src="https://example.com/144p.mp4"]'),
