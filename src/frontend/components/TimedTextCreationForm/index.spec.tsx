@@ -7,7 +7,7 @@ import { timedTextMode, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
@@ -126,7 +126,7 @@ describe('<TimedTextCreationForm />', () => {
           />,
           [
             {
-              path: ERROR_COMPONENT_ROUTE(),
+              path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
                 <span>{`Error Component: ${match.params.code}`}</span>
               ),

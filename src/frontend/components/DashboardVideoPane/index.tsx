@@ -18,7 +18,7 @@ import { DashboardVideoHarvested } from '../DashboardVideoHarvested';
 import { DashboardVideoLive } from '../DashboardVideoLive';
 import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
 const {
@@ -154,11 +154,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   }, []);
 
   if (error) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   if (!video.is_ready_to_show && video.upload_state === ERROR) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('upload')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
   }
 
   const CommonStatusLine = () => (

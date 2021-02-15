@@ -5,7 +5,7 @@ import { appData, getDecodedJwt } from '../../data/appData';
 import { appState } from '../../types/AppData';
 import { uploadState } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
@@ -14,11 +14,11 @@ export const RedirectOnLoad = () => {
   const resource = appData.document || appData.video || null;
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
   }
 
   if (!resource) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   if (resource && resource.is_ready_to_show) {
@@ -31,5 +31,5 @@ export const RedirectOnLoad = () => {
 
   // For safety default to the 404 view: this is for users not able to edit the current resource
   // when this one is not ready.
-  return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+  return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
 };

@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { ImportMock } from 'ts-mock-imports';
 
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import * as useVideoModule from '../../data/stores/useVideo';
 import { uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
@@ -134,7 +134,7 @@ describe('DashboardVideoHarvested', () => {
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoHarvested video={video} />, [
           {
-            path: ERROR_COMPONENT_ROUTE(),
+            path: FULL_SCREEN_ERROR_ROUTE(),
             render: ({ match }) => (
               <span>{`Error Component: ${match.params.code}`}</span>
             ),

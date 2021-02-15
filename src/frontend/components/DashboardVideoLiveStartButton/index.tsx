@@ -7,7 +7,7 @@ import { useVideo } from '../../data/stores/useVideo';
 import { Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DashboardButton } from '../DashboardPaneButtons';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Loader } from '../Loader';
 
 const messages = defineMessages({
@@ -43,7 +43,7 @@ export const DashboardVideoLiveStartButton = ({
   }, [video]);
 
   if (status === 'error') {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('liveInit')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
   }
 
   return (

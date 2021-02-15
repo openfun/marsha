@@ -6,7 +6,7 @@ import { appData } from '../../data/appData';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { DashboardVideoLiveConfigureButton } from '.';
 
 jest.mock('../../data/appData', () => ({
@@ -120,7 +120,7 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
           <DashboardVideoLiveConfigureButton video={appData.video!} />,
           [
             {
-              path: ERROR_COMPONENT_ROUTE('liveInit'),
+              path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
               render: () => <span>error</span>,
             },
           ],
