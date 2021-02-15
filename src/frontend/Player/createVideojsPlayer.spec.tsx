@@ -6,6 +6,8 @@ import VideoPlayer from '../components/VideoPlayer';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { liveState, timedTextMode, uploadState } from '../types/tracks';
+import { isMSESupported } from '../utils/isMSESupported';
+import { jestMockOf } from '../utils/types';
 import { videoMockFactory } from '../utils/tests/factories';
 import { wrapInIntlProvider } from '../utils/tests/intl';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
@@ -15,6 +17,11 @@ jest.mock('../XAPI/XAPIStatement');
 jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
+jest.mock('../utils/isMSESupported', () => ({
+  isMSESupported: jest.fn(),
+}));
+
+const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
 
 const mockVideo = videoMockFactory({
   id: 'video-test-videojs-instance',
@@ -73,7 +80,8 @@ describe('createVideoJsPlayer', () => {
     jest.clearAllMocks();
   });
 
-  it('creates videojs player and configure it', () => {
+  it('creates videojs player and configures it', () => {
+    mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
         <VideoPlayer video={mockVideo} playerType={'videojs'} />,
@@ -88,18 +96,8 @@ describe('createVideoJsPlayer', () => {
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
       {
         type: 'video/mp4',
-        src: 'https://example.com/mp4/144',
-        size: '144',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/240',
-        size: '240',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/480',
-        size: '480',
+        src: 'https://example.com/mp4/1080',
+        size: '1080',
       },
       {
         type: 'video/mp4',
@@ -108,8 +106,18 @@ describe('createVideoJsPlayer', () => {
       },
       {
         type: 'video/mp4',
-        src: 'https://example.com/mp4/1080',
-        size: '1080',
+        src: 'https://example.com/mp4/480',
+        size: '480',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/240',
+        size: '240',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/144',
+        size: '144',
       },
     ]);
 
@@ -128,11 +136,6 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.fluid).toBe(true);
     expect(player.options_.language).toEqual('fr');
     expect(player.options_.liveui).toBe(false);
-    expect(player.options_.plugins).toEqual({
-      httpSourceSelector: {
-        default: 'auto',
-      },
-    });
     expect(player.options_.responsive).toBe(true);
     expect(player.options_.html5).toEqual({
       vhs: {
@@ -141,7 +144,76 @@ describe('createVideoJsPlayer', () => {
     });
   });
 
+  it('creates videojs player without HLS compat and configures it', () => {
+    mockIsMSESupported.mockReturnValue(false);
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
+
+    expect(player.currentSources()).toEqual([
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/1080',
+        size: '1080',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/720',
+        size: '720',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/480',
+        size: '480',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/240',
+        size: '240',
+      },
+      {
+        type: 'video/mp4',
+        src: 'https://example.com/mp4/144',
+        size: '144',
+      },
+    ]);
+
+    expect(player.options_.playbackRates).toEqual([
+      0.5,
+      0.75,
+      1,
+      1.25,
+      1.5,
+      1.75,
+      2,
+      4,
+    ]);
+    expect(player.options_.controls).toBe(true);
+    expect(player.options_.debug).toBe(false);
+    expect(player.options_.fluid).toBe(true);
+    expect(player.options_.language).toEqual('fr');
+    expect(player.options_.liveui).toBe(false);
+    expect(player.options_.responsive).toBe(true);
+    expect(player.options_.html5).toEqual({
+      vhs: {
+        overrideNative: true,
+      },
+    });
+    expect(player.options_.plugins).toEqual({
+      qualitySelector: {
+        default: '480',
+      },
+    });
+  });
+
   it('configures for a live video', () => {
+    mockIsMSESupported.mockReturnValue(true);
     const video = videoMockFactory({
       urls: {
         manifests: {

@@ -16,6 +16,7 @@ import {
   videoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
+import { isMSESupported } from '../../utils/isMSESupported';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DownloadVideo';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -117,6 +118,9 @@ const VideoPlayer = ({
     (size) => Number(size) as videoSize,
   );
 
+  // order resolutions from the higher to the lower
+  resolutions.sort((a, b) => b - a);
+
   return (
     <Box>
       {/* tabIndex is set to -1 to not take focus on this element when a user is navigating using
@@ -127,11 +131,13 @@ const VideoPlayer = ({
         poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
         tabIndex={-1}
       >
-        <source
-          src={video.urls.manifests.hls}
-          size="auto"
-          type="application/x-mpegURL"
-        />
+        {isMSESupported() && (
+          <source
+            src={video.urls.manifests.hls}
+            size="auto"
+            type="application/x-mpegURL"
+          />
+        )}
 
         {resolutions.map((size) => (
           <source
