@@ -4,8 +4,8 @@ import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { appData } from '../../data/appData';
 import { modelName } from '../../types/models';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ErrorComponent } from '../ErrorComponent';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FullScreenError } from '../ErrorComponents';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { Loader } from '../Loader';
 import { RedirectOnLoad } from '../RedirectOnLoad';
@@ -48,7 +48,7 @@ export const Routes = () => (
               );
             }
 
-            return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
         <Route
@@ -63,8 +63,8 @@ export const Routes = () => (
         />
         <Route
           exact
-          path={ERROR_COMPONENT_ROUTE()}
-          render={({ match }) => <ErrorComponent code={match.params.code} />}
+          path={FULL_SCREEN_ERROR_ROUTE()}
+          render={({ match }) => <FullScreenError code={match.params.code} />}
         />
         <Route
           exact
@@ -88,7 +88,7 @@ export const Routes = () => (
               );
             }
 
-            return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />

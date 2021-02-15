@@ -15,7 +15,7 @@ import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { jestMockOf } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UploadForm } from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -184,7 +184,7 @@ describe('UploadForm', () => {
           <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
           [
             {
-              path: ERROR_COMPONENT_ROUTE('policy'),
+              path: FULL_SCREEN_ERROR_ROUTE('policy'),
               render: () => <span>error policy</span>,
             },
           ],

@@ -1,3 +1,4 @@
+import { Box, Heading, Paragraph } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -5,8 +6,9 @@ import styled from 'styled-components';
 import { H2 } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
 
-export interface ErrorComponentProps {
+export interface ErrorComponentsProps {
   code:
+    | 'generic'
     | 'lti'
     | 'notFound'
     | 'policy'
@@ -16,7 +18,7 @@ export interface ErrorComponentProps {
     | 'liveToVod';
 }
 
-const ErrorComponentStyled = styled(LayoutMainArea)`
+const FullScreenErrorStyled = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   padding: 0 2rem;
@@ -34,17 +36,32 @@ const ErrorContent = styled.div`
 `;
 
 const messages = {
+  generic: defineMessages({
+    text: {
+      defaultMessage: `We could not access the appropriate resources. You can try reloating the page
+      or try again at a later time.`,
+      description:
+        'Helpful text for the generic error message (random API request failure).',
+      id: 'components.ErrorComponents.generic.text',
+    },
+    title: {
+      defaultMessage: 'There was an unexpected error',
+      description:
+        'Title for the generic error message (random API request failure).',
+      id: 'components.ErrorComponents.generic.title',
+    },
+  }),
   lti: defineMessages({
     text: {
       defaultMessage: `We could not validate your access to this video. Please contact your instructor.
       If you are the instructor, please check your settings.`,
       description: 'Helpful text for the LTI error page',
-      id: 'components.ErrorComponent.lti.text',
+      id: 'components.ErrorComponents.lti.text',
     },
     title: {
       defaultMessage: 'There was an error loading this video',
       description: 'Title for the LTI error page',
-      id: 'components.ErrorComponent.lti.title',
+      id: 'components.ErrorComponents.lti.title',
     },
   }),
   notFound: defineMessages({
@@ -52,12 +69,12 @@ const messages = {
       defaultMessage: `This video does not exist or has not been published yet.
       If you are an instructor, please make sure you are properly authenticated.`,
       description: 'Helpful text for the 404 Not Found error page',
-      id: 'components.ErrorComponent.notFound.text',
+      id: 'components.ErrorComponents.notFound.text',
     },
     title: {
       defaultMessage: 'The video you are looking for could not be found',
       description: 'Title for the 404 Not Found error page',
-      id: 'components.ErrorComponent.notFound.title',
+      id: 'components.ErrorComponents.notFound.title',
     },
   }),
   policy: defineMessages({
@@ -65,12 +82,12 @@ const messages = {
       defaultMessage:
         'We could not make sure you are allowed to upload a video file. Please check your settings and/or try again.',
       description: 'Title for the upload permission error page',
-      id: 'components.ErrorComponent.policy.text',
+      id: 'components.ErrorComponents.policy.text',
     },
     title: {
       defaultMessage: 'Failed to authenticate your permission to upload',
       description: 'Helpful text for the upload permission error page',
-      id: 'components.ErrorComponent.policy.title',
+      id: 'components.ErrorComponents.policy.title',
     },
   }),
   upload: defineMessages({
@@ -78,12 +95,12 @@ const messages = {
       defaultMessage:
         'You can try again later. You may want to check your Internet connection quality.',
       description: 'Helpful text for the Upload error page',
-      id: 'components.ErrorComponent.upload.text',
+      id: 'components.ErrorComponents.upload.text',
     },
     title: {
       defaultMessage: 'Failed to upload your video file',
       description: 'Title for the video upload error page',
-      id: 'components.ErrorComponent.upload.title',
+      id: 'components.ErrorComponents.upload.title',
     },
   }),
   liveIncompatible: defineMessages({
@@ -91,12 +108,12 @@ const messages = {
       defaultMessage:
         'You can try again later. You may want to check your Internet connection quality.',
       description: 'Helpful text for the Upload error page',
-      id: 'components.ErrorComponent.upload.text',
+      id: 'components.ErrorComponents.upload.text',
     },
     title: {
       defaultMessage: 'Live mode incompatible with this object',
       description: 'Title when the object is incompatible with live mode',
-      id: 'components.ErrorComponent.liveIncompatible.title',
+      id: 'components.ErrorComponents.liveIncompatible.title',
     },
   }),
   liveInit: {
@@ -104,40 +121,49 @@ const messages = {
       defaultMessage:
         'We could not make sure you are allowed to modify a live. Please check your settings and/or try again.',
       description: 'Title for the live permission error page',
-      id: 'components.ErrorComponent.liveInit.text',
+      id: 'components.ErrorComponents.liveInit.text',
     },
     title: {
       defaultMessage: 'Failed to authenticate your permission to modify a live',
       description: 'Helpful text for the upload permission error page',
-      id: 'components.ErrorComponent.liveInit.title',
+      id: 'components.ErrorComponents.liveInit.title',
     },
   },
   liveToVod: {
     text: {
       defaultMessage: 'Failed to publish a VOD',
       description: 'Error title when publish a live to VOD fails.',
-      id: 'components.ErrorComponent.liveToVod.title',
+      id: 'components.ErrorComponents.liveToVod.title',
     },
     title: {
       defaultMessage:
         'We could not publish this video as a VOD. Please retry later',
       description: 'Error message when publish a live to VOD fails.',
-      id: 'components.ErrorComponent.liveToVod.text',
+      id: 'components.ErrorComponents.liveToVod.text',
     },
   },
 };
 
-export const ErrorComponent = (props: ErrorComponentProps) => {
-  return (
-    <ErrorComponentStyled>
-      <ErrorContent>
-        <H2>
-          <FormattedMessage {...messages[props.code].title} />
-        </H2>
-        <p>
-          <FormattedMessage {...messages[props.code].text} />
-        </p>
-      </ErrorContent>
-    </ErrorComponentStyled>
-  );
-};
+export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
+  <Box direction="column">
+    <Heading level={6}>
+      <FormattedMessage {...messages[code].title} />
+    </Heading>
+    <Paragraph>
+      <FormattedMessage {...messages[code].text} />
+    </Paragraph>
+  </Box>
+);
+
+export const FullScreenError: React.FC<ErrorComponentsProps> = ({ code }) => (
+  <FullScreenErrorStyled>
+    <ErrorContent>
+      <H2>
+        <FormattedMessage {...messages[code].title} />
+      </H2>
+      <Paragraph>
+        <FormattedMessage {...messages[code].text} />
+      </Paragraph>
+    </ErrorContent>
+  </FullScreenErrorStyled>
+);

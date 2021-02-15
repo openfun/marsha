@@ -12,7 +12,7 @@ import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { IframeHeading } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
 import { Loader } from '../Loader';
@@ -129,10 +129,10 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
       return <Redirect push to={DASHBOARD_ROUTE(appData.modelName)} />;
 
     case 'not_found_error':
-      return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
 
     case 'policy_error':
-      return <Redirect push to={ERROR_COMPONENT_ROUTE('policy')} />;
+      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
 
     default:
       return (

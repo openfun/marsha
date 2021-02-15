@@ -18,7 +18,7 @@ import {
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { Maybe, Nullable } from '../../utils/types';
 import { DownloadVideo } from '../DownloadVideo';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Transcripts } from '../Transcripts';
 import './VideoPlayer.css'; // Improve some plyr styles
 
@@ -99,7 +99,7 @@ const VideoPlayer = ({
 
   // The video is somehow missing and jwt must be set
   if (!video) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   const transcripts = timedTextTracks

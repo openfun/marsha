@@ -15,7 +15,7 @@ import { TimedText, timedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';
 import { Maybe } from '../../utils/types';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 const messages = defineMessages({
@@ -112,7 +112,7 @@ export const TimedTextCreationForm = ({
   };
 
   if (error === 'schema') {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   if (newTTUploadId) {
