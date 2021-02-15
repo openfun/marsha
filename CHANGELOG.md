@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Create a videojs plugin to manage MP4 selection
+
 ## [3.15.0] - 2021-02-04
 
 ### Changed
