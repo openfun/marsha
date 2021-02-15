@@ -6,7 +6,7 @@ import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { RedirectOnLoad } from './index';
@@ -53,7 +53,7 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: ERROR_COMPONENT_ROUTE(),
+          path: FULL_SCREEN_ERROR_ROUTE(),
           render: ({ match }) => (
             <span>{`Error Component: ${match.params.code}`}</span>
           ),
@@ -73,7 +73,7 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: ERROR_COMPONENT_ROUTE(),
+          path: FULL_SCREEN_ERROR_ROUTE(),
           render: ({ match }) => (
             <span>{`Error Component: ${match.params.code}`}</span>
           ),
@@ -189,7 +189,7 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: ERROR_COMPONENT_ROUTE(),
+          path: FULL_SCREEN_ERROR_ROUTE(),
           render: ({ match }) => (
             <span>{`Error Component: ${match.params.code}`}</span>
           ),
@@ -213,7 +213,7 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: ERROR_COMPONENT_ROUTE(),
+          path: FULL_SCREEN_ERROR_ROUTE(),
           render: ({ match }) => (
             <span>{`Error Component: ${match.params.code}`}</span>
           ),

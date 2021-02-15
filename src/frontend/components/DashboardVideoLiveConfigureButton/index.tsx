@@ -9,7 +9,7 @@ import { Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { DashboardButton } from '../DashboardPaneButtons';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Loader } from '../Loader';
 
 const messages = defineMessages({
@@ -51,7 +51,7 @@ export const DashboardVideoLiveConfigureButton = ({
   }
 
   if (status === 'error') {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('liveInit')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
   }
 
   return (

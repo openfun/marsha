@@ -7,7 +7,7 @@ import * as useVideoModule from '../../data/stores/useVideo';
 import { uploadState, liveState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { DashboardVideoLiveStopButton } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -97,7 +97,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoLiveStopButton video={video} />, [
           {
-            path: ERROR_COMPONENT_ROUTE('liveInit'),
+            path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
             render: () => <span>error</span>,
           },
         ]),

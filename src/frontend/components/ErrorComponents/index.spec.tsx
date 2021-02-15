@@ -1,13 +1,13 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { ErrorComponent } from '.';
+import { FullScreenError } from '.';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
-describe('<ErrorComponent />', () => {
+describe('<FullScreenError />', () => {
   it('displays the content for 404 not found errors', () => {
     const { getByText } = render(
-      wrapInIntlProvider(<ErrorComponent code="notFound" />),
+      wrapInIntlProvider(<FullScreenError code="notFound" />),
     );
     getByText('The video you are looking for could not be found');
     getByText(
@@ -17,7 +17,7 @@ describe('<ErrorComponent />', () => {
 
   it('displays the content for lti related errors', () => {
     const { getByText } = render(
-      wrapInIntlProvider(<ErrorComponent code="lti" />),
+      wrapInIntlProvider(<FullScreenError code="lti" />),
     );
     getByText('There was an error loading this video');
     getByText(

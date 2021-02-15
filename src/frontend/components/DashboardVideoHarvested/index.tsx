@@ -8,7 +8,7 @@ import {
   DashboardButtonWithLink,
 } from '../DashboardPaneButtons';
 import { PLAYER_ROUTE } from '../routes';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { useVideo } from '../../data/stores/useVideo';
 import { modelName } from '../../types/models';
@@ -56,7 +56,7 @@ export const DashboardVideoHarvested = ({
   };
 
   if (error) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('liveToVod')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveToVod')} />;
   }
 
   return (

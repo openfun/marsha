@@ -10,7 +10,7 @@ import { modelName } from '../../types/models';
 import { timedTextMode } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 
 const messages = defineMessages({
   [timedTextMode.CLOSED_CAPTIONING]: {
@@ -48,7 +48,7 @@ export const DashboardTimedTextPane = () => {
   );
 
   if (status === requestStatus.FAILURE) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   return (

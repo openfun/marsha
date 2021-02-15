@@ -10,7 +10,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { TimedTextListItem } from '.';
-import { ERROR_COMPONENT_ROUTE } from '../../components/ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Deferred } from '../../utils/tests/Deferred';
@@ -104,7 +104,7 @@ describe('<TimedTextListItem />', () => {
         wrapInIntlProvider(
           wrapInRouter(<TimedTextListItem track={track} />, [
             {
-              path: ERROR_COMPONENT_ROUTE(),
+              path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
                 <span>{`Error Component: ${match.params.code}`}</span>
               ),

@@ -9,7 +9,7 @@ import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('../../data/appData', () => ({
@@ -42,7 +42,7 @@ describe('<DashboardVideoPane />', () => {
           />,
           [
             {
-              path: ERROR_COMPONENT_ROUTE(),
+              path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
                 <span>{`Error Component: ${match.params.code}`}</span>
               ),
@@ -137,7 +137,7 @@ describe('<DashboardVideoPane />', () => {
           />,
           [
             {
-              path: ERROR_COMPONENT_ROUTE(),
+              path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
                 <span>{`Error Component: ${match.params.code}`}</span>
               ),

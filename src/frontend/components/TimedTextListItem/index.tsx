@@ -13,7 +13,7 @@ import { modelName } from '../../types/models';
 import { TimedText, uploadState } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
-import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
@@ -95,7 +95,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   }, []);
 
   if (error) {
-    return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   const language: Maybe<LanguageChoice> =
