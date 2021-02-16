@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
 import { useDocument } from '../../data/stores/useDocument';
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { UploadState } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardDocumentTitleForm } from '../DashboardDocumentTitleForm';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
@@ -15,7 +15,7 @@ import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import DocumentPlayer from '../DocumentPlayer';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
+const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = UploadState;
 
 const messages = defineMessages({
   filename: {
@@ -86,13 +86,13 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   useEffect(() => {
     if ([PENDING, UPLOADING, PROCESSING].includes(document.upload_state)) {
       window.setTimeout(async () => {
-        await pollForTrack(modelName.DOCUMENTS, document.id);
+        await pollForTrack(ModelName.DOCUMENTS, document.id);
       }, 1000 * 10);
     }
   }, []);
 
   const CommonStatusLine = () => (
-    <Box align={'center'} direction={'row'}>
+    <Box align="center" direction="row">
       <DashboardDocumentInternalHeading>
         {intl.formatMessage(messages.title)}
       </DashboardDocumentInternalHeading>
@@ -108,7 +108,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardObjectProgress objectId={document.id} />
           <DashboardPaneButtons
             object={document}
-            objectType={modelName.DOCUMENTS}
+            objectType={ModelName.DOCUMENTS}
           />
         </DashboardDocumentInnerContainer>
       );
@@ -119,34 +119,34 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <CommonStatusLine />
           <DashboardPaneButtons
             object={document}
-            objectType={modelName.DOCUMENTS}
+            objectType={ModelName.DOCUMENTS}
           />
         </DashboardDocumentInnerContainer>
       );
     case READY:
       return (
         <DashboardDocumentInnerContainer>
-          <Box direction={'row'}>
-            <Box basis={'1/2'} margin={'small'}>
+          <Box direction="row">
+            <Box basis="1/2" margin="small">
               <CommonStatusLine />
               {intl.formatMessage(messages[READY])}
-              <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
+              <Box align="center" direction="row" margin={{ top: 'small' }}>
                 <DashboardDocumentInternalHeading>
                   {intl.formatMessage(messages.filename)}
                 </DashboardDocumentInternalHeading>
                 <div>{document.filename}</div>
               </Box>
             </Box>
-            <Box basis={'1/2'} margin={'small'}>
+            <Box basis="1/2" margin="small">
               <DocumentPlayer document={document} />
             </Box>
           </Box>
-          <Box margin={'small'}>
+          <Box margin="small">
             <DashboardDocumentTitleForm document={document} />
           </Box>
           <DashboardPaneButtons
             object={document}
-            objectType={modelName.DOCUMENTS}
+            objectType={ModelName.DOCUMENTS}
           />
         </DashboardDocumentInnerContainer>
       );
@@ -158,7 +158,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
             intl.formatMessage(messages[PENDING])}
           <DashboardPaneButtons
             object={document}
-            objectType={modelName.DOCUMENTS}
+            objectType={ModelName.DOCUMENTS}
           />
         </DashboardDocumentInnerContainer>
       );

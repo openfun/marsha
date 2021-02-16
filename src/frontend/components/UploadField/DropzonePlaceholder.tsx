@@ -61,10 +61,10 @@ export const DropzonePlaceholder = () => (
   <DropzonePlaceholderStyled>
     <DropzoneDashBox />
     <DropzoneIcon />
-    <DropzoneTextBox direction={'row'}>
+    <DropzoneTextBox direction="row">
       <Button
-        alignSelf={'center'}
-        color={'brand'}
+        alignSelf="center"
+        color="brand"
         label={<FormattedMessage {...messages.dropzoneButtonPick} />}
         primary={true}
       />

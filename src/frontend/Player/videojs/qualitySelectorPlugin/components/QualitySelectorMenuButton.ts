@@ -5,10 +5,7 @@ import { QualitySelectorMenuItem } from './QualitySelectorMenuItem';
 const MenuButton = videojs.getComponent('MenuButton');
 
 export class QualitySelectorMenuButton extends MenuButton {
-  constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
-    super(player, options);
-  }
-
+  // eslint-disable-next-line class-methods-use-this
   createEl() {
     return videojs.dom.createEl('div', {
       className:

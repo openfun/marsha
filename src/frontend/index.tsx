@@ -29,7 +29,8 @@ if (appData.sentry_dsn) {
 let localeCode: string;
 let locale: string;
 try {
-  locale = localeCode = getDecodedJwt().locale;
+  ({ locale } = getDecodedJwt());
+  localeCode = locale;
   if (localeCode.match(/^.*_.*$/)) {
     localeCode = localeCode.split('_')[0];
   }
@@ -38,10 +39,12 @@ try {
   locale = 'en_US';
 }
 
-export let intl: IntlShape;
+let intl: IntlShape;
+
+export const getIntl = (): IntlShape => intl;
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
-document.addEventListener('DOMContentLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async () => {
   try {
     if (!window.Intl) {
       await import('intl');
@@ -52,7 +55,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     try {
       // We need to specifically attempt to use the constructor as `CustomEvent` exists in some browsers
       // (eg. IE11) but does not support the constructor.
-      const test = new CustomEvent('CustomEventConstructorIsSupported');
+      // eslint-disable-next-line no-new
+      new CustomEvent('CustomEventConstructorIsSupported');
     } catch (e) {
       await import('custom-event-polyfill');
     }
@@ -75,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   let translatedMessages = null;
   try {
     translatedMessages = await import(`./translations/${locale}.json`);
+    // eslint-disable-next-line no-empty
   } catch (e) {}
 
   const cache = createIntlCache();

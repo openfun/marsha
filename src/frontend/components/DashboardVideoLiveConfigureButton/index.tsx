@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import { initiateLive } from '../../data/sideEffects/initiateLive';
 import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
 });
 
-type configureLiveStatus = 'pending' | 'success' | 'error';
+type ConfigureLiveStatus = 'pending' | 'success' | 'error';
 
 /** Props shape for the DashboardVideoLiveConfigureButton component. */
 export interface DashboardVideoLiveConfigureButtonProps {
@@ -30,7 +30,7 @@ export interface DashboardVideoLiveConfigureButtonProps {
 export const DashboardVideoLiveConfigureButton = ({
   video,
 }: DashboardVideoLiveConfigureButtonProps) => {
-  const [status, setStatus] = useState<Nullable<configureLiveStatus>>(null);
+  const [status, setStatus] = useState<Nullable<ConfigureLiveStatus>>(null);
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
@@ -47,7 +47,7 @@ export const DashboardVideoLiveConfigureButton = ({
   };
 
   if (status === 'success') {
-    return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
+    return <Redirect push to={DASHBOARD_ROUTE(ModelName.VIDEOS)} />;
   }
 
   if (status === 'error') {

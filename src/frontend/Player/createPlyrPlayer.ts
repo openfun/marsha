@@ -4,8 +4,8 @@ import Plyr, { SourceInfo } from 'plyr';
 import { appData, getDecodedJwt } from '../data/appData';
 import { useTimedTextTrack } from '../data/stores/useTimedTextTrack';
 import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
-import { intl } from '../index';
-import { timedTextMode, Video, videoSize, uploadState } from '../types/tracks';
+import { getIntl } from '../index';
+import { TimedTextMode, Video, VideoSize } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -15,9 +15,9 @@ import { XAPIStatement } from '../XAPI/XAPIStatement';
 import { createHlsPlayer } from './createHlsPlayer';
 import { i18nMessages } from './i18n/plyrTranslation';
 
-const trackTextKind: { [key in timedTextMode]?: string } = {
-  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
-  [timedTextMode.SUBTITLE]: 'subtitles',
+const trackTextKind: { [key in TimedTextMode]?: string } = {
+  [TimedTextMode.CLOSED_CAPTIONING]: 'captions',
+  [TimedTextMode.SUBTITLE]: 'subtitles',
 };
 
 export const createPlyrPlayer = (
@@ -28,8 +28,9 @@ export const createPlyrPlayer = (
   let sources;
   const settings = ['captions', 'speed', 'loop', 'quality'];
   const resolutions = Object.keys(video.urls.mp4).map(
-    (size) => Number(size) as videoSize,
+    (size) => Number(size) as VideoSize,
   );
+  const intl = getIntl();
 
   if (!Hls.isSupported()) {
     const timedTextTracks = useTimedTextTrack.getState().getTimedTextTracks();
@@ -43,7 +44,7 @@ export const createPlyrPlayer = (
       tracks: timedTextTracks
         .filter((track) => track.is_ready_to_show)
         .filter((track) =>
-          [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+          [TimedTextMode.CLOSED_CAPTIONING, TimedTextMode.SUBTITLE].includes(
             track.mode,
           ),
         )
@@ -56,14 +57,6 @@ export const createPlyrPlayer = (
       type: 'video',
     } as SourceInfo;
   }
-
-  const sizeToBitrateMapping: { [key in videoSize]: number } = {
-    144: 300,
-    240: 600,
-    480: 1600,
-    720: 2400,
-    1080: -1,
-  };
 
   const player = new Plyr(videoNode, {
     captions: {
@@ -180,16 +173,16 @@ export const createPlyrPlayer = (
   const changePlayButtonAriaLabel = (label: string) => {
     // change button control aria-label to given label.
     const playButtons = document.querySelectorAll('button[data-plyr="play"]');
-    for (const playButton of playButtons) {
+    playButtons?.forEach((playButton) => {
       if (playButton.hasAttribute('aria-label')) {
         playButton.setAttribute('aria-label', label);
       }
-    }
+    });
   };
 
   const initialize = (event: Plyr.PlyrEvent) => {
     // if the module is already initalized abort the operation.
-    if (true === isInitialized) {
+    if (isInitialized === true) {
       // this is a workaround to force the player to stay on the first frame (time code 0)
       // while the video is not played. Without this, the state seeks a little bit
       // when loaded and the poster is not displayed.
@@ -208,7 +201,7 @@ export const createPlyrPlayer = (
     }
 
     const contextExtensions: InitializedContextExtensions = {
-      ccSubtitleEnabled: player.currentTrack === -1 ? false : true,
+      ccSubtitleEnabled: player.currentTrack !== -1,
       fullScreen: player.fullscreen.active,
       length: player.duration,
       speed: `${player.speed || 1}x`,
@@ -232,7 +225,7 @@ export const createPlyrPlayer = (
   player.on('loadedmetadata', initialize);
   player.on('loadeddata', initialize);
 
-  player.on('playing', (event) => {
+  player.on('playing', () => {
     xapiStatement.played({
       time: player.currentTime,
     });
@@ -240,7 +233,7 @@ export const createPlyrPlayer = (
     changePlayButtonAriaLabel(player.config.i18n.pause);
   });
 
-  player.on('pause', (event) => {
+  player.on('pause', () => {
     xapiStatement.paused({
       time: player.currentTime,
     });
@@ -248,23 +241,23 @@ export const createPlyrPlayer = (
     changePlayButtonAriaLabel(player.config.i18n.play);
   });
 
-  /**************** Seeked statement ***********************/
-  player.on('timeupdate', (event) => {
-    if (true === isInitialized && false === player.seeking) {
-      currentTime = player.currentTime;
+  /** ************** Seeked statement ********************** */
+  player.on('timeupdate', () => {
+    if (isInitialized === true && player.seeking === false) {
+      ({ currentTime } = player);
     }
   });
 
-  player.on('seeking', (event) => {
-    if (false === isInitialized) {
+  player.on('seeking', () => {
+    if (isInitialized === false) {
       return;
     }
 
     seekingAt = currentTime;
     hasSeeked = true;
   });
-  player.on('seeked', (event) => {
-    if (false === isInitialized) {
+  player.on('seeked', () => {
+    if (isInitialized === false) {
       // this is a workaround to force the player to stay on the first frame (time code 0)
       // while the video is not played. Without this, the state seeks a little bit
       // when loaded and the poster is not displayed.
@@ -273,7 +266,7 @@ export const createPlyrPlayer = (
       return;
     }
 
-    if (false === hasSeeked) {
+    if (hasSeeked === false) {
       return;
     }
     hasSeeked = false;
@@ -283,14 +276,14 @@ export const createPlyrPlayer = (
     });
   });
 
-  /**************** Interacted event *************************/
-  const interacted = (event: Plyr.PlyrEvent): void => {
-    if (false === isInitialized) {
+  /** ************** Interacted event ************************ */
+  const interacted = (): void => {
+    if (isInitialized === false) {
       return;
     }
 
     const contextExtensions: InteractedContextExtensions = {
-      ccSubtitleEnabled: player.currentTrack === -1 ? false : true,
+      ccSubtitleEnabled: player.currentTrack !== -1,
       fullScreen: player.fullscreen.active,
       quality: player.quality,
       speed: `${player.speed || 1}x`,
@@ -307,29 +300,29 @@ export const createPlyrPlayer = (
     xapiStatement.interacted({ time: player.currentTime }, contextExtensions);
   };
 
-  player.on('captionsdisabled', (event) => interacted(event));
-  player.on('captionsenabled', (event) => interacted(event));
-  player.on('enterfullscreen', (event) => interacted(event));
-  player.on('exitfullscreen', (event) => interacted(event));
-  player.on('languagechange', (event) => interacted(event));
-  player.on('qualitychange', (event) => interacted(event));
-  player.on('ratechange', (event) => interacted(event));
-  player.on('volumechange', (event) => interacted(event));
-  /**************** End interacted event *************************/
+  player.on('captionsdisabled', () => interacted());
+  player.on('captionsenabled', () => interacted());
+  player.on('enterfullscreen', () => interacted());
+  player.on('exitfullscreen', () => interacted());
+  player.on('languagechange', () => interacted());
+  player.on('qualitychange', () => interacted());
+  player.on('ratechange', () => interacted());
+  player.on('volumechange', () => interacted());
+  /** ************** End interacted event ************************ */
 
-  /**************** Dispatch time updated ************************/
-  player.on('timeupdate', (event) => {
+  /** ************** Dispatch time updated *********************** */
+  player.on('timeupdate', () => {
     dispatchPlayerTimeUpdate(player.currentTime);
   });
-  /**************** End dispatch time updated *********************/
+  /** ************** End dispatch time updated ******************** */
 
-  player.on('ended', (event) => {
+  player.on('ended', () => {
     // change button control aria-label to play.
     changePlayButtonAriaLabel(player.config.i18n.play);
   });
 
   window.addEventListener('unload', () => {
-    if (false === isInitialized) {
+    if (isInitialized === false) {
       return;
     }
 

@@ -1,21 +1,21 @@
 import { Document } from './file';
-import { modelName } from './models';
+import { ModelName } from './models';
 import { Resource, Thumbnail, TimedText, Video } from './tracks';
 
 export type StoreState<R extends Resource> = {
   addResource: (Resource: R) => void;
   addMultipleResources: (Resources: R[]) => void;
   removeResource: (Resource: R) => void;
-  [modelName.THUMBNAILS]?: {
+  [ModelName.THUMBNAILS]?: {
     [id: string]: Thumbnail;
   };
-  [modelName.TIMEDTEXTTRACKS]?: {
+  [ModelName.TIMEDTEXTTRACKS]?: {
     [id: string]: TimedText;
   };
-  [modelName.VIDEOS]?: {
+  [ModelName.VIDEOS]?: {
     [id: string]: Video;
   };
-  [modelName.DOCUMENTS]?: {
+  [ModelName.DOCUMENTS]?: {
     [id: string]: Document;
   };
 };

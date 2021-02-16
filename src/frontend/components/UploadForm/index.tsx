@@ -7,8 +7,8 @@ import { appData } from '../../data/appData';
 import { upload } from '../../data/sideEffects/upload';
 import { getResource } from '../../data/stores/generics';
 import { useObjectProgress } from '../../data/stores/useObjectProgress';
-import { modelName } from '../../types/models';
-import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { TimedText, TimedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -27,17 +27,17 @@ const messages = defineMessages({
 });
 
 const titleMessages = defineMessages({
-  [modelName.VIDEOS]: {
+  [ModelName.VIDEOS]: {
     defaultMessage: 'Create a new video',
     description: 'Title for the video upload form',
     id: 'components.UploadForm.title-videos',
   },
-  [modelName.THUMBNAILS]: {
+  [ModelName.THUMBNAILS]: {
     defaultMessage: 'Upload a new thumbnail',
     description: 'Title for the thumbnail upload form',
     id: 'components.UploadForm.title-thumbnail',
   },
-  [modelName.DOCUMENTS]: {
+  [ModelName.DOCUMENTS]: {
     defaultMessage: 'Upload a new document',
     description: 'Title for the document upload form',
     id: 'components.UploadForm.title-document',
@@ -45,17 +45,17 @@ const titleMessages = defineMessages({
 });
 
 const timedtexttrackTitleMessages = defineMessages({
-  [timedTextMode.CLOSED_CAPTIONING]: {
+  [TimedTextMode.CLOSED_CAPTIONING]: {
     defaultMessage: 'Upload a new closed captions file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-cc',
   },
-  [timedTextMode.SUBTITLE]: {
+  [TimedTextMode.SUBTITLE]: {
     defaultMessage: 'Upload a new subtitles file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-st',
   },
-  [timedTextMode.TRANSCRIPT]: {
+  [TimedTextMode.TRANSCRIPT]: {
     defaultMessage: 'Upload a new transcript file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-ts',
@@ -87,7 +87,7 @@ const UploadFormBack = styled.div`
 /** Props shape for the UploadForm component. */
 interface UploadFormProps {
   objectId: UploadableObject['id'];
-  objectType: modelName;
+  objectType: ModelName;
 }
 
 export type Status = Maybe<
@@ -140,7 +140,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
           <UploadFormContainer>
             <IframeHeadingWithLayout>
               <FormattedMessage
-                {...(objectType === modelName.TIMEDTEXTTRACKS
+                {...(objectType === ModelName.TIMEDTEXTTRACKS
                   ? timedtexttrackTitleMessages[(object as TimedText).mode]
                   : titleMessages[objectType])}
               />

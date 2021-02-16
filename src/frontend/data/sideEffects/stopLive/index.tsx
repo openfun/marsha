@@ -23,5 +23,5 @@ export const stopLive = async (video: Video): Promise<Video> => {
     throw new Error(`Failed to stop a live streaming for video ${video.id}.`);
   }
 
-  return await response.json();
+  return response.json();
 };

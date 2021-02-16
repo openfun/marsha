@@ -1,15 +1,15 @@
 import { AppData } from '../../types/AppData';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 
 export const parseDataElements = (element: Element): AppData => {
   const context = JSON.parse(element.getAttribute('data-context')!);
 
   if (context.modelName) {
     switch (context.modelName) {
-      case modelName.VIDEOS:
+      case ModelName.VIDEOS:
         context.video = context.resource;
         break;
-      case modelName.DOCUMENTS:
+      case ModelName.DOCUMENTS:
         context.document = context.resource;
         break;
       default:

@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
+import { RequestStatus } from '../../../types/api';
 import { report } from '../../../utils/errors/report';
 import { appData } from '../../appData';
 import { AnonymousUser } from '../../stores/useCurrentUser';
@@ -8,7 +8,7 @@ import { AnonymousUser } from '../../stores/useCurrentUser';
  * Makes and handles the GET request for the current user.
  * @returns a promise for a request status, so the side effect caller can simply wait for it if needed.
  */
-export const getCurrentUser = async (): Promise<requestStatus> => {
+export const getCurrentUser = async (): Promise<RequestStatus> => {
   try {
     const { useCurrentUser } = await import('../../stores/useCurrentUser');
 
@@ -21,7 +21,7 @@ export const getCurrentUser = async (): Promise<requestStatus> => {
 
     if (response.status === 401) {
       useCurrentUser.getState().setCurrentUser(AnonymousUser.ANONYMOUS);
-      return requestStatus.SUCCESS;
+      return RequestStatus.SUCCESS;
     }
 
     if (!response.ok) {
@@ -32,9 +32,9 @@ export const getCurrentUser = async (): Promise<requestStatus> => {
     const currentUser = await response.json();
     useCurrentUser.getState().setCurrentUser(currentUser);
 
-    return requestStatus.SUCCESS;
+    return RequestStatus.SUCCESS;
   } catch (error) {
     report(error);
-    return requestStatus.FAILURE;
+    return RequestStatus.FAILURE;
   }
 };

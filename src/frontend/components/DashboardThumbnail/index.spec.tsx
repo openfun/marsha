@@ -5,7 +5,7 @@ import { ImportMock } from 'ts-mock-imports';
 
 import { DashboardThumbnail } from '.';
 import * as useThumbnailModule from '../../data/stores/useThumbnail';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -41,7 +41,7 @@ describe('<DashboardThumbnail />', () => {
         active_stamp: 128748302847,
         id: '42',
         is_ready_to_show: true,
-        upload_state: uploadState.READY,
+        upload_state: UploadState.READY,
         urls: {
           144: 'https://example.com/thumbnail/144',
           240: 'https://example.com/thumbnail/240',
@@ -51,7 +51,7 @@ describe('<DashboardThumbnail />', () => {
         },
         video: '43',
       },
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     useThumbnailStub.returns({
@@ -86,7 +86,7 @@ describe('<DashboardThumbnail />', () => {
       is_ready_to_show: true,
       show_download: true,
       thumbnail: null,
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
     useThumbnailStub.returns({
       addThumbnail: mockAddThumbnail,
@@ -123,7 +123,7 @@ describe('<DashboardThumbnail />', () => {
         active_stamp: 128748302847,
         id: '42',
         is_ready_to_show: true,
-        upload_state: uploadState.UPLOADING,
+        upload_state: UploadState.UPLOADING,
         urls: {
           144: 'https://example.com/thumbnail/144',
           240: 'https://example.com/thumbnail/240',
@@ -133,7 +133,7 @@ describe('<DashboardThumbnail />', () => {
         },
         video: '43',
       },
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     useThumbnailStub.returns({
@@ -171,7 +171,7 @@ describe('<DashboardThumbnail />', () => {
         active_stamp: 128748302847,
         id: '42',
         is_ready_to_show: true,
-        upload_state: uploadState.PROCESSING,
+        upload_state: UploadState.PROCESSING,
         urls: {
           144: 'https://example.com/thumbnail/144',
           240: 'https://example.com/thumbnail/240',
@@ -181,7 +181,7 @@ describe('<DashboardThumbnail />', () => {
         },
         video: '43',
       },
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     useThumbnailStub.returns({
@@ -217,7 +217,7 @@ describe('<DashboardThumbnail />', () => {
         active_stamp: 128748302847,
         id: '42',
         is_ready_to_show: true,
-        upload_state: uploadState.ERROR,
+        upload_state: UploadState.ERROR,
         urls: {
           144: 'https://example.com/thumbnail/144',
           240: 'https://example.com/thumbnail/240',
@@ -227,7 +227,7 @@ describe('<DashboardThumbnail />', () => {
         },
         video: '43',
       },
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     useThumbnailStub.returns({
@@ -264,7 +264,7 @@ describe('<DashboardThumbnail />', () => {
       is_ready_to_show: true,
       show_download: true,
       thumbnail: null,
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     useThumbnailStub.onCall(0).returns({
@@ -298,7 +298,7 @@ describe('<DashboardThumbnail />', () => {
           active_stamp: 128748302847,
           id: '42',
           is_ready_to_show: true,
-          upload_state: uploadState.READY,
+          upload_state: UploadState.READY,
           urls: {
             144: 'https://example.com/thumbnail/144',
             240: 'https://example.com/thumbnail/240',

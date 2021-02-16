@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
   moduleNameMapper: {
@@ -8,6 +10,6 @@ module.exports = {
     'regenerator-runtime/runtime',
     './testSetup.ts',
   ],
-  testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
+  testMatch: [path.join(__dirname, '/**/*.spec.+(ts|tsx|js)')],
   testURL: 'https://localhost',
 };

@@ -64,12 +64,12 @@ export enum VerbDefinition {
   terminated = 'http://adlnet.gov/expapi/verbs/terminated',
 }
 
-/************* Played event  *************/
+/** *********** Played event  ************ */
 export interface PlayedResultExtensions {
   time: number;
 }
 
-/************* Initialized event **********/
+/** *********** Initialized event ********* */
 export interface InitializedContextExtensions {
   length: number;
   ccSubtitleEnabled?: boolean;
@@ -85,26 +85,26 @@ export interface InitializedContextExtensions {
   volume?: number;
 }
 
-/************* Paused event  **************/
+/** *********** Paused event  ************* */
 
 export interface PausedResultExtensions {
   time: number;
 }
 
-/************* Seeked event  ***************/
+/** *********** Seeked event  ************** */
 
 export interface SeekedResultExtensions {
   timeFrom: number;
   timeTo: number;
 }
 
-/************* Terminated event  *************/
+/** *********** Terminated event  ************ */
 
 export interface TerminatedResultExtensions {
   time: number;
 }
 
-/************* Interacted event  *************/
+/** *********** Interacted event  ************ */
 
 export interface InteractedResultExtensions {
   time: number;

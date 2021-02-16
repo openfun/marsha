@@ -20,7 +20,7 @@ export const useCurrentUser = create<CurrentUserState>((set, get) => ({
     set({ currentUser });
   },
   getCurrentUser: () => {
-    const currentUser = get().currentUser;
+    const { currentUser } = get();
     if (!currentUser) {
       getCurrentUser();
     }

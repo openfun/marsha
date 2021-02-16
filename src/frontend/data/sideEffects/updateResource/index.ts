@@ -1,11 +1,11 @@
 import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import { Resource } from '../../../types/tracks';
 import { appData } from '../../appData';
 
 export async function updateResource<R extends Resource>(
   resource: R,
-  resourceName: modelName,
+  resourceName: ModelName,
 ): Promise<R> {
   const endpoint = `${API_ENDPOINT}/${resourceName}/${resource.id}/`;
 
@@ -24,5 +24,5 @@ export async function updateResource<R extends Resource>(
     );
   }
 
-  return await response.json();
+  return response.json();
 }

@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import { TimedText } from '../../../types/tracks';
 import { appData } from '../../appData';
 
@@ -9,7 +9,7 @@ import { appData } from '../../appData';
  */
 export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
   const response = await fetch(
-    `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
+    `${API_ENDPOINT}/${ModelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {
         Authorization: `Bearer ${appData.jwt}`,
@@ -20,7 +20,7 @@ export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to delete ${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}.`,
+      `Failed to delete ${ModelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}.`,
     );
   }
 

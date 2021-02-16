@@ -1,5 +1,5 @@
 import { Document } from '../../types/file';
-import { liveState, uploadState, Video } from '../../types/tracks';
+import { UploadState, Video } from '../../types/tracks';
 
 export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
   description: '',
@@ -10,7 +10,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
   thumbnail: null,
   timed_text_tracks: [],
   title: '',
-  upload_state: uploadState.READY,
+  upload_state: UploadState.READY,
   urls: {
     manifests: {
       hls: 'https://example.com/hls',
@@ -53,7 +53,7 @@ export const documentMockFactory = (
     is_ready_to_show: true,
     show_download: true,
     title: 'foo.pdf',
-    upload_state: uploadState.PROCESSING,
+    upload_state: UploadState.PROCESSING,
     url: `https://example.com/document/${id}`,
     playlist: {
       title: 'foo',

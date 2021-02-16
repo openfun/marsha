@@ -6,7 +6,7 @@ export const report = (error: Error) => {
   if (appData.sentry_dsn) {
     Sentry.captureException(error);
   } else {
-    // tslint:disable:no-console
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 };

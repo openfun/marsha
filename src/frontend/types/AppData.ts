@@ -1,23 +1,23 @@
 import { Nullable } from '../utils/types';
 import { Document } from './file';
-import { modelName } from './models';
+import { ModelName } from './models';
 import { Video } from './tracks';
 
-export enum appState {
+export enum AppState {
   ERROR = 'error',
   SUCCESS = 'success',
 }
 
-export enum flags {
+export enum Flags {
   VIDEO_LIVE = 'video_live',
 }
 
 export interface AppData {
   jwt?: string;
-  state: appState;
+  state: AppState;
   video?: Nullable<Video>;
   document?: Nullable<Document>;
-  modelName: modelName.VIDEOS | modelName.DOCUMENTS;
+  modelName: ModelName.VIDEOS | ModelName.DOCUMENTS;
   sentry_dsn: Nullable<string>;
   environment: string;
   frontend: string;
@@ -29,6 +29,6 @@ export interface AppData {
   };
   player?: string;
   flags: {
-    [key in flags]?: boolean;
+    [key in Flags]?: boolean;
   };
 }

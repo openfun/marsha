@@ -1,14 +1,13 @@
 import { cleanup, render } from '@testing-library/react';
 import * as React from 'react';
 
-import { appState } from '../../types/AppData';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
+import { AppState } from '../../types/AppData';
+import { ModelName } from '../../types/models';
+import { UploadState } from '../../types/tracks';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { PLAYER_ROUTE } from '../routes';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { RedirectOnLoad } from './index';
 
 let mockState: any;
@@ -45,10 +44,10 @@ describe('<RedirectOnLoad />', () => {
   beforeEach(jest.resetAllMocks);
 
   it('redirects users to the error view on LTI error', () => {
-    mockState = appState.ERROR;
+    mockState = AppState.ERROR;
     mockVideo = null;
     mockDocument = null;
-    mockModelName = modelName.VIDEOS;
+    mockModelName = ModelName.VIDEOS;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -65,10 +64,10 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to the error view when there is no resource', () => {
-    mockState = appState.SUCCESS;
+    mockState = AppState.SUCCESS;
     mockVideo = null;
     mockDocument = null;
-    mockModelName = modelName.VIDEOS;
+    mockModelName = ModelName.VIDEOS;
 
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
@@ -84,57 +83,56 @@ describe('<RedirectOnLoad />', () => {
     getByText('Error Component: notFound');
   });
 
-  it('redirects users to the player when the video can be shown', async () => {
-    mockState = appState.SUCCESS;
-    mockModelName = modelName.VIDEOS;
+  it('redirects users to the player when the video can be shown', () => {
+    mockState = AppState.SUCCESS;
+    mockModelName = ModelName.VIDEOS;
     mockDocument = null;
     mockCanUpdate = false;
-
-    for (const state of Object.values(uploadState)) {
+    Object.values(UploadState).forEach((state) => {
       mockVideo = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
+            path: PLAYER_ROUTE(ModelName.VIDEOS),
             render: () => <span>video player</span>,
           },
         ]),
       );
 
       getByText('video player');
-      await cleanup();
-    }
+      cleanup();
+    });
   });
 
-  it('redirects users to the player when the document can be shown', async () => {
-    mockState = appState.SUCCESS;
-    mockModelName = modelName.DOCUMENTS;
+  it('redirects users to the player when the document can be shown', () => {
+    mockState = AppState.SUCCESS;
+    mockModelName = ModelName.DOCUMENTS;
     mockVideo = null;
     mockCanUpdate = false;
 
-    for (const state of Object.values(uploadState)) {
+    Object.values(UploadState).forEach((state) => {
       mockDocument = { is_ready_to_show: true, upload_state: state };
       const { getByText } = render(
         wrapInRouter(<RedirectOnLoad />, [
           {
-            path: PLAYER_ROUTE(modelName.DOCUMENTS),
+            path: PLAYER_ROUTE(ModelName.DOCUMENTS),
             render: () => <span>document player</span>,
           },
         ]),
       );
 
       getByText('document player');
-      await cleanup();
-    }
+      cleanup();
+    });
   });
 
   it('redirects users to /dashboard when video is not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
+    mockState = AppState.SUCCESS;
     mockVideo = {
       is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     };
-    mockModelName = modelName.VIDEOS;
+    mockModelName = ModelName.VIDEOS;
     mockDocument = null;
     mockCanUpdate = true;
 
@@ -153,12 +151,12 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
+    mockState = AppState.SUCCESS;
     mockDocument = {
       is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     };
-    mockModelName = modelName.DOCUMENTS;
+    mockModelName = ModelName.DOCUMENTS;
     mockVideo = null;
     mockCanUpdate = true;
 
@@ -177,12 +175,12 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /error when video is not ready to be shown and it has no permissions to update it', () => {
-    mockState = appState.SUCCESS;
+    mockState = AppState.SUCCESS;
     mockVideo = {
       is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     };
-    mockModelName = modelName.VIDEOS;
+    mockModelName = ModelName.VIDEOS;
     mockDocument = null;
     mockCanUpdate = false;
 
@@ -201,12 +199,12 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /error when document is not ready to be shown and it has no permissions to update it', () => {
-    mockState = appState.SUCCESS;
+    mockState = AppState.SUCCESS;
     mockDocument = {
       is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     };
-    mockModelName = modelName.DOCUMENTS;
+    mockModelName = ModelName.DOCUMENTS;
     mockVideo = null;
     mockCanUpdate = false;
 

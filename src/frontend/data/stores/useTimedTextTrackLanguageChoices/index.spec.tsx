@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { useTimedTextTrackLanguageChoices } from '.';
-import { requestStatus } from '../../../types/api';
+import { RequestStatus } from '../../../types/api';
 import { report } from '../../../utils/errors/report';
 
 jest.mock('../../appData', () => ({
@@ -51,7 +51,7 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
       const { choices, getChoices } = getLatestHookValues();
       expect(choices).toEqual(undefined);
       await act(async () => {
-        expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+        expect(await getChoices()).toEqual(RequestStatus.SUCCESS);
       });
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/');
@@ -67,7 +67,7 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
         { label: 'French', value: 'fr' },
       ]);
       await act(async () => {
-        expect(await getChoices()).toEqual(requestStatus.SUCCESS);
+        expect(await getChoices()).toEqual(RequestStatus.SUCCESS);
       });
       expect(fetchMock.calls().length).toEqual(1);
     }
@@ -81,7 +81,7 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
       const { choices, getChoices } = getLatestHookValues();
       expect(choices).toEqual(undefined);
       await act(async () => {
-        expect(await getChoices()).toEqual(requestStatus.FAILURE);
+        expect(await getChoices()).toEqual(RequestStatus.FAILURE);
       });
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/');

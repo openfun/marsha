@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage, MessageDescriptor } from 'react-intl';
 import styled from 'styled-components';
 
-import { TimedText, timedTextMode } from '../../types/tracks';
+import { TimedText, TimedTextMode } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { TimedTextCreationForm } from '../TimedTextCreationForm';
 import { TimedTextListItem } from '../TimedTextListItem';
@@ -14,7 +14,7 @@ const DashboardTimedTextManagerStyled = styled.div`
 /** Props shape for the DashboardTimedTextManager component. */
 interface DashboardTimedTextManagerProps {
   message: MessageDescriptor;
-  mode: timedTextMode;
+  mode: TimedTextMode;
   tracks: TimedText[];
 }
 

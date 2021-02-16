@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { IframeHeading } from '../Headings';
 
@@ -37,7 +37,7 @@ const DashboardContainer = styled.div`
 interface DashboardProps {
   video?: Video;
   document?: Document;
-  objectType: modelName;
+  objectType: ModelName;
 }
 
 /** Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
@@ -51,8 +51,8 @@ const Dashboard = ({ document, video, objectType }: DashboardProps) => {
       <IframeHeadingWithLayout>
         <FormattedMessage {...messages.title} />
       </IframeHeadingWithLayout>
-      {objectType === modelName.VIDEOS && <DashboardVideo video={video!} />}
-      {objectType === modelName.DOCUMENTS && (
+      {objectType === ModelName.VIDEOS && <DashboardVideo video={video!} />}
+      {objectType === ModelName.DOCUMENTS && (
         <DashboardDocument document={document!} />
       )}
     </DashboardContainer>

@@ -36,7 +36,7 @@ export class QualitySelector extends Plugin {
     if (this.player.videojs_quality_selector_plugin_initialized) {
       return;
     }
-    const controlBar = this.player.controlBar;
+    const { controlBar } = this.player;
     const fullscreenToggle = controlBar.getChild('fullscreenToggle')?.el();
     controlBar
       .el()

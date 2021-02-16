@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ErrorComponent } from '../ErrorComponent';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -26,7 +26,7 @@ export const Routes = () => (
           exact
           path={PLAYER_ROUTE()}
           render={({ match }) => {
-            if (match.params.objectType === modelName.VIDEOS && appData.video) {
+            if (match.params.objectType === ModelName.VIDEOS && appData.video) {
               return (
                 <InstructorWrapper resource={appData.video}>
                   <VideoPlayer
@@ -38,7 +38,7 @@ export const Routes = () => (
             }
 
             if (
-              match.params.objectType === modelName.DOCUMENTS &&
+              match.params.objectType === ModelName.DOCUMENTS &&
               appData.document
             ) {
               return (
@@ -70,20 +70,20 @@ export const Routes = () => (
           exact
           path={DASHBOARD_ROUTE()}
           render={() => {
-            if (appData.modelName === modelName.DOCUMENTS) {
+            if (appData.modelName === ModelName.DOCUMENTS) {
               return (
                 <Dashboard
                   document={appData.document!}
-                  objectType={modelName.DOCUMENTS}
+                  objectType={ModelName.DOCUMENTS}
                 />
               );
             }
 
-            if (appData.modelName === modelName.VIDEOS) {
+            if (appData.modelName === ModelName.VIDEOS) {
               return (
                 <Dashboard
                   video={appData.video!}
-                  objectType={modelName.VIDEOS}
+                  objectType={ModelName.VIDEOS}
                 />
               );
             }

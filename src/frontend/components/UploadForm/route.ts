@@ -1,4 +1,4 @@
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
 
 /**
@@ -7,12 +7,12 @@ import { UploadableObject } from '../../types/tracks';
  * @param objectId The ID of said object.
  */
 export const UPLOAD_FORM_ROUTE = (
-  objectType?: modelName,
+  objectType?: ModelName,
   objectId?: UploadableObject['id'],
 ) => {
   if (objectType) {
     return `/form/${objectType}/${objectId}`;
   } else {
-    return `/form/:objectType(${Object.values(modelName).join('|')})/:objectId`;
+    return `/form/:objectType(${Object.values(ModelName).join('|')})/:objectId`;
   }
 };

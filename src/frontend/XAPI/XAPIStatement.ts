@@ -113,7 +113,7 @@ export class XAPIStatement {
   computeCompletionThreshold() {
     // beyond durationThreshold we've reached the maximal completion threshold
     const durationThreshold = 600;
-    let duration = this.duration;
+    let { duration } = this;
     if (duration > durationThreshold) {
       duration = durationThreshold;
     }
@@ -136,11 +136,11 @@ export class XAPIStatement {
     } = {
       [ContextExtensionsDefinition.sessionId]: this.sessionId,
     };
-    for (const key of Object.keys(contextExtensions)) {
+    Object.keys(contextExtensions).forEach((key) => {
       extensions[
         ContextExtensionsDefinition[key as keyof InitializedContextExtensions]
       ] = contextExtensions[key as keyof InitializedContextExtensions];
-    }
+    });
 
     this.setDuration(contextExtensions.length);
     this.startedAt = DateTime.utc();
@@ -346,11 +346,11 @@ export class XAPIStatement {
     } = {
       [ContextExtensionsDefinition.sessionId]: this.sessionId,
     };
-    for (const key of Object.keys(contextExtensions)) {
+    Object.keys(contextExtensions).forEach((key) => {
       extensions[
         ContextExtensionsDefinition[key as keyof InteractedContextExtensions]
       ] = contextExtensions[key as keyof InteractedContextExtensions];
-    }
+    });
 
     const data: DataPayload = {
       context: {

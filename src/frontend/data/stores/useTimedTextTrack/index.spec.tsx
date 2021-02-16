@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { useTimedTextTrack } from '.';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
   appData: {
@@ -64,7 +64,7 @@ describe('stores/useTimedTextTrack', () => {
 
     const state = getLatestHookValues();
 
-    expect(state[modelName.TIMEDTEXTTRACKS]).toEqual({
+    expect(state[ModelName.TIMEDTEXTTRACKS]).toEqual({
       'ttt-1': {
         active_stamp: 1549385921,
         id: 'ttt-1',
@@ -145,20 +145,20 @@ describe('stores/useTimedTextTrack', () => {
     useTimedTextTrack.getState().addResource({ id: 'newResource' } as any);
 
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].newResource,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].newResource,
     ).toEqual({ id: 'newResource' });
   });
   it('removes an existing resource', () => {
     useTimedTextTrack.getState().addResource({ id: 'toDelete' } as any);
 
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].toDelete,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].toDelete,
     ).toEqual({ id: 'toDelete' });
 
     useTimedTextTrack.getState().removeResource({ id: 'toDelete' } as any);
 
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].toDelete,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].toDelete,
     ).toBeUndefined();
 
     useTimedTextTrack
@@ -178,13 +178,13 @@ describe('stores/useTimedTextTrack', () => {
       ]);
 
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].multi1,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].multi1,
     ).toEqual({ id: 'multi1' });
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].multi2,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].multi2,
     ).toEqual({ id: 'multi2' });
     expect(
-      useTimedTextTrack.getState()[modelName.TIMEDTEXTTRACKS].multi3,
+      useTimedTextTrack.getState()[ModelName.TIMEDTEXTTRACKS].multi3,
     ).toEqual({ id: 'multi3' });
   });
 });

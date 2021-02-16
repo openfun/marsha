@@ -1,14 +1,15 @@
 import { Box } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Redirect } from 'react-router';
 import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { UploadState, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
@@ -30,7 +31,7 @@ const {
   PROCESSING,
   READY,
   UPLOADING,
-} = uploadState;
+} = UploadState;
 
 const messages = defineMessages({
   [DELETED]: {
@@ -136,8 +137,8 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       else if (incomingVideo.upload_state === READY) {
         updateVideo(incomingVideo);
       }
-    } catch (error) {
-      report(error);
+    } catch (err) {
+      report(err);
       setError(true);
     }
   };
@@ -162,7 +163,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   }
 
   const CommonStatusLine = () => (
-    <Box align={'center'} direction={'row'}>
+    <Box align="center" direction="row">
       <DashboardVideoPaneInternalHeading>
         {intl.formatMessage(messages.title)}
       </DashboardVideoPaneInternalHeading>
@@ -178,11 +179,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       if (video.live_state !== null) {
         return (
           <DashboardVideoPaneInnerContainer>
-            <Box direction={'row'}>
-              <Box basis={'1/2'} margin={'small'}>
+            <Box direction="row">
+              <Box basis="1/2" margin="small">
                 <CommonStatusLine />
               </Box>
-              <Box basis={'1/2'} margin={'small'}>
+              <Box basis="1/2" margin="small">
                 <DashboardVideoLive video={video} />
               </Box>
             </Box>
@@ -195,7 +196,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
             {intl.formatMessage(messages[PENDING])}
             <DashboardPaneButtons
               object={video}
-              objectType={modelName.VIDEOS}
+              objectType={ModelName.VIDEOS}
             />
           </DashboardVideoPaneInnerContainer>
         );
@@ -223,30 +224,30 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     case READY:
       return (
         <DashboardVideoPaneInnerContainer>
-          <Box direction={'row'}>
-            <Box basis={'1/2'} margin={'small'}>
+          <Box direction="row">
+            <Box basis="1/2" margin="small">
               <CommonStatusLine />
               {intl.formatMessage(messages[READY])}
               <DashboardVideoPaneDownloadOption video={video} />
               <DashboardVideoPaneTranscriptOption video={video} />
             </Box>
-            <Box basis={'1/2'} margin={'small'}>
+            <Box basis="1/2" margin="small">
               <DashboardThumbnail video={video} />
             </Box>
           </Box>
-          <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
+          <DashboardPaneButtons object={video} objectType={ModelName.VIDEOS} />
         </DashboardVideoPaneInnerContainer>
       );
 
     case HARVESTED:
       return (
         <DashboardVideoPaneInnerContainer>
-          <Box direction={'column'}>
-            <Box basis={'1/2'} margin={'small'}>
+          <Box direction="column">
+            <Box basis="1/2" margin="small">
               <CommonStatusLine />
               {intl.formatMessage(messages[video.upload_state])}
             </Box>
-            <Box basis={'1/2'} margin={'small'}>
+            <Box basis="1/2" margin="small">
               <DashboardVideoHarvested video={video} />
             </Box>
           </Box>

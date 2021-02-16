@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { initiateUpload } from '.';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
 
@@ -15,7 +15,7 @@ describe('sideEffects/initiateUpload', () => {
       { method: 'POST' },
     );
     const policy = await initiateUpload(
-      modelName.VIDEOS,
+      ModelName.VIDEOS,
       '42',
       'foo.pdf',
       'application/pdf',
@@ -35,7 +35,7 @@ describe('sideEffects/initiateUpload', () => {
     );
 
     await expect(
-      initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
+      initiateUpload(ModelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
     ).rejects.toThrowError('Failed to perform the request');
   });
 
@@ -43,7 +43,7 @@ describe('sideEffects/initiateUpload', () => {
     fetchMock.mock('/api/videos/42/initiate-upload/', 400);
 
     await expect(
-      initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
+      initiateUpload(ModelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
     ).rejects.toThrowError(
       'Failed to trigger initiate-upload on the API for videos/42.',
     );

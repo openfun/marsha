@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { ObjectStatusPicker } from '.';
-import { liveState, uploadState } from '../../types/tracks';
+import { LiveState, UploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 const {
@@ -14,8 +14,8 @@ const {
   PROCESSING,
   READY,
   UPLOADING,
-} = uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED } = liveState;
+} = UploadState;
+const { IDLE, STARTING, RUNNING, STOPPED } = LiveState;
 
 describe('<ObjectStatusPicker />', () => {
   it('renders the status list for upload state PENDING', () => {
@@ -59,7 +59,7 @@ describe('<ObjectStatusPicker />', () => {
   it('renders the status list for upload state HARVESTING', () => {
     render(wrapInIntlProvider(<ObjectStatusPicker state={HARVESTING} />));
 
-    screen.getByText('Transforming live in VOD');
+    screen.getByText('Transforming live in VOD ✔️');
   });
 
   it('renders the status list for upload state HARVESTED', () => {

@@ -1,11 +1,9 @@
 import React from 'react';
 
 import { useVideo } from '../../data/stores/useVideo';
-import { uploadState, Video } from '../../types/tracks';
+import { UploadState, Video } from '../../types/tracks';
 import { DashboardTimedTextPane } from '../DashboardTimedTextPane';
 import { DashboardVideoPane } from '../DashboardVideoPane';
-
-const { READY, PENDING } = uploadState;
 
 interface DashboardVideoProps {
   video: Video;
@@ -16,9 +14,9 @@ const DashboardVideo = (props: DashboardVideoProps) => {
   const displayTimedTextPane =
     video.live_state === null &&
     ![
-      uploadState.DELETED,
-      uploadState.HARVESTED,
-      uploadState.HARVESTING,
+      UploadState.DELETED,
+      UploadState.HARVESTED,
+      UploadState.HARVESTING,
     ].includes(video.upload_state);
 
   return (

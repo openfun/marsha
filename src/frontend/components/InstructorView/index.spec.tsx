@@ -4,7 +4,7 @@ import React from 'react';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { InstructorView } from './';
+import { InstructorView } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 

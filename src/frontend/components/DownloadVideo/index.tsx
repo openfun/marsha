@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { Video, videoSize } from '../../types/tracks';
+import { Video, VideoSize } from '../../types/tracks';
 
 const messages = defineMessages({
   downloadVideo: {
@@ -34,15 +34,15 @@ const StatusInfo = styled.span`
   cursor: pointer;
 `;
 
-type downloadableSize = Extract<videoSize, 1080 | 720 | 480>;
+type DownloadableSize = Extract<VideoSize, 1080 | 720 | 480>;
 
 export const DownloadVideo = ({ video }: { video: Video }) => {
   const resolutions = Object.keys(video.urls.mp4).map(
-    (size) => Number(size) as videoSize,
+    (size) => Number(size) as VideoSize,
   );
-  const elements: JSX.Element[] = ([1080, 720, 480] as downloadableSize[])
+  const elements: JSX.Element[] = ([1080, 720, 480] as DownloadableSize[])
     .filter((size) => resolutions.includes(size))
-    .reduce((acc: JSX.Element[], size: downloadableSize) => {
+    .reduce((acc: JSX.Element[], size: DownloadableSize) => {
       acc.push(
         <Fragment key={`fragment-${size}`}>
           <a href={video.urls.mp4[size]}>{size}p</a>

@@ -4,7 +4,7 @@ import { Grommet } from 'grommet';
 import React from 'react';
 
 import { DashboardDocumentTitleForm } from '.';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { documentMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -28,7 +28,7 @@ describe('DashboardDocumentTitleForm', () => {
             document={documentMockFactory({
               id: '46',
               title: 'document title',
-              upload_state: uploadState.READY,
+              upload_state: UploadState.READY,
             })}
           />
         </Grommet>,
@@ -45,7 +45,7 @@ describe('DashboardDocumentTitleForm', () => {
     const document = documentMockFactory({
       id: '46',
       title: 'foo.pdf',
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     });
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });

@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { defineMessages } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getResourceList } from '../../data/sideEffects/getResourceList';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
-import { requestStatus } from '../../types/api';
-import { modelName } from '../../types/models';
-import { timedTextMode } from '../../types/tracks';
+import { RequestStatus } from '../../types/api';
+import { ModelName } from '../../types/models';
+import { TimedTextMode } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { DashboardTimedTextManager } from '../DashboardTimedTextManager';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 
 const messages = defineMessages({
-  [timedTextMode.CLOSED_CAPTIONING]: {
+  [TimedTextMode.CLOSED_CAPTIONING]: {
     defaultMessage: 'Closed captions',
     description: 'Title for the closed captions management in the dashboard.',
     id: 'components.DashboardTimedTextPane.closedCaptions',
   },
-  [timedTextMode.SUBTITLE]: {
+  [TimedTextMode.SUBTITLE]: {
     defaultMessage: 'Subtitles',
     description: 'Title for the subtitles management in the dashboard.',
     id: 'components.DashboardTimedTextPane.subtitles',
   },
-  [timedTextMode.TRANSCRIPT]: {
+  [TimedTextMode.TRANSCRIPT]: {
     defaultMessage: 'Transcripts',
     description: 'Title for the transcripts management in the dashboard.',
     id: 'components.DashboardTimedTextPane.transcripts',
@@ -41,19 +41,19 @@ const DashboardTimedTextPaneStyled = styled.div`
 export const DashboardTimedTextPane = () => {
   const [status, setStatus] = useState('');
   useAsyncEffect(async () => {
-    setStatus(await getResourceList(modelName.TIMEDTEXTTRACKS));
+    setStatus(await getResourceList(ModelName.TIMEDTEXTTRACKS));
   }, []);
   const timedtexttracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
 
-  if (status === requestStatus.FAILURE) {
+  if (status === RequestStatus.FAILURE) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('notFound')} />;
   }
 
   return (
     <DashboardTimedTextPaneStyled>
-      {(Object.values(timedTextMode) as timedTextMode[]).map((mode) => (
+      {(Object.values(TimedTextMode) as TimedTextMode[]).map((mode) => (
         <DashboardTimedTextManager
           key={mode}
           message={messages[mode]}

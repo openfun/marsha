@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages } from 'react-intl';
 
 import { DashboardTimedTextManager } from '.';
-import { TimedText, timedTextMode, uploadState } from '../../types/tracks';
+import { TimedText, TimedTextMode, UploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -47,14 +47,14 @@ describe('<DashboardTimedTextManager />', () => {
       {
         id: '42',
         language: 'fr',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.TRANSCRIPT,
+        upload_state: UploadState.READY,
       } as TimedText,
       {
         id: '43',
         language: 'en',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.TRANSCRIPT,
+        upload_state: UploadState.READY,
       } as TimedText,
     ];
 
@@ -63,7 +63,7 @@ describe('<DashboardTimedTextManager />', () => {
         wrapInRouter(
           <DashboardTimedTextManager
             message={message.key}
-            mode={timedTextMode.TRANSCRIPT}
+            mode={TimedTextMode.TRANSCRIPT}
             tracks={tracks}
           />,
         ),

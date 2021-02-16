@@ -7,17 +7,17 @@ import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrac
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { requestStatus } from '../../types/api';
+import { RequestStatus } from '../../types/api';
 import { LanguageChoice } from '../../types/LanguageChoice';
-import { modelName } from '../../types/models';
-import { TimedText, uploadState } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { TimedText, UploadState } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
-const { PENDING, PROCESSING, UPLOADING } = uploadState;
+const { PENDING, PROCESSING, UPLOADING } = UploadState;
 
 const messages = defineMessages({
   delete: {
@@ -86,8 +86,8 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
 
     if ([PENDING, UPLOADING, PROCESSING].includes(track.upload_state)) {
       window.setTimeout(async () => {
-        const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
-        if (result === requestStatus.FAILURE) {
+        const result = await pollForTrack(ModelName.TIMEDTEXTTRACKS, track.id);
+        if (result === RequestStatus.FAILURE) {
           setError('notFound');
         }
       }, 1000 * 10);
@@ -115,19 +115,19 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
       <ObjectStatusPickerStyled state={track.upload_state} />
       <TimedTextListItemActions>
         <ActionLink
-          color={'status-critical'}
+          color="status-critical"
           label={<FormattedMessage {...messages.delete} />}
           onClick={() => deleteTrack()}
         />
         &nbsp;/&nbsp;
-        <Link to={UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, track.id)}>
+        <Link to={UPLOAD_FORM_ROUTE(ModelName.TIMEDTEXTTRACKS, track.id)}>
           <FormattedMessage
-            {...(track.upload_state === uploadState.PENDING
+            {...(track.upload_state === UploadState.PENDING
               ? messages.upload
               : messages.replace)}
           />
         </Link>
-        {track.upload_state === uploadState.READY && track.source_url && (
+        {track.upload_state === UploadState.READY && track.source_url && (
           <React.Fragment>
             &nbsp;/&nbsp;
             <a href={track.source_url}>

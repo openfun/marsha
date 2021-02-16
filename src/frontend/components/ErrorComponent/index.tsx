@@ -36,8 +36,7 @@ const ErrorContent = styled.div`
 const messages = {
   lti: defineMessages({
     text: {
-      defaultMessage: `We could not validate your access to this video. Please contact your instructor.
-      If you are the instructor, please check your settings.`,
+      defaultMessage: `We could not validate your access to this video. Please contact your instructor. If you are the instructor, please check your settings.`,
       description: 'Helpful text for the LTI error page',
       id: 'components.ErrorComponent.lti.text',
     },
@@ -49,8 +48,7 @@ const messages = {
   }),
   notFound: defineMessages({
     text: {
-      defaultMessage: `This video does not exist or has not been published yet.
-      If you are an instructor, please make sure you are properly authenticated.`,
+      defaultMessage: `This video does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.`,
       description: 'Helpful text for the 404 Not Found error page',
       id: 'components.ErrorComponent.notFound.text',
     },

@@ -5,10 +5,10 @@ import { ImportMock } from 'ts-mock-imports';
 
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { createPlayer } from '../../Player/createPlayer';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { jestMockOf } from '../../utils/types';
+import { JestMockOf } from '../../utils/types';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -17,7 +17,7 @@ jest.mock('../../Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
+const mockCreatePlayer = createPlayer as JestMockOf<typeof createPlayer>;
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
   useTimedTextTrackModule,
@@ -32,7 +32,7 @@ const mockVideo = videoMockFactory({
   thumbnail: null,
   timed_text_tracks: [],
   title: 'Some title',
-  upload_state: uploadState.READY,
+  upload_state: UploadState.READY,
   urls: {
     manifests: {
       hls: 'https://example.com/hls.m3u8',
@@ -127,7 +127,7 @@ describe('VideoPlayer', () => {
 
     const { container, getByText, queryByText } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
     await waitFor(() =>
@@ -160,7 +160,7 @@ describe('VideoPlayer', () => {
 
     render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 
@@ -186,7 +186,7 @@ describe('VideoPlayer', () => {
 
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 
@@ -221,7 +221,7 @@ describe('VideoPlayer', () => {
 
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 

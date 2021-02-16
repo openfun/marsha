@@ -4,7 +4,7 @@ import { Grommet } from 'grommet';
 import React from 'react';
 
 import DashboardDocument from '.';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { documentMockFactory } from '../../utils/tests/factories';
@@ -29,7 +29,7 @@ describe('<DashboardDocument />', () => {
     const document = documentMockFactory({
       id: '44',
       is_ready_to_show: true,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     });
 
     fetchMock.mock('/api/documents/44/', deferred.promise);
@@ -57,15 +57,15 @@ describe('<DashboardDocument />', () => {
         JSON.stringify({
           ...document,
           is_ready_to_show: false,
-          upload_state: uploadState.PROCESSING,
+          upload_state: UploadState.PROCESSING,
         }),
       ),
     );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
-      expect(fetchMock.lastCall()![1]!.headers).toEqual({
-        Authorization: 'Bearer cool_token_m8',
-      });
+    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/');
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
     screen.getByText('Processing');
 
     // The document will be ready in further responses
@@ -80,7 +80,7 @@ describe('<DashboardDocument />', () => {
         JSON.stringify({
           ...document,
           is_ready_to_show: true,
-          upload_state: uploadState.READY,
+          upload_state: UploadState.READY,
         }),
       ),
     );
@@ -101,7 +101,7 @@ describe('<DashboardDocument />', () => {
             document={documentMockFactory({
               id: '45',
               is_ready_to_show: true,
-              upload_state: uploadState.PENDING,
+              upload_state: UploadState.PENDING,
             })}
           />,
         ),
@@ -118,7 +118,7 @@ describe('<DashboardDocument />', () => {
           <DashboardDocument
             document={documentMockFactory({
               id: '45',
-              upload_state: uploadState.ERROR,
+              upload_state: UploadState.ERROR,
               is_ready_to_show: true,
             })}
           />,
@@ -142,7 +142,7 @@ describe('<DashboardDocument />', () => {
               document={documentMockFactory({
                 id: '45',
                 is_ready_to_show: true,
-                upload_state: uploadState.READY,
+                upload_state: UploadState.READY,
                 title: 'foo',
                 playlist: {
                   title: 'foo',
@@ -178,7 +178,7 @@ describe('<DashboardDocument />', () => {
           <DashboardDocument
             document={documentMockFactory({
               id: '45',
-              upload_state: uploadState.UPLOADING,
+              upload_state: UploadState.UPLOADING,
             })}
           />,
         ),

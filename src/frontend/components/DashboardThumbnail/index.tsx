@@ -7,8 +7,8 @@ import { appData } from '../../data/appData';
 import { createThumbnail } from '../../data/sideEffects/createThumbnail';
 import { useThumbnail } from '../../data/stores/useThumbnail';
 import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
-import { Thumbnail, uploadState, Video } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { Thumbnail, UploadState, Video } from '../../types/tracks';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -19,7 +19,7 @@ const messages = defineMessages({
     description: 'Generic error message when we fail to create a thumbnail.',
     id: 'components.DashboardThumbnail.error',
   },
-  [uploadState.PROCESSING]: {
+  [UploadState.PROCESSING]: {
     defaultMessage:
       'Your thumbnail is currently processing. This may take several minutes. It will appear here once done.',
     description:
@@ -50,7 +50,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   useEffect(() => {
     if (
       thumbnail &&
-      thumbnail.upload_state === uploadState.PROCESSING &&
+      thumbnail.upload_state === UploadState.PROCESSING &&
       pollInterval === -1
     ) {
       setPollInterval(window.setInterval(() => pollThumbnail(), 1000 * 5));
@@ -66,7 +66,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const pollThumbnail = async () => {
     try {
       const response = await fetch(
-        `${API_ENDPOINT}/${modelName.THUMBNAILS}/${thumbnail!.id}/`,
+        `${API_ENDPOINT}/${ModelName.THUMBNAILS}/${thumbnail!.id}/`,
         {
           headers: {
             Authorization: `Bearer ${appData.jwt}`,
@@ -77,12 +77,12 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
       const incomingThumbnail: Thumbnail = await response.json();
       if (
         incomingThumbnail.is_ready_to_show &&
-        incomingThumbnail.upload_state === uploadState.READY
+        incomingThumbnail.upload_state === UploadState.READY
       ) {
         addThumbnail(incomingThumbnail);
       }
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setError(err);
     }
   };
 
@@ -94,8 +94,8 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
       }
 
       setShouldRedirect(true);
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setError(err);
     }
   };
 
@@ -103,29 +103,29 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     return (
       <Redirect
         push
-        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, thumbnail!.id)}
+        to={UPLOAD_FORM_ROUTE(ModelName.THUMBNAILS, thumbnail!.id)}
       />
     );
   }
 
-  const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
+  const thumbnailState = thumbnail ? thumbnail.upload_state : UploadState.READY;
 
   switch (thumbnailState) {
-    case uploadState.UPLOADING:
+    case UploadState.UPLOADING:
       return (
         <Box>
           <DashboardObjectProgress objectId={thumbnail!.id} />
         </Box>
       );
-    case uploadState.PROCESSING:
+    case UploadState.PROCESSING:
       return (
         <Box>
           <Text weight="bold">
-            <FormattedMessage {...messages[uploadState.PROCESSING]} />
+            <FormattedMessage {...messages[UploadState.PROCESSING]} />
           </Text>
         </Box>
       );
-    case uploadState.ERROR:
+    case UploadState.ERROR:
       return (
         <Box>
           <Text color="status-error">
@@ -135,11 +135,11 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
       );
     default:
       return (
-        <Box direction={'column'}>
+        <Box direction="column">
           <Box>
             <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />
           </Box>
-          <Box margin={'xsmall'} direction={'column'}>
+          <Box margin="xsmall" direction="column">
             <Button
               fill={true}
               label={<FormattedMessage {...messages.uploadButton} />}

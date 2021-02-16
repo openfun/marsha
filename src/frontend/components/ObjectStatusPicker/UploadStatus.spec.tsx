@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { statusIconKey, UploadStatus } from './UploadStatus';
+import { StatusIconKey, UploadStatus } from './UploadStatus';
 
 describe('<UploadStatus />', () => {
   it('renders with children', () => {
@@ -13,7 +13,7 @@ describe('<UploadStatus />', () => {
 
   it('displays the status icon ❌', () => {
     const { getByText } = render(
-      <UploadStatus statusIcon={statusIconKey.X}>
+      <UploadStatus statusIcon={StatusIconKey.X}>
         Some child content
       </UploadStatus>,
     );
@@ -23,7 +23,7 @@ describe('<UploadStatus />', () => {
 
   it('displays the status icon ✔️', () => {
     const { getByText } = render(
-      <UploadStatus statusIcon={statusIconKey.TICK}>
+      <UploadStatus statusIcon={StatusIconKey.TICK}>
         Some child content
       </UploadStatus>,
     );
@@ -33,7 +33,7 @@ describe('<UploadStatus />', () => {
 
   it('displays the Loader status icon ✔️', () => {
     const { container } = render(
-      <UploadStatus statusIcon={statusIconKey.LOADER}>
+      <UploadStatus statusIcon={StatusIconKey.LOADER}>
         Some child content
       </UploadStatus>,
     );

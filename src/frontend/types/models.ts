@@ -1,4 +1,4 @@
-export enum modelName {
+export enum ModelName {
   TIMEDTEXTTRACKS = 'timedtexttracks',
   THUMBNAILS = 'thumbnails',
   VIDEOS = 'videos',

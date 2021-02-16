@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import { UploadableObject } from '../../../types/tracks';
 import { appData } from '../../appData';
 
@@ -10,7 +10,7 @@ import { appData } from '../../appData';
  * @param objectId The ID of the object for which we're uploading a file.
  */
 export const initiateUpload = async (
-  objectType: modelName,
+  objectType: ModelName,
   objectId: UploadableObject['id'],
   filename: string,
   mimetype: string,
@@ -36,5 +36,5 @@ export const initiateUpload = async (
     );
   }
 
-  return await response.json();
+  return response.json();
 };

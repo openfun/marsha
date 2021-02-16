@@ -9,10 +9,6 @@ export interface UploadFieldProps {
   onContentUpdated: (fieldContent: Maybe<File>) => void;
 }
 
-interface UploadFieldState {
-  file: Maybe<File>;
-}
-
 const DropzoneStyled = styled.div`
   display: flex; /* For the dropzone contents */
   flex-grow: 1;

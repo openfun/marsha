@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { DashboardVideoPane } from '.';
-import { liveState, uploadState } from '../../types/tracks';
+import { LiveState, UploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
@@ -20,7 +20,7 @@ jest.mock('../../data/appData', () => ({
 }));
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
 
-const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = uploadState;
+const { ERROR, PENDING, PROCESSING, UPLOADING, READY } = UploadState;
 
 describe('<DashboardVideoPane />', () => {
   beforeEach(() => jest.useFakeTimers());
@@ -168,8 +168,8 @@ describe('<DashboardVideoPane />', () => {
     );
   });
 
-  it('shows the buttons only when the video is pending or ready', async () => {
-    for (const state of Object.values(uploadState)) {
+  it('shows the buttons only when the video is pending or ready', () => {
+    Object.values(UploadState).forEach((state) => {
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
@@ -198,12 +198,12 @@ describe('<DashboardVideoPane />', () => {
           expect(queryByText('Replace the video')).toEqual(null);
           expect(queryByText('Watch')).toEqual(null);
       }
-      await cleanup();
-    }
+      cleanup();
+    });
   });
 
-  it('shows the thumbnail only when the video is ready', async () => {
-    for (const state of Object.values(uploadState)) {
+  it('shows the thumbnail only when the video is ready', () => {
+    Object.values(UploadState).forEach((state) => {
       const { getByAltText, queryByAltText } = render(
         wrapInIntlProvider(
           wrapInRouter(
@@ -221,12 +221,12 @@ describe('<DashboardVideoPane />', () => {
       } else {
         expect(queryByAltText('Video thumbnail preview image.')).toEqual(null);
       }
-      await cleanup();
-    }
+      cleanup();
+    });
   });
 
   it('shows the upload progress only when the video is uploading', () => {
-    for (const state of Object.values(uploadState)) {
+    Object.values(UploadState).forEach((state) => {
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
@@ -245,11 +245,11 @@ describe('<DashboardVideoPane />', () => {
         expect(queryByText('0%')).toEqual(null);
       }
       cleanup();
-    }
+    });
   });
 
   it('shows the video live dashboard when the video is live', () => {
-    for (const state of Object.values(uploadState)) {
+    Object.values(UploadState).forEach((state) => {
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
@@ -257,7 +257,7 @@ describe('<DashboardVideoPane />', () => {
               video={videoMockFactory({
                 is_ready_to_show: false,
                 upload_state: state,
-                live_state: liveState.IDLE,
+                live_state: LiveState.IDLE,
                 live_info: {
                   medialive: {
                     input: {
@@ -280,12 +280,12 @@ describe('<DashboardVideoPane />', () => {
         expect(queryByText('Streaming link')).not.toBeInTheDocument();
       }
       cleanup();
-    }
+    });
   });
 
   it('shows the video harvested dashboard when the video is in HARVESTED state', () => {
     const video = videoMockFactory({
-      upload_state: uploadState.HARVESTED,
+      upload_state: UploadState.HARVESTED,
     });
 
     render(

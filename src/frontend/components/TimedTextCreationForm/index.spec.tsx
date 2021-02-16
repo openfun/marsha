@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { TimedTextCreationForm } from '.';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -41,7 +41,7 @@ describe('<TimedTextCreationForm />', () => {
       wrapInIntlProvider(
         <TimedTextCreationForm
           excludedLanguages={['en']}
-          mode={timedTextMode.SUBTITLE}
+          mode={TimedTextMode.SUBTITLE}
         />,
       ),
     );
@@ -61,8 +61,8 @@ describe('<TimedTextCreationForm />', () => {
         id: '42',
         is_ready_to_show: false,
         language: 'en',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.PENDING,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.PENDING,
         url: '',
         video: {} as any,
       },
@@ -74,7 +74,7 @@ describe('<TimedTextCreationForm />', () => {
         wrapInRouter(
           <TimedTextCreationForm
             excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
+            mode={TimedTextMode.SUBTITLE}
           />,
           [
             {
@@ -117,12 +117,12 @@ describe('<TimedTextCreationForm />', () => {
   it('shows an error message and reports the error when it fails to create a timedtexttrack', async () => {
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'POST' });
 
-    const { container, getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <TimedTextCreationForm
             excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
+            mode={TimedTextMode.SUBTITLE}
           />,
           [
             {

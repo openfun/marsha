@@ -1,13 +1,12 @@
 import { Box, Heading, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
-import { Video, liveState } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
+import { ModelName } from '../../types/models';
+import { Video, LiveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { PLAYER_ROUTE } from '../routes';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
@@ -73,7 +72,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
 
       const incomingVideo: Video = await response.json();
 
-      if (incomingVideo.live_state === liveState.RUNNING) {
+      if (incomingVideo.live_state === LiveState.RUNNING) {
         updateVideo(incomingVideo);
       }
     } catch (error) {
@@ -82,7 +81,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   };
 
   useEffect(() => {
-    if (video.live_state === liveState.STARTING) {
+    if (video.live_state === LiveState.STARTING) {
       const interval = setInterval(pollForVideo, 15_000);
       return () => clearInterval(interval);
     }
@@ -109,6 +108,8 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Box>
         );
       }
+
+      return null;
     },
   );
 
@@ -118,26 +119,26 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         <FormattedMessage {...messages.title} />
       </Heading>
       <Box>{endpoints}</Box>
-      <Box direction={'row'} justify={'center'} margin={'small'}>
-        {video.live_state === liveState.IDLE && (
+      <Box direction="row" justify="center" margin="small">
+        {video.live_state === LiveState.IDLE && (
           <DashboardVideoLiveStartButton video={video} />
         )}
-        {video.live_state === liveState.STARTING && (
+        {video.live_state === LiveState.STARTING && (
           <Text>
             <FormattedMessage {...messages.liveStarting} />
           </Text>
         )}
-        {video.live_state === liveState.RUNNING && (
+        {video.live_state === LiveState.RUNNING && (
           <React.Fragment>
             <DashboardButtonWithLink
               label={<FormattedMessage {...messages.showLive} />}
               primary={false}
-              to={PLAYER_ROUTE(modelName.VIDEOS)}
+              to={PLAYER_ROUTE(ModelName.VIDEOS)}
             />
             <DashboardVideoLiveStopButton video={video} />
           </React.Fragment>
         )}
-        {video.live_state === liveState.STOPPED && (
+        {video.live_state === LiveState.STOPPED && (
           <Text>
             <FormattedMessage {...messages.liveStopped} />
           </Text>

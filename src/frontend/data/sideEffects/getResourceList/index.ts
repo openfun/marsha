@@ -1,6 +1,6 @@
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
-import { APIListCommonRequestParams, requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
+import { APIListCommonRequestParams, RequestStatus } from '../../../types/api';
+import { ModelName } from '../../../types/models';
 import { report } from '../../../utils/errors/report';
 import { appData } from '../../appData';
 import { addMultipleResources } from '../../stores/generics';
@@ -14,9 +14,9 @@ import { addMultipleResources } from '../../stores/generics';
  * @returns a promise for a request status, so the side effect caller can simply wait for it if needed.
  */
 export const getResourceList = async (
-  resourceName: modelName,
+  resourceName: ModelName,
   params: APIListCommonRequestParams = API_LIST_DEFAULT_PARAMS,
-): Promise<requestStatus> => {
+): Promise<RequestStatus> => {
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
 
   try {
@@ -41,9 +41,9 @@ export const getResourceList = async (
 
     const resourcesResponse = await response.json();
     await addMultipleResources(resourceName, resourcesResponse.results);
-    return requestStatus.SUCCESS;
+    return RequestStatus.SUCCESS;
   } catch (error) {
     report(error);
-    return requestStatus.FAILURE;
+    return RequestStatus.FAILURE;
   }
 };

@@ -2,21 +2,21 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-jest.mock('../../data/sideEffects/uploadFile', () => ({
-  uploadFile: jest.fn(),
-}));
-
 import { uploadFile } from '../../data/sideEffects/uploadFile';
 import { getResource } from '../../data/stores/generics';
-import { modelName } from '../../types/models';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
-import { jestMockOf } from '../../utils/types';
+import { JestMockOf } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { UploadForm } from './index';
+
+jest.mock('../../data/sideEffects/uploadFile', () => ({
+  uploadFile: jest.fn(),
+}));
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -31,8 +31,8 @@ jest.mock('../../data/appData', () => ({
   },
 }));
 
-const mockUploadFile: jestMockOf<typeof uploadFile> = uploadFile as any;
-const mockGetResource = getResource as jestMockOf<typeof getResource>;
+const mockUploadFile: JestMockOf<typeof uploadFile> = uploadFile as any;
+const mockGetResource = getResource as JestMockOf<typeof getResource>;
 
 describe('UploadForm', () => {
   const object = videoMockFactory({
@@ -43,8 +43,8 @@ describe('UploadForm', () => {
         id: 'ttt-1',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         source_url: 'https://example.com/timedtext/ttt-1',
         url: 'https://example.com/timedtext/ttt-1.vtt',
         title: 'ttt1',
@@ -55,8 +55,8 @@ describe('UploadForm', () => {
         id: 'ttt-2',
         is_ready_to_show: false,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         source_url: 'https://example.com/timedtext/ttt-2',
         url: 'https://example.com/timedtext/ttt-2.vtt',
         title: 'ttt2',
@@ -67,8 +67,8 @@ describe('UploadForm', () => {
         id: 'ttt-3',
         is_ready_to_show: true,
         language: 'en',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.CLOSED_CAPTIONING,
+        upload_state: UploadState.READY,
         source_url: 'https://example.com/timedtext/ttt-3',
         url: 'https://example.com/timedtext/ttt-3.vtt',
         title: 'ttt3',
@@ -79,8 +79,8 @@ describe('UploadForm', () => {
         id: 'ttt-4',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.TRANSCRIPT,
+        upload_state: UploadState.READY,
         source_url: 'https://example.com/timedtext/ttt-4',
         url: 'https://example.com/timedtext/ttt-4.vtt',
         title: 'ttt4',
@@ -88,7 +88,7 @@ describe('UploadForm', () => {
       },
     ],
     title: 'Some title',
-    upload_state: uploadState.PENDING,
+    upload_state: UploadState.PENDING,
     urls: {
       manifests: {
         hls: 'https://example.com/hls.m3u8',
@@ -112,7 +112,7 @@ describe('UploadForm', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          <UploadForm objectId={object.id} objectType={ModelName.VIDEOS} />,
         ),
       ),
     );
@@ -138,7 +138,7 @@ describe('UploadForm', () => {
     const { container } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          <UploadForm objectId={object.id} objectType={ModelName.VIDEOS} />,
           [
             {
               path: DASHBOARD_ROUTE(),
@@ -181,7 +181,7 @@ describe('UploadForm', () => {
     const { container } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          <UploadForm objectId={object.id} objectType={ModelName.VIDEOS} />,
           [
             {
               path: ERROR_COMPONENT_ROUTE('policy'),

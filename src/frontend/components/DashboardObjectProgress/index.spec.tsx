@@ -14,7 +14,7 @@ describe('<DashboardVideoPaneProgress />', () => {
 
   it('renders and displays the current progress', () => {
     const { getByText } = render(
-      wrapInIntlProvider(<DashboardObjectProgress objectId={'42'} />),
+      wrapInIntlProvider(<DashboardObjectProgress objectId="42" />),
     );
     getByText('0%');
 

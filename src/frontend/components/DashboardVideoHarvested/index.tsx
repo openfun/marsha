@@ -11,8 +11,8 @@ import { PLAYER_ROUTE } from '../routes';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
-import { Video, uploadState } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { Video, UploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 
 const messages = defineMessages({
@@ -44,10 +44,10 @@ export const DashboardVideoHarvested = ({
   const onClick = async () => {
     const updatedVideo = {
       ...video,
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     };
     try {
-      await updateResource(updatedVideo, modelName.VIDEOS);
+      await updateResource(updatedVideo, ModelName.VIDEOS);
       updateVideo(updatedVideo);
     } catch (err) {
       report(err);
@@ -60,10 +60,10 @@ export const DashboardVideoHarvested = ({
   }
 
   return (
-    <Box direction={'row'} justify={'center'} margin={'small'}>
+    <Box direction="row" justify="center" margin="small">
       <DashboardButtonWithLink
         label={intl.formatMessage(messages.watch)}
-        to={PLAYER_ROUTE(modelName.VIDEOS)}
+        to={PLAYER_ROUTE(ModelName.VIDEOS)}
       />
       <DashboardButton
         label={intl.formatMessage(messages.publish)}

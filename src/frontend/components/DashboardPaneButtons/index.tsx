@@ -4,9 +4,9 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { flags } from '../../types/AppData';
-import { uploadState, Video } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { Flags } from '../../types/AppData';
+import { UploadState, Video } from '../../types/tracks';
 import { isFeatureEnabled } from '../../utils/isFeatureEnabled';
 import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
 import { PLAYER_ROUTE } from '../routes';
@@ -14,7 +14,7 @@ import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { withLink } from '../withLink/withLink';
 
 const messages = {
-  [modelName.VIDEOS]: defineMessages({
+  [ModelName.VIDEOS]: defineMessages({
     btnPlay: {
       defaultMessage: 'Watch',
       description:
@@ -34,7 +34,7 @@ const messages = {
       id: 'components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst',
     },
   }),
-  [modelName.DOCUMENTS]: defineMessages({
+  [ModelName.DOCUMENTS]: defineMessages({
     btnPlay: {
       defaultMessage: 'Display',
       description:
@@ -74,7 +74,7 @@ export const DashboardButtonWithLink = withLink(DashboardButton);
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardPaneButtonsProps {
   object: Video | Document;
-  objectType: modelName.VIDEOS | modelName.DOCUMENTS;
+  objectType: ModelName.VIDEOS | ModelName.DOCUMENTS;
 }
 
 /** Component. Displays buttons with links to the Player & the Form, adapting their state and
@@ -87,23 +87,23 @@ export const DashboardPaneButtons = ({
   object,
   objectType,
 }: DashboardPaneButtonsProps) => {
-  const displayWatchBtn = object.upload_state === uploadState.READY;
+  const displayWatchBtn = object.upload_state === UploadState.READY;
 
   return (
     <Box
-      direction={'row'}
+      direction="row"
       justify={displayWatchBtn ? 'center' : 'end'}
-      margin={'small'}
+      margin="small"
     >
-      {objectType === modelName.VIDEOS &&
-        object.upload_state === uploadState.PENDING &&
-        isFeatureEnabled(flags.VIDEO_LIVE) && (
+      {objectType === ModelName.VIDEOS &&
+        object.upload_state === UploadState.PENDING &&
+        isFeatureEnabled(Flags.VIDEO_LIVE) && (
           <DashboardVideoLiveConfigureButton video={object as Video} />
         )}
       <DashboardButtonWithLink
         label={
           <FormattedMessage
-            {...(object.upload_state === uploadState.PENDING
+            {...(object.upload_state === UploadState.PENDING
               ? messages[objectType].btnUploadFirst
               : messages[objectType].btnReplace)}
           />

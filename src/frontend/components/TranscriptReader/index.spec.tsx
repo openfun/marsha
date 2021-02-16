@@ -7,7 +7,7 @@ import 'vtt.js/lib/vttcue';
 import { TranscriptReader } from '.';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { Deferred } from '../../utils/tests/Deferred';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 
 jest.mock('vtt.js', () => ({
   WebVTT: {
@@ -28,7 +28,9 @@ jest.mock('vtt.js', () => ({
           },
         ].forEach((cue) => this.oncue(cue));
       }
+      // eslint-disable-next-line class-methods-use-this
       parse() {}
+      // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
       oncue(cue: VTTCue) {}
     },
     StringDecoder: jest.fn(),
@@ -49,9 +51,9 @@ const transcript = {
   id: '1',
   is_ready_to_show: true,
   language: 'fr',
-  mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
+  mode: TimedTextMode.TRANSCRIPT as TimedTextMode.TRANSCRIPT,
   title: 'foo',
-  upload_state: uploadState.READY,
+  upload_state: UploadState.READY,
   source_url: 'https://example.com/vtt/fr',
   url: 'https://example.com/vtt/fr.vtt',
   video: '42',
@@ -61,7 +63,7 @@ describe('<TranscriptReader />', () => {
   let setPlayerCurrentTime: (time: number) => void;
   const VideoPlayer = () => {
     const videoProgress = useVideoProgress((state) => state);
-    setPlayerCurrentTime = videoProgress.setPlayerCurrentTime;
+    ({ setPlayerCurrentTime } = videoProgress);
     return null;
   };
 
@@ -75,9 +77,9 @@ describe('<TranscriptReader />', () => {
     const { getByText } = render(<TranscriptReader transcript={transcript} />);
     await act(async () => deferred.resolve('OK'));
 
-    expect(fetchMock.calls(transcript.url).length).toEqual(1),
-      // Both cues are inactive
-      getByText('-Bonjour. Bonjour à tous.');
+    expect(fetchMock.calls(transcript.url).length).toEqual(1);
+    // Both cues are inactive
+    getByText('-Bonjour. Bonjour à tous.');
     getByText(
       (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&

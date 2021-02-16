@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { FC } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { withRouter } from 'react-router';
 
 interface WithLinkprops {
@@ -13,15 +14,15 @@ interface WithLinkprops {
 export function withLink<P extends object>(
   WrappedComponent: React.ComponentType<P & React.DOMAttributes<any>>,
 ) {
-  return class extends React.Component<P & WithLinkprops> {
-    render() {
-      const InnerWrapper = withRouter((props) => (
-        <WrappedComponent
-          {...this.props}
-          onClick={() => props.history.push(this.props.to)}
-        />
-      ));
-      return <InnerWrapper />;
-    }
+  const wrapper: FC<P & WithLinkprops> = (wrapperProps) => {
+    const InnerWrapper = withRouter((props) => (
+      <WrappedComponent
+        {...wrapperProps}
+        onClick={() => props.history.push(wrapperProps.to)}
+      />
+    ));
+    return <InnerWrapper />;
   };
+
+  return wrapper;
 }

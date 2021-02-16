@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { Video } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 
@@ -42,7 +42,7 @@ export const DashboardVideoPaneDownloadOption = ({
             ...video,
             show_download: checked,
           },
-          modelName.VIDEOS,
+          ModelName.VIDEOS,
         );
         updateVideo(newVideo);
       } catch (e) {
@@ -53,10 +53,10 @@ export const DashboardVideoPaneDownloadOption = ({
   }, [checked]);
 
   return (
-    <Box align={'center'} direction={'row'} pad={{ top: 'small' }}>
+    <Box align="center" direction="row" pad={{ top: 'small' }}>
       <Form>
         <CheckBox
-          id={'allowDownload'}
+          id="allowDownload"
           onChange={() => setChecked(!checked)}
           checked={checked}
           label={<FormattedMessage {...messages.allowDownload} />}
@@ -64,7 +64,7 @@ export const DashboardVideoPaneDownloadOption = ({
           toggle
         />
         {error && (
-          <Text id={'updateVideoFail'} color="status-error">
+          <Text id="updateVideoFail" color="status-error">
             <FormattedMessage {...messages.updateVideoFail} />
           </Text>
         )}

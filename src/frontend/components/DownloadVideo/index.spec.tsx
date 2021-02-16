@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import * as React from 'react';
 
 import { DownloadVideo } from '.';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
@@ -13,7 +13,7 @@ describe('<DownloadVideo />', () => {
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
       urls: {
         manifests: {
           hls: 'https://example.com/hls.m3u8',
@@ -44,7 +44,7 @@ describe('<DownloadVideo />', () => {
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
       urls: {
         manifests: {
           hls: 'https://example.com/hls.m3u8',
@@ -73,7 +73,7 @@ describe('<DownloadVideo />', () => {
       id: 'video-id',
       is_ready_to_show: true,
       title: 'Some title',
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
       urls: {
         manifests: {
           hls: 'https://example.com/hls.m3u8',

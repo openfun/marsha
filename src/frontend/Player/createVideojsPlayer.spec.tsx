@@ -5,9 +5,9 @@ import { mocked } from 'ts-jest/utils';
 import VideoPlayer from '../components/VideoPlayer';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
-import { liveState, timedTextMode, uploadState } from '../types/tracks';
+import { LiveState, TimedTextMode, UploadState } from '../types/tracks';
 import { isMSESupported } from '../utils/isMSESupported';
-import { jestMockOf } from '../utils/types';
+import { JestMockOf } from '../utils/types';
 import { videoMockFactory } from '../utils/tests/factories';
 import { wrapInIntlProvider } from '../utils/tests/intl';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
@@ -21,7 +21,7 @@ jest.mock('../utils/isMSESupported', () => ({
   isMSESupported: jest.fn(),
 }));
 
-const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
+const mockIsMSESupported = isMSESupported as JestMockOf<typeof isMSESupported>;
 
 const mockVideo = videoMockFactory({
   id: 'video-test-videojs-instance',
@@ -31,8 +31,8 @@ const mockVideo = videoMockFactory({
       id: 'ttt-1',
       is_ready_to_show: true,
       language: 'fr',
-      mode: timedTextMode.SUBTITLE,
-      upload_state: uploadState.READY,
+      mode: TimedTextMode.SUBTITLE,
+      upload_state: UploadState.READY,
       source_url: 'https://example.com/timedtext/ttt-1.vtt',
       url: 'https://example.com/timedtext/ttt-1.vtt',
       title: 'test',
@@ -43,8 +43,8 @@ const mockVideo = videoMockFactory({
       id: 'ttt-2',
       is_ready_to_show: true,
       language: 'fr',
-      mode: timedTextMode.CLOSED_CAPTIONING,
-      upload_state: uploadState.READY,
+      mode: TimedTextMode.CLOSED_CAPTIONING,
+      upload_state: UploadState.READY,
       source_url: 'https://example.com/timedtext/ttt-2.vtt',
       url: 'https://example.com/timedtext/ttt-2.vtt',
       title: 'test',
@@ -69,9 +69,9 @@ jest.mock('../data/appData', () => ({
   })),
 }));
 jest.mock('../index', () => ({
-  intl: {
+  getIntl: () => ({
     locale: 'fr',
-  },
+  }),
 }));
 
 describe('createVideoJsPlayer', () => {
@@ -84,7 +84,7 @@ describe('createVideoJsPlayer', () => {
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 
@@ -127,7 +127,7 @@ describe('createVideoJsPlayer', () => {
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 
@@ -205,10 +205,10 @@ describe('createVideoJsPlayer', () => {
         mp4: {},
         thumbnails: {},
       },
-      live_state: liveState.RUNNING,
+      live_state: LiveState.RUNNING,
     });
     const { container } = render(
-      wrapInIntlProvider(<VideoPlayer video={video} playerType={'videojs'} />),
+      wrapInIntlProvider(<VideoPlayer video={video} playerType="videojs" />),
     );
 
     const videoElement = container.querySelector('video');
@@ -224,7 +224,7 @@ describe('createVideoJsPlayer', () => {
   it('sends xapi events', () => {
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer video={mockVideo} playerType="videojs" />,
       ),
     );
 

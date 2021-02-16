@@ -102,7 +102,7 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
             value={selected.language}
           >
             <FormattedMessage {...messages.transcriptSelectPlaceholder}>
-              {(message) => <option value={''}>{message}</option>}
+              {(message) => <option value="">{message}</option>}
             </FormattedMessage>
             {options.map((language) => (
               <option key={language.value} value={language.value}>
@@ -120,9 +120,9 @@ export const Transcripts = ({ transcripts }: TranscriptsProps) => {
           />
           <Box>
             <ActionLink
-              margin={'small'}
+              margin="small"
               alignSelf="center"
-              color={'status-critical'}
+              color="status-critical"
               label={<FormattedMessage {...messages.hideTranscript} />}
               onClick={disableTranscript}
             />

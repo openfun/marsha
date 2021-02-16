@@ -10,8 +10,8 @@ import styled from 'styled-components';
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from '../../types/models';
-import { TimedText, timedTextMode } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { TimedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';
 import { Maybe } from '../../utils/types';
@@ -58,7 +58,7 @@ interface SelectOption {
 /** Props shape for the TimedTextCreationForm component. */
 interface TimedTextCreationFormProps {
   excludedLanguages: string[];
-  mode: timedTextMode;
+  mode: TimedTextMode;
 }
 
 const isSelectOption = (
@@ -105,8 +105,8 @@ export const TimedTextCreationForm = ({
       const newTTT = await createTimedTextTrack(newTTLanguage, mode);
       doCreateTimedTextTrack(newTTT);
       setNewTTUploadId(newTTT.id);
-    } catch (error) {
-      report(error); // it should work every time
+    } catch (err) {
+      report(err); // it should work every time
       setError('creation');
     }
   };
@@ -119,7 +119,7 @@ export const TimedTextCreationForm = ({
     return (
       <Redirect
         push
-        to={UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, newTTUploadId)}
+        to={UPLOAD_FORM_ROUTE(ModelName.TIMEDTEXTTRACKS, newTTUploadId)}
       />
     );
   }
@@ -133,7 +133,7 @@ export const TimedTextCreationForm = ({
         styles={{ input: (styles) => ({ ...styles, width: '8rem' }) }}
       />
       <Button
-        color={'brand'}
+        color="brand"
         disabled={!newTTLanguage}
         label={<FormattedMessage {...messages.addTrackBtn} />}
         onClick={createAndGoToUpload}

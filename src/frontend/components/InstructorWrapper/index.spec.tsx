@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { InstructorWrapper } from './';
+import { InstructorWrapper } from '.';
 import { videoMockFactory } from '../../utils/tests/factories';
 
 jest.mock('../InstructorView/index', () => {

@@ -13,7 +13,7 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from '../types/libs/video.js/extend';
-import { Video, videoSize } from '../types/tracks';
+import { Video, VideoSize } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -23,7 +23,7 @@ import { isMSESupported } from '../utils/isMSESupported';
 import { Nullable } from '../utils/types';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
 
-import { intl } from '../index';
+import { getIntl } from '../index';
 import { Events } from './videojs/qualitySelectorPlugin/types';
 
 export const createVideojsPlayer = (
@@ -42,7 +42,7 @@ export const createVideojsPlayer = (
       default: '480',
     };
     Object.keys(video.urls.mp4)
-      .map((size) => Number(size) as videoSize)
+      .map((size) => Number(size) as VideoSize)
       .sort((a, b) => b - a)
       .forEach((size) => {
         sources.push({
@@ -77,7 +77,7 @@ export const createVideojsPlayer = (
       nativeAudioTracks: videojs.browser.IS_SAFARI,
       nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
-    language: intl.locale,
+    language: getIntl().locale,
     liveui: video.live_state !== null,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins,
@@ -97,7 +97,7 @@ export const createVideojsPlayer = (
 
   const tracks = player.remoteTextTracks();
 
-  /************************** XAPI **************************/
+  /** ************************ XAPI ************************* */
 
   let xapiStatement: XAPIStatement;
   try {
@@ -154,7 +154,7 @@ export const createVideojsPlayer = (
     });
   });
 
-  /**************** Seeked statement ***********************/
+  /** ************** Seeked statement ********************** */
 
   player.on('timeupdate', () => {
     if (isInitialized && !player.seeking()) {
@@ -178,7 +178,7 @@ export const createVideojsPlayer = (
     });
   });
 
-  /**************** Interacted event *************************/
+  /** ************** Interacted event ************************ */
   const interacted = (qualityLevels?: QualityLevels): void => {
     if (!isInitialized) {
       return;
@@ -213,7 +213,7 @@ export const createVideojsPlayer = (
     currentTrack = getCurrentTrack();
     interacted();
   });
-  /**************** End interacted event *************************/
+  /** ************** End interacted event ************************ */
 
   window.addEventListener('unload', () => {
     if (!isInitialized) {

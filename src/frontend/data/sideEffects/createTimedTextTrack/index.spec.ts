@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { createTimedTextTrack } from '.';
-import { timedTextMode } from '../../../types/tracks';
+import { TimedTextMode } from '../../../types/tracks';
 
 jest.mock('../../appData', () => ({
   appData: { jwt: 'some token' },
@@ -17,7 +17,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
       mode: 'st',
     });
 
-    const track = await createTimedTextTrack('en', timedTextMode.SUBTITLE);
+    const track = await createTimedTextTrack('en', TimedTextMode.SUBTITLE);
     const fetchArgs = fetchMock.lastCall()![1]!;
 
     expect(track).toEqual({ id: '42', language: 'en', mode: 'st' });
@@ -38,7 +38,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
     );
 
     await expect(
-      createTimedTextTrack('en', timedTextMode.SUBTITLE),
+      createTimedTextTrack('en', TimedTextMode.SUBTITLE),
     ).rejects.toThrowError('Failed to perform the request');
   });
 
@@ -46,7 +46,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
     fetchMock.mock('/api/timedtexttracks/', 400);
 
     await expect(
-      createTimedTextTrack('en', timedTextMode.SUBTITLE),
+      createTimedTextTrack('en', TimedTextMode.SUBTITLE),
     ).rejects.toThrowError(
       'Failed to create a new TimedTextTrack with en, st: 400.',
     );

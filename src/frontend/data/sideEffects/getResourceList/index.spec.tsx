@@ -1,13 +1,13 @@
 import fetchMock from 'fetch-mock';
 
-import { requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
-import { uploadState, Video } from '../../../types/tracks';
+import { RequestStatus } from '../../../types/api';
+import { ModelName } from '../../../types/models';
+import { UploadState } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
 import { videoMockFactory } from '../../../utils/tests/factories';
-import { jestMockOf } from '../../../utils/types';
+import { JestMockOf } from '../../../utils/types';
 import { addMultipleResources } from '../../stores/generics';
-import { getResourceList } from './';
+import { getResourceList } from '.';
 
 jest.mock('../../appData', () => ({
   appData: {
@@ -23,7 +23,7 @@ jest.mock('../../../utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-const mockAddMultipleResources = addMultipleResources as jestMockOf<
+const mockAddMultipleResources = addMultipleResources as JestMockOf<
   typeof addMultipleResources
 >;
 
@@ -31,13 +31,13 @@ describe('sideEffects/getResourceList', () => {
   const video42 = videoMockFactory({
     id: '42',
     is_ready_to_show: false,
-    upload_state: uploadState.PENDING,
+    upload_state: UploadState.PENDING,
   });
 
   const video43 = videoMockFactory({
     id: '43',
     is_ready_to_show: true,
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
   });
 
   afterEach(() => fetchMock.restore());
@@ -54,22 +54,22 @@ describe('sideEffects/getResourceList', () => {
       }),
     );
 
-    const status = await getResourceList(modelName.VIDEOS, {
+    const status = await getResourceList(ModelName.VIDEOS, {
       limit: 2,
       offset: 43,
     });
 
-    expect(status).toEqual(requestStatus.SUCCESS);
-    expect(mockAddMultipleResources).toHaveBeenCalledWith(modelName.VIDEOS, [
+    expect(status).toEqual(RequestStatus.SUCCESS);
+    expect(mockAddMultipleResources).toHaveBeenCalledWith(ModelName.VIDEOS, [
       videoMockFactory({
         id: '42',
         is_ready_to_show: false,
-        upload_state: uploadState.PENDING,
+        upload_state: UploadState.PENDING,
       }),
       videoMockFactory({
         id: '43',
         is_ready_to_show: true,
-        upload_state: uploadState.READY,
+        upload_state: UploadState.READY,
       }),
     ]);
   });
@@ -80,12 +80,12 @@ describe('sideEffects/getResourceList', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    const status = await getResourceList(modelName.VIDEOS, {
+    const status = await getResourceList(ModelName.VIDEOS, {
       limit: 2,
       offset: 43,
     });
 
-    expect(status).toEqual(requestStatus.FAILURE);
+    expect(status).toEqual(RequestStatus.FAILURE);
     expect(report).toHaveBeenCalledWith(
       new Error('Failed to perform the request'),
     );
@@ -95,12 +95,12 @@ describe('sideEffects/getResourceList', () => {
   it('returns an error response when it fails to get the resource list (api)', async () => {
     fetchMock.mock('/api/videos/?limit=2&offset=43', 404);
 
-    const status = await getResourceList(modelName.VIDEOS, {
+    const status = await getResourceList(ModelName.VIDEOS, {
       limit: 2,
       offset: 43,
     });
 
-    expect(status).toEqual(requestStatus.FAILURE);
+    expect(status).toEqual(RequestStatus.FAILURE);
     expect(report).toHaveBeenCalledWith(
       new Error(
         'Failed to get list for /api/videos/ and {"limit":2,"offset":43} : 404.',

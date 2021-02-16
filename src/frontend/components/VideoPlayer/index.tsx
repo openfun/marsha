@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import 'plyr/dist/plyr.css';
 import React, { useEffect, useRef, useState } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Redirect } from 'react-router';
 
 import { useThumbnail } from '../../data/stores/useThumbnail';
@@ -10,10 +11,10 @@ import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { createPlayer } from '../../Player/createPlayer';
 import {
-  timedTextMode,
+  TimedTextMode,
   TimedTextTranscript,
   Video,
-  videoSize,
+  VideoSize,
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { Maybe, Nullable } from '../../utils/types';
@@ -22,9 +23,9 @@ import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { Transcripts } from '../Transcripts';
 import './VideoPlayer.css'; // Improve some plyr styles
 
-const trackTextKind: { [key in timedTextMode]?: string } = {
-  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
-  [timedTextMode.SUBTITLE]: 'subtitles',
+const trackTextKind: { [key in TimedTextMode]?: string } = {
+  [TimedTextMode.CLOSED_CAPTIONING]: 'captions',
+  [TimedTextMode.SUBTITLE]: 'subtitles',
 };
 
 interface BaseVideoPlayerProps {
@@ -106,15 +107,15 @@ const VideoPlayer = ({
     .filter((track) => track.is_ready_to_show)
     .filter((track) =>
       video.has_transcript === false && video.should_use_subtitle_as_transcript
-        ? timedTextMode.SUBTITLE === track.mode
-        : timedTextMode.TRANSCRIPT === track.mode,
+        ? TimedTextMode.SUBTITLE === track.mode
+        : TimedTextMode.TRANSCRIPT === track.mode,
     );
 
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
     video.urls.thumbnails;
   const resolutions = Object.keys(video.urls.mp4).map(
-    (size) => Number(size) as videoSize,
+    (size) => Number(size) as VideoSize,
   );
 
   // order resolutions from the higher to the lower
@@ -123,7 +124,10 @@ const VideoPlayer = ({
   return (
     <Box>
       {/* tabIndex is set to -1 to not take focus on this element when a user is navigating using
-       their keyboard. */}
+       their keyboard. 
+      eslint caption control is disabled. The user is responsible to add the caption.
+      */}
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
@@ -142,7 +146,7 @@ const VideoPlayer = ({
         {timedTextTracks
           .filter((track) => track.is_ready_to_show)
           .filter((track) =>
-            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+            [TimedTextMode.CLOSED_CAPTIONING, TimedTextMode.SUBTITLE].includes(
               track.mode,
             ),
           )

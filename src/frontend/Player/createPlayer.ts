@@ -12,11 +12,12 @@ export const createPlayer: VideoPlayerCreator = (
   switch (type) {
     case 'plyr':
       return createPlyrPlayer(ref, dispatchPlayerTimeUpdate, video);
-    case 'videojs':
+    case 'videojs': {
       const player = createVideojsPlayer(ref, dispatchPlayerTimeUpdate, video);
       return {
         destroy: () => player.dispose(),
       };
+    }
     default:
       report(new Error(`player ${type} not implemented`));
   }

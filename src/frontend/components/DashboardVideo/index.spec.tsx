@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { liveState, uploadState, Video } from '../../types/tracks';
+import { LiveState, UploadState, Video } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import DashboardVideo from './';
+import DashboardVideo from '.';
 
 jest.mock('../DashboardVideoPane', () => ({
   DashboardVideoPane: (props: { video: Video }) => (
@@ -32,7 +32,7 @@ describe('<DashboardVideo />', () => {
       id: 'dd44',
       thumbnail: null,
       timed_text_tracks: [],
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     });
 
     render(wrapInIntlProvider(<DashboardVideo video={mockVideo} />));
@@ -46,7 +46,7 @@ describe('<DashboardVideo />', () => {
       thumbnail: null,
       timed_text_tracks: [],
       live_state: null,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     });
     render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
     screen.getByTitle('dd43');
@@ -58,8 +58,8 @@ describe('<DashboardVideo />', () => {
       id: 'dd43',
       thumbnail: null,
       timed_text_tracks: [],
-      live_state: liveState.IDLE,
-      upload_state: uploadState.PENDING,
+      live_state: LiveState.IDLE,
+      upload_state: UploadState.PENDING,
     });
     render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
 
@@ -72,7 +72,7 @@ describe('<DashboardVideo />', () => {
   it('hides timed text pane when the upload state is DELETED', () => {
     const videoProps = videoMockFactory({
       id: 'dd43',
-      upload_state: uploadState.DELETED,
+      upload_state: UploadState.DELETED,
     });
     render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
 
@@ -85,7 +85,7 @@ describe('<DashboardVideo />', () => {
   it('hides timed text pane when the upload state is HARVESTING', () => {
     const videoProps = videoMockFactory({
       id: 'dd43',
-      upload_state: uploadState.HARVESTING,
+      upload_state: UploadState.HARVESTING,
     });
     render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
 
@@ -98,7 +98,7 @@ describe('<DashboardVideo />', () => {
   it('hides timed text pane when the upload state is HARVESTED', () => {
     const videoProps = videoMockFactory({
       id: 'dd43',
-      upload_state: uploadState.HARVESTED,
+      upload_state: UploadState.HARVESTED,
     });
     render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
 

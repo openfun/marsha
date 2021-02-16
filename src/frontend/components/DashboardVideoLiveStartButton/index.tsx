@@ -18,7 +18,7 @@ const messages = defineMessages({
   },
 });
 
-type startLiveStatus = 'pending' | 'error';
+type StartLiveStatus = 'pending' | 'error';
 
 interface DashboardVideoLiveStartButtonProps {
   video: Video;
@@ -27,7 +27,7 @@ interface DashboardVideoLiveStartButtonProps {
 export const DashboardVideoLiveStartButton = ({
   video,
 }: DashboardVideoLiveStartButtonProps) => {
-  const [status, setStatus] = useState<Nullable<startLiveStatus>>(null);
+  const [status, setStatus] = useState<Nullable<StartLiveStatus>>(null);
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));

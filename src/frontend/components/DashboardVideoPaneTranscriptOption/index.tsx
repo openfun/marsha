@@ -5,8 +5,8 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
-import { timedTextMode, Video } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { TimedTextMode, Video } from '../../types/tracks';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 
 const messages = defineMessages({
@@ -48,7 +48,7 @@ export const DashboardVideoPaneTranscriptOption = ({
             ...video,
             should_use_subtitle_as_transcript: checked,
           },
-          modelName.VIDEOS,
+          ModelName.VIDEOS,
         );
         updateVideo(newVideo);
       } catch (e) {
@@ -65,11 +65,11 @@ export const DashboardVideoPaneTranscriptOption = ({
 
   const transcripts = timedTextTracks
     .filter((track) => track.is_ready_to_show)
-    .filter((track) => timedTextMode.TRANSCRIPT === track.mode);
+    .filter((track) => TimedTextMode.TRANSCRIPT === track.mode);
 
   const subtitles = timedTextTracks
     .filter((track) => track.is_ready_to_show)
-    .filter((track) => timedTextMode.SUBTITLE === track.mode);
+    .filter((track) => TimedTextMode.SUBTITLE === track.mode);
 
   // Transcripts are already uploaded or there is no subtitle uploaded.
   // Do not display this component.
@@ -79,10 +79,10 @@ export const DashboardVideoPaneTranscriptOption = ({
 
   // There is no transcript but subtitles available
   return (
-    <Box align={'center'} direction={'row'} pad={{ top: 'small' }}>
+    <Box align="center" direction="row" pad={{ top: 'small' }}>
       <Form>
         <CheckBox
-          id={'useTranscript'}
+          id="useTranscript"
           onChange={() => setChecked(!checked)}
           checked={checked}
           label={<FormattedMessage {...messages.useTranscript} />}
@@ -90,7 +90,7 @@ export const DashboardVideoPaneTranscriptOption = ({
           toggle
         />
         {error && (
-          <Text id={'updateVideoFail'} color="status-error">
+          <Text id="updateVideoFail" color="status-error">
             <FormattedMessage {...messages.updateVideoFail} />
           </Text>
         )}

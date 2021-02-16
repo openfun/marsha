@@ -1,9 +1,9 @@
-import { wait, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
 import { pollForTrack } from '.';
-import { requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
+import { RequestStatus } from '../../../types/api';
+import { ModelName } from '../../../types/models';
 import { report } from '../../../utils/errors/report';
 
 jest.mock('../../../utils/errors/report', () => ({ report: jest.fn() }));
@@ -24,7 +24,7 @@ describe('sideEffects/pollForTrack', () => {
       JSON.stringify({ is_ready_to_show: false }),
       { method: 'GET' },
     );
-    const promise = pollForTrack(modelName.VIDEOS, '42', 15);
+    const promise = pollForTrack(ModelName.VIDEOS, '42', 15);
 
     expect(
       fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
@@ -60,7 +60,7 @@ describe('sideEffects/pollForTrack', () => {
       ).toEqual(4);
     });
 
-    expect(await promise).toEqual(requestStatus.SUCCESS);
+    expect(await promise).toEqual(RequestStatus.SUCCESS);
 
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
 
@@ -78,7 +78,7 @@ describe('sideEffects/pollForTrack', () => {
       JSON.stringify({ is_ready_to_show: false }),
       { method: 'GET' },
     );
-    const promise = pollForTrack(modelName.DOCUMENTS, '42', 15);
+    const promise = pollForTrack(ModelName.DOCUMENTS, '42', 15);
 
     expect(
       fetchMock.calls('/api/documents/42/', { method: 'GET' }).length,
@@ -114,7 +114,7 @@ describe('sideEffects/pollForTrack', () => {
       ).toEqual(4);
     });
 
-    expect(await promise).toEqual(requestStatus.SUCCESS);
+    expect(await promise).toEqual(RequestStatus.SUCCESS);
 
     jest.advanceTimersByTime(2 * 3 * 4 * 5 * 15 * 1000 + 200);
 
@@ -132,7 +132,7 @@ describe('sideEffects/pollForTrack', () => {
       JSON.stringify({ is_ready_to_show: false }),
       { method: 'GET' },
     );
-    const promise = pollForTrack(modelName.VIDEOS, '42', 15);
+    const promise = pollForTrack(ModelName.VIDEOS, '42', 15);
 
     // The first call was successful
     expect(
@@ -155,7 +155,7 @@ describe('sideEffects/pollForTrack', () => {
         fetchMock.calls('/api/videos/42/', { method: 'GET' }).length,
       ).toEqual(2);
     });
-    expect(await promise).toEqual(requestStatus.FAILURE);
+    expect(await promise).toEqual(RequestStatus.FAILURE);
     expect(report).toHaveBeenCalledWith(new Error('Failed to get the track'));
   });
 });

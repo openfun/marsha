@@ -36,15 +36,15 @@ export const DashboardObjectProgress = ({
   ];
   return (
     <Box
-      direction={'row'}
-      justify={'between'}
+      direction="row"
+      justify="between"
       margin={{ bottom: 'small', top: 'small' }}
     >
       <StyledMeter
         a11yTitle={intl.formatMessage(messages.progressLabel)}
         values={values}
       />
-      <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
+      <Text color="brand" weight="bold">{`${progress}%`}</Text>
     </Box>
   );
 };

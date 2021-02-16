@@ -3,7 +3,7 @@ import React from 'react';
 import { Loader } from '../Loader';
 
 /** Available icon names for statusIcon on the UploadStatus component. */
-export enum statusIconKey {
+export enum StatusIconKey {
   LOADER = 'loader',
   TICK = 'tick',
   X = 'x',
@@ -13,7 +13,7 @@ export enum statusIconKey {
 export interface UploadStatusProps {
   children: React.ReactNode;
   className?: string;
-  statusIcon?: statusIconKey;
+  statusIcon?: StatusIconKey;
 }
 
 /** Component. Displays one word status information along with an optional icon.
@@ -26,15 +26,15 @@ export const UploadStatus = ({
 }: UploadStatusProps) => {
   let icon;
   switch (statusIcon) {
-    case statusIconKey.LOADER:
+    case StatusIconKey.LOADER:
       icon = <Loader />;
       break;
 
-    case statusIconKey.TICK:
+    case StatusIconKey.TICK:
       icon = '✔️';
       break;
 
-    case statusIconKey.X:
+    case StatusIconKey.X:
       icon = '❌';
       break;
   }

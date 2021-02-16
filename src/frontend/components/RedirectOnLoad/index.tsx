@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { appData, getDecodedJwt } from '../../data/appData';
-import { appState } from '../../types/AppData';
-import { uploadState } from '../../types/tracks';
+import { AppState } from '../../types/AppData';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import { PLAYER_ROUTE } from '../routes';
@@ -13,7 +12,7 @@ import { PLAYER_ROUTE } from '../routes';
 export const RedirectOnLoad = () => {
   const resource = appData.document || appData.video || null;
   // Get LTI errors out of the way
-  if (appData.state === appState.ERROR) {
+  if (appData.state === AppState.ERROR) {
     return <Redirect push to={ERROR_COMPONENT_ROUTE('lti')} />;
   }
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { liveState as liveStateTrack, uploadState } from '../../types/tracks';
+import { LiveState as liveStateTrack, UploadState } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
-import { statusIconKey, UploadStatus } from './UploadStatus';
+import { StatusIconKey, UploadStatus } from './UploadStatus';
 
 const {
   DELETED,
@@ -14,7 +14,7 @@ const {
   PROCESSING,
   READY,
   UPLOADING,
-} = uploadState;
+} = UploadState;
 const { IDLE, STARTING, RUNNING, STOPPED } = liveStateTrack;
 
 const messages = defineMessages({
@@ -83,7 +83,7 @@ const messages = defineMessages({
 /** Props shape for the ObjectStatusPicker component. */
 export interface ObjectStatusPickerProps {
   className?: string;
-  state: uploadState;
+  state: UploadState;
   liveState?: Nullable<liveStateTrack>;
 }
 
@@ -99,17 +99,16 @@ export const ObjectStatusPicker = ({
   if (liveState) {
     return <FormattedMessage {...messages[liveState]} />;
   }
+  let statusIcon;
+  if ([PROCESSING, UPLOADING].includes(state)) {
+    statusIcon = StatusIconKey.LOADER;
+  } else if ([DELETED, ERROR, PENDING].includes(state)) {
+    statusIcon = StatusIconKey.X;
+  } else {
+    statusIcon = StatusIconKey.TICK;
+  }
   return (
-    <UploadStatus
-      className={className}
-      statusIcon={
-        [PROCESSING, UPLOADING, HARVESTING].includes(state)
-          ? statusIconKey.LOADER
-          : [DELETED, ERROR, PENDING].includes(state)
-          ? statusIconKey.X
-          : statusIconKey.TICK
-      }
-    >
+    <UploadStatus className={className || ''} statusIcon={statusIcon}>
       <FormattedMessage {...messages[state]} />
     </UploadStatus>
   );

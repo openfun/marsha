@@ -21,6 +21,20 @@ const TitleLink = withLink(Anchor);
 
 export const SiteHeader: React.FC = () => {
   const currentUser = useCurrentUser().getCurrentUser();
+  let headerContent;
+  if (currentUser) {
+    if (currentUser === AnonymousUser.ANONYMOUS) {
+      headerContent = (
+        <Button>
+          <FormattedMessage {...messages.logInBtn} />
+        </Button>
+      );
+    } else {
+      headerContent = <Text>{currentUser.email}</Text>;
+    }
+  } else {
+    headerContent = <Loader />;
+  }
 
   return (
     <Header
@@ -34,17 +48,7 @@ export const SiteHeader: React.FC = () => {
       <TitleLink to="/" size="large" color="white">
         marsha.education
       </TitleLink>
-      {currentUser ? (
-        currentUser === AnonymousUser.ANONYMOUS ? (
-          <Button>
-            <FormattedMessage {...messages.logInBtn} />
-          </Button>
-        ) : (
-          <Text>{currentUser.email}</Text>
-        )
-      ) : (
-        <Loader />
-      )}
+      {headerContent}
     </Header>
   );
 };

@@ -22,7 +22,7 @@ module.exports = {
   // is on AWS.
   output: {
     filename: 'index.js',
-    path: __dirname + '/../backend/marsha/static/js',
+    path: path.join(__dirname, '/../backend/marsha/static/js'),
     chunkFilename: '[id].[fullhash].index.js',
   },
 

@@ -20,7 +20,7 @@ export interface Resource {
  * applied on any Video or other track record but will be used as a stand-in in our local
  * track representations and whenever we might need to pass such state information around.
  */
-export enum uploadState {
+export enum UploadState {
   DELETED = 'deleted',
   ERROR = 'error',
   HARVESTED = 'harvested',
@@ -31,7 +31,7 @@ export enum uploadState {
   UPLOADING = 'uploading',
 }
 
-export enum liveState {
+export enum LiveState {
   IDLE = 'idle',
   STARTING = 'starting',
   RUNNING = 'running',
@@ -44,7 +44,7 @@ export enum liveState {
  * as they're both the same types of files that go through the same pipelines, and have the same kinds
  * of relations to video tracks.
  */
-export enum timedTextMode {
+export enum TimedTextMode {
   SUBTITLE = 'st',
   TRANSCRIPT = 'ts',
   CLOSED_CAPTIONING = 'cc',
@@ -60,8 +60,8 @@ export interface TimedText extends Resource {
   active_stamp: Nullable<number>;
   is_ready_to_show: boolean;
   language: string;
-  mode: timedTextMode;
-  upload_state: uploadState;
+  mode: TimedTextMode;
+  upload_state: UploadState;
   source_url: Nullable<string>;
   url: string;
   video: Video['id'];
@@ -69,20 +69,20 @@ export interface TimedText extends Resource {
 }
 
 export interface TimedTextTranscript extends TimedText {
-  mode: timedTextMode.TRANSCRIPT;
+  mode: TimedTextMode.TRANSCRIPT;
 }
 
 /** Possible sizes for an image, a video or stream. Used as keys in lists of files. */
-export type videoSize = 144 | 240 | 480 | 720 | 1080;
+export type VideoSize = 144 | 240 | 480 | 720 | 1080;
 
 /** An URLs property that includes URLs for each possible visual size */
-export type urls = { [key in videoSize]?: string };
+export type Urls = { [key in VideoSize]?: string };
 
 /** A Thumbnail record as it exists on the backend. */
 export interface Thumbnail extends Resource {
   is_ready_to_show: boolean;
-  upload_state: uploadState;
-  urls: urls;
+  upload_state: UploadState;
+  urls: Urls;
   active_stamp: Nullable<number>;
   video: Video['id'];
 }
@@ -95,18 +95,18 @@ export interface Video extends Resource {
   thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];
   title: string;
-  upload_state: uploadState;
+  upload_state: UploadState;
   urls: {
     manifests: {
       hls: string;
     };
-    mp4: Partial<urls>;
-    thumbnails: Partial<urls>;
+    mp4: Partial<Urls>;
+    thumbnails: Partial<Urls>;
   };
   should_use_subtitle_as_transcript: boolean;
   has_transcript: boolean;
   playlist: Playlist;
-  live_state: Nullable<liveState>;
+  live_state: Nullable<LiveState>;
   live_info: {
     medialive?: {
       input: {

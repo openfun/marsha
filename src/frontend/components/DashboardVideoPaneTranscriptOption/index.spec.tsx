@@ -6,7 +6,7 @@ import { ImportMock } from 'ts-mock-imports';
 
 import { DashboardVideoPaneTranscriptOption } from '.';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -27,7 +27,7 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   const video = videoMockFactory({
     id: '443',
     timed_text_tracks: [],
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
     should_use_subtitle_as_transcript: false,
   });
 
@@ -46,8 +46,8 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.TRANSCRIPT,
+        upload_state: UploadState.READY,
       },
     ]);
 
@@ -63,8 +63,8 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.CLOSED_CAPTIONING,
+        upload_state: UploadState.READY,
       },
     ]);
 
@@ -80,8 +80,8 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
       },
     ]);
 
@@ -103,8 +103,8 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
       },
     ]);
 

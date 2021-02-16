@@ -65,12 +65,16 @@ interface InstructorViewProps {
 export const InstructorView = ({ children, resource }: InstructorViewProps) => {
   const canAccessDashboard =
     getDecodedJwt().permissions.can_update &&
-    false === getDecodedJwt().maintenance;
-  const message = canAccessDashboard
-    ? messages.title
-    : getDecodedJwt().maintenance
-    ? messages.maintenance
-    : messages.disabledDashboard;
+    getDecodedJwt().maintenance === false;
+  let message;
+  if (canAccessDashboard) {
+    message = messages.title;
+  } else if (getDecodedJwt().maintenance) {
+    message = messages.maintenance;
+  } else {
+    message = messages.disabledDashboard;
+  }
+
   const messagePlaceholder = canAccessDashboard
     ? {}
     : { lti_id: resource.playlist.lti_id };
@@ -83,7 +87,7 @@ export const InstructorView = ({ children, resource }: InstructorViewProps) => {
         <FormattedMessage {...message} values={messagePlaceholder} />
         {canAccessDashboard && (
           <BtnWithLink
-            color={'brand'}
+            color="brand"
             label={<FormattedMessage {...messages.btnDashboard} />}
             to={DASHBOARD_ROUTE(appData.modelName)}
           />

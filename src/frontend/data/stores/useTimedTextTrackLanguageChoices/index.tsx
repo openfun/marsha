@@ -1,9 +1,9 @@
 import create from 'zustand';
 
 import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
+import { RequestStatus } from '../../../types/api';
 import { LanguageChoice } from '../../../types/LanguageChoice';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import { RouteOptions } from '../../../types/RouteOptions';
 import { TimedText } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
@@ -12,18 +12,18 @@ import { appData } from '../../appData';
 
 type State = {
   choices: Maybe<LanguageChoice[]>;
-  getChoices: () => Promise<requestStatus>;
+  getChoices: () => Promise<RequestStatus>;
 };
 
 export const useTimedTextTrackLanguageChoices = create<State>((set, get) => ({
   choices: undefined,
   getChoices: async () => {
-    const jwt = appData.jwt;
-    const choices = get().choices;
+    const { jwt } = appData;
+    const { choices } = get();
 
     if (!choices) {
       const response = await fetch(
-        `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
+        `${API_ENDPOINT}/${ModelName.TIMEDTEXTTRACKS}/`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -35,10 +35,10 @@ export const useTimedTextTrackLanguageChoices = create<State>((set, get) => ({
       if (!response.ok) {
         report(
           new Error(
-            `Failed to fetch OPTIONS ${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
+            `Failed to fetch OPTIONS ${API_ENDPOINT}/${ModelName.TIMEDTEXTTRACKS}/`,
           ),
         );
-        return requestStatus.FAILURE;
+        return RequestStatus.FAILURE;
       }
 
       const routeOptions: RouteOptions<TimedText> = await response.json();
@@ -52,6 +52,6 @@ export const useTimedTextTrackLanguageChoices = create<State>((set, get) => ({
       });
     }
 
-    return requestStatus.SUCCESS;
+    return RequestStatus.SUCCESS;
   },
 }));

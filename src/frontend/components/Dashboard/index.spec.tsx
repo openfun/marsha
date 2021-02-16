@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
 
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { UploadState, Video } from '../../types/tracks';
 import {
   documentMockFactory,
   videoMockFactory,
@@ -42,13 +42,13 @@ describe('<Dashboard />', () => {
         id: 'dd44',
         thumbnail: null,
         timed_text_tracks: [],
-        upload_state: uploadState.PROCESSING,
+        upload_state: UploadState.PROCESSING,
       });
 
       render(
         wrapInIntlProvider(
           <Suspense fallback={<Loader />}>
-            <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+            <Dashboard video={mockVideo} objectType={ModelName.VIDEOS} />
           </Suspense>,
         ),
       );
@@ -61,7 +61,7 @@ describe('<Dashboard />', () => {
     it('renders', async () => {
       const mockDocument = documentMockFactory({
         id: 'doc1',
-        upload_state: uploadState.PROCESSING,
+        upload_state: UploadState.PROCESSING,
       });
 
       render(
@@ -69,7 +69,7 @@ describe('<Dashboard />', () => {
           <Suspense fallback={<Loader />}>
             <Dashboard
               document={mockDocument}
-              objectType={modelName.DOCUMENTS}
+              objectType={ModelName.DOCUMENTS}
             />
           </Suspense>,
         ),

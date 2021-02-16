@@ -1,7 +1,7 @@
 import { Status } from '../../../components/UploadForm';
 import { AWSPresignedPost } from '../../../types/AWSPresignedPost';
-import { modelName } from '../../../types/models';
-import { UploadableObject, uploadState } from '../../../types/tracks';
+import { ModelName } from '../../../types/models';
+import { UploadableObject, UploadState } from '../../../types/tracks';
 import { makeFormData } from '../../../utils/makeFormData/makeFormData';
 import { Maybe } from '../../../utils/types';
 import { addResource } from '../../stores/generics';
@@ -12,7 +12,7 @@ import { uploadFile } from '../uploadFile';
 export const upload = (
   setStatus: (status: Status) => void,
   notifyObjectUploadProgress: (progress: number) => void,
-  objectType: modelName,
+  objectType: ModelName,
   object: Maybe<UploadableObject>,
 ) => async (file: Maybe<File>) => {
   // Do not trigger an upload if we did not receive a file object.
@@ -43,7 +43,7 @@ export const upload = (
       key,
       presignedPost.fields[key],
     ]),
-    ...(([modelName.VIDEOS, modelName.THUMBNAILS].includes(objectType)
+    ...(([ModelName.VIDEOS, ModelName.THUMBNAILS].includes(objectType)
       ? [['Content-Type', file!.type]]
       : []) as any),
     // Add the file after all of the text fields
@@ -55,7 +55,7 @@ export const upload = (
     // Useful for the Dashboard loader and help text.
     await addResource(objectType, {
       ...object,
-      upload_state: uploadState.UPLOADING,
+      upload_state: UploadState.UPLOADING,
     });
 
     // This `setStatus` call, which results in a redirection from the upload form to the dashboard, needs to
@@ -71,7 +71,7 @@ export const upload = (
       await addResource(objectType, {
         ...object,
         title: file.name,
-        upload_state: uploadState.PROCESSING,
+        upload_state: UploadState.PROCESSING,
       });
 
       // Fetch the API to update the title resource.
@@ -85,13 +85,13 @@ export const upload = (
     } else {
       await addResource(objectType, {
         ...object,
-        upload_state: uploadState.PROCESSING,
+        upload_state: UploadState.PROCESSING,
       });
     }
   } catch (error) {
     await addResource(objectType, {
       ...object,
-      upload_state: uploadState.ERROR,
+      upload_state: UploadState.ERROR,
     });
   }
 };

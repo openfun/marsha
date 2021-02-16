@@ -10,8 +10,8 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { TimedTextListItem } from '.';
-import { ERROR_COMPONENT_ROUTE } from '../../components/ErrorComponent/route';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -56,9 +56,9 @@ describe('<TimedTextListItem />', () => {
               id: '42',
               is_ready_to_show: true,
               language: 'fr',
-              mode: timedTextMode.SUBTITLE,
+              mode: TimedTextMode.SUBTITLE,
               title: 'foo',
-              upload_state: uploadState.READY,
+              upload_state: UploadState.READY,
               source_url: 'https://example.com/timedtext/source/42',
               url: 'https://example.com/timedtext/42.vtt',
               video: '142',
@@ -86,9 +86,9 @@ describe('<TimedTextListItem />', () => {
       id: '1',
       is_ready_to_show: false,
       language: 'fr',
-      mode: timedTextMode.SUBTITLE,
+      mode: TimedTextMode.SUBTITLE,
       title: 'foo',
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
       source_url: 'https://example.com/timedtext/source/1',
       url: 'https://example.com/timedtexttrack/1.vtt',
       video: '142',
@@ -138,12 +138,14 @@ describe('<TimedTextListItem />', () => {
         method: 'GET',
       });
 
-      timer = timer * i;
+      timer *= i;
       jest.advanceTimersByTime(1000 * timer + 200);
+      // eslint-disable-next-line no-await-in-loop
       await waitFor(() => {
         // Expect only 1 call since we restore the mock before each one
         expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(1);
       });
+      // eslint-disable-next-line no-await-in-loop
       await act(async () => deferred.resolve(JSON.stringify(track)));
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(screen.queryByText('Ready')).toBeNull();
@@ -152,17 +154,18 @@ describe('<TimedTextListItem />', () => {
   });
 
   it('renders & polls the track until it is READY', async () => {
+    // eslint-disable-next-line no-restricted-syntax
     for (const state of [
-      uploadState.PENDING,
-      uploadState.PROCESSING,
-      uploadState.UPLOADING,
+      UploadState.PENDING,
+      UploadState.PROCESSING,
+      UploadState.UPLOADING,
     ]) {
       const track = {
         active_stamp: 28271937429,
         id: '1',
         is_ready_to_show: false,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
+        mode: TimedTextMode.SUBTITLE,
         title: 'foo',
         upload_state: state,
         source_url: 'https://example.com/timedtext/source/1',
@@ -181,6 +184,7 @@ describe('<TimedTextListItem />', () => {
 
       // first backend call
       jest.advanceTimersByTime(1000 * 10 + 200);
+      // eslint-disable-next-line no-await-in-loop
       await waitFor(() =>
         expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
       );
@@ -191,7 +195,7 @@ describe('<TimedTextListItem />', () => {
 
       const updatedTrack = {
         ...track,
-        upload_state: uploadState.READY,
+        upload_state: UploadState.READY,
       };
       fetchMock.restore();
       fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(updatedTrack));
@@ -204,6 +208,7 @@ describe('<TimedTextListItem />', () => {
         ),
       );
 
+      // eslint-disable-next-line no-await-in-loop
       await waitFor(() => {
         expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       });
@@ -211,7 +216,7 @@ describe('<TimedTextListItem />', () => {
         queryByText((content) => content.startsWith('Processing')),
       ).not.toBeTruthy();
       getByText((content) => content.startsWith('Ready'));
-      await cleanup();
+      cleanup();
       fetchMock.restore();
     }
   });
@@ -228,9 +233,9 @@ describe('<TimedTextListItem />', () => {
                 id: '42',
                 is_ready_to_show: true,
                 language: 'fr',
-                mode: timedTextMode.SUBTITLE,
+                mode: TimedTextMode.SUBTITLE,
                 title: 'foo',
-                upload_state: uploadState.READY,
+                upload_state: UploadState.READY,
                 source_url: 'https://example.com/timedtext/source/42',
                 url: 'https://example.com/timedtext/42.vtt',
                 video: '142',

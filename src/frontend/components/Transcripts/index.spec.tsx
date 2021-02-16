@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { Transcripts } from '.';
-import { timedTextMode, uploadState } from '../../types/tracks';
+import { TimedTextMode, UploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 
 jest.mock('../../data/appData', () => ({
@@ -31,9 +31,9 @@ const transcripts = [
     id: '1',
     is_ready_to_show: true,
     language: 'fr',
-    mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
+    mode: TimedTextMode.TRANSCRIPT as TimedTextMode.TRANSCRIPT,
     title: 'foo',
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
     source_url: 'https://example.com/vtt/fr',
     url: 'https://example.com/vtt/fr.vtt',
     video: '42',
@@ -43,9 +43,9 @@ const transcripts = [
     id: '2',
     is_ready_to_show: true,
     language: 'en',
-    mode: timedTextMode.TRANSCRIPT as timedTextMode.TRANSCRIPT,
+    mode: TimedTextMode.TRANSCRIPT as TimedTextMode.TRANSCRIPT,
     title: 'foo',
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
     source_url: 'https://example.com/vtt/en',
     url: 'https://example.com/vtt/en.vtt',
     video: '42',
@@ -86,9 +86,7 @@ describe('<Transcripts />', () => {
   it('shows the transcript when the user selects a language', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
 
-    const { getByLabelText, getByText } = render(
-      wrapInIntlProvider(<Transcripts transcripts={transcripts} />),
-    );
+    render(wrapInIntlProvider(<Transcripts transcripts={transcripts} />));
 
     const select = screen.getByLabelText('Show a transcript');
     fireEvent.change(select, { target: { value: '1' } });

@@ -4,7 +4,7 @@ import React from 'react';
 import { ImportMock } from 'ts-mock-imports';
 
 import * as useVideoModule from '../../data/stores/useVideo';
-import { uploadState, liveState } from '../../types/tracks';
+import { UploadState, LiveState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
@@ -41,7 +41,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
     thumbnail: null,
     timed_text_tracks: [],
     title: '',
-    upload_state: uploadState.PENDING,
+    upload_state: UploadState.PENDING,
     urls: {
       manifests: {
         dash: 'https://example.com/dash',
@@ -55,7 +55,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     },
-    live_state: liveState.RUNNING,
+    live_state: LiveState.RUNNING,
     live_info: {
       medialive: {
         input: {
@@ -128,7 +128,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       '/api/videos/f0e4835f-f126-457e-8e27-16898cd0b5d5/stop-live/',
       {
         ...video,
-        live_state: liveState.STOPPED,
+        live_state: LiveState.STOPPED,
       },
       { method: 'POST' },
     );
@@ -154,7 +154,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
 
     expect(mockUpdateVideo).toHaveBeenLastCalledWith({
       ...video,
-      live_state: liveState.STOPPED,
+      live_state: LiveState.STOPPED,
     });
   });
 });

@@ -23,5 +23,5 @@ export const initiateLive = async (video: Video): Promise<Video> => {
     throw new Error(`Failed to initialite a live mode for video ${video.id}.`);
   }
 
-  return await response.json();
+  return response.json();
 };

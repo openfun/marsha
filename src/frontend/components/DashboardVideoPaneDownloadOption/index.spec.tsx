@@ -4,7 +4,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 
 import { DashboardVideoPaneDownloadOption } from '.';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -19,7 +19,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
   const video = videoMockFactory({
     id: '442',
     show_download: false,
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
   });
 
   it('renders with checkbox not checked', () => {

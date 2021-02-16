@@ -1,23 +1,23 @@
 import fetchMock from 'fetch-mock';
 import xhrMock from 'xhr-mock';
 
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import {
   Thumbnail,
-  timedTextMode,
-  uploadState,
+  TimedTextMode,
+  UploadState,
   Video,
 } from '../../../types/tracks';
-import { jestMockOf } from '../../../utils/types';
+import { JestMockOf } from '../../../utils/types';
 import { addResource } from '../../stores/generics';
-import { upload } from './';
+import { upload } from '.';
 
 jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
 
 jest.mock('../../stores/generics', () => ({
   addResource: jest.fn(),
 }));
-const mockAddResource = addResource as jestMockOf<typeof addResource>;
+const mockAddResource = addResource as JestMockOf<typeof addResource>;
 
 describe('upload', () => {
   const object = {
@@ -32,8 +32,8 @@ describe('upload', () => {
         id: 'ttt-1',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-1.vtt',
       },
       {
@@ -41,8 +41,8 @@ describe('upload', () => {
         id: 'ttt-2',
         is_ready_to_show: false,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-2.vtt',
       },
       {
@@ -50,8 +50,8 @@ describe('upload', () => {
         id: 'ttt-3',
         is_ready_to_show: true,
         language: 'en',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.CLOSED_CAPTIONING,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-3.vtt',
       },
       {
@@ -59,8 +59,8 @@ describe('upload', () => {
         id: 'ttt-4',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.TRANSCRIPT,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.TRANSCRIPT,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-4.vtt',
       },
     ],
@@ -82,7 +82,7 @@ describe('upload', () => {
 
   const setStatus = jest.fn();
   const notifyObjectUploadProgress = jest.fn();
-  const objectType = modelName.VIDEOS;
+  const objectType = ModelName.VIDEOS;
 
   beforeEach(jest.resetAllMocks);
   beforeEach(() => xhrMock.setup());
@@ -126,12 +126,12 @@ describe('upload', () => {
     expect(setStatus).toHaveBeenCalledWith('uploading');
     expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
-      upload_state: uploadState.UPLOADING,
+      upload_state: UploadState.UPLOADING,
     });
     expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
       title: file.name,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     });
     expect(fetchMock.called('/api/videos/video-id/', { method: 'PUT' })).toBe(
       true,
@@ -148,7 +148,7 @@ describe('upload', () => {
       active_stamp: null,
       id: 'thumb1',
       is_ready_to_show: false,
-      upload_state: uploadState.PENDING,
+      upload_state: UploadState.PENDING,
       urls: {
         144: 'https://example.com/144p.jpg',
         240: 'https://example.com/240p.jpg',
@@ -182,7 +182,7 @@ describe('upload', () => {
     await upload(
       setStatus,
       notifyObjectUploadProgress,
-      modelName.THUMBNAILS,
+      ModelName.THUMBNAILS,
       thumbnail,
     )(file);
 
@@ -192,13 +192,13 @@ describe('upload', () => {
       }),
     ).toBe(true);
     expect(setStatus).toHaveBeenCalledWith('uploading');
-    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAILS, {
+    expect(mockAddResource).toHaveBeenCalledWith(ModelName.THUMBNAILS, {
       ...thumbnail,
-      upload_state: uploadState.UPLOADING,
+      upload_state: UploadState.UPLOADING,
     });
-    expect(mockAddResource).toHaveBeenCalledWith(modelName.THUMBNAILS, {
+    expect(mockAddResource).toHaveBeenCalledWith(ModelName.THUMBNAILS, {
       ...thumbnail,
-      upload_state: uploadState.PROCESSING,
+      upload_state: UploadState.PROCESSING,
     });
     expect(fetchMock.called('/api/thumbnails/thumb1/', { method: 'PUT' })).toBe(
       false,
@@ -258,7 +258,7 @@ describe('upload', () => {
 
     expect(
       fetchMock.calls(
-        `/api/${modelName.VIDEOS}/${object.id}/initiate-upload/`,
+        `/api/${ModelName.VIDEOS}/${object.id}/initiate-upload/`,
         {
           method: 'POST',
         },
@@ -267,11 +267,11 @@ describe('upload', () => {
     expect(setStatus).toHaveBeenCalledWith('uploading');
     expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
-      upload_state: uploadState.UPLOADING,
+      upload_state: UploadState.UPLOADING,
     });
     expect(mockAddResource).toHaveBeenCalledWith(objectType, {
       ...object,
-      upload_state: uploadState.ERROR,
+      upload_state: UploadState.ERROR,
     });
   });
 
@@ -296,7 +296,7 @@ describe('upload', () => {
 
     expect(
       fetchMock.calls(
-        `/api/${modelName.VIDEOS}/${object.id}/initiate-upload/`,
+        `/api/${ModelName.VIDEOS}/${object.id}/initiate-upload/`,
         {
           method: 'POST',
         },

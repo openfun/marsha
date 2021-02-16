@@ -2,7 +2,7 @@ import { Nullable } from '../utils/types';
 import { Resource } from './tracks';
 
 /** Possible states for any API request. */
-export enum requestStatus {
+export enum RequestStatus {
   FAILURE = 'failure',
   PENDING = 'pending',
   SUCCESS = 'success',
@@ -10,12 +10,12 @@ export enum requestStatus {
 
 interface RespFailure {
   error: string;
-  status: requestStatus.FAILURE;
+  status: RequestStatus.FAILURE;
 }
 
 interface RespSuccess {
   objects: Resource[];
-  status: requestStatus.SUCCESS;
+  status: RequestStatus.SUCCESS;
 }
 
 /** Intermediate response types to pass around in internal interfaces. */
@@ -29,5 +29,5 @@ export interface APIListCommonRequestParams {
 
 export interface ConsumableQuery<R extends Resource> {
   objects: R[] | never[];
-  status: Nullable<requestStatus>;
+  status: Nullable<RequestStatus>;
 }

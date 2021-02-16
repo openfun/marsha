@@ -1,7 +1,7 @@
 import videojs from 'video.js';
 
-import { VideoJsExtendedSourceObject } from '../../../types/libs/video.js/extend';
 import { Maybe } from 'utils/types';
+import { VideoJsExtendedSourceObject } from '../../../types/libs/video.js/extend';
 
 import { Events } from './types';
 

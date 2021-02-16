@@ -2,13 +2,13 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import DocumentPlayer from '.';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { documentMockFactory } from '../../utils/tests/factories';
 
 const mockDocument = documentMockFactory({
   id: '42',
   title: 'foo.pdf',
-  upload_state: uploadState.READY,
+  upload_state: UploadState.READY,
 });
 jest.mock('../../data/appData', () => ({
   appData: {

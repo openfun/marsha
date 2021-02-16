@@ -4,7 +4,7 @@ import React from 'react';
 import { appData } from '../../appData';
 
 import { useVideo } from '.';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 
 jest.mock('../../appData', () => ({
   appData: {
@@ -86,7 +86,7 @@ describe('stores/useVideo', () => {
 
     const state = getLatestHookValues();
 
-    expect(state[modelName.VIDEOS]).toEqual({
+    expect(state[ModelName.VIDEOS]).toEqual({
       'video-id': appData.video,
     });
     expect(state.getVideo({ id: 'video-id' })).toEqual(appData.video);
@@ -94,20 +94,20 @@ describe('stores/useVideo', () => {
   it('adds a resource to the store', () => {
     useVideo.getState().addResource({ id: 'newResource' } as any);
 
-    expect(useVideo.getState()[modelName.VIDEOS].newResource).toEqual({
+    expect(useVideo.getState()[ModelName.VIDEOS].newResource).toEqual({
       id: 'newResource',
     });
   });
   it('removes an existing resource', () => {
     useVideo.getState().addResource({ id: 'toDelete' } as any);
 
-    expect(useVideo.getState()[modelName.VIDEOS].toDelete).toEqual({
+    expect(useVideo.getState()[ModelName.VIDEOS].toDelete).toEqual({
       id: 'toDelete',
     });
 
     useVideo.getState().removeResource({ id: 'toDelete' } as any);
 
-    expect(useVideo.getState()[modelName.VIDEOS].toDelete).toBeUndefined();
+    expect(useVideo.getState()[ModelName.VIDEOS].toDelete).toBeUndefined();
   });
   it('adds multiple resources to the store', () => {
     useVideo
@@ -118,13 +118,13 @@ describe('stores/useVideo', () => {
         { id: 'multi3' } as any,
       ]);
 
-    expect(useVideo.getState()[modelName.VIDEOS].multi1).toEqual({
+    expect(useVideo.getState()[ModelName.VIDEOS].multi1).toEqual({
       id: 'multi1',
     });
-    expect(useVideo.getState()[modelName.VIDEOS].multi2).toEqual({
+    expect(useVideo.getState()[ModelName.VIDEOS].multi2).toEqual({
       id: 'multi2',
     });
-    expect(useVideo.getState()[modelName.VIDEOS].multi3).toEqual({
+    expect(useVideo.getState()[ModelName.VIDEOS].multi3).toEqual({
       id: 'multi3',
     });
   });

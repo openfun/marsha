@@ -16,7 +16,7 @@ export const uploadFile = (
     xhr.addEventListener('error', reject);
     xhr.addEventListener('abort', reject);
 
-    xhr.addEventListener('readystatechange', (event) => {
+    xhr.addEventListener('readystatechange', () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 204) {
           return resolve(true);

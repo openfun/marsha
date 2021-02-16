@@ -1,18 +1,10 @@
-import Hls from 'hls.js';
-
-import { timedTextMode, uploadState, Video } from '../types/tracks';
+import { TimedTextMode, UploadState, Video } from '../types/tracks';
 import { videoMockFactory } from '../utils/tests/factories';
-import { jestMockOf } from '../utils/types';
-import { createHlsPlayer } from './createHlsPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
 
 jest.mock('./createHlsPlayer', () => ({
   createHlsPlayer: jest.fn(),
 }));
-
-const mockCreateHlsPlayer = createHlsPlayer as jestMockOf<
-  typeof createHlsPlayer
->;
 
 jest.mock('plyr', () => {
   return jest.fn().mockImplementation(() => ({
@@ -40,9 +32,9 @@ jest.mock('plyr', () => {
   }));
 });
 jest.mock('../index', () => ({
-  intl: {
+  getIntl: () => ({
     formatMessage: jest.fn(),
-  },
+  }),
 }));
 
 jest.mock('../data/appData', () => ({
@@ -71,8 +63,8 @@ describe('createPlyrPlayer', () => {
         id: 'ttt-1',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-1.vtt',
         source_url: 'https://example.com/timedtext/ttt-1.vtt',
         video: 'video-id',
@@ -83,8 +75,8 @@ describe('createPlyrPlayer', () => {
         id: 'ttt-2',
         is_ready_to_show: false,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-2.vtt',
         source_url: 'https://example.com/timedtext/ttt-2.vtt',
         video: 'video-id',
@@ -95,8 +87,8 @@ describe('createPlyrPlayer', () => {
         id: 'ttt-3',
         is_ready_to_show: true,
         language: 'en',
-        mode: timedTextMode.CLOSED_CAPTIONING,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.CLOSED_CAPTIONING,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-3.vtt',
         source_url: 'https://example.com/timedtext/ttt-3.vtt',
         video: 'video-id',
@@ -107,8 +99,8 @@ describe('createPlyrPlayer', () => {
         id: 'ttt-4',
         is_ready_to_show: true,
         language: 'fr',
-        mode: timedTextMode.SUBTITLE,
-        upload_state: uploadState.READY,
+        mode: TimedTextMode.SUBTITLE,
+        upload_state: UploadState.READY,
         url: 'https://example.com/timedtext/ttt-4.vtt',
         source_url: 'https://example.com/timedtext/ttt-4.vtt',
         video: 'video-id',
@@ -116,7 +108,7 @@ describe('createPlyrPlayer', () => {
       },
     ],
     title: 'Some title',
-    upload_state: uploadState.READY,
+    upload_state: UploadState.READY,
     urls: {
       manifests: {
         hls: 'https://example.com/hls.m3u8',

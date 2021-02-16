@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineMessages } from 'react-intl';
 
-import { Thumbnail, Video, videoSize } from '../../types/tracks';
+import { Thumbnail, Video, VideoSize } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { videoSizeMapping } from '../../utils/videoSizeMapping';
 import { ImageIntlAlt } from '../ImageIntlAlt/ImageIntlAlt';
@@ -28,14 +28,14 @@ export const DashboardThumbnailDisplay = ({
       ? thumbnail.urls
       : video.urls.thumbnails;
   const resolutions = Object.keys(urls).map(
-    (size) => Number(size) as videoSize,
+    (size) => Number(size) as VideoSize,
   );
   return (
     <ImageIntlAlt
       alt={messages.thumbnailAlt}
-      fit={'cover'}
+      fit="cover"
       src={urls[resolutions[0]]}
-      srcSet={resolutions.reduce((acc: string, size: videoSize) => {
+      srcSet={resolutions.reduce((acc: string, size: VideoSize) => {
         const url = `${urls[size]} ${videoSizeMapping[size]}w`;
         if (acc.length === 0) {
           return url;

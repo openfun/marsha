@@ -5,13 +5,13 @@ import { ImportMock } from 'ts-mock-imports';
 
 import { ERROR_COMPONENT_ROUTE } from '../ErrorComponent/route';
 import * as useVideoModule from '../../data/stores/useVideo';
-import { uploadState } from '../../types/tracks';
+import { UploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 
-import { DashboardVideoHarvested } from './';
+import { DashboardVideoHarvested } from '.';
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -48,7 +48,7 @@ describe('DashboardVideoHarvested', () => {
     });
 
     const video = videoMockFactory({
-      upload_state: uploadState.HARVESTED,
+      upload_state: UploadState.HARVESTED,
     });
 
     render(
@@ -68,12 +68,12 @@ describe('DashboardVideoHarvested', () => {
 
     const video = videoMockFactory({
       id: 'bd1ab4c9-a051-423b-a71c-e7ddae9d404b',
-      upload_state: uploadState.HARVESTED,
+      upload_state: UploadState.HARVESTED,
     });
 
     const updatedVideo = {
       ...video,
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     };
 
     fetchMock.mock(
@@ -111,12 +111,12 @@ describe('DashboardVideoHarvested', () => {
 
     const video = videoMockFactory({
       id: 'bd1ab4c9-a051-423b-a71c-e7ddae9d404b',
-      upload_state: uploadState.HARVESTED,
+      upload_state: UploadState.HARVESTED,
     });
 
     const updatedVideo = {
       ...video,
-      upload_state: uploadState.READY,
+      upload_state: UploadState.READY,
     };
 
     fetchMock.mock(

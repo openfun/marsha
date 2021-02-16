@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { uploadState, liveState } from '../../../types/tracks';
+import { UploadState, LiveState } from '../../../types/tracks';
 import { startLive } from '.';
 
 jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
@@ -17,7 +17,7 @@ describe('sideEffects/startLive', () => {
     thumbnail: null,
     timed_text_tracks: [],
     title: 'Some title',
-    upload_state: uploadState.PENDING,
+    upload_state: UploadState.PENDING,
     urls: {
       manifests: {
         dash: 'https://example.com/dash.mpd',
@@ -43,7 +43,7 @@ describe('sideEffects/startLive', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     },
-    live_state: liveState.IDLE,
+    live_state: LiveState.IDLE,
     live_info: {
       medialive: {
         input: {
@@ -58,7 +58,7 @@ describe('sideEffects/startLive', () => {
       '/api/videos/36/start-live/',
       JSON.stringify({
         ...video,
-        live_state: liveState.STARTING,
+        live_state: LiveState.STARTING,
       }),
       { method: 'POST' },
     );
@@ -66,7 +66,7 @@ describe('sideEffects/startLive', () => {
 
     expect(updatedVideo).toEqual({
       ...video,
-      live_state: liveState.STARTING,
+      live_state: LiveState.STARTING,
     });
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',

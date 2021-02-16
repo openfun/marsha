@@ -2,4 +2,5 @@
 
 export const isMSESupported = () =>
   'MediaSource' in window &&
+  // eslint-disable-next-line compat/compat
   typeof window.MediaSource.isTypeSupported === 'function';

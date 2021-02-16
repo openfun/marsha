@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
-import { TimedText, timedTextMode } from '../../../types/tracks';
+import { ModelName } from '../../../types/models';
+import { TimedText, TimedTextMode } from '../../../types/tracks';
 import { appData } from '../../appData';
 
 /**
@@ -10,10 +10,10 @@ import { appData } from '../../appData';
  */
 export const createTimedTextTrack = async (
   language: string,
-  mode: timedTextMode,
+  mode: TimedTextMode,
 ) => {
   const response = await fetch(
-    `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
+    `${API_ENDPOINT}/${ModelName.TIMEDTEXTTRACKS}/`,
     {
       body: JSON.stringify({ language, mode }),
       headers: {

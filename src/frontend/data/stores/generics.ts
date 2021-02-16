@@ -1,25 +1,29 @@
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
 
-const getStore = async (objectType: modelName) => {
+const getStore = async (objectType: ModelName) => {
   switch (objectType) {
-    case modelName.THUMBNAILS:
+    case ModelName.THUMBNAILS: {
       const { useThumbnail } = await import('./useThumbnail');
       return useThumbnail;
-    case modelName.TIMEDTEXTTRACKS:
+    }
+    case ModelName.TIMEDTEXTTRACKS: {
       const { useTimedTextTrack } = await import('./useTimedTextTrack');
       return useTimedTextTrack;
-    case modelName.VIDEOS:
+    }
+    case ModelName.VIDEOS: {
       const { useVideo } = await import('./useVideo');
       return useVideo;
-    case modelName.DOCUMENTS:
+    }
+    case ModelName.DOCUMENTS: {
       const { useDocument } = await import('./useDocument');
       return useDocument;
+    }
   }
 };
 
 export const addMultipleResources = async (
-  objectType: modelName,
+  objectType: ModelName,
   objects: UploadableObject[],
 ) => {
   const store = await getStore(objectType);
@@ -27,14 +31,14 @@ export const addMultipleResources = async (
 };
 
 export const addResource = async (
-  objectType: modelName,
+  objectType: ModelName,
   object: UploadableObject,
 ) => {
   const store = await getStore(objectType);
   store.getState().addResource(object as any);
 };
 
-export const getResource = async (objectType: modelName, objectId: string) => {
+export const getResource = async (objectType: ModelName, objectId: string) => {
   const store = await getStore(objectType);
   const state = store.getState();
   return state[objectType] && state[objectType]![objectId];

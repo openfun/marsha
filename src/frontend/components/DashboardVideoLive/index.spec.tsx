@@ -3,8 +3,8 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { PLAYER_ROUTE } from '../routes';
-import { modelName } from '../../types/models';
-import { liveState, uploadState } from '../../types/tracks';
+import { ModelName } from '../../types/models';
+import { LiveState, UploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DashboardVideoLive } from '.';
@@ -31,7 +31,7 @@ describe('components/DashboardVideoLive', () => {
     thumbnail: null,
     timed_text_tracks: [],
     title: '',
-    upload_state: uploadState.PENDING,
+    upload_state: UploadState.PENDING,
     urls: {
       manifests: {
         dash: 'https://example.com/dash',
@@ -45,7 +45,7 @@ describe('components/DashboardVideoLive', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     },
-    live_state: liveState.IDLE,
+    live_state: LiveState.IDLE,
     live_info: {
       medialive: {
         input: {
@@ -83,7 +83,7 @@ describe('components/DashboardVideoLive', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
+            video={{ ...video, live_state: LiveState.RUNNING }}
           />,
         ),
       ),
@@ -98,11 +98,11 @@ describe('components/DashboardVideoLive', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
+            video={{ ...video, live_state: LiveState.RUNNING }}
           />,
           [
             {
-              path: PLAYER_ROUTE(modelName.VIDEOS),
+              path: PLAYER_ROUTE(ModelName.VIDEOS),
               render: () => <span>video player</span>,
             },
           ],
@@ -121,14 +121,14 @@ describe('components/DashboardVideoLive', () => {
   it('polls the video when live state is STARTING', async () => {
     fetchMock.mock(
       '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
-      JSON.stringify({ ...video, live_state: liveState.STARTING }),
+      JSON.stringify({ ...video, live_state: LiveState.STARTING }),
     );
 
     const { rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoLive
-            video={{ ...video, live_state: liveState.STARTING }}
+            video={{ ...video, live_state: LiveState.STARTING }}
           />,
         ),
       ),
@@ -157,7 +157,7 @@ describe('components/DashboardVideoLive', () => {
     fetchMock.restore();
     fetchMock.mock(
       '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
-      JSON.stringify({ ...video, live_state: liveState.RUNNING }),
+      JSON.stringify({ ...video, live_state: LiveState.RUNNING }),
     );
 
     // Second backend call
@@ -176,7 +176,7 @@ describe('components/DashboardVideoLive', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
+            video={{ ...video, live_state: LiveState.RUNNING }}
           />,
         ),
       ),

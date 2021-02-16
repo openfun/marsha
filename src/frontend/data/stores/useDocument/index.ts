@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 import { Document } from '../../../types/file';
-import { modelName } from '../../../types/models';
+import { ModelName } from '../../../types/models';
 import { StoreState } from '../../../types/stores';
 import { Nullable } from '../../../utils/types';
 import { appData } from '../../appData';
@@ -9,24 +9,24 @@ import { addMultipleResources, addResource, removeResource } from '../actions';
 
 type DocumentState = StoreState<Document> & {
   getDocument: (document: Nullable<Document>) => Document;
-  [modelName.DOCUMENTS]: {
+  [ModelName.DOCUMENTS]: {
     [id: string]: Document;
   };
 };
 
 export const useDocument = create<DocumentState>((set, get) => ({
   addMultipleResources: (documentsToAdd: Document[]) =>
-    set(addMultipleResources(get(), modelName.DOCUMENTS, documentsToAdd)),
+    set(addMultipleResources(get(), ModelName.DOCUMENTS, documentsToAdd)),
   addResource: (document: Document) =>
-    set(addResource<Document>(get(), modelName.DOCUMENTS, document)),
+    set(addResource<Document>(get(), ModelName.DOCUMENTS, document)),
   getDocument: (document: Nullable<Document>) => {
     return (
-      get()[modelName.DOCUMENTS][(document && document.id) || ''] || document
+      get()[ModelName.DOCUMENTS][(document && document.id) || ''] || document
     );
   },
   removeResource: (document: Document) =>
-    set(removeResource(get(), modelName.DOCUMENTS, document)),
-  [modelName.DOCUMENTS]: {
+    set(removeResource(get(), ModelName.DOCUMENTS, document)),
+  [ModelName.DOCUMENTS]: {
     ...(appData.document ? { [appData.document.id]: appData.document } : {}),
   },
 }));

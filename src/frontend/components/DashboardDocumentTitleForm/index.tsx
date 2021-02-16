@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { useDocument } from '../../data/stores/useDocument';
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
+import { ModelName } from '../../types/models';
 import { Maybe } from '../../utils/types';
 
 const messages = defineMessages({
@@ -50,12 +50,12 @@ export const DashboardDocumentTitleForm = ({
           ...document,
           title,
         },
-        modelName.DOCUMENTS,
+        ModelName.DOCUMENTS,
       );
       setError(undefined);
       setUpdated(true);
       updateDocument(newDocument);
-    } catch (error) {
+    } catch (err) {
       setError(intl.formatMessage(messages.updateError));
       setUpdated(false);
     }
@@ -66,23 +66,23 @@ export const DashboardDocumentTitleForm = ({
       <Form onSubmit={updateTitle}>
         <FormField
           label={intl.formatMessage(messages.updateTitle)}
-          htmlFor={'title'}
+          htmlFor="title"
           error={error}
           component={TextInput}
         >
           <TextInput
-            id={'title'}
+            id="title"
             maxLength={255}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Title"
             required={true}
-            size={'medium'}
+            size="medium"
             value={title}
           />
         </FormField>
         <Button type="submit" primary label="Submit" />
         {udpated && (
-          <Text margin={'small'} color={'status-ok'}>
+          <Text margin="small" color="status-ok">
             {intl.formatMessage(messages.updateSuccessful)}
           </Text>
         )}
