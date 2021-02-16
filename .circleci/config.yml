@@ -382,6 +382,9 @@ jobs:
           keys:
             - v3-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
+          name: Lint code with eslint
+          command: yarn lint
+      - run:
           name: Lint code with prettier
           command: yarn prettier
 
