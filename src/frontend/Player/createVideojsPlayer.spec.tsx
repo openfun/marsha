@@ -139,7 +139,9 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.responsive).toBe(true);
     expect(player.options_.html5).toEqual({
       vhs: {
+        limitRenditionByPlayerDimensions: true,
         overrideNative: true,
+        useDevicePixelRatio: true,
       },
     });
   });
@@ -202,7 +204,9 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.responsive).toBe(true);
     expect(player.options_.html5).toEqual({
       vhs: {
+        limitRenditionByPlayerDimensions: true,
         overrideNative: true,
+        useDevicePixelRatio: true,
       },
     });
     expect(player.options_.plugins).toEqual({

@@ -33,7 +33,15 @@ export const createVideojsPlayer = (
     fluid: true,
     html5: {
       vhs: {
+        // prevent to have a resolution selected higher than
+        // the player size. By default this is set to true.
+        // We set it to true here to remember this undocumented option.
+        limitRenditionByPlayerDimensions: true,
         overrideNative: !videojs.browser.IS_SAFARI,
+        // take the device pixel ratio into account when doing rendition switching.
+        // This means that if you have a player with the width of 540px in a high density
+        // display with a device pixel ratio of 2, a rendition of 1080p will be allowed.
+        useDevicePixelRatio: true,
       },
     },
     language: intl.locale,
