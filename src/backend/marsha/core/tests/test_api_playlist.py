@@ -153,6 +153,116 @@ class PlaylistAPITest(TestCase):
             },
         )
 
+    def test_retrieve_playlist_by_anonymous_user(self):
+        """Anonymous users cannot retrieve playlists."""
+        playlist = factories.PlaylistFactory()
+        response = self.client.get(f"/api/playlists/{playlist.id}/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_retrieve_playlist_by_random_logged_in_user(self):
+        """Random logged-in users cannot retrieve playlists unrelated to them."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_retrieve_playlist_by_playlist_instructor(self):
+        """Playlist instructors cannot retrieve playlists."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_retrieve_playlist_by_playlist_admin(self):
+        """Playlist administrators can retrieve playlists."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "consumer_site": str(playlist.consumer_site.id),
+                "created_by": None,
+                "duplicated_from": None,
+                "id": str(playlist.id),
+                "is_portable_to_consumer_site": False,
+                "is_portable_to_playlist": True,
+                "is_public": False,
+                "lti_id": playlist.lti_id,
+                "organization": None,
+                "portable_to": [],
+                "title": playlist.title,
+                "users": [str(user.id)],
+            },
+        )
+
+    def test_retrieve_playlist_by_organization_admin(self):
+        """Organization administrators can retrieve organization-related playlists."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "consumer_site": str(playlist.consumer_site.id),
+                "created_by": None,
+                "duplicated_from": None,
+                "id": str(playlist.id),
+                "is_portable_to_consumer_site": False,
+                "is_portable_to_playlist": True,
+                "is_public": False,
+                "lti_id": playlist.lti_id,
+                "organization": str(organization.id),
+                "portable_to": [],
+                "title": playlist.title,
+                "users": [],
+            },
+        )
+
     def test_list_playlists_by_anonymous_user(self):
         """Anonymous users cannot make list requests for playlists."""
         factories.PlaylistFactory()
@@ -302,3 +412,102 @@ class PlaylistAPITest(TestCase):
                 },
             ],
         )
+
+    def test_delete_playlist_by_anonymous_user(self):
+        """Anonymous users cannot delete playlists."""
+        playlist = factories.PlaylistFactory()
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+        response = self.client.delete(f"/api/playlists/{playlist.id}/")
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+    def test_delete_playlist_by_random_logged_in_user(self):
+        """Random logged-in users cannot delete playlists unrelated to them."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.delete(
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+    def test_delete_playlist_by_playlist_admin(self):
+        """Playlist administrators cannot delete playlists."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.delete(
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+    def test_update_playlist_by_anonymous_user(self):
+        """Anonymous users cannot update playlists."""
+        playlist = factories.PlaylistFactory(title="existing title")
+        response = self.client.put(
+            f"/api/playlists/{playlist.id}/", {"title": "new playlist title"}
+        )
+
+        self.assertEqual(response.status_code, 401)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "existing title")
+
+    def test_update_playlist_by_random_logged_in_user(self):
+        """Random logged-in users cannot update playlists unrelated to them."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory(title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.delete(
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new playlist title"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "existing title")
+
+    def test_update_playlist_by_playlist_admin(self):
+        """Playlist administrators cannot update playlists."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory(title="existing title")
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.delete(
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new playlist title"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "existing title")
