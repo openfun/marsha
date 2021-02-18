@@ -271,6 +271,52 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
             return False
 
 
+class IsPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user has an access to the playlist in the path, with
+    an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the playlist exists and the current logged in user is one
+        of its administrator.
+        """
+        return models.PlaylistAccess.objects.filter(
+            role=ADMINISTRATOR,
+            # Avoid making extra requests to get the playlist id through get_object
+            playlist__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsPlaylistOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user is a member of the organization related to the playlist
+    in the path, with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the playlist exists and the current logged in user is one
+        of the administrators of its related organization.
+        """
+        return models.OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            # Avoid making extra requests to get the playlist id through get_object
+            organization__playlists__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
 class IsVideoPlaylistAdmin(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.

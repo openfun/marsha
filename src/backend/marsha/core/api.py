@@ -37,6 +37,20 @@ from .xapi import XAPI, XAPIStatement
 logger = logging.getLogger(__name__)
 
 
+class ObjectPkMixin:
+    """
+    Get the object primary key from the URL path.
+
+    This is useful to avoid making extra requests using view.get_object() on
+    a ViewSet when we only need the object's id, which is available in the URL.
+    """
+
+    def get_object_pk(self):
+        """Get the object primary key from the URL path."""
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        return self.kwargs.get(lookup_url_kwarg)
+
+
 class UserViewSet(viewsets.GenericViewSet):
     """ViewSet for all user-related interactions."""
 
@@ -71,7 +85,7 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(data=self.get_serializer(user).data)
 
 
-class PlaylistViewSet(viewsets.ModelViewSet):
+class PlaylistViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     """ViewSet for all playlist-related interactions."""
 
     permission_classes = [permissions.NotAllowed]
@@ -85,10 +99,14 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["create"]:
-            permission_classes = [permissions.IsParamsOrganizationAdmin]
-        elif self.action in ["list"]:
+        if self.action in ["list"]:
             permission_classes = [IsAuthenticated]
+        elif self.action in ["retrieve"]:
+            permission_classes = [
+                permissions.IsPlaylistAdmin | permissions.IsPlaylistOrganizationAdmin
+            ]
+        elif self.action in ["create"]:
+            permission_classes = [permissions.IsParamsOrganizationAdmin]
         else:
             try:
                 permission_classes = getattr(self, self.action).kwargs.get(
