@@ -43,6 +43,8 @@ export const createVideojsPlayer = (
         // display with a device pixel ratio of 2, a rendition of 1080p will be allowed.
         useDevicePixelRatio: true,
       },
+      nativeAudioTracks: videojs.browser.IS_SAFARI,
+      nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
     language: intl.locale,
     liveui: video.live_state !== null,
