@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Disable native audio and video tracks in Videojs conf
+
 ## [3.16.0] - 2021-02-17
 
 ### Added

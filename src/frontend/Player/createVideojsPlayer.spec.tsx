@@ -143,6 +143,8 @@ describe('createVideoJsPlayer', () => {
         overrideNative: true,
         useDevicePixelRatio: true,
       },
+      nativeAudioTracks: false,
+      nativeVideoTracks: false,
     });
   });
 
@@ -208,6 +210,8 @@ describe('createVideoJsPlayer', () => {
         overrideNative: true,
         useDevicePixelRatio: true,
       },
+      nativeAudioTracks: false,
+      nativeVideoTracks: false,
     });
     expect(player.options_.plugins).toEqual({
       qualitySelector: {
