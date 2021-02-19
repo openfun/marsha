@@ -20,7 +20,7 @@ from rest_framework_simplejwt.models import TokenUser
 
 from . import defaults, forms, permissions, serializers
 from .lti import LTIUser
-from .models import Document, Playlist, Thumbnail, TimedTextTrack, Video
+from .models import Document, Organization, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
     create_live_stream,
@@ -83,6 +83,32 @@ class UserViewSet(viewsets.GenericViewSet):
             return Response(status=401)
 
         return Response(data=self.get_serializer(user).data)
+
+
+class OrganizationViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+    """ViewSet for all organization-related interactions."""
+
+    permission_classes = [permissions.NotAllowed]
+    queryset = Organization.objects.all()
+    serializer_class = serializers.OrganizationSerializer
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the actions' self defined permissions if applicable or
+        to the ViewSet's default permissions.
+        """
+        if self.action in ["retrieve"]:
+            permission_classes = [permissions.IsOrganizationAdmin]
+        else:
+            try:
+                permission_classes = getattr(self, self.action).kwargs.get(
+                    "permission_classes"
+                )
+            except AttributeError:
+                permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
 
 
 class PlaylistViewSet(ObjectPkMixin, viewsets.ModelViewSet):

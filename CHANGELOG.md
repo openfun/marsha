@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Switch to enable sentry in front application
 - Management command checking live stuck in IDLE
 - Add new live state CREATING
+- Open retrieve endpoints for organizations & playlists
 
 ### Changed
 

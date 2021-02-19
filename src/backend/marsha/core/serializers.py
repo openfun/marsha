@@ -27,6 +27,7 @@ from .defaults import (
 )
 from .models import (
     Document,
+    Organization,
     OrganizationAccess,
     Playlist,
     Thumbnail,
@@ -417,6 +418,22 @@ class ThumbnailSerializer(serializers.ModelSerializer):
                 )
             return urls
         return None
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    """Serializer to display a complete Organization resource."""
+
+    class Meta:
+        """Meta for OrganizationSerializer."""
+
+        model = Organization
+        fields = [
+            "consumer_sites",
+            "created_on",
+            "id",
+            "name",
+            "users",
+        ]
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
