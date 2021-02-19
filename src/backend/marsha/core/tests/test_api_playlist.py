@@ -169,7 +169,8 @@ class PlaylistAPITest(TestCase):
         jwt_token.payload["user_id"] = str(user.id)
 
         response = self.client.get(
-            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -187,7 +188,8 @@ class PlaylistAPITest(TestCase):
         jwt_token.payload["user_id"] = str(user.id)
 
         response = self.client.get(
-            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -205,7 +207,8 @@ class PlaylistAPITest(TestCase):
         jwt_token.payload["user_id"] = str(user.id)
 
         response = self.client.get(
-            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)
@@ -241,7 +244,8 @@ class PlaylistAPITest(TestCase):
         jwt_token.payload["user_id"] = str(user.id)
 
         response = self.client.get(
-            f"/api/playlists/{playlist.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            f"/api/playlists/{playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)
