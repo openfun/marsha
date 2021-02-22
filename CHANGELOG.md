@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Disable native audio and video tracks in Videojs conf
+- Remove HLS source in <VideoPlayer />
 
 ## [3.16.0] - 2021-02-17
 
