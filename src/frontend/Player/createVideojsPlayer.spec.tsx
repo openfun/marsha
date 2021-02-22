@@ -94,31 +94,6 @@ describe('createVideoJsPlayer', () => {
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/1080',
-        size: '1080',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/720',
-        size: '720',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/480',
-        size: '480',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/240',
-        size: '240',
-      },
-      {
-        type: 'video/mp4',
-        src: 'https://example.com/mp4/144',
-        size: '144',
-      },
     ]);
 
     expect(player.options_.playbackRates).toEqual([

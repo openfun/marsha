@@ -1,12 +1,19 @@
 import 'video.js/dist/video-js.css';
-import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
+import videojs, {
+  VideoJsPlayer,
+  VideoJsPlayerOptions,
+  VideoJsPlayerPluginOptions,
+} from 'video.js';
 import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
 import { appData, getDecodedJwt } from '../data/appData';
-import { QualityLevels } from '../types/libs/video.js/extend';
-import { Video } from '../types/tracks';
+import {
+  QualityLevels,
+  VideoJsExtendedSourceObject,
+} from '../types/libs/video.js/extend';
+import { Video, videoSize } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -26,6 +33,30 @@ export const createVideojsPlayer = (
 ): VideoJsPlayer => {
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
+
+  const sources: VideoJsExtendedSourceObject[] = [];
+  const plugins: VideoJsPlayerPluginOptions = {};
+
+  if (!isMSESupported()) {
+    plugins.qualitySelector = {
+      default: '480',
+    };
+    Object.keys(video.urls.mp4)
+      .map((size) => Number(size) as videoSize)
+      .sort((a, b) => b - a)
+      .forEach((size) => {
+        sources.push({
+          type: 'video/mp4',
+          src: video.urls.mp4[size]!,
+          size: size.toString(),
+        });
+      });
+  } else {
+    sources.push({
+      type: 'application/x-mpegURL',
+      src: video.urls.manifests.hls,
+    });
+  }
 
   const options: VideoJsPlayerOptions = {
     controls: true,
@@ -49,16 +80,10 @@ export const createVideojsPlayer = (
     language: intl.locale,
     liveui: video.live_state !== null,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
+    plugins,
     responsive: true,
+    sources,
   };
-
-  if (!isMSESupported()) {
-    options.plugins = {
-      qualitySelector: {
-        default: '480',
-      },
-    };
-  }
 
   const player = videojs(videoNode, options);
 
