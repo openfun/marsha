@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add a series of components to power breadcrumbs.
+
 ## [3.17.0] - 2021-03-04
 
 ### Added
