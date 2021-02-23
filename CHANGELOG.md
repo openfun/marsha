@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.16.1] - 2021-02-23
+
 ### Fixed
 
 - Disable native audio and video tracks in Videojs conf
@@ -671,7 +673,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.16.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.16.1...master
+[3.16.1]: https://github.com/openfun/marsha/compare/v3.16.0...v3.16.1
 [3.16.0]: https://github.com/openfun/marsha/compare/v3.15.0...v3.16.0
 [3.15.0]: https://github.com/openfun/marsha/compare/v3.14.0...v3.15.0
 [3.14.0]: https://github.com/openfun/marsha/compare/v3.13.1...v3.14.0
