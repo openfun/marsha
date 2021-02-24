@@ -92,7 +92,8 @@ class VideoLTIViewTestCase(TestCase):
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            context.get("static"), {"svg": {"plyr": "/static/svg/plyr.svg"}}
+            context.get("static"),
+            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -202,7 +203,8 @@ class VideoLTIViewTestCase(TestCase):
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            context.get("static"), {"svg": {"plyr": "/static/svg/plyr.svg"}}
+            context.get("static"),
+            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -325,7 +327,8 @@ class VideoLTIViewTestCase(TestCase):
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
-            context.get("static"), {"svg": {"plyr": "/static/svg/plyr.svg"}}
+            context.get("static"),
+            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
