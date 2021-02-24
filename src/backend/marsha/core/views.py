@@ -72,7 +72,16 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
         jwt_token.payload["resource_id"] = str(self.request.user.id)
         jwt_token.payload["user_id"] = str(self.request.user.id)
 
-        app_data = {"frontend": "Site", "jwt": str(jwt_token)}
+        app_data = {
+            "frontend": "Site",
+            "jwt": str(jwt_token),
+            "static": {
+                "svg": {
+                    "icons": static("svg/icons.svg"),
+                    "plyr": static("svg/plyr.svg"),
+                }
+            },
+        }
 
         return {
             "app_data": json.dumps(app_data),
@@ -205,7 +214,12 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 else None,
                 "sentry_dsn": settings.SENTRY_DSN,
                 "state": "success",
-                "static": {"svg": {"plyr": static("svg/plyr.svg")}},
+                "static": {
+                    "svg": {
+                        "icons": static("svg/icons.svg"),
+                        "plyr": static("svg/plyr.svg"),
+                    }
+                },
                 "player": settings.VIDEO_PLAYER,
             }
             if lti is None or lti.is_student:
