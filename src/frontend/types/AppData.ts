@@ -25,6 +25,7 @@ export interface AppData {
   release: string;
   static: {
     svg: {
+      icons: string;
       plyr: string;
     };
   };
