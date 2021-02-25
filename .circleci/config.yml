@@ -843,6 +843,7 @@ jobs:
             docker push fundocker/marsha-ffmpeg-transmux:${DOCKER_TAG}
             if [[ -n "$CIRCLE_TAG" ]]; then
               docker push fundocker/marsha-ffmpeg-transmux:latest
+            fi
 
   lambda-publish:
     machine:
