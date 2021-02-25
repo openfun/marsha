@@ -7,10 +7,6 @@ exports.handler = async (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event_origin));
   const type = event_origin['detail-type'];
 
-  if (event_origin.detail.pipeline !== '0') {
-    return Promise.resolve('Lambda listening only pipeline 0');
-  }
-
   switch (type) {
     case 'MediaLive Channel State Change':
       try {

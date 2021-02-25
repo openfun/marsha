@@ -20,6 +20,7 @@ from ..defaults import (
     RUNNING,
     STATE_CHOICES,
     STOPPED,
+    STOPPING,
 )
 
 
@@ -2229,7 +2230,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
-                "live_state": "stopped",
+                "live_state": STOPPING,
                 "live_info": {
                     "medialive": {
                         "input": {
@@ -2325,7 +2326,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
-            live_state=RUNNING,
+            live_state=STOPPING,
             live_info={},
         )
         data = {
@@ -2435,3 +2436,36 @@ class VideoAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_video_update_live_state_same_state(self):
+        """Updating with exact same live state should return earlier a status code 200."""
+        video = factories.VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            upload_state=PENDING,
+            live_state=STOPPED,
+            live_info={},
+        )
+        data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "state": "stopped",
+        }
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.core.api.delete_aws_element_stack"
+        ) as delete_aws_element_stack_mock, mock.patch(
+            "marsha.core.api.create_mediapackage_harvest_job"
+        ) as create_mediapackage_harvest_job_mock:
+            response = self.client.patch(
+                "/api/videos/{!s}/update-live-state/".format(video.id),
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=(
+                    "6b551203cd79200fe9f02e20e69bb75a583dfe833c997a849b8cf59802185199"
+                ),
+            )
+            delete_aws_element_stack_mock.assert_not_called()
+            create_mediapackage_harvest_job_mock.assert_not_called()
+
+        self.assertEqual(response.status_code, 200)

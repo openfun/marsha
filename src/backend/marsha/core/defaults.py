@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
     IDLE,
     STARTING,
     STOPPED,
+    STOPPING,
     RUNNING,
     DELETED,
 ) = (
@@ -24,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
     "idle",
     "starting",
     "stopped",
+    "stopping",
     "running",
     "deleted",
 )
@@ -42,6 +44,7 @@ LIVE_CHOICES = (
     (STARTING, _("starting")),
     (RUNNING, _("running")),
     (STOPPED, _("stopped")),
+    (STOPPING, _("stopping")),
 )
 
 # FLAGS
