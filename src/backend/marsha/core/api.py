@@ -451,7 +451,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         stop_live_channel(video.live_info.get("medialive").get("channel").get("id"))
 
-        video.live_state = defaults.STOPPED
+        video.live_state = defaults.STOPPING
         video.save()
         serializer = self.get_serializer(video)
 
@@ -497,8 +497,24 @@ class VideoViewSet(viewsets.ModelViewSet):
         if not validate_signature(request.headers.get("X-Marsha-Signature"), msg):
             return Response("Forbidden", status=403)
 
+        # Load the video first to return a 404 if not existing
         video = self.get_object()
-        video.live_state = serializer.validated_data["state"]
+
+        # Try to update the video with the new live state. If the video has already this live state
+        # we are in a concurrent request and only the first one should be accepted.
+        updated_rows = Video.objects.filter(
+            ~Q(live_state=serializer.validated_data["state"]),
+            pk=video.pk,
+        ).update(live_state=serializer.validated_data["state"])
+
+        if updated_rows == 0:
+            # State was alreay updated by an earlier request, we can stop the process here
+            # If we return a status different than 200 the lambda will retry
+            # to update the live state several times.
+            return Response({"success": True})
+
+        video.refresh_from_db()
+
         live_info = video.live_info
         live_info.update(
             {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
