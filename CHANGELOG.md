@@ -21,6 +21,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Avoid blank page when feature flags are not set.
 
+### Changed
+
+- Use a new `<UploadManager />` for uploads to prepare a common tool
+  between the LTI app and the Marsha site.
+
 ## [3.17.0] - 2021-03-04
 
 ### Added
