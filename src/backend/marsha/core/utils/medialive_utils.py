@@ -75,9 +75,9 @@ def create_mediapackage_channel(key):
             "AdMarkers": "PASSTHROUGH",
             "IncludeIframeOnlyStream": False,
             "PlaylistType": "EVENT",
-            "PlaylistWindowSeconds": 5,
+            "PlaylistWindowSeconds": 10,
             "ProgramDateTimeIntervalSeconds": 0,
-            "SegmentDurationSeconds": 1,
+            "SegmentDurationSeconds": 4,
         },
         Tags={"environment": settings.AWS_BASE_NAME},
     )
