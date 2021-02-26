@@ -14,6 +14,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a harvest job when a live is ended
 - Component to switch a live to VOD
 
+### Changed
+
+- Medialive profiles use 24FPS instead of 30
+- Increase Medialive profiles segment to 4 seconds
+- Increase Mediapackage endpoint segment to 4 seconds
+- Rollback Medialive control rate mode to CBR
+
 ## [3.16.1] - 2021-02-23
 
 ### Fixed
