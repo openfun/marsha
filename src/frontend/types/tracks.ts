@@ -36,6 +36,7 @@ export enum liveState {
   STARTING = 'starting',
   RUNNING = 'running',
   STOPPED = 'stopped',
+  STOPPING = 'stopping',
 }
 
 /** Possible modes for a timed text track.
