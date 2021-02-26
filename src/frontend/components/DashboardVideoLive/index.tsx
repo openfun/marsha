@@ -7,7 +7,6 @@ import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
 import { Video, liveState } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { report } from '../../utils/errors/report';
 import { PLAYER_ROUTE } from '../routes';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
@@ -48,10 +47,17 @@ const messages = defineMessages({
   },
   liveStopped: {
     defaultMessage:
-      'Live streaming is ended. The process to transform the live in VOD will begin soon.',
+      'Live streaming is ended. The process to transform the live to VOD has started. You can close the window and come back later.',
     description:
-      'Helptext explaining that the live is ended and the live to VOD process will start.',
+      'Helptext explaining that the live is ended and the live to VOD process has started.',
     id: 'components.DashboardVideoLive.liveStopped',
+  },
+  liveStopping: {
+    defaultMessage:
+      'Live streaming is ending. The process to transform the live to VOD will begin soon. You can close the window and come back later.',
+    description:
+      'Helptext explaining that the live is ending and the live to VOD process will start.',
+    id: 'components.DashboardVideoLive.liveStopping',
   },
 });
 
@@ -140,6 +146,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         {video.live_state === liveState.STOPPED && (
           <Text>
             <FormattedMessage {...messages.liveStopped} />
+          </Text>
+        )}
+        {video.live_state === liveState.STOPPING && (
+          <Text>
+            <FormattedMessage {...messages.liveStopping} />
           </Text>
         )}
       </Box>
