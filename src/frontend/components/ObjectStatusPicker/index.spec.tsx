@@ -1,9 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import { ObjectStatusPicker } from '.';
-import { liveState, uploadState } from '../../types/tracks';
+import { modelName } from '../../types/models';
+import { liveState, UploadableObject, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import { ObjectStatusPicker } from '.';
+
+jest.mock('../../data/appData', () => ({}));
 
 const {
   DELETED,
@@ -13,118 +18,368 @@ const {
   PENDING,
   PROCESSING,
   READY,
-  UPLOADING,
 } = uploadState;
 const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
-  it('renders the status list for upload state PENDING', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={PENDING} />));
+  describe('upload state', () => {
+    it('renders status info for an object currently PENDING', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: PENDING,
+      } as UploadableObject;
 
-    screen.getByText('Missing ❌');
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{ setUploadState: () => {}, uploadManagerState: {} }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Missing ❌');
+    });
+
+    it('renders status info for an object with an ongoing upload', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: PENDING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {
+                [object.id]: {
+                  file: new File(['(⌐□_□)'], 'course.mp4', {
+                    type: 'video/mp4',
+                  }),
+                  objectId: object.id,
+                  objectType: modelName.VIDEOS,
+                  progress: 60,
+                  status: UploadManagerStatus.UPLOADING,
+                },
+              },
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Uploading');
+    });
+
+    it('renders status info for an object with a just-finished upload', () => {
+      // State is still pending as the state info has not looped back from lambda => server => client,
+      // however we know it should be processing as we just finished uploading it.
+      const object = {
+        id: uuidv4(),
+        upload_state: PENDING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {
+                [object.id]: {
+                  file: new File(['(⌐□_□)'], 'course.mp4', {
+                    type: 'video/mp4',
+                  }),
+                  objectId: object.id,
+                  objectType: modelName.VIDEOS,
+                  progress: 100,
+                  status: UploadManagerStatus.SUCCESS,
+                },
+              },
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Processing');
+    });
+
+    it('renders status info for an object undergoing PROCESSING', () => {
+      // Here the object is not an upload that has just finished. However as we got it from the API,
+      // the state on the object itself was "PROCESSING".
+      const object = {
+        id: uuidv4(),
+        upload_state: PROCESSING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Processing');
+    });
+
+    it('renders status info for an object in state READY', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: READY,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Ready ✔️');
+    });
+
+    it('renders status info for an object in state ERROR', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: ERROR,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Error ❌');
+    });
+
+    it('renders status info for an object in state DELETED', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: DELETED,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Deleted ❌');
+    });
+
+    it('renders status info for an object in state HARVESTING', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: HARVESTING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Transforming live in VOD');
+    });
+
+    it('renders status info for an object in state HARVESTED', () => {
+      const object = {
+        id: uuidv4(),
+        upload_state: HARVESTED,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Waiting VOD publication ✔️');
+    });
   });
 
-  it('renders the status list for upload state UPLOADING', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<ObjectStatusPicker state={UPLOADING} />),
-    );
+  describe('live state', () => {
+    it('renders status info for an object in live state IDLE', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: IDLE,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-    getByText('Uploading');
-  });
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-  it('renders the status list for upload state PROCESSING', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={PROCESSING} />));
+      screen.getByText('Ready to start live');
+    });
 
-    screen.getByText('Processing');
-  });
+    it('renders status info for an object in live state STARTING', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: STARTING,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-  it('renders the status list for upload state READY', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={READY} />));
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-    screen.getByText('Ready ✔️');
-  });
+      screen.getByText('live Starting');
+    });
 
-  it('renders the status list for upload state ERROR', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={ERROR} />));
+    it('renders status info for an object in live state RUNNING', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: RUNNING,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-    screen.getByText('Error ❌');
-  });
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-  it('renders the status list for upload state DELETED', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={DELETED} />));
+      screen.getByText('Live is running');
+    });
 
-    screen.getByText('Deleted ❌');
-  });
+    it('renders status info for an object in live state STOPPED', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: STOPPED,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-  it('renders the status list for upload state HARVESTING', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={HARVESTING} />));
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-    screen.getByText('Transforming live in VOD');
-  });
+      screen.getByText('Live ended');
+    });
 
-  it('renders the status list for upload state HARVESTED', () => {
-    render(wrapInIntlProvider(<ObjectStatusPicker state={HARVESTED} />));
+    it('renders status info for an object in live state STOPPING', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: STOPPING,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-    screen.getByText('Waiting VOD publication ✔️');
-  });
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-  it('renders the status list for live state IDLE', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={IDLE} />,
-      ),
-    );
+      screen.getByText('Live is stopping');
+    });
 
-    screen.getByText('Ready to start live');
-  });
+    it('renders status info for an object in live state CREATING', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: CREATING,
+        upload_state: PENDING,
+      } as UploadableObject;
 
-  it('renders the status list for live state STARTING', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={STARTING} />,
-      ),
-    );
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
 
-    screen.getByText('live Starting');
-  });
-
-  it('renders the status list for live state RUNNING', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={RUNNING} />,
-      ),
-    );
-
-    screen.getByText('Live is running');
-  });
-
-  it('renders the status list for live state STOPPED', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={STOPPED} />,
-      ),
-    );
-
-    screen.getByText('Live ended');
-  });
-
-  it('renders the status list for live state STOPPING', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={STOPPING} />,
-      ),
-    );
-
-    screen.getByText('Live is stopping');
-  });
-
-  it('renders the status list for live state CREATING', () => {
-    render(
-      wrapInIntlProvider(
-        <ObjectStatusPicker state={PENDING} liveState={CREATING} />,
-      ),
-    );
-
-    screen.getByText('Creating');
+      screen.getByText('Creating');
+    });
   });
 });

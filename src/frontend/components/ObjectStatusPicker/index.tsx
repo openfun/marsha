@@ -1,9 +1,15 @@
+import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { liveState as liveStateTrack, uploadState } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
-import { statusIconKey, UploadStatus } from './UploadStatus';
+import {
+  liveState as liveStateTrack,
+  UploadableObject,
+  uploadState,
+  Video,
+} from '../../types/tracks';
+import { Spinner } from '../Loader';
+import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const {
   DELETED,
@@ -13,7 +19,6 @@ const {
   PENDING,
   PROCESSING,
   READY,
-  UPLOADING,
 } = uploadState;
 const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
 
@@ -58,11 +63,6 @@ const messages = defineMessages({
     description: 'Status information for a video/audio/timed text track',
     id: 'components.ObjectStatusPicker.READY',
   },
-  [UPLOADING]: {
-    defaultMessage: 'Uploading',
-    description: 'Status information for a video/audio/timed text track',
-    id: 'components.ObjectStatusPicker.UPLOADING',
-  },
   [IDLE]: {
     defaultMessage: 'Ready to start live',
     description: 'The video is in live state and ready to be start',
@@ -88,39 +88,71 @@ const messages = defineMessages({
     description: 'The video is in live state and is stopping',
     id: 'components.ObjectStatusPicker.STOPPING',
   },
+  uploadingObject: {
+    defaultMessage: 'Uploading',
+    description: 'Status information for a video/audio/timed text track',
+    id: 'components.ObjectStatusPicker.UPLOADING',
+  },
 });
+
+const isPossibleLiveObject = (object: UploadableObject): object is Video =>
+  (object as any)?.live_state !== undefined;
 
 /** Props shape for the ObjectStatusPicker component. */
 export interface ObjectStatusPickerProps {
-  className?: string;
-  state: uploadState;
-  liveState?: Nullable<liveStateTrack>;
+  object: UploadableObject;
 }
 
-/** Component. Displays the list of statuses for an upload, showing (and/or highlighting)
- * the relevant one, along with relevant status icon(s).
- * @param state The current state of the video/track upload.
+/**
+ * Displays the current status for an uploadable object, based on its status and
+ * the state of the upload manager.
+ * @param object The current state of the video/track upload.
  */
-export const ObjectStatusPicker = ({
-  className = '',
-  state,
-  liveState,
-}: ObjectStatusPickerProps) => {
-  if (liveState) {
-    return <FormattedMessage {...messages[liveState]} />;
+export const ObjectStatusPicker = ({ object }: ObjectStatusPickerProps) => {
+  const { uploadManagerState } = useUploadManager();
+
+  if (isPossibleLiveObject(object) && object.live_state) {
+    return <FormattedMessage {...messages[object.live_state]} />;
   }
+
+  let message = messages[object.upload_state];
+  if (object.upload_state === PENDING) {
+    if (
+      uploadManagerState[object.id]?.status === UploadManagerStatus.UPLOADING
+    ) {
+      // If we know we're currently uploading a file for the object, we can override the
+      // object's own upload_state.
+      message = messages.uploadingObject;
+    } else if (
+      uploadManagerState[object.id]?.status === UploadManagerStatus.SUCCESS
+    ) {
+      // We have not yet received the updated object but we know the object *should* be
+      // processing. If there is an error we'll receive the information after the object
+      // is updated with a new upload_state.
+      message = messages[PROCESSING];
+    }
+  }
+
+  let icon: JSX.Element | string;
+  if (
+    [HARVESTING, PROCESSING].includes(object.upload_state) ||
+    (object.upload_state === PENDING &&
+      [UploadManagerStatus.UPLOADING, UploadManagerStatus.SUCCESS].includes(
+        uploadManagerState[object.id]?.status,
+      ))
+  ) {
+    icon = <Spinner aria-hidden={true} size="small" />;
+  } else if ([DELETED, ERROR, PENDING].includes(object.upload_state)) {
+    icon = '❌';
+  } else {
+    icon = '✔️';
+  }
+
   return (
-    <UploadStatus
-      className={className}
-      statusIcon={
-        [PROCESSING, UPLOADING, HARVESTING].includes(state)
-          ? statusIconKey.LOADER
-          : [DELETED, ERROR, PENDING].includes(state)
-          ? statusIconKey.X
-          : statusIconKey.TICK
-      }
-    >
-      <FormattedMessage {...messages[state]} />
-    </UploadStatus>
+    <Box direction="row" margin="none" pad="none">
+      <FormattedMessage {...message} />
+      &nbsp;
+      {icon}
+    </Box>
   );
 };
