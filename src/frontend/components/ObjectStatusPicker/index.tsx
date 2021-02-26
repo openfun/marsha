@@ -15,7 +15,7 @@ const {
   READY,
   UPLOADING,
 } = uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED } = liveStateTrack;
+const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
 
 const messages = defineMessages({
   [DELETED]: {
@@ -77,6 +77,11 @@ const messages = defineMessages({
     defaultMessage: 'Live ended',
     description: 'The video is in live state and has ended',
     id: 'components.ObjectStatusPicker.STOPPED',
+  },
+  [STOPPING]: {
+    defaultMessage: 'Live is stopping',
+    description: 'The video is in live state and is stopping',
+    id: 'components.ObjectStatusPicker.STOPPING',
   },
 });
 

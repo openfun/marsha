@@ -15,7 +15,7 @@ const {
   READY,
   UPLOADING,
 } = uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED } = liveState;
+const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
   it('renders the status list for upload state PENDING', () => {
@@ -106,5 +106,15 @@ describe('<ObjectStatusPicker />', () => {
     );
 
     screen.getByText('Live ended');
+  });
+
+  it('renders the status list for live state STOPPING', () => {
+    render(
+      wrapInIntlProvider(
+        <ObjectStatusPicker state={PENDING} liveState={STOPPING} />,
+      ),
+    );
+
+    screen.getByText('Live is stopping');
   });
 });
