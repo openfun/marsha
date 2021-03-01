@@ -133,6 +133,8 @@ disable=print-statement,
         abstract-method,
         no-self-use,
         too-many-ancestors,
+        django-not-configured,
+        unsupported-binary-operation,
         django-not-configured
 
 # Enable the message, report, category or checker with the given id(s). You can
