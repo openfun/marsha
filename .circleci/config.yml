@@ -152,7 +152,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
-    working_directory: ~/marsha/src/aws/ffmpeg-transmux-live-image
+    working_directory: ~/marsha
     steps:
       # Checkout repository sources
       - checkout
@@ -167,7 +167,7 @@ jobs:
           command: |
             docker build \
               -t marsha-ffmpeg-transmux:${CIRCLE_SHA1} \
-              .
+              src/aws/ffmpeg-transmux-live-image/
 
       - run:
           name: Check built image availability
