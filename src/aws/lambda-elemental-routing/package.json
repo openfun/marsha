@@ -3,7 +3,7 @@
   "name": "aws-marsha-elemental-routing",
   "version": "3.16.1",
   "engines": {
-    "node": "12"
+    "node": "14"
   },
   "description": "Routing tasks to execute when an elemental event is fired to the lambda in the target environment",
   "repository": {
@@ -21,6 +21,6 @@
     "prettier": "2.2.1"
   },
   "dependencies": {
-    "aws-sdk": "2.843.0"
+    "aws-sdk": "2.853.0"
   }
 }

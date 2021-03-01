@@ -3,7 +3,7 @@
   "name": "aws-marsha-update-state",
   "version": "3.16.1",
   "engines": {
-    "node": "12"
+    "node": "14"
   },
   "description": "Helper to update state on marsha server",
   "repository": {
