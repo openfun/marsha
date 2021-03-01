@@ -156,8 +156,6 @@ jobs:
     steps:
       # Checkout repository sources
       - checkout
-      # Generate a version.json file describing app release
-      - <<: *generate-version-file
       # Activate docker-in-docker (with layers caching enabled)
       - setup_remote_docker:
           docker_layer_caching: true
@@ -408,7 +406,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -435,7 +433,7 @@ jobs:
 
   test-lambda-encode:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -462,7 +460,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -489,7 +487,7 @@ jobs:
 
   test-lambda-medialive:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -515,7 +513,7 @@ jobs:
 
   test-lambda-mediapackage:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -541,7 +539,7 @@ jobs:
 
   test-lambda-elemental-routing:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -567,7 +565,7 @@ jobs:
 
   lint-lambda-configure:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -589,7 +587,7 @@ jobs:
 
   lint-lambda-encode:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -611,7 +609,7 @@ jobs:
 
   lint-lambda-complete:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -633,7 +631,7 @@ jobs:
 
   lint-lambda-medialive:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -655,7 +653,7 @@ jobs:
 
   lint-lambda-mediapackage:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -677,7 +675,7 @@ jobs:
 
   lint-lambda-elemental-routing:
     docker:
-      - image: circleci/node:12.20
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
