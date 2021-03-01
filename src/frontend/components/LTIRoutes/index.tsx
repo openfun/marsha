@@ -14,13 +14,24 @@ import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { PLAYER_ROUTE } from '../routes';
 import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UploadManager } from '../UploadManager';
+import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
 
 const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const VideoPlayer = lazy(() => import('../VideoPlayer'));
 
-export const Routes = () => (
+const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
+    <UploadManager>
+      <LTIUploadHandlers />
+      {children}
+    </UploadManager>
+  </MemoryRouter>
+);
+
+export const Routes = () => (
+  <Wrappers>
     <Suspense fallback={<Loader />}>
       <Switch>
         <Route
@@ -99,5 +110,5 @@ export const Routes = () => (
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </Switch>
     </Suspense>
-  </MemoryRouter>
+  </Wrappers>
 );

@@ -14,7 +14,7 @@ export enum UploadManagerStatus {
   UPLOADING = 'uploading',
 }
 
-interface UploadManagerState {
+export interface UploadManagerState {
   [key: string]: {
     file: File;
     objectType: modelName;
