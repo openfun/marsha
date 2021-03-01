@@ -13,7 +13,7 @@
   },
   "component.DashboardVideoPaneTranscriptOption.useTranscript": {
     "description": "",
-    "message": "Utiliser les sous-titres comme transcrit"
+    "message": "Utiliser les sous-titres comme transcription"
   },
   "components.Dashboard.DashboardPaneButtons.documents.btnPlay": {
     "description": "Dashboard button to display the existing document, if there is one.",
@@ -43,46 +43,6 @@
     "description": "Dashboard button to upload a video, when there is no existing video.",
     "message": "Téléverser une vidéo"
   },
-  "components.Dashboard.DashboardPaneHelptext.documents.helptextError": {
-    "description": "Dashboard helptext for when the document failed to upload or get processed.",
-    "message": "Une erreur s'est produite avec ce document. Merci de réessayer ou de téléverser un autre document."
-  },
-  "components.Dashboard.DashboardPaneHelptext.documents.helptextPending": {
-    "description": "Dashboard helptext for the case when there is no existing document nor anything in progress.",
-    "message": "Il n'y a pas encore de document à afficher."
-  },
-  "components.Dashboard.DashboardPaneHelptext.documents.helptextProcessing": {
-    "description": "Dashboard helptext to warn users document is processing.",
-    "message": "Votre document est en cours de traitement. Cela peut prendre quelques minutes."
-  },
-  "components.Dashboard.DashboardPaneHelptext.documents.helptextReady": {
-    "description": "Dashboard helptext for ready-to-display documents.",
-    "message": "Votre document est prêt à être affiché."
-  },
-  "components.Dashboard.DashboardPaneHelptext.documents.helptextUploading": {
-    "description": "Dashboard helptext to warn user not to navigate away during document upload.",
-    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
-  },
-  "components.Dashboard.DashboardPaneHelptext.videos.helptextError": {
-    "description": "Dashboard helptext for when the video failed to upload or get processed.",
-    "message": "Une erreur s'est produite avec cette vidéo. Merci de réessayer ou de téléverser une autre vidéo."
-  },
-  "components.Dashboard.DashboardPaneHelptext.videos.helptextPending": {
-    "description": "Dashboard helptext for the case when there is no existing video nor anything in progress.",
-    "message": "Il n'y a pas encore de vidéo à afficher."
-  },
-  "components.Dashboard.DashboardPaneHelptext.videos.helptextProcessing": {
-    "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
-    "message": "Votre vidéo est en cours de traitement. Le traitement peut prendre jusqu'à une heure. Nous vous conseillons de revenir plus tard."
-  },
-  "components.Dashboard.DashboardPaneHelptext.videos.helptextReady": {
-    "description": "Dashboard helptext for ready-to-play videos.",
-    "message": "Votre vidéo est prête à être visionnée."
-  },
-  "components.Dashboard.DashboardPaneHelptext.videos.helptextUploading": {
-    "description": "Dashboard helptext to warn user not to navigate away during video upload.",
-    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
-  },
   "components.Dashboard.title": {
     "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
     "message": "Tableau de bord"
@@ -90,6 +50,26 @@
   "components.DashboardDocument.filename": {
     "description": "Document filename.",
     "message": "Nom de fichier"
+  },
+  "components.DashboardDocument.helptextError": {
+    "description": "Dashboard helptext for when the document failed to upload or get processed.",
+    "message": "Une erreur s'est produite avec ce document. Merci de réessayer ou de téléverser un autre document."
+  },
+  "components.DashboardDocument.helptextPending": {
+    "description": "Dashboard helptext for the case when there is no existing document nor anything in progress.",
+    "message": "Il n'y a pas encore de document à afficher."
+  },
+  "components.DashboardDocument.helptextProcessing": {
+    "description": "Dashboard helptext to warn users document is processing.",
+    "message": "Votre document est en cours de traitement. Cela peut prendre quelques minutes."
+  },
+  "components.DashboardDocument.helptextReady": {
+    "description": "Dashboard helptext for ready-to-display documents.",
+    "message": "Votre document est prêt à être affiché."
+  },
+  "components.DashboardDocument.helptextUploading": {
+    "description": "Dashboard helptext to warn user not to navigate away during document upload.",
+    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
   },
   "components.DashboardDocument.title": {
     "description": "Document upload status.",
@@ -125,11 +105,27 @@
   },
   "components.DashboardTimedTextPane.transcripts": {
     "description": "Title for the transcripts management in the dashboard.",
-    "message": "Transcripts"
+    "message": "Transcriptions"
+  },
+  "components.DashboardVideoHarvested.publish": {
+    "description": "Call to action to publish a live video in VOD",
+    "message": "publier la vidéo"
+  },
+  "components.DashboardVideoHarvested.watch": {
+    "description": "Button to watch the video.",
+    "message": "regarder"
   },
   "components.DashboardVideoLive.liveStarting": {
     "description": "Helptext explainig to wait until the live is ready.",
     "message": "La diffusion en direct démarre. Attendez avant de commencer votre stream."
+  },
+  "components.DashboardVideoLive.liveStopped": {
+    "description": "Helptext explaining that the live is ended and the live to VOD process has started.",
+    "message": "Le direct est terminé. Le processus de conversion du direct en VOD a débuté. Vous pouvez fermer cette fenêtre et revenir plus tard."
+  },
+  "components.DashboardVideoLive.liveStopping": {
+    "description": "Helptext explaining that the live is ending and the live to VOD process will start.",
+    "message": "Arrêt du direct. Le processus de conversion du direct en VOD va bientôt commencer. Vous pouvez fermer la fenêtre et revenir plus tard."
   },
   "components.DashboardVideoLive.showLive": {
     "description": "button to redirect use to video player.",
@@ -137,7 +133,7 @@
   },
   "components.DashboardVideoLive.startLive": {
     "description": "Start a video streaming.",
-    "message": "commencer le Streaming"
+    "message": "commencer le streaming"
   },
   "components.DashboardVideoLive.streamKey": {
     "description": "Video key streaming.",
@@ -158,6 +154,38 @@
   "components.DashboardVideoLiveStopButton.startLive": {
     "description": "Stop a video streaming.",
     "message": "arrêter le streaming"
+  },
+  "components.DashboardVideoPane.helpTextDeleted": {
+    "description": "Dashboard helptext for when the video is in DELETED state",
+    "message": "Cette vidéo est définitivement supprimée."
+  },
+  "components.DashboardVideoPane.helptextError": {
+    "description": "Dashboard helptext for when the video failed to upload or get processed.",
+    "message": "Une erreur s'est produite avec cette vidéo. Réessayez ou choisissez une autre vidéo."
+  },
+  "components.DashboardVideoPane.helptextHarvested": {
+    "description": "Dashboard helptext to ask user to finish VOD conversion",
+    "message": "La vidéo a été convertie en VOD. Vous devez explicitement publier la vidéo en cliquant sur le bouton ci-dessous."
+  },
+  "components.DashboardVideoPane.helptextHarvesting": {
+    "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
+    "message": "Votre vidéo est en cours de conversion en VOD. Le traitement peut prendre jusqu'à une heure. Vous pouvez fermer cette fenêtre et revenir plus tard."
+  },
+  "components.DashboardVideoPane.helptextPending": {
+    "description": "Dashboard helptext for the case when there is no existing video nor anything in progress.",
+    "message": "Il n'y a pas encore de vidéo à afficher."
+  },
+  "components.DashboardVideoPane.helptextProcessing": {
+    "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
+    "message": "Votre vidéo est en cours de traitement. Le traitement peut prendre jusqu'à une heure. Vous pouvez fermer cette fenêtre et revenir plus tard."
+  },
+  "components.DashboardVideoPane.helptextReady": {
+    "description": "Dashboard helptext for ready-to-play videos.",
+    "message": "Votre vidéo est prête à être visionnée."
+  },
+  "components.DashboardVideoPane.helptextUploading": {
+    "description": "Dashboard helptext to warn user not to navigate away during video upload.",
+    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
   },
   "components.DashboardVideoPane.thumbnailAlt": {
     "description": "Accessibility text for the video thumbnail in the Dashboard.",
@@ -239,6 +267,62 @@
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Aperçu instructeur 👆"
   },
+  "components.ObjectStatusPicker.DELETED": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Supprimé"
+  },
+  "components.ObjectStatusPicker.ERROR": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Erreur"
+  },
+  "components.ObjectStatusPicker.HARVESTED": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "En attente de publication de la VOD"
+  },
+  "components.ObjectStatusPicker.HARVESTING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Transformation du direct en VOD"
+  },
+  "components.ObjectStatusPicker.IDLE": {
+    "description": "The video is in live state and ready to be start",
+    "message": "Prêt à démarrer le direct"
+  },
+  "components.ObjectStatusPicker.PENDING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Absent"
+  },
+  "components.ObjectStatusPicker.PROCESSING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "En cours de traitement"
+  },
+  "components.ObjectStatusPicker.READY": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Disponible"
+  },
+  "components.ObjectStatusPicker.RUNNING": {
+    "description": "The video is in live state and live is running",
+    "message": "Direct en cours"
+  },
+  "components.ObjectStatusPicker.STARTING": {
+    "description": "The video is in live state and live is starting",
+    "message": "démarrage du direct"
+  },
+  "components.ObjectStatusPicker.STOPPED": {
+    "description": "The video is in live state and has ended",
+    "message": "Direct arrêté"
+  },
+  "components.ObjectStatusPicker.STOPPING": {
+    "description": "The video is in live state and is stopping",
+    "message": "Arrêt du direct"
+  },
+  "components.ObjectStatusPicker.UPLOADING": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Téléversement en cours"
+  },
+  "components.SiteHeader.logInBtn": {
+    "description": "Text for the login button in the header of the marsha site",
+    "message": "Se connecter"
+  },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
     "message": "Téléverser le fichier"
@@ -314,26 +398,6 @@
   "components.UploadForm.title-videos": {
     "description": "Title for the video upload form",
     "message": "Créer une nouvelle vidéo"
-  },
-  "components.UploadStatusPicker.ERROR": {
-    "description": "Status information for a video/audio/timed text track",
-    "message": "Erreur"
-  },
-  "components.UploadStatusPicker.PENDING": {
-    "description": "Status information for a video/audio/timed text track",
-    "message": "Absent"
-  },
-  "components.UploadStatusPicker.PROCESSING": {
-    "description": "Status information for a video/audio/timed text track",
-    "message": "En cours de traitement"
-  },
-  "components.UploadStatusPicker.READY": {
-    "description": "Status information for a video/audio/timed text track",
-    "message": "Disponible"
-  },
-  "components.UploadStatusPicker.UPLOADING": {
-    "description": "Status information for a video/audio/timed text track",
-    "message": "Téléversement en cours"
   },
   "components.dashboardThumbnail.replaceThumbnailButton": {
     "description": "",
