@@ -6,12 +6,16 @@ import { TimedText } from '../../../types/tracks';
 import { appData } from '../../appData';
 import { addMultipleResources, addResource, removeResource } from '../actions';
 
-type TimedTextTrackState = StoreState<TimedText> & {
-  getTimedTextTracks: () => TimedText[];
+type TimedTextTrackStore = {
   [modelName.TIMEDTEXTTRACKS]: {
     [id: string]: TimedText;
   };
 };
+
+type TimedTextTrackState = StoreState<TimedText> &
+  TimedTextTrackStore & {
+    getTimedTextTracks: () => TimedText[];
+  };
 
 export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
   const timedTextTracks: { [id: string]: TimedText } = {};
@@ -29,7 +33,7 @@ export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
           get(),
           modelName.TIMEDTEXTTRACKS,
           timedTextTracksToAdd,
-        ),
+        ) as TimedTextTrackStore,
       ),
     addResource: (timedTextTrack: TimedText) =>
       set(
@@ -37,13 +41,19 @@ export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
           get(),
           modelName.TIMEDTEXTTRACKS,
           timedTextTrack,
-        ),
+        ) as TimedTextTrackStore,
       ),
     getTimedTextTracks: () => {
       return Object.values(get()[modelName.TIMEDTEXTTRACKS]);
     },
     removeResource: (timedTextTrack: TimedText) =>
-      set(removeResource(get(), modelName.TIMEDTEXTTRACKS, timedTextTrack)),
+      set(
+        removeResource(
+          get(),
+          modelName.TIMEDTEXTTRACKS,
+          timedTextTrack,
+        ) as TimedTextTrackStore,
+      ),
     [modelName.TIMEDTEXTTRACKS]: timedTextTracks,
   };
 });
