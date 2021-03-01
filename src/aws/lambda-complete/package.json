@@ -3,7 +3,7 @@
   "name": "aws-marsha-complete",
   "version": "3.16.1",
   "engines": {
-    "node": "12"
+    "node": "14"
   },
   "description": "Tasks to execute when encoding for a video is complete",
   "repository": {
@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.843.0",
+    "aws-sdk": "2.853.0",
     "update-state": "file:../utils/update-state"
   },
   "devDependencies": {
