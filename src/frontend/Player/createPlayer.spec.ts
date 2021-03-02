@@ -13,6 +13,7 @@ jest.mock('jwt-decode', () => {
 
 jest.mock('../data/appData', () => ({
   appData: {
+    flags: {},
     jwt: 'foo',
   },
 }));
