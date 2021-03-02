@@ -9,8 +9,9 @@ from django.core.management.base import BaseCommand
 import boto3
 from dateutil.parser import isoparse
 
-from marsha.core.defaults import RUNNING, STOPPED
+from marsha.core.defaults import RUNNING, STOPPING
 from marsha.core.models import Video
+from marsha.core.utils.medialive_utils import stop_live_channel
 
 
 aws_credentials = {
@@ -116,9 +117,8 @@ class Command(BaseCommand):
                     self.stdout.write(
                         f"Stopping channel with id {live_info['medialive']['channel']['id']}"
                     )
-                    medialive_client.stop_channel(
-                        ChannelId=live_info["medialive"]["channel"]["id"]
-                    )
-                    video.live_state = STOPPED
+                    stop_live_channel(live_info["medialive"]["channel"]["id"])
+
+                    video.live_state = STOPPING
                     video.save()
                     self.stdout.write("Channel stopped")

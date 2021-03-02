@@ -221,9 +221,9 @@ class CheckLiveStateTest(TestCase):
             },
         )
         out = StringIO()
-        with Stubber(check_live_state.logs_client) as logs_client_stubber, Stubber(
-            check_live_state.medialive_client
-        ) as medialive_stubber, mock.patch(
+        with Stubber(check_live_state.logs_client) as logs_client_stubber, mock.patch(
+            "marsha.core.management.commands.check_live_state.stop_live_channel"
+        ) as mock_stop_live_channel, mock.patch(
             "marsha.core.management.commands.check_live_state.generate_expired_date"
         ) as generate_expired_date_mock:
             logs_client_stubber.add_response(
@@ -276,17 +276,13 @@ class CheckLiveStateTest(TestCase):
                     ],
                 },
             )
-            medialive_stubber.add_response(
-                "stop_channel",
-                expected_params={"ChannelId": "123456"},
-                service_response={},
-            )
+
             generate_expired_date_mock.return_value = datetime(
                 2020, 8, 25, 12, 30, 0, tzinfo=pytz.utc
             )
             call_command("check_live_state", stdout=out)
             logs_client_stubber.assert_no_pending_responses()
-            medialive_stubber.assert_no_pending_responses()
+            mock_stop_live_channel.assert_called_once()
 
         self.assertIn(
             "Checking video 0b791906-ccb3-4450-97cb-7b66fd9ad419", out.getvalue()
