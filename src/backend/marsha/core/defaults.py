@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
     STOPPING,
     RUNNING,
     DELETED,
+    CREATING,
 ) = (
     "pending",
     "processing",
@@ -28,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
     "stopping",
     "running",
     "deleted",
+    "creating",
 )
 STATE_CHOICES = (
     (PENDING, _("pending")),
@@ -40,6 +42,7 @@ STATE_CHOICES = (
 )
 
 LIVE_CHOICES = (
+    (CREATING, _("creating")),
     (IDLE, _("idle")),
     (STARTING, _("starting")),
     (RUNNING, _("running")),
