@@ -4,16 +4,22 @@ const { DISABLE_SSL_VALIDATION, MARSHA_URL, SHARED_SECRET } = process.env;
 module.exports = async (channel, event, context) => {
   const status = event.detail.state;
 
-  if (!['RUNNING', 'STOPPED'].includes(status)) {
+  const correspondingStatus = {
+    'CREATED': 'idle',
+    'RUNNING': 'running',
+    'STOPPED': 'stopped',
+  }
+
+  if (!correspondingStatus[status]) {
     throw new Error(
-      `Expected status are RUNNING and STOPPED. ${status} received`,
+      `Expected status are CREATED, RUNNING and STOPPED. ${status} received`,
     );
   }
 
   const videoId = channel.Name.split('_')[1];
   const body = {
     logGroupName: context.logGroupName,
-    state: status.toLowerCase(),
+    state: correspondingStatus[status],
   };
 
   const signature = computeSignature(SHARED_SECRET, JSON.stringify(body));
