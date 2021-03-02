@@ -1,25 +1,61 @@
-import { act, render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import { DashboardObjectProgress } from '.';
-import { useObjectProgress } from '../../data/stores/useObjectProgress';
+import { modelName } from '../../types/models';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import { DashboardObjectProgress } from '.';
 
-describe('<DashboardVideoPaneProgress />', () => {
-  let setObjectProgress: any;
-  const ControlComponent = () => {
-    setObjectProgress = useObjectProgress((state) => state.setObjectProgress);
-    return null;
-  };
+jest.mock('../../data/appData', () => ({}));
 
+describe('<DashboardObjectProgress />', () => {
   it('renders and displays the current progress', () => {
-    const { getByText } = render(
-      wrapInIntlProvider(<DashboardObjectProgress objectId={'42'} />),
-    );
-    getByText('0%');
+    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+    const objectId = uuidv4();
 
-    render(<ControlComponent />);
-    act(() => setObjectProgress('42', 51));
-    getByText('51%');
+    const { rerender } = render(
+      wrapInIntlProvider(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {
+              [objectId]: {
+                file,
+                objectId,
+                objectType: modelName.VIDEOS,
+                progress: 0,
+                status: UploadManagerStatus.UPLOADING,
+              },
+            },
+          }}
+        >
+          <DashboardObjectProgress objectId={objectId} />
+        </UploadManagerContext.Provider>,
+      ),
+    );
+    screen.getByText('0%');
+
+    rerender(
+      wrapInIntlProvider(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {
+              [objectId]: {
+                file,
+                objectId,
+                objectType: modelName.VIDEOS,
+                progress: 51,
+                status: UploadManagerStatus.UPLOADING,
+              },
+            },
+          }}
+        >
+          <DashboardObjectProgress objectId={objectId} />
+        </UploadManagerContext.Provider>,
+      ),
+    );
+    screen.getByText('51%');
   });
 });
