@@ -12,12 +12,14 @@ import {
 } from 'react-intl';
 
 import { appData, getDecodedJwt } from './data/appData';
+import { flags } from './types/AppData';
 import { report } from './utils/errors/report';
+import { isFeatureEnabled } from './utils/isFeatureEnabled';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
 
-if (appData.sentry_dsn) {
+if (isFeatureEnabled(flags.SENTRY) && appData.sentry_dsn) {
   Sentry.init({
     dsn: appData.sentry_dsn,
     environment: appData.environment,
