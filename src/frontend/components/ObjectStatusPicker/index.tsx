@@ -15,9 +15,14 @@ const {
   READY,
   UPLOADING,
 } = uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
+const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
 
 const messages = defineMessages({
+  [CREATING]: {
+    defaultMessage: 'Creating',
+    description: 'Live video in creation status',
+    id: 'components.ObjectStatusPicker.CREATING',
+  },
   [DELETED]: {
     defaultMessage: 'Deleted',
     description: 'Status information for a video/audio/timed text track',

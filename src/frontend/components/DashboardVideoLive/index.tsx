@@ -39,6 +39,12 @@ const messages = defineMessages({
     description: 'button to redirect use to video player.',
     id: 'components.DashboardVideoLive.showLive',
   },
+  liveCreating: {
+    defaultMessage:
+      'Live streaming is being created. You will be able to start it in a few seconds',
+    description: 'Helptext explainig to wait until the live is created.',
+    id: 'components.DashboardVideoLive.liveCreating',
+  },
   liveStarting: {
     defaultMessage:
       'Live streaming is starting. Wait before starting your stream.',
@@ -79,7 +85,10 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
 
       const incomingVideo: Video = await response.json();
 
-      if (incomingVideo.live_state === liveState.RUNNING) {
+      if (
+        incomingVideo.live_state === liveState.RUNNING ||
+        incomingVideo.live_state === liveState.IDLE
+      ) {
         updateVideo(incomingVideo);
       }
     } catch (error) {
@@ -88,8 +97,15 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   };
 
   useEffect(() => {
-    if (video.live_state === liveState.STARTING) {
-      const interval = setInterval(pollForVideo, 15_000);
+    const intervalMs = {
+      [liveState.STARTING]: 15000,
+      [liveState.CREATING]: 2000,
+    };
+    if (
+      video.live_state === liveState.STARTING ||
+      video.live_state === liveState.CREATING
+    ) {
+      const interval = setInterval(pollForVideo, intervalMs[video.live_state]);
       return () => clearInterval(interval);
     }
   }, [video.live_state]);
@@ -125,6 +141,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
       </Heading>
       <Box>{endpoints}</Box>
       <Box direction={'row'} justify={'center'} margin={'small'}>
+        {video.live_state === liveState.CREATING && (
+          <Text>
+            <FormattedMessage {...messages.liveCreating} />
+          </Text>
+        )}
         {video.live_state === liveState.IDLE && (
           <DashboardVideoLiveStartButton video={video} />
         )}
