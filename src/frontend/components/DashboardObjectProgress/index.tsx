@@ -3,8 +3,8 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useObjectProgress } from '../../data/stores/useObjectProgress';
 import { Resource } from '../../types/tracks';
+import { useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({
   progressLabel: {
@@ -26,8 +26,8 @@ export const DashboardObjectProgress = ({
   objectId,
 }: DashboardObjectProgressProps) => {
   const intl = useIntl();
-  const objectProgress = useObjectProgress((state) => state.objectProgress);
-  const progress = objectProgress[objectId] || 0;
+  const { uploadManagerState } = useUploadManager();
+  const progress = uploadManagerState[objectId]?.progress || 0;
 
   // There is a conflict in the type of the `values` prop between `react` and `grommet`
   // Use the const type to ensure correctness and the `any` escape hatch for the actual value
