@@ -356,7 +356,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         Video.objects.filter(pk=pk).update(
             live_info=live_info,
             upload_state=defaults.PENDING,
-            live_state=defaults.IDLE,
+            live_state=defaults.CREATING,
             uploaded_on=None,
         )
 

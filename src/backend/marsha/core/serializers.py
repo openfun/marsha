@@ -17,6 +17,7 @@ from rest_framework_simplejwt.models import TokenUser
 from .defaults import (
     ERROR,
     HARVESTED,
+    IDLE,
     LIVE_CHOICES,
     PROCESSING,
     READY,
@@ -663,7 +664,7 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the UpdateLiveState API endpoint."""
 
     state = serializers.ChoiceField(
-        tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
+        tuple(c for c in LIVE_CHOICES if c[0] in (IDLE, RUNNING, STOPPED))
     )
     logGroupName = serializers.CharField()
 

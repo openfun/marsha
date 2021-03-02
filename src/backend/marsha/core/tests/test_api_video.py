@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
+    CREATING,
     HARVESTING,
     IDLE,
     LIVE_CHOICES,
@@ -1911,7 +1912,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
-                "live_state": "idle",
+                "live_state": "creating",
                 "live_info": {
                     "medialive": {
                         "input": {
@@ -2362,6 +2363,41 @@ class VideoAPITest(TestCase):
             {
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "stopped_at": "1533686400",
+            },
+        )
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_video_update_live_state_idle(self):
+        """Updating state to idle."""
+        video = factories.VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            upload_state=PENDING,
+            live_state=CREATING,
+            live_info={},
+        )
+        data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "state": "idle",
+        }
+
+        response = self.client.patch(
+            "/api/videos/{!s}/update-live-state/".format(video.id),
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=(
+                "7fca3f22cc16b5c0f3b9c83dd1aef6d7dba70cc72195c685734ba499901826da"
+            ),
+        )
+
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        self.assertEqual(video.live_state, IDLE)
+        self.assertEqual(
+            video.live_info,
+            {
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
             },
         )
 
