@@ -260,6 +260,7 @@ class Base(Configuration):
 
     MAINTENANCE_MODE = values.BooleanValue(False)
     NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
+    NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
 
     # pylint: disable=invalid-name
     @property
