@@ -10,6 +10,7 @@ export enum appState {
 
 export enum flags {
   VIDEO_LIVE = 'video_live',
+  SENTRY = 'sentry',
 }
 
 export interface AppData {
