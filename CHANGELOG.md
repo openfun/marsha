@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Component to switch a live to VOD
 - Switch to enable sentry in front application
 - Management command checking live stuck in IDLE
+- Add new live state CREATING
 
 ### Changed
 
