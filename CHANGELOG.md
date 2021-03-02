@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a harvest job when a live is ended
 - Component to switch a live to VOD
 - Switch to enable sentry in front application
+- Management command checking live stuck in IDLE
 
 ### Changed
 
