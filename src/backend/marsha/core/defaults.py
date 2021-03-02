@@ -49,3 +49,4 @@ LIVE_CHOICES = (
 
 # FLAGS
 VIDEO_LIVE = "video_live"
+SENTRY = "sentry"

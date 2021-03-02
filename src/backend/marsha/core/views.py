@@ -23,7 +23,7 @@ from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import VIDEO_LIVE
+from .defaults import SENTRY, VIDEO_LIVE
 from .lti import LTI
 from .lti.utils import PortabilityError, get_or_create_resource
 from .models import Document, Video
@@ -187,7 +187,10 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             app_data = {
                 "environment": settings.ENVIRONMENT,
                 "frontend": "LTI",
-                "flags": {VIDEO_LIVE: switch_is_active(VIDEO_LIVE)},
+                "flags": {
+                    VIDEO_LIVE: switch_is_active(VIDEO_LIVE),
+                    SENTRY: switch_is_active(SENTRY),
+                },
                 "modelName": self.model.RESOURCE_NAME,
                 "release": settings.RELEASE,
                 "resource": self.serializer_class(

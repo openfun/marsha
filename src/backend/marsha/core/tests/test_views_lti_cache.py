@@ -10,7 +10,7 @@ from django.test import TestCase
 
 from waffle.testutils import override_switch
 
-from ..defaults import STATE_CHOICES, VIDEO_LIVE
+from ..defaults import SENTRY, STATE_CHOICES, VIDEO_LIVE
 from ..factories import ConsumerSiteFactory, VideoFactory
 from ..lti import LTI
 
@@ -38,6 +38,7 @@ class CacheLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     @override_switch(VIDEO_LIVE, active=True)
+    @override_switch(SENTRY, active=True)
     def test_views_lti_cache_student(self, mock_get_consumer_site, mock_verify):
         """Validate that responses are cached for students."""
         video1, video2 = VideoFactory.create_batch(
@@ -59,7 +60,7 @@ class CacheLTIViewTestCase(TestCase):
             "user_id": "111",
         }
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
         self.assertTrue(elapsed < 0.1)
@@ -119,6 +120,7 @@ class CacheLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     @override_switch(VIDEO_LIVE, active=True)
+    @override_switch(SENTRY, active=True)
     def test_views_lti_cache_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate that responses are not cached for instructors."""
         video = VideoFactory(
@@ -137,7 +139,7 @@ class CacheLTIViewTestCase(TestCase):
             "user_id": "111",
         }
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertTrue(elapsed < 0.1)
@@ -150,6 +152,7 @@ class CacheLTIViewTestCase(TestCase):
         self.assertTrue(elapsed < 0.1)
 
     @override_switch(VIDEO_LIVE, active=True)
+    @override_switch(SENTRY, active=True)
     def test_views_public_resource(self):
         """Validate that response for public resources are cached."""
         video = VideoFactory(
@@ -160,7 +163,7 @@ class CacheLTIViewTestCase(TestCase):
         )
         url = "/videos/{!s}".format(video.pk)
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertTrue(elapsed < 0.1)

@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a new lambda (lamba-mediapackage) called when an harvest job is done
 - Create a harvest job when a live is ended
 - Component to switch a live to VOD
+- Switch to enable sentry in front application
 
 ### Changed
 
