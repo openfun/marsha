@@ -19,6 +19,7 @@ from ..defaults import (
     PENDING,
     READY,
     RUNNING,
+    SENTRY,
     STATE_CHOICES,
     VIDEO_LIVE,
 )
@@ -45,6 +46,7 @@ class VideoLTIViewTestCase(TestCase):
     @override_settings(RELEASE="1.2.3")
     @override_settings(VIDEO_PLAYER="videojs")
     @override_switch(VIDEO_LIVE, active=True)
+    @override_switch(SENTRY, active=True)
     def test_views_lti_video_post_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -120,7 +122,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
-        self.assertEqual(context.get("flags"), {"video_live": True})
+        self.assertEqual(context.get("flags"), {"video_live": True, "sentry": True})
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
