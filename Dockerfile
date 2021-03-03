@@ -1,18 +1,4 @@
 # Marsha, a FUN LTI video provider
-#
-# Nota bene:
-#
-# this container expects two volumes for statics and media files (that will be
-# served by nginx):
-#
-# * /data/media
-# * /data/static
-#
-# Once mounted, you will need to collect static files via the eponym django
-# admin command:
-#
-#     python ./manage.py collectstatic
-#
 
 # ---- base image to inherit from ----
 FROM python:3.9-buster as base
@@ -42,9 +28,36 @@ RUN yarn install --frozen-lockfile && \
     yarn sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=node_modules  && \
     yarn build --mode=production --output-path /app/marsha/static/js/
 
+# ---- static link collector ----
+FROM base as link-collector
+ARG MARSHA_STATIC_ROOT=/data/static
+
+# Install rdfind
+RUN apt-get update && \
+    apt-get install -y \
+    rdfind && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy installed python dependencies
+COPY --from=back-builder /install /usr/local
+
+# Copy marsha application (see .dockerignore)
+COPY . /app/
+# Copy front-end dependencies
+COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
+
+WORKDIR /app/src/backend
+
+# collecstatic
+RUN DJANGO_CONFIGURATION=Build python manage.py collectstatic --noinput
+
+# Replace duplicated file by a symlink to decrease the overall size of the
+# final image
+RUN rdfind -makesymlinks true -followsymlinks true -makeresultsfile false ${MARSHA_STATIC_ROOT}
+
 # ---- final application image ----
 FROM base
-
+ARG MARSHA_STATIC_ROOT=/data/static
 # Install gettext
 RUN apt-get update && \
     apt-get install -y \
@@ -54,13 +67,11 @@ RUN apt-get update && \
 # Copy installed python dependencies
 COPY --from=back-builder /install /usr/local
 
-# Copy marsha application (see .dockerignore)
-COPY . /app/
+# Copy application
+COPY --from=link-collector /app /app
 
-# Copy front-end dependencies
-COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
-
-WORKDIR /app/src/backend
+# Copy statics
+COPY --from=link-collector ${MARSHA_STATIC_ROOT} ${MARSHA_STATIC_ROOT}
 
 # Gunicorn
 RUN mkdir -p /usr/local/etc/gunicorn
@@ -70,6 +81,8 @@ COPY docker/files/usr/local/etc/gunicorn/marsha.py /usr/local/etc/gunicorn/marsh
 # to allow a user belonging to the root group to add new users; typically the
 # docker user (see entrypoint).
 RUN chmod g=u /etc/passwd
+
+WORKDIR /app/src/backend
 
 # We wrap commands run in this container by the following entrypoint that
 # creates a user on-the-fly with the container user ID (see USER) and root group

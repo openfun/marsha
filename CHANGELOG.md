@@ -24,6 +24,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Increase Medialive profiles segment to 4 seconds
 - Increase Mediapackage endpoint segment to 4 seconds
 - Rollback Medialive control rate mode to CBR
+- Static files are managed using whitenoise
 
 ### Fixed
 
