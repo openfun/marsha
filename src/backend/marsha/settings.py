@@ -53,7 +53,6 @@ class Base(Configuration):
     # Static files (CSS, JavaScript, Images)
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
     STATIC_URL = "/static/"
-    ABSOLUTE_STATIC_URL = STATIC_URL
     MEDIA_URL = "/media/"
     # Allow to configure location of static/media files for non-Docker installation
     MEDIA_ROOT = values.Value(os.path.join(str(DATA_DIR), "media"))
@@ -117,6 +116,7 @@ class Base(Configuration):
 
     MIDDLEWARE = [
         "django.middleware.security.SecurityMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
@@ -351,11 +351,29 @@ class Base(Configuration):
                 scope.set_extra("application", "backend")
 
 
+class Build(Base):
+    """Settings used when the application is built.
+
+    This environment should not be used to run the application. Just to build it with non blocking
+    settings.
+    """
+
+    ALLOWED_HOSTS = None
+    AWS_ACCESS_KEY_ID = values.Value("")
+    AWS_SECRET_ACCESS_KEY = values.Value("")
+    AWS_BASE_NAME = values.Value("")
+    AWS_MEDIALIVE_ROLE_ARN = values.Value("")
+    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
+    SECRET_KEY = values.Value("DummyKey")
+    STATICFILES_STORAGE = values.Value(
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    )
+
+
 class Development(Base):
     """Development environment settings.
 
-    We set ``DEBUG`` to ``True`` by default, configure the server to respond to all hosts,
-    and use a local sqlite database by default.
+    We set ``DEBUG`` to ``True`` by default, configure the server to respond to all hosts.
     """
 
     ALLOWED_HOSTS = ["*"]
@@ -405,6 +423,8 @@ class Test(Base):
 
     CLOUDFRONT_SIGNED_URLS_ACTIVE = False
     AWS_BASE_NAME = values.Value("test")
+    # Enable it to speed up tests by stopping WhiteNoise from scanning your static files
+    WHITENOISE_AUTOREFRESH = True
 
 
 class Production(Base):
@@ -418,54 +438,20 @@ class Production(Base):
 
     ALLOWED_HOSTS = values.ListValue(None)
 
-    # For static files in production, we want to use a backend that includes a hash in
-    # the filename, that is calculated from the file content, so that browsers always
-    # get the updated version of each file.
     STATICFILES_STORAGE = values.Value(
-        "marsha.core.storage.ConfigurableManifestS3Boto3Storage"
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
     )
 
-    # The mapping between the names of the original files and the names of the files distributed
-    # by the backend is stored in a file.
-    # The best practice is to allow this manifest file's name to change for each deployment so
-    # that several versions of the app can run in parallel without interfering with each other.
-    # We make it configurable so that it can be versioned with a deployment stamp in your CI/CD:
-    STATICFILES_MANIFEST_NAME = values.Value("staticfiles.json")
-
-    AWS_S3_OBJECT_PARAMETERS = {
-        "Expires": "Thu, 31 Dec 2099 20:00:00 GMT",
-        "CacheControl": "max-age=94608000",
-    }
     AWS_BASE_NAME = values.Value("production")
-
-    # folder where static will be stored. It matches the path_pattern used
-    # in the cloudfront configuration.
-    AWS_LOCATION = Base.STATIC_URL.lstrip("/")
-
-    # pattern matching files to ignore when hashing file names and exclude from the
-    # static files manifest
-    STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(r"^js\/[0-9]*\..*\.index\.js$")
 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
     # pylint: disable=invalid-name
     @property
-    def ABSOLUTE_STATIC_URL(self):
+    def STATIC_URL(self):
         """Compute the absolute static url used in the lti template."""
-        return f"//{self.CLOUDFRONT_DOMAIN}{self.STATIC_URL}"
-
-    # pylint: disable=invalid-name
-    @property
-    def AWS_STATIC_BUCKET_NAME(self):
-        """AWS Static bucket name.
-
-        If this setting is set in an environment variable we use it. Otherwise
-        the value is computed with the AWS_BASE_NAME value.
-        """
-        return os.environ.get(
-            "DJANGO_AWS_STATIC_BUCKET_NAME", f"{self.AWS_BASE_NAME}-marsha-static"
-        )
+        return f"//{self.CLOUDFRONT_DOMAIN}/static/"
 
 
 class Staging(Production):
