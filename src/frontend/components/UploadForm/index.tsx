@@ -4,9 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
-import { upload } from '../../data/sideEffects/upload';
 import { getResource } from '../../data/stores/generics';
-import { useObjectProgress } from '../../data/stores/useObjectProgress';
 import { modelName } from '../../types/models';
 import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
@@ -17,12 +15,19 @@ import { IframeHeading } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
 import { Loader } from '../Loader';
 import { UploadField } from '../UploadField';
+import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({
   linkToDashboard: {
     defaultMessage: 'Back to dashboard',
     description: 'Text for the link to the dashboard in the upload form.',
     id: 'components.UploadForm.linkToDashboard',
+  },
+  preparingUpload: {
+    defaultMessage: 'Preparing for upload...',
+    description:
+      'Accessible message for the spinner while loading the uploadable object in the upload form.',
+    id: 'components.UploadForm.preparingUpload',
   },
 });
 
@@ -90,24 +95,17 @@ export interface UploadFormProps {
   objectType: modelName;
 }
 
-export type Status = Maybe<
-  'not_found_error' | 'policy_error' | 'uploading' | 'success'
->;
-
 export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
-  const [status, setStatus] = useState(undefined as Status);
-  const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
+  const { uploadManagerState } = useUploadManager();
+  const objectStatus = uploadManagerState[objectId]?.status;
 
+  const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
   useAsyncEffect(async () => {
     setObject(await getResource(objectType, objectId));
   }, []);
 
-  const setObjectProgress = useObjectProgress(
-    (state) => state.setObjectProgress,
-  );
-
   const beforeUnload = (event: BeforeUnloadEvent) => {
-    if (status === 'uploading') {
+    if (objectStatus === UploadManagerStatus.UPLOADING) {
       event.preventDefault();
       event.returnValue = '';
     }
@@ -115,25 +113,29 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
 
   useEffect(() => {
     window.addEventListener('beforeunload', beforeUnload);
-
     return () => window.removeEventListener('beforeunload', beforeUnload);
   }, []);
 
   if (object === undefined) {
-    return <Loader />;
+    return (
+      <Loader>
+        <FormattedMessage {...messages.preparingUpload} />
+      </Loader>
+    );
   }
 
-  switch (status) {
-    case 'success':
-    case 'uploading':
+  switch (objectStatus) {
+    case UploadManagerStatus.SUCCESS:
+    case UploadManagerStatus.UPLOADING:
       return <Redirect push to={DASHBOARD_ROUTE(appData.modelName)} />;
 
-    case 'not_found_error':
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-
-    case 'policy_error':
+    case UploadManagerStatus.ERR_POLICY:
       return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
 
+    case UploadManagerStatus.ERR_UPLOAD:
+      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
+
+    case UploadManagerStatus.INIT:
     default:
       return (
         <div>
@@ -146,15 +148,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
               />
             </IframeHeadingWithLayout>
             <UploadFieldContainer>
-              <UploadField
-                onContentUpdated={upload(
-                  setStatus,
-                  (progress: number) =>
-                    object && setObjectProgress(object.id, progress),
-                  objectType,
-                  object,
-                )}
-              />
+              <UploadField {...{ objectType, objectId }} />
             </UploadFieldContainer>
           </UploadFormContainer>
           <UploadFormBack>
