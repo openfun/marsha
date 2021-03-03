@@ -77,7 +77,7 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
         return {
             "app_data": json.dumps(app_data),
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
-            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+            "static_base_url": f"{settings.STATIC_URL}js/",
         }
 
 
@@ -139,7 +139,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+            "static_base_url": f"{settings.STATIC_URL}js/",
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 
@@ -297,7 +297,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.ABSOLUTE_STATIC_URL}js/",
+            "static_base_url": f"{settings.STATIC_URL}js/",
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 

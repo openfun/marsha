@@ -1061,9 +1061,8 @@ class VideoLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    @override_settings(ABSOLUTE_STATIC_URL="/static/")
     def test_views_lti_video_static_base_url(self, mock_get_consumer_site, mock_verify):
-        """Meta tag public-path should be the ABSOLUTE_STATIC_URL settings with js/ at the end."""
+        """Meta tag public-path should be the STATIC_URL settings with js/ at the end."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(playlist__consumer_site=passport.consumer_site)
         data = {
