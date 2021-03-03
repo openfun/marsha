@@ -2,28 +2,28 @@ import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import styled from 'styled-components';
 
+import { modelName } from '../../types/models';
 import { Maybe } from '../../utils/types';
+import { useUploadManager } from '../UploadManager';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
-
-export interface UploadFieldProps {
-  onContentUpdated: (fieldContent: Maybe<File>) => void;
-}
-
-interface UploadFieldState {
-  file: Maybe<File>;
-}
 
 const DropzoneStyled = styled.div`
   display: flex; /* For the dropzone contents */
   flex-grow: 1;
 `;
 
-export const UploadField = ({ onContentUpdated }: UploadFieldProps) => {
-  const [file, setFile] = useState(undefined as Maybe<File>);
+export interface UploadFieldProps {
+  objectType: modelName;
+  objectId: string;
+}
+
+export const UploadField = ({ objectType, objectId }: UploadFieldProps) => {
+  const { addUpload } = useUploadManager();
+  const [file, setFile] = useState<Maybe<File>>(undefined);
 
   const onDrop = (files: any) => {
     setFile(files[0]);
-    onContentUpdated(files[0]);
+    addUpload(objectType, objectId, files[0]);
   };
 
   return (
