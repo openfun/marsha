@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.17.0] - 2021-03-04
+
 ### Added
 
 - Create a new lambda (lamba-mediapackage) called when an harvest job is done
@@ -697,7 +699,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.16.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.17.0...master
+[3.17.0]: https://github.com/openfun/marsha/compare/v3.16.1...v3.17.0
 [3.16.1]: https://github.com/openfun/marsha/compare/v3.16.0...v3.16.1
 [3.16.0]: https://github.com/openfun/marsha/compare/v3.15.0...v3.16.0
 [3.15.0]: https://github.com/openfun/marsha/compare/v3.14.0...v3.15.0
