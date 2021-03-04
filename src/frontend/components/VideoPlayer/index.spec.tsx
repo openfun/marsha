@@ -42,7 +42,8 @@ const mockVideo = videoMockFactory({
       1080: 'https://example.com/1080p.mp4',
     },
     thumbnails: {
-      720: 'https://example.com/144p.jpg',
+      144: 'https://example.com/thumbnail/144p.jpg',
+      1080: 'https://example.com/thumbnail/1080p.jpg',
     },
   },
 });
@@ -152,7 +153,11 @@ describe('VideoPlayer', () => {
     expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
       2,
     );
-    expect(container.querySelector('video')!.tabIndex).toEqual(-1);
+    const videoElement = container.querySelector('video')!;
+    expect(videoElement.tabIndex).toEqual(-1);
+    expect(videoElement.poster).toEqual(
+      'https://example.com/thumbnail/1080p.jpg',
+    );
   });
 
   it('allows video download when the video object specifies it', async () => {
