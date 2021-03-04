@@ -12,6 +12,7 @@ import { Thumbnail, uploadState, Video } from '../../types/tracks';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({
   error: {
@@ -42,6 +43,8 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
   const [pollInterval, setPollInterval] = useState(-1);
+
+  const { uploadManagerState } = useUploadManager();
   const { addThumbnail, thumbnail } = useThumbnail((state) => ({
     addThumbnail: state.addResource,
     thumbnail: state.getThumbnail(),
@@ -110,51 +113,57 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
 
   const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
 
-  switch (thumbnailState) {
-    case uploadState.UPLOADING:
-      return (
-        <Box>
-          <DashboardObjectProgress objectId={thumbnail!.id} />
-        </Box>
-      );
-    case uploadState.PROCESSING:
-      return (
-        <Box>
-          <Text weight="bold">
-            <FormattedMessage {...messages[uploadState.PROCESSING]} />
-          </Text>
-        </Box>
-      );
-    case uploadState.ERROR:
-      return (
-        <Box>
-          <Text color="status-error">
-            <FormattedMessage {...messages.error} />
-          </Text>
-        </Box>
-      );
-    default:
-      return (
-        <Box direction={'column'}>
-          <Box>
-            <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />
-          </Box>
-          <Box margin={'xsmall'} direction={'column'}>
-            <Button
-              fill={true}
-              label={<FormattedMessage {...messages.uploadButton} />}
-              disabled={disableUploadBtn}
-              onClick={prepareUpdate}
-            />
-            {error && (
-              <Box>
-                <Text color="status-error">
-                  <FormattedMessage {...messages.error} />
-                </Text>
-              </Box>
-            )}
-          </Box>
-        </Box>
-      );
+  if (thumbnailState === uploadState.ERROR) {
+    return (
+      <Box>
+        <Text color="status-error">
+          <FormattedMessage {...messages.error} />
+        </Text>
+      </Box>
+    );
   }
+
+  if (thumbnailState === uploadState.PROCESSING) {
+    return (
+      <Box>
+        <Text weight="bold">
+          <FormattedMessage {...messages[uploadState.PROCESSING]} />
+        </Text>
+      </Box>
+    );
+  }
+
+  if (
+    thumbnailState === uploadState.PENDING &&
+    uploadManagerState[thumbnail!.id].status === UploadManagerStatus.UPLOADING
+  ) {
+    return (
+      <Box>
+        <DashboardObjectProgress objectId={thumbnail!.id} />
+      </Box>
+    );
+  }
+
+  return (
+    <Box direction={'column'}>
+      <Box>
+        <DashboardThumbnailDisplay video={video} thumbnail={thumbnail} />
+      </Box>
+      <Box margin={'xsmall'} direction={'column'}>
+        <Button
+          fill={true}
+          label={<FormattedMessage {...messages.uploadButton} />}
+          disabled={disableUploadBtn}
+          onClick={prepareUpdate}
+        />
+        {error && (
+          <Box>
+            <Text color="status-error">
+              <FormattedMessage {...messages.error} />
+            </Text>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 };
