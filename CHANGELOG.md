@@ -25,6 +25,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Increase Mediapackage endpoint segment to 4 seconds
 - Rollback Medialive control rate mode to CBR
 
+### Fixed
+
+- Display higher resolution thumbnail available
+
 ## [3.16.1] - 2021-02-23
 
 ### Fixed

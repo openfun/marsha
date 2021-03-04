@@ -127,7 +127,7 @@ const VideoPlayer = ({
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
-        poster={thumbnailUrls[resolutions[resolutions.length - 1]]}
+        poster={thumbnailUrls[resolutions[0]]}
         tabIndex={-1}
       >
         {resolutions.map((size) => (
