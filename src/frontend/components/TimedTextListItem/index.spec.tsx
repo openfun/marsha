@@ -152,11 +152,7 @@ describe('<TimedTextListItem />', () => {
   });
 
   it('renders & polls the track until it is READY', async () => {
-    for (const state of [
-      uploadState.PENDING,
-      uploadState.PROCESSING,
-      uploadState.UPLOADING,
-    ]) {
+    for (const state of [uploadState.PENDING, uploadState.PROCESSING]) {
       const track = {
         active_stamp: 28271937429,
         id: '1',
