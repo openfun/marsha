@@ -17,7 +17,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
-const { PENDING, PROCESSING, UPLOADING } = uploadState;
+const { PENDING, PROCESSING } = uploadState;
 
 const messages = defineMessages({
   delete: {
@@ -84,7 +84,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   useEffect(() => {
     getChoices();
 
-    if ([PENDING, UPLOADING, PROCESSING].includes(track.upload_state)) {
+    if ([PENDING, PROCESSING].includes(track.upload_state)) {
       window.setTimeout(async () => {
         const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
         if (result === requestStatus.FAILURE) {
@@ -112,7 +112,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
       <TimedTextListItemLanguage>
         {language ? language.label : track.language}
       </TimedTextListItemLanguage>
-      <ObjectStatusPickerStyled state={track.upload_state} />
+      <ObjectStatusPickerStyled object={track} />
       <TimedTextListItemActions>
         <ActionLink
           color={'status-critical'}

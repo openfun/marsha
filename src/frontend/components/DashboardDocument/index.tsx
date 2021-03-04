@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React, { useEffect } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { pollForTrack } from '../../data/sideEffects/pollForTrack';
@@ -14,8 +14,9 @@ import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import DocumentPlayer from '../DocumentPlayer';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
+import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
-const { ERROR, PENDING, PROCESSING, READY, UPLOADING } = uploadState;
+const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
 const messages = defineMessages({
   filename: {
@@ -28,36 +29,16 @@ const messages = defineMessages({
     description: 'Document upload status.',
     id: 'components.DashboardDocument.title',
   },
-  [ERROR]: {
-    defaultMessage:
-      'There was an error with your document. Retry or upload another one.',
-    description:
-      'Dashboard helptext for when the document failed to upload or get processed.',
-    id: 'components.DashboardDocument.helptextError',
-  },
   [PENDING]: {
     defaultMessage: 'There is currently no document to display.',
     description:
       'Dashboard helptext for the case when there is no existing document nor anything in progress.',
     id: 'components.DashboardDocument.helptextPending',
   },
-  [PROCESSING]: {
-    defaultMessage:
-      'Your document is currently processing. This may take some minutes.',
-    description: 'Dashboard helptext to warn users document is processing.',
-    id: 'components.DashboardDocument.helptextProcessing',
-  },
   [READY]: {
     defaultMessage: 'Your document is ready to display.',
     description: 'Dashboard helptext for ready-to-display documents.',
     id: 'components.DashboardDocument.helptextReady',
-  },
-  [UPLOADING]: {
-    defaultMessage:
-      'Upload in progress... Please do not close or reload this page.',
-    description:
-      'Dashboard helptext to warn user not to navigate away during document upload.',
-    id: 'components.DashboardDocument.helptextUploading',
   },
 });
 
@@ -73,96 +54,107 @@ const DashboardDocumentInternalHeading = styled(DashboardInternalHeading)`
   padding: 0 1rem 0 0;
 `;
 
+const CommonStatusLine = ({ document }: { document: Document }) => (
+  <Box align={'center'} direction={'row'}>
+    <DashboardDocumentInternalHeading>
+      <FormattedMessage {...messages.title} />
+    </DashboardDocumentInternalHeading>
+    <ObjectStatusPicker object={document} />
+  </Box>
+);
+
 interface DashboardDocumentProps {
   document: Document;
 }
 
 const DashboardDocument = (props: DashboardDocumentProps) => {
+  const intl = useIntl();
+
+  const { uploadManagerState } = useUploadManager();
   const { document } = useDocument((state) => ({
     document: state.getDocument(props.document),
   }));
-  const intl = useIntl();
 
   useEffect(() => {
-    if ([PENDING, UPLOADING, PROCESSING].includes(document.upload_state)) {
+    if ([PENDING, PROCESSING].includes(document.upload_state)) {
       window.setTimeout(async () => {
         await pollForTrack(modelName.DOCUMENTS, document.id);
       }, 1000 * 10);
     }
   }, []);
 
-  const CommonStatusLine = () => (
-    <Box align={'center'} direction={'row'}>
-      <DashboardDocumentInternalHeading>
-        {intl.formatMessage(messages.title)}
-      </DashboardDocumentInternalHeading>
-      <ObjectStatusPicker state={document.upload_state} />
-    </Box>
-  );
-
-  switch (document.upload_state) {
-    case UPLOADING:
-      return (
-        <DashboardDocumentInnerContainer>
-          <CommonStatusLine />
-          <DashboardObjectProgress objectId={document.id} />
-          <DashboardPaneButtons
-            object={document}
-            objectType={modelName.DOCUMENTS}
-          />
-        </DashboardDocumentInnerContainer>
-      );
-    case ERROR:
-    case PROCESSING:
-      return (
-        <DashboardDocumentInnerContainer>
-          <CommonStatusLine />
-          <DashboardPaneButtons
-            object={document}
-            objectType={modelName.DOCUMENTS}
-          />
-        </DashboardDocumentInnerContainer>
-      );
-    case READY:
-      return (
-        <DashboardDocumentInnerContainer>
-          <Box direction={'row'}>
-            <Box basis={'1/2'} margin={'small'}>
-              <CommonStatusLine />
-              {intl.formatMessage(messages[READY])}
-              <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
-                <DashboardDocumentInternalHeading>
-                  {intl.formatMessage(messages.filename)}
-                </DashboardDocumentInternalHeading>
-                <div>{document.filename}</div>
-              </Box>
-            </Box>
-            <Box basis={'1/2'} margin={'small'}>
-              <DocumentPlayer document={document} />
+  if (document.upload_state === READY) {
+    return (
+      <DashboardDocumentInnerContainer>
+        <Box direction={'row'}>
+          <Box basis={'1/2'} margin={'small'}>
+            <CommonStatusLine document={document} />
+            {intl.formatMessage(messages[READY])}
+            <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
+              <DashboardDocumentInternalHeading>
+                {intl.formatMessage(messages.filename)}
+              </DashboardDocumentInternalHeading>
+              <div>{document.filename}</div>
             </Box>
           </Box>
-          <Box margin={'small'}>
-            <DashboardDocumentTitleForm document={document} />
+          <Box basis={'1/2'} margin={'small'}>
+            <DocumentPlayer document={document} />
           </Box>
-          <DashboardPaneButtons
-            object={document}
-            objectType={modelName.DOCUMENTS}
-          />
-        </DashboardDocumentInnerContainer>
-      );
-    default:
-      return (
-        <DashboardDocumentInnerContainer>
-          <CommonStatusLine />
-          {document.upload_state === PENDING &&
-            intl.formatMessage(messages[PENDING])}
-          <DashboardPaneButtons
-            object={document}
-            objectType={modelName.DOCUMENTS}
-          />
-        </DashboardDocumentInnerContainer>
-      );
+        </Box>
+        <Box margin={'small'}>
+          <DashboardDocumentTitleForm document={document} />
+        </Box>
+        <DashboardPaneButtons
+          object={document}
+          objectType={modelName.DOCUMENTS}
+        />
+      </DashboardDocumentInnerContainer>
+    );
   }
+
+  if (
+    [ERROR, PROCESSING].includes(document.upload_state) ||
+    (document.upload_state === PENDING &&
+      uploadManagerState[document.id]?.status === UploadManagerStatus.SUCCESS)
+  ) {
+    return (
+      <DashboardDocumentInnerContainer>
+        <CommonStatusLine document={document} />
+        <DashboardPaneButtons
+          object={document}
+          objectType={modelName.DOCUMENTS}
+        />
+      </DashboardDocumentInnerContainer>
+    );
+  }
+
+  if (
+    document.upload_state === PENDING &&
+    uploadManagerState[document.id]?.status === UploadManagerStatus.UPLOADING
+  ) {
+    return (
+      <DashboardDocumentInnerContainer>
+        <CommonStatusLine document={document} />
+        <DashboardObjectProgress objectId={document.id} />
+        <DashboardPaneButtons
+          object={document}
+          objectType={modelName.DOCUMENTS}
+        />
+      </DashboardDocumentInnerContainer>
+    );
+  }
+
+  return (
+    <DashboardDocumentInnerContainer>
+      <CommonStatusLine document={document} />
+      {document.upload_state === PENDING &&
+        intl.formatMessage(messages[PENDING])}
+      <DashboardPaneButtons
+        object={document}
+        objectType={modelName.DOCUMENTS}
+      />
+    </DashboardDocumentInnerContainer>
+  );
 };
 
 export default DashboardDocument;
