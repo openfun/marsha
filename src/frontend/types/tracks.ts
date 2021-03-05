@@ -28,7 +28,6 @@ export enum uploadState {
   PENDING = 'pending',
   PROCESSING = 'processing',
   READY = 'ready',
-  UPLOADING = 'uploading',
 }
 
 export enum liveState {
