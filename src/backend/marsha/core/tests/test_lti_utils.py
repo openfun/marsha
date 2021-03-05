@@ -9,7 +9,7 @@ from django.utils import timezone
 from pylti.common import LTIOAuthServer
 
 from .. import factories, models
-from ..defaults import LIVE_CHOICES, STATE_CHOICES
+from ..defaults import LIVE_CHOICES, RUNNING, STATE_CHOICES
 from ..lti import LTI
 from ..lti.utils import PortabilityError, get_or_create_resource
 
@@ -2522,12 +2522,11 @@ class PortabilityLTITestCase(TestCase):
         passport = factories.ConsumerSiteLTIPassportFactory(
             consumer_site__domain="example.com"
         )
-        one_not_portable = random.choice([True, False])
         resource = factory(
             id="77fbf317-3e99-41bd-819c-130531313139",
             playlist__lti_id="a-playlist",
-            playlist__is_portable_to_playlist=one_not_portable,
-            playlist__is_portable_to_consumer_site=not one_not_portable,
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
             **factory_parameters,
         )
         data = {
@@ -2566,6 +2565,7 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {
                 "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": timezone.now(),
             },
         )
 
@@ -2583,7 +2583,7 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
-                "live_state": random.choice([lc[0] for lc in LIVE_CHOICES]),
+                "live_state": RUNNING,
             },
         )
 
@@ -2600,6 +2600,7 @@ class PortabilityLTITestCase(TestCase):
             models.Document,
             {
                 "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": timezone.now(),
             },
         )
 
@@ -2615,10 +2616,10 @@ class PortabilityLTITestCase(TestCase):
         passport = factories.ConsumerSiteLTIPassportFactory(
             consumer_site__domain="example.com"
         )
-        one_not_portable = random.choice([True, False])
+
         resource = factory(
-            playlist__is_portable_to_playlist=one_not_portable,
-            playlist__is_portable_to_consumer_site=not one_not_portable,
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
             **factory_parameters,
         )
         data = {
@@ -2649,6 +2650,7 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {
                 "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": timezone.now(),
             },
         )
 
@@ -2664,7 +2666,7 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
-                "live_state": random.choice([lc[0] for lc in LIVE_CHOICES]),
+                "live_state": RUNNING,
             },
         )
 
@@ -2681,6 +2683,7 @@ class PortabilityLTITestCase(TestCase):
             models.Document,
             {
                 "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": timezone.now(),
             },
         )
 
