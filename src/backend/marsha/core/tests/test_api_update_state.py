@@ -1,6 +1,7 @@
 """Tests for the upload & processing state update API of the Marsha project."""
 from datetime import datetime
 import json
+import random
 
 from django.test import TestCase, override_settings
 
@@ -13,6 +14,7 @@ from ..factories import (
     TimedTextTrackFactory,
     VideoFactory,
 )
+from ..utils.api_utils import generate_hash
 
 
 class UpdateStateAPITest(TestCase):
@@ -27,13 +29,12 @@ class UpdateStateAPITest(TestCase):
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "4336d782e449fe7eae0b21bb621ef7da66fa1043ea1b1ea373d91f6c37a64606"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -52,13 +53,12 @@ class UpdateStateAPITest(TestCase):
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "processing",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "97ae90866e2699a0a6e4fcfd9f24bcc7aa0af39bfb95ca0d2a6fbf24e5dee108"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -102,13 +102,12 @@ class UpdateStateAPITest(TestCase):
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "harvested",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "ae2b2a39ee220c05ce6a3b09c0139235a7eea7698879000da1faa098896a2271"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -131,14 +130,15 @@ class UpdateStateAPITest(TestCase):
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "error",
         }
-
+        signature = generate_hash(
+            random.choice(["previous secret", "current secret"]),
+            json.dumps(data).encode("utf-8"),
+        )
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "b472ad5a2e7fb8246d8d5dd20e7bd92bf1b3e1f288f7071d3e09ada1892cbcca"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -161,14 +161,12 @@ class UpdateStateAPITest(TestCase):
             ),
             "state": "ready",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "696e101c154911186763ec3d71f60bb16bcf4d444e810f8a5cdee2afcd997517"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         timed_text_track.refresh_from_db()
 
@@ -190,14 +188,12 @@ class UpdateStateAPITest(TestCase):
             ),
             "state": "ready",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "4fa1bd84afcc81fe35b6dbb6af7872deae7d025501adc8a3070fcbc1f803a7ea"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         self.assertEqual(response.status_code, 404)
@@ -231,13 +227,13 @@ class UpdateStateAPITest(TestCase):
             "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
             "state": "ready",
         }
-
+        signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
             # Expected signature: 51c2f6b3dbfaf7f1e675550e4c5bae3e729201c51544760d41e7d5c05fec6372
-            HTTP_X_MARSHA_SIGNATURE="invalid signature",
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -257,14 +253,12 @@ class UpdateStateAPITest(TestCase):
             "key": "{doc!s}/document/{doc!s}/1533686400.pdf".format(doc=document.pk),
             "state": "ready",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "dc2a02957f6859e89836dc6e0a0308f48d3c4a1e04d91723621b358ee8608cb9"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         document.refresh_from_db()
@@ -286,14 +280,12 @@ class UpdateStateAPITest(TestCase):
             "key": "{doc!s}/document/{doc!s}/1533686400".format(doc=document.pk),
             "state": "ready",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "70d2382a1adce903845d02b97a1f0bf7c772d68e1268d7e711137d2d7bea362e"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         document.refresh_from_db()
@@ -316,14 +308,12 @@ class UpdateStateAPITest(TestCase):
             "key": f"{thumbnail.video.pk}/thumbnail/{thumbnail.pk}/1533686400",
             "state": "ready",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.post(
             "/api/update-state",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "1a37bbad75e6311d0ae32d3581ad2b6c14fabd1261c9d0aef28ade5e3865e12e"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         thumbnail.refresh_from_db()
