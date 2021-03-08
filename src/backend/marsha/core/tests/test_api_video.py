@@ -23,6 +23,7 @@ from ..defaults import (
     STOPPED,
     STOPPING,
 )
+from ..utils.api_utils import generate_hash
 
 
 RSA_KEY_MOCK = b"""
@@ -2297,15 +2298,14 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(
                 "/api/videos/{!s}/update-live-state/".format(video.id),
                 data,
                 content_type="application/json",
-                HTTP_X_MARSHA_SIGNATURE=(
-                    "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
-                ),
+                HTTP_X_MARSHA_SIGNATURE=signature,
             )
 
         video.refresh_from_db()
@@ -2334,6 +2334,7 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "stopped",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2345,9 +2346,7 @@ class VideoAPITest(TestCase):
                 "/api/videos/{!s}/update-live-state/".format(video.id),
                 data,
                 content_type="application/json",
-                HTTP_X_MARSHA_SIGNATURE=(
-                    "6b551203cd79200fe9f02e20e69bb75a583dfe833c997a849b8cf59802185199"
-                ),
+                HTTP_X_MARSHA_SIGNATURE=signature,
             )
             delete_aws_element_stack_mock.assert_called_once()
             create_mediapackage_harvest_job_mock.assert_called_once()
@@ -2379,14 +2378,12 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "idle",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
             "/api/videos/{!s}/update-live-state/".format(video.id),
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "7fca3f22cc16b5c0f3b9c83dd1aef6d7dba70cc72195c685734ba499901826da"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         video.refresh_from_db()
@@ -2413,17 +2410,19 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
+        signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
             "/api/videos/{!s}/update-live-state/".format(video.id),
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=("invalid signature"),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(video.live_state, IDLE)
 
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_state(self):
         """Live state update with an invalid state should fails."""
         video = factories.VideoFactory(
@@ -2432,19 +2431,18 @@ class VideoAPITest(TestCase):
             live_state=IDLE,
         )
         invalid_state = random.choice(
-            [s[0] for s in LIVE_CHOICES if s[0] not in [RUNNING, STOPPED]]
+            [s[0] for s in LIVE_CHOICES if s[0] not in [IDLE, RUNNING, STOPPED]]
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": invalid_state,
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
             "/api/videos/{!s}/update-live-state/".format(video.id),
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "5f5698f31efb97df5474f54ccd93319f55a424fbd87b1086696a190dad0daddb"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
         video.refresh_from_db()
 
@@ -2462,13 +2460,12 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "running",
         }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
             "/api/videos/9087c52d-cb87-4fd0-9b57-d9f28a0c69cb/update-live-state/",
             data,
             content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=(
-                "7632f0c4960b7da252bbeab020bcea16f8261e7def999a57a0b7d7db5199ecf2"
-            ),
+            HTTP_X_MARSHA_SIGNATURE=signature,
         )
 
         self.assertEqual(response.status_code, 404)
@@ -2486,7 +2483,7 @@ class VideoAPITest(TestCase):
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "state": "stopped",
         }
-
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.core.api.delete_aws_element_stack"
@@ -2497,9 +2494,7 @@ class VideoAPITest(TestCase):
                 "/api/videos/{!s}/update-live-state/".format(video.id),
                 data,
                 content_type="application/json",
-                HTTP_X_MARSHA_SIGNATURE=(
-                    "6b551203cd79200fe9f02e20e69bb75a583dfe833c997a849b8cf59802185199"
-                ),
+                HTTP_X_MARSHA_SIGNATURE=signature,
             )
             delete_aws_element_stack_mock.assert_not_called()
             create_mediapackage_harvest_job_mock.assert_not_called()
