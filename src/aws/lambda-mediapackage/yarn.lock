@@ -757,10 +757,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@2.853.0:
-  version "2.853.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.853.0.tgz#4428565e7c5d81ab0dec685ee48d9044e04da3e9"
-  integrity sha512-3cifeifeMHKtpvQ6OcrA9j34BEdvWmLlSGzZU/mZf9nYcV+22PPXjwpVhPh9BvfC2S77upKNbMgnkv4u50aQKw==
+aws-sdk@2.858.0:
+  version "2.858.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.858.0.tgz#3a25fd85170b8298c469c2dacc511adf93a0b8c0"
+  integrity sha512-VXNnGmPcZu4ZRc0yqw4F6d43edrMMKQwOmZX9/hQW/l5DFGqdGzvaDKljZyD1FHNbmaxXz09RfLzjVEmq+CVzA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2534,10 +2534,10 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-m3u8-parser@4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/m3u8-parser/-/m3u8-parser-4.5.2.tgz#f7d48a60112466e528324624c4e66d52ed341a75"
-  integrity sha512-sN/lu3TiRxmG2RFjZxo5c0/7Dr4RrEztl43jXrWwj5gFZ7vfa2iIxGfiPx485dm5QCazaIcKk+vNkUso8Aq0Ag==
+m3u8-parser@4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/m3u8-parser/-/m3u8-parser-4.6.0.tgz#a0e2f5dcf8391c9a6e59895a084fa38f27b52124"
+  integrity sha512-dKhhpMcPqDM/KzULVrNyDZ/z766peQjwUghDTcl6TE7DQKAt/vm74/IMUAxpO34f6LDpM+OH/dYGQwW1eM4yWw==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@videojs/vhs-utils" "^3.0.0"
@@ -3622,7 +3622,7 @@ unset-value@^1.0.0:
     isobject "^3.0.0"
 
 "update-state@file:../utils/update-state":
-  version "3.16.1"
+  version "3.17.0"
   dependencies:
     request "2.88.2"
     request-promise-native "1.0.9"
