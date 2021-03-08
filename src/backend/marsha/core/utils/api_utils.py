@@ -25,9 +25,27 @@ def validate_signature(signature, message):
         Return true if the signature is valid. False otherwise.
     """
     return any(
-        signature
-        == hmac.new(
-            secret.encode("utf-8"), msg=message, digestmod=hashlib.sha256
-        ).hexdigest()
+        signature == generate_hash(secret, message)
         for secret in settings.UPDATE_STATE_SHARED_SECRETS
     )
+
+
+def generate_hash(secret, message):
+    """Generate a hash given a secret and a message.
+
+    Parameters
+    ----------
+    secret: string
+        The secret to use.
+
+    message: string
+        The message to hash.
+
+    Return
+    ------
+    String
+       Return a computed hash
+    """
+    return hmac.new(
+        secret.encode("utf-8"), msg=message, digestmod=hashlib.sha256
+    ).hexdigest()
