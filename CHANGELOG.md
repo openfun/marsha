@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- The `lti_id` field is optional on Videos and Documents.
+
 ## [3.17.1] - 2021-03-26
 
 ### Added
