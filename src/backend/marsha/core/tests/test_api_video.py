@@ -1078,12 +1078,12 @@ class VideoAPITest(TestCase):
         self.assertEqual(models.Video.objects.count(), 0)
         self.assertEqual(response.status_code, 403)
 
-    def test_api_video_create_by_playlist_admin_missing_lti_id(self):
+    def test_api_video_create_by_playlist_admin_missing_title(self):
         """
         Create video with missing parameter.
 
-        Requests from an authorized user with a missing property should result in an
-        error message.
+        Requests from an authorized user with a missing mandatory property should result
+        in an error message.
         """
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory()
@@ -1099,7 +1099,7 @@ class VideoAPITest(TestCase):
 
         response = self.client.post(
             "/api/videos/",
-            {"playlist": str(playlist.id), "title": "Some video"},
+            {"playlist": str(playlist.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1107,7 +1107,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
-            {"errors": [{"lti_id": ["This field is required."]}]},
+            {"errors": [{"title": ["This field is required."]}]},
         )
 
     def test_api_video_create_by_playlist_instructor(self):
