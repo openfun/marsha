@@ -404,6 +404,130 @@ class VideoAPITest(TestCase):
                 content, {"detail": "Authentication credentials were not provided."}
             )
 
+    def test_api_video_read_detail_by_organization_instructor(self):
+        """Organization instructors cannot get individual videos."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_read_detail_by_organization_admin(self):
+        """Organization admins can get individual videos."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "description": video.description,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_ready_to_show": False,
+                "live_info": {},
+                "live_state": None,
+                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": None,
+                "xmpp": None,
+            },
+        )
+
+    def test_api_video_read_detail_by_playlist_instructor(self):
+        """Playlist instructors cannot get individual videos."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_read_detail_by_playlist_admin(self):
+        """Playlist admins can get individual videos."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "description": video.description,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_ready_to_show": False,
+                "live_info": {},
+                "live_state": None,
+                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": None,
+                "xmpp": None,
+            },
+        )
+
     def test_api_video_read_list_anonymous(self):
         """Anonymous users should not be able to read a list of videos."""
         factories.VideoFactory()
@@ -1476,6 +1600,202 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.description, "my new description")
 
+    def test_api_video_patch_by_organization_instructor(self):
+        """Organization instructors cannot patch videos on the API."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "existing title")
+
+    def test_api_video_patch_by_organization_admin(self):
+        """Organization admins can patch videos on the API."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "updated title")
+
+    def test_api_video_patch_by_playlist_instructor(self):
+        """Playlist instructors cannot patch videos on the API."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "existing title")
+
+    def test_api_video_patch_by_playlist_admin(self):
+        """Playlist admins can patch videos on the API."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "updated title")
+
+    def test_api_video_put_by_organization_instructor(self):
+        """Organization instructors cannot update videos on the API."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "existing title")
+
+    def test_api_video_put_by_organization_admin(self):
+        """Organization admins can update videos on the API."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "updated title")
+
+    def test_api_video_put_by_playlist_instructor(self):
+        """Playlist instructors cannot update videos on the API."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "existing title")
+
+    def test_api_video_put_by_playlist_admin(self):
+        """Playlist admins can update videos on the API."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist, title="existing title")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            json.dumps({"title": "updated title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "updated title")
+
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
         video = factories.VideoFactory()
@@ -1798,6 +2118,212 @@ class VideoAPITest(TestCase):
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
+
+    def test_api_video_initiate_upload_by_organization_instructor(self):
+        """Organization instructors cannot retrieve an upload policy."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.INSTRUCTOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist=playlist,
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        # Get the upload policy for this video
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            json.loads(response.content),
+            {"detail": "You do not have permission to perform this action."},
+        )
+
+        # The upload state of the video has not changed
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, "ready")
+
+    def test_api_video_initiate_upload_by_organization_admin(self):
+        """Organization admins can retrieve an upload policy."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist=playlist,
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        # Get the upload policy for this video
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
+                        "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
+                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
+                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
+                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
+                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
+                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
+                        "OFQwMDAwMDBaIn1dfQ=="
+                    ),
+                    "x-amz-signature": (
+                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                    ),
+                },
+            },
+        )
+
+        # The upload state of the video has been reset
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, "pending")
+
+    def test_api_video_initiate_upload_by_playlist_instructor(self):
+        """Playlist instructors cannot retrieve an upload policy."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist=playlist,
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        # Get the upload policy for this video
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            json.loads(response.content),
+            {"detail": "You do not have permission to perform this action."},
+        )
+
+        # The upload state of the video has not changed
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, "ready")
+
+    def test_api_video_initiate_upload_by_playlist_admin(self):
+        """Playlist admins can retrieve an upload policy."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist=playlist,
+            upload_state="ready",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user_id"] = str(user.id)
+
+        # Get the upload policy for this video
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-upload/".format(video.id),
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
+                        "697b59cfe3c7/1533686400"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
+                        "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
+                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
+                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
+                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
+                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
+                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
+                        "OFQwMDAwMDBaIn1dfQ=="
+                    ),
+                    "x-amz-signature": (
+                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                    ),
+                },
+            },
+        )
+
+        # The upload state of the video has been reset
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, "pending")
 
     def test_api_video_initiate_live_anonymous_user(self):
         """Anonymous users are not allowed to initiate a live."""
