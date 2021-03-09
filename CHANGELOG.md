@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - The `lti_id` field is optional on Videos and Documents.
+- Open Video related API endpoints to playlist and org admins.
 - Clean built frontend files before each build
 - Variabilize live conf related to latency
 - Upgrade node to version 14, the current LTS
