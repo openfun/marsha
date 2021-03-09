@@ -72,6 +72,8 @@ class BaseFile(UploadableFileMixin, BaseModel):
         max_length=255,
         verbose_name=_("lti id"),
         help_text=_("ID for synchronization with an external LTI tool"),
+        blank=True,
+        null=True,
     )
     created_by = models.ForeignKey(
         to=User,
