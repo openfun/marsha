@@ -37,6 +37,8 @@ services:
     depends_on:
       - "base"
       - "db"
+    stdin_open: true
+    tty: true
 
   ngrok:
     image: wernight/ngrok
