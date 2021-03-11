@@ -5,10 +5,10 @@
  * In those cases we want to show the video scaled to the smallest compatible dimension and centered, with
  * the rest of the viewport filled with black bands.
  */
-.plyr {
+.marsha-LTI .plyr {
   /**
    * 100/56.25 == 16/9
-   * We use this ratio as we base marsha's layout on video display
+   * We use this ratio as we base marsha's layout in the LTI app on video display.
    */
   width: 100vw;
   min-height: 56.25vw;
