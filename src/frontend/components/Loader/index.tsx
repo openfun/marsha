@@ -17,13 +17,15 @@ const Preloader = styled(Box)`
 `;
 
 interface SpinnerLookProps {
+  color?: string;
   size?: 'small' | 'medium' | 'large';
 }
 
 const SpinnerLook = styled.div<SpinnerLookProps>`
   border: 0.125rem solid transparent;
-  border-left-color: ${normalizeColor('brand', theme)};
-  border-top-color: ${normalizeColor('brand', theme)};
+  border-left-color: ${(props) =>
+    normalizeColor(props.color || 'brand', theme)};
+  border-top-color: ${(props) => normalizeColor(props.color || 'brand', theme)};
   border-radius: 50%;
   width: ${(props) =>
     props.size === 'small'
@@ -61,6 +63,7 @@ interface SpinnerProps extends SpinnerLookProps {
  * @param aria-hidden Passthrough to remove the whole spinner from accessible tree.
  * @param role The role of the aria region. Informs aria-live. Defaults to "status".
  * @param size Set of available sizes for the spinner. Defaults to "medium".
+ * @param color Color of the rotating spinner. Defaults to "brand".
  */
 export const Spinner: React.FC<SpinnerProps> = (props) => {
   const { children } = props;
@@ -79,7 +82,7 @@ export const Spinner: React.FC<SpinnerProps> = (props) => {
       margin="none"
       pad="none"
     >
-      <SpinnerLook size={size} />
+      <SpinnerLook size={size} color={props.color} />
       <Offscreen id={uniqueID}>{children}</Offscreen>
     </Box>
   );
