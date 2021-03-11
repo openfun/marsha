@@ -29,7 +29,7 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
     <UploadManager>
       <LTIUploadHandlers />
-      {children}
+      <div className={`marsha-${appData.frontend}`}>{children}</div>
     </UploadManager>
   </MemoryRouter>
 );
