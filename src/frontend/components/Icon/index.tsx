@@ -3,20 +3,23 @@ import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
 
+type SvgProps = { size: string };
+
 const Svg = styled.svg`
-  width: 1rem;
-  height: 1rem;
+  width: ${({ size }: SvgProps) => size};
+  height: ${({ size }: SvgProps) => size};
   fill: currentColor;
 `;
 
 interface IconProps {
   name: string;
+  size?: string;
   title?: string;
 }
 
-export const Icon = ({ name, title }: IconProps) => {
+export const Icon = ({ name, size = '1rem', title }: IconProps) => {
   return (
-    <Svg role="img" aria-hidden={!title}>
+    <Svg role="img" size={size} aria-hidden={!title}>
       <use xlinkHref={`${appData.static.svg.icons}#${name}`} />
       {title ? <title>{title}</title> : null}
     </Svg>
