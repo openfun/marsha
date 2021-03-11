@@ -52,8 +52,18 @@ export enum timedTextMode {
 }
 
 export interface Playlist {
-  title: string;
+  consumer_site: string;
+  created_by: Nullable<string>;
+  duplicated_from: Nullable<string>;
+  id: string;
+  is_portable_to_playlist: boolean;
+  is_portable_to_consumer_site: boolean;
+  is_public: boolean;
   lti_id: string;
+  organization: string;
+  portable_to: [];
+  title: string;
+  users: string[];
 }
 
 /* XMPP representation */

@@ -31,3 +31,10 @@ export interface ConsumableQuery<R extends Resource> {
   objects: R[] | never[];
   status: Nullable<requestStatus>;
 }
+
+export interface APIList<T> {
+  count: number;
+  next: string;
+  previous: string;
+  results: T[];
+}
