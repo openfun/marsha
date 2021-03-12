@@ -11,7 +11,6 @@ import { modelName } from '../../types/models';
 import { uploadState, LiveModeType, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
-import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import { DashboardThumbnail } from '../DashboardThumbnail';
 import { DashboardVideoHarvested } from '../DashboardVideoHarvested';
@@ -20,6 +19,7 @@ import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadO
 import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
+import { UploadableObjectProgress } from '../UploadableObjectProgress';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
@@ -197,7 +197,9 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
         return (
           <DashboardVideoPaneInnerContainer>
             <CommonStatusLine video={video} />
-            <DashboardObjectProgress objectId={video.id} />
+            <Box margin={{ vertical: 'small' }}>
+              <UploadableObjectProgress objectId={video.id} />
+            </Box>
             {intl.formatMessage(messages.uploadingVideo)}
           </DashboardVideoPaneInnerContainer>
         );
