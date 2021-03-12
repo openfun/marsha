@@ -10,10 +10,10 @@ import { modelName } from '../../types/models';
 import { uploadState } from '../../types/tracks';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardDocumentTitleForm } from '../DashboardDocumentTitleForm';
-import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardPaneButtons } from '../DashboardPaneButtons';
 import DocumentPlayer from '../DocumentPlayer';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
+import { UploadableObjectProgress } from '../UploadableObjectProgress';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
@@ -135,7 +135,9 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     return (
       <DashboardDocumentInnerContainer>
         <CommonStatusLine document={document} />
-        <DashboardObjectProgress objectId={document.id} />
+        <Box margin={{ vertical: 'small' }}>
+          <UploadableObjectProgress objectId={document.id} />
+        </Box>
         <DashboardPaneButtons
           object={document}
           objectType={modelName.DOCUMENTS}
