@@ -9,9 +9,9 @@ import { useThumbnail } from '../../data/stores/useThumbnail';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
 import { Thumbnail, uploadState, Video } from '../../types/tracks';
-import { DashboardObjectProgress } from '../DashboardObjectProgress';
 import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UploadableObjectProgress } from '../UploadableObjectProgress';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({
@@ -138,8 +138,8 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     uploadManagerState[thumbnail!.id].status === UploadManagerStatus.UPLOADING
   ) {
     return (
-      <Box>
-        <DashboardObjectProgress objectId={thumbnail!.id} />
+      <Box margin={{ vertical: 'small' }}>
+        <UploadableObjectProgress objectId={thumbnail!.id} />
       </Box>
     );
   }
