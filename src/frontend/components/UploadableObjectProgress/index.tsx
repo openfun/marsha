@@ -10,7 +10,7 @@ const messages = defineMessages({
   progressLabel: {
     defaultMessage: 'Upload progress',
     description: 'Accessibility message for the upload progress bar.',
-    id: 'components.DashboardVideoPaneProgress.progressLabel',
+    id: 'components.UploadableObjectProgress.progressLabel',
   },
 });
 
@@ -18,13 +18,13 @@ export const StyledMeter = styled(Meter)`
   width: 80%;
 `;
 
-interface DashboardObjectProgressProps {
+interface UploadableObjectProgressProps {
   objectId: Resource['id'];
 }
 
-export const DashboardObjectProgress = ({
+export const UploadableObjectProgress = ({
   objectId,
-}: DashboardObjectProgressProps) => {
+}: UploadableObjectProgressProps) => {
   const intl = useIntl();
   const { uploadManagerState } = useUploadManager();
   const progress = uploadManagerState[objectId]?.progress || 0;
@@ -35,11 +35,7 @@ export const DashboardObjectProgress = ({
     { color: 'brand', label: `${progress}%`, value: progress },
   ];
   return (
-    <Box
-      direction={'row'}
-      justify={'between'}
-      margin={{ bottom: 'small', top: 'small' }}
-    >
+    <Box direction={'row'} justify={'between'}>
       <StyledMeter
         a11yTitle={intl.formatMessage(messages.progressLabel)}
         values={values}

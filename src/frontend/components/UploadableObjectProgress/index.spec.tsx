@@ -5,11 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { modelName } from '../../types/models';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
-import { DashboardObjectProgress } from '.';
+import { UploadableObjectProgress } from '.';
 
 jest.mock('../../data/appData', () => ({}));
 
-describe('<DashboardObjectProgress />', () => {
+describe('<UploadableObjectProgress />', () => {
   it('renders and displays the current progress', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const objectId = uuidv4();
@@ -30,7 +30,7 @@ describe('<DashboardObjectProgress />', () => {
             },
           }}
         >
-          <DashboardObjectProgress objectId={objectId} />
+          <UploadableObjectProgress objectId={objectId} />
         </UploadManagerContext.Provider>,
       ),
     );
@@ -52,7 +52,7 @@ describe('<DashboardObjectProgress />', () => {
             },
           }}
         >
-          <DashboardObjectProgress objectId={objectId} />
+          <UploadableObjectProgress objectId={objectId} />
         </UploadManagerContext.Provider>,
       ),
     );
