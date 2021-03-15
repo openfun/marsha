@@ -106,7 +106,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     show_download: true,
     thumbnail: null,
     timed_text_tracks: [],
-    title: faker.commerce.product(),
+    title: faker.lorem.words(5),
     upload_state: uploadState.READY,
     urls: {
       manifests: {

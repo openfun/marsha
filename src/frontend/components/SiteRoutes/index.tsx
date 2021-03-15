@@ -8,6 +8,7 @@ import { BreadCrumbs, BreadCrumbsProvider } from '../BreadCrumbs';
 import { OrganizationView } from '../OrganizationView';
 import { SiteLayout } from '../SiteLayout';
 import { UploadManager } from '../UploadManager';
+import { UploadsView } from '../UploadsView';
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,10 @@ export const Routes = () => {
       <SiteLayout>
         <BreadCrumbs />
         <Switch>
+          <Route path={'/uploads'}>
+            <UploadsView />
+          </Route>
+
           <Route path={'/organization/:organizationId'}>
             <OrganizationView />
           </Route>
