@@ -13,6 +13,7 @@ import { OrganizationAccessRole } from '../../types/User';
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
 import { Loader } from '../Loader';
+import { SidebarUploadsIndicator } from '../SidebarUploadsIndicator';
 import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({
@@ -74,27 +75,33 @@ export const SiteLayout: React.FC = ({ children }) => {
           <Nav>
             {currentUser && currentUser !== AnonymousUser.ANONYMOUS ? (
               <React.Fragment>
-                {currentUser.organization_accesses
-                  .filter(
-                    (orgAccess) =>
-                      orgAccess.role === OrganizationAccessRole.ADMINISTRATOR,
-                  )
-                  .map((orgAccess) => (
-                    <SidebarLink
-                      key={orgAccess.organization}
-                      to={`/organization/${orgAccess.organization}`}
-                    >
-                      <Box
-                        direction="row"
-                        pad={{ horizontal: 'medium', vertical: 'small' }}
-                        gap="small"
-                        align="center"
-                      >
-                        <Icon name="icon-organization" />
-                        <Text>{orgAccess.organization_name}</Text>
-                      </Box>
-                    </SidebarLink>
-                  ))}
+                <Box direction="column" gap="medium">
+                  <SidebarUploadsIndicator />
+                  <div>
+                    {currentUser.organization_accesses
+                      .filter(
+                        (orgAccess) =>
+                          orgAccess.role ===
+                          OrganizationAccessRole.ADMINISTRATOR,
+                      )
+                      .map((orgAccess) => (
+                        <SidebarLink
+                          key={orgAccess.organization}
+                          to={`/organization/${orgAccess.organization}`}
+                        >
+                          <Box
+                            direction="row"
+                            pad={{ horizontal: 'medium', vertical: 'small' }}
+                            gap="small"
+                            align="center"
+                          >
+                            <Icon name="icon-organization" />
+                            <Text>{orgAccess.organization_name}</Text>
+                          </Box>
+                        </SidebarLink>
+                      ))}
+                  </div>
+                </Box>
               </React.Fragment>
             ) : null}
           </Nav>
