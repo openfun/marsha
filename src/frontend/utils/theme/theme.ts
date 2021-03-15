@@ -56,18 +56,70 @@ const colorsMain = {
 };
 
 export const theme = {
+  box: {
+    extend: 'min-height: initial; min-width: initial;',
+  },
   button: {
     border: {
       radius: '4px',
     },
-    padding: {
-      horizontal: '0.75rem',
-    },
+    extend: 'padding: 0.5rem 1rem;',
   },
   global: {
     colors: {
       ...colorsGeneric,
       ...colorsMain,
+    },
+    input: {
+      weight: '400',
+    },
+  },
+  heading: {
+    level: {
+      5: {
+        small: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        medium: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        large: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        xlarge: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+      },
+      6: {
+        small: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        medium: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        large: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+        xlarge: {
+          height: '1.5rem',
+          maxWidth: 'initial',
+          size: '1rem',
+        },
+      },
     },
   },
   image: {
@@ -100,6 +152,33 @@ export const theme = {
         horizontal: 'small',
       },
       round: false,
+    },
+  },
+  paragraph: {
+    small: {
+      height: '1rem',
+      maxWidth: 'initial',
+      size: '1rem',
+    },
+    medium: {
+      height: '1.125rem',
+      maxWidth: 'initial',
+      size: '1rem',
+    },
+    large: {
+      height: '1.25rem',
+      maxWidth: 'initial',
+      size: '1.125rem',
+    },
+    xlarge: {
+      height: '1.5rem',
+      maxWidth: 'initial',
+      size: '1.25rem',
+    },
+    xxlarge: {
+      height: '1.75rem',
+      maxWidth: 'initial',
+      size: '1.5rem',
     },
   },
 };
