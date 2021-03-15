@@ -145,8 +145,8 @@ const messages = {
 };
 
 export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
-  <Box direction="column">
-    <Heading level={6}>
+  <Box direction="column" pad="medium" align="center">
+    <Heading level={6} margin={{ bottom: 'small' }}>
       <FormattedMessage {...messages[code].title} />
     </Heading>
     <Paragraph>
