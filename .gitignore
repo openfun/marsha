@@ -146,3 +146,6 @@ transmuxed_video
 
 # Ssh keys
 .ssh
+
+# ngrok
+.ngrok_url

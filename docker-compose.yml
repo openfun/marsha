@@ -38,6 +38,12 @@ services:
       - "base"
       - "db"
 
+  ngrok:
+    image: wernight/ngrok
+    command: ngrok http app:8000
+    ports:
+      - 4040:4040
+
   crowdin:
     image: crowdin/cli:3.2.1
     volumes:

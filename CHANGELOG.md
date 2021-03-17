@@ -14,6 +14,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add a series of components to power breadcrumbs.
 - Add a frontend component to use SVG icons in Marsha.
+- Add ngrok to serve marsha on a public domain and automate CloudFront configuration
+  via terraform when needed
 
 ### Fixed
 

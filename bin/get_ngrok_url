@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Get current ngrok url from ngrok api launched with command "make ngrok"
+if docker-compose port ngrok 4040 &> /dev/null ; then
+    declare -r JQ="docker run --rm -i fundocker/jq:1.6"
+    curl --no-progress-meter "$(docker-compose port ngrok 4040)/api/tunnels/command_line" | \
+    ${JQ} .public_url  | \
+    sed 's/"//g'
+fi
