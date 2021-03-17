@@ -2,12 +2,31 @@
 
 set -eo pipefail
 
+# Get current ngrok url from ngrok api launched with command "make ngrok"
+declare NGROK_URL
+declare DIR_NAME
+
+DIR_NAME=$(dirname "$0")
+NGROK_URL=$("$DIR_NAME"/../../../bin/get_ngrok_url)
+
 # Run Terraform commands in the docker container passing our environment variables
 
-docker run --rm -it \
+if [[ -z ${NGROK_URL} ]]; then
+    docker run --rm -it \
     -u "$(id -u)" \
     -v "${PWD}/:/app" \
     -w "/app" \
     --env-file ./env.d/development \
     "hashicorp/terraform:0.14.5" \
     "$@"
+else
+    docker run --rm -it \
+    -u "$(id -u)" \
+    -v "${PWD}/:/app" \
+    -w "/app" \
+    --env-file ./env.d/development \
+    -e TF_VAR_marsha_base_url="${NGROK_URL}" \
+    "hashicorp/terraform:0.14.5" \
+    "$@"
+fi
+
