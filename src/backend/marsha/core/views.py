@@ -73,8 +73,14 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
         jwt_token.payload["user_id"] = str(self.request.user.id)
 
         app_data = {
+            "environment": settings.ENVIRONMENT,
+            "flags": {
+                SENTRY: switch_is_active(SENTRY),
+            },
             "frontend": "Site",
             "jwt": str(jwt_token),
+            "release": settings.RELEASE,
+            "sentry_dsn": settings.SENTRY_DSN,
             "static": {
                 "svg": {
                     "icons": static("svg/icons.svg"),
