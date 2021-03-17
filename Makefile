@@ -84,6 +84,23 @@ run: ## start the development server using Docker
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 .PHONY: run
 
+ngrok: ## start the development server using Docker through ngrok
+ngrok: run
+	@$(COMPOSE) up -d ngrok
+	@echo
+	@echo "$(BOLD)App running at:$(RESET)"
+	@bin/get_ngrok_url
+.PHONY: ngrok
+
+ngrok-apply: ## start the development server using Docker through ngrok and apply terraform plan
+ngrok-apply: ngrok
+	@make -C src/aws/ apply
+	@echo
+	@echo "$(BOLD)App running at:$(RESET)"
+	@bin/get_ngrok_url
+.PHONY: ngrok-apply
+
+
 stop: ## stop the development server using Docker
 	@$(COMPOSE) stop
 .PHONY: stop
