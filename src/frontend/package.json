@@ -102,8 +102,5 @@
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.6.2",
     "zustand": "3.3.3"
-  },
-  "resolutions": {
-    "video.js/**/mux.js": "5.10.0"
   }
 }
