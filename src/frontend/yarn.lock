@@ -5429,12 +5429,15 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-mux.js@5.10.0, mux.js@5.6.7, mux.js@5.8.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.10.0.tgz#80fb30f9233c7902cac5cc8e1ae5f19e91cf8477"
-  integrity sha512-kLzvYsHYBwNa+ckkmpxWV3eImwntJbrwd1KbN4WR0hLe+dK/KB82aCuC0fQzAI2hkjYszdlSGsAWFgYdiFBUuA==
-  dependencies:
-    "@babel/runtime" "^7.11.2"
+mux.js@5.6.7:
+  version "5.6.7"
+  resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.6.7.tgz#d39fc85cded5a1257de9f6eeb5cf1578c4a63eb8"
+  integrity sha512-YSr6B8MUgE4S18MptbY2XM+JKGbw9JDkgs7YkuE/T2fpDKjOhZfb/nD6vmsVxvLYOExWNaQn1UGBp6PGsnTtew==
+
+mux.js@5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.8.0.tgz#1e1ca927b498de5ae48f1284ccada4d88e47e187"
+  integrity sha512-v56I2YPyCq1bVbXW7vcuvQs8iHrDy7AeXsZyG1kxCxBUqUjZD0Xq/cU1wrd5dy9YTxRpvw37aTQ4ILwi40GXiw==
 
 nanoid@^3.1.20:
   version "3.1.20"
