@@ -6,6 +6,7 @@ import { modelName } from '../../types/models';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FullScreenError } from '../ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { ErrorComponentsProps } from '../ErrorComponents';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { Loader } from '../Loader';
 import { RedirectOnLoad } from '../RedirectOnLoad';
@@ -56,15 +57,19 @@ export const Routes = () => (
           path={UPLOAD_FORM_ROUTE()}
           render={({ match }) => (
             <UploadForm
-              objectId={match.params.objectId}
-              objectType={match.params.objectType}
+              objectId={match.params.objectId!}
+              objectType={match.params.objectType as modelName}
             />
           )}
         />
         <Route
           exact
           path={FULL_SCREEN_ERROR_ROUTE()}
-          render={({ match }) => <FullScreenError code={match.params.code} />}
+          render={({ match }) => (
+            <FullScreenError
+              code={match.params.code as ErrorComponentsProps['code']}
+            />
+          )}
         />
         <Route
           exact
