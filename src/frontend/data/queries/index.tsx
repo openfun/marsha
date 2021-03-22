@@ -118,7 +118,7 @@ export const useVideo = (
   return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
 };
 
-type UseCreateVideoData = { lti_id: string; playlist: string; title: string };
+type UseCreateVideoData = { playlist: string; title: string };
 type UseCreateVideoError =
   | { code: 'exception' }
   | {
