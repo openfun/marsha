@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
 import { BreadCrumbs, BreadCrumbsProvider } from '../BreadCrumbs';
+import { OrganizationView } from '../OrganizationView';
 import { SiteLayout } from '../SiteLayout';
 import { UploadManager } from '../UploadManager';
 
@@ -33,6 +34,10 @@ export const Routes = () => {
       <SiteLayout>
         <BreadCrumbs />
         <Switch>
+          <Route path={'/organization/:organizationId'}>
+            <OrganizationView />
+          </Route>
+
           <Route>
             <Box>
               <Heading margin="medium">The main content</Heading>
