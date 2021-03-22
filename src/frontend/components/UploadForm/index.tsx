@@ -85,7 +85,7 @@ const UploadFormBack = styled.div`
 `;
 
 /** Props shape for the UploadForm component. */
-interface UploadFormProps {
+export interface UploadFormProps {
   objectId: UploadableObject['id'];
   objectType: modelName;
 }
