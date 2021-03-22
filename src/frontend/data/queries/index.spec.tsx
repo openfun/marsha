@@ -385,7 +385,6 @@ describe('queries', () => {
         wrapper: Wrapper,
       });
       result.current.mutate({
-        lti_id: video.playlist.lti_id,
         playlist: video.playlist.id,
         title: video.title,
       });
@@ -399,7 +398,6 @@ describe('queries', () => {
         },
         method: 'POST',
         body: JSON.stringify({
-          lti_id: video.playlist.lti_id,
           playlist: video.playlist.id,
           title: video.title,
         }),
@@ -416,7 +414,6 @@ describe('queries', () => {
         wrapper: Wrapper,
       });
       result.current.mutate({
-        lti_id: video.playlist.lti_id,
         playlist: video.playlist.id,
         title: video.title,
       });
@@ -431,7 +428,6 @@ describe('queries', () => {
         },
         method: 'POST',
         body: JSON.stringify({
-          lti_id: video.playlist.lti_id,
           playlist: video.playlist.id,
           title: video.title,
         }),
