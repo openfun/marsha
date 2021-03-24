@@ -10,10 +10,12 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { RedirectOnLoad } from './index';
+import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
 
 let mockState: any;
 let mockVideo: any;
 let mockDocument: any;
+let mockLtiSelectFormData: any;
 let mockModelName: any;
 let mockCanUpdate: boolean;
 jest.mock('../../data/appData', () => ({
@@ -29,6 +31,9 @@ jest.mock('../../data/appData', () => ({
     },
     get document() {
       return mockDocument;
+    },
+    get lti_select_form_data() {
+      return mockLtiSelectFormData;
     },
     get modelName() {
       return mockModelName;
@@ -222,5 +227,20 @@ describe('<RedirectOnLoad />', () => {
     );
 
     getByText('Error Component: notFound');
+  });
+
+  it('redirects users to /select when LTI select data are passed', () => {
+    mockLtiSelectFormData = { key: 'value' };
+
+    const { getByText } = render(
+      wrapInRouter(<RedirectOnLoad />, [
+        {
+          path: SELECT_CONTENT_ROUTE(),
+          render: () => <span>Select LTI content</span>,
+        },
+      ]),
+    );
+
+    getByText('Select LTI content');
   });
 });

@@ -1,4 +1,5 @@
 import { Playlist, Resource, uploadState } from './tracks';
+import { Nullable } from '../utils/types';
 
 export interface Document extends Resource {
   description: string;
@@ -8,6 +9,7 @@ export interface Document extends Resource {
   title: string;
   upload_state: uploadState;
   url: string;
+  lti_url?: Nullable<string>;
   show_download: boolean;
   playlist: Playlist;
 }

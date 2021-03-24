@@ -9,6 +9,42 @@ class PortabilityError(Exception):
     """An error raised when trying to access a resource that is not portable."""
 
 
+def get_selectable_resources(model, lti):
+    """Filter resources available to a LTI select request.
+
+    This function is generic and will use the `model` argument to filter resources.
+
+    Parameters
+    ----------
+    lti : Type[LTI]
+
+    model:
+        The model we want to get.
+
+    Returns
+    -------
+    A queryset of available model instances to the LTI request
+
+    """
+    if not (lti.is_instructor or lti.is_admin):
+        return model.objects.none()
+
+    consumer_site = lti.get_consumer_site()
+
+    playlist_reachable_from = Playlist.objects.filter(
+        portable_to__lti_id=lti.context_id,
+        portable_to__consumer_site_id=consumer_site.id,
+    )
+
+    return model.objects.select_related("playlist").filter(
+        # The resource exists in this playlist on this consumer site
+        Q(playlist__lti_id=lti.context_id, playlist__consumer_site=consumer_site)
+        # The resource exists in another consumer site to which it is portable because
+        # its playlist is portable to the requested playlist
+        | Q(model.get_ready_clause(), playlist__in=playlist_reachable_from)
+    )
+
+
 def get_or_create_resource(model, lti):
     """Get or Create a resource targeted by a LTI request.
 

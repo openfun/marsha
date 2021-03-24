@@ -20,7 +20,14 @@ from marsha.core.api import (
     XAPIStatementView,
     update_state,
 )
-from marsha.core.views import DevelopmentLTIView, DocumentView, SiteView, VideoView
+from marsha.core.views import (
+    DevelopmentLTIView,
+    DocumentView,
+    LTIRespondView,
+    LTISelectView,
+    SiteView,
+    VideoView,
+)
 
 
 router = DefaultRouter()
@@ -40,6 +47,8 @@ urlpatterns = [
     # Admin
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI
+    path("lti/select/", LTISelectView.as_view(), name="select_lti_view"),
+    path("lti/respond/", LTIRespondView.as_view(), name="respond_lti_view"),
     path("lti/videos/<uuid:uuid>", VideoView.as_view(), name="video_lti_view"),
     path("lti/documents/<uuid:uuid>", DocumentView.as_view(), name="document_lti_view"),
     # Public resources
