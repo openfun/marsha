@@ -116,6 +116,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -242,6 +243,144 @@ class VideoLTIViewTestCase(TestCase):
                         }
                     }
                 },
+                "xmpp": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
+        self.assertEqual(context.get("environment"), "test")
+        self.assertEqual(context.get("release"), "1.2.3")
+        self.assertEqual(context.get("player"), "videojs")
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_settings(VIDEO_PLAYER="videojs")
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    def test_views_lti_video_instructor_live_mode_an_chat_on(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the format of the response for a live video.
+
+        The video is requested by an instructor and chat is enabled.
+        """
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
+            playlist__consumer_site=passport.consumer_site,
+            live_state=IDLE,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+            upload_state=PENDING,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
+
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(
+            context.get("static"),
+            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+        )
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": PENDING,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": IDLE,
+                "live_info": {
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                },
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind",
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                },
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -357,6 +496,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": RUNNING,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -463,6 +603,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -573,6 +714,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -681,6 +823,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -787,6 +930,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -905,6 +1049,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1187,6 +1332,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
 
@@ -1263,5 +1409,6 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )

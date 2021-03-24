@@ -31,6 +31,7 @@ from .utils.medialive_utils import (
 )
 from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
+from .utils.xmpp_utils import close_room, create_room
 from .xapi import XAPI, XAPIStatement
 
 
@@ -449,6 +450,8 @@ class VideoViewSet(viewsets.ModelViewSet):
             )
 
         start_live_channel(video.live_info.get("medialive").get("channel").get("id"))
+        if settings.LIVE_CHAT_ENABLED:
+            create_room(video.id)
 
         video.live_state = defaults.STARTING
         video.save()
@@ -574,6 +577,8 @@ class VideoViewSet(viewsets.ModelViewSet):
             video.live_info = live_info
             create_mediapackage_harvest_job(video)
             delete_aws_element_stack(video)
+            if settings.LIVE_CHAT_ENABLED:
+                close_room(video.id)
 
         video.save()
 

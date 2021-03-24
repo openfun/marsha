@@ -263,6 +263,15 @@ class Base(Configuration):
     NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
     NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
 
+    # XMPP Settings
+    LIVE_CHAT_ENABLED = values.BooleanValue(False)
+    XMPP_BOSH_URL = values.Value(None)
+    XMPP_CONFERENCE_DOMAIN = values.Value(None)
+    XMPP_PRIVATE_ADMIN_JID = values.Value(None)
+    XMPP_PRIVATE_SERVER_PORT = values.Value(5222)
+    XMPP_PRIVATE_SERVER_PASSWORD = values.Value(None)
+    XMPP_DOMAIN = values.Value(None)
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
@@ -426,6 +435,7 @@ class Test(Base):
     AWS_BASE_NAME = values.Value("test")
     # Enable it to speed up tests by stopping WhiteNoise from scanning your static files
     WHITENOISE_AUTOREFRESH = True
+    LIVE_CHAT_ENABLED = False
 
 
 class Production(Base):
