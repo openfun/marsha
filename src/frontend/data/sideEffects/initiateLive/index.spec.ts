@@ -1,6 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { liveState, uploadState } from '../../../types/tracks';
+import { videoMockFactory } from '../../../utils/tests/factories';
 import { initiateLive } from '.';
 
 jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
@@ -8,7 +9,7 @@ jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
 describe('sideEffects/initiateLive', () => {
   afterEach(() => fetchMock.restore());
 
-  const video = {
+  const video = videoMockFactory({
     description: 'Some description',
     has_transcript: false,
     id: '36',
@@ -20,7 +21,6 @@ describe('sideEffects/initiateLive', () => {
     upload_state: uploadState.PENDING,
     urls: {
       manifests: {
-        dash: 'https://example.com/dash.mpd',
         hls: 'https://example.com/hls.m3u8',
       },
       mp4: {
@@ -45,7 +45,7 @@ describe('sideEffects/initiateLive', () => {
     },
     live_state: null,
     live_info: {},
-  };
+  });
 
   it('makes a POST request on the initiate-live route & returns the updated video', async () => {
     fetchMock.mock(

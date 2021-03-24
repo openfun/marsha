@@ -5,6 +5,7 @@ import React from 'react';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
 import { liveState, uploadState } from '../../types/tracks';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DashboardVideoLive } from '.';
@@ -22,7 +23,7 @@ describe('components/DashboardVideoLive', () => {
     jest.resetAllMocks();
   });
 
-  const video = {
+  const video = videoMockFactory({
     description: '',
     has_transcript: false,
     id: '9e02ae7d-6c18-40ce-95e8-f87bbeae31c5',
@@ -34,7 +35,6 @@ describe('components/DashboardVideoLive', () => {
     upload_state: uploadState.PENDING,
     urls: {
       manifests: {
-        dash: 'https://example.com/dash',
         hls: 'https://example.com/hls',
       },
       mp4: {},
@@ -56,7 +56,7 @@ describe('components/DashboardVideoLive', () => {
         },
       },
     },
-  };
+  });
 
   it('displays steraming links', () => {
     render(

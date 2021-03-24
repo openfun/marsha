@@ -5,6 +5,7 @@ import { ImportMock } from 'ts-mock-imports';
 
 import * as useVideoModule from '../../data/stores/useVideo';
 import { uploadState, liveState } from '../../types/tracks';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
@@ -32,7 +33,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
 
   afterAll(useVideoStub.restore);
 
-  const video = {
+  const video = videoMockFactory({
     description: '',
     has_transcript: false,
     id: '94da33b7-a38b-4efc-a8d5-99566056e8c6',
@@ -44,7 +45,6 @@ describe('components/DashboardVideoLiveStartButton', () => {
     upload_state: uploadState.PENDING,
     urls: {
       manifests: {
-        dash: 'https://example.com/dash',
         hls: 'https://example.com/hls',
       },
       mp4: {},
@@ -66,7 +66,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
         },
       },
     },
-  };
+  });
 
   it('renders the start button', () => {
     useVideoStub.returns({

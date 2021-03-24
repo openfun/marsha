@@ -37,6 +37,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => ({
   },
   live_state: null,
   live_info: {},
+  xmpp: null,
   ...video,
 });
 
