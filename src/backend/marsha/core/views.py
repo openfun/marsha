@@ -2,21 +2,25 @@
 from abc import ABC, abstractmethod
 import json
 from logging import getLogger
+from urllib.parse import unquote
 import uuid
 
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import (
     ImproperlyConfigured,
+    PermissionDenied,
     ValidationError as DjangoValidationError,
 )
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
+from oauthlib import oauth1
 from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
@@ -25,10 +29,19 @@ from waffle import mixins, switch_is_active
 
 from .defaults import SENTRY, VIDEO_LIVE
 from .lti import LTI
-from .lti.utils import PortabilityError, get_or_create_resource
-from .models import Document, Video
-from .models.account import NONE
-from .serializers import DocumentSerializer, VideoSerializer
+from .lti.utils import (
+    PortabilityError,
+    get_or_create_resource,
+    get_selectable_resources,
+)
+from .models import Document, Playlist, Video
+from .models.account import NONE, ConsumerSite, LTIPassport
+from .serializers import (
+    DocumentSelectLTISerializer,
+    DocumentSerializer,
+    VideoSelectLTISerializer,
+    VideoSerializer,
+)
 from .utils.react_locales_utils import react_locale
 
 
@@ -398,6 +411,185 @@ class DocumentView(BaseLTIView):
     serializer_class = DocumentSerializer
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
+class LTIRespondView(TemplateResponseMixin, View):
+    """LTI view called to respond to a consumer.
+
+    ie. after a deep linking content selection.
+
+    """
+
+    template_name = "core/form_autosubmit.html"
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Renders a form autosubmitted to a LTI consumer with signed parameters.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        content_item_return_url = self.request.POST.get("content_item_return_url")
+
+        # filters out oauth parameters
+        lti_parameters = {
+            key: value
+            for (key, value) in self.request.POST.items()
+            if "oauth" not in key and key not in ("content_item_return_url",)
+        }
+
+        # generate signature
+        lti = LTI(self.request)
+        try:
+            lti.verify()
+        except LTIException as error:
+            raise PermissionDenied from error
+
+        lti_parameters = lti.sign_post_request(content_item_return_url, lti_parameters)
+
+        return self.render_to_response(
+            {"form_action": content_item_return_url, "form_data": lti_parameters}
+        )
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
+class LTISelectView(TemplateResponseMixin, View):
+    """LTI view called to select LTI content through Deep Linking.
+
+    It is designed to work as a React single page application.
+
+    """
+
+    template_name = "core/resource.html"
+
+    def get_context_data(self):
+        """Build context for template rendering of configuration data for the frontend.
+
+        Returns
+        -------
+        dictionary
+            context with configuration data for the frontend
+
+        """
+
+        def _manage_exception(error):
+            logger.warning(str(error))
+            return {"state": "error"}
+
+        lti = LTI(self.request)
+
+        if not lti.is_instructor and not lti.is_admin:
+            raise PermissionDenied
+
+        try:
+            lti.verify()
+        except LTIException as error:
+            app_data = _manage_exception(error)
+        else:
+            Playlist.objects.get_or_create(
+                lti_id=lti.context_id,
+                consumer_site=lti.get_consumer_site(),
+                defaults={"title": lti.context_title},
+            )
+            app_data = self._get_app_data(lti)
+
+        return {
+            "app_data": json.dumps(app_data),
+            "static_base_url": f"{settings.STATIC_URL}js/",
+        }
+
+    def _get_app_data(self, lti):
+        """Build app data for the frontend with information retrieved from the LTI launch request.
+
+        Returns
+        -------
+        dictionary
+            Configuration data to bootstrap the frontend:
+            A form is built in React to post data to the LTI Consumer thnough an iframe.
+
+            For instructors only
+            ++++++++++++++++++++
+
+            - lti_select_form_action_url: URL to post data to.
+            - lti_select_form_data: Data to post.
+            - new_document_url: LTI URL to a new document.
+            - new_video_url: LTI URL to a new video.
+            - documents: Documents list with their LTI URLs.
+            - videos: Videos list with their LTI URLs.
+
+        """
+        documents = DocumentSelectLTISerializer(
+            get_selectable_resources(Document, lti),
+            many=True,
+            context={"request": self.request},
+        ).data
+
+        videos = VideoSelectLTISerializer(
+            get_selectable_resources(Video, lti),
+            many=True,
+            context={"request": self.request},
+        ).data
+
+        new_uuid = str(uuid.uuid4())
+        app_data = _get_base_app_data()
+
+        lti_select_form_data = self.request.POST.copy()
+        lti_select_form_data.update({"lti_message_type": "ContentItemSelection"})
+        app_data.update(
+            {
+                "frontend": "LTI",
+                "lti_select_form_action_url": reverse("respond_lti_view"),
+                "lti_select_form_data": lti_select_form_data,
+                "new_document_url": self.request.build_absolute_uri(
+                    reverse("document_lti_view", args=[new_uuid])
+                ),
+                "new_video_url": self.request.build_absolute_uri(
+                    reverse("video_lti_view", args=[new_uuid])
+                ),
+                "documents": documents,
+                "videos": videos,
+            }
+        )
+        return app_data
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Populated with context retrieved by get_context_data in the LTI launch request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response(self.get_context_data())
+
+
 class DevelopmentLTIView(TemplateView):
     """A development view with iframe POST / plain POST helpers.
 
@@ -421,4 +613,40 @@ class DevelopmentLTIView(TemplateView):
             context for template rendering
 
         """
-        return {"uuid": uuid.uuid4()}
+        consumer_site, _ = ConsumerSite.objects.get_or_create(domain="localhost")
+        playlist, _ = Playlist.objects.get_or_create(consumer_site=consumer_site)
+        passport, _ = LTIPassport.objects.get_or_create(playlist=playlist)
+
+        client = oauth1.Client(
+            client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
+        )
+
+        lti_parameters = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Instructor",
+        }
+
+        _uri, headers, _body = client.sign(
+            self.request.build_absolute_uri(reverse("lti-development-view")),
+            http_method="POST",
+            body=lti_parameters,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+        # Parse headers to pass to template as part of context:
+        oauth_dict = dict(
+            param.strip().replace('"', "").split("=")
+            for param in headers["Authorization"].split(",")
+        )
+
+        signature = oauth_dict["oauth_signature"]
+        oauth_dict["oauth_signature"] = unquote(signature)
+        oauth_dict["oauth_nonce"] = oauth_dict.pop("OAuth oauth_nonce")
+
+        return {
+            "uuid": uuid.uuid4(),
+            "select_context_id": playlist.lti_id,
+            "select_content_item_return_url": reverse("lti-development-view"),
+            "oauth_dict": oauth_dict,
+        }

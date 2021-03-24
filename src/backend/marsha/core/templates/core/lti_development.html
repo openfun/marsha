@@ -38,31 +38,44 @@
         border: 1px solid lightslategray;
       }
     </style>
-
-    <script>
-      var baseUrl = "http://localhost:8060/lti";
-
-      document.addEventListener('DOMContentLoaded', function () {
-        var forms = document.querySelectorAll('form');
-        for (var i = 0; i < forms.length; i++) {
-          var formForListener = forms[i];
-          formForListener.addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            var form = event.target;
-            var uuid = form.querySelector('input[name="uuid"]').value;
-            var resource = form.querySelector('select[name="resource"]').value;
-            form.action = baseUrl + '/' + resource + '/' + uuid;
-            form.submit();
-          });
-        }
-      });
-    </script>
   </head>
 
   <body>
     <section>
-      <h2>Iframe LTI setup</h2>
+      <h2>Iframe LTI Select</h2>
+      <form
+        id="lti_select"
+        method="post"
+        target="lti_select"
+        action={% url "select_lti_view" %}
+      >
+        <input type="text" name="lti_message_type" value="ContentItemSelectionRequest" />
+        <input type="text" name="lti_version" value="LTI-1p0" />
+        <input type="text" name="roles" value="Instructor" />
+        <input type="text" name="context_id" value="{{ select_context_id }}" />
+        <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}" />
+        {% for key, value in oauth_dict.items %}
+            <input type="text" name="{{ key }}" value="{{ value }}" />
+        {% endfor %}
+
+        <input type="submit" />
+      </form>
+
+      <iframe
+        class="controlled-iframe"
+        name="lti_select"
+        srcdoc="<body style='position: absolute; display: flex; justify-content: center; align-items: center; width: 100%; margin: 0;'><h2 style='font-family: Helvetica, sans-serif;'>Fill the form above to load the LTI Select view</h2></body>"
+        frameborder="0"
+        allowfullscreen
+        allow="fullscreen *"
+        webkitallowfullscreen
+        mozallowfullscreen
+      >
+      </iframe>
+    </section>
+
+    <section>
+      <h2>Iframe LTI Resource setup</h2>
       <p>
         Open the `/lti/videos/` view in the iframe below, with a POST request.
         Simulates execution in real conditions, except this is not a
@@ -71,6 +84,7 @@
       <form
         method="post"
         target="lti_iframe"
+        class="resource"
       >
         <input type="text" name="uuid" value="{{ uuid }}" />
         <input type="text" name="resource_link_id" value="example.com-df7" />
@@ -106,7 +120,7 @@
       <iframe
         class="controlled-iframe"
         name="lti_iframe"
-        srcdoc="<body style='position: absolute; display: flex; justify-content: center; align-items: center; width: 100%; margin: 0;'><h2 style='font-family: Helvetica, sans-serif;'>Fill the form above to load the LTI view</h2></body>"
+        srcdoc="<body style='position: absolute; display: flex; justify-content: center; align-items: center; width: 100%; margin: 0;'><h2 style='font-family: Helvetica, sans-serif;'>Fill the form above to load the LTI Resource view</h2></body>"
         frameborder="0"
         allowfullscreen
         allow="fullscreen *"
@@ -117,6 +131,24 @@
 
       <script src="{% static 'js/iframeResizer.min.js' %}"></script>
       <script>
+        var baseUrl = "http://localhost:8060/lti";
+
+        document.addEventListener('DOMContentLoaded', function () {
+          var forms = document.querySelectorAll('form.resource');
+          for (var i = 0; i < forms.length; i++) {
+            var formForListener = forms[i];
+            formForListener.addEventListener('submit', function (event) {
+              event.preventDefault();
+
+              var form = event.target;
+              var uuid = form.querySelector('input[name="uuid"]').value;
+              var resource = form.querySelector('select[name="resource"]').value;
+              form.action = baseUrl + '/' + resource + '/' + uuid;
+              form.submit();
+            });
+          }
+        });
+
         iFrameResize({
           checkOrigin: ['http://localhost:8060'],
         });
@@ -124,12 +156,15 @@
     </section>
 
     <section>
-      <h2>New page LTI setup</h2>
+      <h2>New page LTI Resource setup</h2>
       <p style="margin-top: 0;">
         Open the `/lti/videos/` view in a regular full-screen page, with a POST
         request.
       </p>
-      <form method="post">
+      <form
+        method="post"
+        class="resource"
+      >
         <input type="text" name="uuid" value="{{ uuid }}" />
         <input type="text" name="resource_link_id" value="example.com-df7" />
         <input

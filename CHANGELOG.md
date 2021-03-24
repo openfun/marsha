@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Chat feature implementing XMPP protocol
 - Add a prosody server in docker-compose stack
+- Add a LTI select view to allow LTI consumers to add a LTI content through Deep Linking
 
 ### Changed
 

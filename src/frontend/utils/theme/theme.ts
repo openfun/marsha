@@ -73,4 +73,33 @@ export const theme = {
   image: {
     extend: 'max-width: 100%;',
   },
+  card: {
+    container: {
+      round: false,
+    },
+  },
+  tab: {
+    color: 'text',
+    border: {
+      side: 'bottom',
+      color: 'background-back',
+      hover: {
+        color: 'control',
+      },
+    },
+    pad: 'small',
+    margin: 'small',
+  },
+  tip: {
+    content: {
+      background: 'white',
+      elevation: 'none',
+      margin: 'xsmall',
+      pad: {
+        vertical: 'small',
+        horizontal: 'small',
+      },
+      round: false,
+    },
+  },
 };
