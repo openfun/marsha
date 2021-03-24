@@ -111,6 +111,7 @@ class VideoPublicViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
         self.assertEqual(context.get("state"), "success")

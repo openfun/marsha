@@ -32,6 +32,15 @@ DJANGO_CLOUDFRONT_DOMAIN=yourCloudfrontUrl
 DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:medialive:arn:role
 DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 
+# XMPP
+DJANGO_LIVE_CHAT_ENABLED=False
+DJANGO_XMPP_BOSH_URL=https://your-xmpp-server.com/http-bind
+DJANGO_XMPP_BOSH_PRE_BIND_URL=http://localhost:8061/http-pre-bind
+DJANGO_XMPP_CONFERENCE_URL=conference.your-xmpp-server.com
+DJANGO_XMPP_JID=your-xmpp-server.com
+DJANGO_XMPP_PRIVATE_SERVER_JID=admin@your-xmpp-server.com
+DJANGO_XMPP_PRIVATE_SERVER_PASSWORD=ThisIsNotAPassword
+
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
 
 # CROWDIN API Credentials
