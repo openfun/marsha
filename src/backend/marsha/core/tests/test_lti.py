@@ -4,6 +4,7 @@ from urllib.parse import unquote
 import uuid
 
 from django.test import RequestFactory, TestCase, override_settings
+from django.urls import reverse
 
 import oauth2
 from oauthlib import oauth1
@@ -581,3 +582,93 @@ class LTITestCase(TestCase):
         lti = LTI(request, uuid.uuid4())
         self.assertTrue(lti.verify())
         self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
+
+    @mock.patch(
+        "oauthlib.oauth1.rfc5849.generate_nonce",
+        return_value="59474787080480293391616018589",
+    )
+    @mock.patch("oauthlib.oauth1.rfc5849.generate_timestamp", return_value="1616018589")
+    def test_lti_sign_post_request(self, mock_ts, mock_nonce):
+        """Simulate an LTI launch request with oauth in the body.
+
+        This test uses the oauthlib library to simulate an LTI launch request and make sure
+        that our LTI verification works.
+        """
+        ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="localhost:8080",
+            oauth_consumer_key="W1PWSNDUL7T7YGMCOWZH",
+            shared_secret="passport_secret",
+        )
+        lti_parameters = {
+            "content_items": (
+                '{"@context":"http://purl.imsglobal.org/ctx/lti/v1/ContentItem",'
+                '"@graph":[{'
+                '"@type":"LtiLinkItem",'
+                '"url":"/lti/videos/0c02115f-dae7-4c05-b931-2ddc7e87abc1",'
+                '"title":"example.com-df8",'
+                '"frame":[]'
+                "}]"
+                "}"
+            ),
+            "oauth_version": "1.0",
+            "oauth_nonce": "557b295f193999bb0c515e332d77ecb9",
+            "oauth_timestamp": "1616586282",
+            "oauth_consumer_key": "W1PWSNDUL7T7YGMCOWZH",
+            "user_id": "2",
+            "lis_person_sourcedid": "",
+            "roles": (
+                "Instructor,"
+                "urn:lti:sysrole:ims/lis/Administrator,"
+                "urn:lti:instrole:ims/lis/Administrator"
+            ),
+            "context_id": "2",
+            "context_label": "aui",
+            "context_title": "aui",
+            "context_type": "CourseSection",
+            "lis_course_section_sourcedid": "",
+            "launch_presentation_locale": "en",
+            "ext_lms": "moodle-2",
+            "tool_consumer_info_product_family_code": "moodle",
+            "tool_consumer_info_version": "2020110902.01",
+            "oauth_callback": "about:blank",
+            "lti_version": "LTI-1p0",
+            "lti_message_type": "ContentItemSelectionRequest",
+            "tool_consumer_instance_guid": "localhost",
+            "tool_consumer_instance_name": "",
+            "tool_consumer_instance_description": "",
+            "accept_media_types": "application/vnd.ims.lti.v1.ltilink",
+            "accept_presentation_document_targets": "frame,iframe,window",
+            "accept_copy_advice": "false",
+            "accept_multiple": "true",
+            "accept_unsigned": "false",
+            "auto_create": "false",
+            "can_confirm": "false",
+            "lti_select_form_action_url": (
+                "http://localhost:8080/mod/lti/contentitem_return.php"
+                "?course=2&id=1&sesskey=BJ9rCsvIPs"
+            ),
+            "title": "localhost.marsha",
+            "text": "",
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_signature": "5jUg6zMZLHOOPN+2FkiqBXz4uSw=",
+        }
+
+        request = self.factory.post(
+            reverse("select_lti_view"),
+            lti_parameters,
+            HTTP_REFERER="http://localhost:8080/mod/lti/contentitem.php",
+        )
+
+        lti = LTI(request)
+
+        sent_lti_parameters = lti_parameters.copy()
+        sent_lti_parameters["oauth_signature"] = "SS11F5F7ubKZuxiJmEOHAJbMaPE="
+        sent_lti_parameters["oauth_timestamp"] = mock_ts.return_value
+        sent_lti_parameters["oauth_nonce"] = mock_nonce.return_value
+
+        self.assertDictEqual(
+            sent_lti_parameters,
+            lti.sign_post_request(
+                lti_parameters.get("lti_select_form_action_url"), lti_parameters
+            ),
+        )

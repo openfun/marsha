@@ -7,6 +7,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -473,135 +474,24 @@ class PlaylistLiteSerializer(serializers.ModelSerializer):
         read_only_fields = ("title", "lti_id")
 
 
-class VideoSerializer(serializers.ModelSerializer):
-    """Serializer to display a video model with all its resolution options."""
+class VideoBaseSerializer(serializers.ModelSerializer):
+    """Base Serializer to factorize common Video attributes."""
 
     class Meta:  # noqa
         model = Video
         fields = (
-            "active_stamp",
-            "description",
-            "id",
-            "is_ready_to_show",
-            "timed_text_tracks",
-            "thumbnail",
-            "title",
-            "upload_state",
             "urls",
-            "show_download",
-            "should_use_subtitle_as_transcript",
-            "has_transcript",
-            "playlist",
-            "live_info",
-            "live_state",
-            "xmpp",
+            "thumbnail",
+            "is_ready_to_show",
         )
         read_only_fields = (
-            "id",
-            "active_stamp",
-            "is_ready_to_show",
             "urls",
-            "has_transcript",
-            "live_info",
-            "live_state",
+            "is_ready_to_show",
         )
 
-    active_stamp = TimestampField(
-        source="uploaded_on", required=False, allow_null=True, read_only=True
-    )
-    timed_text_tracks = TimedTextTrackSerializer(
-        source="timedtexttracks", many=True, read_only=True
-    )
-    thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
-    playlist = PlaylistLiteSerializer(read_only=True)
     urls = serializers.SerializerMethodField()
+    thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
     is_ready_to_show = serializers.BooleanField(read_only=True)
-    has_transcript = serializers.SerializerMethodField()
-    live_info = serializers.SerializerMethodField()
-    xmpp = serializers.SerializerMethodField()
-
-    def get_xmpp(self, obj):
-        """Chat info.
-
-        Parameters
-        ----------
-        obj : Type[models.Video]
-            The video that we want to serialize
-
-        Returns
-        -------
-        Dictionnary
-            A dictionary containing all info needed to manage a connection to a xmpp server.
-        """
-        if (
-            settings.LIVE_CHAT_ENABLED
-            and obj.live_state is not None
-            and self.context.get("user_id", False)
-        ):
-            roles = self.context.get("roles", [])
-            is_admin = bool(LTI_ROLES[ADMINISTRATOR] & set(roles))
-            is_instructor = bool(LTI_ROLES[INSTRUCTOR] & set(roles))
-            token = xmpp_utils.generate_jwt(
-                str(obj.id),
-                self.context["user_id"],
-                "owner" if is_admin or is_instructor else "member",
-                timezone.now() + timedelta(days=1),
-            )
-            bosh_url = list(urlparse(settings.XMPP_BOSH_URL))
-            bosh_query_string = dict(parse_qs(bosh_url[4]))
-            bosh_query_string.update({"token": token})
-            bosh_url[4] = urlencode(bosh_query_string)
-
-            return {
-                "bosh_url": urlunparse(bosh_url),
-                "conference_url": f"{obj.id}@{settings.XMPP_CONFERENCE_DOMAIN}",
-                "jid": settings.XMPP_DOMAIN,
-            }
-
-        return None
-
-    def get_live_info(self, obj):
-        """Live streaming informations.
-
-        Parameters
-        ----------
-        obj : Type[models.Video]
-            The video that we want to serialize
-
-        Returns
-        -------
-        Dictionnary
-            A dictionnary containing all info needed to manage a live stream for an admin.
-            For other users, an empty dictionnary is returned.
-        """
-        can_return_live_info = self.context.get("can_return_live_info", False)
-
-        if obj.live_state is None or can_return_live_info is False:
-            return {}
-
-        return {
-            "medialive": {
-                "input": {
-                    "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
-                }
-            }
-        }
-
-    def get_has_transcript(self, obj):
-        """Compute if should_use_subtitle_as_transcript behavior is disabled.
-
-        Parameters
-        ----------
-        obj : Type[models.Video]
-            The video that we want to serialize
-
-        Returns
-        -------
-        Boolean
-            If there is at least one transcript ready to be shown the method will return True.
-            Returns False otherwise.
-        """
-        return obj.timedtexttracks.filter(mode="ts", uploaded_on__isnull=False).exists()
 
     def get_urls(self, obj):
         """Urls of the video for each type of encoding.
@@ -702,6 +592,179 @@ class VideoSerializer(serializers.ModelSerializer):
         )
 
         return urls
+
+
+class VideoSerializer(VideoBaseSerializer):
+    """Serializer to display a video model with all its resolution options."""
+
+    class Meta:  # noqa
+        model = Video
+        fields = (
+            "active_stamp",
+            "description",
+            "id",
+            "is_ready_to_show",
+            "timed_text_tracks",
+            "thumbnail",
+            "title",
+            "upload_state",
+            "urls",
+            "show_download",
+            "should_use_subtitle_as_transcript",
+            "has_transcript",
+            "playlist",
+            "live_info",
+            "live_state",
+            "xmpp",
+        )
+        read_only_fields = (
+            "id",
+            "active_stamp",
+            "is_ready_to_show",
+            "urls",
+            "has_transcript",
+            "live_info",
+            "live_state",
+        )
+
+    active_stamp = TimestampField(
+        source="uploaded_on", required=False, allow_null=True, read_only=True
+    )
+    timed_text_tracks = TimedTextTrackSerializer(
+        source="timedtexttracks", many=True, read_only=True
+    )
+    playlist = PlaylistLiteSerializer(read_only=True)
+    has_transcript = serializers.SerializerMethodField()
+    live_info = serializers.SerializerMethodField()
+    xmpp = serializers.SerializerMethodField()
+
+    def get_xmpp(self, obj):
+        """Chat info.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Dictionnary
+            A dictionary containing all info needed to manage a connection to a xmpp server.
+        """
+        if (
+            settings.LIVE_CHAT_ENABLED
+            and obj.live_state is not None
+            and self.context.get("user_id", False)
+        ):
+            roles = self.context.get("roles", [])
+            is_admin = bool(LTI_ROLES[ADMINISTRATOR] & set(roles))
+            is_instructor = bool(LTI_ROLES[INSTRUCTOR] & set(roles))
+            token = xmpp_utils.generate_jwt(
+                str(obj.id),
+                self.context["user_id"],
+                "owner" if is_admin or is_instructor else "member",
+                timezone.now() + timedelta(days=1),
+            )
+            bosh_url = list(urlparse(settings.XMPP_BOSH_URL))
+            bosh_query_string = dict(parse_qs(bosh_url[4]))
+            bosh_query_string.update({"token": token})
+            bosh_url[4] = urlencode(bosh_query_string)
+
+            return {
+                "bosh_url": urlunparse(bosh_url),
+                "conference_url": f"{obj.id}@{settings.XMPP_CONFERENCE_DOMAIN}",
+                "jid": settings.XMPP_DOMAIN,
+            }
+
+        return None
+
+    def get_live_info(self, obj):
+        """Live streaming informations.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Dictionnary
+            A dictionnary containing all info needed to manage a live stream for an admin.
+            For other users, an empty dictionnary is returned.
+        """
+        can_return_live_info = self.context.get("can_return_live_info", False)
+
+        if obj.live_state is None or can_return_live_info is False:
+            return {}
+
+        return {
+            "medialive": {
+                "input": {
+                    "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
+                }
+            }
+        }
+
+    def get_has_transcript(self, obj):
+        """Compute if should_use_subtitle_as_transcript behavior is disabled.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Boolean
+            If there is at least one transcript ready to be shown the method will return True.
+            Returns False otherwise.
+        """
+        return obj.timedtexttracks.filter(mode="ts", uploaded_on__isnull=False).exists()
+
+
+class VideoSelectLTISerializer(VideoBaseSerializer):
+    """A serializer to display a Video resource for LTI select content request."""
+
+    class Meta:  # noqa
+        model = Video
+        fields = (
+            "id",
+            "is_ready_to_show",
+            "thumbnail",
+            "title",
+            "upload_state",
+            "urls",
+            "lti_url",
+        )
+        read_only_fields = (
+            "id",
+            "is_ready_to_show",
+            "thumbnail",
+            "title",
+            "upload_state",
+            "urls",
+            "lti_url",
+        )
+
+    lti_url = serializers.SerializerMethodField()
+
+    def get_lti_url(self, obj):
+        """LTI Url of the Video.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The document that we want to serialize
+
+        Returns
+        -------
+        String
+            the LTI url to be used by LTI consumers
+
+        """
+        return self.context["request"].build_absolute_uri(
+            reverse("video_lti_view", args=[obj.id])
+        )
 
 
 class UpdateStateSerializer(serializers.Serializer):
@@ -913,3 +976,45 @@ class DocumentSerializer(serializers.ModelSerializer):
             return match.group("title")
 
         return value
+
+
+class DocumentSelectLTISerializer(serializers.ModelSerializer):
+    """A serializer to display a Document resource for LTI select content request."""
+
+    class Meta:  # noqa
+        model = Document
+        fields = (
+            "id",
+            "is_ready_to_show",
+            "title",
+            "upload_state",
+            "lti_url",
+        )
+        read_only_fields = (
+            "id",
+            "is_ready_to_show",
+            "title",
+            "upload_state",
+            "lti_url",
+        )
+
+    is_ready_to_show = serializers.BooleanField(read_only=True)
+    lti_url = serializers.SerializerMethodField()
+
+    def get_lti_url(self, obj):
+        """LTI Url of the Document.
+
+        Parameters
+        ----------
+        obj : Type[models.Document]
+            The document that we want to serialize
+
+        Returns
+        -------
+        String
+            the LTI url to be used by LTI consumers
+
+        """
+        return self.context["request"].build_absolute_uri(
+            reverse("document_lti_view", args=[obj.id])
+        )

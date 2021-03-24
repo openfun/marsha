@@ -11,7 +11,11 @@ from pylti.common import LTIOAuthServer
 from .. import factories, models
 from ..defaults import LIVE_CHOICES, RUNNING, STATE_CHOICES
 from ..lti import LTI
-from ..lti.utils import PortabilityError, get_or_create_resource
+from ..lti.utils import (
+    PortabilityError,
+    get_or_create_resource,
+    get_selectable_resources,
+)
 
 
 # We don't enforce arguments documentation in tests
@@ -1132,7 +1136,7 @@ class PortabilityLTITestCase(TestCase):
         already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
-        self._test_lti_get_resource_other_site_pl_auto_portable_student(
+        self._test_lti_get_resource_other_site_pl_auto_portable_instructor(
             factories.VideoFactory,
             models.Video,
             is_portable_to_playlist=False,
@@ -1150,7 +1154,7 @@ class PortabilityLTITestCase(TestCase):
         already existing for a consumer site but not portable to another consumer site, even if it
         is ready.
         """
-        self._test_lti_get_resource_other_site_pl_auto_portable_student(
+        self._test_lti_get_resource_other_site_pl_auto_portable_instructor(
             factories.DocumentFactory,
             models.Document,
             is_portable_to_playlist=False,
@@ -2800,4 +2804,339 @@ class PortabilityLTITestCase(TestCase):
         """
         self._test_lti_get_resource_wrong_lti_id_student(
             factories.DocumentFactory, models.Document
+        )
+
+
+class LTISelectTestCase(TestCase):
+    """Test the availability of selectable resource between playlists and consumer sites.
+
+    We need to test the content of selectable resource in a subset of
+    PortabilityLTITestCase cases.
+
+    Same case identifiers are used for convenience.
+    """
+
+    def setUp(self):
+        """Override the setUp method to instanciate and serve a request factory."""
+        super().setUp()
+        self.factory = RequestFactory()
+
+    def _test_lti_get_selectable_resource_same_playlist_same_site_student_ready_to_show(
+        self, factory, model, factory_parameters
+    ):
+        """Above case 1-1-2 upload state ready.
+
+        No content should be selectable by a student.
+        """
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        resource = factory(
+            playlist__consumer_site=passport.consumer_site,
+            upload_state=random.choice([s[0] for s in STATE_CHOICES]),
+            **factory_parameters,
+        )
+        data = {
+            "resource_link_id": resource.lti_id,
+            "context_id": resource.playlist.lti_id,
+            "roles": "Student",
+            "tool_consumer_instance_guid": resource.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, resource.pk)
+        lti.verify()
+
+        self.assertNotIn(resource, get_selectable_resources(model, lti))
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-1-2 upload state ready.
+
+        A video that exists for the requested playlist and consumer site shouldn't be selectable
+        by a student even if it is ready.
+        """
+        self._test_lti_get_selectable_resource_same_playlist_same_site_student_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_document_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-1-2 upload state ready.
+
+        A document that exists for the requested playlist and consumer site shouldn't be selectable
+        by a student even if it is ready.
+        """
+        self._test_lti_get_selectable_resource_same_playlist_same_site_student_ready_to_show(
+            factories.DocumentFactory,
+            models.Document,
+            {
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
+        )
+
+    def _test_lti_get_selectable_resource_same_playlist_same_site_instructor(
+        self, factory, model, factory_parameters
+    ):
+        """Above case 1-1-1.
+
+        A resource that exists for the requested playlist and consumer site should be selectable
+        by an instructor whatever its upload state.
+        """
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        resource = factory(
+            playlist__consumer_site=passport.consumer_site,
+            **factory_parameters,
+        )
+        data = {
+            "resource_link_id": resource.lti_id,
+            "context_id": resource.playlist.lti_id,
+            "roles": "Instructor",
+            "tool_consumer_instance_guid": resource.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, resource.pk)
+        lti.verify()
+
+        self.assertIn(resource, get_selectable_resources(model, lti))
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A video that exists for the requested playlist and consumer site should be selectable
+        by an instructor whatever its upload state.
+        """
+        self._test_lti_get_selectable_resource_same_playlist_same_site_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_live_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A video live that exists for the requested playlist and consumer site should be selectable
+        by an instructor whatever its upload state.
+        """
+        self._test_lti_get_selectable_resource_same_playlist_same_site_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {"live_state": random.choice([s[0] for s in LIVE_CHOICES])},
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_document_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A document that exists for the requested playlist and consumer site should be selectable
+        by an instructor whatever its upload state.
+        """
+        self._test_lti_get_selectable_resource_same_playlist_same_site_instructor(
+            factories.DocumentFactory,
+            models.Document,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+            },
+        )
+
+    def _test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
+        self, factory, model, factory_parameters
+    ):
+        """Above case 1-4-1-3-1.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the resource to the
+        requested playlist.
+        """
+        playlist = factories.PlaylistFactory(consumer_site__domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site=playlist.consumer_site
+        )
+        resource = factory(
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
+            **factory_parameters,
+        )
+        # Add automatic portability from the playlist of the video to the requested playlist
+        models.PlaylistPortability.objects.create(
+            source_playlist=resource.playlist, target_playlist=playlist
+        )
+
+        data = {
+            "resource_link_id": resource.lti_id,
+            "context_id": playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, resource.pk)
+        lti.verify()
+
+        self.assertIn(resource, get_selectable_resources(model, lti))
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_live_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video live.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "live_state": "running",
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_document_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Document.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the document to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
+            factories.DocumentFactory,
+            models.Document,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
+        )
+
+    def _test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
+        self, factory, model, factory_parameters
+    ):
+        """Above case 1-4-1-3-2-1.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the resource to the
+        requested playlist.
+        """
+        playlist = factories.PlaylistFactory(consumer_site__domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site=playlist.consumer_site
+        )
+        resource = factory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            lti_id="df7",
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_playlist=True,
+            playlist__is_portable_to_consumer_site=False,
+            **factory_parameters,
+        )
+        # Add automatic portability from the playlist of the video to the requested playlist
+        models.PlaylistPortability.objects.create(
+            source_playlist=resource.playlist, target_playlist=playlist
+        )
+
+        data = {
+            "resource_link_id": resource.lti_id,
+            "context_id": playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        request = self.factory.post("/", data, HTTP_REFERER="https://example.com/route")
+        lti = LTI(request, resource.pk)
+        lti.verify()
+
+        self.assertIn(resource, get_selectable_resources(model, lti))
+
+        # No new playlist or resource are created
+        self.assertEqual(models.Playlist.objects.count(), 2)
+        self.assertEqual(model.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_other_pl_pl_auto_portable_not_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-2-1 for Video.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_live_other_pl_pl_auto_portable_not_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-2-1 for Video live.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "live_state": "running",
+            },
+        )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_document_other_pl_pl_auto_portable_not_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-2-1 for Document.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the document to the
+        requested playlist.
+        """
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
+            factories.DocumentFactory,
+            models.Document,
+            {
+                "upload_state": random.choice([s[0] for s in STATE_CHOICES]),
+                "uploaded_on": "2019-09-24 07:24:40+00",
+            },
         )

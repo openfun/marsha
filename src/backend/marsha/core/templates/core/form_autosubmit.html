@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form action="{{ form_action }}"
+      method="post"
+      encType="application/x-www-form-urlencoded">
+  {% for name, value in form_data.items %}
+    <input type="hidden" name="{{ name }}" value="{{ value }}"/>
+  {% endfor %}
+</form>
+
+<script>
+  document.getElementsByTagName("form")[0].submit();
+</script>
+</body>
+</html>

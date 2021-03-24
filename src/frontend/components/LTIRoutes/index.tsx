@@ -12,6 +12,8 @@ import { Loader } from '../Loader';
 import { RedirectOnLoad } from '../RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { PLAYER_ROUTE } from '../routes';
+import { SelectContent } from '../SelectContent/';
+import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
 import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { UploadManager } from '../UploadManager';
@@ -62,6 +64,20 @@ export const Routes = () => (
 
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
+        />
+        <Route
+          exact
+          path={SELECT_CONTENT_ROUTE()}
+          render={() => (
+            <SelectContent
+              documents={appData.documents}
+              videos={appData.videos}
+              new_document_url={appData.new_document_url}
+              new_video_url={appData.new_video_url}
+              lti_select_form_action_url={appData.lti_select_form_action_url!}
+              lti_select_form_data={appData.lti_select_form_data!}
+            />
+          )}
         />
         <Route
           exact
