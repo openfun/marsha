@@ -17,6 +17,7 @@ import {
 } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { Maybe, Nullable } from '../../utils/types';
+import { Chat } from '../Chat';
 import { DownloadVideo } from '../DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Transcripts } from '../Transcripts';
@@ -160,6 +161,7 @@ const VideoPlayer = ({
       {transcripts.length > 0 && (
         <Transcripts transcripts={transcripts as TimedTextTranscript[]} />
       )}
+      {video.live_state !== null && video.xmpp && <Chat xmpp={video.xmpp} />}
     </Box>
   );
 };
