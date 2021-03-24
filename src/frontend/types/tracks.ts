@@ -56,6 +56,14 @@ export interface Playlist {
   lti_id: string;
 }
 
+/* XMPP representation */
+export interface XMPP {
+  bosh_url: string;
+  conference_url: string;
+  prebind_url: string;
+  jid: string;
+}
+
 /** A timed text track record as it exists on the backend. */
 export interface TimedText extends Resource {
   active_stamp: Nullable<number>;
@@ -115,6 +123,7 @@ export interface Video extends Resource {
       };
     };
   };
+  xmpp: Nullable<XMPP>;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;
