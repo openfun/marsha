@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn build",
+    "clean": "find ../backend/marsha/static/js/ -type f ! -iname 'iframeResizer.min.js' -delete",
     "extract-translations": "formatjs extract './**/*.ts*' --ignore ./node_modules --ignore './**/*.d.ts' --out-file i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
     "compile-translations": "formatjs compile-folder --format crowdin ./i18n ./translations",
     "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
@@ -71,6 +72,7 @@
     "@sentry/browser": "6.3.1",
     "@types/intl": "1.2.0",
     "buffer": "6.0.3",
+    "converse.js": "7.0.4",
     "core-js": "3.11.0",
     "custom-event-polyfill": "1.0.7",
     "grommet": "2.17.1",

@@ -2913,6 +2913,11 @@ consolidate@^0.16.0:
   dependencies:
     bluebird "^3.7.2"
 
+converse.js@7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/converse.js/-/converse.js-7.0.4.tgz#83b1a6648256b8badc7ec5ed870cadd07bc03eb1"
+  integrity sha512-U07RJB71nG88IRlfhlcxOlJAnH4pVNH1H8jF39OANxZbqSikOX3qJO3e3fV0Tem0I9oNgDqkRW60pI22zjeP0w==
+
 convert-source-map@^1.4.0, convert-source-map@^1.6.0, convert-source-map@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.7.0.tgz#17a2cb882d7f77d3490585e2ce6c524424a3a442"
