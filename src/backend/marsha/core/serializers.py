@@ -493,6 +493,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "playlist",
             "live_info",
             "live_state",
+            "xmpp",
         )
         read_only_fields = (
             "id",
@@ -516,6 +517,29 @@ class VideoSerializer(serializers.ModelSerializer):
     is_ready_to_show = serializers.BooleanField(read_only=True)
     has_transcript = serializers.SerializerMethodField()
     live_info = serializers.SerializerMethodField()
+    xmpp = serializers.SerializerMethodField()
+
+    def get_xmpp(self, obj):
+        """Chat info.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        Returns
+        -------
+        Dictionnary
+            A dictionary containing all info needed to manage a connection to a xmpp server.
+        """
+        if settings.LIVE_CHAT_ENABLED:
+            return {
+                "bosh_url": f"{settings.XMPP_BOSH_URL}",
+                "conference_url": f"{obj.id}@{settings.XMPP_CONFERENCE_DOMAIN}",
+                "jid": settings.XMPP_DOMAIN,
+            }
+
+        return None
 
     def get_live_info(self, obj):
         """Live streaming informations.

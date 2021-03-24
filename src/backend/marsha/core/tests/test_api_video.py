@@ -214,6 +214,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
 
@@ -288,6 +289,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
 
@@ -335,6 +337,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "xmpp": None,
             },
         )
 
@@ -510,6 +513,7 @@ class VideoAPITest(TestCase):
                         "title": video.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     }
                 ],
             },
@@ -579,6 +583,7 @@ class VideoAPITest(TestCase):
                         "title": video_1.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     },
                     {
                         "active_stamp": None,
@@ -599,6 +604,7 @@ class VideoAPITest(TestCase):
                         "title": video_2.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     },
                 ],
             },
@@ -679,6 +685,7 @@ class VideoAPITest(TestCase):
                         "title": video.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     }
                 ],
             },
@@ -737,6 +744,7 @@ class VideoAPITest(TestCase):
                         "title": video.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     }
                 ],
             },
@@ -822,6 +830,7 @@ class VideoAPITest(TestCase):
                         "title": video.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     }
                 ],
             },
@@ -879,6 +888,7 @@ class VideoAPITest(TestCase):
                         "title": video_1.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     },
                     {
                         "active_stamp": None,
@@ -899,6 +909,7 @@ class VideoAPITest(TestCase):
                         "title": video_2.title,
                         "upload_state": "pending",
                         "urls": None,
+                        "xmpp": None,
                     },
                 ],
             },
@@ -1051,6 +1062,7 @@ class VideoAPITest(TestCase):
                 "title": "Some video",
                 "upload_state": "pending",
                 "urls": None,
+                "xmpp": None,
             },
         )
 
@@ -1192,6 +1204,7 @@ class VideoAPITest(TestCase):
                 "title": "Some video",
                 "upload_state": "pending",
                 "urls": None,
+                "xmpp": None,
             },
         )
 
@@ -1924,6 +1937,7 @@ class VideoAPITest(TestCase):
                         }
                     }
                 },
+                "xmpp": None,
             },
         )
 
@@ -1984,8 +1998,12 @@ class VideoAPITest(TestCase):
                 content, {"detail": "Authentication credentials were not provided."}
             )
 
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="xmpp-server.com")
     def test_api_video_instructor_start_live(self):
-        """An instructor should be able to start a live."""
+        """An instructor should be able to start a live with a chat room."""
         video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
@@ -2020,11 +2038,14 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "start_live_channel"):
+        with mock.patch.object(api, "start_live_channel"), mock.patch.object(
+            api, "create_room"
+        ) as mock_create_room:
             response = self.client.post(
                 "/api/videos/{!s}/start-live/".format(video.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
+            mock_create_room.assert_called_once_with(video.id)
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -2063,6 +2084,11 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     }
+                },
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind",
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "xmpp-server.com",
                 },
             },
         )
@@ -2163,6 +2189,7 @@ class VideoAPITest(TestCase):
                 content, {"detail": "Authentication credentials were not provided."}
             )
 
+    @override_settings(LIVE_CHAT_ENABLED=False)
     def test_api_video_instructor_stop_live(self):
         """An instructor should be able to stop a live."""
         video = factories.VideoFactory(
@@ -2243,6 +2270,7 @@ class VideoAPITest(TestCase):
                         }
                     }
                 },
+                "xmpp": None,
             },
         )
 
@@ -2322,6 +2350,7 @@ class VideoAPITest(TestCase):
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    @override_settings(LIVE_CHAT_ENABLED=True)
     def test_api_video_update_live_state_stopped(self):
         """Updating state to stopped should delete all the AWS elemental stack."""
         video = factories.VideoFactory(
@@ -2341,7 +2370,9 @@ class VideoAPITest(TestCase):
             "marsha.core.api.delete_aws_element_stack"
         ) as delete_aws_element_stack_mock, mock.patch(
             "marsha.core.api.create_mediapackage_harvest_job"
-        ) as create_mediapackage_harvest_job_mock:
+        ) as create_mediapackage_harvest_job_mock, mock.patch.object(
+            api, "close_room"
+        ) as mock_close_room:
             response = self.client.patch(
                 "/api/videos/{!s}/update-live-state/".format(video.id),
                 data,
@@ -2350,6 +2381,7 @@ class VideoAPITest(TestCase):
             )
             delete_aws_element_stack_mock.assert_called_once()
             create_mediapackage_harvest_job_mock.assert_called_once()
+            mock_close_room.assert_called_once_with(video.id)
 
         video.refresh_from_db()
 
