@@ -997,6 +997,9 @@ class VideoLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_switch(SENTRY, active=True)
     @mock.patch.object(Logger, "warning")
     @mock.patch.object(LTI, "verify", side_effect=LTIException("lti error"))
     def test_views_lti_video_post_error(self, mock_verify, mock_logger):
@@ -1018,6 +1021,27 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "error")
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(
+            context,
+            {
+                "environment": "test",
+                "flags": {
+                    "sentry": True,
+                },
+                "frontend": "LTI",
+                "modelName": "videos",
+                "release": "1.2.3",
+                "resource": None,
+                "sentry_dsn": "https://sentry.dsn",
+                "state": "error",
+                "static": {
+                    "svg": {
+                        "icons": "/static/svg/icons.svg",
+                        "plyr": "/static/svg/plyr.svg",
+                    }
+                },
+            },
+        )
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
