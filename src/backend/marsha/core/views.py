@@ -55,6 +55,24 @@ def exception_handler(exc, context):
     return drf_exception_handler(exc, context)
 
 
+def _get_base_app_data():
+    """Define common app data."""
+    return {
+        "environment": settings.ENVIRONMENT,
+        "flags": {
+            SENTRY: switch_is_active(SENTRY),
+        },
+        "release": settings.RELEASE,
+        "sentry_dsn": settings.SENTRY_DSN,
+        "static": {
+            "svg": {
+                "icons": static("svg/icons.svg"),
+                "plyr": static("svg/plyr.svg"),
+            }
+        },
+    }
+
+
 class SiteView(mixins.WaffleSwitchMixin, TemplateView):
     """
     View called to serve the first site pages a user lands on, wherever they come from.
@@ -72,22 +90,13 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
         jwt_token.payload["resource_id"] = str(self.request.user.id)
         jwt_token.payload["user_id"] = str(self.request.user.id)
 
-        app_data = {
-            "environment": settings.ENVIRONMENT,
-            "flags": {
-                SENTRY: switch_is_active(SENTRY),
-            },
-            "frontend": "Site",
-            "jwt": str(jwt_token),
-            "release": settings.RELEASE,
-            "sentry_dsn": settings.SENTRY_DSN,
-            "static": {
-                "svg": {
-                    "icons": static("svg/icons.svg"),
-                    "plyr": static("svg/plyr.svg"),
-                }
-            },
-        }
+        app_data = _get_base_app_data()
+        app_data.update(
+            {
+                "frontend": "Site",
+                "jwt": str(jwt_token),
+            }
+        )
 
         return {
             "app_data": json.dumps(app_data),
@@ -117,6 +126,17 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     def serializer_class(self):
         """Return the serializer used by the view."""
 
+    def _get_base_app_data(self):
+        """Define common app data for the LTI view."""
+        app_data = _get_base_app_data()
+        app_data.update(
+            {
+                "frontend": "LTI",
+                "modelName": self.model.RESOURCE_NAME,
+            }
+        )
+        return app_data
+
     def get_context_data(self):
         """Build context for template rendering of configuration data for the frontend.
 
@@ -129,11 +149,14 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         def _manage_exception(error):
             logger.warning(str(error))
-            return {
-                "state": "error",
-                "modelName": self.model.RESOURCE_NAME,
-                "resource": None,
-            }
+            app_data = self._get_base_app_data()
+            app_data.update(
+                {
+                    "resource": None,
+                    "state": "error",
+                }
+            )
+            return app_data
 
         lti = LTI(self.request, self.kwargs["uuid"])
         try:
@@ -199,35 +222,27 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "can_update": (lti.is_instructor or lti.is_admin)
                     and resource.playlist.lti_id == lti.context_id,
                 }
-            app_data = {
-                "environment": settings.ENVIRONMENT,
-                "frontend": "LTI",
-                "flags": {
-                    VIDEO_LIVE: switch_is_active(VIDEO_LIVE),
-                    SENTRY: switch_is_active(SENTRY),
-                },
-                "modelName": self.model.RESOURCE_NAME,
-                "release": settings.RELEASE,
-                "resource": self.serializer_class(
-                    resource,
-                    context={
-                        "can_return_live_info": lti.is_admin or lti.is_instructor
-                        if lti
-                        else False
+            app_data = self._get_base_app_data()
+            app_data.update(
+                {
+                    "flags": {
+                        VIDEO_LIVE: switch_is_active(VIDEO_LIVE),
+                        SENTRY: switch_is_active(SENTRY),
                     },
-                ).data
-                if resource
-                else None,
-                "sentry_dsn": settings.SENTRY_DSN,
-                "state": "success",
-                "static": {
-                    "svg": {
-                        "icons": static("svg/icons.svg"),
-                        "plyr": static("svg/plyr.svg"),
-                    }
-                },
-                "player": settings.VIDEO_PLAYER,
-            }
+                    "resource": self.serializer_class(
+                        resource,
+                        context={
+                            "can_return_live_info": lti.is_admin or lti.is_instructor
+                            if lti
+                            else False
+                        },
+                    ).data
+                    if resource
+                    else None,
+                    "state": "success",
+                    "player": settings.VIDEO_PLAYER,
+                }
+            )
             if lti is None or lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
