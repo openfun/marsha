@@ -30,7 +30,7 @@ export interface AppData {
     };
   };
   player?: string;
-  flags: {
+  flags?: {
     [key in flags]?: boolean;
   };
 }
