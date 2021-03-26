@@ -8,10 +8,16 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.17.1] - 2021-03-26
+
 ### Added
 
 - Add a series of components to power breadcrumbs.
 - Add a frontend component to use SVG icons in Marsha.
+
+### Fixed
+
+- Avoid blank page when feature flags are not set.
 
 ## [3.17.0] - 2021-03-04
 
