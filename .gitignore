@@ -129,7 +129,7 @@ src/backend/marsha/static/css
 src/backend/marsha/static/js
 
 # Assets
-data/
+./data/
 
 # Terraform
 .terraform
