@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Chat feature implementing XMPP protocol
+
 ### Changed
 
 - The `lti_id` field is optional on Videos and Documents.

@@ -1,7 +1,7 @@
 """Define the structure of our API responses with Django Rest Framework serializers."""
 from datetime import timedelta
 import re
-from urllib.parse import quote_plus
+from urllib.parse import parse_qs, quote_plus, urlencode, urlparse, urlunparse
 import uuid
 
 from django.conf import settings
@@ -34,7 +34,8 @@ from .models import (
     TimedTextTrack,
     Video,
 )
-from .utils import cloudfront_utils, time_utils
+from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
+from .utils import cloudfront_utils, time_utils, xmpp_utils
 
 
 UUID_REGEX = (
@@ -532,9 +533,27 @@ class VideoSerializer(serializers.ModelSerializer):
         Dictionnary
             A dictionary containing all info needed to manage a connection to a xmpp server.
         """
-        if settings.LIVE_CHAT_ENABLED:
+        if (
+            settings.LIVE_CHAT_ENABLED
+            and obj.live_state is not None
+            and self.context.get("user_id", False)
+        ):
+            roles = self.context.get("roles", [])
+            is_admin = bool(LTI_ROLES[ADMINISTRATOR] & set(roles))
+            is_instructor = bool(LTI_ROLES[INSTRUCTOR] & set(roles))
+            token = xmpp_utils.generate_jwt(
+                str(obj.id),
+                self.context["user_id"],
+                "owner" if is_admin or is_instructor else "member",
+                timezone.now() + timedelta(days=1),
+            )
+            bosh_url = list(urlparse(settings.XMPP_BOSH_URL))
+            bosh_query_string = dict(parse_qs(bosh_url[4]))
+            bosh_query_string.update({"token": token})
+            bosh_url[4] = urlencode(bosh_query_string)
+
             return {
-                "bosh_url": f"{settings.XMPP_BOSH_URL}",
+                "bosh_url": urlunparse(bosh_url),
                 "conference_url": f"{obj.id}@{settings.XMPP_CONFERENCE_DOMAIN}",
                 "jid": settings.XMPP_DOMAIN,
             }

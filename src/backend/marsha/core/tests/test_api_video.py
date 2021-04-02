@@ -2002,6 +2002,7 @@ class VideoAPITest(TestCase):
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_video_instructor_start_live(self):
         """An instructor should be able to start a live with a chat room."""
         video = factories.VideoFactory(
@@ -2036,11 +2037,15 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user_id"] = "56255f3807599c377bf0e5bf072359fd"
 
         # start a live video,
         with mock.patch.object(api, "start_live_channel"), mock.patch.object(
             api, "create_room"
-        ) as mock_create_room:
+        ) as mock_create_room, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
                 "/api/videos/{!s}/start-live/".format(video.id),
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
@@ -2086,7 +2091,7 @@ class VideoAPITest(TestCase):
                     }
                 },
                 "xmpp": {
-                    "bosh_url": "https://xmpp-server.com/http-bind",
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "xmpp-server.com",
                 },
