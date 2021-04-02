@@ -1,6 +1,7 @@
 """Utils for XMPP server."""
 from django.conf import settings
 
+import jwt
 import xmpp
 
 
@@ -15,8 +16,8 @@ def _connect():
 
     Returns
     -------
-    xmmp.Client
-        A xmmp client authenticated to a XMPP server.
+    xmpp.Client
+        A xmpp client authenticated to a XMPP server.
     """
     jid = xmpp.protocol.JID(settings.XMPP_PRIVATE_ADMIN_JID)
 
@@ -133,4 +134,39 @@ def close_room(room_name):
                 )
             ],
         )
+    )
+
+
+def generate_jwt(room_name, user_id, affiliation, expires_at):
+    """Generate the JWT token used by xmpp server.
+
+    Parameters
+    ----------
+    room_name: string
+        The name of the room the token is associated with
+
+    user_id: string
+        User's id who try to access to the XMPP conference
+
+    affiliations: string
+        User affiliation (owner or member)
+
+    expires_at: number
+        Expiration time in timestamp format
+    """
+    return jwt.encode(
+        {
+            "context": {
+                "user": {
+                    "id": user_id,
+                    "affiliation": affiliation,
+                },
+            },
+            "aud": settings.XMPP_JWT_AUDIENCE,
+            "iss": settings.XMPP_JWT_ISSUER,
+            "sub": settings.XMPP_DOMAIN,
+            "room": room_name,
+            "exp": expires_at,
+        },
+        settings.XMPP_JWT_SHARED_SECRET,
     )

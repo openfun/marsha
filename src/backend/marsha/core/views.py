@@ -210,6 +210,8 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         permissions = {"can_access_dashboard": False, "can_update": False}
 
+        user_id = getattr(lti, "user_id", None) if lti else None
+
         if app_data is None:
             resource = (
                 get_or_create_resource(self.model, lti)
@@ -234,7 +236,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                         context={
                             "can_return_live_info": lti.is_admin or lti.is_instructor
                             if lti
-                            else False
+                            else False,
+                            "roles": lti.roles if lti else [],
+                            "user_id": user_id,
                         },
                     ).data
                     if resource
@@ -275,11 +279,8 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 }
             )
 
-            if lti:
-                try:
-                    jwt_token.payload["user_id"] = lti.user_id
-                except AttributeError:
-                    pass
+            if user_id:
+                jwt_token.payload["user_id"] = user_id
 
             app_data["jwt"] = str(jwt_token)
 

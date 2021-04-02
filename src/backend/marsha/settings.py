@@ -270,6 +270,9 @@ class Base(Configuration):
     XMPP_PRIVATE_ADMIN_JID = values.Value(None)
     XMPP_PRIVATE_SERVER_PORT = values.Value(5222)
     XMPP_PRIVATE_SERVER_PASSWORD = values.Value(None)
+    XMPP_JWT_SHARED_SECRET = values.Value(None)
+    XMPP_JWT_ISSUER = values.Value("marsha")
+    XMPP_JWT_AUDIENCE = values.Value("marsha")
     XMPP_DOMAIN = values.Value(None)
 
     # pylint: disable=invalid-name
