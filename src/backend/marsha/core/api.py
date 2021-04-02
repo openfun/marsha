@@ -273,6 +273,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         # The API is only reachable by admin users.
         context["can_return_live_info"] = True
 
+        user = self.request.user
+        if isinstance(user, TokenUser):
+            context["roles"] = user.token.payload.get("roles", [])
+            context["user_id"] = user.token.payload.get("user_id", None)
+
         return context
 
     def create(self, request, *args, **kwargs):

@@ -264,6 +264,7 @@ class VideoLTIViewTestCase(TestCase):
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_views_lti_video_instructor_live_mode_an_chat_on(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -310,7 +311,12 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        with mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -377,7 +383,7 @@ class VideoLTIViewTestCase(TestCase):
                     },
                 },
                 "xmpp": {
-                    "bosh_url": "https://xmpp-server.com/http-bind",
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
