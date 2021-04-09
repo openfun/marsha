@@ -17,6 +17,20 @@ apply-all: \
 	apply-shared-resources
 .PHONY: apply-all
 
+destroy: ## Destroy terraform resources
+	@bin/terraform destroy
+.PHONY: destroy
+
+destroy-shared-resources: ## Destroy terraform shared resources
+	@bin/shared-resources destroy
+.PHONY: destroy-shared-resources
+
+destroy-all: ## Destroy all terraform resources
+destroy-all: \
+	destroy-shared-resources \
+	destroy
+.PHONY: destroy-all
+
 output: ## Display Terraform config output
 	bin/terraform output
 .PHONY: output
