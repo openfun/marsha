@@ -4,6 +4,7 @@ Uses django-configurations to manage environments inheritance and the loading of
 config from the environment
 
 """
+# pylint: disable=abstract-class-instantiated
 
 from datetime import timedelta
 import json
