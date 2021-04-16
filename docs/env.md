@@ -291,6 +291,89 @@ that will be used to distribute processed files to end users.
 - Required: Yes
 - Default: None
 
+### XMPP settings
+
+#### DJANGO_LIVE_CHAT_ENABLED
+
+To enable or disable the global chat feature.
+
+- Type: boolean
+- Required: No
+- Default: False
+
+#### DJANGO_XMPP_DOMAIN
+
+Main XMPP server domain.
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_BOSH_URL
+
+The Bosh endpoint defined by your XMPP server. This url is used by Marsha's front application to excahnge with the XMPP server.
+Required when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_CONFERENCE_DOMAIN
+
+Your XMPP MUC component domain.
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_PRIVATE_ADMIN_JID
+
+The JID of an admin configured on your XMPP server. Example: `admin@your-xmpp-server.com`
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_PRIVATE_SERVER_PORT
+
+XMPP server port to use for client connections
+
+- Type: number
+- Required: No
+- Default: 5222
+
+#### DJANGO_XMPP_PRIVATE_SERVER_PASSWORD
+
+The password associated to your admin user set in the setting `DJANGO_XMPP_PRIVATE_ADMIN_JID`
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_JWT_SHARED_SECRET
+
+Secret key used to sign JWTs.
+
+- Type: string
+- Required: Only when `DJANGO_LIVE_CHAT_ENABLED` is set to True
+- Default: None
+
+#### DJANGO_XMPP_JWT_ISSUER
+
+The JWT issuer accepted by the XMPP server
+
+- Type: string
+- Required: No
+- Default: marsha
+
+#### DJANGO_XMPP_JWT_AUDIENCE
+
+The JWT audience accepted by the XMPP server
+
+- Type: string
+- Required: No
+- Default: marsha
+
 ### Crowdin API access related settings
 
 #### CROWDIN_API_KEY

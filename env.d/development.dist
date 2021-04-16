@@ -35,11 +35,11 @@ DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 # XMPP
 DJANGO_LIVE_CHAT_ENABLED=False
 DJANGO_XMPP_BOSH_URL=https://your-xmpp-server.com/http-bind
-DJANGO_XMPP_BOSH_PRE_BIND_URL=http://localhost:8061/http-pre-bind
-DJANGO_XMPP_CONFERENCE_URL=conference.your-xmpp-server.com
-DJANGO_XMPP_JID=your-xmpp-server.com
-DJANGO_XMPP_PRIVATE_SERVER_JID=admin@your-xmpp-server.com
+DJANGO_XMPP_CONFERENCE_DOMAIN=conference.your-xmpp-server.com
+DJANGO_XMPP_DOMAIN=your-xmpp-server.com
+DJANGO_XMPP_PRIVATE_ADMIN_JID=admin@your-xmpp-server.com
 DJANGO_XMPP_PRIVATE_SERVER_PASSWORD=ThisIsNotAPassword
+DJANGO_XMPP_JWT_SHARED_SECRET=ThisIsNotASharedSecret
 
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
 
