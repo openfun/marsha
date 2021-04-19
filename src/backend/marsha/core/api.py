@@ -227,7 +227,7 @@ def update_state(request):
     return Response({"success": True})
 
 
-class VideoViewSet(viewsets.ModelViewSet):
+class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the video object."""
 
     queryset = Video.objects.all()
