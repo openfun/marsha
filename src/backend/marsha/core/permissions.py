@@ -205,14 +205,11 @@ class IsParamsOrganizationAdmin(permissions.BasePermission):
         organization_id = request.data.get("organization") or request.query_params.get(
             "organization"
         )
-        try:
-            return models.OrganizationAccess.objects.filter(
-                role=ADMINISTRATOR,
-                organization__id=organization_id,
-                user__id=request.user.id,
-            ).exists()
-        except models.OrganizationAccess.DoesNotExist:
-            return False
+        return models.OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            organization__id=organization_id,
+            user__id=request.user.id,
+        ).exists()
 
 
 class IsParamsPlaylistAdmin(permissions.BasePermission):
@@ -233,14 +230,9 @@ class IsParamsPlaylistAdmin(permissions.BasePermission):
         playlist_id = request.data.get("playlist") or request.query_params.get(
             "playlist"
         )
-        try:
-            return models.PlaylistAccess.objects.filter(
-                role=ADMINISTRATOR,
-                playlist__id=playlist_id,
-                user__id=request.user.id,
-            ).exists()
-        except models.PlaylistAccess.DoesNotExist:
-            return False
+        return models.PlaylistAccess.objects.filter(
+            role=ADMINISTRATOR, playlist__id=playlist_id, user__id=request.user.id,
+        ).exists()
 
 
 class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
@@ -261,14 +253,11 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
         playlist_id = request.data.get("playlist") or request.query_params.get(
             "playlist"
         )
-        try:
-            return models.OrganizationAccess.objects.filter(
-                role=ADMINISTRATOR,
-                organization__playlists__id=playlist_id,
-                user__id=request.user.id,
-            ).exists()
-        except models.OrganizationAccess.DoesNotExist:
-            return False
+        return models.OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            organization__playlists__id=playlist_id,
+            user__id=request.user.id,
+        ).exists()
 
 
 class IsOrganizationAdmin(permissions.BasePermission):
@@ -355,15 +344,11 @@ class IsVideoPlaylistAdmin(permissions.BasePermission):
         Allow the request only if there is a video id in the path of the request, which exists,
         and if the current user is an admin for the playlist this video is a part of.
         """
-        try:
-            return models.PlaylistAccess.objects.filter(
-                role=ADMINISTRATOR,
-                # Avoid making extra requests to get the video or playlist id through get_object
-                playlist__videos__id=request.path.split("/")[3],
-                user__id=request.user.id,
-            ).exists()
-        except (models.PlaylistAccess.DoesNotExist, IndexError):
-            return False
+        return models.PlaylistAccess.objects.filter(
+            role=ADMINISTRATOR,
+            playlist__videos__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
 
 
 class IsVideoOrganizationAdmin(permissions.BasePermission):
@@ -382,12 +367,8 @@ class IsVideoOrganizationAdmin(permissions.BasePermission):
         and if the current user is an admin for the organization linked to the playlist this video
         is a part of.
         """
-        try:
-            return models.OrganizationAccess.objects.filter(
-                role=ADMINISTRATOR,
-                # Avoid making extra requests to get the video/playlist/org id through get_object
-                organization__playlists__videos__id=request.path.split("/")[3],
-                user__id=request.user.id,
-            ).exists()
-        except (models.OrganizationAccess.DoesNotExist, IndexError):
-            return False
+        return models.OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            organization__playlists__videos__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
