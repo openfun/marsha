@@ -196,9 +196,11 @@ class TimedTextTrackAPITest(TestCase):
             "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
-        self.assertEqual(content, {"detail": "Not found."})
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_without_extension_read_detail_token_user(self):
@@ -249,9 +251,11 @@ class TimedTextTrackAPITest(TestCase):
             "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
-        self.assertEqual(content, {"detail": "Not found."})
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_admin_user(self):
@@ -307,9 +311,11 @@ class TimedTextTrackAPITest(TestCase):
             "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
-        self.assertEqual(content, {"detail": "Not found."})
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
 
     def test_api_timed_text_track_read_instructor_in_read_only(self):
         """Instructor should not be able to read a timed text track in read_only mode."""
@@ -767,7 +773,7 @@ class TimedTextTrackAPITest(TestCase):
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         timed_text_track_update.refresh_from_db()
         self.assertEqual(timed_text_track_update.language, "en")
 
@@ -861,7 +867,7 @@ class TimedTextTrackAPITest(TestCase):
         response = self.client.delete(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
         self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
 
     def test_api_timed_text_track_delete_list_staff_or_user(self):
@@ -993,9 +999,11 @@ class TimedTextTrackAPITest(TestCase):
             ),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
-        self.assertEqual(content, {"detail": "Not found."})
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
 
     def test_api_timed_text_track_initiate_upload_staff_or_user(self):
         """Users authenticated via a session should not be able to initiate an upload."""

@@ -353,7 +353,7 @@ class ThumbnailApiTest(TestCase):
             "/api/thumbnails/{!s}/".format(thumbnail.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_thumbnail_initiate_upload_anonymous(self):
         """Anonymous users are not allowed to initiate an upload."""

@@ -243,7 +243,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         """
         if self.action in ["retrieve", "partial_update", "update"]:
             permission_classes = [
-                permissions.IsResourceAdmin | permissions.IsResourceInstructor
+                permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+                | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [IsAuthenticated]
@@ -324,7 +325,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         detail=True,
         url_path="initiate-upload",
         permission_classes=[
-            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -372,7 +374,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         detail=True,
         url_path="initiate-live",
         permission_classes=[
-            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -420,7 +423,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         detail=True,
         url_path="start-live",
         permission_classes=[
-            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -469,7 +473,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         detail=True,
         url_path="stop-live",
         permission_classes=[
-            permissions.IsResourceAdmin | permissions.IsResourceInstructor
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -591,14 +596,18 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
 
 class DocumentViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+    ObjectPkMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
 ):
     """Viewset for the API of the Document object."""
 
     queryset = Document.objects.all()
     serializer_class = serializers.DocumentSerializer
     permission_classes = [
-        permissions.IsResourceAdmin | permissions.IsResourceInstructor
+        permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+        | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
     ]
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
@@ -649,18 +658,27 @@ class DocumentViewSet(
         return Response(presigned_post)
 
 
-class TimedTextTrackViewSet(viewsets.ModelViewSet):
+class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the TimedTextTrack object."""
 
+    permission_classes = [permissions.NotAllowed]
     serializer_class = serializers.TimedTextTrackSerializer
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "metadata":
             permission_classes = [permissions.IsVideoToken]
+        elif self.action in ["create", "list"]:
+            # NB: list should be restricted by queryset, not resource id
+            permission_classes = [
+                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+            ]
         else:
             permission_classes = [
-                permissions.IsVideoRelatedAdmin | permissions.IsVideoRelatedInstructor
+                permissions.IsTokenResourceRouteObjectRelatedVideo
+                & permissions.IsTokenInstructor
+                | permissions.IsTokenResourceRouteObjectRelatedVideo
+                & permissions.IsTokenAdmin
             ]
         return [permission() for permission in permission_classes]
 
@@ -711,6 +729,7 @@ class TimedTextTrackViewSet(viewsets.ModelViewSet):
 
 
 class ThumbnailViewSet(
+    ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
@@ -718,10 +737,23 @@ class ThumbnailViewSet(
 ):
     """Viewset for the API of the Thumbnail object."""
 
-    permission_classes = [
-        permissions.IsVideoRelatedInstructor | permissions.IsVideoRelatedAdmin
-    ]
+    permission_classes = [permissions.NotAllowed]
     serializer_class = serializers.ThumbnailSerializer
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action == "create":
+            permission_classes = [
+                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+            ]
+        else:
+            permission_classes = [
+                permissions.IsTokenResourceRouteObjectRelatedVideo
+                & permissions.IsTokenInstructor
+                | permissions.IsTokenResourceRouteObjectRelatedVideo
+                & permissions.IsTokenAdmin
+            ]
+        return [permission() for permission in permission_classes]
 
     def get_queryset(self):
         """Restrict list access to thumbnail related to the video in the JWT token."""
