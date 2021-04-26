@@ -113,8 +113,8 @@ const VideoPlayer = ({
 
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
-    video.urls.thumbnails;
-  const resolutions = Object.keys(video.urls.mp4).map(
+    video.urls!.thumbnails;
+  const resolutions = Object.keys(video.urls!.mp4).map(
     (size) => Number(size) as videoSize,
   );
 
@@ -133,9 +133,9 @@ const VideoPlayer = ({
       >
         {resolutions.map((size) => (
           <source
-            key={video.urls.mp4[size]}
+            key={video.urls!.mp4[size]}
             size={`${size}`}
-            src={video.urls.mp4[size]}
+            src={video.urls!.mp4[size]}
             type="video/mp4"
           />
         ))}
@@ -157,7 +157,7 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {video.show_download && <DownloadVideo video={video} />}
+      {video.show_download && <DownloadVideo urls={video.urls!} />}
       {transcripts.length > 0 && (
         <Transcripts transcripts={transcripts as TimedTextTranscript[]} />
       )}

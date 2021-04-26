@@ -96,6 +96,14 @@ export interface Thumbnail extends Resource {
   video: Video['id'];
 }
 
+export interface VideoUrls {
+  manifests: {
+    hls: string;
+  };
+  mp4: Partial<urls>;
+  thumbnails: Partial<urls>;
+}
+
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   description: string;
@@ -105,13 +113,7 @@ export interface Video extends Resource {
   timed_text_tracks: TimedText[];
   title: string;
   upload_state: uploadState;
-  urls: {
-    manifests: {
-      hls: string;
-    };
-    mp4: Partial<urls>;
-    thumbnails: Partial<urls>;
-  };
+  urls: Nullable<VideoUrls>;
   should_use_subtitle_as_transcript: boolean;
   has_transcript: boolean;
   playlist: Playlist;

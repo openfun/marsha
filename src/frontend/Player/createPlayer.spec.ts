@@ -37,7 +37,7 @@ describe('createPlayer', () => {
     expect(createPlyrPlayer).toHaveBeenCalledWith(
       ref,
       dispatchPlayerTimeUpdate,
-      video,
+      video.urls!,
     );
   });
 
@@ -51,7 +51,8 @@ describe('createPlayer', () => {
     expect(createVideojsPlayer).toHaveBeenCalledWith(
       ref,
       dispatchPlayerTimeUpdate,
-      video,
+      video.urls!,
+      video.live_state,
     );
   });
 

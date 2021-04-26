@@ -1,6 +1,4 @@
-import Hls from 'hls.js';
-
-import { timedTextMode, uploadState, Video } from '../types/tracks';
+import { timedTextMode, uploadState } from '../types/tracks';
 import { videoMockFactory } from '../utils/tests/factories';
 import { jestMockOf } from '../utils/types';
 import { createHlsPlayer } from './createHlsPlayer';
@@ -134,7 +132,7 @@ describe('createPlyrPlayer', () => {
     jest.clearAllMocks();
   });
   it('creates Plyr player and configure it', () => {
-    const player = createPlyrPlayer('ref' as any, jest.fn(), video as Video);
+    const player = createPlyrPlayer('ref' as any, jest.fn(), video.urls!);
 
     const playButton = player.elements.buttons.play! as HTMLButtonElement[];
     expect(playButton[0].tabIndex).toEqual(-1);
