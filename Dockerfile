@@ -26,7 +26,7 @@ COPY ./src/frontend /app/
 RUN yarn install --frozen-lockfile && \
     yarn compile-translations && \
     yarn sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=node_modules  && \
-    yarn build --mode=production --output-path /app/marsha/static/js/
+    yarn build --mode=production --output-path /app/marsha/static/js/build/
 
 # ---- static link collector ----
 FROM base as link-collector

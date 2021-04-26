@@ -8,7 +8,7 @@ MARSHA_IMAGE_TAG="${2:-latest}"
 
 echo "Test statics for image ${MARSHA_IMAGE_NAME}:${MARSHA_IMAGE_TAG}..."
 
-expected_statics_path="/data/static/js/index.js"
+expected_statics_path="/data/static/js/build/index.js"
 
 docker run --rm --env-file=env.d/development.dist "${MARSHA_IMAGE_NAME}:${MARSHA_IMAGE_TAG}" ls $expected_statics_path
 
