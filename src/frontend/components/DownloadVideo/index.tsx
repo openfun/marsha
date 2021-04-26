@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { Video, videoSize } from '../../types/tracks';
+import { videoSize, VideoUrls } from '../../types/tracks';
 
 const messages = defineMessages({
   downloadVideo: {
@@ -36,8 +36,8 @@ const StatusInfo = styled.span`
 
 type downloadableSize = Extract<videoSize, 1080 | 720 | 480>;
 
-export const DownloadVideo = ({ video }: { video: Video }) => {
-  const resolutions = Object.keys(video.urls.mp4).map(
+export const DownloadVideo = ({ urls }: { urls: VideoUrls }) => {
+  const resolutions = Object.keys(urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
   const elements: JSX.Element[] = ([1080, 720, 480] as downloadableSize[])
@@ -45,7 +45,7 @@ export const DownloadVideo = ({ video }: { video: Video }) => {
     .reduce((acc: JSX.Element[], size: downloadableSize) => {
       acc.push(
         <Fragment key={`fragment-${size}`}>
-          <a href={video.urls.mp4[size]}>{size}p</a>
+          <a href={urls.mp4[size]}>{size}p</a>
           &nbsp;
           <Tooltip
             overlay={<FormattedMessage {...messages[size]} />}
