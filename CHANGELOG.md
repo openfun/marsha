@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - The `lti_id` field is optional on Videos and Documents.
+- Clean built frontend files before each build
 
 ### Fixed
 

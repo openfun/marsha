@@ -22,8 +22,9 @@ module.exports = {
   // is on AWS.
   output: {
     filename: 'index.js',
-    path: __dirname + '/../backend/marsha/static/js',
+    path: __dirname + '/../backend/marsha/static/js/build',
     chunkFilename: '[id].[fullhash].index.js',
+    clean: true,
   },
 
   // Enable sourcemaps for debugging webpack's output.

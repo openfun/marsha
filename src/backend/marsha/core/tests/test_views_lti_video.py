@@ -1256,7 +1256,9 @@ class VideoLTIViewTestCase(TestCase):
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
-        self.assertContains(response, '<meta name="public-path" value="/static/js/" />')
+        self.assertContains(
+            response, '<meta name="public-path" value="/static/js/build/" />'
+        )
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
