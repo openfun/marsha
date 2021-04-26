@@ -26,7 +26,7 @@ export const DashboardThumbnailDisplay = ({
   const urls =
     thumbnail && thumbnail.is_ready_to_show
       ? thumbnail.urls
-      : video.urls.thumbnails;
+      : video.urls!.thumbnails;
   const resolutions = Object.keys(urls).map(
     (size) => Number(size) as videoSize,
   );

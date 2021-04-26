@@ -13,7 +13,7 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from '../types/libs/video.js/extend';
-import { Video, videoSize } from '../types/tracks';
+import { liveState, videoSize, VideoUrls } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -29,7 +29,8 @@ import { Events } from './videojs/qualitySelectorPlugin/types';
 export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-  video: Video,
+  urls: VideoUrls,
+  live: Nullable<liveState>,
 ): VideoJsPlayer => {
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
@@ -41,20 +42,20 @@ export const createVideojsPlayer = (
     plugins.qualitySelector = {
       default: '480',
     };
-    Object.keys(video.urls.mp4)
+    Object.keys(urls.mp4)
       .map((size) => Number(size) as videoSize)
       .sort((a, b) => b - a)
       .forEach((size) => {
         sources.push({
           type: 'video/mp4',
-          src: video.urls.mp4[size]!,
+          src: urls.mp4[size]!,
           size: size.toString(),
         });
       });
   } else {
     sources.push({
       type: 'application/x-mpegURL',
-      src: video.urls.manifests.hls,
+      src: urls.manifests.hls,
     });
   }
 
@@ -78,7 +79,7 @@ export const createVideojsPlayer = (
       nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
     language: intl.locale,
-    liveui: video.live_state !== null,
+    liveui: live !== null,
     playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins,
     responsive: true,

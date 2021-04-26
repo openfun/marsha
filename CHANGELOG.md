@@ -16,6 +16,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The `lti_id` field is optional on Videos and Documents.
 
+### Fixed
+
+- Frontend video type now allows Nullable urls.
+
 ## [3.17.1] - 2021-03-26
 
 ### Added

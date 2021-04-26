@@ -11,9 +11,14 @@ export const createPlayer: VideoPlayerCreator = (
 ) => {
   switch (type) {
     case 'plyr':
-      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate, video);
+      return createPlyrPlayer(ref, dispatchPlayerTimeUpdate, video.urls!);
     case 'videojs':
-      const player = createVideojsPlayer(ref, dispatchPlayerTimeUpdate, video);
+      const player = createVideojsPlayer(
+        ref,
+        dispatchPlayerTimeUpdate,
+        video.urls!,
+        video.live_state,
+      );
       return {
         destroy: () => player.dispose(),
       };

@@ -90,7 +90,12 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      mockVideo.urls!,
+      mockVideo.live_state,
+    );
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -133,7 +138,12 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      mockVideo.urls!,
+      mockVideo.live_state,
+    );
 
     expect(player.currentSources()).toEqual([
       {
@@ -213,7 +223,12 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      video.urls!,
+      video.live_state,
+    );
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -234,7 +249,8 @@ describe('createVideoJsPlayer', () => {
     const player = createVideojsPlayer(
       videoElement!,
       dispatchPlayerTimeUpdate,
-      mockVideo,
+      mockVideo.urls!,
+      mockVideo.live_state,
     );
 
     expect(XAPIStatementMocked).toHaveBeenCalled();

@@ -5,7 +5,7 @@ import { appData, getDecodedJwt } from '../data/appData';
 import { useTimedTextTrack } from '../data/stores/useTimedTextTrack';
 import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
 import { intl } from '../index';
-import { timedTextMode, Video, videoSize, uploadState } from '../types/tracks';
+import { timedTextMode, videoSize, VideoUrls } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -23,11 +23,11 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 export const createPlyrPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-  video: Video,
+  urls: VideoUrls,
 ): Plyr => {
   let sources;
   const settings = ['captions', 'speed', 'loop', 'quality'];
-  const resolutions = Object.keys(video.urls.mp4).map(
+  const resolutions = Object.keys(urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
 
@@ -37,7 +37,7 @@ export const createPlyrPlayer = (
     sources = {
       sources: resolutions.map((size) => ({
         size,
-        src: video.urls.mp4[size],
+        src: urls.mp4[size],
         type: 'video/mp4',
       })),
       tracks: timedTextTracks
@@ -136,7 +136,7 @@ export const createPlyrPlayer = (
   }
 
   if (Hls.isSupported()) {
-    createHlsPlayer(video, videoNode);
+    createHlsPlayer(urls, videoNode);
   }
 
   if (player.elements.buttons.play) {
