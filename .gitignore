@@ -127,6 +127,7 @@ node_modules
 src/frontend/i18n/frontend.json
 src/backend/marsha/static/css
 src/backend/marsha/static/js
+storybook-static
 
 # Assets
 ./data/
