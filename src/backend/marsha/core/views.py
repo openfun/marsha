@@ -2,7 +2,6 @@
 from abc import ABC, abstractmethod
 import json
 from logging import getLogger
-from urllib.parse import unquote
 import uuid
 
 from django.conf import settings
@@ -20,7 +19,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
-from oauthlib import oauth1
 from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
@@ -442,6 +440,12 @@ class LTIRespondView(TemplateResponseMixin, View):
             generated from applying the data to the template
 
         """
+        lti = LTI(self.request)
+        try:
+            lti.verify()
+        except LTIException as error:
+            raise PermissionDenied from error
+
         content_item_return_url = self.request.POST.get("content_item_return_url")
 
         # filters out oauth parameters
@@ -452,12 +456,6 @@ class LTIRespondView(TemplateResponseMixin, View):
         }
 
         # generate signature
-        lti = LTI(self.request)
-        try:
-            lti.verify()
-        except LTIException as error:
-            raise PermissionDenied from error
-
         lti_parameters = lti.sign_post_request(content_item_return_url, lti_parameters)
 
         return self.render_to_response(
@@ -548,7 +546,7 @@ class LTISelectView(TemplateResponseMixin, View):
         app_data = _get_base_app_data()
 
         lti_select_form_data = self.request.POST.copy()
-        lti_select_form_data.update({"lti_message_type": "ContentItemSelection"})
+        lti_select_form_data["lti_message_type"] = "ContentItemSelection"
         app_data.update(
             {
                 "frontend": "LTI",
@@ -590,6 +588,8 @@ class LTISelectView(TemplateResponseMixin, View):
         return self.render_to_response(self.get_context_data())
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
 class DevelopmentLTIView(TemplateView):
     """A development view with iframe POST / plain POST helpers.
 
@@ -613,40 +613,56 @@ class DevelopmentLTIView(TemplateView):
             context for template rendering
 
         """
-        consumer_site, _ = ConsumerSite.objects.get_or_create(domain="localhost")
-        playlist, _ = Playlist.objects.get_or_create(consumer_site=consumer_site)
+        domain = self.request.build_absolute_uri("/").split("/")[2]
+        try:
+            consumer_site = ConsumerSite.objects.get(domain=domain)
+        except ConsumerSite.DoesNotExist:
+            consumer_site, _ = ConsumerSite.objects.get_or_create(
+                domain=domain, name=domain
+            )
+
+        try:
+            playlist = Playlist.objects.get(consumer_site=consumer_site)
+        except Playlist.DoesNotExist:
+            playlist, _ = Playlist.objects.get_or_create(
+                consumer_site=consumer_site, title=domain, lti_id=domain
+            )
+
         passport, _ = LTIPassport.objects.get_or_create(playlist=playlist)
 
-        client = oauth1.Client(
-            client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
-        )
-
-        lti_parameters = {
-            "resource_link_id": "df7",
-            "context_id": "course-v1:ufr+mathematics+0001",
-            "roles": "Instructor",
+        oauth_dict = {
+            "oauth_consumer_key": passport.oauth_consumer_key,
         }
-
-        _uri, headers, _body = client.sign(
-            self.request.build_absolute_uri(reverse("lti-development-view")),
-            http_method="POST",
-            body=lti_parameters,
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-        )
-
-        # Parse headers to pass to template as part of context:
-        oauth_dict = dict(
-            param.strip().replace('"', "").split("=")
-            for param in headers["Authorization"].split(",")
-        )
-
-        signature = oauth_dict["oauth_signature"]
-        oauth_dict["oauth_signature"] = unquote(signature)
-        oauth_dict["oauth_nonce"] = oauth_dict.pop("OAuth oauth_nonce")
 
         return {
+            "domain": domain,
             "uuid": uuid.uuid4(),
             "select_context_id": playlist.lti_id,
-            "select_content_item_return_url": reverse("lti-development-view"),
+            "select_content_item_return_url": self.request.build_absolute_uri(
+                reverse("lti-development-view")
+            ),
             "oauth_dict": oauth_dict,
         }
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Context populated with POST request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response({"content_selected": self.request.POST})
