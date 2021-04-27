@@ -8,7 +8,7 @@
     "build-dev": "yarn copy-iframe-resizer; yarn build",
     "extract-translations": "formatjs extract './**/*.ts*' --ignore ./node_modules --ignore './**/*.d.ts' --out-file i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
     "compile-translations": "formatjs compile-folder --format crowdin ./i18n ./translations",
-    "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/iframeResizer.min.js ../backend/marsha/static/js",
+    "copy-iframe-resizer": "cp node_modules/iframe-resizer/js/*.min.js ../backend/marsha/static/js",
     "lint": "tslint -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "lint-fix": "tslint --fix -c tslint.json '**/*.ts?(x)' -e 'node_modules/**/*'",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../.prettierignore",
