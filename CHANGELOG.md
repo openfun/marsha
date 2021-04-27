@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a LTI select view to allow LTI consumers to add a LTI content through Deep Linking
 - Display chat box without video player
 - Add a tests.utils module to share LTI request signature and refactor related tests
+- Install storybook
 
 ### Changed
 
