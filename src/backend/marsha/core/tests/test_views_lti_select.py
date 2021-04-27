@@ -1,6 +1,7 @@
 """Test the LTI select view."""
 from html import unescape
 import json
+import random
 import re
 from unittest import mock
 import uuid
@@ -50,14 +51,12 @@ class SelectLTIViewTestCase(TestCase):
         passport = ConsumerSiteLTIPassportFactory()
         resolutions = [144]
         playlist = PlaylistFactory(consumer_site=passport.consumer_site)
-        VideoFactory(
-            id=1,
+        video = VideoFactory(
             playlist=playlist,
             uploaded_on=timezone.now(),
             resolutions=resolutions,
         )
-        DocumentFactory(
-            id=2,
+        document = DocumentFactory(
             playlist=playlist,
             uploaded_on=timezone.now(),
         )
@@ -66,7 +65,7 @@ class SelectLTIViewTestCase(TestCase):
         data = {
             "content_item_return_url": "https://example.com/lti",
             "context_id": passport.consumer_site.playlists.first().lti_id,
-            "roles": "Instructor,Administrator",
+            "roles": random.choice(["instructor", "administrator"]),
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
@@ -76,19 +75,19 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
 
-        content = response.content.decode("utf-8")
         match = re.search(
-            '<div id="marsha-frontend-data" data-context="(.*)">', content
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
         )
         context = json.loads(unescape(match.group(1)))
 
         self.assertEqual(
             context.get("videos")[0].get("lti_url"),
-            "http://testserver/lti/videos/00000000-0000-0000-0000-000000000001",
+            f"http://testserver/lti/videos/{video.id}",
         )
         self.assertEqual(
             context.get("documents")[0].get("lti_url"),
-            "http://testserver/lti/documents/00000000-0000-0000-0000-000000000002",
+            f"http://testserver/lti/documents/{document.id}",
         )
 
         new_document_url = context.get("new_document_url")

@@ -26,12 +26,24 @@
         flex-direction: column;
       }
 
+      .input-group {
+          display: inline-block;
+          text-align: left;
+          margin-bottom: 0.5rem;
+      }
+
+      .input-group label,
+      .input-group input,
+      .input-group select {
+          display: block;
+      }
+
       section p {
         max-width: 40rem;
       }
 
       section iframe {
-        width: 1000px;
+        width: 100%;
         height: 100px; /* Explicitly set a bogus height to force iframe-resizer action */
         resize: both;
         overflow: auto;
@@ -41,6 +53,15 @@
   </head>
 
   <body>
+  {% if content_selected %}
+    <script src="{% static 'js/iframeResizer.contentWindow.min.js' %}"></script>
+    <dl>
+      {% for key, value in content_selected.items %}
+        <dt>{{ key }}</dt>
+        <dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  {% else %}
     <section>
       <h2>Iframe LTI Select</h2>
       <form
@@ -49,13 +70,32 @@
         target="lti_select"
         action={% url "select_lti_view" %}
       >
-        <input type="text" name="lti_message_type" value="ContentItemSelectionRequest" />
-        <input type="text" name="lti_version" value="LTI-1p0" />
-        <input type="text" name="roles" value="Instructor" />
-        <input type="text" name="context_id" value="{{ select_context_id }}" />
-        <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}" />
+        <div class="input-group">
+          <label>lti_message_type</label>
+          <input type="text" name="lti_message_type" value="ContentItemSelectionRequest"/>
+        </div>
+        <div class="input-group">
+          <label>lti_version</label>
+          <input type="text" name="lti_version" value="LTI-1p0"/>
+        </div>
+        <div class="input-group">
+          <label>roles</label>
+          <input type="text" name="roles" value="Instructor"/>
+        </div>
+        <div class="input-group">
+          <label>context_id</label>
+          <input type="text" name="context_id" value="{{ select_context_id }}"/>
+        </div>
+        <div class="input-group">
+          <label>content_item_return_url</label>
+          <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}"/>
+        </div>
+
         {% for key, value in oauth_dict.items %}
-            <input type="text" name="{{ key }}" value="{{ value }}" />
+        <div class="input-group">
+          <label>{{ key }}</label>
+          <input type="text" name="{{ key }}" value="{{ value }}"/>
+        </div>
         {% endfor %}
 
         <input type="submit" />
@@ -86,27 +126,51 @@
         target="lti_iframe"
         class="resource"
       >
-        <input type="text" name="uuid" value="{{ uuid }}" />
-        <input type="text" name="resource_link_id" value="example.com-df7" />
-        <input
-          type="text"
-          name="context_id"
-          value="course-v1:ufr+mathematics+0001"
-        />
-        <input type="text" name="roles" value="Instructor" />
-        <select name="resource">
-          <option>Resource</option>
-          <option value="videos" selected>video</option>
-          <option value="documents">document</option>
-        </select>
-        <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
-        <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
-        <select name="launch_presentation_locale">
-          <option>Locale</option>
-          <option value="en" selected>English</option>
-          <option value="fr">French</option>
-          <option value="es">Spanish</option>
-        </select>
+        <div class="input-group">
+          <label>uuid</label>
+          <input type="text" name="uuid" value="{{ uuid }}" />
+        </div>
+        <div class="input-group">
+          <label>ressource_link_id</label>
+          <input type="text" name="resource_link_id" value="example.com-df7" />
+        </div>
+        <div class="input-group">
+          <label>context_id</label>
+          <input
+            type="text"
+            name="context_id"
+            value="course-v1:ufr+mathematics+0001"
+          />
+        </div>
+        <div class="input-group">
+          <label>roles</label>
+          <input type="text" name="roles" value="Instructor" />
+        </div>
+        <div class="input-group">
+          <label>resource</label>
+          <select name="resource">
+            <option>Resource</option>
+            <option value="videos" selected>video</option>
+            <option value="documents">document</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>user_id</label>
+          <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
+        </div>
+        <div class="input-group">
+          <label>lis_person_contact_email_primary</label>
+          <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
+        </div>
+        <div class="input-group">
+          <label>launch_presentation_locale</label>
+          <select name="launch_presentation_locale">
+            <option>Locale</option>
+            <option value="en" selected>English</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
         <input type="hidden" name="lti_version" value="LTI-1p0" />
         <input type="hidden" name="lis_person_sourcedid" value="John" />
@@ -131,7 +195,7 @@
 
       <script src="{% static 'js/iframeResizer.min.js' %}"></script>
       <script>
-        var baseUrl = "http://localhost:8060/lti";
+        var baseUrl = "http://{{ domain }}/lti";
 
         document.addEventListener('DOMContentLoaded', function () {
           var forms = document.querySelectorAll('form.resource');
@@ -150,7 +214,7 @@
         });
 
         iFrameResize({
-          checkOrigin: ['http://localhost:8060'],
+          checkOrigin: ["http://{{ domain }}"],
         });
       </script>
     </section>
@@ -165,21 +229,39 @@
         method="post"
         class="resource"
       >
-        <input type="text" name="uuid" value="{{ uuid }}" />
-        <input type="text" name="resource_link_id" value="example.com-df7" />
+        <div class="input-group">
+          <label>uuid</label>
+          <input type="text" name="uuid" value="{{ uuid }}" />
+        </div>
+        <div class="input-group">
+          <label>resource_link_id</label>
+          <input type="text" name="resource_link_id" value="example.com-df7" />
+        </div>
         <input
           type="text"
           name="context_id"
           value="course-v1:ufr+mathematics+0001"
         />
-        <input type="text" name="roles" value="Instructor" />
-        <select name="resource">
-          <option>Resource</option>
-          <option value="videos" selected>video</option>
-          <option value="documents">document</option>
-        </select>
-        <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
-        <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
+        <div class="input-group">
+          <label>roles</label>
+          <input type="text" name="roles" value="Instructor" />
+        </div>
+        <div class="input-group">
+          <label>resource</label>
+          <select name="resource">
+            <option>Resource</option>
+            <option value="videos" selected>video</option>
+            <option value="documents">document</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>user_id</label>
+          <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
+        </div>
+        <div class="input-group">
+          <label>lis_person_contact_email_primary</label>
+          <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
+        </div>
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
         <input type="hidden" name="lti_version" value="LTI-1p0" />
         <input type="hidden" name="lis_person_sourcedid" value="John" />
@@ -190,5 +272,6 @@
         <input type="submit" />
       </form>
     </section>
+  {% endif %}
   </body>
 </html>
