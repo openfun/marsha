@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Chat feature implementing XMPP protocol
+- Add a prosody server in docker-compose stack
 
 ### Changed
 

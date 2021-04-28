@@ -25,6 +25,8 @@
 # ==============================================================================
 # VARIABLES
 
+include env.d/development
+
 # -- Project
 PROJECT_NAME := $(shell python src/backend/setup.py --name)
 PROJECT_VERSION := $(shell python src/backend/setup.py --version)
@@ -56,7 +58,8 @@ bootstrap: \
 	build-lambda-dev \
 	run \
 	migrate \
-	i18n-compile-back
+	i18n-compile-back \
+	prosody-admin
 .PHONY: bootstrap
 
 # -- Docker/compose
@@ -82,6 +85,7 @@ run: ## start the development server using Docker
 	@$(COMPOSE) up -d app
 	@echo "Wait for postgresql to be up..."
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
+	@$(COMPOSE) up -d prosody-nginx
 .PHONY: run
 
 ngrok: ## start the development server using Docker through ngrok
@@ -181,6 +185,11 @@ superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser
 .PHONY: superuser
+
+prosody-admin: ## create prosody admin user
+	@echo "$(BOLD)Creating a prosody admin$(RESET)"
+	$(COMPOSE_RUN) prosody-app prosodyctl register admin prosody-app "${DJANGO_XMPP_PRIVATE_SERVER_PASSWORD}"
+.PHONY: 
 
 .PHONY: test
 test:  ## Run django tests for the marsha project.
