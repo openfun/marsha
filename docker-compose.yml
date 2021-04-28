@@ -4,6 +4,8 @@ services:
   db:
     image: postgres:10.3
     env_file: env.d/${ENV_FILE:-development}
+    volumes:
+      - ./docker/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "5452:5432"
 
@@ -178,3 +180,23 @@ services:
       - "./src/.prettierrc:/var/task/.prettierrc"
     depends_on:
       - lambda_base
+
+  prosody-app:
+    image: fundocker/prosody
+    ports: 
+      - 5222:5222
+    volumes:
+      - "./docker/files/etc/prosody:/etc/prosody"
+    depends_on: 
+      - db
+
+  prosody-nginx:
+    image: nginx
+    ports: 
+      - 8061:80
+    volumes:
+      - "./docker/files/etc/nginx/conf.d:/etc/nginx/conf.d"
+    depends_on: 
+      - prosody-app
+    links:
+      - "prosody-app:prosody"

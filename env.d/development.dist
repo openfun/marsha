@@ -33,13 +33,13 @@ DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:medialive:arn:role
 DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 
 # XMPP
-DJANGO_LIVE_CHAT_ENABLED=False
-DJANGO_XMPP_BOSH_URL=https://your-xmpp-server.com/http-bind
-DJANGO_XMPP_CONFERENCE_DOMAIN=conference.your-xmpp-server.com
-DJANGO_XMPP_DOMAIN=your-xmpp-server.com
-DJANGO_XMPP_PRIVATE_ADMIN_JID=admin@your-xmpp-server.com
-DJANGO_XMPP_PRIVATE_SERVER_PASSWORD=ThisIsNotAPassword
-DJANGO_XMPP_JWT_SHARED_SECRET=ThisIsNotASharedSecret
+DJANGO_LIVE_CHAT_ENABLED=True
+DJANGO_XMPP_BOSH_URL=http://localhost:8061/http-bind
+DJANGO_XMPP_CONFERENCE_DOMAIN=conference.prosody
+DJANGO_XMPP_PRIVATE_ADMIN_JID=admin@prosody-app
+DJANGO_XMPP_PRIVATE_SERVER_PASSWORD=jm2bafdxJRzxR9SDJEEMsv2b2
+DJANGO_XMPP_JWT_SHARED_SECRET=ThisIsNotAPrivateProsodyJwtSigningKey
+DJANGO_XMPP_DOMAIN=prosody
 
 DJANGO_UPDATE_STATE_SHARED_SECRETS=ThisIsAFirstSharedSecret,ThisOneTheSecondSharedSecret
 
