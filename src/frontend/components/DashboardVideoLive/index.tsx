@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { appData } from '../../data/appData';
@@ -8,6 +8,7 @@ import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
 import { Video, liveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
 import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
@@ -38,6 +39,11 @@ const messages = defineMessages({
     defaultMessage: 'show live',
     description: 'button to redirect use to video player.',
     id: 'components.DashboardVideoLive.showLive',
+  },
+  chatOnly: {
+    defaultMessage: 'show chat only',
+    description: 'button to redirect to the chat only view.',
+    id: 'components.DashboardVideoLive.chatOnly',
   },
   liveCreating: {
     defaultMessage:
@@ -156,6 +162,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         )}
         {video.live_state === liveState.RUNNING && (
           <React.Fragment>
+            <DashboardButtonWithLink
+              label={<FormattedMessage {...messages.chatOnly} />}
+              primary={false}
+              to={CHAT_ROUTE()}
+            />
             <DashboardButtonWithLink
               label={<FormattedMessage {...messages.showLive} />}
               primary={false}

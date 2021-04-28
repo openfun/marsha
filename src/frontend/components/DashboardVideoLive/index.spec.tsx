@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
 import { liveState, uploadState } from '../../types/tracks';
@@ -89,6 +90,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
+    screen.getByRole('button', { name: /show chat only/i });
     screen.getByRole('button', { name: /show live/i });
     screen.getByRole('button', { name: /stop streaming/i });
   });
@@ -116,6 +118,33 @@ describe('components/DashboardVideoLive', () => {
     fireEvent.click(showLiveButton);
 
     screen.getByText('video player');
+  });
+
+  it('clicks on show chat only and redirects to the chat component', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoLive
+            video={{ ...video, live_state: liveState.RUNNING }}
+          />,
+          [
+            {
+              path: CHAT_ROUTE(),
+              render: () => <span>chat component</span>,
+            },
+          ],
+        ),
+      ),
+    );
+
+    const showChatOnlyButton = screen.getByRole('button', {
+      name: /show chat only/i,
+    });
+    expect(screen.queryByText('chat component')).not.toBeInTheDocument();
+
+    fireEvent.click(showChatOnlyButton);
+
+    screen.getByText('chat component');
   });
 
   it('polls the video when live state is STARTING', async () => {
