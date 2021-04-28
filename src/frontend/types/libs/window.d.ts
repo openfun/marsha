@@ -4,9 +4,7 @@ export {};
 declare global {
   interface Window {
     converse: {
-      plugins: {
-        add: (name: string, {}: any) => void;
-      };
+      insertInto: (container: HTMLElement) => void;
       initialize: (options: any) => void;
     };
   }
