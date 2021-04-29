@@ -507,7 +507,7 @@ class LTISelectView(TemplateResponseMixin, View):
 
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.STATIC_URL}js/",
+            "static_base_url": f"{settings.STATIC_URL}js/build/",
         }
 
     def _get_app_data(self, lti):
