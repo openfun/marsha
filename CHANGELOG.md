@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a prosody server in docker-compose stack
 - Add a LTI select view to allow LTI consumers to add a LTI content through Deep Linking
 - Display chat box without video player
+- Add a tests.utils module to share LTI request signature and refactor related tests
 
 ### Changed
 
