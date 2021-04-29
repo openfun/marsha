@@ -144,3 +144,28 @@ class SelectLTIViewTestCase(TestCase):
         # second call should not create new playlist
         self.client.post("/lti/select/", data, HTTP_REFERER=passport.consumer_site)
         self.assertEqual(Playlist.objects.count(), 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_select_static_base_url(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Meta tag public-path should be the STATIC_URL settings with js/build/ at the end."""
+        passport = ConsumerSiteLTIPassportFactory()
+        PlaylistFactory(consumer_site=passport.consumer_site)
+
+        data = {
+            "content_item_return_url": "https://example.com/lti",
+            "context_id": passport.consumer_site.playlists.first().lti_id,
+            "roles": random.choice(["instructor", "administrator"]),
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post(
+            "/lti/select/", data, HTTP_REFERER=passport.consumer_site
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        self.assertContains(
+            response, '<meta name="public-path" value="/static/js/build/" />'
+        )
