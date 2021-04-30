@@ -27,10 +27,6 @@
 
 include env.d/development
 
-# -- Project
-PROJECT_NAME := $(shell python src/backend/setup.py --name)
-PROJECT_VERSION := $(shell python src/backend/setup.py --version)
-
 BOLD := \033[1m
 RESET := \033[0m
 
