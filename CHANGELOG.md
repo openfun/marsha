@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The `lti_id` field is optional on Videos and Documents.
 - Clean built frontend files before each build
+- Variabilize live conf related to latency
 
 ### Fixed
 

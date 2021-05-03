@@ -75,9 +75,9 @@ def create_mediapackage_channel(key):
             "AdMarkers": "PASSTHROUGH",
             "IncludeIframeOnlyStream": False,
             "PlaylistType": "EVENT",
-            "PlaylistWindowSeconds": 10,
+            "PlaylistWindowSeconds": settings.LIVE_PLAYLIST_WINDOW_SECONDS,
             "ProgramDateTimeIntervalSeconds": 0,
-            "SegmentDurationSeconds": 4,
+            "SegmentDurationSeconds": settings.LIVE_SEGMENT_DURATION_SECONDS,
         },
         Tags={"environment": settings.AWS_BASE_NAME},
     )
@@ -165,6 +165,16 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     with open(f"{dir_path}/medialive_profiles/medialive-720p.json") as encoding:
         encoder_settings = json.load(encoding)
+
+    # update encoder settings with marsha settings
+    for video_description in encoder_settings.get("VideoDescriptions"):
+        video_description["CodecSettings"]["H264Settings"].update(
+            {
+                "FramerateDenominator": settings.LIVE_FRAMERATE_DENOMINATOR,
+                "FramerateNumerator": settings.LIVE_FRAMERATE_NUMERATOR,
+                "GopSize": settings.LIVE_GOP_SIZE,
+            }
+        )
 
     medialive_channel = medialive_client.create_channel(
         InputSpecification={
