@@ -260,8 +260,6 @@ class Base(Configuration):
     VIDEO_PLAYER = values.Value("videojs")
 
     MAINTENANCE_MODE = values.BooleanValue(False)
-    NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
-    NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
 
     # XMPP Settings
     LIVE_CHAT_ENABLED = values.BooleanValue(False)
@@ -274,6 +272,15 @@ class Base(Configuration):
     XMPP_JWT_ISSUER = values.Value("marsha")
     XMPP_JWT_AUDIENCE = values.Value("marsha")
     XMPP_DOMAIN = values.Value(None)
+
+    # LIVE SETTINGS
+    NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
+    NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
+    LIVE_PLAYLIST_WINDOW_SECONDS = values.Value(10)
+    LIVE_SEGMENT_DURATION_SECONDS = values.Value(4)
+    LIVE_FRAMERATE_NUMERATOR = values.Value(24000)
+    LIVE_FRAMERATE_DENOMINATOR = values.Value(1000)
+    LIVE_GOP_SIZE = values.Value(4)
 
     # pylint: disable=invalid-name
     @property
