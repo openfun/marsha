@@ -374,6 +374,53 @@ The JWT audience accepted by the XMPP server
 - Required: No
 - Default: marsha
 
+### Live settings
+
+#### DJANGO_LIVE_PLAYLIST_WINDOW_SECONDS
+
+Time window (in seconds) contained in each parent manifest.
+https://docs.aws.amazon.com/mediapackage/latest/apireference/origin_endpoints.html#origin_endpoints-prop-hlspackage-playlistwindowseconds
+
+- Type: integer
+- Required: No
+- Default: 10
+
+#### DJANGO_LIVE_SEGMENT_DURATION_SECONDS
+
+Duration (in seconds) of each fragment. Actual fragments are rounded to the nearest multiple of the source fragment duration. 
+https://docs.aws.amazon.com/mediapackage/latest/apireference/origin_endpoints.html#origin_endpoints-prop-hlspackage-segmentdurationseconds
+
+- Type: integer
+- Required: No
+- Default: 4
+
+#### DJANGO_LIVE_FRAMERATE_NUMERATOR
+
+Framerate numerator - framerate is a fraction, e.g. 24000 / 1001 = 23.976 fps.
+https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels-prop-h264settings-frameratenumerator
+
+- Type: integer
+- Required: No
+- Default: 24000
+
+#### DJANGO_LIVE_FRAMERATE_DENOMINATOR
+
+Framerate denominator.
+https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels-prop-h264settings-frameratedenominator
+
+- Type: integer
+- Required: No
+- Default: 1000
+
+#### DJANGO_LIVE_GOP_SIZE
+
+GOP size (keyframe interval) in units of either frames or seconds per gopSizeUnits. gopSize must be greater than 0, but need not be an integer.
+https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels-prop-h264settings-gopsize
+
+- Type: number
+- Required: No
+- Default: 4
+
 ### Crowdin API access related settings
 
 #### CROWDIN_API_KEY
