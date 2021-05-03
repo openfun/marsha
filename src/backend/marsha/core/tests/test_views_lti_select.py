@@ -10,11 +10,9 @@ import uuid
 from django.test import TestCase
 from django.utils import timezone
 
-from ..factories import (
-    DocumentFactory,
-    PlaylistFactory,
-    VideoFactory,
-)
+from rest_framework_simplejwt.tokens import AccessToken
+
+from ..factories import DocumentFactory, PlaylistFactory, VideoFactory
 from ..models import Playlist
 from .utils import generate_passport_and_signed_lti_parameters
 
@@ -30,11 +28,11 @@ class SelectLTIViewTestCase(TestCase):
 
     def test_views_lti_select_student(self):
         """Error 403 raised if a student initiates the request."""
-        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters={
                 "roles": "student",
-                "content_item_return_url": "https://example.com/lti",
+                "content_item_return_url": "https://lti-consumer.site/lti",
                 "context_id": "sent_lti_context_id",
             },
         )
@@ -46,13 +44,14 @@ class SelectLTIViewTestCase(TestCase):
 
     def test_views_lti_select(self):
         """Validate the context passed to the frontend app for a LTI Content selection."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+        }
         lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
-            lti_parameters={
-                "roles": random.choice(["instructor", "administrator"]),
-                "content_item_return_url": "https://example.com/lti",
-                "context_id": "sent_lti_context_id",
-            },
+            lti_parameters=lti_consumer_parameters,
         )
 
         resolutions = [144]
@@ -106,7 +105,9 @@ class SelectLTIViewTestCase(TestCase):
         )
 
         form_data = context.get("lti_select_form_data")
-        self.assertEqual(form_data.get("lti_message_type"), "ContentItemSelection")
+        jwt_token = AccessToken(form_data.get("jwt"))
+        lti_parameters.update({"lti_message_type": "ContentItemSelection"})
+        self.assertEqual(jwt_token.get("lti_select_form_data"), lti_parameters)
 
     def test_views_lti_select_no_playlist(self):
         """A playlist should be created if it does not exist for the current consumer site."""
@@ -114,7 +115,7 @@ class SelectLTIViewTestCase(TestCase):
             url="http://testserver/lti/select/",
             lti_parameters={
                 "roles": random.choice(["instructor", "administrator"]),
-                "content_item_return_url": "https://example.com/lti",
+                "content_item_return_url": "https://lti-consumer.site/lti",
                 "context_id": "sent_lti_context_id",
             },
         )
@@ -148,11 +149,11 @@ class SelectLTIViewTestCase(TestCase):
 
     def test_views_lti_select_static_base_url(self):
         """Meta tag public-path should be the STATIC_URL settings with js/build/ at the end."""
-        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters={
                 "roles": random.choice(["instructor", "administrator"]),
-                "content_item_return_url": "https://example.com/lti",
+                "content_item_return_url": "https://lti-consumer.site/lti",
                 "context_id": "sent_lti_context_id",
             },
         )
@@ -169,11 +170,11 @@ class SelectLTIViewTestCase(TestCase):
     @mock.patch.object(Logger, "warning")
     def test_views_lti_select_wrong_signature(self, mock_logger):
         """Wrong signature should display an error."""
-        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters={
                 "roles": random.choice(["instructor", "administrator"]),
-                "content_item_return_url": "https://example.com/lti",
+                "content_item_return_url": "https://lti-consumer.site/lti",
                 "context_id": "sent_lti_context_id",
             },
         )
@@ -200,12 +201,12 @@ class SelectLTIViewTestCase(TestCase):
 
     @mock.patch.object(Logger, "warning")
     def test_views_lti_select_wrong_referer(self, mock_logger):
-        """Wrong signature should display an error."""
-        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        """Wrong referer should display an error."""
+        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters={
                 "roles": random.choice(["instructor", "administrator"]),
-                "content_item_return_url": "https://example.com/lti",
+                "content_item_return_url": "https://lti-consumer.site/lti",
                 "context_id": "sent_lti_context_id",
             },
         )

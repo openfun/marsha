@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Frontend video type now allows Nullable urls.
 - Fix js public path on LTI select view.
+- Replace LTI verification in lti/respond view by JWT verification
 
 ## [3.17.1] - 2021-03-26
 

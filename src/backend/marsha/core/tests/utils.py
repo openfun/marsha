@@ -7,10 +7,16 @@ from oauthlib import oauth1
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
 
 
-def generate_passport_and_signed_lti_parameters(url, lti_parameters):
+def generate_passport_and_signed_lti_parameters(
+    url, lti_parameters, passport_attributes=None
+):
     """Generate signed LTI parameters."""
     url = urlparse(url)
-    passport = ConsumerSiteLTIPassportFactory(consumer_site__domain=url.hostname)
+    if passport_attributes is None:
+        passport_attributes = {}
+    passport = ConsumerSiteLTIPassportFactory(
+        consumer_site__domain=url.hostname, **passport_attributes
+    )
     client = oauth1.Client(
         client_key=passport.oauth_consumer_key, client_secret=passport.shared_secret
     )
