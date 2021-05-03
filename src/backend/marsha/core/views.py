@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 import json
 from logging import getLogger
+from urllib.parse import unquote
 import uuid
 
 from django.conf import settings
@@ -9,6 +10,7 @@ from django.core.cache import cache
 from django.core.exceptions import (
     ImproperlyConfigured,
     PermissionDenied,
+    SuspiciousOperation,
     ValidationError as DjangoValidationError,
 )
 from django.templatetags.static import static
@@ -19,9 +21,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
+from oauthlib import oauth1
 from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
@@ -411,60 +415,6 @@ class DocumentView(BaseLTIView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
-class LTIRespondView(TemplateResponseMixin, View):
-    """LTI view called to respond to a consumer.
-
-    ie. after a deep linking content selection.
-
-    """
-
-    template_name = "core/form_autosubmit.html"
-
-    # pylint: disable=unused-argument
-    def post(self, request, *args, **kwargs):
-        """Respond to POST request.
-
-        Renders a form autosubmitted to a LTI consumer with signed parameters.
-
-        Parameters
-        ----------
-        request : Request
-            passed by Django
-        args : list
-            positional extra arguments
-        kwargs : dictionary
-            keyword extra arguments
-        Returns
-        -------
-        HTML
-            generated from applying the data to the template
-
-        """
-        lti = LTI(self.request)
-        try:
-            lti.verify()
-        except LTIException as error:
-            raise PermissionDenied from error
-
-        content_item_return_url = self.request.POST.get("content_item_return_url")
-
-        # filters out oauth parameters
-        lti_parameters = {
-            key: value
-            for (key, value) in self.request.POST.items()
-            if "oauth" not in key and key not in ("content_item_return_url",)
-        }
-
-        # generate signature
-        lti_parameters = lti.sign_post_request(content_item_return_url, lti_parameters)
-
-        return self.render_to_response(
-            {"form_action": content_item_return_url, "form_data": lti_parameters}
-        )
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(xframe_options_exempt, name="dispatch")
 class LTISelectView(TemplateResponseMixin, View):
     """LTI view called to select LTI content through Deep Linking.
 
@@ -486,7 +436,10 @@ class LTISelectView(TemplateResponseMixin, View):
 
         def _manage_exception(error):
             logger.warning(str(error))
-            return {"state": "error"}
+            return {
+                "frontend": "LTI",
+                "state": "error",
+            }
 
         lti = LTI(self.request)
 
@@ -547,11 +500,15 @@ class LTISelectView(TemplateResponseMixin, View):
 
         lti_select_form_data = self.request.POST.copy()
         lti_select_form_data["lti_message_type"] = "ContentItemSelection"
+
+        jwt_token = AccessToken()
+        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+
         app_data.update(
             {
                 "frontend": "LTI",
                 "lti_select_form_action_url": reverse("respond_lti_view"),
-                "lti_select_form_data": lti_select_form_data,
+                "lti_select_form_data": {"jwt": str(jwt_token)},
                 "new_document_url": self.request.build_absolute_uri(
                     reverse("document_lti_view", args=[new_uuid])
                 ),
@@ -586,6 +543,111 @@ class LTISelectView(TemplateResponseMixin, View):
 
         """
         return self.render_to_response(self.get_context_data())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
+class LTIRespondView(TemplateResponseMixin, View):
+    """LTI view called to respond to a consumer.
+
+    ie. after a deep linking content selection.
+
+    """
+
+    template_name = "core/form_autosubmit.html"
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Renders a form autosubmitted to a LTI consumer with signed parameters.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        try:
+            jwt_token = AccessToken(self.request.POST.get("jwt", ""))
+            jwt_token.verify()
+        except TokenError as error:
+            logger.warning(str(error))
+            raise PermissionDenied from error
+
+        try:
+            lti_select_form_data = jwt_token.payload.get("lti_select_form_data")
+            content_item_return_url = lti_select_form_data.get(
+                "content_item_return_url"
+            )
+            if not content_item_return_url or "content_items" not in request.POST:
+                raise SuspiciousOperation
+
+            # filters out oauth parameters
+            lti_parameters = {
+                key: value
+                for (key, value) in lti_select_form_data.items()
+                if "oauth" not in key
+            }
+            lti_parameters.update(
+                {"content_items": self.request.POST.get("content_items")}
+            )
+        except AttributeError as error:
+            logger.warning(str(error))
+            raise SuspiciousOperation from error
+
+        try:
+            passport = LTIPassport.objects.get(
+                oauth_consumer_key=lti_select_form_data.get("oauth_consumer_key"),
+                is_enabled=True,
+            )
+        except LTIPassport.DoesNotExist as error:
+            logger.warning(str(error))
+            raise PermissionDenied from error
+
+        try:
+            client = oauth1.Client(
+                client_key=passport.oauth_consumer_key,
+                client_secret=passport.shared_secret,
+            )
+            # Compute Authorization header which looks like:
+            # Authorization: OAuth oauth_nonce="80966668944732164491378916897",
+            # oauth_timestamp="1378916897",
+            # oauth_version="1.0", oauth_signature_method="HMAC-SHA1",
+            # oauth_consumer_key="",
+            # oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"
+            _uri, headers, _body = client.sign(
+                content_item_return_url,
+                http_method="POST",
+                body=lti_parameters,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+            )
+        except ValueError as error:
+            logger.warning(str(error))
+            raise SuspiciousOperation from error
+
+        # Parse headers to pass to template as part of context:
+        oauth_dict = dict(
+            param.strip().replace('"', "").split("=")
+            for param in headers["Authorization"].split(",")
+        )
+
+        oauth_dict["oauth_signature"] = unquote(oauth_dict["oauth_signature"])
+        oauth_dict["oauth_nonce"] = oauth_dict.pop("OAuth oauth_nonce")
+
+        lti_parameters.update(oauth_dict)
+
+        return self.render_to_response(
+            {"form_action": content_item_return_url, "form_data": lti_parameters}
+        )
 
 
 @method_decorator(csrf_exempt, name="dispatch")

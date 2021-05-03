@@ -11,7 +11,9 @@
 </form>
 
 <script>
-  document.getElementsByTagName("form")[0].submit();
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementsByTagName("form")[0].submit();
+  });
 </script>
 </body>
 </html>
