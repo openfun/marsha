@@ -276,11 +276,11 @@ class Base(Configuration):
     # LIVE SETTINGS
     NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
     NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
-    LIVE_PLAYLIST_WINDOW_SECONDS = values.Value(10)
-    LIVE_SEGMENT_DURATION_SECONDS = values.Value(4)
-    LIVE_FRAMERATE_NUMERATOR = values.Value(24000)
-    LIVE_FRAMERATE_DENOMINATOR = values.Value(1000)
-    LIVE_GOP_SIZE = values.Value(4)
+    LIVE_PLAYLIST_WINDOW_SECONDS = values.PositiveIntegerValue(10)
+    LIVE_SEGMENT_DURATION_SECONDS = values.PositiveIntegerValue(4)
+    LIVE_FRAMERATE_NUMERATOR = values.PositiveIntegerValue(24000)
+    LIVE_FRAMERATE_DENOMINATOR = values.PositiveIntegerValue(1000)
+    LIVE_GOP_SIZE = values.FloatValue(4)
 
     # pylint: disable=invalid-name
     @property
