@@ -1,6 +1,7 @@
 """Test the LTI select view."""
 from html import unescape
 import json
+from logging import Logger
 import random
 import re
 from unittest import mock
@@ -10,13 +11,12 @@ from django.test import TestCase
 from django.utils import timezone
 
 from ..factories import (
-    ConsumerSiteLTIPassportFactory,
     DocumentFactory,
     PlaylistFactory,
     VideoFactory,
 )
-from ..lti import LTI
-from ..models import LTIPassport, Playlist
+from ..models import Playlist
+from .utils import generate_passport_and_signed_lti_parameters
 
 
 # We don't enforce arguments documentation in tests
@@ -30,27 +30,36 @@ class SelectLTIViewTestCase(TestCase):
 
     def test_views_lti_select_student(self):
         """Error 403 raised if a student initiates the request."""
-        passport = ConsumerSiteLTIPassportFactory()
-        PlaylistFactory(consumer_site=passport.consumer_site)
-
-        # https://www.imsglobal.org/specs/lticiv1p0/specification
-        data = {
-            "context_id": passport.consumer_site.playlists.first().lti_id,
-            "roles": "student",
-        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": "student",
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
 
         response = self.client.post(
-            "/lti/select/", data, HTTP_REFERER=passport.consumer_site
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_select(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_select(self):
         """Validate the context passed to the frontend app for a LTI Content selection."""
-        passport = ConsumerSiteLTIPassportFactory()
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": random.choice(["instructor", "administrator"]),
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
+
         resolutions = [144]
-        playlist = PlaylistFactory(consumer_site=passport.consumer_site)
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
         video = VideoFactory(
             playlist=playlist,
             uploaded_on=timezone.now(),
@@ -61,16 +70,8 @@ class SelectLTIViewTestCase(TestCase):
             uploaded_on=timezone.now(),
         )
 
-        # https://www.imsglobal.org/specs/lticiv1p0/specification
-        data = {
-            "content_item_return_url": "https://example.com/lti",
-            "context_id": passport.consumer_site.playlists.first().lti_id,
-            "roles": random.choice(["instructor", "administrator"]),
-        }
-
-        mock_get_consumer_site.return_value = passport.consumer_site
         response = self.client.post(
-            "/lti/select/", data, HTTP_REFERER=passport.consumer_site
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
@@ -107,22 +108,19 @@ class SelectLTIViewTestCase(TestCase):
         form_data = context.get("lti_select_form_data")
         self.assertEqual(form_data.get("lti_message_type"), "ContentItemSelection")
 
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_select_no_playlist(self, mock_get_consumer_site, mock_verify):
+    def test_views_lti_select_no_playlist(self):
         """A playlist should be created if it does not exist for the current consumer site."""
-        passport: LTIPassport = ConsumerSiteLTIPassportFactory()
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": random.choice(["instructor", "administrator"]),
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
 
-        # https://www.imsglobal.org/specs/lticiv1p0/specification
-        data = {
-            "context_id": "unknown",
-            "oauth_consumer_key": passport.oauth_consumer_key,
-            "roles": "Instructor,Administrator",
-        }
-
-        mock_get_consumer_site.return_value = passport.consumer_site
         response = self.client.post(
-            "/lti/select/", data, HTTP_REFERER=passport.consumer_site
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
@@ -135,37 +133,96 @@ class SelectLTIViewTestCase(TestCase):
 
         self.assertEqual(Playlist.objects.count(), 1)
         self.assertEqual(
-            passport.consumer_site.playlists.first().lti_id, data.get("context_id")
+            passport.consumer_site.playlists.first().lti_id,
+            lti_parameters.get("context_id"),
         )
 
         self.assertEqual(len(context.get("videos")), 0)
         self.assertEqual(len(context.get("documents")), 0)
 
         # second call should not create new playlist
-        self.client.post("/lti/select/", data, HTTP_REFERER=passport.consumer_site)
+        self.client.post(
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
+        )
         self.assertEqual(Playlist.objects.count(), 1)
 
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_select_static_base_url(
-        self, mock_get_consumer_site, mock_verify
-    ):
+    def test_views_lti_select_static_base_url(self):
         """Meta tag public-path should be the STATIC_URL settings with js/build/ at the end."""
-        passport = ConsumerSiteLTIPassportFactory()
-        PlaylistFactory(consumer_site=passport.consumer_site)
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": random.choice(["instructor", "administrator"]),
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
 
-        data = {
-            "content_item_return_url": "https://example.com/lti",
-            "context_id": passport.consumer_site.playlists.first().lti_id,
-            "roles": random.choice(["instructor", "administrator"]),
-        }
-
-        mock_get_consumer_site.return_value = passport.consumer_site
         response = self.client.post(
-            "/lti/select/", data, HTTP_REFERER=passport.consumer_site
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(
             response, '<meta name="public-path" value="/static/js/build/" />'
+        )
+
+    @mock.patch.object(Logger, "warning")
+    def test_views_lti_select_wrong_signature(self, mock_logger):
+        """Wrong signature should display an error."""
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": random.choice(["instructor", "administrator"]),
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
+        lti_parameters["oauth_signature"] = "{:s}a".format(
+            lti_parameters["oauth_signature"]
+        )
+
+        response = self.client.post(
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        content = response.content.decode("utf-8")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(context.get("state"), "error")
+        mock_logger.assert_called_once_with(
+            "OAuth error: Please check your key and secret"
+        )
+
+    @mock.patch.object(Logger, "warning")
+    def test_views_lti_select_wrong_referer(self, mock_logger):
+        """Wrong signature should display an error."""
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters={
+                "roles": random.choice(["instructor", "administrator"]),
+                "content_item_return_url": "https://example.com/lti",
+                "context_id": "sent_lti_context_id",
+            },
+        )
+
+        response = self.client.post(
+            "/lti/select/", lti_parameters, HTTP_REFERER="https://wrongserver"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        content = response.content.decode("utf-8")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(context.get("state"), "error")
+        mock_logger.assert_called_once_with(
+            "Host domain (wrongserver) does not match registered passport (testserver)."
         )
