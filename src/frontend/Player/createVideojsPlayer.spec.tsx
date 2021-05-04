@@ -74,6 +74,13 @@ jest.mock('../index', () => ({
   },
 }));
 
+jest.mock('../data/stores/useTimedTextTrackLanguageChoices', () => ({
+  useTimedTextTrackLanguageChoices: () => ({
+    getChoices: jest.fn(),
+    choices: [],
+  }),
+}));
+
 describe('createVideoJsPlayer', () => {
   const XAPIStatementMocked = mocked(XAPIStatement);
   beforeEach(() => {
