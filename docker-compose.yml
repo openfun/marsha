@@ -57,7 +57,7 @@ services:
     working_dir: /app
 
   node:
-    image: node:10
+    image: node:14
     volumes:
       - ".:/app"
     working_dir: /app/src/frontend

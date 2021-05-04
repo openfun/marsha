@@ -109,6 +109,7 @@ jobs:
       # Activate docker-in-docker (with layers caching enabled)
       - setup_remote_docker:
           docker_layer_caching: true
+          version: 19.03.13
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -331,7 +332,7 @@ jobs:
   # ---- Front-end jobs ----
   build-front:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -341,8 +342,8 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "yarn.lock" }}
-            - v3-front-dependencies-
+            - v4-front-dependencies-{{ checksum "yarn.lock" }}
+            - v4-front-dependencies-
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -364,11 +365,11 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-front-dependencies-{{ checksum "yarn.lock" }}
+          key: v4-front-dependencies-{{ checksum "yarn.lock" }}
 
   lint-front:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -378,7 +379,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "yarn.lock" }}
+            - v4-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -388,7 +389,7 @@ jobs:
 
   test-front:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:14
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -398,7 +399,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-front-dependencies-{{ checksum "yarn.lock" }}
+            - v4-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Run tests
           command: yarn test -w 1
