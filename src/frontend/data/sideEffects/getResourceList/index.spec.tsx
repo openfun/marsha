@@ -5,7 +5,6 @@ import { modelName } from '../../../types/models';
 import { uploadState, Video } from '../../../types/tracks';
 import { report } from '../../../utils/errors/report';
 import { videoMockFactory } from '../../../utils/tests/factories';
-import { jestMockOf } from '../../../utils/types';
 import { addMultipleResources } from '../../stores/generics';
 import { getResourceList } from './';
 
@@ -23,7 +22,7 @@ jest.mock('../../../utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-const mockAddMultipleResources = addMultipleResources as jestMockOf<
+const mockAddMultipleResources = addMultipleResources as jest.MockedFunction<
   typeof addMultipleResources
 >;
 

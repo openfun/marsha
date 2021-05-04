@@ -7,7 +7,6 @@ import VideoPlayer from '../components/VideoPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { liveState, timedTextMode, uploadState } from '../types/tracks';
 import { isMSESupported } from '../utils/isMSESupported';
-import { jestMockOf } from '../utils/types';
 import { videoMockFactory } from '../utils/tests/factories';
 import { wrapInIntlProvider } from '../utils/tests/intl';
 import { XAPIStatement } from '../XAPI/XAPIStatement';
@@ -21,7 +20,9 @@ jest.mock('../utils/isMSESupported', () => ({
   isMSESupported: jest.fn(),
 }));
 
-const mockIsMSESupported = isMSESupported as jestMockOf<typeof isMSESupported>;
+const mockIsMSESupported = isMSESupported as jest.MockedFunction<
+  typeof isMSESupported
+>;
 
 const mockVideo = videoMockFactory({
   id: 'video-test-videojs-instance',
