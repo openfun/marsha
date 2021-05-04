@@ -6,7 +6,6 @@ import { updateResource } from '../../data/sideEffects/updateResource';
 import { addResource, getResource } from '../../data/stores/generics';
 import { modelName } from '../../types/models';
 import { Thumbnail, Video } from '../../types/tracks';
-import { jestMockOf } from '../../utils/types';
 import { LTIUploadHandlers } from './LTIUploadHandlers';
 import { UploadManagerContext, UploadManagerStatus } from '.';
 
@@ -19,9 +18,11 @@ jest.mock('../../data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
-const mockAddResource = addResource as jestMockOf<typeof addResource>;
-const mockGetResource = getResource as jestMockOf<typeof getResource>;
-const mockUpdateResource = updateResource as jestMockOf<typeof updateResource>;
+const mockAddResource = addResource as jest.MockedFunction<typeof addResource>;
+const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
+const mockUpdateResource = updateResource as jest.MockedFunction<
+  typeof updateResource
+>;
 
 describe('<LTIUploadHandlers />', () => {
   const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
