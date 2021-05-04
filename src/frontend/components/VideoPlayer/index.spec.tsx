@@ -8,7 +8,6 @@ import { createPlayer } from '../../Player/createPlayer';
 import { uploadState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { jestMockOf } from '../../utils/types';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -17,7 +16,9 @@ jest.mock('../../Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-const mockCreatePlayer = createPlayer as jestMockOf<typeof createPlayer>;
+const mockCreatePlayer = createPlayer as jest.MockedFunction<
+  typeof createPlayer
+>;
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
   useTimedTextTrackModule,

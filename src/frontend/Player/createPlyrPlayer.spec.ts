@@ -1,6 +1,5 @@
 import { timedTextMode, uploadState } from '../types/tracks';
 import { videoMockFactory } from '../utils/tests/factories';
-import { jestMockOf } from '../utils/types';
 import { createHlsPlayer } from './createHlsPlayer';
 import { createPlyrPlayer } from './createPlyrPlayer';
 
@@ -8,7 +7,7 @@ jest.mock('./createHlsPlayer', () => ({
   createHlsPlayer: jest.fn(),
 }));
 
-const mockCreateHlsPlayer = createHlsPlayer as jestMockOf<
+const mockCreateHlsPlayer = createHlsPlayer as jest.MockedFunction<
   typeof createHlsPlayer
 >;
 
