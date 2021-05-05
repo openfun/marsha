@@ -15,6 +15,7 @@ from ..defaults import IDLE, LIVE_CHOICES, RUNNING, STOPPED
 from ..models import Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
+from ..utils.url_utils import build_absolute_uri_behind_proxy
 from .base import TimestampField
 from .playlist import PlaylistLiteSerializer
 
@@ -582,6 +583,7 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return self.context["request"].build_absolute_uri(
-            reverse("video_lti_view", args=[obj.id])
+        return build_absolute_uri_behind_proxy(
+            self.context["request"],
+            reverse("video_lti_view", args=[obj.id]),
         )

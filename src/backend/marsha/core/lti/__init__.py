@@ -11,6 +11,7 @@ from pylti.common import LTIException, verify_request_common
 
 from ..models import ConsumerSite
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
+from ..utils.url_utils import build_absolute_uri_behind_proxy
 
 
 class LTI:
@@ -86,9 +87,7 @@ class LTI:
         # calculated by our LTI consumer.
         # Note that this is normally done in pylti's "verify_request_common" method but it does
         # not support WSGI normalized headers so let's do it ourselves.
-        url = self.request.build_absolute_uri()
-        if self.request.META.get("HTTP_X_FORWARDED_PROTO", "http") == "https":
-            url = url.replace("http:", "https:", 1)
+        url = build_absolute_uri_behind_proxy(self.request)
 
         # A call to the verification function should raise an LTIException but
         # we can further check that it returns True.
