@@ -45,6 +45,7 @@ from .serializers import (
     VideoSerializer,
 )
 from .utils.react_locales_utils import react_locale
+from .utils.url_utils import build_absolute_uri_behind_proxy
 
 
 logger = getLogger(__name__)
@@ -504,17 +505,23 @@ class LTISelectView(TemplateResponseMixin, View):
         jwt_token = AccessToken()
         jwt_token.payload["lti_select_form_data"] = lti_select_form_data
 
+        new_document_url = build_absolute_uri_behind_proxy(
+            self.request,
+            reverse("document_lti_view", args=[new_uuid]),
+        )
+
+        new_video_url = build_absolute_uri_behind_proxy(
+            self.request,
+            reverse("video_lti_view", args=[new_uuid]),
+        )
+
         app_data.update(
             {
                 "frontend": "LTI",
                 "lti_select_form_action_url": reverse("respond_lti_view"),
                 "lti_select_form_data": {"jwt": str(jwt_token)},
-                "new_document_url": self.request.build_absolute_uri(
-                    reverse("document_lti_view", args=[new_uuid])
-                ),
-                "new_video_url": self.request.build_absolute_uri(
-                    reverse("video_lti_view", args=[new_uuid])
-                ),
+                "new_document_url": new_document_url,
+                "new_video_url": new_video_url,
                 "documents": documents,
                 "videos": videos,
             }
