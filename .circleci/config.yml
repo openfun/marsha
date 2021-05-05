@@ -729,6 +729,7 @@ jobs:
       # Activate docker-in-docker (with layers caching enabled)
       - setup_remote_docker:
           docker_layer_caching: true
+          version: 19.03.13
       - *docker_login
       - run:
           name: Build production image (using cached layers)
