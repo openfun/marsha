@@ -45,6 +45,12 @@ The new external tool should appear.
 
 ![moodle_lti_select_admin_5](images/moodle_lti_select_admin_5.png)
 
+#### Cookies configuration
+
+Secured cookies needs to be enabled for Deep Linking response authentication.
+
+![moodle_lti_select_admin_6](images/moodle_lti_select_admin_6.png)
+
 #### Iframe resizer
 
 In order to have iframes resized automatically to show their content,
