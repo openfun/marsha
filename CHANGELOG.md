@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display chat box without video player
 - Add a tests.utils module to share LTI request signature and refactor related tests
 - Install storybook
+- Add a button to easily copy RTMP infos
 
 ### Changed
 
