@@ -59,16 +59,22 @@ describe('components/DashboardVideoLive', () => {
     },
   });
 
-  it('displays steraming links', () => {
+  it('displays streaming links', () => {
     render(
       wrapInIntlProvider(wrapInRouter(<DashboardVideoLive video={video} />)),
     );
 
     screen.getByText('Streaming link');
-    screen.getByText('url: rtmp://1.2.3.4:1935');
-    screen.getByText('stream key: stream-key-primary');
-    screen.getByText('url: rtmp://4.3.2.1:1935');
-    screen.getByText('stream key: stream-key-secondary');
+    screen.getByText('rtmp://1.2.3.4:1935');
+    screen.getByText('stream-key-primary');
+    screen.getByText('rtmp://4.3.2.1:1935');
+    screen.getByText('stream-key-secondary');
+
+    screen.getByRole('button', { name: 'copy url rtmp://1.2.3.4:1935' });
+    screen.getByRole('button', { name: 'copy key stream-key-primary' });
+
+    screen.getByRole('button', { name: 'copy url rtmp://4.3.2.1:1935' });
+    screen.getByRole('button', { name: 'copy key stream-key-secondary' });
   });
 
   it('shows the start button when the status id IDLE', () => {
