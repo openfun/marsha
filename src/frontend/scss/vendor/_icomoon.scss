@@ -1,11 +1,12 @@
 $icomoon-font-path: "../fonts/icomoon" !default;
 
 $icon-file-text2: "\e926";
+$icon-copy: "\e92c";
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('#{$icomoon-font-path}/icomoon.woff?fn0yi1') format('woff'),
-    url('#{$icomoon-font-path}/icomoon.svg?fn0yi1#icomoon') format('svg');
+  src:  url('#{$icomoon-font-path}/icomoon.woff?kmbkx6') format('woff'),
+    url('#{$icomoon-font-path}/icomoon.svg?kmbkx6#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -41,3 +42,8 @@ $icon-file-text2: "\e926";
   }
 }
 
+.icon-copy {
+  &:before {
+    content: $icon-copy;
+  }
+}
