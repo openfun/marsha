@@ -1,19 +1,45 @@
-import { Heading, Main } from 'grommet';
+import { Box, Heading } from 'grommet';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import { appData } from '../../data/appData';
+import { BreadCrumbs, BreadCrumbsProvider } from '../BreadCrumbs';
 import { SiteLayout } from '../SiteLayout';
+import { UploadManager } from '../UploadManager';
 
-export const Routes = () => (
-  <BrowserRouter>
-    <SiteLayout>
-      <Switch>
-        <Route>
-          <Main>
-            <Heading margin="medium">The main content</Heading>
-          </Main>
-        </Route>
-      </Switch>
-    </SiteLayout>
+const queryClient = new QueryClient();
+
+const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
+  <BrowserRouter basename="/site">
+    <QueryClientProvider client={queryClient}>
+      <BreadCrumbsProvider>
+        <UploadManager>
+          <div
+            style={{ width: '100%', height: '100%' }}
+            className={`marsha-${appData.frontend}`}
+          >
+            {children}
+          </div>
+        </UploadManager>
+      </BreadCrumbsProvider>
+    </QueryClientProvider>
   </BrowserRouter>
 );
+
+export const Routes = () => {
+  return (
+    <Wrappers>
+      <SiteLayout>
+        <BreadCrumbs />
+        <Switch>
+          <Route>
+            <Box>
+              <Heading margin="medium">The main content</Heading>
+            </Box>
+          </Route>
+        </Switch>
+      </SiteLayout>
+    </Wrappers>
+  );
+};
