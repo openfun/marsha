@@ -11,15 +11,8 @@ import {
 import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
-const {
-  DELETED,
-  ERROR,
-  HARVESTED,
-  HARVESTING,
-  PENDING,
-  PROCESSING,
-  READY,
-} = uploadState;
+const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
+  uploadState;
 const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
 
 const messages = defineMessages({

@@ -54,9 +54,8 @@ describe('XAPIStatement', () => {
         'en-US': 'initialized',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 1,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
@@ -100,9 +99,8 @@ describe('XAPIStatement', () => {
       expect(body.context.extensions).toEqual({
         'https://w3id.org/xapi/video/extensions/cc-subtitle-enabled': true,
         'https://w3id.org/xapi/video/extensions/cc-subtitle-lang': 'en-US',
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/frame-rate': 29.97,
         'https://w3id.org/xapi/video/extensions/full-screen': false,
         'https://w3id.org/xapi/video/extensions/length': 1,
@@ -181,9 +179,8 @@ describe('XAPIStatement', () => {
         'en-US': 'paused',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
@@ -264,9 +261,8 @@ describe('XAPIStatement', () => {
         'en-US': 'completed',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
@@ -311,9 +307,8 @@ describe('XAPIStatement', () => {
         'en-US': 'completed',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 74.582,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
@@ -355,9 +350,8 @@ describe('XAPIStatement', () => {
         'en-US': 'terminated',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });
@@ -407,9 +401,8 @@ describe('XAPIStatement', () => {
         'en-US': 'terminated',
       });
       expect(body.context.extensions).toEqual({
-        'https://w3id.org/xapi/video/extensions/completion-threshold': truncateDecimalDigits(
-          xapiStatement.getCompletionThreshold(),
-        ),
+        'https://w3id.org/xapi/video/extensions/completion-threshold':
+          truncateDecimalDigits(xapiStatement.getCompletionThreshold()),
         'https://w3id.org/xapi/video/extensions/length': 100,
         'https://w3id.org/xapi/video/extensions/session-id': 'abcd',
       });

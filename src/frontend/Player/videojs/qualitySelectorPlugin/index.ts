@@ -52,8 +52,10 @@ export class QualitySelector extends Plugin {
     selectedSource: QualitySelectorMenuItemOptions,
   ) {
     const sources = this.player.currentSources();
-    this.player.videojs_quality_selector_plugin_is_paused = this.player.paused();
-    this.player.videojs_quality_selector_plugin_currentime = this.player.currentTime();
+    this.player.videojs_quality_selector_plugin_is_paused =
+      this.player.paused();
+    this.player.videojs_quality_selector_plugin_currentime =
+      this.player.currentTime();
 
     const newSources = sources.map((source) => {
       source.selected = source.src === selectedSource.src;

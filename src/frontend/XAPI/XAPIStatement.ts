@@ -145,9 +145,8 @@ export class XAPIStatement {
     this.setDuration(contextExtensions.length);
     this.startedAt = DateTime.utc();
 
-    extensions[
-      ContextExtensionsDefinition.completionTreshold
-    ] = truncateDecimalDigits(this.getCompletionThreshold());
+    extensions[ContextExtensionsDefinition.completionTreshold] =
+      truncateDecimalDigits(this.getCompletionThreshold());
     const data: DataPayload = {
       context: {
         extensions,
@@ -195,9 +194,8 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefinition.completionTreshold]: truncateDecimalDigits(
-            this.getCompletionThreshold(),
-          ),
+          [ContextExtensionsDefinition.completionTreshold]:
+            truncateDecimalDigits(this.getCompletionThreshold()),
           [ContextExtensionsDefinition.length]: this.duration,
           [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },
@@ -206,9 +204,8 @@ export class XAPIStatement {
         extensions: {
           [ResultExtensionsDefinition.time]: time,
           [ResultExtensionsDefinition.playedSegment]: this.getPlayedSegment(),
-          [ResultExtensionsDefinition.progress]: truncateDecimalDigits(
-            progress,
-          ),
+          [ResultExtensionsDefinition.progress]:
+            truncateDecimalDigits(progress),
         },
       },
       verb: {
@@ -271,9 +268,8 @@ export class XAPIStatement {
         extensions: {
           [ContextExtensionsDefinition.length]: this.duration,
           [ContextExtensionsDefinition.sessionId]: this.sessionId,
-          [ContextExtensionsDefinition.completionTreshold]: truncateDecimalDigits(
-            this.getCompletionThreshold(),
-          ),
+          [ContextExtensionsDefinition.completionTreshold]:
+            truncateDecimalDigits(this.getCompletionThreshold()),
         },
       },
       result: {
@@ -309,9 +305,8 @@ export class XAPIStatement {
     const data: DataPayload = {
       context: {
         extensions: {
-          [ContextExtensionsDefinition.completionTreshold]: truncateDecimalDigits(
-            this.getCompletionThreshold(),
-          ),
+          [ContextExtensionsDefinition.completionTreshold]:
+            truncateDecimalDigits(this.getCompletionThreshold()),
           [ContextExtensionsDefinition.length]: this.duration,
           [ContextExtensionsDefinition.sessionId]: this.sessionId,
         },

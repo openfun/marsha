@@ -22,15 +22,8 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
-const {
-  DELETED,
-  ERROR,
-  HARVESTED,
-  HARVESTING,
-  PENDING,
-  PROCESSING,
-  READY,
-} = uploadState;
+const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
+  uploadState;
 
 const messages = defineMessages({
   [DELETED]: {
