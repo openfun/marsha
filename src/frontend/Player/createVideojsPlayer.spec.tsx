@@ -110,14 +110,7 @@ describe('createVideoJsPlayer', () => {
     ]);
 
     expect(player.options_.playbackRates).toEqual([
-      0.5,
-      0.75,
-      1,
-      1.25,
-      1.5,
-      1.75,
-      2,
-      4,
+      0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4,
     ]);
     expect(player.options_.controls).toBe(true);
     expect(player.options_.debug).toBe(false);
@@ -182,14 +175,7 @@ describe('createVideoJsPlayer', () => {
     ]);
 
     expect(player.options_.playbackRates).toEqual([
-      0.5,
-      0.75,
-      1,
-      1.25,
-      1.5,
-      1.75,
-      2,
-      4,
+      0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4,
     ]);
     expect(player.options_.controls).toBe(true);
     expect(player.options_.debug).toBe(false);

@@ -10,7 +10,7 @@ import { appData } from '../../appData';
 import { addResource } from '../../stores/generics';
 
 export async function pollForTrack<
-  T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS
+  T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS,
 >(
   resourceName: T,
   resourceId: string,

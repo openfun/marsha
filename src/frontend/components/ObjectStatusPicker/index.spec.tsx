@@ -10,15 +10,8 @@ import { ObjectStatusPicker } from '.';
 
 jest.mock('../../data/appData', () => ({}));
 
-const {
-  DELETED,
-  ERROR,
-  HARVESTED,
-  HARVESTING,
-  PENDING,
-  PROCESSING,
-  READY,
-} = uploadState;
+const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
+  uploadState;
 const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
