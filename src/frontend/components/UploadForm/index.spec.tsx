@@ -29,9 +29,8 @@ jest.mock('../../data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
-const mockUploadFile: jest.MockedFunction<
-  typeof uploadFile
-> = uploadFile as any;
+const mockUploadFile: jest.MockedFunction<typeof uploadFile> =
+  uploadFile as any;
 const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 
 describe('UploadForm', () => {
