@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.18.0] - 2021-05-10
+
 ### Added
 
 - Chat feature implementing XMPP protocol
@@ -742,7 +744,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.17.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.18.0...master
+[3.18.0]: https://github.com/openfun/marsha/compare/v3.17.1...v3.18.0
+[3.17.1]: https://github.com/openfun/marsha/compare/v3.17.0...v3.17.1
 [3.17.0]: https://github.com/openfun/marsha/compare/v3.16.1...v3.17.0
 [3.16.1]: https://github.com/openfun/marsha/compare/v3.16.0...v3.16.1
 [3.16.0]: https://github.com/openfun/marsha/compare/v3.15.0...v3.16.0

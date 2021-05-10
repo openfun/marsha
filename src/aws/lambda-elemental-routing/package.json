@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-elemental-routing",
-  "version": "3.17.1",
+  "version": "3.18.0",
   "engines": {
     "node": "14"
   },
