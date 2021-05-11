@@ -18,6 +18,7 @@ from ..defaults import (
     IDLE,
     LIVE_CHOICES,
     PENDING,
+    RAW,
     RUNNING,
     STATE_CHOICES,
     STOPPED,
@@ -2422,6 +2423,7 @@ class VideoAPITest(TestCase):
         ):
             response = self.client.post(
                 "/api/videos/{!s}/initiate-live/".format(video.id),
+                {"type": "raw"},
                 HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
             )
         self.assertEqual(response.status_code, 200)
@@ -2461,11 +2463,150 @@ class VideoAPITest(TestCase):
                                 "https://live_endpoint2",
                             ],
                         }
-                    }
+                    },
+                    "type": "raw",
                 },
                 "xmpp": None,
             },
         )
+
+    @override_settings(JITSI_ENABLED=True)
+    def test_api_video_instructor_initiate_jitsi_live(self):
+        """An instructor should be able to initiate a jitsi live."""
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # initiate a live video,
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        live_info = {
+            "medialive": {
+                "input": {
+                    "id": "medialive_input_1",
+                    "endpoints": ["https://live_endpoint1", "https://live_endpoint2"],
+                },
+                "channel": {"id": "medialive_channel_1"},
+            },
+            "mediapackage": {
+                "id": "mediapackage_channel_1",
+                "endpoints": {
+                    "hls": {
+                        "id": "endpoint1",
+                        "url": "https://channel_endpoint1/live.m3u8",
+                    },
+                },
+            },
+        }
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
+            api, "create_live_stream", return_value=live_info
+        ):
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-live/".format(video.id),
+                {"type": "jitsi"},
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "show_download": True,
+                "upload_state": "pending",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": "creating",
+                "live_info": {
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                    "type": "jitsi",
+                    "jitsi": {
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "config_overwrite": {},
+                        "interface_config_overwrite": {},
+                    },
+                },
+                "xmpp": None,
+            },
+        )
+
+    def test_api_video_instructor_initiate_live_invalid_type(self):
+        """A 400 response should be return if the live type is invalid."""
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # initiate a live video,
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        live_info = {
+            "medialive": {
+                "input": {
+                    "id": "medialive_input_1",
+                    "endpoints": ["https://live_endpoint1", "https://live_endpoint2"],
+                },
+                "channel": {"id": "medialive_channel_1"},
+            },
+            "mediapackage": {
+                "id": "mediapackage_channel_1",
+                "endpoints": {
+                    "hls": {
+                        "id": "endpoint1",
+                        "url": "https://channel_endpoint1/live.m3u8",
+                    },
+                },
+            },
+        }
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
+            api, "create_live_stream", return_value=live_info
+        ):
+            response = self.client.post(
+                "/api/videos/{!s}/initiate-live/".format(video.id),
+                {"type": "invalid"},
+                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+
+        self.assertEqual(content, {"type": ['"invalid" is not a valid choice.']})
 
     def test_api_video_start_live_anonymous_user(self):
         """Anonymous users are not allowed to start a live."""
@@ -2557,6 +2698,7 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
+                "type": RAW,
             },
         )
         jwt_token = AccessToken()
@@ -2614,7 +2756,8 @@ class VideoAPITest(TestCase):
                                 "https://live_endpoint2",
                             ],
                         }
-                    }
+                    },
+                    "type": RAW,
                 },
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
@@ -2749,6 +2892,7 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
+                "type": RAW,
             },
         )
         jwt_token = AccessToken()
@@ -2799,7 +2943,8 @@ class VideoAPITest(TestCase):
                                 "https://live_endpoint2",
                             ],
                         }
-                    }
+                    },
+                    "type": RAW,
                 },
                 "xmpp": None,
             },

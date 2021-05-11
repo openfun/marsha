@@ -282,6 +282,13 @@ class Base(Configuration):
     LIVE_FRAMERATE_DENOMINATOR = values.PositiveIntegerValue(1000)
     LIVE_GOP_SIZE = values.FloatValue(4)
 
+    # JITSI SETTINGS
+    JITSI_ENABLED = values.BooleanValue(False)
+    JITSI_EXTERNAL_API_URL = values.Value("https://meet.jit.si/external_api.js")
+    JITSI_DOMAIN = values.Value("meet.jit.si")
+    JITSI_CONFIG_OVERWRITE = values.DictValue({})
+    JITSI_INTERFACE_CONFIG_OVERWRITE = values.DictValue({})
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):

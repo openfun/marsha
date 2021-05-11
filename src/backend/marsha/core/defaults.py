@@ -50,6 +50,11 @@ LIVE_CHOICES = (
     (STOPPING, _("stopping")),
 )
 
+# LIVE TYPE
+(RAW, JITSI) = ("raw", "jitsi")
+
+LIVE_TYPE_CHOICES = ((RAW, _("raw")), (JITSI, _("jitsi")))
+
 # FLAGS
 VIDEO_LIVE = "video_live"
 SENTRY = "sentry"
