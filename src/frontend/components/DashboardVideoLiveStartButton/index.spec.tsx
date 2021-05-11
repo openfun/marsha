@@ -33,40 +33,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
 
   afterAll(useVideoStub.restore);
 
-  const video = videoMockFactory({
-    description: '',
-    has_transcript: false,
-    id: '94da33b7-a38b-4efc-a8d5-99566056e8c6',
-    is_ready_to_show: true,
-    show_download: true,
-    thumbnail: null,
-    timed_text_tracks: [],
-    title: '',
-    upload_state: uploadState.PENDING,
-    urls: {
-      manifests: {
-        hls: 'https://example.com/hls',
-      },
-      mp4: {},
-      thumbnails: {},
-    },
-    should_use_subtitle_as_transcript: false,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
-    live_state: liveState.IDLE,
-    live_info: {
-      medialive: {
-        input: {
-          endpoints: [
-            'rtmp://1.2.3.4:1935/stream-key-primary',
-            'rtmp://4.3.2.1:1935/stream-key-secondary',
-          ],
-        },
-      },
-    },
-  });
+  const video = videoMockFactory();
 
   it('renders the start button', () => {
     useVideoStub.returns({
@@ -87,11 +54,9 @@ describe('components/DashboardVideoLiveStartButton', () => {
       updateVideo: mockUpdateVideo,
     });
 
-    fetchMock.mock(
-      '/api/videos/94da33b7-a38b-4efc-a8d5-99566056e8c6/start-live/',
-      400,
-      { method: 'POST' },
-    );
+    fetchMock.mock(`/api/videos/${video.id}/start-live/`, 400, {
+      method: 'POST',
+    });
 
     render(
       wrapInIntlProvider(
@@ -125,7 +90,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
       updateVideo: mockUpdateVideo,
     });
     fetchMock.mock(
-      '/api/videos/94da33b7-a38b-4efc-a8d5-99566056e8c6/start-live/',
+      `/api/videos/${video.id}/start-live/`,
       {
         ...video,
         live_state: liveState.STARTING,
