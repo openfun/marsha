@@ -33,40 +33,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
 
   afterAll(useVideoStub.restore);
 
-  const video = videoMockFactory({
-    description: '',
-    has_transcript: false,
-    id: 'f0e4835f-f126-457e-8e27-16898cd0b5d5',
-    is_ready_to_show: true,
-    show_download: true,
-    thumbnail: null,
-    timed_text_tracks: [],
-    title: '',
-    upload_state: uploadState.PENDING,
-    urls: {
-      manifests: {
-        hls: 'https://example.com/hls',
-      },
-      mp4: {},
-      thumbnails: {},
-    },
-    should_use_subtitle_as_transcript: false,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
-    live_state: liveState.RUNNING,
-    live_info: {
-      medialive: {
-        input: {
-          endpoints: [
-            'rtmp://1.2.3.4:1935/stream-key-primary',
-            'rtmp://4.3.2.1:1935/stream-key-secondary',
-          ],
-        },
-      },
-    },
-  });
+  const video = videoMockFactory();
 
   it('renders the stop button', () => {
     useVideoStub.returns({
@@ -87,11 +54,9 @@ describe('components/DashboardVideoLiveStopButton', () => {
       updateVideo: mockUpdateVideo,
     });
 
-    fetchMock.mock(
-      '/api/videos/f0e4835f-f126-457e-8e27-16898cd0b5d5/stop-live/',
-      400,
-      { method: 'POST' },
-    );
+    fetchMock.mock(`/api/videos/${video.id}/stop-live/`, 400, {
+      method: 'POST',
+    });
 
     render(
       wrapInIntlProvider(
@@ -125,7 +90,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       updateVideo: mockUpdateVideo,
     });
     fetchMock.mock(
-      '/api/videos/f0e4835f-f126-457e-8e27-16898cd0b5d5/stop-live/',
+      `/api/videos/${video.id}/stop-live/`,
       {
         ...video,
         live_state: liveState.STOPPED,

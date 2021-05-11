@@ -25,13 +25,7 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<InstructorWrapper />', () => {
-  const video = videoMockFactory({
-    id: 'bc5b2a9a-4963-4a55-bb79-b94489a8164f',
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
-  });
+  const video = videoMockFactory();
   it('wraps its children in an instructor view if the current user is an instructor', () => {
     mockCanAccessDashboard = true;
     const { getByText, getByTitle } = render(

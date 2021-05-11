@@ -33,24 +33,20 @@ describe('<DashboardVideoPane />', () => {
   });
 
   it('redirects to error when it fails to fetch the video', async () => {
-    fetchMock.mock('/api/videos/43/', () => {
+    const video = videoMockFactory({ upload_state: PROCESSING });
+    fetchMock.mock(`/api/videos/${video.id}/`, () => {
       throw new Error('Failed request');
     });
     render(
       wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoPane
-            video={videoMockFactory({ upload_state: PROCESSING })}
-          />,
-          [
-            {
-              path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
-            },
-          ],
-        ),
+        wrapInRouter(<DashboardVideoPane video={video} />, [
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+        ]),
       ),
     );
 
@@ -64,7 +60,7 @@ describe('<DashboardVideoPane />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const video = videoMockFactory({ upload_state: PENDING });
     let deferred = new Deferred();
-    fetchMock.mock('/api/videos/43/', deferred.promise);
+    fetchMock.mock(`/api/videos/${video.id}/`, deferred.promise);
 
     const { rerender } = render(
       <UploadManagerContext.Provider
@@ -141,7 +137,7 @@ describe('<DashboardVideoPane />', () => {
       deferred.resolve(JSON.stringify({ ...video, upload_state: PROCESSING })),
     );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/videos/43/');
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
@@ -153,7 +149,7 @@ describe('<DashboardVideoPane />', () => {
     // The video will be ready in further responses
     fetchMock.restore();
     deferred = new Deferred();
-    fetchMock.mock('/api/videos/43/', deferred.promise);
+    fetchMock.mock(`/api/videos/${video.id}/`, deferred.promise);
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 60 + 200);
@@ -161,7 +157,7 @@ describe('<DashboardVideoPane />', () => {
       deferred.resolve(JSON.stringify({ ...video, upload_state: READY })),
     );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/videos/43/');
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });

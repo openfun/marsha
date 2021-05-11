@@ -37,9 +37,6 @@ describe('components/DashboardVideoLive', () => {
   });
 
   const video = videoMockFactory({
-    description: '',
-    has_transcript: false,
-    id: '9e02ae7d-6c18-40ce-95e8-f87bbeae31c5',
     is_ready_to_show: true,
     show_download: true,
     thumbnail: null,
@@ -54,10 +51,6 @@ describe('components/DashboardVideoLive', () => {
       thumbnails: {},
     },
     should_use_subtitle_as_transcript: false,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
     live_info: {
       medialive: {
         input: {
@@ -131,7 +124,7 @@ describe('components/DashboardVideoLive', () => {
 
   it('polls the video when live state is STARTING', async () => {
     fetchMock.mock(
-      '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
+      `/api/videos/${video.id}/`,
       JSON.stringify({ ...video, live_state: liveState.STARTING }),
     );
 
@@ -156,9 +149,7 @@ describe('components/DashboardVideoLive', () => {
     jest.advanceTimersByTime(1000 * 15 + 200);
     await waitFor(() => expect(fetchMock.called()).toBe(true));
 
-    expect(fetchMock.lastCall()![0]).toEqual(
-      '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
-    );
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
@@ -169,7 +160,7 @@ describe('components/DashboardVideoLive', () => {
     // The live will be running in further response
     fetchMock.restore();
     fetchMock.mock(
-      '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
+      `/api/videos/${video.id}/`,
       JSON.stringify({ ...video, live_state: liveState.RUNNING }),
     );
 
@@ -178,9 +169,7 @@ describe('components/DashboardVideoLive', () => {
     jest.advanceTimersByTime(1000 * 15 + 200);
     await waitFor(() => expect(fetchMock.called()).toBe(true));
 
-    expect(fetchMock.lastCall()![0]).toEqual(
-      '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
-    );
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
