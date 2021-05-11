@@ -1,5 +1,26 @@
+import * as faker from 'faker';
 import { Document } from '../../types/file';
-import { liveState, uploadState, Video } from '../../types/tracks';
+import { Playlist, uploadState, Video } from '../../types/tracks';
+
+export const playlistMockFactory = (
+  playlist: Partial<Playlist> = {},
+): Playlist => {
+  return {
+    consumer_site: faker.internet.domainName(),
+    created_by: null,
+    duplicated_from: null,
+    id: faker.datatype.string(),
+    is_portable_to_playlist: faker.datatype.boolean(),
+    is_portable_to_consumer_site: faker.datatype.boolean(),
+    is_public: faker.datatype.boolean(),
+    lti_id: faker.datatype.string(),
+    organization: faker.company.companyName(),
+    portable_to: [],
+    title: faker.name.title(),
+    users: [],
+    ...playlist,
+  };
+};
 
 export const videoMockFactory = (video: Partial<Video> = {}): Video => {
   const id = video.id || '43';
@@ -34,10 +55,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
       },
     },
     should_use_subtitle_as_transcript: false,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
+    playlist: playlistMockFactory(),
     live_state: null,
     live_info: {},
     live_type: null,
@@ -62,10 +80,7 @@ export const documentMockFactory = (
     title: 'foo.pdf',
     upload_state: uploadState.PROCESSING,
     url: `https://example.com/document/${id}`,
-    playlist: {
-      title: 'foo',
-      lti_id: 'foo+context_id',
-    },
+    playlist: playlistMockFactory(),
     ...document,
   };
 };
