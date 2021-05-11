@@ -51,6 +51,7 @@ describe('components/DashboardVideoLive', () => {
       thumbnails: {},
     },
     should_use_subtitle_as_transcript: false,
+    live_state: liveState.IDLE,
     live_info: {
       medialive: {
         input: {
