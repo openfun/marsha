@@ -29,7 +29,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import SENTRY, VIDEO_LIVE
+from .defaults import JITSI, SENTRY, VIDEO_LIVE
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -246,6 +246,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "flags": {
                         VIDEO_LIVE: switch_is_active(VIDEO_LIVE),
                         SENTRY: switch_is_active(SENTRY),
+                        JITSI: settings.JITSI_ENABLED,
                     },
                     "resource": self.serializer_class(
                         resource,
@@ -263,6 +264,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "player": settings.VIDEO_PLAYER,
                 }
             )
+
             if lti is None or lti.is_student:
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 

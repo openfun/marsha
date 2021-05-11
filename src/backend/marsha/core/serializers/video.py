@@ -11,7 +11,15 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..defaults import IDLE, LIVE_CHOICES, RUNNING, STOPPED
+from ..defaults import (
+    IDLE,
+    JITSI,
+    LIVE_CHOICES,
+    LIVE_TYPE_CHOICES,
+    RAW,
+    RUNNING,
+    STOPPED,
+)
 from ..models import Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
@@ -295,6 +303,12 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     logGroupName = serializers.CharField()
 
 
+class InitLiveStateSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the initiate-live API endpoint."""
+
+    type = serializers.ChoiceField(LIVE_TYPE_CHOICES)
+
+
 class VideoBaseSerializer(serializers.ModelSerializer):
     """Base Serializer to factorize common Video attributes."""
 
@@ -518,13 +532,28 @@ class VideoSerializer(VideoBaseSerializer):
         if obj.live_state is None or can_return_live_info is False:
             return {}
 
-        return {
+        live_info = {
             "medialive": {
                 "input": {
                     "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
                 }
-            }
+            },
+            "type": obj.live_info.get("type", RAW),
         }
+
+        if settings.JITSI_ENABLED and obj.live_info.get("type", RAW) == JITSI:
+            live_info.update(
+                {
+                    "jitsi": {
+                        "external_api_url": settings.JITSI_EXTERNAL_API_URL,
+                        "domain": settings.JITSI_DOMAIN,
+                        "config_overwrite": settings.JITSI_CONFIG_OVERWRITE,
+                        "interface_config_overwrite": settings.JITSI_INTERFACE_CONFIG_OVERWRITE,
+                    }
+                }
+            )
+
+        return live_info
 
     def get_has_transcript(self, obj):
         """Compute if should_use_subtitle_as_transcript behavior is disabled.

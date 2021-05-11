@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 import requests
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -402,6 +402,11 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         Type[rest_framework.response.Response]
             HttpResponse with the serialized video.
         """
+        serializer = serializers.InitLiveStateSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         now = timezone.now()
         stamp = to_timestamp(now)
 
@@ -409,6 +414,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         key = f"{video.pk}_{stamp}"
 
         live_info = create_live_stream(key)
+        live_info.update({"type": serializer.validated_data["type"]})
 
         Video.objects.filter(pk=pk).update(
             live_info=live_info,
