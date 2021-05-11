@@ -23,7 +23,7 @@ export const playlistMockFactory = (
 };
 
 export const videoMockFactory = (video: Partial<Video> = {}): Video => {
-  const id = video.id || '43';
+  const id = video.id || faker.datatype.uuid();
   return {
     description: '',
     has_transcript: false,
