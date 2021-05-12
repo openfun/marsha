@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Jitsi streamed in marsha live
+
 ## [3.18.0] - 2021-05-10
 
 ### Added

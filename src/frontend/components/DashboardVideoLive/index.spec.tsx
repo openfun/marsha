@@ -1,11 +1,16 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
-import { liveState, uploadState } from '../../types/tracks';
+import {
+  LiveModeType,
+  liveState,
+  uploadState,
+  Video,
+} from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -15,6 +20,13 @@ jest.mock('jwt-decode', () => jest.fn());
 jest.mock('../../data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
+jest.mock('../DashboardVideoLiveRaw', () => (props: { video: Video }) => (
+  <span title={props.video.id} />
+));
+
+jest.mock('../DashboardVideoLiveJitsi', () => (props: { video: Video }) => (
+  <span title={props.video.id}>jitsi</span>
+));
 
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => jest.useFakeTimers());
@@ -46,7 +58,6 @@ describe('components/DashboardVideoLive', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     },
-    live_state: liveState.IDLE,
     live_info: {
       medialive: {
         input: {
@@ -56,42 +67,35 @@ describe('components/DashboardVideoLive', () => {
           ],
         },
       },
+      type: LiveModeType.RAW,
     },
   });
 
-  it('displays streaming links', () => {
+  it('shows the start button when the status is IDLE', () => {
     render(
-      wrapInIntlProvider(wrapInRouter(<DashboardVideoLive video={video} />)),
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.IDLE }}
+            />
+          </Suspense>,
+        ),
+      ),
     );
 
-    screen.getByText('Streaming link');
-    screen.getByText('rtmp://1.2.3.4:1935');
-    screen.getByText('stream-key-primary');
-    screen.getByText('rtmp://4.3.2.1:1935');
-    screen.getByText('stream-key-secondary');
-
-    screen.getByRole('button', { name: 'copy url rtmp://1.2.3.4:1935' });
-    screen.getByRole('button', { name: 'copy key stream-key-primary' });
-
-    screen.getByRole('button', { name: 'copy url rtmp://4.3.2.1:1935' });
-    screen.getByRole('button', { name: 'copy key stream-key-secondary' });
-  });
-
-  it('shows the start button when the status id IDLE', () => {
-    render(
-      wrapInIntlProvider(wrapInRouter(<DashboardVideoLive video={video} />)),
-    );
-
-    screen.getByRole('button', { name: /start streaming/i });
+    screen.getByText('start streaming');
   });
 
   it('shows the live and stop button when the status is LIVE', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
-          />,
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.RUNNING }}
+            />
+          </Suspense>,
         ),
       ),
     );
@@ -105,9 +109,11 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
-          />,
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.RUNNING }}
+            />
+          </Suspense>,
           [
             {
               path: PLAYER_ROUTE(modelName.VIDEOS),
@@ -130,9 +136,11 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
-          />,
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.RUNNING }}
+            />
+          </Suspense>,
           [
             {
               path: CHAT_ROUTE(),
@@ -162,9 +170,11 @@ describe('components/DashboardVideoLive', () => {
     const { rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLive
-            video={{ ...video, live_state: liveState.STARTING }}
-          />,
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.STARTING }}
+            />
+          </Suspense>,
         ),
       ),
     );
@@ -210,9 +220,11 @@ describe('components/DashboardVideoLive', () => {
     rerender(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLive
-            video={{ ...video, live_state: liveState.RUNNING }}
-          />,
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.RUNNING }}
+            />
+          </Suspense>,
         ),
       ),
     );
