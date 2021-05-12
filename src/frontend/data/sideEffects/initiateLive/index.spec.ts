@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { liveState, uploadState } from '../../../types/tracks';
+import { LiveModeType, liveState, uploadState } from '../../../types/tracks';
 import { videoMockFactory } from '../../../utils/tests/factories';
 import { initiateLive } from '.';
 
@@ -62,9 +62,46 @@ describe('sideEffects/initiateLive', () => {
           },
         },
       }),
-      { method: 'POST' },
+      { body: { type: LiveModeType.RAW }, method: 'POST' },
     );
-    const updatedVideo = await initiateLive(video);
+    const updatedVideo = await initiateLive(video, LiveModeType.RAW);
+
+    expect(updatedVideo).toEqual({
+      ...video,
+      upload_state: uploadState.PENDING,
+      live_state: liveState.IDLE,
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: ['https://endpoint1', 'https://endpoint2'],
+          },
+        },
+      },
+    });
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer some token',
+      'Content-Type': 'application/json',
+    });
+  });
+
+  it('makes a POST request on the initiate-live to initiate a jitsi live', async () => {
+    fetchMock.mock(
+      '/api/videos/36/initiate-live/',
+      JSON.stringify({
+        ...video,
+        upload_state: uploadState.PENDING,
+        live_state: liveState.IDLE,
+        live_info: {
+          medialive: {
+            input: {
+              endpoints: ['https://endpoint1', 'https://endpoint2'],
+            },
+          },
+        },
+      }),
+      { body: { type: LiveModeType.JITSI }, method: 'POST' },
+    );
+    const updatedVideo = await initiateLive(video, LiveModeType.JITSI);
 
     expect(updatedVideo).toEqual({
       ...video,
@@ -90,7 +127,7 @@ describe('sideEffects/initiateLive', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(initiateLive(video)).rejects.toThrowError(
+    await expect(initiateLive(video, LiveModeType.RAW)).rejects.toThrowError(
       'Failed to perform the request',
     );
   });
@@ -98,7 +135,7 @@ describe('sideEffects/initiateLive', () => {
   it('throws when it fails to trigger the initiate-live (API error)', async () => {
     fetchMock.mock('/api/videos/36/initiate-live/', 400);
 
-    await expect(initiateLive(video)).rejects.toThrowError(
+    await expect(initiateLive(video, LiveModeType.RAW)).rejects.toThrowError(
       'Failed to initialite a live mode for video 36.',
     );
   });
