@@ -104,6 +104,11 @@ export interface VideoUrls {
   thumbnails: Partial<urls>;
 }
 
+export enum LiveModeType {
+  RAW = 'raw',
+  JITSI = 'jitsi',
+}
+
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   description: string;
@@ -125,6 +130,7 @@ export interface Video extends Resource {
         endpoints: string[];
       };
     };
+    type?: LiveModeType;
   };
   xmpp: Nullable<XMPP>;
 }
