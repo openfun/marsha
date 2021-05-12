@@ -1,6 +1,28 @@
 import * as faker from 'faker';
 import { Document } from '../../types/file';
-import { Playlist, uploadState, Video } from '../../types/tracks';
+import {
+  Playlist,
+  Thumbnail,
+  TimedText,
+  timedTextMode,
+  uploadState,
+  Video,
+} from '../../types/tracks';
+import { Organization } from '../../types/Organization';
+import { Nullable } from '../types';
+
+export const organizationMockFactory = (
+  organization: Partial<Organization> = {},
+): Organization => {
+  return {
+    consumer_sites: [],
+    created_on: faker.date.recent().toString(),
+    id: faker.datatype.uuid(),
+    name: faker.company.companyName(),
+    users: [],
+    ...organization,
+  };
+};
 
 export const playlistMockFactory = (
   playlist: Partial<Playlist> = {},
@@ -9,7 +31,7 @@ export const playlistMockFactory = (
     consumer_site: faker.internet.domainName(),
     created_by: null,
     duplicated_from: null,
-    id: faker.datatype.string(),
+    id: faker.datatype.uuid(),
     is_portable_to_playlist: faker.datatype.boolean(),
     is_portable_to_consumer_site: faker.datatype.boolean(),
     is_public: faker.datatype.boolean(),
@@ -19,6 +41,46 @@ export const playlistMockFactory = (
     title: faker.name.title(),
     users: [],
     ...playlist,
+  };
+};
+
+export const thumbnailMockFactory = (
+  thumbnail: Partial<Thumbnail> = {},
+): Thumbnail => {
+  const id = thumbnail.id || faker.datatype.uuid();
+  return {
+    id,
+    is_ready_to_show: faker.datatype.boolean(),
+    upload_state: uploadState.READY,
+    urls: {
+      144: 'https://example.com/default_thumbnail/144',
+      240: 'https://example.com/default_thumbnail/240',
+      480: 'https://example.com/default_thumbnail/480',
+      720: 'https://example.com/default_thumbnail/720',
+      1080: 'https://example.com/default_thumbnail/1080',
+    },
+    active_stamp: faker.date.past().getTime(),
+    video: videoMockFactory().id,
+    ...thumbnail,
+  };
+};
+
+export const timedTextMockFactory = (
+  timedText: Partial<TimedText> = {},
+): TimedText => {
+  const id = timedText.id || faker.datatype.uuid();
+  return {
+    id,
+    active_stamp: faker.date.past().getTime(),
+    is_ready_to_show: faker.datatype.boolean(),
+    language: faker.datatype.string(),
+    mode: timedTextMode.SUBTITLE,
+    upload_state: uploadState.READY,
+    source_url: faker.internet.url(),
+    url: faker.internet.url(),
+    video: videoMockFactory().id,
+    title: faker.commerce.product(),
+    ...timedText,
   };
 };
 
