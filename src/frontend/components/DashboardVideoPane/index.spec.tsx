@@ -1,9 +1,9 @@
 import { cleanup, render, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { modelName } from '../../types/models';
-import { liveState, uploadState } from '../../types/tracks';
+import { LiveModeType, liveState, uploadState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { Deferred } from '../../utils/tests/Deferred';
 import { videoMockFactory } from '../../utils/tests/factories';
@@ -340,23 +340,26 @@ describe('<DashboardVideoPane />', () => {
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
-            <DashboardVideoPane
-              video={videoMockFactory({
-                is_ready_to_show: false,
-                upload_state: state,
-                live_state: liveState.IDLE,
-                live_info: {
-                  medialive: {
-                    input: {
-                      endpoints: [
-                        'https://live_endpoint1',
-                        'https://live_endpoint2',
-                      ],
+            <Suspense fallback="loading...">
+              <DashboardVideoPane
+                video={videoMockFactory({
+                  is_ready_to_show: false,
+                  upload_state: state,
+                  live_state: liveState.IDLE,
+                  live_info: {
+                    medialive: {
+                      input: {
+                        endpoints: [
+                          'https://live_endpoint1',
+                          'https://live_endpoint2',
+                        ],
+                      },
                     },
+                    type: LiveModeType.RAW,
                   },
-                },
-              })}
-            />,
+                })}
+              />
+            </Suspense>,
           ),
         ),
       );

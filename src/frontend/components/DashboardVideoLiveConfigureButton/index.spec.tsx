@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { appData } from '../../data/appData';
+import { LiveModeType } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -55,7 +56,10 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLiveConfigureButton video={appData.video!} />,
+          <DashboardVideoLiveConfigureButton
+            video={appData.video!}
+            type={LiveModeType.RAW}
+          />,
         ),
       ),
     );
@@ -84,7 +88,10 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLiveConfigureButton video={appData.video!} />,
+          <DashboardVideoLiveConfigureButton
+            video={appData.video!}
+            type={LiveModeType.RAW}
+          />,
           [
             {
               path: DASHBOARD_ROUTE(),
@@ -117,7 +124,10 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <DashboardVideoLiveConfigureButton video={appData.video!} />,
+          <DashboardVideoLiveConfigureButton
+            video={appData.video!}
+            type={LiveModeType.RAW}
+          />,
           [
             {
               path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
