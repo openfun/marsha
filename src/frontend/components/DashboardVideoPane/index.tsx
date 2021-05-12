@@ -8,7 +8,7 @@ import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
-import { uploadState, Video } from '../../types/tracks';
+import { uploadState, LiveModeType, Video } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
 import { DashboardObjectProgress } from '../DashboardObjectProgress';
@@ -177,7 +177,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       if (video.live_state !== null) {
         return (
           <DashboardVideoPaneInnerContainer>
-            <Box direction={'row'}>
+            <Box
+              direction={
+                video.live_info.type === LiveModeType.RAW ? 'row' : 'column'
+              }
+            >
               <Box basis={'1/2'} margin={'small'}>
                 <CommonStatusLine video={video} />
               </Box>

@@ -22,9 +22,11 @@ type stopLiveStatus = 'pending' | 'error';
 
 interface DashboardVideoLiveStartButtonProps {
   video: Video;
+  jitsi?: JitsiMeetExternalAPI;
 }
 
 export const DashboardVideoLiveStopButton = ({
+  jitsi,
   video,
 }: DashboardVideoLiveStartButtonProps) => {
   const [status, setStatus] = useState<Nullable<stopLiveStatus>>(null);

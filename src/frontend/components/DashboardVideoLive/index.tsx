@@ -1,15 +1,12 @@
-import ClipboardJS from 'clipboard';
 import { Box, Heading, Text } from 'grommet';
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import ReactTooltip from 'react-tooltip';
-import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
 import { modelName } from '../../types/models';
-import { Video, liveState } from '../../types/tracks';
+import { Video, liveState, LiveModeType } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
@@ -17,31 +14,26 @@ import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton'
 import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
 import { DashboardButtonWithLink } from '../DashboardPaneButtons';
 
+const DashboardVideoLiveRaw = lazy(() => import('../DashboardVideoLiveRaw'));
+const DashboardVideoLiveJitsi = lazy(
+  () => import('../DashboardVideoLiveJitsi'),
+);
+
 const messages = defineMessages({
-  copied: {
-    defaultMessage: 'Copied!',
-    description: 'Message displayed when endpoints info are copied.',
-    id: 'components.DashboardVideoLive.copied',
-  },
-  title: {
+  raw: {
     defaultMessage: 'Streaming link',
     description: 'DashboardVideoLive main title.',
-    id: 'components.DashboardVideoLive.title',
+    id: 'components.DashboardVideoLive.raw',
   },
-  streamLink: {
-    defaultMessage: 'Stream link',
-    description: 'link to use to stream a video.',
-    id: 'components.DashboardVideoLive.streamLink',
+  jitsi: {
+    defaultMessage: 'Jitsi Streaming',
+    description: 'DashboardVideoLive jitsi title.',
+    id: 'components.DashboardVideoLive.jitsi',
   },
   url: {
     defaultMessage: 'url',
     description: 'Video url streaming.',
     id: 'components.DashboardVideoLive.url',
-  },
-  streamKey: {
-    defaultMessage: 'stream key',
-    description: 'Video key streaming.',
-    id: 'components.DashboardVideoLive.streamKey',
   },
   showLive: {
     defaultMessage: 'show live',
@@ -80,15 +72,6 @@ const messages = defineMessages({
     id: 'components.DashboardVideoLive.liveStopping',
   },
 });
-
-const IconBox = styled.span`
-  font-size: 18px;
-`;
-
-const CopyButton = styled.button`
-  border: none;
-  cursor: pointer;
-`;
 
 interface DashboardVideoLiveProps {
   video: Video;
@@ -133,82 +116,17 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     }
   }, [video.live_state]);
 
-  useEffect(() => {
-    const clipboard = new ClipboardJS('.copy');
-    clipboard.on('success', (event) => {
-      setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
-
-      event.clearSelection();
-    });
-
-    clipboard.on('error', (event) => {
-      ReactTooltip.hide(event.trigger);
-    });
-
-    return clipboard.destroy;
-  }, []);
-
-  const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-  const endpoints = video.live_info.medialive!.input.endpoints.map(
-    (endpoint) => {
-      const matches = endpoint.match(endpointIdentifier);
-      if (matches) {
-        return (
-          <Box key={matches[2]}>
-            <Heading level={4}>
-              <FormattedMessage {...messages.streamLink} />
-            </Heading>
-            <ul>
-              <li>
-                <FormattedMessage {...messages.url} />
-                :&nbsp;
-                <span id={`url-${matches[2]}`}>{matches[1]}</span>
-                <CopyButton
-                  data-tip
-                  aria-label={`copy url ${matches[1]}`}
-                  className="copy"
-                  data-clipboard-target={`#url-${matches[2]}`}
-                >
-                  <IconBox className="icon-copy" />
-                </CopyButton>
-              </li>
-              <li>
-                <FormattedMessage {...messages.streamKey} />
-                :&nbsp;
-                <span id={`key-${matches[2]}`}>{matches[2]}</span>
-                <CopyButton
-                  data-tip
-                  aria-label={`copy key ${matches[2]}`}
-                  className="copy"
-                  data-clipboard-target={`#key-${matches[2]}`}
-                >
-                  <IconBox className="icon-copy" />
-                </CopyButton>
-              </li>
-            </ul>
-          </Box>
-        );
-      }
-    },
-  );
-
   return (
     <Box>
       <Heading level={2}>
-        <FormattedMessage {...messages.title} />
+        <FormattedMessage {...messages[video.live_info.type!]} />
       </Heading>
-      <Box>
-        {endpoints}
-        <ReactTooltip
-          effect="solid"
-          place="bottom"
-          type="success"
-          isCapture={true}
-          event="click"
-        >
-          <FormattedMessage {...messages.copied} />
-        </ReactTooltip>
-      </Box>
+      {video.live_info.type === LiveModeType.RAW && (
+        <DashboardVideoLiveRaw video={video} />
+      )}
+      {video.live_info.type === LiveModeType.JITSI && (
+        <DashboardVideoLiveJitsi video={video} />
+      )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
         {video.live_state === liveState.CREATING && (
           <Text>
@@ -225,16 +143,20 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         )}
         {video.live_state === liveState.RUNNING && (
           <React.Fragment>
-            <DashboardButtonWithLink
-              label={<FormattedMessage {...messages.chatOnly} />}
-              primary={false}
-              to={CHAT_ROUTE()}
-            />
-            <DashboardButtonWithLink
-              label={<FormattedMessage {...messages.showLive} />}
-              primary={false}
-              to={PLAYER_ROUTE(modelName.VIDEOS)}
-            />
+            {video.live_info.type === LiveModeType.RAW && (
+              <React.Fragment>
+                <DashboardButtonWithLink
+                  label={<FormattedMessage {...messages.chatOnly} />}
+                  primary={false}
+                  to={CHAT_ROUTE()}
+                />
+                <DashboardButtonWithLink
+                  label={<FormattedMessage {...messages.showLive} />}
+                  primary={false}
+                  to={PLAYER_ROUTE(modelName.VIDEOS)}
+                />
+              </React.Fragment>
+            )}
             <DashboardVideoLiveStopButton video={video} />
           </React.Fragment>
         )}

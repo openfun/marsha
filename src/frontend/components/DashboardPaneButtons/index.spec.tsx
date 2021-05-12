@@ -72,6 +72,23 @@ describe('<DashboardPaneButtons />', () => {
     screen.getByRole('button', { name: 'Configure a live streaming' });
   });
 
+  it('displays the configure live and jitsi button', () => {
+    mockFlags = { [flags.VIDEO_LIVE]: true, [flags.JITSI]: true };
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardPaneButtons
+            object={videoMockFactory({ id: 'vid1', upload_state: PENDING })}
+            objectType={modelName.VIDEOS}
+          />,
+        ),
+      ),
+    );
+
+    screen.getByRole('button', { name: 'Configure a live streaming' });
+    screen.getByRole('button', { name: 'Launch Jitsi LiveStream' });
+  });
+
   it('hides the configure live button when live state is not null', () => {
     mockFlags = { [flags.VIDEO_LIVE]: false };
     render(
