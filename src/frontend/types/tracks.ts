@@ -131,6 +131,12 @@ export interface Video extends Resource {
       };
     };
     type?: LiveModeType;
+    jitsi?: {
+      external_api_url?: string;
+      domain?: string;
+      config_overwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions;
+      interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
+    };
   };
   xmpp: Nullable<XMPP>;
 }

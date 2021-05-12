@@ -7,5 +7,6 @@ declare global {
       insertInto: (container: HTMLElement) => void;
       initialize: (options: any) => void;
     };
+    JitsiMeetExternalAPI: JitsiMeetExternalAPI;
   }
 }
