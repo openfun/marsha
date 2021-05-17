@@ -664,6 +664,7 @@ class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the TimedTextTrack object."""
 
     permission_classes = [permissions.NotAllowed]
+    queryset = TimedTextTrack.objects.all()
     serializer_class = serializers.TimedTextTrackSerializer
 
     def get_permissions(self):
@@ -671,9 +672,11 @@ class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if self.action == "metadata":
             permission_classes = [permissions.IsVideoToken]
         elif self.action in ["create", "list"]:
-            # NB: list should be restricted by queryset, not resource id
             permission_classes = [
-                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+                permissions.IsTokenInstructor
+                | permissions.IsTokenAdmin
+                | permissions.IsParamsVideoAdminThroughOrganization
+                | permissions.IsParamsVideoAdminThroughPlaylist
             ]
         else:
             permission_classes = [
@@ -681,15 +684,35 @@ class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 & permissions.IsTokenInstructor
                 | permissions.IsTokenResourceRouteObjectRelatedVideo
                 & permissions.IsTokenAdmin
+                | permissions.IsRelatedVideoPlaylistAdmin
+                | permissions.IsRelatedVideoOrganizationAdmin
             ]
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self):
-        """Restrict list access to timed text tracks related to the video in the JWT token."""
+    def list(self, request, *args, **kwargs):
+        """List timed text tracks through the API."""
+        queryset = self.get_queryset()
+        # If the "user" is just representing a resource and not an actual user profile, restrict
+        # the queryset to tracks linked to said resource
         user = self.request.user
-        if isinstance(user, TokenUser):
-            return TimedTextTrack.objects.filter(video__id=user.id)
-        return TimedTextTrack.objects.none()
+        if isinstance(user, TokenUser) and (
+            not user.token.get("user")
+            or user.token.get("user", {}).get("id") != user.token.get("resource_id")
+        ):
+            queryset = queryset.filter(video__id=user.id)
+
+        # Apply the video filter if appropriate
+        video = request.query_params.get("video")
+        if video is not None:
+            queryset = queryset.filter(video__id=video)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
