@@ -161,7 +161,7 @@ const VideoPlayer = ({
       {transcripts.length > 0 && (
         <Transcripts transcripts={transcripts as TimedTextTranscript[]} />
       )}
-      {video.live_state !== null && video.xmpp && <Chat xmpp={video.xmpp} />}
+      {video.live_state !== null && video.xmpp && <Chat video={video} />}
     </Box>
   );
 };
