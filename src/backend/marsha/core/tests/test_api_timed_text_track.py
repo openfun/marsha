@@ -9,6 +9,7 @@ from django.test import TestCase, override_settings
 import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
+from .. import factories, models
 from ..api import timezone
 from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from ..models import TimedTextTrack
@@ -33,7 +34,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
 
         response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         content = json.loads(response.content)
         self.assertEqual(
@@ -61,7 +62,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         content = json.loads(response.content)
         self.assertEqual(
@@ -89,7 +90,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = ["administrator"]
 
         response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         content = json.loads(response.content)
         self.assertEqual(
@@ -116,9 +117,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()
-        response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id)
-        )
+        response = self.client.get(f"/api/timedtexttracks/{timed_text_track.id}/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -133,8 +132,8 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
         # Get the timed text track using the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -162,8 +161,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -193,8 +192,8 @@ class TimedTextTrackAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -221,8 +220,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -248,8 +247,8 @@ class TimedTextTrackAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -277,8 +276,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -308,8 +307,8 @@ class TimedTextTrackAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(other_timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -327,8 +326,8 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -346,8 +345,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn('"url":null', response.content.decode("utf-8"))
@@ -367,8 +366,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed_text_track linked to the JWT token
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn('"url":null', response.content.decode("utf-8"))
@@ -401,8 +400,8 @@ class TimedTextTrackAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
-                "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/timedtexttracks/{timed_text_track.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -438,14 +437,172 @@ class TimedTextTrackAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             timed_text_track = TimedTextTrackFactory()
-            response = self.client.get(
-                "/api/timedtexttracks/{!s}/".format(timed_text_track.id)
-            )
+            response = self.client.get(f"/api/timedtexttracks/{timed_text_track.id}/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
+
+    def test_api_timed_text_track_read_detail_by_user_with_no_access(self):
+        """
+        Token user without any access gets a single timed text track.
+
+        A user with a user token, without any specific access, cannot get
+        a single timed text track.
+        """
+        user = factories.UserFactory()
+        video = factories.VideoFactory()
+        track = TimedTextTrackFactory(video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_detail_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user gets a single timed text track.
+
+        A user with a user token, who is a playlist instructor, cannot get
+        a single timed text track linked to a video in that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+        track = TimedTextTrackFactory(video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_detail_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user gets a single timed text track.
+
+        A user with a user token, who is a playlist administrator, can get
+        a single timed text track linked to a video in that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an administrator, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        track = TimedTextTrackFactory(mode="cc", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "id": str(track.id),
+                "is_ready_to_show": False,
+                "language": track.language,
+                "mode": "cc",
+                "source_url": None,
+                "upload_state": "pending",
+                "url": None,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_timed_text_track_read_detail_by_video_organization_instructor(self):
+        """
+        Organization instructor token user gets a single timed text track.
+
+        A user with a user token, who is an organization instructor, cannot get
+        a single timed text track linked to a video in that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+        track = TimedTextTrackFactory(mode="cc", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_detail_by_video_organization_admin(self):
+        """
+        Organization administrator token user gets a single timed text track.
+
+        A user with a user token, who is an organization administrator, can get
+        a single timed text track linked to a video in that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an admin, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+        track = TimedTextTrackFactory(mode="cc", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "id": str(track.id),
+                "is_ready_to_show": False,
+                "language": track.language,
+                "mode": "cc",
+                "source_url": None,
+                "upload_state": "pending",
+                "url": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_timed_text_track_read_list_anonymous(self):
         """Anonymous users should not be able to read a list of timed text tracks."""
@@ -470,7 +627,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 200)
         timed_text_track_list = json.loads(response.content)
@@ -493,6 +650,212 @@ class TimedTextTrackAPITest(TestCase):
             response = self.client.get("/api/timedtexttracks/")
             self.assertEqual(response.status_code, 401)
 
+    def test_api_timed_text_track_read_list_by_user_with_no_access(self):
+        """
+        Token user without any access lists timed text tracks by video.
+
+        A user with a user token, without any specific access, cannot list
+        timed text tracks for a video.
+        """
+        user = factories.UserFactory()
+        video = factories.VideoFactory()
+
+        TimedTextTrackFactory(mode="st", video=video)
+        TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/?video={video.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_list_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user lists timed text tracks by video.
+
+        A user with a user token, who is a playlist instructor, cannot list timed
+        text tracks for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+
+        TimedTextTrackFactory(mode="st", video=video)
+        TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/?video={video.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_list_by_video_playlist_admin(self):
+        """
+        Playlist admin token user lists timed text tracks by video.
+
+        A user with a user token, who is a playlist administrator, can list timed
+        text tracks for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an admin, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+
+        timed_text_track_one = TimedTextTrackFactory(mode="st", video=video)
+        timed_text_track_two = TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/?video={video.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        timed_text_track_list = json.loads(response.content)
+        self.assertEqual(len(timed_text_track_list["results"]), 2)
+        self.assertEqual(timed_text_track_list["count"], 2)
+        self.assertTrue(
+            str(timed_text_track_one.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
+        self.assertTrue(
+            str(timed_text_track_two.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
+
+    def test_api_timed_text_track_read_list_by_video_organization_instructor(self):
+        """
+        Organization instructor token user lists timed text tracks by video.
+
+        A user with a user token, who is an organization instructor, cannot list timed
+        text tracks for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+
+        TimedTextTrackFactory(mode="st", video=video)
+        TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/?video={video.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_read_list_by_video_organization_admin(self):
+        """
+        Organization admin token user lists timed text tracks by video.
+
+        A user with a user token, who is an organization administrator, can list timed
+        text tracks for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an admin, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+
+        timed_text_track_one = TimedTextTrackFactory(mode="st", video=video)
+        timed_text_track_two = TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/?video={video.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        timed_text_track_list = json.loads(response.content)
+        self.assertEqual(len(timed_text_track_list["results"]), 2)
+        self.assertEqual(timed_text_track_list["count"], 2)
+        self.assertTrue(
+            str(timed_text_track_one.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
+        self.assertTrue(
+            str(timed_text_track_two.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
+
+    def test_api_timed_text_track_read_list_by_admin_without_video_filter(self):
+        """
+        Token user with organization access lists timed text tracks without the video filter.
+
+        A user with a user token, with an organization access, cannot list timed text
+        tracks without a filter, as they have no basis to have permission to do so.
+        """
+        user = factories.UserFactory()
+        # An organization where the user has access, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+
+        TimedTextTrackFactory(mode="st", video=video)
+        TimedTextTrackFactory(mode="cc", video=video)
+        # Add a timed text track for another video
+        TimedTextTrackFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            "/api/timedtexttracks/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     def test_api_timed_text_track_create_anonymous(self):
         """Anonymous users should not be able to create a new timed text track."""
         response = self.client.post("/api/timedtexttracks/")
@@ -511,7 +874,7 @@ class TimedTextTrackAPITest(TestCase):
         response = self.client.post(
             "/api/timedtexttracks/",
             data,
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -542,7 +905,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
 
@@ -554,12 +917,179 @@ class TimedTextTrackAPITest(TestCase):
             self.assertEqual(response.status_code, 401)
             self.assertFalse(TimedTextTrack.objects.exists())
 
+    def test_api_timed_text_track_create_by_user_with_no_access(self):
+        """
+        Token user without any access creates a timed text track for a video.
+
+        A user with a user token, without any specific access, cannot create a timed text
+        track for any given video.
+        """
+        user = factories.UserFactory()
+        video = factories.VideoFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            {"language": "fr", "video": str(video.id)},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
+
+    def test_api_timed_text_track_create_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user creates a timed text track for a video.
+
+        A user with a user token, who is a playlist instructor, cannot create a timed
+        text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            {"language": "fr", "video": str(video.id)},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
+
+    def test_api_timed_text_track_create_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user creates a timed text track for a video.
+
+        A user with a user token, who is a playlist administrator, can create a timed
+        text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            {"language": "fr", "video": str(video.id)},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {
+                "id": str(TimedTextTrack.objects.first().id),
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "mode": "st",
+                "language": "fr",
+                "upload_state": "pending",
+                "source_url": None,
+                "url": None,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_timed_text_track_create_by_video_organization_instructor(self):
+        """
+        Organization instructor token user creates a timed text track for a video.
+
+        A user with a user token, who is an organization instructor, cannot create a timed
+        text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            {"language": "fr", "video": str(video.id)},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
+
+    def test_api_timed_text_track_create_by_video_organization_admin(self):
+        """
+        Organization administrator token user creates a timed text track for a video.
+
+        A user with a user token, who is an organization administrator, can create a timed
+        text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            {"language": "fr", "video": str(video.id)},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {
+                "id": str(TimedTextTrack.objects.first().id),
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "mode": "st",
+                "language": "fr",
+                "upload_state": "pending",
+                "source_url": None,
+                "url": None,
+                "video": str(video.id),
+            },
+        )
+
     def test_api_timed_text_track_update_detail_anonymous(self):
         """Anonymous users should not be allowed to update a timed_text_track through the API."""
         timed_text_track = TimedTextTrackFactory(language="fr")
         data = {"language": "en"}
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
             content_type="application/json",
         )
@@ -575,11 +1105,16 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        data = {"language": "en"}
+        response = self.client.get(
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -595,15 +1130,15 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         data["mode"] = "ts"
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
 
@@ -620,17 +1155,17 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         self.assertIsNone(data["active_stamp"])
         data["active_stamp"] = "1533686400"
 
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -646,17 +1181,17 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         self.assertEqual(data["upload_state"], "pending")
         data["upload_state"] = "ready"
 
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -673,10 +1208,191 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_update_by_user_with_no_access(self):
+        """
+        Token user without any access updates a single timed text track.
+
+        A user with a user token, without any specific access, cannot update
+        a single timed text track.
+        """
+        user = factories.UserFactory()
+        track = factories.TimedTextTrackFactory(language="fr")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
+
+        response = self.client.put(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_update_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user updates a timed text track.
+
+        A user with a user token, who is a playlist instructor, cannot update
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
+
+        response = self.client.put(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_update_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user updates a timed text track.
+
+        A user with a user token, who is a playlist administrator, can update
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an administrator, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
+
+        response = self.client.put(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "en")
+
+    def test_api_timed_text_track_update_by_video_organization_instructor(self):
+        """
+        Organization instructor token user updates a timed text track.
+
+        A user with a user token, who is an organization instructor, cannot update
+        a timed text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
+
+        response = self.client.put(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_update_by_video_organization_admin(self):
+        """
+        Organization administrator token user updates a timed text track.
+
+        A user with a user token, who is an organization administrator, can update
+        a timed text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an administrator, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.get(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["language"] = "en"
+
+        response = self.client.put(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "en")
 
     def test_api_timed_text_track_patch_detail_token_user_stamp_and_state(self):
         """Token users should not be able to patch upload state and active stamp.
@@ -694,9 +1410,9 @@ class TimedTextTrackAPITest(TestCase):
         data = {"active_stamp": "1533686400", "upload_state": "ready"}
 
         response = self.client.patch(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
 
@@ -715,16 +1431,16 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         data["id"] = "my new id"
 
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -741,16 +1457,16 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         data["video"] = str(VideoFactory().id)
 
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -768,9 +1484,9 @@ class TimedTextTrackAPITest(TestCase):
 
         data = {"language": "fr"}
         response = self.client.put(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track_update.id),
+            f"/api/timedtexttracks/{timed_text_track_update.id}/",
             json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
@@ -787,18 +1503,172 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.patch(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_patch_by_user_with_no_access(self):
+        """
+        Token user without any access patches a single timed text track.
+
+        A user with a user token, without any specific access, cannot patch
+        a single timed text track.
+        """
+        user = factories.UserFactory()
+        track = factories.TimedTextTrackFactory(language="fr")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        data = {"language": "en"}
+
+        response = self.client.patch(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_patch_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user patches a timed text track.
+
+        A user with a user token, who is a playlist instructor, cannot patch
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        data = {"language": "en"}
+
+        response = self.client.patch(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_patch_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user patches a timed text track.
+
+        A user with a user token, who is a playlist administrator, can patch
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an administrator, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        data = {"language": "en"}
+
+        response = self.client.patch(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "en")
+
+    def test_api_timed_text_track_patch_by_video_organization_instructor(self):
+        """
+        Organization instructor token user patches a timed text track.
+
+        A user with a user token, who is an organization instructor, cannot patch
+        a timed text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        data = {"language": "en"}
+
+        response = self.client.patch(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "fr")
+
+    def test_api_timed_text_track_patch_by_video_organization_admin(self):
+        """
+        Organization administrator token user patches a timed text track.
+
+        A user with a user token, who is an organization administrator, can patch
+        a timed text track for a video that belongs to that organization.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an administrator, with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(language="fr", video=video)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        data = {"language": "en"}
+
+        response = self.client.patch(
+            f"/api/timedtexttracks/{track.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        track.refresh_from_db()
+        self.assertEqual(track.language, "en")
 
     def test_api_timed_text_track_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a timed text track."""
         timed_text_track = TimedTextTrackFactory()
 
-        response = self.client.delete(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id)
-        )
+        response = self.client.delete(f"/api/timedtexttracks/{timed_text_track.id}/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -820,8 +1690,8 @@ class TimedTextTrackAPITest(TestCase):
             ]
             jwt_token.payload["permissions"] = {"can_update": True}
             response = self.client.delete(
-                "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/timedtexttracks/{timed_text_track.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 204)
             self.assertFalse(
@@ -839,7 +1709,7 @@ class TimedTextTrackAPITest(TestCase):
             self.client.login(username=user.username, password="test")
 
             response = self.client.delete(
-                "/api/timedtexttracks/{!s}/".format(timed_text_track.id)
+                f"/api/timedtexttracks/{timed_text_track.id}/"
             )
 
             self.assertEqual(response.status_code, 401)
@@ -847,42 +1717,6 @@ class TimedTextTrackAPITest(TestCase):
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
-        self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
-
-    def test_api_timed_text_track_delete_list_anonymous(self):
-        """Anonymous users should not be able to delete a list of timed text tracks."""
-        timed_text_track = TimedTextTrackFactory()
-        response = self.client.delete("/api/timedtexttracks/")
-        self.assertEqual(response.status_code, 401)
-        self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
-
-    def test_api_timed_text_track_delete_list_token_user(self):
-        """A token user should not be able to delete a list of their timed text tracks."""
-        timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-
-        response = self.client.delete(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
-
-    def test_api_timed_text_track_delete_list_staff_or_user(self):
-        """Users authenticated via session should not be allowed to delete timed text tracks."""
-        timed_text_track = TimedTextTrackFactory()
-
-        for user in [
-            UserFactory(),
-            UserFactory(is_staff=True),
-            UserFactory(is_superuser=True),
-        ]:
-            self.client.login(username=user.username, password="test")
-            response = self.client.delete("/api/timedtexttracks/")
-            self.assertEqual(response.status_code, 401)
-
         self.assertTrue(TimedTextTrack.objects.filter(id=timed_text_track.id).exists())
 
     def test_api_timed_text_track_delete_instructor_in_read_only(self):
@@ -895,17 +1729,164 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.delete(
-            "/api/timedtexttracks/{!s}/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_delete_by_user_with_no_access(self):
+        """
+        Token user without any access deletes a single timed text track.
+
+        A user with a user token, without any specific access, cannot delete
+        a single timed text track.
+        """
+        user = factories.UserFactory()
+        video = factories.VideoFactory()
+
+        track = TimedTextTrackFactory(video=video)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.delete(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+    def test_api_timed_text_track_delete_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user deletes a timed text track for a video.
+
+        A user with a user token, who is a playlist instructor, cannot delete a timed
+        text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+
+        track = factories.TimedTextTrackFactory(video=video)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.delete(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+    def test_api_timed_text_track_delete_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user deletes a timed text track for a video.
+
+        A user with a user token, who is a playlist administrator, can delete a timed
+        text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an administrator, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(playlist=playlist)
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+
+        track = factories.TimedTextTrackFactory(video=video)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.delete(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
+
+    def test_api_timed_text_track_delete_by_video_organization_instructor(self):
+        """
+        Organization instructor token user deletes a timed text track for a video.
+
+        A user with a user token, who is an organization instructor, cannot delete a
+        timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+
+        track = factories.TimedTextTrackFactory(video=video)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.delete(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+    def test_api_timed_text_track_delete_by_video_organization_admin(self):
+        """
+        Organization administrator token user deletes a timed text track for a video.
+
+        A user with a user token, who is an organization administrator, can delete a
+        timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an admin, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(playlist=playlist)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+
+        track = factories.TimedTextTrackFactory(video=video)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        response = self.client.delete(
+            f"/api/timedtexttracks/{track.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
 
     def test_api_timed_text_track_initiate_upload_anonymous_user(self):
         """Anonymous users should not be allowed to initiate an upload."""
         timed_text_track = TimedTextTrackFactory()
 
         response = self.client.post(
-            "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id)
+            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
         )
 
         self.assertEqual(response.status_code, 401)
@@ -947,10 +1928,8 @@ class TimedTextTrackAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/timedtexttracks/{!s}/initiate-upload/".format(
-                    timed_text_track.id
-                ),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -994,10 +1973,8 @@ class TimedTextTrackAPITest(TestCase):
 
         # Try initiating an upload for a timed_text_track linked to another video
         response = self.client.post(
-            "/api/timedtexttracks/{!s}/initiate-upload/".format(
-                other_ttt_for_other_video.id
-            ),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{other_ttt_for_other_video.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -1015,7 +1992,7 @@ class TimedTextTrackAPITest(TestCase):
         ]:
             self.client.login(username=user.username, password="test")
             response = self.client.post(
-                "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id)
+                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
             )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
@@ -1033,7 +2010,263 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/timedtexttracks/{!s}/initiate-upload/".format(timed_text_track.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_initiate_upload_by_user_with_no_access(self):
+        """
+        Token user without any access initiates upload for a timed text track for a video.
+
+        A user with a user token, without any specific access, cannot initiate an upload
+        for any timed text track.
+        """
+        user = factories.UserFactory()
+        video = factories.VideoFactory(
+            id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+        )
+        track = factories.TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_initiate_upload_by_video_playlist_instructor(self):
+        """
+        Playlist instructor token user initiates upload for a timed text track for a video.
+
+        A user with a user token, who is a playlist instructor, cannot initiate an upload for
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an instructor, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(
+            id="b8d40ed7-95b8-4848-98c9-50728dfee25d", playlist=playlist
+        )
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_initiate_upload_by_video_playlist_admin(self):
+        """
+        Playlist administrator token user initiates upload a timed text track for a video.
+
+        A user with a user token, who is a playlist administrator, can initiate an upload for
+        a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # A playlist where the user is an administrator, with a video
+        playlist = factories.PlaylistFactory()
+        video = factories.VideoFactory(
+            id="b8d40ed7-95b8-4848-98c9-50728dfee25d", playlist=playlist
+        )
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
+                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
+                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
+                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
+                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
+                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
+                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                    ),
+                    "x-amz-signature": (
+                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                    ),
+                },
+            },
+        )
+
+    def test_api_timed_text_track_initiate_upload_by_video_organization_instructor(
+        self,
+    ):
+        """
+        Organization instructor token user initiates upload for a timed text track for a video.
+
+        A user with a user token, who is an organization instructor, cannot initiate an upload
+        for a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an instructor, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(
+            id="b8d40ed7-95b8-4848-98c9-50728dfee25d", playlist=playlist
+        )
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+        track = factories.TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_timed_text_track_initiate_upload_by_video_organization_admin(self):
+        """
+        Organization administrator token user initiates upload for a timed text track for a video.
+
+        A user with a user token, who is an organization administrator, can initiate an upload
+        for a timed text track for a video that belongs to that playlist.
+        """
+        user = factories.UserFactory()
+        # An organization where the user is an admin, with a playlist with a video
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        video = factories.VideoFactory(
+            id="b8d40ed7-95b8-4848-98c9-50728dfee25d", playlist=playlist
+        )
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.ADMINISTRATOR
+        )
+        track = factories.TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {"id": str(user.id)}
+
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
+                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
+                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
+                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
+                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
+                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
+                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                    ),
+                    "x-amz-signature": (
+                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                    ),
+                },
+            },
+        )
