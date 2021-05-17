@@ -73,6 +73,15 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         # user here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
+        # Set the video field from the payload if there is one and the user is identified
+        # as a proper user object through access rights
+        if (
+            self.initial_data.get("video")
+            and user.token.get("user")
+            and user.token["resource_id"] == user.token.get("user", {}).get("id")
+        ):
+            validated_data["video_id"] = self.initial_data.get("video")
+        # If the user just has a token for a video, force the video ID on the timed text track
         if not validated_data.get("video_id") and isinstance(user, TokenUser):
             validated_data["video_id"] = user.id
         return super().create(validated_data)
