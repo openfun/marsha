@@ -88,7 +88,7 @@ export const Routes = () => (
             if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
               return (
                 <InstructorWrapper resource={appData.video}>
-                  <Chat xmpp={appData.video.xmpp} />
+                  <Chat video={appData.video} />
                 </InstructorWrapper>
               );
             }
