@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getResource as fetchResource } from '../../data/sideEffects/getResource';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { addResource, getResource } from '../../data/stores/generics';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
@@ -31,6 +32,11 @@ const UploadSuccessHandler = ({
           objectType,
         );
       }
+    }
+
+    if (objectState.status === UploadManagerStatus.UPLOADING) {
+      const { objectId, objectType } = objectState;
+      await fetchResource(objectType, objectId);
     }
   }, [objectState.status]);
 
