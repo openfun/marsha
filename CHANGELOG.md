@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fetch fresh resource data after initiate-upload endpoint called
+- Reset upload manager state before starting a new upload
 
 ## [3.18.0] - 2021-05-10
 
