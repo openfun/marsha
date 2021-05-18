@@ -96,7 +96,7 @@ export interface UploadFormProps {
 }
 
 export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
-  const { uploadManagerState } = useUploadManager();
+  const { uploadManagerState, resetUpload } = useUploadManager();
   const objectStatus = uploadManagerState[objectId]?.status;
 
   const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
@@ -112,6 +112,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   };
 
   useEffect(() => {
+    if (uploadManagerState[objectId]) resetUpload(objectId);
     window.addEventListener('beforeunload', beforeUnload);
     return () => window.removeEventListener('beforeunload', beforeUnload);
   }, []);
