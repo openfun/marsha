@@ -25,7 +25,6 @@ jest.mock('../../data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
 jest.mock('../../data/stores/generics', () => ({
-  addResource: jest.fn(),
   getResource: jest.fn(),
 }));
 

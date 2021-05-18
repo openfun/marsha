@@ -2,8 +2,10 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+import { getResource as fetchResource } from '../../data/sideEffects/getResource';
 import { updateResource } from '../../data/sideEffects/updateResource';
 import { addResource, getResource } from '../../data/stores/generics';
+import { requestStatus } from '../../types/api';
 import { modelName } from '../../types/models';
 import { Thumbnail, Video } from '../../types/tracks';
 import { LTIUploadHandlers } from './LTIUploadHandlers';
@@ -17,11 +19,17 @@ jest.mock('../../data/stores/generics', () => ({
   addResource: jest.fn(),
   getResource: jest.fn(),
 }));
+jest.mock('../../data/sideEffects/getResource', () => ({
+  getResource: jest.fn(),
+}));
 
 const mockAddResource = addResource as jest.MockedFunction<typeof addResource>;
 const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 const mockUpdateResource = updateResource as jest.MockedFunction<
   typeof updateResource
+>;
+const mockFetResource = fetchResource as jest.MockedFunction<
+  typeof fetchResource
 >;
 
 describe('<LTIUploadHandlers />', () => {
@@ -82,6 +90,48 @@ describe('<LTIUploadHandlers />', () => {
         },
         modelName.VIDEOS,
       );
+    });
+  });
+
+  it('fetch the resource when the upload manager status is UPLOADING', async () => {
+    mockFetResource.mockResolvedValue(requestStatus.SUCCESS);
+
+    const { rerender } = render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [objectState.objectId]: {
+              ...objectState,
+              status: UploadManagerStatus.INIT,
+            },
+          },
+        }}
+      >
+        <LTIUploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    expect(mockFetResource).not.toHaveBeenCalled();
+
+    rerender(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [objectState.objectId]: {
+              ...objectState,
+              status: UploadManagerStatus.UPLOADING,
+            },
+          },
+        }}
+      >
+        <LTIUploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(mockFetResource).toHaveBeenCalledWith(modelName.VIDEOS, object.id);
     });
   });
 
