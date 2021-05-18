@@ -245,4 +245,93 @@ describe('<UploadManager />', () => {
       });
     }
   });
+
+  it('resets the state', async () => {
+    const objectType = modelName.VIDEOS;
+    const objectId = uuidv4();
+    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+
+    const initiateUploadDeferred = new Deferred();
+    const mockInitiateUpload = fetchMock.mock(
+      `/api/videos/${objectId}/initiate-upload/`,
+      initiateUploadDeferred.promise,
+      { method: 'POST' },
+    );
+
+    const fileUploadDeferred = new Deferred<MockResponse>();
+    xhrMock.post(
+      'https://s3.aws.example.com/',
+      () => fileUploadDeferred.promise,
+    );
+
+    render(
+      <UploadManager>
+        <TestComponent />
+      </UploadManager>,
+    );
+
+    {
+      const { addUpload, uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({});
+      act(() => addUpload(objectType, objectId, file));
+    }
+    {
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.INIT,
+        },
+      });
+      expect(mockInitiateUpload.calls()).toHaveLength(1);
+    }
+    {
+      await act(async () =>
+        initiateUploadDeferred.resolve({
+          fields: {
+            key: 'foo',
+          },
+          url: 'https://s3.aws.example.com/',
+        }),
+      );
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.UPLOADING,
+        },
+      });
+    }
+    {
+      await act(async () =>
+        fileUploadDeferred.resolve(
+          new MockResponse().body('form data body').status(204),
+        ),
+      );
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.SUCCESS,
+        },
+      });
+    }
+    {
+      const { resetUpload } = getLatestHookValues();
+      act(() => resetUpload(objectId));
+    }
+    {
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({});
+    }
+  });
 });

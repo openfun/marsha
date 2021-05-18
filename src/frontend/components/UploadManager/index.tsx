@@ -148,5 +148,16 @@ export const useUploadManager = () => {
     }));
   };
 
-  return { addUpload, uploadManagerState };
+  const resetUpload = (objectId: string) => {
+    setUploadState((state) =>
+      Object.keys(state)
+        .filter((resourceId) => resourceId !== objectId)
+        .reduce(
+          (acc, resourceId) => ({ ...acc, [resourceId]: state[resourceId] }),
+          {},
+        ),
+    );
+  };
+
+  return { addUpload, resetUpload, uploadManagerState };
 };
