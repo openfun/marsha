@@ -228,6 +228,70 @@ describe('<DashboardThumbnail />', () => {
     useThumbnailStub.reset();
   });
 
+  it('displays an explanatory message when a thumbnail is pending but upload state is success', () => {
+    const file = new File(['(⌐□_□)'], 'thumb.png');
+    const videoWithLoadingThumbnail = videoMockFactory({
+      id: '43',
+      is_ready_to_show: true,
+      show_download: true,
+      thumbnail: {
+        active_stamp: 128748302847,
+        id: '42',
+        is_ready_to_show: true,
+        upload_state: uploadState.PENDING,
+        urls: {
+          144: 'https://example.com/thumbnail/144',
+          240: 'https://example.com/thumbnail/240',
+          480: 'https://example.com/thumbnail/480',
+          720: 'https://example.com/thumbnail/720',
+          1080: 'https://example.com/thumbnail/1080',
+        },
+        video: '43',
+      },
+      upload_state: uploadState.READY,
+    });
+
+    useThumbnailStub.returns({
+      addThumbnail: mockAddThumbnail,
+      thumbnail: videoWithLoadingThumbnail.thumbnail,
+    });
+
+    render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: jest.fn(),
+          uploadManagerState: {
+            42: {
+              file,
+              objectId: '42',
+              objectType: modelName.THUMBNAILS,
+              progress: 0,
+              status: UploadManagerStatus.SUCCESS,
+            },
+          },
+        }}
+      >
+        {wrapInIntlProvider(
+          <DashboardThumbnail video={videoWithLoadingThumbnail} />,
+        )}
+      </UploadManagerContext.Provider>,
+    );
+
+    // The thumbnail image, error message and progress indicator are not shown
+    expect(screen.queryByAltText('Video thumbnail preview image.')).toEqual(
+      null,
+    );
+    expect(
+      screen.queryByText('There was an error during thumbnail creation.'),
+    ).toEqual(null);
+    expect(screen.queryByText('0%')).toEqual(null);
+    // The processing message is shown
+    screen.getByText(
+      'Your thumbnail is currently processing. This may take several minutes. It will appear here once done.',
+    );
+    useThumbnailStub.reset();
+  });
+
   it('displays an error message when there is an issue with a thumbnail', () => {
     const videoWithErroredThumbnail = videoMockFactory({
       id: '43',
