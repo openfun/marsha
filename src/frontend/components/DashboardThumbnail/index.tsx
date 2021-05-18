@@ -1,5 +1,5 @@
 import { Box, Button, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
@@ -42,7 +42,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState(null);
-  const [pollInterval, setPollInterval] = useState(-1);
+  const pollInterval = useRef(-1);
 
   const { uploadManagerState } = useUploadManager();
   const { addThumbnail, thumbnail } = useThumbnail((state) => ({
@@ -50,21 +50,30 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     thumbnail: state.getThumbnail(),
   }));
 
+  const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
+
+  const cleanup = () => {
+    if (pollInterval.current > -1) {
+      window.clearInterval(pollInterval.current);
+    }
+  };
+
   useEffect(() => {
     if (
       thumbnail &&
-      thumbnail.upload_state === uploadState.PROCESSING &&
-      pollInterval === -1
+      [uploadState.PROCESSING, uploadState.PENDING].includes(
+        thumbnail.upload_state,
+      ) &&
+      pollInterval.current === -1
     ) {
-      setPollInterval(window.setInterval(() => pollThumbnail(), 1000 * 5));
+      pollInterval.current = window.setInterval(
+        () => pollThumbnail(),
+        1000 * 5,
+      );
     }
 
-    return function cleanup() {
-      if (pollInterval > -1) {
-        window.clearInterval(pollInterval);
-      }
-    };
-  });
+    return cleanup;
+  }, [thumbnailState]);
 
   const pollThumbnail = async () => {
     try {
@@ -82,6 +91,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
         incomingThumbnail.is_ready_to_show &&
         incomingThumbnail.upload_state === uploadState.READY
       ) {
+        cleanup();
         addThumbnail(incomingThumbnail);
       }
     } catch (error) {
@@ -111,8 +121,6 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     );
   }
 
-  const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
-
   if (thumbnailState === uploadState.ERROR) {
     return (
       <Box>
@@ -123,7 +131,11 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     );
   }
 
-  if (thumbnailState === uploadState.PROCESSING) {
+  if (
+    thumbnailState === uploadState.PROCESSING ||
+    (thumbnailState === uploadState.PENDING &&
+      uploadManagerState[thumbnail!.id]?.status === UploadManagerStatus.SUCCESS)
+  ) {
     return (
       <Box>
         <Text weight="bold">
@@ -135,7 +147,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
 
   if (
     thumbnailState === uploadState.PENDING &&
-    uploadManagerState[thumbnail!.id].status === UploadManagerStatus.UPLOADING
+    uploadManagerState[thumbnail!.id]?.status === UploadManagerStatus.UPLOADING
   ) {
     return (
       <Box>

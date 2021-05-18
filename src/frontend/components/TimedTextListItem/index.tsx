@@ -92,7 +92,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
         }
       }, 1000 * 10);
     }
-  }, []);
+  }, [track.upload_state]);
 
   if (error) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
