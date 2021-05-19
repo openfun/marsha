@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-medialive",
-  "version": "3.18.0",
+  "version": "3.19.0",
   "engines": {
     "node": "14"
   },
