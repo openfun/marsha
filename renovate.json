@@ -4,18 +4,16 @@
   "commitMessageTopic": "{{depName}}",
   "enabledManagers": ["npm"],
   "extends": ["config:base"],
-  "packageRules": [
-    {
-      "packagePatterns": ["*"],
-      "groupName": "npm dependencies",
-      "schedule": ["before 7am on monday"]
-    }
-  ],
+  "packageRules": [{
+    "groupName": "npm dependencies",
+    "schedule": ["before 7am on monday"],
+    "matchPackagePatterns": ["*"]
+  }],
   "prConcurrentLimit": 2,
   "prHourlyLimit": 1,
   "prCreation": "not-pending",
-  "rebaseStalePrs": true,
-  "semanticCommits": false,
+  "semanticCommits": "disabled",
   "separateMajorMinor": false,
-  "updateNotScheduled": true
+  "updateNotScheduled": true,
+  "rebaseWhen": "behind-base-branch"
 }
