@@ -63,6 +63,7 @@ bootstrap: \
 build: ## build the app container
 	@$(COMPOSE) build base;
 	@$(COMPOSE) build app;
+	@$(COMPOSE) build e2e;
 .PHONY: build
 
 build-lambda-dev: ## build all aws lambda
@@ -187,10 +188,19 @@ prosody-admin: ## create prosody admin user
 	$(COMPOSE_RUN) prosody-app prosodyctl register admin prosody-app "${DJANGO_XMPP_PRIVATE_SERVER_PASSWORD}"
 .PHONY: 
 
-.PHONY: test
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	bin/pytest
+	bin/pytest marsha/core/tests/
+.PHONY: test
+
+build-e2e: ## build the e2e container
+	@$(COMPOSE) build e2e;
+.PHONY: build-e2e
+
+e2e:  ## Run e2e tests for the marsha project.
+	@echo "$(BOLD)Running e2e tests$(RESET)"
+	bin/e2e --browser firefox --browser chromium --browser webkit marsha/e2e/
+.PHONY: e2e
 
 ## -- Front-end
 

@@ -122,6 +122,7 @@
         cross-origin call.
       </p>
       <form
+        id="lti_resource_iframe"
         method="post"
         target="lti_iframe"
         class="resource"
@@ -226,6 +227,7 @@
         request.
       </p>
       <form
+        id="lti_resource_page"
         method="post"
         class="resource"
       >
@@ -237,11 +239,14 @@
           <label>resource_link_id</label>
           <input type="text" name="resource_link_id" value="example.com-df7" />
         </div>
-        <input
-          type="text"
-          name="context_id"
-          value="course-v1:ufr+mathematics+0001"
-        />
+        <div class="input-group">
+          <label>context_id</label>
+          <input
+            type="text"
+            name="context_id"
+            value="course-v1:ufr+mathematics+0001"
+          />
+        </div>
         <div class="input-group">
           <label>roles</label>
           <input type="text" name="roles" value="Instructor" />
@@ -262,6 +267,14 @@
           <label>lis_person_contact_email_primary</label>
           <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
         </div>
+
+        {% for key, value in oauth_dict.items %}
+        <div class="input-group">
+          <label>{{ key }}</label>
+          <input type="text" name="{{ key }}" value="{{ value }}"/>
+        </div>
+        {% endfor %}
+
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
         <input type="hidden" name="lti_version" value="LTI-1p0" />
         <input type="hidden" name="lis_person_sourcedid" value="John" />

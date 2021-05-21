@@ -21,13 +21,14 @@ from marsha.core.api import (
     update_state,
 )
 from marsha.core.views import (
-    DevelopmentLTIView,
     DocumentView,
     LTIRespondView,
     LTISelectView,
     SiteView,
     VideoView,
 )
+from marsha.development.api import local_upload
+from marsha.development.views import DevelopmentLTIView
 
 
 router = DefaultRouter()
@@ -68,5 +69,10 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        path("development/", DevelopmentLTIView.as_view(), name="lti-development-view")
+        path("development/", DevelopmentLTIView.as_view(), name="lti-development-view"),
+    ]
+
+if "dummy" in settings.STORAGE_BACKEND:
+    urlpatterns += [
+        path("api/upload/<uuid:uuid>", local_upload, name="local-upload"),
     ]

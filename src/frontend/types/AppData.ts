@@ -41,4 +41,5 @@ export interface AppData {
   flags?: {
     [key in flags]?: boolean;
   };
+  uploadPollInterval: number;
 }

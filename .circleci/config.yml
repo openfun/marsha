@@ -29,7 +29,7 @@ generate-version-file: &generate-version-file
         "$CIRCLE_PROJECT_REPONAME" \
         "$CIRCLE_BUILD_URL" > src/backend/marsha/version.json
 
-version: 2
+version: 2.1
 jobs:
   # Git jobs
   # Check that the git history is clean and complies with our expectations
@@ -327,7 +327,7 @@ jobs:
                 dockerize \
                   -wait tcp://localhost:5432 \
                   -timeout 60s \
-                    ~/.local/bin/pytest
+                    ~/.local/bin/pytest marsha/core/tests
 
   # ---- Front-end jobs ----
   build-front:
@@ -403,6 +403,81 @@ jobs:
       - run:
           name: Run tests
           command: yarn test -w 1
+
+  test-e2e:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+        environment:
+          DJANGO_SETTINGS_MODULE: marsha.settings
+          PYTHONPATH: /home/circleci/marsha/src/backend
+          DJANGO_CONFIGURATION: Test
+          DJANGO_SECRET_KEY: ThisIsAnExampleKeyForTestPurposeOnly
+          DJANGO_JWT_SIGNING_KEY: ThisIsAnExampleKeyForDevPurposeOnly
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: marsha
+          POSTGRES_USER: marsha_user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_PORT: 5432
+          DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
+          DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
+          DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
+          DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
+          DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
+          DOCKERIZE_VERSION: v0.6.1
+          DJANGO_ALLOW_ASYNC_UNSAFE: 1
+      - image: circleci/postgres:10.3-alpine-ram
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+        environment:
+          POSTGRES_DB: marsha
+          POSTGRES_USER: marsha_user
+          POSTGRES_PASSWORD: pass
+    working_directory: ~/marsha/src/backend
+    parameters:
+      browser:
+        description: "Playwright browser"
+        default: "firefox"
+        type: string
+    steps:
+      - checkout:
+          path: ~/marsha
+      - run:
+          name: Install e2e dependencies
+          command: pip install --user .[dev,e2e]
+      - run:
+          name: Install front-end dependencies
+          working_directory: ~/marsha/src/frontend
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Build front-end application
+          working_directory: ~/marsha/src/frontend
+          command: yarn build
+      - run:
+          name: Ensure << parameters.browser >> browser is installed
+          command: python -m playwright install "<< parameters.browser >>"
+      - run:
+          name: Install dockerize
+          command: |
+                curl -LO https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+                && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+                && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+      - run:
+          name: Copy e2e media files
+          command: |
+                mkdir -p /data/media \
+                && cp -r marsha/e2e/media /data/media/e2e
+      - run:
+          name: Run e2e tests
+          command: |
+                dockerize \
+                  -wait tcp://localhost:5432 \
+                  -timeout 60s \
+                    ~/.local/bin/pytest --browser "<< parameters.browser >>" marsha/e2e
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
@@ -1027,6 +1102,24 @@ workflows:
               ignore: master
             tags:
               ignore: /.*/
+      - test-e2e:
+          name: test-e2e-firefox
+          browser: firefox
+          filters:
+            tags:
+              only: /.*/
+      - test-e2e:
+          name: test-e2e-chromium
+          browser: chromium
+          filters:
+            tags:
+              only: /.*/
+      - test-e2e:
+          name: test-e2e-webkit
+          browser: webkit
+          filters:
+            tags:
+              only: /.*/
 
       # i18n jobs
       #

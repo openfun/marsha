@@ -155,7 +155,10 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
           UploadManagerStatus.UPLOADING ||
           uploadManagerState[video.id]?.status === UploadManagerStatus.SUCCESS))
     ) {
-      const interval = window.setInterval(() => pollForVideo(), 1000 * 60);
+      const interval = window.setInterval(
+        () => pollForVideo(),
+        1000 * appData.uploadPollInterval,
+      );
 
       return () => {
         // As a matter of hygiene, stop the polling as we unmount
