@@ -37,7 +37,7 @@ from .lti.utils import (
     get_selectable_resources,
 )
 from .models import Document, Playlist, Video
-from .models.account import NONE, ConsumerSite, LTIPassport
+from .models.account import NONE, LTIPassport
 from .serializers import (
     DocumentSelectLTISerializer,
     DocumentSerializer,
@@ -263,6 +263,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     else None,
                     "state": "success",
                     "player": settings.VIDEO_PLAYER,
+                    "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
                 }
             )
 
@@ -661,83 +662,3 @@ class LTIRespondView(TemplateResponseMixin, View):
         return self.render_to_response(
             {"form_action": content_item_return_url, "form_data": lti_parameters}
         )
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(xframe_options_exempt, name="dispatch")
-class DevelopmentLTIView(TemplateView):
-    """A development view with iframe POST / plain POST helpers.
-
-    Not available outside of DEBUG = true environments.
-
-    """
-
-    template_name = "core/lti_development.html"
-
-    def get_context_data(self, **kwargs):
-        """Generate a UUID to pre-populate the `uuid` fields in the LTI request form.
-
-        Parameters
-        ----------
-        kwargs : dictionary
-            keyword extra arguments
-
-        Returns
-        -------
-        dictionary
-            context for template rendering
-
-        """
-        domain = self.request.build_absolute_uri("/").split("/")[2]
-        try:
-            consumer_site = ConsumerSite.objects.get(domain=domain)
-        except ConsumerSite.DoesNotExist:
-            consumer_site, _ = ConsumerSite.objects.get_or_create(
-                domain=domain, name=domain
-            )
-
-        try:
-            playlist = Playlist.objects.get(consumer_site=consumer_site)
-        except Playlist.DoesNotExist:
-            playlist, _ = Playlist.objects.get_or_create(
-                consumer_site=consumer_site, title=domain, lti_id=domain
-            )
-
-        passport, _ = LTIPassport.objects.get_or_create(playlist=playlist)
-
-        oauth_dict = {
-            "oauth_consumer_key": passport.oauth_consumer_key,
-        }
-
-        return {
-            "domain": domain,
-            "uuid": uuid.uuid4(),
-            "select_context_id": playlist.lti_id,
-            "select_content_item_return_url": self.request.build_absolute_uri(
-                reverse("lti-development-view")
-            ),
-            "oauth_dict": oauth_dict,
-        }
-
-    # pylint: disable=unused-argument
-    def post(self, request, *args, **kwargs):
-        """Respond to POST request.
-
-        Context populated with POST request.
-
-        Parameters
-        ----------
-        request : Request
-            passed by Django
-        args : list
-            positional extra arguments
-        kwargs : dictionary
-            keyword extra arguments
-
-        Returns
-        -------
-        HTML
-            generated from applying the data to the template
-
-        """
-        return self.render_to_response({"content_selected": self.request.POST})

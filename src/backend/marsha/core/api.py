@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from . import defaults, forms, permissions, serializers
+from . import defaults, forms, permissions, serializers, storage
 from .lti import LTIUser
 from .models import Document, Organization, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
@@ -333,11 +333,11 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         ],
     )
     # pylint: disable=unused-argument
-    def initate_upload(self, request, pk=None):
+    def initiate_upload(self, request, pk=None):
         """Get an upload policy for a video.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to
-        our AWS S3 source bucket.
+        selected video backend.
 
         Parameters
         ----------
@@ -349,28 +349,15 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+            HttpResponse carrying the upload policy as a JSON object.
 
         """
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
-        video = self.get_object()
-        key = video.get_source_s3_key(stamp=stamp)
-
-        presigned_post = create_presigned_post(
-            [
-                ["starts-with", "$Content-Type", "video/"],
-                ["content-length-range", 0, settings.VIDEO_SOURCE_MAX_SIZE],
-            ],
-            {},
-            key,
-        )
+        response = storage.get_initiate_backend().initiate_video_upload(request, pk)
 
         # Reset the upload state of the video
         Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(presigned_post)
+        return Response(response)
 
     @action(
         methods=["post"],
@@ -621,7 +608,7 @@ class DocumentViewSet(
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def initate_upload(self, request, pk=None):
+    def initiate_upload(self, request, pk=None):
         """Get an upload policy for a file.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to

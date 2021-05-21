@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:cenc="urn:mpeg:cenc:2013" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" type="static" minBufferTime="PT14S" profiles="urn:mpeg:dash:profile:isoff-main:2011" mediaPresentationDuration="PT1.056S">
+  <Period start="PT0S" duration="PT1.056S" id="1">
+    <AdaptationSet mimeType="video/mp4" frameRate="24000/1000" segmentAlignment="true" subsegmentAlignment="true" startWithSAP="1" subsegmentStartsWithSAP="1" bitstreamSwitching="false">
+      <SegmentTemplate timescale="96000" duration="1800000" startNumber="1"/>
+      <Representation id="1" width="1920" height="1080" bandwidth="5400000" codecs="avc1.4d4028">
+        <SegmentTemplate media="1622122634_1080_$Number%09d$.cmfv" initialization="1622122634_1080init.cmfv" duration="1800000" startNumber="1"/>
+      </Representation>
+      <Representation id="2" width="1280" height="720" bandwidth="2400000" codecs="avc1.4d401f">
+        <SegmentTemplate media="1622122634_720_$Number%09d$.cmfv" initialization="1622122634_720init.cmfv" duration="1800000" startNumber="1"/>
+      </Representation>
+      <Representation id="3" width="854" height="480" bandwidth="1200000" codecs="avc1.4d401e">
+        <SegmentTemplate media="1622122634_480_$Number%09d$.cmfv" initialization="1622122634_480init.cmfv" duration="1800000" startNumber="1"/>
+      </Representation>
+      <Representation id="4" width="428" height="240" bandwidth="600000" codecs="avc1.4d4015">
+        <SegmentTemplate media="1622122634_240_$Number%09d$.cmfv" initialization="1622122634_240init.cmfv" duration="1800000" startNumber="1"/>
+      </Representation>
+      <Representation id="5" width="256" height="144" bandwidth="300000" codecs="avc1.4d400c">
+        <SegmentTemplate media="1622122634_144_$Number%09d$.cmfv" initialization="1622122634_144init.cmfv" duration="1800000" startNumber="1"/>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4" segmentAlignment="0">
+      <SegmentTemplate timescale="32000" media="1622122634_64k_$Number%09d$.cmfa" initialization="1622122634_64kinit.cmfa" duration="600000" startNumber="1"/>
+      <Representation id="6" bandwidth="64000" audioSamplingRate="32000" codecs="mp4a.40.2"/>
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4" segmentAlignment="0">
+      <SegmentTemplate timescale="32000" media="1622122634_96k_$Number%09d$.cmfa" initialization="1622122634_96kinit.cmfa" duration="600000" startNumber="1"/>
+      <Representation id="7" bandwidth="96000" audioSamplingRate="32000" codecs="mp4a.40.2"/>
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4" segmentAlignment="0">
+      <SegmentTemplate timescale="44100" media="1622122634_128k_$Number%09d$.cmfa" initialization="1622122634_128kinit.cmfa" duration="826875" startNumber="1"/>
+      <Representation id="8" bandwidth="128000" audioSamplingRate="44100" codecs="mp4a.40.2"/>
+    </AdaptationSet>
+  </Period>
+</MPD>
