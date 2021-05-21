@@ -18,6 +18,7 @@ jest.mock('../../data/appData', () => ({
   appData: {
     jwt: 'cool_token_m8',
     flags: {},
+    uploadPollInterval: 60,
   },
 }));
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));

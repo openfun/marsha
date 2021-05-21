@@ -203,6 +203,7 @@ class Base(Configuration):
     REACT_LOCALES = values.ListValue(["en_US", "es_ES", "fr_FR", "fr_CA"])
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
+    STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
 
     # Logging
     LOGGING = values.DictValue(
@@ -258,6 +259,7 @@ class Base(Configuration):
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
     VIDEO_PLAYER = values.Value("videojs")
+    FRONT_UPLOAD_POLL_INTERVAL = values.Value("60")
 
     MAINTENANCE_MODE = values.BooleanValue(False)
 

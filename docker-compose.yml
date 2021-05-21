@@ -42,6 +42,24 @@ services:
     stdin_open: true
     tty: true
 
+  e2e:
+    build:
+      context: .
+      dockerfile: ./docker/images/e2e/Dockerfile
+    image: marsha:e2e
+    env_file:
+      - env.d/${ENV_FILE:-development}
+    ports:
+      - "8070:8000"
+    volumes:
+      - .:/app
+      - ./data/static:/data/static
+      - ./src/backend/marsha/e2e/media:/data/media/e2e
+    depends_on:
+      - "app"
+    stdin_open: true
+    tty: true
+
   ngrok:
     image: wernight/ngrok
     command: ngrok http app:8000

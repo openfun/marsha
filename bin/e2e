@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+export ENV_FILE=test
+
+# Allow X server connection
+xhost +local:root
+
+# open Playwright Inspector during tests
+# https://playwright.dev/python/docs/inspector#open-playwright-inspector
+#    -e PWDEBUG=1 \
+
+# Run in Debug Mode
+# https://playwright.dev/python/docs/debug#selectors-in-developer-tools-console
+#    -e PWDEBUG=console \
+
+# output debug logs during execution
+# https://playwright.dev/python/docs/ci#debugging-browser-launches
+#    -e DEBUG=pw:browser* \
+
+# Verbose API logs
+# https://playwright.dev/python/docs/debug#verbose-api-logs
+#    -e DEBUG=pw:api \
+
+
+docker-compose run --rm \
+    -e DISPLAY \
+    -e QT_X11_NO_MITSHM=1 \
+    -e DJANGO_ALLOW_ASYNC_UNSAFE=1 \
+    -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    e2e pytest "$@"
+
+# Disallow X server connection
+xhost -local:root

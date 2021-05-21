@@ -14,6 +14,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Use chat when a live is publicly available
 - Set chat nickname when user is connected
 - Display a waiting message while live is not available
+- Add Playrwright testing (with basic cloud storage mocking)
+- Update circleci config to version 2.1
+- Add a parametrized cicrcleci job to run e2e tests on 3 browsers (chromium, firefox and webkit)
+- Move DevelopmentLTIView to a new development directory
+- Add a variable to set frontend video polling interval
 
 ### Changed
 
