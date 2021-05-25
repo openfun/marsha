@@ -105,62 +105,6 @@ describe('components/DashboardVideoLive', () => {
     screen.getByRole('button', { name: /stop streaming/i });
   });
 
-  it('clicks on show live and redirects to the video player', () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.RUNNING }}
-            />
-          </Suspense>,
-          [
-            {
-              path: PLAYER_ROUTE(modelName.VIDEOS),
-              render: () => <span>video player</span>,
-            },
-          ],
-        ),
-      ),
-    );
-
-    const showLiveButton = screen.getByRole('button', { name: /show live/i });
-    expect(screen.queryByText('video player')).not.toBeInTheDocument();
-
-    fireEvent.click(showLiveButton);
-
-    screen.getByText('video player');
-  });
-
-  it('clicks on show chat only and redirects to the chat component', () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.RUNNING }}
-            />
-          </Suspense>,
-          [
-            {
-              path: CHAT_ROUTE(),
-              render: () => <span>chat component</span>,
-            },
-          ],
-        ),
-      ),
-    );
-
-    const showChatOnlyButton = screen.getByRole('button', {
-      name: /show chat only/i,
-    });
-    expect(screen.queryByText('chat component')).not.toBeInTheDocument();
-
-    fireEvent.click(showChatOnlyButton);
-
-    screen.getByText('chat component');
-  });
-
   it('polls the video when live state is STARTING', async () => {
     fetchMock.mock(
       '/api/videos/9e02ae7d-6c18-40ce-95e8-f87bbeae31c5/',
