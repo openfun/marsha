@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Display chat in dashboard during a jitsi live
+
 ## [3.19.0] - 2021-05-10
 
 ### Added

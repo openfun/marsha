@@ -12,6 +12,7 @@ import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
 import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
+import { DashboardVideoLiveRunning } from '../DashboardVideoLiveRunning';
 import { DashboardButtonWithLink } from '../DashboardPaneButtons';
 
 const DashboardVideoLiveRaw = lazy(() => import('../DashboardVideoLiveRaw'));
@@ -34,16 +35,6 @@ const messages = defineMessages({
     defaultMessage: 'url',
     description: 'Video url streaming.',
     id: 'components.DashboardVideoLive.url',
-  },
-  showLive: {
-    defaultMessage: 'show live',
-    description: 'button to redirect use to video player.',
-    id: 'components.DashboardVideoLive.showLive',
-  },
-  chatOnly: {
-    defaultMessage: 'show chat only',
-    description: 'button to redirect to the chat only view.',
-    id: 'components.DashboardVideoLive.chatOnly',
   },
   liveCreating: {
     defaultMessage:
@@ -142,23 +133,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Text>
         )}
         {video.live_state === liveState.RUNNING && (
-          <React.Fragment>
-            {video.live_info.type === LiveModeType.RAW && (
-              <React.Fragment>
-                <DashboardButtonWithLink
-                  label={<FormattedMessage {...messages.chatOnly} />}
-                  primary={false}
-                  to={CHAT_ROUTE()}
-                />
-                <DashboardButtonWithLink
-                  label={<FormattedMessage {...messages.showLive} />}
-                  primary={false}
-                  to={PLAYER_ROUTE(modelName.VIDEOS)}
-                />
-              </React.Fragment>
-            )}
-            <DashboardVideoLiveStopButton video={video} />
-          </React.Fragment>
+          <DashboardVideoLiveRunning video={video} />
         )}
         {video.live_state === liveState.STOPPED && (
           <Text>
