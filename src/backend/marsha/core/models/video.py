@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import HARVESTED, LIVE_CHOICES, RUNNING
+from ..defaults import DELETED, HARVESTED, LIVE_CHOICES, RUNNING
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
@@ -121,7 +121,8 @@ class Video(BaseFile):
         `uploaded_on` field but it is necessary for conveniency and clarity in the client.
         """
         return (
-            self.uploaded_on is not None and self.upload_state != HARVESTED
+            self.uploaded_on is not None
+            and self.upload_state not in [HARVESTED, DELETED]
         ) or self.live_state == RUNNING
 
     @staticmethod
