@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from waffle.testutils import override_switch
 
 from ..defaults import (
+    DELETED,
     HARVESTED,
     IDLE,
     PENDING,
@@ -768,7 +769,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__title="playlist-003",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             upload_state=random.choice(
-                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
@@ -877,7 +878,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__consumer_site=passport.consumer_site,
             playlist__title="playlist-002",
             upload_state=random.choice(
-                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480],
@@ -1093,7 +1094,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__consumer_site=passport.consumer_site,
             playlist__title="playlist-002",
             upload_state=random.choice(
-                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
