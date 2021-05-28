@@ -10,7 +10,7 @@ from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..defaults import HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
+from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
 from ..factories import VideoFactory
 
 
@@ -32,7 +32,7 @@ class VideoPublicViewTestCase(TestCase):
             is_public=True,
             resolutions=[144, 240, 480, 720, 1080],
             upload_state=random.choice(
-                [s[0] for s in STATE_CHOICES if s[0] != HARVESTED]
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
         )
