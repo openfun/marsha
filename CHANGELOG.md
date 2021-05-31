@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Display chat in dashboard during a jitsi live
+- Use chat when a live is publicly available
 
 ## [3.19.0] - 2021-05-10
 

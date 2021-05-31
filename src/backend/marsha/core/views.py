@@ -227,6 +227,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         permissions = {"can_access_dashboard": False, "can_update": False}
 
         user_id = getattr(lti, "user_id", None) if lti else None
+        session_id = str(uuid.uuid4())
 
         if app_data is None:
             resource = (
@@ -256,6 +257,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                             else False,
                             "roles": lti.roles if lti else [],
                             "user_id": user_id,
+                            "session_id": session_id,
                         },
                     ).data
                     if resource
@@ -282,7 +284,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             jwt_token = AccessToken()
             jwt_token.payload.update(
                 {
-                    "session_id": str(uuid.uuid4()),
+                    "session_id": session_id,
                     "context_id": lti.context_id
                     if lti
                     else app_data["resource"]["playlist"]["lti_id"],
