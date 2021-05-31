@@ -278,8 +278,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         user = self.request.user
         if isinstance(user, TokenUser):
-            context["roles"] = user.token.payload.get("roles", [])
-            context["user_id"] = user.token.payload.get("user_id", None)
+            context.update(user.token.payload)
 
         return context
 

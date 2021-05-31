@@ -3,13 +3,14 @@ from html import unescape
 import json
 import random
 import re
+from unittest import mock
 import uuid
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..defaults import HARVESTED, STATE_CHOICES
+from ..defaults import HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
 from ..factories import VideoFactory
 
 
@@ -161,4 +162,102 @@ class VideoPublicViewTestCase(TestCase):
 
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertEqual(context.get("modelName"), "videos")
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    def test_video_live_publicly_available(self):
+        """Validate to access to a live public video."""
+        video = VideoFactory(
+            id="5caa7753-3e05-406e-a91f-ec1b758fead0",
+            playlist__title="playlist-003",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            is_public=True,
+            uploaded_on="2019-09-24 07:24:40+00",
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "type": RAW,
+            },
+            upload_state=PENDING,
+        )
+
+        with mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            response = self.client.get(f"/videos/{video.pk}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": "1569309880",
+                "is_ready_to_show": True,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": video.upload_state,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "title": "playlist-003",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": RUNNING,
+                "live_info": {},
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                },
+            },
+        )
+        self.assertEqual(context.get("state"), "success")
         self.assertEqual(context.get("modelName"), "videos")
