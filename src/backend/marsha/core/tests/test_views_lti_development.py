@@ -152,6 +152,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )
@@ -215,6 +216,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )

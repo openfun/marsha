@@ -7,7 +7,7 @@ from django.test import TestCase, override_settings
 
 import pytz
 
-from ..defaults import HARVESTED, PENDING, STOPPED
+from ..defaults import HARVESTED, PENDING, RAW, STOPPED
 from ..factories import (
     DocumentFactory,
     ThumbnailFactory,
@@ -96,6 +96,7 @@ class UpdateStateAPITest(TestCase):
                     },
                 },
             },
+            live_type=RAW,
         )
         data = {
             "extraParameters": {"resolutions": [240, 480, 720]},

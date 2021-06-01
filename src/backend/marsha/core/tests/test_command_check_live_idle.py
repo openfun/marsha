@@ -7,7 +7,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
-from ..defaults import DELETED, IDLE
+from ..defaults import DELETED, IDLE, RAW
 from ..factories import VideoFactory
 
 
@@ -28,7 +28,9 @@ class CheckLiveIdleTest(TestCase):
 
     def test_check_live_idle_video_to_delete(self):
         """Command should delete a video in idle state too long."""
-        video = VideoFactory(id="36b82a5e-f2a6-4c11-bdf4-aa435a5dffc2", live_state=IDLE)
+        video = VideoFactory(
+            id="36b82a5e-f2a6-4c11-bdf4-aa435a5dffc2", live_state=IDLE, live_type=RAW
+        )
         out = StringIO()
         with mock.patch(
             "marsha.core.management.commands.check_live_idle.delete_aws_element_stack"
