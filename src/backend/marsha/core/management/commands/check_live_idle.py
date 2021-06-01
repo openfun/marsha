@@ -33,4 +33,5 @@ class Command(BaseCommand):
             delete_aws_element_stack(video)
             video.upload_state = DELETED
             video.live_state = None
+            video.live_type = None
             video.save()

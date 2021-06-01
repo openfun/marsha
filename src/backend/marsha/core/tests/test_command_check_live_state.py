@@ -9,7 +9,7 @@ from django.test import TestCase
 from botocore.stub import Stubber
 import pytz
 
-from ..defaults import RUNNING
+from ..defaults import RAW, RUNNING
 from ..factories import VideoFactory
 from ..management.commands import check_live_state
 
@@ -42,6 +42,7 @@ class CheckLiveStateTest(TestCase):
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
             },
+            live_type=RAW,
         )
         out = StringIO()
         with Stubber(check_live_state.logs_client) as logs_client_stubber, Stubber(
@@ -136,6 +137,7 @@ class CheckLiveStateTest(TestCase):
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
             },
+            live_type=RAW,
         )
         out = StringIO()
         with Stubber(check_live_state.logs_client) as logs_client_stubber, Stubber(
@@ -219,6 +221,7 @@ class CheckLiveStateTest(TestCase):
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
             },
+            live_type=RAW,
         )
         out = StringIO()
         with Stubber(check_live_state.logs_client) as logs_client_stubber, mock.patch(

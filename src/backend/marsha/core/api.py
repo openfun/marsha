@@ -413,10 +413,10 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         key = f"{video.pk}_{stamp}"
 
         live_info = create_live_stream(key)
-        live_info.update({"type": serializer.validated_data["type"]})
 
         Video.objects.filter(pk=pk).update(
             live_info=live_info,
+            live_type=serializer.validated_data["type"],
             upload_state=defaults.PENDING,
             live_state=defaults.CREATING,
             uploaded_on=None,

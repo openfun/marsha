@@ -11,15 +11,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..defaults import (
-    IDLE,
-    JITSI,
-    LIVE_CHOICES,
-    LIVE_TYPE_CHOICES,
-    RAW,
-    RUNNING,
-    STOPPED,
-)
+from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
@@ -450,6 +442,7 @@ class VideoSerializer(VideoBaseSerializer):
             "playlist",
             "live_info",
             "live_state",
+            "live_type",
             "xmpp",
         )
         read_only_fields = (
@@ -535,10 +528,9 @@ class VideoSerializer(VideoBaseSerializer):
                     "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
                 }
             },
-            "type": obj.live_info.get("type", RAW),
         }
 
-        if settings.JITSI_ENABLED and obj.live_info.get("type", RAW) == JITSI:
+        if settings.JITSI_ENABLED and obj.live_type == JITSI:
             live_info.update(
                 {
                     "jitsi": {

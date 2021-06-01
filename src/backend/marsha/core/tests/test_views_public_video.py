@@ -112,6 +112,7 @@ class VideoPublicViewTestCase(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )
@@ -198,8 +199,8 @@ class VideoPublicViewTestCase(TestCase):
                         },
                     },
                 },
-                "type": RAW,
             },
+            live_type=RAW,
             upload_state=PENDING,
         )
 
@@ -252,6 +253,7 @@ class VideoPublicViewTestCase(TestCase):
                 },
                 "live_state": RUNNING,
                 "live_info": {},
+                "live_type": RAW,
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
