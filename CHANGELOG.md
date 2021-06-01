@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display chat in dashboard during a jitsi live
 - Use chat when a live is publicly available
 
+### Changed
+
+- Switch from classic to jitsi live when a classic is created
+
 ### Fixed
 
 - Prevent to display a deleted video

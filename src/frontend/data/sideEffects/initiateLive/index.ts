@@ -26,7 +26,7 @@ export const initiateLive = async (
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to initialite a live mode for video ${video.id}.`);
+    throw new Error(`Failed to initialize a live mode for video ${video.id}.`);
   }
 
   return await response.json();

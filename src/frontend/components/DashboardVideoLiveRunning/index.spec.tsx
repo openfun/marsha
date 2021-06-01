@@ -23,9 +23,7 @@ jest.mock('../Chat', () => ({
 describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat only" buttons', () => {
   it('shows live', () => {
     const video = videoMockFactory({
-      live_info: {
-        type: LiveModeType.RAW,
-      },
+      live_type: LiveModeType.RAW,
     });
 
     render(
@@ -49,9 +47,7 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
 
   it('shows chat only', () => {
     const video = videoMockFactory({
-      live_info: {
-        type: LiveModeType.RAW,
-      },
+      live_type: LiveModeType.RAW,
     });
 
     render(
@@ -77,9 +73,7 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
 
   it('shows and hides the chat during a jitsi live.', () => {
     const video = videoMockFactory({
-      live_info: {
-        type: LiveModeType.JITSI,
-      },
+      live_type: LiveModeType.JITSI,
     });
 
     const { debug } = render(

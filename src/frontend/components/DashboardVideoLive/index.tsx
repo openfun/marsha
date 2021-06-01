@@ -5,15 +5,11 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
 import { Video, liveState, LiveModeType } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
-import { CHAT_ROUTE } from '../Chat/route';
-import { PLAYER_ROUTE } from '../routes';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
-import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
 import { DashboardVideoLiveRunning } from '../DashboardVideoLiveRunning';
-import { DashboardButtonWithLink } from '../DashboardPaneButtons';
+import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
 
 const DashboardVideoLiveRaw = lazy(() => import('../DashboardVideoLiveRaw'));
 const DashboardVideoLiveJitsi = lazy(
@@ -110,12 +106,12 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   return (
     <Box>
       <Heading level={2}>
-        <FormattedMessage {...messages[video.live_info.type!]} />
+        <FormattedMessage {...messages[video.live_type!]} />
       </Heading>
-      {video.live_info.type === LiveModeType.RAW && (
+      {video.live_type === LiveModeType.RAW && (
         <DashboardVideoLiveRaw video={video} />
       )}
-      {video.live_info.type === LiveModeType.JITSI && (
+      {video.live_type === LiveModeType.JITSI && (
         <DashboardVideoLiveJitsi video={video} />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
@@ -125,7 +121,15 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Text>
         )}
         {video.live_state === liveState.IDLE && (
-          <DashboardVideoLiveStartButton video={video} />
+          <React.Fragment>
+            {video.live_type === LiveModeType.RAW && (
+              <DashboardVideoLiveConfigureButton
+                video={video}
+                type={LiveModeType.JITSI}
+              />
+            )}
+            <DashboardVideoLiveStartButton video={video} />
+          </React.Fragment>
         )}
         {video.live_state === liveState.STARTING && (
           <Text>

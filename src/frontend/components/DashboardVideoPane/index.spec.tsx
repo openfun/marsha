@@ -355,8 +355,8 @@ describe('<DashboardVideoPane />', () => {
                         ],
                       },
                     },
-                    type: LiveModeType.RAW,
                   },
+                  live_type: LiveModeType.RAW,
                 })}
               />
             </Suspense>,

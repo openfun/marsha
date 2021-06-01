@@ -136,7 +136,7 @@ describe('sideEffects/initiateLive', () => {
     fetchMock.mock('/api/videos/36/initiate-live/', 400);
 
     await expect(initiateLive(video, LiveModeType.RAW)).rejects.toThrowError(
-      'Failed to initialite a live mode for video 36.',
+      'Failed to initialize a live mode for video 36.',
     );
   });
 });

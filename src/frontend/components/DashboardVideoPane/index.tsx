@@ -179,7 +179,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
           <DashboardVideoPaneInnerContainer>
             <Box
               direction={
-                video.live_info.type === LiveModeType.RAW ? 'row' : 'column'
+                video.live_type === LiveModeType.RAW ? 'row' : 'column'
               }
             >
               <Box basis={'1/2'} margin={'small'}>
