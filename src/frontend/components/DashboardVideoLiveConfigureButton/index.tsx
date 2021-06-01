@@ -3,6 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { initiateLive } from '../../data/sideEffects/initiateLive';
+import { updateResource } from '../../data/sideEffects/updateResource';
 import { useVideo } from '../../data/stores/useVideo';
 import { modelName } from '../../types/models';
 import { LiveModeType, Video } from '../../types/tracks';
@@ -45,7 +46,16 @@ export const DashboardVideoLiveConfigureButton = ({
   const configureLive = async () => {
     setStatus('pending');
     try {
-      const updatedVideo = await initiateLive(video, type);
+      const updatedVideo =
+        video.live_state !== null
+          ? await updateResource(
+              {
+                ...video,
+                live_type: type,
+              },
+              modelName.VIDEOS,
+            )
+          : await initiateLive(video, type);
       updateVideo(updatedVideo);
       setStatus('success');
     } catch (error) {

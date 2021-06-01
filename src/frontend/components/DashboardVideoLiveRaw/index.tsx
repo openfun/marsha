@@ -56,7 +56,7 @@ const DashboardVideoLiveRaw = ({ video }: DashboardVideoLiveRawProps) => {
       ReactTooltip.hide(event.trigger);
     });
 
-    return clipboard.destroy;
+    return () => clipboard.destroy();
   }, []);
 
   const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;

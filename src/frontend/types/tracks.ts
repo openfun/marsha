@@ -130,7 +130,6 @@ export interface Video extends Resource {
         endpoints: string[];
       };
     };
-    type?: LiveModeType;
     jitsi?: {
       external_api_url?: string;
       domain?: string;
@@ -138,6 +137,7 @@ export interface Video extends Resource {
       interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
     };
   };
+  live_type: Nullable<LiveModeType>;
   xmpp: Nullable<XMPP>;
 }
 

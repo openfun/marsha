@@ -50,7 +50,7 @@ export const DashboardVideoLiveRunning = ({
   return (
     <Box direction="column" fill={true}>
       <Box direction="row">
-        {video.live_info.type === LiveModeType.RAW && (
+        {video.live_type === LiveModeType.RAW && (
           <React.Fragment>
             <DashboardButtonWithLink
               label={<FormattedMessage {...messages.chatOnly} />}
@@ -64,7 +64,7 @@ export const DashboardVideoLiveRunning = ({
             />
           </React.Fragment>
         )}
-        {video.live_info.type === LiveModeType.JITSI && (
+        {video.live_type === LiveModeType.JITSI && (
           <DashboardButton
             label={<FormattedMessage {...displayChatMessage} />}
             onClick={() => setDisplayChat(!displayChat)}
