@@ -215,6 +215,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )
@@ -290,6 +291,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )
@@ -338,6 +340,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": None,
                 "live_info": {},
+                "live_type": None,
                 "xmpp": None,
             },
         )
@@ -456,6 +459,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "live_info": {},
                 "live_state": None,
+                "live_type": None,
                 "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
@@ -517,6 +521,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "live_info": {},
                 "live_state": None,
+                "live_type": None,
                 "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
@@ -627,6 +632,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": organization_playlist_1.lti_id,
                             "title": organization_playlist_1.title,
@@ -697,6 +703,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": organization_1_playlist_1.lti_id,
                             "title": organization_1_playlist_1.title,
@@ -718,6 +725,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": organization_1_playlist_2.lti_id,
                             "title": organization_1_playlist_2.title,
@@ -799,6 +807,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
@@ -858,6 +867,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
@@ -944,6 +954,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
@@ -1002,6 +1013,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": playlist_1.lti_id,
                             "title": playlist_1.title,
@@ -1023,6 +1035,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "live_info": {},
                         "live_state": None,
+                        "live_type": None,
                         "playlist": {
                             "lti_id": playlist_2.lti_id,
                             "title": playlist_2.title,
@@ -1179,6 +1192,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "live_info": {},
                 "live_state": None,
+                "live_type": None,
                 "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
@@ -1321,6 +1335,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "live_info": {},
                 "live_state": None,
+                "live_type": None,
                 "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
@@ -2464,9 +2479,9 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "type": "raw",
                 },
                 "xmpp": None,
+                "live_type": "raw",
             },
         )
 
@@ -2550,7 +2565,6 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "type": "jitsi",
                     "jitsi": {
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
@@ -2558,6 +2572,7 @@ class VideoAPITest(TestCase):
                         "interface_config_overwrite": {},
                     },
                 },
+                "live_type": "jitsi",
                 "xmpp": None,
             },
         )
@@ -2698,8 +2713,8 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
-                "type": RAW,
             },
+            live_type=RAW,
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2757,8 +2772,8 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "type": RAW,
                 },
+                "live_type": RAW,
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
@@ -2792,6 +2807,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=PENDING,
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "idle"]),
+            live_type=RAW,
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2892,8 +2908,8 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
-                "type": RAW,
             },
+            live_type=RAW,
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2944,8 +2960,8 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "type": RAW,
                 },
+                "live_type": RAW,
                 "xmpp": None,
             },
         )
@@ -2975,6 +2991,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=PENDING,
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
+            live_type=RAW,
         )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2997,6 +3014,7 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=IDLE,
             live_info={},
+            live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3034,6 +3052,7 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=STOPPING,
             live_info={},
+            live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3081,6 +3100,7 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=CREATING,
             live_info={},
+            live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3113,6 +3133,7 @@ class VideoAPITest(TestCase):
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
+            live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3137,6 +3158,7 @@ class VideoAPITest(TestCase):
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
+            live_type=RAW,
         )
         invalid_state = random.choice(
             [s[0] for s in LIVE_CHOICES if s[0] not in [IDLE, RUNNING, STOPPED]]
@@ -3186,6 +3208,7 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=STOPPED,
             live_info={},
+            live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",

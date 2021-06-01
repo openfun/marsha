@@ -9,7 +9,7 @@ from django.utils import timezone
 from pylti.common import LTIOAuthServer
 
 from .. import factories, models
-from ..defaults import LIVE_CHOICES, RUNNING, STATE_CHOICES
+from ..defaults import LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
 from ..lti import LTI
 from ..lti.utils import (
     PortabilityError,
@@ -157,7 +157,10 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_same_playlist_same_site_instructor(
             factories.VideoFactory,
             models.Video,
-            {"live_state": random.choice([s[0] for s in LIVE_CHOICES])},
+            {
+                "live_state": random.choice([s[0] for s in LIVE_CHOICES]),
+                "live_type": RAW,
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -238,9 +241,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_same_playlist_same_site_student_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -325,7 +326,8 @@ class PortabilityLTITestCase(TestCase):
             {
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
-                )
+                ),
+                "live_type": RAW,
             },
         )
 
@@ -411,7 +413,9 @@ class PortabilityLTITestCase(TestCase):
         another consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_ready_to_show(
-            factories.VideoFactory, models.Video, {"live_state": "running"}
+            factories.VideoFactory,
+            models.Video,
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -511,6 +515,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -600,6 +605,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -686,9 +692,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_site_auto_portable_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -785,6 +789,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -877,6 +882,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -1006,9 +1012,7 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             is_portable_to_playlist=True,
-            factory_parameters={
-                "live_state": "running",
-            },
+            factory_parameters={"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1083,6 +1087,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -1214,7 +1219,10 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_site_not_portable_student(
             factories.VideoFactory,
             models.Video,
-            {"live_state": random.choice([lc[0] for lc in LIVE_CHOICES])},
+            {
+                "live_state": random.choice([lc[0] for lc in LIVE_CHOICES]),
+                "live_type": RAW,
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1291,7 +1299,9 @@ class PortabilityLTITestCase(TestCase):
         to another playlist.
         """
         self._test_lti_get_resource_other_playlist_portable_ready_to_show(
-            factories.VideoFactory, models.Video, {"live_state": "running"}
+            factories.VideoFactory,
+            models.Video,
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1387,6 +1397,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -1476,6 +1487,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -1569,6 +1581,7 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {
                 "live_state": random.choice([lc[0] for lc in LIVE_CHOICES]),
+                "live_type": RAW,
             },
         )
 
@@ -1646,6 +1659,7 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {
                 "live_state": random.choice([lc[0] for lc in LIVE_CHOICES]),
+                "live_type": RAW,
             },
         )
 
@@ -1726,9 +1740,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_portable_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1827,6 +1839,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -1919,6 +1932,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -2007,9 +2021,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_auto_portable_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2112,6 +2124,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -2203,6 +2216,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -2294,6 +2308,7 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {
                 "live_state": "running",
+                "live_type": RAW,
             },
         )
 
@@ -2398,6 +2413,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -2492,6 +2508,7 @@ class PortabilityLTITestCase(TestCase):
                 "live_state": random.choice(
                     [lc[0] for lc in LIVE_CHOICES if lc[0] != "running"]
                 ),
+                "live_type": RAW,
             },
         )
 
@@ -2586,9 +2603,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_not_portable_instructor(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": RUNNING,
-            },
+            {"live_state": RUNNING, "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2669,9 +2684,7 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_not_portable_student(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": RUNNING,
-            },
+            {"live_state": RUNNING, "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2747,7 +2760,9 @@ class PortabilityLTITestCase(TestCase):
         video for an existing playlist.
         """
         self._test_lti_get_resource_wrong_lti_id_intructor(
-            factories.VideoFactory, models.Video, {"live_state": "running"}
+            factories.VideoFactory,
+            models.Video,
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2940,7 +2955,10 @@ class LTISelectTestCase(TestCase):
         self._test_lti_get_selectable_resource_same_playlist_same_site_instructor(
             factories.VideoFactory,
             models.Video,
-            {"live_state": random.choice([s[0] for s in LIVE_CHOICES])},
+            {
+                "live_state": random.choice([s[0] for s in LIVE_CHOICES]),
+                "live_type": RAW,
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -3024,9 +3042,7 @@ class LTISelectTestCase(TestCase):
         self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -3118,9 +3134,7 @@ class LTISelectTestCase(TestCase):
         self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {
-                "live_state": "running",
-            },
+            {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
