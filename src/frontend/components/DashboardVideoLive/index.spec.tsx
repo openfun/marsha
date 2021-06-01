@@ -67,11 +67,11 @@ describe('components/DashboardVideoLive', () => {
           ],
         },
       },
-      type: LiveModeType.RAW,
     },
+    live_type: LiveModeType.RAW,
   });
 
-  it('shows the start button when the status is IDLE', () => {
+  it('shows the start and jitsi button when the status is IDLE', async () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -84,7 +84,31 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    screen.getByText('start streaming');
+    await screen.findByRole('button', { name: /start streaming/i });
+    screen.getByRole('button', { name: /Launch Jitsi LiveStream/i });
+  });
+
+  it('shows only the start button when status is IDLE and live type is JITSI', async () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{
+                ...video,
+                live_state: liveState.IDLE,
+                live_type: LiveModeType.JITSI,
+              }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    await screen.findByRole('button', { name: /start streaming/i });
+    expect(
+      screen.queryByRole('button', { name: /Launch Jitsi LiveStream/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the live and stop button when the status is LIVE', () => {

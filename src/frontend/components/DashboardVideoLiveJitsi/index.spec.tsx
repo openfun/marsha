@@ -22,7 +22,6 @@ describe('<DashboardVideoLiveJitsi />', () => {
             ],
           },
         },
-        type: LiveModeType.JITSI,
         jitsi: {
           domain: 'meet.jit.si',
           external_api_url: 'https://meet.jit.si/external_api.js',
@@ -31,6 +30,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         },
       },
       live_state: liveState.CREATING,
+      live_type: LiveModeType.JITSI,
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
