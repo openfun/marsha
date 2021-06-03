@@ -536,3 +536,121 @@ class LTITestCase(TestCase):
         lti = LTI(request, uuid.uuid4())
         self.assertTrue(lti.verify())
         self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
+
+    def test_lti_username_edx_format(self):
+        """Return username for edx request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "lis_person_sourcedid": "jane_doe",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.username, "jane_doe")
+
+    def test_lti_username_moodle_format(self):
+        """Return username for moodle request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "ext_user_username": "jane_doe",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.username, "jane_doe")
+
+    def test_lti_username_no_username(self):
+        """When there is no username None should be returned."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertIsNone(lti.username)
+
+    def test_lti_email(self):
+        """Email value is return when present."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "lis_person_contact_email_primary": "jane@doe.me",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.email, "jane@doe.me")
+
+    def test_lti_email_no_email(self):
+        """When email is missing None is return."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            "/lti/videos/{!s}".format(resource_id),
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertIsNone(lti.email)

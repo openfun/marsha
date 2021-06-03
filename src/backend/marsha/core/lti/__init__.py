@@ -313,6 +313,19 @@ class LTI:
         """
         return self.request.POST.get("launch_presentation_locale", "en")
 
+    @property
+    def username(self):
+        """Username of the authenticated user.
+
+        Returns
+        -------
+        string
+            The username of the authenticated user.
+        """
+        return self.request.POST.get("lis_person_sourcedid") or self.request.POST.get(
+            "ext_user_username"
+        )
+
 
 class LTIUser:
     """
