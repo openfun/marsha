@@ -52,8 +52,11 @@ describe('converseMounter', () => {
       hide_muc_participants: true,
       jid: 'xmpp-server.com',
       modtools_disable_assign: true,
+      muc_instant_rooms: false,
       root: expect.any(HTMLDivElement),
+      show_client_info: false,
       singleton: true,
+      theme: 'concord',
       view_mode: 'embedded',
       visible_toolbar_buttons: {
         call: false,
