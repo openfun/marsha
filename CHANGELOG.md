@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Switch from classic to jitsi live when a classic is created
+- Use conversejs concord theme
 
 ### Fixed
 
