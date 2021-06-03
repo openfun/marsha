@@ -326,6 +326,11 @@ class LTI:
             "ext_user_username"
         )
 
+    @property
+    def email(self):
+        """Email of the authenticated user."""
+        return self.request.POST.get("lis_person_contact_email_primary")
+
 
 class LTIUser:
     """
