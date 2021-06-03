@@ -609,7 +609,7 @@ class LTITestCase(TestCase):
         self.assertIsNone(lti.username)
 
     def test_lti_email(self):
-        """Email value is return when present."""
+        """Email value is returned when present."""
         ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123", consumer_site__domain="testserver"
         )
@@ -633,7 +633,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.email, "jane@doe.me")
 
     def test_lti_email_no_email(self):
-        """When email is missing None is return."""
+        """When email is missing None is returned."""
         ConsumerSiteLTIPassportFactory(
             oauth_consumer_key="ABC123", consumer_site__domain="testserver"
         )
