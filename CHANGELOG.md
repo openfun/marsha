@@ -23,6 +23,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Prevent to display a deleted video
 
+### Removed
+
+- Remove plyr player
+
 ## [3.19.0] - 2021-05-10
 
 ### Added
