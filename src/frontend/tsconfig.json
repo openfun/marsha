@@ -19,7 +19,6 @@
     "moduleResolution": "node",
     "paths": {
       "intl-pluralrules": ["types/libs/intl-pluralrules"],
-      "plyr": ["types/libs/plyr"],
       "vtt.js": ["types/libs/vtt.js"],
       "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"]
     },

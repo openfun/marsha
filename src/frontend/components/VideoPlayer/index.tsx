@@ -1,5 +1,4 @@
 import { Box } from 'grommet';
-import 'plyr/dist/plyr.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from 'react-router';
 
@@ -21,7 +20,6 @@ import { Chat } from '../Chat';
 import { DownloadVideo } from '../DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Transcripts } from '../Transcripts';
-import './VideoPlayer.css'; // Improve some plyr styles
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -68,14 +66,14 @@ const VideoPlayer = ({
     {};
 
   /**
-   * Initialize the `Plyr` video player and our adaptive bitrate library if applicable.
-   * Noop out if the video or jwt is missing, render will redirect to an error page.
+   * Initialize the video player.
+   * Noop out if the video is missing, render will redirect to an error page.
    */
   useEffect(() => {
     getChoices();
 
     if (video) {
-      // Instantiate Plyr and keep the instance in state
+      // Instantiate the player and keep the instance in state
       setPlayer(
         createPlayer(
           playerType,
