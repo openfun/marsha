@@ -1,9 +1,10 @@
+import { Nullable } from '../utils/types';
+
 export interface DecodedJwt {
   context_id: string;
   email: string;
   roles: string[];
   session_id: string;
-  user_id: string;
   resource_id: string;
   locale: string;
   permissions: {
@@ -11,4 +12,8 @@ export interface DecodedJwt {
     can_update: boolean;
   };
   maintenance: boolean;
+  user?: {
+    id: string;
+    username: Nullable<string>;
+  };
 }
