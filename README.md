@@ -63,7 +63,7 @@ Please note that the only objects we handle in `AWS` are the actual video, docum
 The `React` frontend is responsible for the interfaces with which users interact in the LTI Iframes. It gets an authenticated token with permissions
 from the view and interacts with the `Django` backend to manage objects and directly with `AWS s3` to upload files.
 
-It also powers the same resource view when loaded by a learner to display a video player (thanks to [Plyr](https://plyr.io)) or a document reader.
+It also powers the same resource view when loaded by a learner to display a video player (thanks to [videojs](https://videojs.com/)) or a document reader.
 
 ⚠️ **Iframe management**
 
@@ -203,8 +203,6 @@ The front application is tested using [jest](https://jestjs.io/). Every js modul
 ├── VideoPlayer
 │   ├── index.spec.tsx
 │   ├── index.tsx
-│   ├── indexWithDashjs.spec.tsx
-│   └── VideoPlayer.css
 ```
 
 Run the tests:

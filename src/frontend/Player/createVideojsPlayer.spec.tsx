@@ -57,11 +57,6 @@ const mockVideo = videoMockFactory({
 jest.mock('../data/appData', () => ({
   appData: {
     jwt: 'foo',
-    static: {
-      svg: {
-        plyr: '/static/svg/plyr.svg',
-      },
-    },
     video: mockVideo,
   },
   getDecodedJwt: jest.fn().mockImplementation(() => ({

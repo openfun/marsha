@@ -35,7 +35,6 @@ export interface AppData {
   static: {
     svg: {
       icons: string;
-      plyr: string;
     };
   };
   player?: string;
