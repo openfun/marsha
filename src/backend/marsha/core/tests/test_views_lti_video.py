@@ -103,7 +103,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+            {"svg": {"icons": "/static/svg/icons.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -226,7 +226,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+            {"svg": {"icons": "/static/svg/icons.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -374,7 +374,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+            {"svg": {"icons": "/static/svg/icons.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -512,7 +512,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+            {"svg": {"icons": "/static/svg/icons.svg"}},
         )
         self.assertEqual(
             context.get("resource"),
@@ -1264,7 +1264,6 @@ class VideoLTIViewTestCase(TestCase):
                 "static": {
                     "svg": {
                         "icons": "/static/svg/icons.svg",
-                        "plyr": "/static/svg/plyr.svg",
                     }
                 },
             },

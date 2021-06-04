@@ -51,7 +51,7 @@ class SiteViewTestCase(TestCase):
         self.assertEqual(context.get("flags"), {"sentry": True})
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg", "plyr": "/static/svg/plyr.svg"}},
+            {"svg": {"icons": "/static/svg/icons.svg"}},
         )
 
     @override_switch("site", active=False)
