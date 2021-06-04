@@ -420,7 +420,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -441,7 +444,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -483,7 +489,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -503,7 +512,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -578,7 +590,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -611,7 +626,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -682,7 +700,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -757,7 +778,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/?playlist={playlist.id}",
@@ -785,7 +809,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/?playlist={first_playlist.id}",
@@ -845,7 +872,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/?playlist={first_playlist.id}",
@@ -900,8 +930,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
-
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -932,7 +964,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
@@ -991,7 +1026,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
@@ -1166,7 +1204,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -1216,8 +1257,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
-
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
         self.assertEqual(models.Video.objects.count(), 0)
 
         response = self.client.post(
@@ -1244,7 +1287,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -1276,7 +1322,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -1309,7 +1358,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -1364,7 +1416,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -1628,7 +1683,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -1653,7 +1711,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -1677,7 +1738,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -1701,7 +1765,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -1726,7 +1793,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -1751,7 +1821,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -1775,7 +1848,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -1799,7 +1875,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -1870,7 +1949,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -1897,7 +1979,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -1926,7 +2011,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -1955,7 +2043,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -2151,7 +2242,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -2190,7 +2284,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -2254,7 +2351,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -2292,8 +2392,10 @@ class VideoAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
-
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
@@ -2720,7 +2822,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user_id"] = "56255f3807599c377bf0e5bf072359fd"
+        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         # start a live video,
         with mock.patch.object(api, "start_live_channel"), mock.patch.object(

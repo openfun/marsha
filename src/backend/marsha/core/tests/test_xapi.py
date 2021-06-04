@@ -15,8 +15,8 @@ class MockLtiUser:
 class XAPIStatmentTest(TestCase):
     """Test the XAPIStatement class."""
 
-    def test_xapi_statement_missing_user_id(self):
-        """Missing lti user_id should fallback on session_id."""
+    def test_xapi_statement_missing_user(self):
+        """Missing lti user should fallback on session_id."""
         video = VideoFactory(
             id="68333c45-4b8c-4018-a195-5d5e1706b838",
             playlist__consumer_site__domain="example.com",
@@ -106,7 +106,9 @@ class XAPIStatmentTest(TestCase):
         mock_token = mock.MagicMock()
         type(mock_token).payload = mock.PropertyMock(
             return_value={
-                "user_id": "foo",
+                "user": {
+                    "id": "foo",
+                },
                 "course": {
                     "school_name": "ufr",
                     "course_name": "mathematics",

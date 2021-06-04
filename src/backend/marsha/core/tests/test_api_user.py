@@ -39,7 +39,11 @@ class UserAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": str(user.username),
+        }
+        print(jwt_token.payload["user"])
 
         with self.assertNumQueries(3):
             response = self.client.get(

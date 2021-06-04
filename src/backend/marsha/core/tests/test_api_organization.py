@@ -24,7 +24,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.post(
             "/api/organizations/",
@@ -48,7 +51,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
@@ -67,7 +73,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
@@ -86,7 +95,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": str(user.username),
+        }
 
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
@@ -119,7 +131,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/organizations/",
@@ -137,7 +152,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/organizations/",
@@ -162,7 +180,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/organizations/{organization.id}/",
@@ -182,7 +203,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/organizations/{organization.id}/",
@@ -209,7 +233,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/organizations/{organization.id}/",
@@ -231,7 +258,10 @@ class OrganizationAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.put(
             f"/api/organizations/{organization.id}/",
