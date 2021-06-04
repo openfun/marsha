@@ -34,7 +34,8 @@ class UserFactory(DjangoModelFactory):
         model = models.User
 
     username = factory.Faker("user_name")
-    password = make_password(u"password")
+    password = make_password("password")
+    email = factory.LazyAttribute(lambda o: f"{o.username}@example.org")
 
 
 class ConsumerSiteFactory(DjangoModelFactory):

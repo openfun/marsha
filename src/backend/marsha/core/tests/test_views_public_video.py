@@ -54,6 +54,7 @@ class VideoPublicViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
         )
+        self.assertNotIn("user", jwt_token.payload)
 
         self.assertEqual(
             context.get("resource"),

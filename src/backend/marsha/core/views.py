@@ -104,7 +104,7 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
         """Build the context necessary to run the frontend app for the site."""
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(self.request.user.id)
-        jwt_token.payload["user_id"] = str(self.request.user.id)
+        jwt_token.payload["user"] = {"id": str(self.request.user.id)}
 
         app_data = _get_base_app_data()
         app_data.update(
@@ -300,7 +300,10 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             )
 
             if user_id:
-                jwt_token.payload["user_id"] = user_id
+                jwt_token.payload["user"] = {
+                    "username": lti.username,
+                    "id": user_id,
+                }
 
             app_data["jwt"] = str(jwt_token)
 
