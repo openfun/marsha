@@ -58,6 +58,7 @@ class CacheLTIViewTestCase(TestCase):
             "context_id": video1.playlist.lti_id,
             "roles": "student",
             "user_id": "111",
+            "lis_person_sourcedid": "jane_doe",
         }
 
         with self.assertNumQueries(6):
@@ -137,6 +138,7 @@ class CacheLTIViewTestCase(TestCase):
             "context_id": video.playlist.lti_id,
             "roles": "instructor",
             "user_id": "111",
+            "lis_person_sourcedid": "jane_doe",
         }
 
         with self.assertNumQueries(6):

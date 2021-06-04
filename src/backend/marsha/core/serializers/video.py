@@ -479,7 +479,9 @@ class VideoSerializer(VideoBaseSerializer):
         Dictionnary
             A dictionary containing all info needed to manage a connection to a xmpp server.
         """
-        user_id = self.context.get("user_id") or self.context.get("session_id")
+        user_id = self.context.get("user", {}).get("id") or self.context.get(
+            "session_id"
+        )
         if settings.LIVE_CHAT_ENABLED and user_id and obj.live_state is not None:
             roles = self.context.get("roles", [])
             is_admin = bool(LTI_ROLES[ADMINISTRATOR] & set(roles))

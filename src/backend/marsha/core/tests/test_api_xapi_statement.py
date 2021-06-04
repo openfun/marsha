@@ -34,7 +34,10 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["user"] = {
+            "id": "John Doe",
+            "username": "john_doe",
+        }
         jwt_token.payload["course"] = {
             "school_name": None,
             "course_name": None,
@@ -132,7 +135,10 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["user"] = {
+            "id": "John Doe",
+            "username": "john_doe",
+        }
         jwt_token.payload["course"] = {
             "school_name": None,
             "course_name": None,
@@ -180,7 +186,10 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user_id"] = "John Doe"
+        jwt_token.payload["user"] = {
+            "id": "John Doe",
+            "username": "john_doe",
+        }
         jwt_token.payload["course"] = {
             "school_name": None,
             "course_name": None,
@@ -210,8 +219,8 @@ class XAPIStatementApiTest(TestCase):
         self.assertEqual(response.status_code, 204)
 
     @mock.patch("marsha.core.api.Video.objects.get")
-    def test_xapi_statement_with_missing_user_id(self, video_model_mock):
-        """Missing user_id parameter in JWT will fail request to LRS."""
+    def test_xapi_statement_with_missing_user(self, video_model_mock):
+        """Missing user parameter in JWT will fail request to LRS."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",

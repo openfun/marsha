@@ -38,7 +38,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.post(
             "/api/playlists/",
@@ -67,7 +70,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.post(
             "/api/playlists/",
@@ -92,7 +98,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.post(
             "/api/playlists/",
@@ -117,7 +126,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         self.assertEqual(models.Playlist.objects.count(), 0)
 
@@ -166,7 +178,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -185,7 +200,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -204,7 +222,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -241,7 +262,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -284,7 +308,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/playlists/",
@@ -317,7 +344,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             "/api/playlists/",
@@ -388,7 +418,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.get(
             f"/api/playlists/?organization={str(org_1.id)}",
@@ -435,7 +468,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",
@@ -455,7 +491,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",
@@ -483,7 +522,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",
@@ -504,7 +546,10 @@ class PlaylistAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",

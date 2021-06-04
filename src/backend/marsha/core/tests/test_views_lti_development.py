@@ -50,6 +50,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "tool_consumer_instance_name": "ufr",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
         response = self.client.post(
@@ -68,7 +69,13 @@ class DevelopmentLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
@@ -118,7 +125,13 @@ class DevelopmentLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": None,
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
@@ -168,6 +181,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "roles": "instructor",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
         }
         response = self.client.post(
             "/lti/videos/{!s}".format(uuid.uuid4()),
@@ -185,7 +199,13 @@ class DevelopmentLTIViewTestCase(TestCase):
         jwt_token = AccessToken(context.get("jwt"))
         video = Video.objects.get()
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
@@ -234,6 +254,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "roles": role,
             "context_id": video.playlist.lti_id,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
         }
 
         with self.assertRaises(ImproperlyConfigured):
@@ -255,6 +276,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "tool_consumer_instance_name": "ufr",
             "tool_consumer_instance_guid": "example.com",
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
         response = self.client.post("/lti/videos/{!s}".format(video.pk), data)

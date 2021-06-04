@@ -46,7 +46,7 @@ class XAPIStatement:
 
         """
         try:
-            user_id = lti_user.user_id
+            user_id = lti_user.user.get("id")
         except AttributeError:
             user_id = lti_user.session_id
 

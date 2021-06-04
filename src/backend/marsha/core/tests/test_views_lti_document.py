@@ -43,6 +43,7 @@ class DocumentLTIViewTestCase(TestCase):
             "roles": random.choice(["instructor", "administrator"]),
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
 
@@ -59,7 +60,13 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
@@ -102,6 +109,7 @@ class DocumentLTIViewTestCase(TestCase):
             "roles": random.choice(["instructor", "administrator"]),
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
 
@@ -118,7 +126,13 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
@@ -157,6 +171,7 @@ class DocumentLTIViewTestCase(TestCase):
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
 
@@ -173,7 +188,13 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
-        self.assertEqual(jwt_token.payload["user_id"], data["user_id"])
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
@@ -206,6 +227,7 @@ class DocumentLTIViewTestCase(TestCase):
             "roles": "student",
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
@@ -240,6 +262,7 @@ class DocumentLTIViewTestCase(TestCase):
             "roles": "instructor",
             "oauth_consumer_key": passport.oauth_consumer_key,
             "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
