@@ -14,6 +14,15 @@ export const converseMounter = () => {
     if (hasBeenInitialized) {
       converse.insertInto(document.querySelector(containerName)!);
     } else {
+      converse.plugins.add('marsha', {
+        initialize() {
+          const _converse = this._converse;
+
+          window.addEventListener('beforeunload', () => {
+            _converse.api.user.logout();
+          });
+        },
+      });
       converse.initialize({
         allow_contact_requests: false,
         allow_logout: false,
@@ -43,6 +52,7 @@ export const converseMounter = () => {
           spoiler: false,
           toggle_occupants: false,
         },
+        whitelisted_plugins: ['marsha'],
       });
       hasBeenInitialized = true;
     }
