@@ -10,7 +10,7 @@ export const fetchList: QueryFunction<any> = async ({ queryKey }) => {
 
   const response = await fetch(
     `/api/${name}/?${new URLSearchParams({
-      ...queryParams,
+      ...(queryParams as object),
       limit: '999',
     }).toString()}`,
     {
