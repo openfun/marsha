@@ -4,6 +4,7 @@ import 'converse.js/dist/emojis.js';
 import 'converse.js/dist/icons.js';
 
 import { converse } from './window';
+import { getDecodedJwt } from '../data/appData';
 import { XMPP } from '../types/tracks';
 
 export const converseMounter = () => {
@@ -30,6 +31,7 @@ export const converseMounter = () => {
         jid: xmpp.jid,
         modtools_disable_assign: true,
         muc_instant_rooms: false,
+        nickname: getDecodedJwt().user?.username,
         root: document.querySelector(containerName),
         show_client_info: false,
         singleton: true,
