@@ -7,6 +7,10 @@ jest.mock('./window', () => ({
     insertInto: jest.fn(),
   },
 }));
+let mockDecodedJwtToken = {};
+jest.mock('../data/appData', () => ({
+  getDecodedJwt: () => mockDecodedJwtToken,
+}));
 
 describe('converseMounter', () => {
   afterEach(() => {
@@ -14,6 +18,11 @@ describe('converseMounter', () => {
   });
 
   it('initializes once converse.js', () => {
+    mockDecodedJwtToken = {
+      user: {
+        username: 'jane_doe',
+      },
+    };
     document.body.innerHTML = '<div id="converse-container"></div>';
 
     const xmpp = {
@@ -53,6 +62,7 @@ describe('converseMounter', () => {
       jid: 'xmpp-server.com',
       modtools_disable_assign: true,
       muc_instant_rooms: false,
+      nickname: 'jane_doe',
       root: expect.any(HTMLDivElement),
       show_client_info: false,
       singleton: true,
