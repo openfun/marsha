@@ -5,6 +5,9 @@ jest.mock('./window', () => ({
   converse: {
     initialize: jest.fn(),
     insertInto: jest.fn(),
+    plugins: {
+      add: jest.fn(),
+    },
   },
 }));
 let mockDecodedJwtToken = {};
@@ -38,6 +41,7 @@ describe('converseMounter', () => {
     // The converse mounter is initialized and converse has not been initialized nor inserted.
     expect(mockWindow.converse.initialize).not.toHaveBeenCalled();
     expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
+    expect(mockWindow.converse.plugins.add).not.toHaveBeenCalled();
 
     // first call, converse is initialized
     converseManager('#converse-container', xmpp);
@@ -74,6 +78,11 @@ describe('converseMounter', () => {
         spoiler: false,
         toggle_occupants: false,
       },
+      whitelisted_plugins: ['marsha'],
+    });
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(1);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith('marsha', {
+      initialize: expect.any(Function),
     });
     expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
 
@@ -82,5 +91,6 @@ describe('converseMounter', () => {
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.insertInto).toHaveBeenCalledTimes(1);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(1);
   });
 });
