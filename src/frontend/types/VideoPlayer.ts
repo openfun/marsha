@@ -11,4 +11,4 @@ export type VideoPlayerCreator = (
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
-) => Maybe<VideoPlayerInterface>;
+) => Promise<Maybe<VideoPlayerInterface>>;
