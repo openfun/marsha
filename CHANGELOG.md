@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display chat in dashboard during a jitsi live
 - Use chat when a live is publicly available
 - Set chat nickname when user is connected
+- Display a waiting message while live is not available
 
 ### Changed
 

@@ -1,13 +1,15 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { ImportMock } from 'ts-mock-imports';
 
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { createPlayer } from '../../Player/createPlayer';
-import { uploadState } from '../../types/tracks';
+import { liveState, uploadState } from '../../types/tracks';
+import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { Deferred } from '../../utils/tests/Deferred';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -75,9 +77,11 @@ describe('VideoPlayer', () => {
   );
 
   beforeEach(() => {
-    mockCreatePlayer.mockReturnValue({
-      destroy: jest.fn(),
-    });
+    mockCreatePlayer.mockReturnValue(
+      Promise.resolve({
+        destroy: jest.fn(),
+      }),
+    );
   });
 
   afterEach(() => fetchMock.restore());
@@ -234,5 +238,39 @@ describe('VideoPlayer', () => {
     await screen.findByText('Show a transcript');
     expect(container.querySelector('option[value="ttt-1"]')).toBeNull();
     expect(container.querySelector('option[value="ttt-2"]')).not.toBeNull();
+  });
+
+  it('displays a waiting message while live is not ready', async () => {
+    const deferred = new Deferred<VideoPlayerInterface>();
+    mockCreatePlayer.mockReturnValue(deferred.promise);
+
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+    });
+
+    const { container } = render(
+      wrapInIntlProvider(<VideoPlayer video={video} playerType={'videojs'} />),
+    );
+
+    screen.getByText('Live is starting and will be displayed soon.');
+
+    await act(async () =>
+      deferred.resolve({
+        destroy: jest.fn(),
+      }),
+    );
+
+    expect(mockCreatePlayer).toHaveBeenCalledWith(
+      'videojs',
+      expect.any(Element),
+      expect.anything(),
+      video,
+    ),
+      expect(
+        screen.queryByText('Live is starting and will be displayed soon.'),
+      ).not.toBeInTheDocument();
+
+    const videoElement = container.querySelector('video')!;
+    expect(videoElement.tabIndex).toEqual(-1);
   });
 });
