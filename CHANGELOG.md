@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Prevent to display a deleted video
+- Disable video speed menu for live video
 
 ### Removed
 

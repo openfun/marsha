@@ -80,7 +80,7 @@ export const createVideojsPlayer = (
     },
     language: intl.locale,
     liveui: live !== null,
-    playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
+    playbackRates: live ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins,
     responsive: true,
     sources,
