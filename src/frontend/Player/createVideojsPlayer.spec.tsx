@@ -223,6 +223,7 @@ describe('createVideoJsPlayer', () => {
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
     ]);
     expect(player.options_.liveui).toBe(true);
+    expect(player.options_.playbackRates).toEqual([]);
   });
 
   it('sends xapi events', () => {
