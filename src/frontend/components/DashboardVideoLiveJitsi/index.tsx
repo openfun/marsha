@@ -2,6 +2,7 @@ import { Box } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Video, liveState } from '../../types/tracks';
+import { report } from '../../utils/errors/report';
 
 interface DashboardVideoLiveJitsiProps {
   video: Video;
@@ -10,6 +11,8 @@ interface DashboardVideoLiveJitsiProps {
 const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
   const jitsiNode = useRef(null);
   const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
+  const jitsiIsRecording = useRef(false);
+  const endpoints = useRef<string[]>();
 
   const loadJitsiScript = () =>
     new Promise((resolve) => {
@@ -19,6 +22,18 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
       script.onload = resolve;
       document.body.appendChild(script);
     });
+
+  const startRecording = (jitsiApi: JitsiMeetExternalAPI) => {
+    if (jitsiIsRecording.current) {
+      return;
+    }
+
+    jitsiApi.executeCommand('startRecording', {
+      mode: 'stream',
+      rtmpStreamKey: endpoints.current![0]!,
+    });
+    jitsiIsRecording.current = true;
+  };
 
   const initialiseJitsi = async () => {
     if (!window.JitsiMeetExternalAPI) {
@@ -85,10 +100,31 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
       },
     );
 
+    _jitsi.addListener('recordingStatusChanged', async (event) => {
+      // recording as stopped with an error
+      if (!event.on && event.error) {
+        jitsiIsRecording.current = false;
+        report(event.error);
+        await new Promise((resolve) => window.setTimeout(resolve, 1000));
+        startRecording(_jitsi);
+      }
+    });
+
+    if (video.live_state === liveState.RUNNING) {
+      startRecording(_jitsi);
+    }
+
     setJitsi(_jitsi);
   };
 
   useEffect(() => {
+    const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
+    endpoints.current = video.live_info.medialive!.input.endpoints.map(
+      (endpoint) => {
+        const matches = endpoint.match(endpointIdentifier)!;
+        return `${matches[1]}/marsha/${matches[2]}`;
+      },
+    ) as string[];
     initialiseJitsi();
 
     return () => jitsi?.dispose();
@@ -96,22 +132,14 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
 
   useEffect(() => {
     if (jitsi && video.live_state === liveState.RUNNING) {
-      const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-      const endpoints = video.live_info.medialive!.input.endpoints.map(
-        (endpoint) => {
-          const matches = endpoint.match(endpointIdentifier);
-          if (matches) {
-            return `${matches[1]}/marsha/${matches[2]}`;
-          }
-        },
-      );
-      jitsi?.executeCommand('startRecording', {
-        mode: 'stream',
-        rtmpStreamKey: endpoints[0]!,
-      });
+      startRecording(jitsi);
     }
 
-    if (jitsi && video.live_state === liveState.STOPPING) {
+    if (
+      jitsi &&
+      video.live_state === liveState.STOPPING &&
+      jitsiIsRecording.current
+    ) {
       jitsi.executeCommand('stopRecording', 'stream');
     }
   }, [video.live_state]);

@@ -19,6 +19,7 @@ declare class JitsiMeetExternalAPI {
       | JitsiMeetExternalAPI.RecordingMode
       | JitsiMeetExternalAPI.RecordingOptions,
   ) => void;
+  addListener: (eventName: string, callback: (event: any) => void) => void;
 
   dispose: () => void;
 }
