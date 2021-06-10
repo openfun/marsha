@@ -404,6 +404,23 @@ jobs:
           name: Run tests
           command: yarn test -w 1
 
+  test-storybook-build:
+    docker:
+      - image: circleci/node:14
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    working_directory: ~/marsha/src/frontend
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v4-front-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: Ensure storybook builds
+          command: yarn build-storybook
+
   test-e2e:
     docker:
       - image: mcr.microsoft.com/playwright:focal
@@ -996,6 +1013,12 @@ workflows:
             tags:
               only: /.*/
       - test-front:
+          requires:
+            - build-front
+          filters:
+            tags:
+              only: /.*/
+      - test-storybook-build:
           requires:
             - build-front
           filters:
