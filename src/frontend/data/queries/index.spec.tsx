@@ -10,6 +10,7 @@ import {
   usePlaylists,
   useThumbnail,
   useTimedTextTracks,
+  useUpdatePlaylist,
   useVideo,
   useVideos,
 } from './index';
@@ -152,6 +153,72 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useUpdatePlaylist', () => {
+    it('updates the resource', async () => {
+      const playlist = playlistMockFactory();
+      fetchMock.put(`/api/playlists/${playlist.id}/`, playlist);
+
+      const { result, waitFor } = renderHook(
+        () => useUpdatePlaylist(playlist.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/playlists/${playlist.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify({
+          title: 'updated title',
+        }),
+      });
+      expect(result.current.data).toEqual(playlist);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to update the resource', async () => {
+      const playlist = playlistMockFactory();
+      fetchMock.put(`/api/playlists/${playlist.id}/`, 400);
+
+      const { result, waitFor } = renderHook(
+        () => useUpdatePlaylist(playlist.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/playlists/${playlist.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify({
+          title: 'updated title',
+        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');

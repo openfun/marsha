@@ -1,5 +1,4 @@
 import fetchMock from 'fetch-mock';
-import React from 'react';
 
 import { fetchList } from './fetchList';
 
