@@ -4,24 +4,14 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
 import { useThumbnail } from '../../data/stores/useThumbnail';
-import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { useVideo } from '../../data/stores/useVideo';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { createPlayer } from '../../Player/createPlayer';
-import {
-  timedTextMode,
-  TimedTextTranscript,
-  Video,
-  videoSize,
-} from '../../types/tracks';
+import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { Maybe, Nullable } from '../../utils/types';
-import { Chat } from '../Chat';
-import { DownloadVideo } from '../DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { Transcripts } from '../Transcripts';
 
 const messages = defineMessages({
   liveOnGoing: {
@@ -39,11 +29,13 @@ const trackTextKind: { [key in timedTextMode]?: string } = {
 interface BaseVideoPlayerProps {
   video: Nullable<Video>;
   playerType: string;
+  timedTextTracks: TimedText[];
 }
 
 const VideoPlayer = ({
-  video: baseVideo,
+  video,
   playerType,
+  timedTextTracks,
 }: BaseVideoPlayerProps) => {
   const intl = useIntl();
   const [player, setPlayer] = useState(
@@ -55,11 +47,7 @@ const VideoPlayer = ({
     (state) => state,
   );
 
-  const video = useVideo((state) => state.getVideo(baseVideo));
   const thumbnail = useThumbnail((state) => state.getThumbnail());
-  const timedTextTracks = useTimedTextTrack((state) =>
-    state.getTimedTextTracks(),
-  );
 
   const setPlayerCurrentTime = useVideoProgress(
     (state) => state.setPlayerCurrentTime,
@@ -112,14 +100,6 @@ const VideoPlayer = ({
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
-  const transcripts = timedTextTracks
-    .filter((track) => track.is_ready_to_show)
-    .filter((track) =>
-      video.has_transcript === false && video.should_use_subtitle_as_transcript
-        ? timedTextMode.SUBTITLE === track.mode
-        : timedTextMode.TRANSCRIPT === track.mode,
-    );
-
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
     video.urls!.thumbnails;
@@ -166,16 +146,11 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {player && video.show_download && <DownloadVideo urls={video.urls!} />}
-      {player && transcripts.length > 0 && (
-        <Transcripts transcripts={transcripts as TimedTextTranscript[]} />
-      )}
       {!player && video.live_state && (
         <Text size="large" textAlign="center">
           {intl.formatMessage(messages.liveOnGoing)}
         </Text>
       )}
-      {video.live_state !== null && video.xmpp && <Chat video={video} />}
     </Box>
   );
 };

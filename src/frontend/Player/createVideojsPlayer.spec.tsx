@@ -87,7 +87,11 @@ describe('createVideoJsPlayer', () => {
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer
+          video={mockVideo}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
       ),
     );
 
@@ -128,7 +132,11 @@ describe('createVideoJsPlayer', () => {
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer
+          video={mockVideo}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
       ),
     );
 
@@ -207,7 +215,13 @@ describe('createVideoJsPlayer', () => {
       live_state: liveState.RUNNING,
     });
     const { container } = render(
-      wrapInIntlProvider(<VideoPlayer video={video} playerType={'videojs'} />),
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={video}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
+      ),
     );
 
     const videoElement = container.querySelector('video');
@@ -229,7 +243,11 @@ describe('createVideoJsPlayer', () => {
   it('sends xapi events', () => {
     const { container } = render(
       wrapInIntlProvider(
-        <VideoPlayer video={mockVideo} playerType={'videojs'} />,
+        <VideoPlayer
+          video={mockVideo}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
       ),
     );
 
