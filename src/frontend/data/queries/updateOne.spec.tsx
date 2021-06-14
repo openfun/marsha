@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { createOne } from './createOne';
+import { updateOne } from './updateOne';
 
 let mockAppData = {};
 jest.mock('../appData', () => ({
@@ -9,90 +9,96 @@ jest.mock('../appData', () => ({
   },
 }));
 
-describe('queries/createOne', () => {
-  beforeEach(() => (mockAppData = {}));
+describe('queries/updateOne', () => {
+  beforeEach(() => {
+    mockAppData = {};
+  });
   afterEach(() => fetchMock.restore());
 
-  it('creates the resource, handles the response and resolves with a success', async () => {
+  it('updates the resource, handles the response and resolves with a success', async () => {
     mockAppData = { jwt: 'some token' };
-    const objectToCreate = { objets: 'data' };
-    fetchMock.mock('/api/model-name/', { key: 'value' });
+    const objectToUpdate = { object: 'data' };
+    fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
-    const response = await createOne({
+    const response = await updateOne({
       name: 'model-name',
-      object: objectToCreate,
+      id: '1',
+      object: objectToUpdate,
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'POST',
-      body: JSON.stringify(objectToCreate),
+      method: 'PUT',
+      body: JSON.stringify(objectToUpdate),
     });
     expect(response).toEqual({ key: 'value' });
   });
 
-  it('creates the resource without JWT token', async () => {
+  it('updates the resource without JWT token', async () => {
     mockAppData = {};
-    const objectToCreate = { objets: 'data' };
-    fetchMock.mock('/api/model-name/', { key: 'value' });
+    const objectToUpdate = { object: 'data' };
+    fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
-    const response = await createOne({
+    const response = await updateOne({
       name: 'model-name',
-      object: objectToCreate,
+      id: '1',
+      object: objectToUpdate,
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
-      method: 'POST',
-      body: JSON.stringify(objectToCreate),
+      method: 'PUT',
+      body: JSON.stringify(objectToUpdate),
     });
     expect(response).toEqual({ key: 'value' });
   });
 
-  it('resolves with a failure and handles it when it fails to create the resource (local)', async () => {
+  it('resolves with a failure and handles it when it fails to update the resource (local)', async () => {
     mockAppData = { jwt: 'some token' };
-    const objectToCreate = { objets: 'data' };
+    const objectToUpdate = { object: 'data' };
     fetchMock.mock(
-      '/api/model-name/',
+      '/api/model-name/1/',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
     await expect(
-      createOne({
+      updateOne({
         name: 'model-name',
-        object: objectToCreate,
+        id: '1',
+        object: objectToUpdate,
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'POST',
-      body: JSON.stringify(objectToCreate),
+      method: 'PUT',
+      body: JSON.stringify(objectToUpdate),
     });
   });
 
-  it('resolves with a 404 and handles it when it fails to create the resource (api)', async () => {
+  it('resolves with a 404 and handles it when it fails to update the resource (api)', async () => {
     mockAppData = { jwt: 'some token' };
-    const objectToCreate = { objets: 'data' };
-    fetchMock.mock('/api/model-name/', 404);
+    const objectToUpdate = { object: 'data' };
+    fetchMock.mock('/api/model-name/1/', 404);
 
     let thrownError;
 
     try {
-      await createOne({
+      await updateOne({
         name: 'model-name',
-        object: objectToCreate,
+        id: '1',
+        object: objectToUpdate,
       });
     } catch (error) {
       thrownError = error;
@@ -100,21 +106,21 @@ describe('queries/createOne', () => {
 
     expect(thrownError).toEqual({ code: 'exception' });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'POST',
-      body: JSON.stringify(objectToCreate),
+      method: 'PUT',
+      body: JSON.stringify(objectToUpdate),
     });
   });
 
-  it('resolves with a 400 and handles it when it fails to create the resource (api)', async () => {
+  it('resolves with a 400 and handles it when it fails to update the resource (api)', async () => {
     mockAppData = { jwt: 'some token' };
-    const objectToCreate = { objets: 'data' };
-    fetchMock.mock('/api/model-name/', {
+    const objectToUpdate = { object: 'data' };
+    fetchMock.mock('/api/model-name/1/', {
       body: JSON.stringify({ error: 'An error occured!' }),
       status: 400,
       headers: { 'Content-Type': 'application/json' },
@@ -122,9 +128,10 @@ describe('queries/createOne', () => {
 
     let thrownError;
     try {
-      await createOne({
+      await updateOne({
         name: 'model-name',
-        object: objectToCreate,
+        id: '1',
+        object: objectToUpdate,
       });
     } catch (error) {
       thrownError = error;
@@ -135,14 +142,14 @@ describe('queries/createOne', () => {
       error: 'An error occured!',
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'POST',
-      body: JSON.stringify(objectToCreate),
+      method: 'PUT',
+      body: JSON.stringify(objectToUpdate),
     });
   });
 });

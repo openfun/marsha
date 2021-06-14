@@ -12,6 +12,7 @@ import { Organization } from '../../types/Organization';
 import { createOne } from './createOne';
 import { fetchList } from './fetchList';
 import { fetchOne } from './fetchOne';
+import { updateOne } from './updateOne';
 
 export const useOrganization = (
   organizationId: string,
@@ -27,6 +28,38 @@ export const usePlaylist = (
 ) => {
   const key = ['playlists', playlistId];
   return useQuery<Playlist, 'playlists'>(key, fetchOne, queryConfig);
+};
+
+type UseUpdatePlaylistData = Partial<Playlist>;
+type UseUpdatePlaylistError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseUpdatePlaylistData]?: string[] }[];
+    };
+type UseUpdatePlaylistOptions = UseMutationOptions<
+  Playlist,
+  UseUpdatePlaylistError,
+  UseUpdatePlaylistData
+>;
+export const useUpdatePlaylist = (
+  id: string,
+  options?: UseUpdatePlaylistOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<Playlist, UseUpdatePlaylistError, UseUpdatePlaylistData>(
+    (updatedPlaylist) =>
+      updateOne({ name: 'playlists', id, object: updatedPlaylist }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('playlists');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+    },
+  );
 };
 
 type PlaylistsResponse = APIList<Playlist>;
