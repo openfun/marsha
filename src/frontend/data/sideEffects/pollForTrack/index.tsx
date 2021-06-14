@@ -1,5 +1,3 @@
-import { Dispatch } from 'redux';
-
 import { API_ENDPOINT } from '../../../settings';
 import { requestStatus } from '../../../types/api';
 import { Document } from '../../../types/file';
