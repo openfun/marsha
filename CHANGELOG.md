@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a parametrized cicrcleci job to run e2e tests on 3 browsers (chromium, firefox and webkit)
 - Move DevelopmentLTIView to a new development directory
 - Add a variable to set frontend video polling interval
+- Add a component responsible to manage public video dashboard
 
 ### Changed
 

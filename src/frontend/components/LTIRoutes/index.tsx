@@ -24,6 +24,7 @@ import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
 const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const VideoPlayer = lazy(() => import('../VideoPlayer'));
+const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -45,7 +46,7 @@ export const Routes = () => (
             if (match.params.objectType === modelName.VIDEOS && appData.video) {
               return (
                 <InstructorWrapper resource={appData.video}>
-                  <VideoPlayer
+                  <PublicVideoDashboard
                     video={appData.video}
                     playerType={appData.player!}
                   />
@@ -88,7 +89,7 @@ export const Routes = () => (
             if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
               return (
                 <InstructorWrapper resource={appData.video}>
-                  <Chat video={appData.video} />
+                  <Chat video={appData.video} standalone={true} />
                 </InstructorWrapper>
               );
             }
