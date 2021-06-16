@@ -233,7 +233,7 @@ class VideoAPITest(TestCase):
         )
 
     def test_api_video_read_detail_as_instructor_in_read_only(self):
-        """An instructor with read_only set to True should not be able to read the video."""
+        """An instructor with read_only can read the video."""
         video = factories.VideoFactory(upload_state="ready")
 
         jwt_token = AccessToken()
@@ -246,7 +246,7 @@ class VideoAPITest(TestCase):
             "/api/videos/{!s}/".format(video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
@@ -2553,7 +2553,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "upload_state": "pending",
                 "thumbnail": None,
@@ -2639,7 +2639,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "upload_state": "pending",
                 "thumbnail": None,
@@ -2846,7 +2846,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "upload_state": "pending",
                 "thumbnail": None,
@@ -3034,7 +3034,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "upload_state": PENDING,
                 "thumbnail": None,

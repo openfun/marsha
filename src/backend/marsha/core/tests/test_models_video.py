@@ -15,7 +15,6 @@ from ..defaults import (
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     RAW,
-    RUNNING,
     STATE_CHOICES,
 )
 from ..factories import VideoFactory
@@ -89,8 +88,8 @@ class VideoModelsTestCase(TestCase):
 
             self.assertEqual(video.is_ready_to_show, False)
 
-        # Only when live is running, the video is ready to show
+        # The video is ready to show when live_state is not null
         for live_choice in LIVE_CHOICES:
             video = VideoFactory(live_state=live_choice[0], live_type=RAW)
 
-            self.assertEqual(video.is_ready_to_show, live_choice[0] == RUNNING)
+            self.assertEqual(video.is_ready_to_show, True)
