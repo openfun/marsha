@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import DELETED, HARVESTED, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING
+from ..defaults import DELETED, HARVESTED, LIVE_CHOICES, LIVE_TYPE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
@@ -140,7 +140,7 @@ class Video(BaseFile):
         return (
             self.uploaded_on is not None
             and self.upload_state not in [HARVESTED, DELETED]
-        ) or self.live_state == RUNNING
+        ) or self.live_state is not None
 
     @staticmethod
     def get_ready_clause():
@@ -155,7 +155,7 @@ class Video(BaseFile):
             A condition added to a QuerySet
         """
         return models.Q(uploaded_on__isnull=False, live_state__isnull=True) | models.Q(
-            live_state="running"
+            live_state__isnull=False
         )
 
 

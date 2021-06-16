@@ -232,7 +232,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -287,7 +287,7 @@ class VideoLTIViewTestCase(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_views_lti_video_instructor_live_mode_an_chat_on(
+    def test_views_lti_video_instructor_live_mode_and_chat_on(
         self, mock_get_consumer_site, mock_verify
     ):
         """Validate the format of the response for a live video.
@@ -380,7 +380,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
