@@ -1,8 +1,8 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import React, { useRef, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
+import { WaitingLiveVideo } from '../WaitingLiveVideo';
 import { useThumbnail } from '../../data/stores/useThumbnail';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
@@ -10,16 +10,8 @@ import { createPlayer } from '../../Player/createPlayer';
 import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { Maybe, Nullable } from '../../utils/types';
+import { Nullable } from '../../utils/types';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-
-const messages = defineMessages({
-  liveOnGoing: {
-    defaultMessage: 'Live is starting and will be displayed soon.',
-    description: 'Waiting message when a live is starting',
-    id: 'components.VideoPlayer.LiveOnDoing',
-  },
-});
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -37,10 +29,7 @@ const VideoPlayer = ({
   playerType,
   timedTextTracks,
 }: BaseVideoPlayerProps) => {
-  const intl = useIntl();
-  const [player, setPlayer] = useState(
-    undefined as Maybe<VideoPlayerInterface>,
-  );
+  const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
@@ -146,11 +135,7 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {!player && video.live_state && (
-        <Text size="large" textAlign="center">
-          {intl.formatMessage(messages.liveOnGoing)}
-        </Text>
-      )}
+      {!player && video.live_state && <WaitingLiveVideo />}
     </Box>
   );
 };

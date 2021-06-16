@@ -11,8 +11,8 @@ import {
   timedTextMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Deferred } from '../../utils/tests/Deferred';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import VideoPlayer from './index';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -125,13 +125,11 @@ describe('VideoPlayer', () => {
     ];
 
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType={'videojs'}
-          timedTextTracks={timedTextTracks}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType={'videojs'}
+        timedTextTracks={timedTextTracks}
+      />,
     );
     await waitFor(() =>
       // The player is created and initialized with DashJS for adaptive bitrate
@@ -178,7 +176,10 @@ describe('VideoPlayer', () => {
       ),
     );
 
-    screen.getByText('Live is starting and will be displayed soon.');
+    screen.getByText('Live will begin soon');
+    screen.getByText(
+      'The live is going to start. You can wait here, the player will start once the live is ready.',
+    );
 
     await act(async () =>
       deferred.resolve({
@@ -193,8 +194,13 @@ describe('VideoPlayer', () => {
       video,
     ),
       expect(
-        screen.queryByText('Live is starting and will be displayed soon.'),
+        screen.queryByText('Live will begin soon'),
       ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'The live is going to start. You can wait here, the player will start once the live is ready.',
+      ),
+    ).not.toBeInTheDocument();
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
