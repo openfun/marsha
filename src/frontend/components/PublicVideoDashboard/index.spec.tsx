@@ -1,8 +1,9 @@
 import React from 'react';
 import fetchMock from 'fetch-mock';
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { ImportMock } from 'ts-mock-imports';
 
+import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { liveState, timedTextMode } from '../../types/tracks';
 import { converseMounter } from '../../utils/converse';
@@ -11,11 +12,18 @@ import {
   videoMockFactory,
 } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { wrapInRouter } from '../../utils/tests/router';
 import { createPlayer } from '../../Player/createPlayer';
 import PublicVideoDashboard from '.';
 
 jest.mock('../../Player/createPlayer', () => ({
   createPlayer: jest.fn(),
+}));
+jest.mock('../../data/sideEffects/getResource', () => ({
+  getResource: jest.fn().mockResolvedValue(null),
+}));
+jest.mock('../../data/sideEffects/pollForLive', () => ({
+  pollForLive: jest.fn().mockResolvedValue(null),
 }));
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
@@ -277,5 +285,56 @@ describe('PublicVideoDashboard', () => {
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
     expect(container.querySelector('#converse-container')).toBeInTheDocument();
+  });
+
+  it('redirects to the error component when live state is stopped or stopping', () => {
+    [liveState.STOPPED, liveState.STOPPING].forEach((state) => {
+      const video = videoMockFactory({
+        live_state: state,
+      });
+      render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <PublicVideoDashboard video={video} playerType="videojs" />,
+            [
+              {
+                path: FULL_SCREEN_ERROR_ROUTE(),
+                render: ({ match }) => (
+                  <span>{`Error Component: ${match.params.code}`}</span>
+                ),
+              },
+            ],
+          ),
+        ),
+      );
+
+      screen.getByText('Error Component: notFound');
+
+      cleanup();
+    });
+  });
+
+  it('displays the WaitingLiveVideo component when live is not ready', () => {
+    [liveState.IDLE, liveState.CREATING, liveState.STARTING].forEach(
+      (state) => {
+        const video = videoMockFactory({
+          live_state: state,
+        });
+        render(
+          wrapInIntlProvider(
+            wrapInRouter(
+              <PublicVideoDashboard video={video} playerType="videojs" />,
+            ),
+          ),
+        );
+
+        screen.getByText('Live will begin soon');
+        screen.getByText(
+          'The live is going to start. You can wait here, the player will start once the live is ready.',
+        );
+
+        cleanup();
+      },
+    );
   });
 });

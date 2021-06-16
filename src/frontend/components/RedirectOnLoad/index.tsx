@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 
 import { appData, getDecodedJwt } from '../../data/appData';
 import { appState } from '../../types/AppData';
-import { uploadState } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
