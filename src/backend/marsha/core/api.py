@@ -241,10 +241,16 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["retrieve", "partial_update", "update"]:
+        if self.action in ["partial_update", "update"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
                 | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+                | permissions.IsVideoPlaylistAdmin
+                | permissions.IsVideoOrganizationAdmin
+            ]
+        elif self.action in ["retrieve"]:
+            permission_classes = [
+                permissions.IsTokenResourceRouteObject
                 | permissions.IsVideoPlaylistAdmin
                 | permissions.IsVideoOrganizationAdmin
             ]

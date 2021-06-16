@@ -77,7 +77,7 @@ class VideoAPITest(TestCase):
         )
 
     def test_api_video_read_detail_student(self):
-        """Student users should not be allowed to read a video detail."""
+        """Student users should be allowed to read a video detail."""
         video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -88,11 +88,22 @@ class VideoAPITest(TestCase):
             "/api/videos/{!s}/".format(video.id),
             HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
-        self.assertEqual(response.status_code, 403)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_video_read_detail_student_other_video(self):
+        """Student users should not be allowed to read an other video detail."""
+        video = factories.VideoFactory()
+        other_video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            "/api/videos/{!s}/".format(other_video.id),
+            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
         )
+        self.assertEqual(response.status_code, 403)
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_admin_token_user(self):
