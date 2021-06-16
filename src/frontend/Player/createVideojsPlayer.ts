@@ -60,6 +60,7 @@ export const createVideojsPlayer = (
   }
 
   const options: VideoJsPlayerOptions = {
+    autoplay: !!live,
     controls: true,
     debug: false,
     fluid: true,

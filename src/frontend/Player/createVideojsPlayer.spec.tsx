@@ -111,6 +111,7 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.playbackRates).toEqual([
       0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4,
     ]);
+    expect(player.options_.autoplay).toBe(false);
     expect(player.options_.controls).toBe(true);
     expect(player.options_.debug).toBe(false);
     expect(player.options_.fluid).toBe(true);
@@ -236,6 +237,7 @@ describe('createVideoJsPlayer', () => {
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
     ]);
+    expect(player.options_.autoplay).toBe(true);
     expect(player.options_.liveui).toBe(true);
     expect(player.options_.playbackRates).toEqual([]);
   });
