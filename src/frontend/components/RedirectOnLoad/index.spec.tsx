@@ -1,5 +1,5 @@
 import { cleanup, render } from '@testing-library/react';
-import * as React from 'react';
+import React from 'react';
 
 import { appState } from '../../types/AppData';
 import { modelName } from '../../types/models';
@@ -8,7 +8,6 @@ import { wrapInRouter } from '../../utils/tests/router';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { RedirectOnLoad } from './index';
 import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
 

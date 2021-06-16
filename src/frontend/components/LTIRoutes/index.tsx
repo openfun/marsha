@@ -23,7 +23,6 @@ import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
 
 const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
-const VideoPlayer = lazy(() => import('../VideoPlayer'));
 const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
