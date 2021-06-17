@@ -15,8 +15,11 @@ jest.mock('../../data/appData', () => ({
 }));
 
 jest.mock('../Chat', () => ({
-  Chat: (props: { video: Video }) => (
-    <span title={props.video.id}>chat component</span>
+  Chat: (props: { video: Video; standalone?: boolean }) => (
+    <div>
+      <span title={props.video.id}>chat component</span>
+      <span>standalone: {props.standalone ? 'true' : 'false'}</span>
+    </div>
   ),
 }));
 
@@ -89,6 +92,7 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
     fireEvent.click(showChatButton);
 
     screen.getByText('chat component');
+    screen.getByText('standalone: true');
 
     const hideChatButton = screen.getByRole('button', { name: /hide chat/ });
 
