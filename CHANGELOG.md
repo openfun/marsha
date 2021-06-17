@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a variable to set frontend video polling interval
 - Add a component responsible to manage public video dashboard
 - Add a waiting workflow while a live is not ready
+- Allow to play a youtube video in jitsi
 
 ### Changed
 
