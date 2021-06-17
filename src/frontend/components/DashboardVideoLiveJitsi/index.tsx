@@ -56,6 +56,7 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
       'profile',
       'chat',
       'etherpad',
+      'sharedvideo',
       'shareaudio',
       'settings',
       'raisehand',
