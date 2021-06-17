@@ -35,13 +35,17 @@
     "description": "Dashboard button to upload a video to replace the existing one, when there *is* an existing video.",
     "message": "Reemplazar este vídeo"
   },
-  "components.Dashboard.DashboardPaneButtons.videos.btnStartLive": {
-    "description": "Dashboard button to configure a live streaming",
-    "message": "Configure a live streaming"
-  },
   "components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst": {
     "description": "Dashboard button to upload a video, when there is no existing video.",
     "message": "Upload a video"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.jitsi": {
+    "description": "Dashboard button to launch jitsi livestream",
+    "message": "Launch Jitsi LiveStream"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.raw": {
+    "description": "Dashboard button to configure a live streaming",
+    "message": "Configure a live streaming"
   },
   "components.Dashboard.title": {
     "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
@@ -51,25 +55,13 @@
     "description": "Document filename.",
     "message": "Filename"
   },
-  "components.DashboardDocument.helptextError": {
-    "description": "Dashboard helptext for when the document failed to upload or get processed.",
-    "message": "There was an error with your document. Retry or upload another one."
-  },
   "components.DashboardDocument.helptextPending": {
     "description": "Dashboard helptext for the case when there is no existing document nor anything in progress.",
     "message": "There is currently no document to display."
   },
-  "components.DashboardDocument.helptextProcessing": {
-    "description": "Dashboard helptext to warn users document is processing.",
-    "message": "Your document is currently processing. This may take some minutes."
-  },
   "components.DashboardDocument.helptextReady": {
     "description": "Dashboard helptext for ready-to-display documents.",
     "message": "Your document is ready to display."
-  },
-  "components.DashboardDocument.helptextUploading": {
-    "description": "Dashboard helptext to warn user not to navigate away during document upload.",
-    "message": "Upload in progress... Please do not close or reload this page."
   },
   "components.DashboardDocument.title": {
     "description": "Document upload status.",
@@ -115,6 +107,14 @@
     "description": "Button to watch the video.",
     "message": "watch"
   },
+  "components.DashboardVideoLive.jitsi": {
+    "description": "DashboardVideoLive jitsi title.",
+    "message": "Jitsi Streaming"
+  },
+  "components.DashboardVideoLive.liveCreating": {
+    "description": "Helptext explainig to wait until the live is created.",
+    "message": "Live streaming is being created. You will be able to start it in a few seconds"
+  },
   "components.DashboardVideoLive.liveStarting": {
     "description": "Helptext explainig to wait until the live is ready.",
     "message": "Live streaming is starting. Wait before starting your stream."
@@ -127,29 +127,49 @@
     "description": "Helptext explaining that the live is ending and the live to VOD process will start.",
     "message": "Live streaming is ending. The process to transform the live to VOD will begin soon. You can close the window and come back later."
   },
-  "components.DashboardVideoLive.showLive": {
-    "description": "button to redirect use to video player.",
-    "message": "show live"
+  "components.DashboardVideoLive.raw": {
+    "description": "DashboardVideoLive main title.",
+    "message": "Streaming link"
   },
   "components.DashboardVideoLive.startLive": {
     "description": "Start a video streaming.",
     "message": "start streaming"
   },
-  "components.DashboardVideoLive.streamKey": {
-    "description": "Video key streaming.",
-    "message": "stream key"
-  },
-  "components.DashboardVideoLive.streamLink": {
-    "description": "link to use to stream a video.",
-    "message": "Stream link"
-  },
-  "components.DashboardVideoLive.title": {
-    "description": "DashboardVideoLive main title.",
-    "message": "Streaming link"
-  },
   "components.DashboardVideoLive.url": {
     "description": "Video url streaming.",
     "message": "url"
+  },
+  "components.DashboardVideoLiveRaw.copied": {
+    "description": "Message displayed when endpoints info are copied.",
+    "message": "Copied!"
+  },
+  "components.DashboardVideoLiveRaw.streamKey": {
+    "description": "Video key streaming.",
+    "message": "stream key"
+  },
+  "components.DashboardVideoLiveRaw.streamLink": {
+    "description": "link to use to stream a video.",
+    "message": "Stream link"
+  },
+  "components.DashboardVideoLiveRaw.url": {
+    "description": "Video url streaming.",
+    "message": "url"
+  },
+  "components.DashboardVideoLiveRunning.chatOnly": {
+    "description": "button to redirect to the chat only view.",
+    "message": "show chat only"
+  },
+  "components.DashboardVideoLiveRunning.hideChat": {
+    "description": "button to hide the chat during a jitsi live.",
+    "message": "hide chat"
+  },
+  "components.DashboardVideoLiveRunning.showChat": {
+    "description": "button to show the chat during a jitsi live.",
+    "message": "show chat"
+  },
+  "components.DashboardVideoLiveRunning.showLive": {
+    "description": "button to redirect use to video player.",
+    "message": "show live"
   },
   "components.DashboardVideoLiveStopButton.startLive": {
     "description": "Stop a video streaming.",
@@ -177,27 +197,23 @@
   },
   "components.DashboardVideoPane.helptextProcessing": {
     "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
-    "message": "Your video is currently processing. This may take up to an hour. You can close the window and come back later."
+    "message": "El vídeo está siendo procesado. Esto puede tomar hasta una hora. Por favor, vuelva más tarde."
   },
   "components.DashboardVideoPane.helptextReady": {
     "description": "Dashboard helptext for ready-to-play videos.",
-    "message": "Your video is ready to play."
+    "message": "El vídeo está listo para ser reproducido."
   },
   "components.DashboardVideoPane.helptextUploading": {
     "description": "Dashboard helptext to warn user not to navigate away during video upload.",
-    "message": "Upload in progress... Please do not close or reload this page."
+    "message": "Carga en curso... Por favor no cierre o vuelva a cargar esta página."
   },
   "components.DashboardVideoPane.thumbnailAlt": {
     "description": "Accessibility text for the video thumbnail in the Dashboard.",
-    "message": "Video thumbnail preview image."
+    "message": "Imagen previa de la miniatura del vídeo."
   },
   "components.DashboardVideoPane.title": {
     "description": "Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).",
-    "message": "Video status"
-  },
-  "components.DashboardVideoPaneProgress.progressLabel": {
-    "description": "Accessibility message for the upload progress bar.",
-    "message": "Upload progress"
+    "message": "Estado del vídeo"
   },
   "components.DownloadVideo.1080": {
     "description": "High quality video",
@@ -205,51 +221,59 @@
   },
   "components.DownloadVideo.480": {
     "description": "Mobile quality video",
-    "message": "480p: SD (Mobile)"
+    "message": "480p: SD (Móvil)"
   },
   "components.DownloadVideo.720": {
     "description": "Normal quality video",
-    "message": "720p: HD (standard)"
+    "message": "720p: HD (estándar)"
   },
   "components.DownloadVideo.downloadVideo": {
     "description": "Text to download the video",
-    "message": "Download this video:"
+    "message": "Descargar este vídeo:"
   },
-  "components.ErrorComponent.liveIncompatible.title": {
+  "components.ErrorComponents.generic.text": {
+    "description": "Helpful text for the generic error message (random API request failure).",
+    "message": "We could not access the appropriate resources. You can try reloading the page or come back again at a later time."
+  },
+  "components.ErrorComponents.generic.title": {
+    "description": "Title for the generic error message (random API request failure).",
+    "message": "There was an unexpected error"
+  },
+  "components.ErrorComponents.liveIncompatible.title": {
     "description": "Title when the object is incompatible with live mode",
     "message": "Live mode incompatible with this object"
   },
-  "components.ErrorComponent.lti.text": {
+  "components.ErrorComponents.lti.text": {
     "description": "Helpful text for the LTI error page",
     "message": "We could not validate your access to this video. Please contact your instructor. If you are the instructor, please check your settings."
   },
-  "components.ErrorComponent.lti.title": {
+  "components.ErrorComponents.lti.title": {
     "description": "Title for the LTI error page",
     "message": "There was an error loading this video"
   },
-  "components.ErrorComponent.notFound.text": {
+  "components.ErrorComponents.notFound.text": {
     "description": "Helpful text for the 404 Not Found error page",
     "message": "This video does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated."
   },
-  "components.ErrorComponent.notFound.title": {
+  "components.ErrorComponents.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "The video you are looking for could not be found"
   },
-  "components.ErrorComponent.policy.text": {
+  "components.ErrorComponents.policy.text": {
     "description": "Title for the upload permission error page",
     "message": "We could not make sure you are allowed to upload a video file. Please check your settings and/or try again."
   },
-  "components.ErrorComponent.policy.title": {
+  "components.ErrorComponents.policy.title": {
     "description": "Helpful text for the upload permission error page",
     "message": "Failed to authenticate your permission to upload"
   },
-  "components.ErrorComponent.upload.text": {
+  "components.ErrorComponents.upload.text": {
     "description": "Helpful text for the Upload error page",
     "message": "You can try again later. You may want to check your Internet connection quality."
   },
-  "components.ErrorComponent.upload.title": {
+  "components.ErrorComponents.upload.title": {
     "description": "Title for the video upload error page",
-    "message": "Failed to upload your video file"
+    "message": "Error al subir el archivo de vídeo"
   },
   "components.InstructorView.btnDashboard": {
     "description": "Text for the button in the instructor view that allows the instructor to go to the dashboard.",
@@ -265,11 +289,15 @@
   },
   "components.InstructorView.title": {
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
-    "message": "Instructor Preview 👆"
+    "message": "Vista previa del instructor 👆"
+  },
+  "components.ObjectStatusPicker.CREATING": {
+    "description": "Live video in creation status",
+    "message": "Creando"
   },
   "components.ObjectStatusPicker.DELETED": {
     "description": "Status information for a video/audio/timed text track",
-    "message": "Deleted"
+    "message": "Eliminado"
   },
   "components.ObjectStatusPicker.ERROR": {
     "description": "Status information for a video/audio/timed text track",
@@ -289,15 +317,15 @@
   },
   "components.ObjectStatusPicker.PENDING": {
     "description": "Status information for a video/audio/timed text track",
-    "message": "Missing"
+    "message": "Pendiente"
   },
   "components.ObjectStatusPicker.PROCESSING": {
     "description": "Status information for a video/audio/timed text track",
-    "message": "Processing"
+    "message": "Procesando"
   },
   "components.ObjectStatusPicker.READY": {
     "description": "Status information for a video/audio/timed text track",
-    "message": "Ready"
+    "message": "Listo"
   },
   "components.ObjectStatusPicker.RUNNING": {
     "description": "The video is in live state and live is running",
@@ -319,53 +347,105 @@
     "description": "Status information for a video/audio/timed text track",
     "message": "Uploading"
   },
+  "components.SelectContent.addDocument": {
+    "description": "Text displayed on a button to add a new document.",
+    "message": "Añadir un documento"
+  },
+  "components.SelectContent.addVideo": {
+    "description": "Text displayed on a button to add a new video.",
+    "message": "Añadir un vídeo"
+  },
+  "components.SelectContent.cancel": {
+    "description": "Text displayed on a button to cancel content selection.",
+    "message": "Cancelar"
+  },
+  "components.SelectContent.confirm": {
+    "description": "Text displayed on a button to confirm content selection.",
+    "message": "Seleccionar"
+  },
+  "components.SelectContent.newDocument": {
+    "description": "Default LTI consumer title for a new document.",
+    "message": "Nuevo Documento"
+  },
+  "components.SelectContent.newVideo": {
+    "description": "Default LTI consumer title for a new video.",
+    "message": "Nuevo vídeo"
+  },
+  "components.SelectContent.notReadyToShow": {
+    "description": "Text helper displayed if a video or a document is not ready to show to students.",
+    "message": "Not ready to show"
+  },
+  "components.SelectContent.notUploaded": {
+    "description": "Text helper displayed if a video or a document is not uploaded.",
+    "message": "Not uploaded"
+  },
+  "components.SelectContent.readyToShow": {
+    "description": "Text helper displayed if a video or a document is ready to show to students.",
+    "message": "Ready to show"
+  },
+  "components.SelectContent.select": {
+    "description": "Title used for a video or a document select.",
+    "message": "Seleccionar {content_title}"
+  },
+  "components.SelectContent.title": {
+    "description": "Title for the LTI content selector, where the LTI Consumer can see the available video and documents\n      , and will be able to select them.",
+    "message": "Select LTI content"
+  },
+  "components.SelectContent.titleEdit": {
+    "description": "Label for LTI title content input.",
+    "message": "LTI Content title"
+  },
+  "components.SelectContent.uploaded": {
+    "description": "Text helper displayed if a video or a document is uploaded.",
+    "message": "Uploaded"
+  },
   "components.SiteHeader.logInBtn": {
     "description": "Text for the login button in the header of the marsha site",
-    "message": "Log in"
+    "message": "Iniciar sesión"
   },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
-    "message": "Upload the file"
+    "message": "Subir el archivo"
   },
   "components.TimedTextCreationForm.addTrackLabel": {
     "description": "Label for the form that lets the instructor add a new timed text track.",
-    "message": "Add a language"
+    "message": "Añadir un idioma"
   },
   "components.TimedTextCreationForm.error": {
     "description": "Generic error message when we fail to create a subtitle/transcript/caption track.",
-    "message": "There was an error during track creation."
+    "message": "Se produjo un error durante la creación de pistas."
   },
   "components.TimedTextListItem.delete": {
     "description": "Link text to delete a subtitle/transcript/captions item.",
-    "message": "Delete"
+    "message": "Eliminar"
   },
   "components.TimedTextListItem.download": {
     "description": "Link text to download a subtitle/transcript/captions item.",
-    "message": "Download"
+    "message": "Descargar"
   },
   "components.TimedTextListItem.replace": {
     "description": "Link text to replace a subtitle/transcript/captions item with a new file (for the same language).",
-    "message": "Replace"
+    "message": "Reemplazar"
   },
   "components.TimedTextListItem.upload": {
     "description": "Link text to upload a missing subtitle/transcript/captions item file.",
-    "message": "Upload"
+    "message": "Subir"
   },
   "components.Transcripts.hideTranscript": {
     "description": "Text to hide a displayed transcript",
-    "message": "Hide transcript"
+    "message": "Ocultar transcripción"
   },
   "components.Transcripts.transcriptLabel": {
     "description": "Text indicated to choose an available transcript language",
-    "message": "Show a transcript"
+    "message": "Mostrar una transcripción"
   },
   "components.Transcripts.transcriptSelect": {
     "description": "Placeholder for the transcript select box",
-    "message": "Choose a language"
+    "message": "Elegir un idioma"
   },
   "components.UploadForm.dropzoneButtonPick": {
     "description": "File upload dropzone: button to choose a file to upload,\n      has the drag text next to it (components.UploadForm.dropzoneDragText)",
-    "message": "Select a file to upload"
+    "message": "Seleccione un archivo para cargar"
   },
   "components.UploadForm.dropzoneDragText": {
     "description": "File upload dropzone: helptext on the dropzone,\n      goes along with the button (components.UploadForm.dropzoneButtonPick)",
@@ -375,9 +455,13 @@
     "description": "Text for the link to the dashboard in the upload form.",
     "message": "Back to dashboard"
   },
+  "components.UploadForm.preparingUpload": {
+    "description": "Accessible message for the spinner while loading the uploadable object in the upload form.",
+    "message": "Preparing for upload..."
+  },
   "components.UploadForm.title-document": {
     "description": "Title for the document upload form",
-    "message": "Upload a new document"
+    "message": "Subir nuevo documento"
   },
   "components.UploadForm.title-thumbnail": {
     "description": "Title for the thumbnail upload form",
@@ -399,6 +483,18 @@
     "description": "Title for the video upload form",
     "message": "Create a new video"
   },
+  "components.UploadableObjectProgress.progressLabel": {
+    "description": "Accessibility message for the upload progress bar.",
+    "message": "Upload progress"
+  },
+  "components.WaitingLiveVideo.message": {
+    "description": "Message for the waiting live video component",
+    "message": "The live is going to start. You can wait here, the player will start once the live is ready."
+  },
+  "components.WaitingLiveVideo.title": {
+    "description": "Title for the waiting live video component",
+    "message": "Live will begin soon"
+  },
   "components.dashboardThumbnail.replaceThumbnailButton": {
     "description": "",
     "message": "Replace this thumbnail"
@@ -406,165 +502,5 @@
   "message.key": {
     "description": "",
     "message": "Our title"
-  },
-  "plyr.controls.captions.menu.disabled": {
-    "description": "label used in the captions menu list to select the disabled option and then disable captions if selected",
-    "message": "Disabled"
-  },
-  "plyr.controls.captions.menu.enabled": {
-    "description": "label used in the captions menu list if captions are enabled and the selected caption has no language nor label",
-    "message": "enabled"
-  },
-  "plyr.controls.currentTime": {
-    "description": "Indicates the current time in the video.",
-    "message": "Current time"
-  },
-  "plyr.controls.disableCaptions": {
-    "description": "Button to disable captions",
-    "message": "Disable captions"
-  },
-  "plyr.controls.download": {
-    "description": "Download button",
-    "message": "Download"
-  },
-  "plyr.controls.enableCaptions": {
-    "description": "Button to enable captions",
-    "message": "Enable captions"
-  },
-  "plyr.controls.enterFullscreen": {
-    "description": "Button to activate the fullscreen mode",
-    "message": "Enter fullscreen"
-  },
-  "plyr.controls.exitFullscreen": {
-    "description": "Button to exit fullscreen mode",
-    "message": "Exit fullscreen"
-  },
-  "plyr.controls.forward": {
-    "description": "Video control forward button",
-    "message": "Forward '{seektime}'s"
-  },
-  "plyr.controls.loop": {
-    "description": "Loop is commented in Plyr's code, it is a feature allowing users to play in loop a video section",
-    "message": "Loop"
-  },
-  "plyr.controls.loop.all": {
-    "description": "When loop is activated, loop over all the video",
-    "message": "All"
-  },
-  "plyr.controls.loop.end": {
-    "description": "When loop is activated, this the time where the loop should end at",
-    "message": "End"
-  },
-  "plyr.controls.loop.reset": {
-    "description": "When loop is activated, button to reset the loop configuration",
-    "message": "Reset"
-  },
-  "plyr.controls.loop.start": {
-    "description": "When loop is activated, this the time where the loop should start at",
-    "message": "Start"
-  },
-  "plyr.controls.mute": {
-    "description": "Mute button",
-    "message": "Mute"
-  },
-  "plyr.controls.pause": {
-    "description": "Video control pause button",
-    "message": "Pause"
-  },
-  "plyr.controls.play": {
-    "description": "Video control play button",
-    "message": "Play"
-  },
-  "plyr.controls.progress.buffered": {
-    "description": "Used to indicate the % of buffered video",
-    "message": "Buffered"
-  },
-  "plyr.controls.progress.played": {
-    "description": "Used to indicate the % of video played",
-    "message": "Played"
-  },
-  "plyr.controls.quality.badge.1080": {
-    "description": "Label associatied to the 1080px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.quality.badge.1440": {
-    "description": "Label associatied to the 1440px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.quality.badge.2160": {
-    "description": "Label associatied to the 2160px quality badge",
-    "message": "4K"
-  },
-  "plyr.controls.quality.badge.480": {
-    "description": "Label associatied to the 480px quality badge",
-    "message": "SD"
-  },
-  "plyr.controls.quality.badge.576": {
-    "description": "Label associatied to the 576px quality badge",
-    "message": "SD"
-  },
-  "plyr.controls.quality.badge.720": {
-    "description": "Label associatied to the 720px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.rangeFill.seek": {
-    "description": "Video seek progress bar used as polyfill for webkit",
-    "message": "'{currentTime}' of '{duration}'"
-  },
-  "plyr.controls.restart": {
-    "description": "Video control restart button",
-    "message": "Restart"
-  },
-  "plyr.controls.rewind": {
-    "description": "Video control rewind button",
-    "message": "Rewind '{seektime}'s"
-  },
-  "plyr.controls.seek": {
-    "description": "Video control seek slider",
-    "message": "Seek"
-  },
-  "plyr.controls.unmute": {
-    "description": "Unmute button",
-    "message": "Unmute"
-  },
-  "plyr.controls.volume": {
-    "description": "Indicates the zone where the volume is managed in the plyr interface",
-    "message": "Volume"
-  },
-  "plyr.pluging.ad": {
-    "description": "When Ad plugin is used, a countdown is display and this label is used to indicated the remaining time before viewing the video. Eg: Ad - 0:08",
-    "message": "Ad"
-  },
-  "plyr.ui.display.duration": {
-    "description": "Display the total video duration",
-    "message": "Duration"
-  },
-  "plyr.ui.frameTitle": {
-    "description": "Title set to an iframe when the video is loaded in an iframe as parent element",
-    "message": "Player for '{title}'"
-  },
-  "plyr.ui.menuBack": {
-    "description": "When a setting menu is open, this label is added to the button responsible to go back to the previous menu",
-    "message": "Go back to previous menu"
-  },
-  "plyr.ui.setting.quality": {
-    "description": "Label used in the menu to open quality setting",
-    "message": "Quality"
-  },
-  "plyr.ui.setting.speed": {
-    "description": "Label used in the menu to open speed setting",
-    "message": "Speed"
-  },
-  "plyr.ui.setting.speed.normal": {
-    "description": "Value used in the speed setting, corresponding to a 1x speed",
-    "message": "Normal"
-  },
-  "plyr.ui.settings": {
-    "description": "Label used to indicate settings menu",
-    "message": "Settings"
-  },
-  "plyr.ui.settings.captions": {
-    "description": "Label used in the setting menu to access captions choices",
-    "message": "Captions"
   }
 }
