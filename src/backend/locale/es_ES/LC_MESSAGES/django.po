@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 13:18+0000\n"
-"PO-Revision-Date: 2021-03-01 13:09\n"
+"POT-Creation-Date: 2021-06-17 14:11+0000\n"
+"PO-Revision-Date: 2021-06-17 14:22\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -62,12 +62,12 @@ msgstr ""
 msgid "Video"
 msgstr "Video"
 
-#: marsha/core/admin.py:294 marsha/core/models/video.py:60
-#: marsha/core/models/video.py:150 marsha/core/models/video.py:313
+#: marsha/core/admin.py:294 marsha/core/models/video.py:68
+#: marsha/core/models/video.py:168 marsha/core/models/video.py:331
 msgid "video"
 msgstr "video"
 
-#: marsha/core/admin.py:295 marsha/core/models/video.py:61
+#: marsha/core/admin.py:295 marsha/core/models/video.py:69
 msgid "videos"
 msgstr "videos"
 
@@ -83,11 +83,11 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: marsha/core/admin.py:328 marsha/core/models/file.py:159
+#: marsha/core/admin.py:328 marsha/core/models/file.py:161
 msgid "document"
 msgstr ""
 
-#: marsha/core/admin.py:329 marsha/core/models/file.py:160
+#: marsha/core/admin.py:329 marsha/core/models/file.py:162
 msgid "documents"
 msgstr ""
 
@@ -103,52 +103,64 @@ msgstr "pasaporte LTI"
 msgid "Marsha"
 msgstr "Marsha"
 
-#: marsha/core/defaults.py:33
+#: marsha/core/defaults.py:35
 msgid "pending"
 msgstr ""
 
-#: marsha/core/defaults.py:34
+#: marsha/core/defaults.py:36
 msgid "processing"
 msgstr "procesando"
 
-#: marsha/core/defaults.py:35
+#: marsha/core/defaults.py:37
 msgid "processing live to VOD"
 msgstr ""
 
-#: marsha/core/defaults.py:36
+#: marsha/core/defaults.py:38
 msgid "error"
 msgstr "error"
 
-#: marsha/core/defaults.py:37
+#: marsha/core/defaults.py:39
 msgid "ready"
 msgstr "listo"
 
-#: marsha/core/defaults.py:38
+#: marsha/core/defaults.py:40
 msgid "harvested"
 msgstr ""
 
-#: marsha/core/defaults.py:39
+#: marsha/core/defaults.py:41
 msgid "deleted"
 msgstr ""
 
-#: marsha/core/defaults.py:43
-msgid "idle"
-msgstr ""
-
-#: marsha/core/defaults.py:44
-msgid "starting"
-msgstr ""
-
 #: marsha/core/defaults.py:45
-msgid "running"
+msgid "creating"
 msgstr ""
 
 #: marsha/core/defaults.py:46
-msgid "stopped"
+msgid "idle"
 msgstr ""
 
 #: marsha/core/defaults.py:47
+msgid "starting"
+msgstr ""
+
+#: marsha/core/defaults.py:48
+msgid "running"
+msgstr ""
+
+#: marsha/core/defaults.py:49
+msgid "stopped"
+msgstr ""
+
+#: marsha/core/defaults.py:50
 msgid "stopping"
+msgstr ""
+
+#: marsha/core/defaults.py:56
+msgid "raw"
+msgstr ""
+
+#: marsha/core/defaults.py:56
+msgid "jitsi"
 msgstr ""
 
 #: marsha/core/models/account.py:36
@@ -263,7 +275,7 @@ msgstr ""
 msgid "default value used for every newly created video to determine if the links to download a video are shown by default."
 msgstr ""
 
-#: marsha/core/models/account.py:258 marsha/core/models/file.py:126
+#: marsha/core/models/account.py:258 marsha/core/models/file.py:128
 #: marsha/core/models/playlist.py:106
 msgid "{:s} [deleted]"
 msgstr ""
@@ -466,60 +478,60 @@ msgstr ""
 msgid "ID for synchronization with an external LTI tool"
 msgstr ""
 
-#: marsha/core/models/file.py:79
+#: marsha/core/models/file.py:81
 msgid "author"
 msgstr ""
 
-#: marsha/core/models/file.py:80
+#: marsha/core/models/file.py:82
 msgid "author of the file"
 msgstr ""
 
-#: marsha/core/models/file.py:89 marsha/core/models/playlist.py:92
+#: marsha/core/models/file.py:91 marsha/core/models/playlist.py:92
 #: marsha/core/models/playlist.py:180
 msgid "playlist"
 msgstr ""
 
-#: marsha/core/models/file.py:90
+#: marsha/core/models/file.py:92
 msgid "playlist to which this file belongs"
 msgstr ""
 
-#: marsha/core/models/file.py:97 marsha/core/models/playlist.py:52
+#: marsha/core/models/file.py:99 marsha/core/models/playlist.py:52
 msgid "duplicated from"
 msgstr ""
 
-#: marsha/core/models/file.py:98
+#: marsha/core/models/file.py:100
 msgid "original file this one was duplicated from"
 msgstr ""
 
-#: marsha/core/models/file.py:106
+#: marsha/core/models/file.py:108
 msgid "description"
 msgstr ""
 
-#: marsha/core/models/file.py:107
+#: marsha/core/models/file.py:109
 msgid "description of the file"
 msgstr ""
 
-#: marsha/core/models/file.py:112
+#: marsha/core/models/file.py:114
 msgid "position"
 msgstr ""
 
-#: marsha/core/models/file.py:113
+#: marsha/core/models/file.py:115
 msgid "position of this file in the playlist"
 msgstr ""
 
-#: marsha/core/models/file.py:143
+#: marsha/core/models/file.py:145
 msgid "file extension"
 msgstr ""
 
-#: marsha/core/models/file.py:146 marsha/core/models/video.py:219
+#: marsha/core/models/file.py:148 marsha/core/models/video.py:237
 msgid "extension"
 msgstr ""
 
-#: marsha/core/models/file.py:151
+#: marsha/core/models/file.py:153
 msgid "is document public"
 msgstr ""
 
-#: marsha/core/models/file.py:152
+#: marsha/core/models/file.py:154
 msgid "Is the document publicly accessible?"
 msgstr ""
 
@@ -635,87 +647,95 @@ msgstr ""
 msgid "state of the live mode."
 msgstr ""
 
+#: marsha/core/models/video.py:50
+msgid "type of live"
+msgstr ""
+
 #: marsha/core/models/video.py:51
+msgid "type of live."
+msgstr ""
+
+#: marsha/core/models/video.py:59
 msgid "is video public"
 msgstr ""
 
-#: marsha/core/models/video.py:52
+#: marsha/core/models/video.py:60
 msgid "Is the video publicly accessible?"
 msgstr ""
 
-#: marsha/core/models/video.py:151
+#: marsha/core/models/video.py:169
 msgid "video for which this track is"
 msgstr ""
 
-#: marsha/core/models/video.py:158
+#: marsha/core/models/video.py:176
 msgid "language"
 msgstr ""
 
-#: marsha/core/models/video.py:159
+#: marsha/core/models/video.py:177
 msgid "language of this track"
 msgstr ""
 
-#: marsha/core/models/video.py:175
+#: marsha/core/models/video.py:193
 msgid "audio track"
 msgstr ""
 
-#: marsha/core/models/video.py:176
+#: marsha/core/models/video.py:194
 msgid "audio tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:196
+#: marsha/core/models/video.py:214
 msgid "Subtitle"
 msgstr ""
 
-#: marsha/core/models/video.py:197
+#: marsha/core/models/video.py:215
 msgid "Transcript"
 msgstr ""
 
-#: marsha/core/models/video.py:198
+#: marsha/core/models/video.py:216
 msgid "Closed captioning"
 msgstr ""
 
-#: marsha/core/models/video.py:202
+#: marsha/core/models/video.py:220
 msgid "mode"
 msgstr ""
 
-#: marsha/core/models/video.py:206
+#: marsha/core/models/video.py:224
 msgid "Activate a special mode for this timed text track: simple subtitles, closed captioning (for deaf or hard of hearing viewers) or transcription (complete text below aside of the player)."
 msgstr ""
 
-#: marsha/core/models/video.py:216
+#: marsha/core/models/video.py:234
 msgid "timed text track extension"
 msgstr ""
 
-#: marsha/core/models/video.py:226
+#: marsha/core/models/video.py:244
 msgid "timed text track"
 msgstr ""
 
-#: marsha/core/models/video.py:227
+#: marsha/core/models/video.py:245
 msgid "timed text tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:294
+#: marsha/core/models/video.py:312
 msgid "signs language track"
 msgstr ""
 
-#: marsha/core/models/video.py:295
+#: marsha/core/models/video.py:313
 msgid "signs language tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:314
+#: marsha/core/models/video.py:332
 msgid "video for which this thumbnail is"
 msgstr ""
 
-#: marsha/core/models/video.py:323
+#: marsha/core/models/video.py:341
 msgid "thumbnail"
 msgstr ""
 
-#: marsha/settings.py:193
+#: marsha/settings.py:194
 msgid "english"
 msgstr ""
 
-#: marsha/settings.py:193
+#: marsha/settings.py:194
 msgid "french"
 msgstr ""
 
