@@ -72,7 +72,7 @@ export const DashboardVideoLiveRunning = ({
         )}
         <DashboardVideoLiveStopButton video={video} />
       </Box>
-      {displayChat && <Chat video={video} />}
+      {displayChat && <Chat video={video} standalone={true} />}
     </Box>
   );
 };
