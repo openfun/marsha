@@ -47,8 +47,8 @@ class Video(BaseFile):
     )
     live_type = models.CharField(
         max_length=20,
-        verbose_name=_("live type"),
-        help_text=_("live type."),
+        verbose_name=_("type of live"),
+        help_text=_("type of live."),
         choices=LIVE_TYPE_CHOICES,
         null=True,
         blank=True,
