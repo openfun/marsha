@@ -35,13 +35,17 @@
     "description": "Dashboard button to upload a video to replace the existing one, when there *is* an existing video.",
     "message": "Remplacer la vidéo"
   },
-  "components.Dashboard.DashboardPaneButtons.videos.btnStartLive": {
-    "description": "Dashboard button to configure a live streaming",
-    "message": "Configurer un streaming live"
-  },
   "components.Dashboard.DashboardPaneButtons.videos.btnUploadFirst": {
     "description": "Dashboard button to upload a video, when there is no existing video.",
     "message": "Téléverser une vidéo"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.jitsi": {
+    "description": "Dashboard button to launch jitsi livestream",
+    "message": "Démarrer un direct avec Jitsi"
+  },
+  "components.Dashboard.DashboardPaneButtons.videos.raw": {
+    "description": "Dashboard button to configure a live streaming",
+    "message": "Configurer un direct"
   },
   "components.Dashboard.title": {
     "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
@@ -51,25 +55,13 @@
     "description": "Document filename.",
     "message": "Nom de fichier"
   },
-  "components.DashboardDocument.helptextError": {
-    "description": "Dashboard helptext for when the document failed to upload or get processed.",
-    "message": "Une erreur s'est produite avec ce document. Merci de réessayer ou de téléverser un autre document."
-  },
   "components.DashboardDocument.helptextPending": {
     "description": "Dashboard helptext for the case when there is no existing document nor anything in progress.",
     "message": "Il n'y a pas encore de document à afficher."
   },
-  "components.DashboardDocument.helptextProcessing": {
-    "description": "Dashboard helptext to warn users document is processing.",
-    "message": "Votre document est en cours de traitement. Cela peut prendre quelques minutes."
-  },
   "components.DashboardDocument.helptextReady": {
     "description": "Dashboard helptext for ready-to-display documents.",
     "message": "Votre document est prêt à être affiché."
-  },
-  "components.DashboardDocument.helptextUploading": {
-    "description": "Dashboard helptext to warn user not to navigate away during document upload.",
-    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
   },
   "components.DashboardDocument.title": {
     "description": "Document upload status.",
@@ -115,6 +107,14 @@
     "description": "Button to watch the video.",
     "message": "regarder"
   },
+  "components.DashboardVideoLive.jitsi": {
+    "description": "DashboardVideoLive jitsi title.",
+    "message": "Direct Jitsi"
+  },
+  "components.DashboardVideoLive.liveCreating": {
+    "description": "Helptext explainig to wait until the live is created.",
+    "message": "Le direct est cours de création. Vous allez pouvoir le démarrer dans quelques instants"
+  },
   "components.DashboardVideoLive.liveStarting": {
     "description": "Helptext explainig to wait until the live is ready.",
     "message": "La diffusion en direct démarre. Attendez avant de commencer votre stream."
@@ -127,29 +127,49 @@
     "description": "Helptext explaining that the live is ending and the live to VOD process will start.",
     "message": "Arrêt du direct. Le processus de conversion du direct en VOD va bientôt commencer. Vous pouvez fermer la fenêtre et revenir plus tard."
   },
-  "components.DashboardVideoLive.showLive": {
-    "description": "button to redirect use to video player.",
-    "message": "regarder le direct"
+  "components.DashboardVideoLive.raw": {
+    "description": "DashboardVideoLive main title.",
+    "message": "Lien de streaming"
   },
   "components.DashboardVideoLive.startLive": {
     "description": "Start a video streaming.",
     "message": "commencer le streaming"
   },
-  "components.DashboardVideoLive.streamKey": {
-    "description": "Video key streaming.",
-    "message": "clé de streaming"
-  },
-  "components.DashboardVideoLive.streamLink": {
-    "description": "link to use to stream a video.",
-    "message": "Lien de streaming"
-  },
-  "components.DashboardVideoLive.title": {
-    "description": "DashboardVideoLive main title.",
-    "message": "Lien de streaming"
-  },
   "components.DashboardVideoLive.url": {
     "description": "Video url streaming.",
     "message": "url"
+  },
+  "components.DashboardVideoLiveRaw.copied": {
+    "description": "Message displayed when endpoints info are copied.",
+    "message": "Copié !"
+  },
+  "components.DashboardVideoLiveRaw.streamKey": {
+    "description": "Video key streaming.",
+    "message": "clé de streaming"
+  },
+  "components.DashboardVideoLiveRaw.streamLink": {
+    "description": "link to use to stream a video.",
+    "message": "Lien de streaming"
+  },
+  "components.DashboardVideoLiveRaw.url": {
+    "description": "Video url streaming.",
+    "message": "url"
+  },
+  "components.DashboardVideoLiveRunning.chatOnly": {
+    "description": "button to redirect to the chat only view.",
+    "message": "afficher le tchat seul"
+  },
+  "components.DashboardVideoLiveRunning.hideChat": {
+    "description": "button to hide the chat during a jitsi live.",
+    "message": "masquer le tchat"
+  },
+  "components.DashboardVideoLiveRunning.showChat": {
+    "description": "button to show the chat during a jitsi live.",
+    "message": "afficher le tchat"
+  },
+  "components.DashboardVideoLiveRunning.showLive": {
+    "description": "button to redirect use to video player.",
+    "message": "afficher le direct"
   },
   "components.DashboardVideoLiveStopButton.startLive": {
     "description": "Stop a video streaming.",
@@ -195,10 +215,6 @@
     "description": "Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).",
     "message": "Statut de la vidéo"
   },
-  "components.DashboardVideoPaneProgress.progressLabel": {
-    "description": "Accessibility message for the upload progress bar.",
-    "message": "Progression du téléversement"
-  },
   "components.DownloadVideo.1080": {
     "description": "High quality video",
     "message": "1080p: FullHD (haute qualité)"
@@ -215,39 +231,47 @@
     "description": "Text to download the video",
     "message": "Télécharger cette vidéo :"
   },
-  "components.ErrorComponent.liveIncompatible.title": {
+  "components.ErrorComponents.generic.text": {
+    "description": "Helpful text for the generic error message (random API request failure).",
+    "message": "Nous ne pouvons pas accéder aux ressources demandées. Veuillez tenter de recharger la page ou revenir dans quelques instants."
+  },
+  "components.ErrorComponents.generic.title": {
+    "description": "Title for the generic error message (random API request failure).",
+    "message": "Erreur inattendue"
+  },
+  "components.ErrorComponents.liveIncompatible.title": {
     "description": "Title when the object is incompatible with live mode",
-    "message": "Mode live incompatible avec cet objet"
+    "message": "Mode direct incompatible avec cette ressource"
   },
-  "components.ErrorComponent.lti.text": {
+  "components.ErrorComponents.lti.text": {
     "description": "Helpful text for the LTI error page",
-    "message": "Nous ne pouvons vérifier vos droits pour accéder à cette vidéo. Merci de prendre contact avec votre instructeur. Si vous êtes l'instructeur, merci de vérifier vos paramètres."
+    "message": "Nous ne pouvons valider vos droits pour accéder à cette vidéo. Merci de prendre contact avec votre instructeur. Si vous êtes l'instructeur, merci de vérifier vos paramètres."
   },
-  "components.ErrorComponent.lti.title": {
+  "components.ErrorComponents.lti.title": {
     "description": "Title for the LTI error page",
     "message": "Une erreur s'est produite pendant le chargement de la vidéo"
   },
-  "components.ErrorComponent.notFound.text": {
+  "components.ErrorComponents.notFound.text": {
     "description": "Helpful text for the 404 Not Found error page",
     "message": "La vidéo n'existe pas ou n'a pas encore été publiée. Si vous êtes un instructeur assurez vous d'être correctement authentifié."
   },
-  "components.ErrorComponent.notFound.title": {
+  "components.ErrorComponents.notFound.title": {
     "description": "Title for the 404 Not Found error page",
-    "message": "Cette vidéo n'est pas disponible"
+    "message": "La vidéo recherchée n'existe pas"
   },
-  "components.ErrorComponent.policy.text": {
+  "components.ErrorComponents.policy.text": {
     "description": "Title for the upload permission error page",
     "message": "Nous ne pouvons vérifier si vous avez les droits nécessaires pour téléverser un fichier. Vérifiez vos paramètres et/ou réessayez."
   },
-  "components.ErrorComponent.policy.title": {
+  "components.ErrorComponents.policy.title": {
     "description": "Helpful text for the upload permission error page",
     "message": "Impossible de vérifier vos droits pour téléverser le fichier"
   },
-  "components.ErrorComponent.upload.text": {
+  "components.ErrorComponents.upload.text": {
     "description": "Helpful text for the Upload error page",
     "message": "Vous pouvez réessayer dans quelques instants. Vous devriez vérifier la qualité de votre connexion internet."
   },
-  "components.ErrorComponent.upload.title": {
+  "components.ErrorComponents.upload.title": {
     "description": "Title for the video upload error page",
     "message": "Erreur lors du téléversement du fichier vidéo"
   },
@@ -266,6 +290,10 @@
   "components.InstructorView.title": {
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Aperçu instructeur 👆"
+  },
+  "components.ObjectStatusPicker.CREATING": {
+    "description": "Live video in creation status",
+    "message": "Création en cours"
   },
   "components.ObjectStatusPicker.DELETED": {
     "description": "Status information for a video/audio/timed text track",
@@ -318,6 +346,58 @@
   "components.ObjectStatusPicker.UPLOADING": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Téléversement en cours"
+  },
+  "components.SelectContent.addDocument": {
+    "description": "Text displayed on a button to add a new document.",
+    "message": "Ajouter un document"
+  },
+  "components.SelectContent.addVideo": {
+    "description": "Text displayed on a button to add a new video.",
+    "message": "Ajouter une vidéo"
+  },
+  "components.SelectContent.cancel": {
+    "description": "Text displayed on a button to cancel content selection.",
+    "message": "Annuler"
+  },
+  "components.SelectContent.confirm": {
+    "description": "Text displayed on a button to confirm content selection.",
+    "message": "Sélectionner"
+  },
+  "components.SelectContent.newDocument": {
+    "description": "Default LTI consumer title for a new document.",
+    "message": "Nouveau document"
+  },
+  "components.SelectContent.newVideo": {
+    "description": "Default LTI consumer title for a new video.",
+    "message": "Nouvelle vidéo"
+  },
+  "components.SelectContent.notReadyToShow": {
+    "description": "Text helper displayed if a video or a document is not ready to show to students.",
+    "message": "Pas prêt à afficher"
+  },
+  "components.SelectContent.notUploaded": {
+    "description": "Text helper displayed if a video or a document is not uploaded.",
+    "message": "Non téléversé"
+  },
+  "components.SelectContent.readyToShow": {
+    "description": "Text helper displayed if a video or a document is ready to show to students.",
+    "message": "Prêt à visualiser"
+  },
+  "components.SelectContent.select": {
+    "description": "Title used for a video or a document select.",
+    "message": "Sélectionner {content_title}"
+  },
+  "components.SelectContent.title": {
+    "description": "Title for the LTI content selector, where the LTI Consumer can see the available video and documents\n      , and will be able to select them.",
+    "message": "Sélectionner un contenu LTI"
+  },
+  "components.SelectContent.titleEdit": {
+    "description": "Label for LTI title content input.",
+    "message": "Titre du contenu LTI"
+  },
+  "components.SelectContent.uploaded": {
+    "description": "Text helper displayed if a video or a document is uploaded.",
+    "message": "Téléversé"
   },
   "components.SiteHeader.logInBtn": {
     "description": "Text for the login button in the header of the marsha site",
@@ -375,6 +455,10 @@
     "description": "Text for the link to the dashboard in the upload form.",
     "message": "Revenir au tableau de bord"
   },
+  "components.UploadForm.preparingUpload": {
+    "description": "Accessible message for the spinner while loading the uploadable object in the upload form.",
+    "message": "Préparation du téléversement..."
+  },
   "components.UploadForm.title-document": {
     "description": "Title for the document upload form",
     "message": "Téléverser un nouveau document"
@@ -399,6 +483,18 @@
     "description": "Title for the video upload form",
     "message": "Créer une nouvelle vidéo"
   },
+  "components.UploadableObjectProgress.progressLabel": {
+    "description": "Accessibility message for the upload progress bar.",
+    "message": "Progression du téléversement"
+  },
+  "components.WaitingLiveVideo.message": {
+    "description": "Message for the waiting live video component",
+    "message": "Le direct est en cours de démarrage. Patientez ici, la vidéo se lancera automatiquement une fois celle-ci disponible."
+  },
+  "components.WaitingLiveVideo.title": {
+    "description": "Title for the waiting live video component",
+    "message": "Le direct va bientôt démarrer"
+  },
   "components.dashboardThumbnail.replaceThumbnailButton": {
     "description": "",
     "message": "Remplacer cette vignette"
@@ -406,165 +502,5 @@
   "message.key": {
     "description": "",
     "message": "Titre"
-  },
-  "plyr.controls.captions.menu.disabled": {
-    "description": "label used in the captions menu list to select the disabled option and then disable captions if selected",
-    "message": "Désactivé"
-  },
-  "plyr.controls.captions.menu.enabled": {
-    "description": "label used in the captions menu list if captions are enabled and the selected caption has no language nor label",
-    "message": "activé"
-  },
-  "plyr.controls.currentTime": {
-    "description": "Indicates the current time in the video.",
-    "message": "Heure actuelle"
-  },
-  "plyr.controls.disableCaptions": {
-    "description": "Button to disable captions",
-    "message": "Désactiver les sous-titres"
-  },
-  "plyr.controls.download": {
-    "description": "Download button",
-    "message": "Télécharger"
-  },
-  "plyr.controls.enableCaptions": {
-    "description": "Button to enable captions",
-    "message": "Activer les sous-titres"
-  },
-  "plyr.controls.enterFullscreen": {
-    "description": "Button to activate the fullscreen mode",
-    "message": "Passer en plein écran"
-  },
-  "plyr.controls.exitFullscreen": {
-    "description": "Button to exit fullscreen mode",
-    "message": "Quitter le mode plein écran"
-  },
-  "plyr.controls.forward": {
-    "description": "Video control forward button",
-    "message": "Avancer de '{seektime}'s"
-  },
-  "plyr.controls.loop": {
-    "description": "Loop is commented in Plyr's code, it is a feature allowing users to play in loop a video section",
-    "message": "Boucle"
-  },
-  "plyr.controls.loop.all": {
-    "description": "When loop is activated, loop over all the video",
-    "message": "Tout"
-  },
-  "plyr.controls.loop.end": {
-    "description": "When loop is activated, this the time where the loop should end at",
-    "message": "Fin"
-  },
-  "plyr.controls.loop.reset": {
-    "description": "When loop is activated, button to reset the loop configuration",
-    "message": "Réinitialiser"
-  },
-  "plyr.controls.loop.start": {
-    "description": "When loop is activated, this the time where the loop should start at",
-    "message": "Démarrer"
-  },
-  "plyr.controls.mute": {
-    "description": "Mute button",
-    "message": "Couper le son"
-  },
-  "plyr.controls.pause": {
-    "description": "Video control pause button",
-    "message": "Pause"
-  },
-  "plyr.controls.play": {
-    "description": "Video control play button",
-    "message": "Lecture"
-  },
-  "plyr.controls.progress.buffered": {
-    "description": "Used to indicate the % of buffered video",
-    "message": "Mis en mémoire"
-  },
-  "plyr.controls.progress.played": {
-    "description": "Used to indicate the % of video played",
-    "message": "Lu"
-  },
-  "plyr.controls.quality.badge.1080": {
-    "description": "Label associatied to the 1080px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.quality.badge.1440": {
-    "description": "Label associatied to the 1440px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.quality.badge.2160": {
-    "description": "Label associatied to the 2160px quality badge",
-    "message": "4K"
-  },
-  "plyr.controls.quality.badge.480": {
-    "description": "Label associatied to the 480px quality badge",
-    "message": "SD"
-  },
-  "plyr.controls.quality.badge.576": {
-    "description": "Label associatied to the 576px quality badge",
-    "message": "SD"
-  },
-  "plyr.controls.quality.badge.720": {
-    "description": "Label associatied to the 720px quality badge",
-    "message": "HD"
-  },
-  "plyr.controls.rangeFill.seek": {
-    "description": "Video seek progress bar used as polyfill for webkit",
-    "message": "'{currentTime}' sur '{duration}'"
-  },
-  "plyr.controls.restart": {
-    "description": "Video control restart button",
-    "message": "Recommencer"
-  },
-  "plyr.controls.rewind": {
-    "description": "Video control rewind button",
-    "message": "Reculer de '{seektime}'s"
-  },
-  "plyr.controls.seek": {
-    "description": "Video control seek slider",
-    "message": "Avancer"
-  },
-  "plyr.controls.unmute": {
-    "description": "Unmute button",
-    "message": "Remettre le son"
-  },
-  "plyr.controls.volume": {
-    "description": "Indicates the zone where the volume is managed in the plyr interface",
-    "message": "Volume"
-  },
-  "plyr.pluging.ad": {
-    "description": "When Ad plugin is used, a countdown is display and this label is used to indicated the remaining time before viewing the video. Eg: Ad - 0:08",
-    "message": "Annonce"
-  },
-  "plyr.ui.display.duration": {
-    "description": "Display the total video duration",
-    "message": "Durée"
-  },
-  "plyr.ui.frameTitle": {
-    "description": "Title set to an iframe when the video is loaded in an iframe as parent element",
-    "message": "Lecteur pour '{title}'"
-  },
-  "plyr.ui.menuBack": {
-    "description": "When a setting menu is open, this label is added to the button responsible to go back to the previous menu",
-    "message": "Revenir au menu précédent"
-  },
-  "plyr.ui.setting.quality": {
-    "description": "Label used in the menu to open quality setting",
-    "message": "Qualité"
-  },
-  "plyr.ui.setting.speed": {
-    "description": "Label used in the menu to open speed setting",
-    "message": "Vitesse"
-  },
-  "plyr.ui.setting.speed.normal": {
-    "description": "Value used in the speed setting, corresponding to a 1x speed",
-    "message": "Normale"
-  },
-  "plyr.ui.settings": {
-    "description": "Label used to indicate settings menu",
-    "message": "Réglages"
-  },
-  "plyr.ui.settings.captions": {
-    "description": "Label used in the setting menu to access captions choices",
-    "message": "Sous-titres"
   }
 }
