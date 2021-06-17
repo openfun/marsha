@@ -13,6 +13,8 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
   const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
   const endpoints = useRef<string[]>();
+  const retryDelayStep = 2000;
+  const retryStartRecordingDelay = useRef(retryDelayStep);
 
   const loadJitsiScript = () =>
     new Promise((resolve) => {
@@ -106,8 +108,17 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
       if (!event.on && event.error) {
         jitsiIsRecording.current = false;
         report(event.error);
-        await new Promise((resolve) => window.setTimeout(resolve, 1000));
+        await new Promise((resolve) =>
+          window.setTimeout(resolve, retryStartRecordingDelay.current),
+        );
+        if (retryStartRecordingDelay.current < 20000)
+          retryStartRecordingDelay.current += retryDelayStep;
         startRecording(_jitsi);
+      }
+
+      // recording has started. Reset the retry delay
+      if (event.on) {
+        retryStartRecordingDelay.current = retryDelayStep;
       }
     });
 
