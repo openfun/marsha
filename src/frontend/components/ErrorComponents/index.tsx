@@ -38,8 +38,7 @@ const ErrorContent = styled.div`
 const messages = {
   generic: defineMessages({
     text: {
-      defaultMessage: `We could not access the appropriate resources. You can try reloating the page
-      or try again at a later time.`,
+      defaultMessage: `We could not access the appropriate resources. You can try reloading the page or come back again at a later time.`,
       description:
         'Helpful text for the generic error message (random API request failure).',
       id: 'components.ErrorComponents.generic.text',
