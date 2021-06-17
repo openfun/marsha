@@ -67,6 +67,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
       'profile',
       'chat',
       'etherpad',
+      'sharedvideo',
       'shareaudio',
       'settings',
       'raisehand',
