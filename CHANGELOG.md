@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.20.0] - 2021-06-18
+
 ### Added
 
 - Display chat in dashboard during a jitsi live
@@ -785,7 +787,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.19.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.20.0...master
+[3.20.0]: https://github.com/openfun/marsha/compare/v3.19.0...v3.20.0
 [3.19.0]: https://github.com/openfun/marsha/compare/v3.18.0...v3.19.0
 [3.18.0]: https://github.com/openfun/marsha/compare/v3.17.1...v3.18.0
 [3.17.1]: https://github.com/openfun/marsha/compare/v3.17.0...v3.17.1
