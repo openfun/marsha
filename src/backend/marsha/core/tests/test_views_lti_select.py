@@ -210,6 +210,15 @@ class SelectLTIViewTestCase(TestCase):
             lti_parameters.get("context_id"),
         )
 
+        playlist = Playlist.objects.first()
+        self.assertEqual(
+            context.get("playlist"),
+            {
+                "id": str(playlist.id),
+                "lti_id": playlist.lti_id,
+                "title": playlist.title,
+            },
+        )
         self.assertEqual(len(context.get("videos")), 0)
         self.assertEqual(len(context.get("documents")), 0)
 
