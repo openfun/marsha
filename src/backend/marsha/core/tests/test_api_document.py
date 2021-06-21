@@ -91,6 +91,7 @@ class DocumentAPITest(TestCase):
                 "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
                 "show_download": True,
                 "playlist": {
+                    "id": str(document.playlist.id),
                     "title": "foo",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },

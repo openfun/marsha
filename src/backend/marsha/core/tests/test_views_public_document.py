@@ -64,6 +64,7 @@ class DocumentPublicViewTestCase(TestCase):
                 "extension": None,
                 "filename": "playlist-003_document-001",
                 "playlist": {
+                    "id": str(document.playlist.id),
                     "title": "playlist-003",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },

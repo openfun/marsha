@@ -1,4 +1,6 @@
 """Tests for the Playlist API of the Marsha project."""
+import json
+import random
 import uuid
 
 from django.test import TestCase
@@ -211,6 +213,38 @@ class PlaylistAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_retrieve_playlist_through_video_token_instructor(self):
+        """Playlist instructors should be able to retrieve playlists."""
+        video = factories.VideoFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_retrieve_playlist_through_document_token_instructor(self):
+        """Playlist instructors should be able to retrieve playlists."""
+        document = factories.DocumentFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/playlists/{document.playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
 
     def test_retrieve_playlist_by_playlist_admin(self):
         """Playlist administrators can retrieve playlists."""
@@ -527,7 +561,7 @@ class PlaylistAPITest(TestCase):
             "username": user.username,
         }
 
-        response = self.client.delete(
+        response = self.client.put(
             f"/api/playlists/{playlist.id}/",
             {"title": "new playlist title"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -551,7 +585,7 @@ class PlaylistAPITest(TestCase):
             "username": user.username,
         }
 
-        response = self.client.delete(
+        response = self.client.put(
             f"/api/playlists/{playlist.id}/",
             {"title": "new playlist title"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -560,3 +594,170 @@ class PlaylistAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         playlist.refresh_from_db()
         self.assertEqual(playlist.title, "existing title")
+
+    def test_update_playlist_through_video_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        video = factories.VideoFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["title"] = "new playlist title"
+
+        response = self.client.put(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.playlist.refresh_from_db()
+        self.assertEqual(video.playlist.title, "new playlist title")
+
+    def test_update_playlist_through_document_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        document = factories.DocumentFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/playlists/{document.playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["title"] = "new playlist title"
+
+        response = self.client.put(
+            f"/api/playlists/{document.playlist.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        document.playlist.refresh_from_db()
+        self.assertEqual(document.playlist.title, "new playlist title")
+
+    def test_partial_update_playlist_through_video_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        video = factories.VideoFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.patch(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps({"title": "new playlist title"}),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.playlist.refresh_from_db()
+        self.assertEqual(video.playlist.title, "new playlist title")
+
+    def test_add_playlist_portability_through_video_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        video = factories.VideoFactory()
+        other_playlist = factories.PlaylistFactory()
+
+        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.patch(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps(
+                {
+                    "portable_to": [str(other_playlist.id)],
+                }
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        # video.playlist.refresh_from_db()
+        video_playlist = video.playlist
+        # video_playlist.refresh_from_db()
+        assert video_playlist.portable_to.count() == 1
+        assert video_playlist.portable_to.filter(id=other_playlist.id)
+
+    def test_delete_playlist_portability_through_video_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        video = factories.VideoFactory()
+        other_playlist = factories.PlaylistFactory()
+        video.playlist.portable_to.add(other_playlist)
+
+        assert video.playlist.portable_to.filter(id=other_playlist.id)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.patch(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps(
+                {
+                    "portable_to": [],
+                }
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        # video.playlist.refresh_from_db()
+        video_playlist = video.playlist
+        # video_playlist.refresh_from_db()
+        assert video_playlist.portable_to.count() == 0
+        assert not video_playlist.portable_to.filter(id=other_playlist.id)
+
+    def test_update_playlist_portability_through_video_token_instructor(self):
+        """Playlist instructors or admins should be able to update playlists."""
+        video = factories.VideoFactory()
+        other_playlist = factories.PlaylistFactory()
+
+        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["portable_to"] = [str(other_playlist.id)]
+
+        response = self.client.put(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video_playlist = video.playlist
+        assert video_playlist.portable_to.count() == 1
+        assert video_playlist.portable_to.filter(id=other_playlist.id)
+        assert other_playlist.reachable_from.filter(id=video_playlist.id)
