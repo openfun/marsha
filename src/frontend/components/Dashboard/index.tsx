@@ -9,7 +9,7 @@ import { LTINav } from '../LTINav';
 const DashboardVideo = lazy(() => import('../DashboardVideo'));
 const DashboardDocument = lazy(() => import('../DashboardDocument'));
 
-const DashboardContainer = styled.div`
+export const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;

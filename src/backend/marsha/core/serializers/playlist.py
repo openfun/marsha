@@ -41,6 +41,18 @@ class PlaylistSerializer(serializers.ModelSerializer):
         """Create the Playlist object with the passed data."""
         return Playlist.objects.create(**validated_data)
 
+    def update(self, instance, validated_data):
+        """
+        Update the Playlist object with the passed data.
+
+        Instance id is removed from portable_to attribute.
+        """
+        if "portable_to" in validated_data and str(instance.id) in validated_data.get(
+            "portable_to"
+        ):
+            validated_data.get("portable_to").remove(str(instance.id))
+        return super().update(instance, validated_data)
+
     def to_internal_value(self, data):
         """Override to add portable_to playlists."""
         value: OrderedDict = super().to_internal_value(data)

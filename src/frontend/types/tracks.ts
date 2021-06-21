@@ -61,7 +61,7 @@ export interface Playlist {
   is_public: boolean;
   lti_id: string;
   organization: string;
-  portable_to: [];
+  portable_to: any[];
   title: string;
   users: string[];
 }

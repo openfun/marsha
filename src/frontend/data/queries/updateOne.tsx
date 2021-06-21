@@ -11,7 +11,7 @@ export const updateOne: MutationFunction<
       'Content-Type': 'application/json',
       ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
     },
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(object),
   });
 

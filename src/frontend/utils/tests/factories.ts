@@ -9,7 +9,6 @@ import {
   Video,
 } from '../../types/tracks';
 import { Organization } from '../../types/Organization';
-import { Nullable } from '../types';
 
 export const organizationMockFactory = (
   organization: Partial<Organization> = {},

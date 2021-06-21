@@ -58,6 +58,12 @@ export const useUpdatePlaylist = (
           options.onSuccess(data, variables, context);
         }
       },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('playlists');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
     },
   );
 };

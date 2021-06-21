@@ -37,6 +37,7 @@ def _preview_video(live_server, page, video_uploaded=False):
     resource_id = uuid.uuid4()
     context_id = "sent_lti_context_id"
     passport_attributes = {}
+    video = None
 
     if video_uploaded:
         video = VideoFactory(
@@ -96,7 +97,7 @@ def _preview_video(live_server, page, video_uploaded=False):
 
     if not video_uploaded:
         page.wait_for_selector("text=There is currently no video to display.")
-    return page
+    return page, video
 
 
 def _preview_document(live_server, page, document_uploaded=False):
@@ -116,6 +117,7 @@ def _preview_document(live_server, page, document_uploaded=False):
     resource_id = uuid.uuid4()
     context_id = "sent_lti_context_id"
     passport_attributes = {}
+    document = None
 
     if document_uploaded:
         document = DocumentFactory(
@@ -174,7 +176,7 @@ def _preview_document(live_server, page, document_uploaded=False):
 
     if not document_uploaded:
         page.wait_for_selector("text=There is currently no document to display.")
-    return page
+    return page, document
 
 
 @pytest.fixture
@@ -326,7 +328,7 @@ def test_lti_select(page: Page, live_server: LiveServer):
 @override_settings(X_FRAME_OPTIONS="")
 def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_storage):
     """Test LTI Video play."""
-    page = _preview_video(live_server, page, video_uploaded=True)
+    page, _ = _preview_video(live_server, page, video_uploaded=True)
 
     with page.expect_request(
         mock_video_cloud_storage.return_value.get("mp4").get(1080)
@@ -345,7 +347,7 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
 @pytest.mark.usefixtures("mock_video_cloud_storage")
 def test_lti_video_upload(page: Page, live_server: LiveServer):
     """Test LTI Video upload."""
-    page = _preview_video(live_server, page)
+    page, _ = _preview_video(live_server, page)
 
     page.click("text=Upload a video")
 
@@ -369,7 +371,7 @@ def test_lti_nav_video(page: Page, live_server: LiveServer):
 
     Preview tab should be visible.
     """
-    page = _preview_video(live_server, page, video_uploaded=True)
+    page, _ = _preview_video(live_server, page, video_uploaded=True)
 
     assert "There is currently no video to display." not in page.content()
     assert page.is_enabled('button:has-text("Play Video")')
@@ -387,7 +389,7 @@ def test_lti_nav_no_video(page: Page, live_server: LiveServer):
 
     Preview tab should not be visible.
     """
-    page = _preview_video(live_server, page)
+    page, _ = _preview_video(live_server, page)
 
     assert "There is currently no video to display." in page.content()
     assert "Preview" not in page.content()
@@ -397,7 +399,7 @@ def test_lti_nav_no_video(page: Page, live_server: LiveServer):
 @pytest.mark.usefixtures("mock_document_cloud_storage")
 def test_lti_document_upload(page: Page, live_server: LiveServer):
     """Test LTI Document upload."""
-    page = _preview_document(live_server, page)
+    page, _ = _preview_document(live_server, page)
 
     page.click("text=Upload a document")
 
@@ -422,7 +424,7 @@ def test_lti_nav_document(page: Page, live_server: LiveServer):
 
     Preview tab should be visible.
     """
-    page = _preview_document(live_server, page, document_uploaded=True)
+    page, _ = _preview_document(live_server, page, document_uploaded=True)
 
     assert "Your document is ready to display." not in page.content()
 
@@ -438,7 +440,60 @@ def test_lti_nav_no_document(page: Page, live_server: LiveServer):
 
     Preview tab should not be visible.
     """
-    page = _preview_document(live_server, page)
+    page, _ = _preview_document(live_server, page)
 
     assert "There is currently no document to display." in page.content()
     assert "Preview" not in page.content()
+
+
+@pytest.mark.django_db()
+@pytest.mark.usefixtures("mock_video_cloud_storage")
+def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
+    """Test LTI playlist portability."""
+    page, video = _preview_video(live_server, page, video_uploaded=True)
+
+    new_playlist = PlaylistFactory(
+        consumer_site=video.consumer_site,
+    )
+
+    page.click("text=Playlist")
+
+    content = page.text_content("[role=heading]")
+    assert (
+        content == f"Belongs to playlist {video.playlist.title} ({video.playlist.id})"
+    )
+    page.fill('[placeholder="Paste playlist uuid"]', str(new_playlist.id))
+
+    page.click('[aria-label="add share"]')
+
+    # wait for request done
+    with page.expect_response(f"**/api/playlists/{video.playlist.id}/"):
+        print("put done")
+
+    assert video.playlist.portable_to.get(id=new_playlist.id)
+    page.text_content(f"[aria-label='Shared with {new_playlist.title}']")
+    page.text_content('[role="status"]:has-text("Playlist updated")')
+
+    # go to new_playlist LTI select view
+    lti_consumer_parameters = {
+        "roles": random.choice(["instructor", "administrator"]),
+        "content_item_return_url": f"{live_server.url}/development/",
+        "context_id": new_playlist.lti_id,
+        "lti_message_type": "ContentItemSelectionRequest",
+        "lti_version": "LTI-1p0",
+    }
+    lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        url=f"{live_server.url}/lti/select/",
+        lti_parameters=lti_consumer_parameters,
+        passport_attributes={"consumer_site": video.playlist.consumer_site},
+    )
+
+    page.goto(f"{live_server.url}/development/")
+    lti_select_form = page.query_selector("#lti_select")
+    for key, value in lti_parameters.items():
+        lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
+    page.click('#lti_select input[type="submit"]')
+
+    # ensure video is available in new_playlist
+    lti_select_iframe = page.frame("lti_select")
+    lti_select_iframe.text_content(f'[title="Select {video.title}"]')

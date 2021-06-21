@@ -12,6 +12,7 @@ import { Router } from 'react-router-dom';
 import { PLAYER_ROUTE } from '../routes';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { modelName } from '../../types/models';
+import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
 import { createMemoryHistory } from 'history';
 import { wrapInRouter } from '../../utils/tests/router';
 
@@ -60,6 +61,9 @@ describe('<LTINav />', () => {
 
       fireEvent.click(screen.getByRole('link', { name: /preview/i }));
       expect(history.location.pathname).toBe(PLAYER_ROUTE(modelName.VIDEOS));
+
+      fireEvent.click(screen.getByRole('link', { name: /playlist/i }));
+      expect(history.location.pathname).toBe(PLAYLIST_ROUTE(modelName.VIDEOS));
     });
 
     it('hides dashboard link when user is not permitted to update video', () => {
@@ -74,6 +78,7 @@ describe('<LTINav />', () => {
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
+      expect(screen.queryByRole('link', { name: /playlist/i })).toBeNull();
     });
 
     it('hides dashboard link when system is under maintenance', () => {
@@ -88,6 +93,7 @@ describe('<LTINav />', () => {
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
+      expect(screen.queryByRole('link', { name: /playlist/i })).toBeNull();
     });
 
     it('hides preview link when video is not ready', () => {
@@ -102,6 +108,7 @@ describe('<LTINav />', () => {
 
       screen.getByRole('link', { name: /dashboard/i });
       expect(screen.queryByRole('link', { name: /preview/i })).toBeNull();
+      screen.getByRole('link', { name: /playlist/i });
     });
   });
 
@@ -130,6 +137,11 @@ describe('<LTINav />', () => {
 
       fireEvent.click(screen.getByRole('link', { name: /preview/i }));
       expect(history.location.pathname).toBe(PLAYER_ROUTE(modelName.DOCUMENTS));
+
+      fireEvent.click(screen.getByRole('link', { name: /playlist/i }));
+      expect(history.location.pathname).toBe(
+        PLAYLIST_ROUTE(modelName.DOCUMENTS),
+      );
     });
 
     it('hides dashboard link when user is not permitted to update document', () => {
@@ -144,6 +156,7 @@ describe('<LTINav />', () => {
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
+      expect(screen.queryByRole('link', { name: /playlist/i })).toBeNull();
     });
 
     it('hides dashboard link when system is under maintenance', () => {
@@ -158,6 +171,7 @@ describe('<LTINav />', () => {
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
+      expect(screen.queryByRole('link', { name: /playlist/i })).toBeNull();
     });
 
     it('hides preview link when document not ready.', () => {
@@ -172,6 +186,7 @@ describe('<LTINav />', () => {
 
       screen.getByRole('link', { name: /dashboard/i });
       expect(screen.queryByRole('link', { name: /preview/i })).toBeNull();
+      screen.getByRole('link', { name: /playlist/i });
     });
   });
 });

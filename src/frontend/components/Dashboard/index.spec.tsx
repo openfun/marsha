@@ -12,6 +12,7 @@ import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Loader } from '../Loader';
 import Dashboard from './index';
 import { wrapInRouter } from '../../utils/tests/router';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('../DashboardVideo', () => (props: { video: Video }) => (
   <span title={props.video.id} />
@@ -42,6 +43,8 @@ jest.mock('../../data/appData', () => ({
   }),
 }));
 
+const queryClient = new QueryClient();
+
 describe('<Dashboard />', () => {
   describe('video', () => {
     it('renders', async () => {
@@ -55,9 +58,12 @@ describe('<Dashboard />', () => {
       render(
         wrapInIntlProvider(
           wrapInRouter(
-            <Suspense fallback={<Loader />}>
-              <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
-            </Suspense>,
+            <QueryClientProvider client={queryClient}>
+              <Suspense fallback={<Loader />}>
+                <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+              </Suspense>
+              ,
+            </QueryClientProvider>,
           ),
         ),
       );
@@ -76,12 +82,15 @@ describe('<Dashboard />', () => {
       render(
         wrapInIntlProvider(
           wrapInRouter(
-            <Suspense fallback={<Loader />}>
-              <Dashboard
-                document={mockDocument}
-                objectType={modelName.DOCUMENTS}
-              />
-            </Suspense>,
+            <QueryClientProvider client={queryClient}>
+              <Suspense fallback={<Loader />}>
+                <Dashboard
+                  document={mockDocument}
+                  objectType={modelName.DOCUMENTS}
+                />
+              </Suspense>
+              ,
+            </QueryClientProvider>,
           ),
         ),
       );

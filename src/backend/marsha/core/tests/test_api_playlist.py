@@ -761,3 +761,30 @@ class PlaylistAPITest(TestCase):
         assert video_playlist.portable_to.count() == 1
         assert video_playlist.portable_to.filter(id=other_playlist.id)
         assert other_playlist.reachable_from.filter(id=video_playlist.id)
+
+    def test_add_playlist_portability_through_video_token_instructor_self_id(self):
+        """Adding self id as playlist portability should be filtered."""
+        video = factories.VideoFactory()
+        other_playlist = factories.PlaylistFactory()
+
+        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.patch(
+            f"/api/playlists/{video.playlist.id}/",
+            json.dumps(
+                {
+                    "portable_to": [str(video.playlist.id)],
+                }
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video_playlist = video.playlist
+        assert video_playlist.portable_to.count() == 0

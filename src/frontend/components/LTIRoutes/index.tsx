@@ -20,6 +20,8 @@ import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { UploadManager } from '../UploadManager';
 import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
+import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
+import { PlaylistPortability } from '../PlaylistPortability';
 
 const Dashboard = lazy(() => import('../Dashboard'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
@@ -72,6 +74,7 @@ export const Routes = () => (
           path={SELECT_CONTENT_ROUTE()}
           render={() => (
             <SelectContent
+              playlist={appData.playlist}
               documents={appData.documents}
               videos={appData.videos}
               new_document_url={appData.new_document_url}
@@ -135,6 +138,21 @@ export const Routes = () => (
                   objectType={modelName.VIDEOS}
                 />
               );
+            }
+
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+          }}
+        />
+        <Route
+          exact
+          path={PLAYLIST_ROUTE()}
+          render={() => {
+            if (appData.modelName === modelName.DOCUMENTS) {
+              return <PlaylistPortability object={appData.document!} />;
+            }
+
+            if (appData.modelName === modelName.VIDEOS) {
+              return <PlaylistPortability object={appData.video!} />;
             }
 
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
