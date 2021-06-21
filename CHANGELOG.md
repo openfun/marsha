@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Redirect instructor to the dashboard when live is stopped
+
 ## [3.20.0] - 2021-06-18
 
 ### Added
