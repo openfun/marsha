@@ -1,4 +1,5 @@
 """Custom permission classes for the Marsha project."""
+from django.db.models import Q
 from django.http.response import Http404
 
 from rest_framework import permissions
@@ -97,6 +98,37 @@ class IsTokenResourceRouteObject(permissions.BasePermission):
         """
         # NB: request.user.id is the ID of the related object from LTI, not an actual Django user
         return view.get_object_pk() == request.user.id
+
+
+class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
+    """
+    Base permission class for JWT Tokens related to a playlist linked to a video.
+
+    These permissions grants access to users authenticated with a JWT token built from a
+    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Add a check to allow the request if the JWT resource matches the playlist in the url path.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request that holds the authenticated user
+        view : Type[restframework.viewsets or restframework.views]
+            The API view for which permissions are being checked
+
+        Returns
+        -------
+        boolean
+            True if the request is authorized, False otherwise
+        """
+        # NB: request.user.id is the ID of the related object from LTI, not an actual Django user
+        return models.Playlist.objects.filter(
+            Q(id=view.get_object_pk())
+            & (Q(videos__id=request.user.id) | Q(documents__id=request.user.id)),
+        ).exists()
 
 
 class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
