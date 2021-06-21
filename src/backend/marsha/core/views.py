@@ -41,6 +41,7 @@ from .models.account import NONE, LTIPassport
 from .serializers import (
     DocumentSelectLTISerializer,
     DocumentSerializer,
+    PlaylistLiteSerializer,
     VideoSelectLTISerializer,
     VideoSerializer,
 )
@@ -458,19 +459,19 @@ class LTISelectView(TemplateResponseMixin, View):
         except LTIException as error:
             app_data = _manage_exception(error)
         else:
-            Playlist.objects.get_or_create(
+            playlist, _ = Playlist.objects.get_or_create(
                 lti_id=lti.context_id,
                 consumer_site=lti.get_consumer_site(),
                 defaults={"title": lti.context_title},
             )
-            app_data = self._get_app_data(lti)
+            app_data = self._get_app_data(lti, playlist)
 
         return {
             "app_data": json.dumps(app_data),
             "static_base_url": f"{settings.STATIC_URL}js/build/",
         }
 
-    def _get_app_data(self, lti):
+    def _get_app_data(self, lti, playlist):
         """Build app data for the frontend with information retrieved from the LTI launch request.
 
         Returns
@@ -530,6 +531,7 @@ class LTISelectView(TemplateResponseMixin, View):
                 "new_video_url": new_video_url,
                 "documents": documents,
                 "videos": videos,
+                "playlist": PlaylistLiteSerializer(playlist).data,
             }
         )
         return app_data
