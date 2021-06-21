@@ -126,7 +126,7 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
         """
         # NB: request.user.id is the ID of the related object from LTI, not an actual Django user
         return models.Playlist.objects.filter(
-            Q(id=view.get_object_pk())
+            Q(pk=view.get_object_pk())
             & (Q(videos__id=request.user.id) | Q(documents__id=request.user.id)),
         ).exists()
 
