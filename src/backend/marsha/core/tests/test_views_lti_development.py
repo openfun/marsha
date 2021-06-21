@@ -160,6 +160,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -231,6 +232,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "course-v1:ufr+mathematics+00001",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },

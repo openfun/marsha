@@ -223,6 +223,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -299,6 +300,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -348,6 +350,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -479,7 +482,11 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
-                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "thumbnail": None,
@@ -547,7 +554,11 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
-                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "thumbnail": None,
@@ -665,6 +676,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(organization_playlist_1.id),
                             "lti_id": organization_playlist_1.lti_id,
                             "title": organization_playlist_1.title,
                         },
@@ -739,6 +751,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(organization_1_playlist_1.id),
                             "lti_id": organization_1_playlist_1.lti_id,
                             "title": organization_1_playlist_1.title,
                         },
@@ -761,6 +774,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(organization_1_playlist_2.id),
                             "lti_id": organization_1_playlist_2.lti_id,
                             "title": organization_1_playlist_2.title,
                         },
@@ -849,6 +863,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
@@ -912,6 +927,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
@@ -1004,6 +1020,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
@@ -1066,6 +1083,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(playlist_1.id),
                             "lti_id": playlist_1.lti_id,
                             "title": playlist_1.title,
                         },
@@ -1088,6 +1106,7 @@ class VideoAPITest(TestCase):
                         "live_state": None,
                         "live_type": None,
                         "playlist": {
+                            "id": str(playlist_2.id),
                             "lti_id": playlist_2.lti_id,
                             "title": playlist_2.title,
                         },
@@ -1247,7 +1266,11 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
-                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "thumbnail": None,
@@ -1401,7 +1424,11 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
-                "playlist": {"lti_id": playlist.lti_id, "title": playlist.title},
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "thumbnail": None,
@@ -2581,6 +2608,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -2667,6 +2695,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -2874,6 +2903,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
@@ -3063,6 +3093,7 @@ class VideoAPITest(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
+                    "id": str(video.playlist.id),
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
