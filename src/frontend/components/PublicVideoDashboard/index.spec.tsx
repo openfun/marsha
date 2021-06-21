@@ -3,10 +3,10 @@ import fetchMock from 'fetch-mock';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { ImportMock } from 'ts-mock-imports';
 
+import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { liveState, timedTextMode } from '../../types/tracks';
-import { converseMounter } from '../../utils/converse';
 import {
   timedTextMockFactory,
   videoMockFactory,
@@ -30,11 +30,17 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
 
+let mockCanUpdate: boolean;
 const mockVideo = videoMockFactory();
 jest.mock('../../data/appData', () => ({
   appData: {
     video: mockVideo,
   },
+  getDecodedJwt: () => ({
+    permissions: {
+      can_update: mockCanUpdate,
+    },
+  }),
 }));
 
 const useTimedTextTrackStub = ImportMock.mockFunction(
@@ -67,6 +73,7 @@ describe('PublicVideoDashboard', () => {
     mockCreatePlayer.mockResolvedValue({
       destroy: jest.fn(),
     });
+    mockCanUpdate = false;
   });
 
   afterEach(() => {
@@ -287,7 +294,7 @@ describe('PublicVideoDashboard', () => {
     expect(container.querySelector('#converse-container')).toBeInTheDocument();
   });
 
-  it('redirects to the error component when live state is stopped or stopping', () => {
+  it('redirects to the error component when user has no update permission and live state is stopped or stopping', () => {
     [liveState.STOPPED, liveState.STOPPING].forEach((state) => {
       const video = videoMockFactory({
         live_state: state,
@@ -297,6 +304,12 @@ describe('PublicVideoDashboard', () => {
           wrapInRouter(
             <PublicVideoDashboard video={video} playerType="videojs" />,
             [
+              {
+                path: DASHBOARD_ROUTE(),
+                render: ({ match }) => (
+                  <span>{`dashboard ${match.params.objectType}`}</span>
+                ),
+              },
               {
                 path: FULL_SCREEN_ERROR_ROUTE(),
                 render: ({ match }) => (
@@ -308,7 +321,41 @@ describe('PublicVideoDashboard', () => {
         ),
       );
 
-      screen.getByText('Error Component: notFound');
+      screen.getByText('Error Component: liveStopped');
+
+      cleanup();
+    });
+  });
+
+  it('redirects to the dashboard when user has update permission and live state is stopped or stopping', () => {
+    mockCanUpdate = true;
+    [liveState.STOPPED, liveState.STOPPING].forEach((state) => {
+      const video = videoMockFactory({
+        live_state: state,
+      });
+      render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <PublicVideoDashboard video={video} playerType="videojs" />,
+            [
+              {
+                path: DASHBOARD_ROUTE(),
+                render: ({ match }) => (
+                  <span>{`dashboard ${match.params.objectType}`}</span>
+                ),
+              },
+              {
+                path: FULL_SCREEN_ERROR_ROUTE(),
+                render: ({ match }) => (
+                  <span>{`Error Component: ${match.params.code}`}</span>
+                ),
+              },
+            ],
+          ),
+        ),
+      );
+
+      screen.getByText('dashboard videos');
 
       cleanup();
     });
