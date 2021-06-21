@@ -1,4 +1,6 @@
 """Structure of Playlist model API responses with Django Rest Framework serializers."""
+from collections import OrderedDict
+
 from rest_framework import serializers
 
 from ..models import Playlist
@@ -26,9 +28,25 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "users",
         ]
 
+    portable_to = serializers.SerializerMethodField(read_only=False)
+
+    def get_portable_to(self, obj):
+        """Getter for portable_to attribute instead of PlaylistSerializer to prevent recursion."""
+        return [
+            {"id": playlist.id, "title": playlist.title}
+            for playlist in obj.portable_to.all()
+        ]
+
     def create(self, validated_data):
         """Create the Playlist object with the passed data."""
         return Playlist.objects.create(**validated_data)
+
+    def to_internal_value(self, data):
+        """Override to add portable_to playlists."""
+        value: OrderedDict = super().to_internal_value(data)
+        if "portable_to" in data.keys():
+            value.update({"portable_to": data.get("portable_to")})
+        return value
 
 
 class PlaylistLiteSerializer(serializers.ModelSerializer):
@@ -36,5 +54,5 @@ class PlaylistLiteSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = Playlist
-        fields = ("title", "lti_id")
-        read_only_fields = ("title", "lti_id")
+        fields = ("id", "title", "lti_id")
+        read_only_fields = ("id", "title", "lti_id")

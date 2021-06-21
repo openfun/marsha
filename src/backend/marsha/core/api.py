@@ -132,10 +132,20 @@ class PlaylistViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                permissions.IsPlaylistAdmin | permissions.IsPlaylistOrganizationAdmin
+                permissions.IsPlaylistAdmin
+                | permissions.IsPlaylistOrganizationAdmin
+                | (
+                    permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                    & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+                )
             ]
         elif self.action in ["create"]:
             permission_classes = [permissions.IsParamsOrganizationAdmin]
+        elif self.action in ["partial_update", "update"]:
+            permission_classes = [
+                permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+            ]
         else:
             try:
                 permission_classes = getattr(self, self.action).kwargs.get(
