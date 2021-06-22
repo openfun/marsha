@@ -38,7 +38,7 @@ describe('<InstructorView />', () => {
     );
 
     getByText('Instructor Preview 👆');
-    getByText('Go to Dashboard');
+    getByText('Dashboard');
   });
 
   it('removes the button when permissions.can_update is set to false', () => {
@@ -51,9 +51,11 @@ describe('<InstructorView />', () => {
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(
-        <InstructorView resource={video}>
-          <div className="some-child" />
-        </InstructorView>,
+        wrapInRouter(
+          <InstructorView resource={video}>
+            <div className="some-child" />
+          </InstructorView>,
+        ),
       ),
     );
 
@@ -73,9 +75,11 @@ describe('<InstructorView />', () => {
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(
-        <InstructorView resource={video}>
-          <div className="some-child" />
-        </InstructorView>,
+        wrapInRouter(
+          <InstructorView resource={video}>
+            <div className="some-child" />
+          </InstructorView>,
+        ),
       ),
     );
 

@@ -1,29 +1,13 @@
 import React, { lazy } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { Video } from '../../types/tracks';
-import { IframeHeading } from '../Headings';
+import { LTINav } from '../LTINav';
 
 const DashboardVideo = lazy(() => import('../DashboardVideo'));
 const DashboardDocument = lazy(() => import('../DashboardDocument'));
-
-const messages = defineMessages({
-  title: {
-    defaultMessage: 'Dashboard',
-    description: `Title for the dashboard, where the user can see the status of the video/audio/timed text upload
-      & processing, and will be able to manage them.`,
-    id: 'components.Dashboard.title',
-  },
-});
-
-const IframeHeadingWithLayout = styled(IframeHeading)`
-  flex-grow: 0;
-  margin: 0;
-  text-align: center;
-`;
 
 const DashboardContainer = styled.div`
   display: flex;
@@ -48,9 +32,7 @@ interface DashboardProps {
 const Dashboard = ({ document, video, objectType }: DashboardProps) => {
   return (
     <DashboardContainer>
-      <IframeHeadingWithLayout>
-        <FormattedMessage {...messages.title} />
-      </IframeHeadingWithLayout>
+      <LTINav object={video! || document!} />
       {objectType === modelName.VIDEOS && <DashboardVideo video={video!} />}
       {objectType === modelName.DOCUMENTS && (
         <DashboardDocument document={document!} />
