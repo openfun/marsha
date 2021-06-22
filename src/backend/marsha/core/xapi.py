@@ -52,6 +52,12 @@ class XAPIStatement:
 
         homepage = video.playlist.consumer_site.domain
 
+        activity_type = "https://w3id.org/xapi/video/activity-type/video"
+
+        # When the video is a live we change the activity to webinar
+        if video.live_state is not None:
+            activity_type = "http://id.tincanapi.com/activitytype/webinar"
+
         if re.match(r"^http(s?):\/\/.*", homepage) is None:
             homepage = f"http://{homepage}"
 
@@ -70,7 +76,7 @@ class XAPIStatement:
 
         statement["object"] = {
             "definition": {
-                "type": "https://w3id.org/xapi/video/activity-type/video",
+                "type": activity_type,
                 "name": {
                     to_locale(settings.LANGUAGE_CODE).replace("_", "-"): video.title
                 },
