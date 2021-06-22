@@ -4,12 +4,12 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { appData, getDecodedJwt } from '../../data/appData';
+import { getDecodedJwt } from '../../data/appData';
 import { theme } from '../../utils/theme/theme';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { withLink } from '../withLink/withLink';
 import { Document } from '../../types/file';
 import { Video } from '../../types/tracks';
+import { LTINav } from '../LTINav';
 
 const messages = defineMessages({
   btnDashboard: {
@@ -38,6 +38,14 @@ const messages = defineMessages({
     id: 'components.InstructorView.title',
   },
 });
+
+const DashboardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100vw;
+  min-height: 56.25vw; /* Default to LayoutMainArea aspect ratio, ie. 16/9. */
+`;
 
 export const Preview = styled.div`
   transform: scale(0.85);
@@ -75,20 +83,14 @@ export const InstructorView = ({ children, resource }: InstructorViewProps) => {
     ? {}
     : { lti_id: resource.playlist.lti_id };
   return (
-    <React.Fragment>
+    <DashboardContainer>
+      <LTINav object={resource} />
       <PreviewWrapper>
         <Preview>{children}</Preview>
       </PreviewWrapper>
       <InstructorControls>
         <FormattedMessage {...message} values={messagePlaceholder} />
-        {canAccessDashboard && (
-          <BtnWithLink
-            color={'brand'}
-            label={<FormattedMessage {...messages.btnDashboard} />}
-            to={DASHBOARD_ROUTE(appData.modelName)}
-          />
-        )}
       </InstructorControls>
-    </React.Fragment>
+    </DashboardContainer>
   );
 };

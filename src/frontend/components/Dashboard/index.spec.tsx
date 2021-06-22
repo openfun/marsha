@@ -11,6 +11,7 @@ import {
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Loader } from '../Loader';
 import Dashboard from './index';
+import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('../DashboardVideo', () => (props: { video: Video }) => (
   <span title={props.video.id} />
@@ -33,6 +34,12 @@ jest.mock('../../data/appData', () => ({
       upload_state: 'processing',
     },
   },
+  getDecodedJwt: () => ({
+    maintenance: false,
+    permissions: {
+      can_update: true,
+    },
+  }),
 }));
 
 describe('<Dashboard />', () => {
@@ -47,9 +54,11 @@ describe('<Dashboard />', () => {
 
       render(
         wrapInIntlProvider(
-          <Suspense fallback={<Loader />}>
-            <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
-          </Suspense>,
+          wrapInRouter(
+            <Suspense fallback={<Loader />}>
+              <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+            </Suspense>,
+          ),
         ),
       );
       await screen.findByText('Dashboard');
@@ -66,12 +75,14 @@ describe('<Dashboard />', () => {
 
       render(
         wrapInIntlProvider(
-          <Suspense fallback={<Loader />}>
-            <Dashboard
-              document={mockDocument}
-              objectType={modelName.DOCUMENTS}
-            />
-          </Suspense>,
+          wrapInRouter(
+            <Suspense fallback={<Loader />}>
+              <Dashboard
+                document={mockDocument}
+                objectType={modelName.DOCUMENTS}
+              />
+            </Suspense>,
+          ),
         ),
       );
 
