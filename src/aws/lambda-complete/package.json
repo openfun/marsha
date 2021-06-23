@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-complete",
-  "version": "3.20.0",
+  "version": "3.20.1",
   "engines": {
     "node": "14"
   },

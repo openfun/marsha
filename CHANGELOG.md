@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.20.1] - 2021-06-23
+
 ### Fixed
 
 - Redirect instructor to the dashboard when live is stopped
@@ -791,7 +793,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.20.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.20.1...master
+[3.20.1]: https://github.com/openfun/marsha/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/openfun/marsha/compare/v3.19.0...v3.20.0
 [3.19.0]: https://github.com/openfun/marsha/compare/v3.18.0...v3.19.0
 [3.18.0]: https://github.com/openfun/marsha/compare/v3.17.1...v3.18.0
