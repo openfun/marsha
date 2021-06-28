@@ -638,26 +638,18 @@ class DocumentViewSet(
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
         extension = splitext(serializer.validated_data["filename"])[
             1
         ] or guess_extension(serializer.validated_data["mimetype"])
 
-        document = self.get_object()
-        key = document.get_source_s3_key(stamp=stamp, extension=extension)
-
-        presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
-            {},
-            key,
+        response = storage.get_initiate_backend().initiate_document_upload(
+            request, pk, extension
         )
 
         # Reset the upload state of the document
         Document.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
-        return Response(presigned_post)
+        return Response(response)
 
 
 class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
