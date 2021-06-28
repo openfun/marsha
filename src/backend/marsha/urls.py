@@ -27,7 +27,7 @@ from marsha.core.views import (
     SiteView,
     VideoView,
 )
-from marsha.development.api import local_upload
+from marsha.development.api import local_document_upload, local_video_upload
 from marsha.development.views import DevelopmentLTIView
 
 
@@ -74,5 +74,14 @@ if settings.DEBUG:
 
 if "dummy" in settings.STORAGE_BACKEND:
     urlpatterns += [
-        path("api/upload/<uuid:uuid>", local_upload, name="local-upload"),
+        path(
+            "api/video-upload/<uuid:uuid>",
+            local_video_upload,
+            name="local-video-upload",
+        ),
+        path(
+            "api/document-upload/<uuid:uuid>",
+            local_document_upload,
+            name="local-document-upload",
+        ),
     ]

@@ -8,7 +8,7 @@ from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..core.models import Video
+from ..core.models import Document, Video
 from ..core.utils import time_utils
 
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
-def local_upload(request: HttpRequest, uuid=None):
+def local_video_upload(request: HttpRequest, uuid=None):
     """Endpoint to mock s3 video upload."""
     try:
         object_instance = Video.objects.get(id=uuid)
@@ -27,6 +27,22 @@ def local_upload(request: HttpRequest, uuid=None):
         upload_state="ready",
         uploaded_on=time_utils.to_datetime(1533686400),
         resolutions=settings.VIDEO_RESOLUTIONS,
+    )
+
+    return Response({"success": True})
+
+
+@api_view(["POST"])
+def local_document_upload(request: HttpRequest, uuid=None):
+    """Endpoint to mock s3 document upload."""
+    try:
+        object_instance = Document.objects.get(id=uuid)
+    except Document.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    object_instance.update_upload_state(
+        upload_state="ready",
+        uploaded_on=time_utils.to_datetime(1533686400),
     )
 
     return Response({"success": True})
