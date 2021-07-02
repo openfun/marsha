@@ -11,6 +11,7 @@
 - [Manuel Raynaud](https://github.com/lunika) <manu@raynaud.io>
 - [Matthieu Huguet](https://github.com/madmatah) <matthieu.huguet@fun-mooc.fr>
 - [Florian Pereira](https://github.com/flo-pereira) <pereira.florian@gmail.com>
+- [Caroline Cramoisan](https://github.com/carofun) <caroline.cramoisan@fun-mooc.fr>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>

@@ -447,6 +447,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add document management
 - Cache database queries and serialization in LTI views for students
+- Add a beta label on live configuration buttons
 
 ### Changed
 
