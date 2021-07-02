@@ -9,7 +9,7 @@ import { modelName } from '../../types/models';
 import { LiveModeType, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DashboardButton } from '../DashboardPaneButtons';
+import { DashboardButtonBeta } from '../DashboardPaneButtons';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Loader } from '../Loader';
 
@@ -75,7 +75,7 @@ export const DashboardVideoLiveConfigureButton = ({
     <React.Fragment>
       {status === 'pending' && <Loader />}
 
-      <DashboardButton
+      <DashboardButtonBeta
         onClick={configureLive}
         label={<FormattedMessage {...messages[type]} />}
       />
