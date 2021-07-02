@@ -419,7 +419,7 @@ jobs:
             - v4-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Ensure storybook builds
-          command: yarn build-storybook
+          command: yarn storybook --smoke-test
 
   test-e2e:
     docker:
