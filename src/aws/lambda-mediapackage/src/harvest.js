@@ -20,16 +20,7 @@ const mediapackage = new AWS.MediaPackage({ apiVersion: '2017-10-12' });
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
 
-module.exports = async (event, lambdaFunctionName) => {
-  const harvestJob = event.detail.harvest_job;
-  if (harvestJob.status !== 'SUCCEEDED') {
-    return Promise.reject(
-      new Error(
-        `harvest jos status is not SUCCEEDED. Current status: ${harvestJob.status}`,
-      ),
-    );
-  }
-
+const harvestJobSucceeded = async (harvestJob, lambdaFunctionName) => {
   // delete mediapackage endpoint and channel
   // first fetch origin endpoint to retrieve channel id
   const endpoint = await mediapackage
@@ -167,4 +158,53 @@ module.exports = async (event, lambdaFunctionName) => {
       ContentType: 'application/json',
     })
     .promise();
+};
+
+const harvestJobFailed = async (harvestJob) => {
+  const existingHarvestJobs = await mediapackage
+    .listHarvestJobs({
+      IncludeChannelId: harvestJob.id,
+      IncludeStatus: 'FAILED',
+      MaxResults: '3',
+    })
+    .promise();
+
+  // The harvest id has this pattern : {environment}_{pk}_{stamp}
+  // splitting it give us the information we need
+  const [environment, pk, stamp] = harvestJob.id.split('_');
+
+  if (existingHarvestJobs.HarvestJobs.length === 3) {
+    console.log(
+      `harvesjob for channel ${harvestJob.channel_id} failed 3 times. Change video state to DELETED`,
+    );
+    // update state
+    return updateState(`${pk}/video/${pk}/${stamp}`, 'deleted');
+  }
+
+  return mediapackage
+    .createHarvestJob({
+      EndTime: harvestJob.end_time,
+      Id:
+        harvestJob.channel_id +
+        `_${existingHarvestJobs.HarvestJobs.length + 1}`,
+      OriginEndpointId: harvestJob.origin_endpoint_id,
+      S3Destination: {
+        BucketName: harvestJob.s3_destination.bucket_name,
+        ManifestKey: harvestJob.s3_destination.manifest_key,
+        RoleArn: harvestJob.s3_destination.role_arn,
+      },
+      StartTime: harvestJob.start_time,
+    })
+    .promise();
+};
+
+module.exports = async (event, lambdaFunctionName) => {
+  const harvestJob = event.detail.harvest_job;
+  if (harvestJob.status === 'SUCCEEDED') {
+    return harvestJobSucceeded(harvestJob, lambdaFunctionName);
+  }
+
+  if (harvestJob.status === 'FAILED') {
+    return harvestJobFailed(harvestJob);
+  }
 };

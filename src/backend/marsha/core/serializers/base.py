@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 from rest_framework import serializers
 
-from ..defaults import ERROR, HARVESTED, PROCESSING, READY, STATE_CHOICES
+from ..defaults import DELETED, ERROR, HARVESTED, PROCESSING, READY, STATE_CHOICES
 from ..models import TimedTextTrack
 from ..utils import time_utils
 
@@ -75,7 +75,7 @@ class UpdateStateSerializer(serializers.Serializer):
 
     key = serializers.RegexField(KEY_REGEX)
     state = serializers.ChoiceField(
-        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR, HARVESTED))
+        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR, HARVESTED, DELETED))
     )
     extraParameters = serializers.DictField()
 

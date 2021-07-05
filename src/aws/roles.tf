@@ -556,7 +556,9 @@ resource "aws_iam_policy" "lambda_mediapackage_access_policy" {
       "Action": [
         "mediapackage:DeleteChannel",
         "mediapackage:DeleteOriginEndpoint",
-        "mediapackage:DescribeOriginEndpoint"
+        "mediapackage:DescribeOriginEndpoint",
+        "mediapackage:listHarvestJobs",
+        "mediapackage:createHarvestJob"
       ],
       "Resource": "*"
     }
