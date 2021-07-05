@@ -57,7 +57,6 @@ describe('<DashboardPaneButtons />', () => {
   });
 
   it('displays the configure live button', () => {
-    mockFlags = { [flags.VIDEO_LIVE]: true };
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -73,7 +72,7 @@ describe('<DashboardPaneButtons />', () => {
   });
 
   it('displays the configure live and jitsi button', () => {
-    mockFlags = { [flags.VIDEO_LIVE]: true, [flags.JITSI]: true };
+    mockFlags = { [flags.JITSI]: true };
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -90,7 +89,6 @@ describe('<DashboardPaneButtons />', () => {
   });
 
   it('hides the configure live button when live state is not null', () => {
-    mockFlags = { [flags.VIDEO_LIVE]: false };
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -100,24 +98,6 @@ describe('<DashboardPaneButtons />', () => {
               upload_state: PENDING,
               live_state: liveState.IDLE,
             })}
-            objectType={modelName.VIDEOS}
-          />,
-        ),
-      ),
-    );
-
-    expect(
-      screen.queryByRole('button', { name: 'Configure a live streaming' }),
-    ).toBeNull();
-  });
-
-  it('hides the configure live button when the flag is disabled', () => {
-    mockFlags = { [flags.VIDEO_LIVE]: false };
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardPaneButtons
-            object={videoMockFactory({ id: 'vid1', upload_state: PENDING })}
             objectType={modelName.VIDEOS}
           />,
         ),
