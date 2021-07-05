@@ -56,5 +56,4 @@ LIVE_CHOICES = (
 LIVE_TYPE_CHOICES = ((RAW, _("raw")), (JITSI, _("jitsi")))
 
 # FLAGS
-VIDEO_LIVE = "video_live"
 SENTRY = "sentry"
