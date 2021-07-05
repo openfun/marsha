@@ -137,7 +137,7 @@ class BaseModel(SafeDeleteModel):
             )
         else:
             app_prefix = cls._meta.app_label
-            module_prefix = cls.__module__.split(".")[0]
+            module_prefix = cls.__module__.split(".", maxsplit=1)[0]
             for prefix in [
                 app_prefix,
                 module_prefix,
