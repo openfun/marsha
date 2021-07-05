@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/jest": "26.0.23",
     "@types/request-promise-native": "1.0.17",
-    "jest": "27.0.4"
+    "jest": "27.0.6"
   },
   "resolutions": {
     "merge": "^2.0.0",
