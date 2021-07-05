@@ -29,7 +29,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import JITSI, SENTRY, VIDEO_LIVE
+from .defaults import JITSI, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -244,7 +244,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             app_data.update(
                 {
                     "flags": {
-                        VIDEO_LIVE: switch_is_active(VIDEO_LIVE),
                         SENTRY: switch_is_active(SENTRY),
                         JITSI: settings.JITSI_ENABLED,
                     },

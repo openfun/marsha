@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- VIDEO_LIVE Waffle switch
+
 ## [3.20.1] - 2021-06-23
 
 ### Fixed
