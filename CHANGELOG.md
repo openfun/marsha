@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.21.0] - 2021-07-05
+
 ### Added
 
 - Add a beta label on live configuration buttons
@@ -801,7 +803,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.20.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.21.0...master
+[3.21.0]: https://github.com/openfun/marsha/compare/v3.20.1...v3.21.0
 [3.20.1]: https://github.com/openfun/marsha/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/openfun/marsha/compare/v3.19.0...v3.20.0
 [3.19.0]: https://github.com/openfun/marsha/compare/v3.18.0...v3.19.0
