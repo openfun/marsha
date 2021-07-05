@@ -9,9 +9,26 @@ import { liveState, timedTextMode, uploadState } from '../types/tracks';
 import { isMSESupported } from '../utils/isMSESupported';
 import { videoMockFactory } from '../utils/tests/factories';
 import { wrapInIntlProvider } from '../utils/tests/intl';
-import { XAPIStatement } from '../XAPI/XAPIStatement';
+import { VideoXAPIStatementInterface, XAPIStatement } from '../XAPI';
 
-jest.mock('../XAPI/XAPIStatement');
+const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
+  initialized: jest.fn(),
+  completed: jest.fn(),
+  interacted: jest.fn(),
+  paused: jest.fn(),
+  played: jest.fn(),
+  seeked: jest.fn(),
+  terminated: jest.fn(),
+};
+
+jest.mock('../XAPI', () => ({
+  XAPIStatement: jest.fn(),
+}));
+
+const mockXAPIStatement = XAPIStatement as jest.MockedFunction<
+  typeof XAPIStatement
+>;
+mockXAPIStatement.mockReturnValue(mockXAPIStatementInterface);
 
 jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -78,7 +95,6 @@ jest.mock('../data/stores/useTimedTextTrackLanguageChoices', () => ({
 }));
 
 describe('createVideoJsPlayer', () => {
-  const XAPIStatementMocked = mocked(XAPIStatement);
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -97,12 +113,7 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(
-      videoElement!,
-      jest.fn(),
-      mockVideo.urls!,
-      mockVideo.live_state,
-    );
+    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -143,12 +154,7 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(
-      videoElement!,
-      jest.fn(),
-      mockVideo.urls!,
-      mockVideo.live_state,
-    );
+    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
 
     expect(player.currentSources()).toEqual([
       {
@@ -227,12 +233,7 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(
-      videoElement!,
-      jest.fn(),
-      video.urls!,
-      video.live_state,
-    );
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -259,21 +260,19 @@ describe('createVideoJsPlayer', () => {
     const player = createVideojsPlayer(
       videoElement!,
       dispatchPlayerTimeUpdate,
-      mockVideo.urls!,
-      mockVideo.live_state,
+      mockVideo,
     );
 
-    expect(XAPIStatementMocked).toHaveBeenCalled();
-    const XapiStatementInstance = XAPIStatementMocked.mock.instances[0];
+    expect(mockXAPIStatement).toHaveBeenCalled();
 
     player.trigger('canplaythrough');
-    expect(XapiStatementInstance.initialized).toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.initialized).toHaveBeenCalled();
 
     player.trigger('playing');
-    expect(XapiStatementInstance.played).toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.played).toHaveBeenCalled();
 
     player.trigger('pause');
-    expect(XapiStatementInstance.paused).toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.paused).toHaveBeenCalled();
 
     player.trigger('timeupdate');
     expect(dispatchPlayerTimeUpdate).toHaveBeenCalled();
@@ -281,11 +280,11 @@ describe('createVideoJsPlayer', () => {
     // calling seeked without seeking before should not
     // send xapi statement
     player.trigger('seeked');
-    expect(XapiStatementInstance.seeked).not.toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.seeked).not.toHaveBeenCalled();
 
     player.trigger('seeking');
     player.trigger('seeked');
-    expect(XapiStatementInstance.seeked).toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.seeked).toHaveBeenCalled();
 
     player.trigger('fullscreenchange');
     player.trigger('languagechange');
@@ -293,9 +292,9 @@ describe('createVideoJsPlayer', () => {
     player.trigger('volumechange');
     player.qualityLevels().trigger('change');
     player.remoteTextTracks().dispatchEvent(new Event('change'));
-    expect(XapiStatementInstance.interacted).toHaveBeenCalledTimes(6);
+    expect(mockXAPIStatementInterface.interacted).toHaveBeenCalledTimes(6);
 
     window.dispatchEvent(new Event('unload'));
-    expect(XapiStatementInstance.terminated).toHaveBeenCalled();
+    expect(mockXAPIStatementInterface.terminated).toHaveBeenCalled();
   });
 });
