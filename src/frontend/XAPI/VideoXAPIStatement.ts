@@ -1,8 +1,5 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { DateTime, Interval } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
-
-import { XAPI_ENDPOINT } from '../settings';
 import {
   CompletedDataPlayload,
   ContextExtensionsDefinition,
@@ -19,8 +16,9 @@ import {
 } from '../types/XAPI';
 import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { Nullable } from '../utils/types';
+import { sendXAPIStatement, VideoXAPIStatementInterface } from '.';
 
-export class XAPIStatement {
+export class VideoXAPIStatement implements VideoXAPIStatementInterface {
   private playedSegments: string = '';
   private startSegment: Nullable<number> = null;
   private duration: number = 0;
@@ -376,17 +374,7 @@ export class XAPIStatement {
       return;
     }
 
-    fetch(`${XAPI_ENDPOINT}/`, {
-      body: JSON.stringify({
-        ...data,
-        id: uuidv4(),
-      }),
-      headers: {
-        Authorization: `Bearer ${this.jwt}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    });
+    sendXAPIStatement(data, this.jwt);
   }
 
   private addStartSegment(time: number) {

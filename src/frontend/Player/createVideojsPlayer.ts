@@ -13,7 +13,7 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from '../types/libs/video.js/extend';
-import { liveState, videoSize, VideoUrls } from '../types/tracks';
+import { liveState, Video, videoSize, VideoUrls } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -21,7 +21,7 @@ import {
 import { report } from '../utils/errors/report';
 import { isMSESupported } from '../utils/isMSESupported';
 import { Nullable } from '../utils/types';
-import { XAPIStatement } from '../XAPI/XAPIStatement';
+import { VideoXAPIStatementInterface, XAPIStatement } from '../XAPI';
 
 import { intl } from '../index';
 import { Events } from './videojs/qualitySelectorPlugin/types';
@@ -29,8 +29,7 @@ import { Events } from './videojs/qualitySelectorPlugin/types';
 export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
-  urls: VideoUrls,
-  live: Nullable<liveState>,
+  video: Video,
 ): VideoJsPlayer => {
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
@@ -42,25 +41,25 @@ export const createVideojsPlayer = (
     plugins.qualitySelector = {
       default: '480',
     };
-    Object.keys(urls.mp4)
+    Object.keys(video.urls!.mp4)
       .map((size) => Number(size) as videoSize)
       .sort((a, b) => b - a)
       .forEach((size) => {
         sources.push({
           type: 'video/mp4',
-          src: urls.mp4[size]!,
+          src: video.urls!.mp4[size]!,
           size: size.toString(),
         });
       });
   } else {
     sources.push({
       type: 'application/x-mpegURL',
-      src: urls.manifests.hls,
+      src: video.urls!.manifests.hls,
     });
   }
 
   const options: VideoJsPlayerOptions = {
-    autoplay: !!live,
+    autoplay: !!video.live_state,
     controls: true,
     debug: false,
     fluid: true,
@@ -80,8 +79,9 @@ export const createVideojsPlayer = (
       nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
     language: intl.locale,
-    liveui: live !== null,
-    playbackRates: live ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
+    liveui: video.live_state !== null,
+    playbackRates:
+      video.live_state !== null ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins,
     responsive: true,
     sources,
@@ -101,9 +101,13 @@ export const createVideojsPlayer = (
 
   /************************** XAPI **************************/
 
-  let xapiStatement: XAPIStatement;
+  let xapiStatement: VideoXAPIStatementInterface;
   try {
-    xapiStatement = new XAPIStatement(appData.jwt!, getDecodedJwt().session_id);
+    xapiStatement = XAPIStatement(
+      appData.jwt!,
+      getDecodedJwt().session_id,
+      video,
+    );
   } catch (error) {
     report(error);
     throw error;
