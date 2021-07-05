@@ -17,12 +17,7 @@ export const createPlayer: VideoPlayerCreator = async (
 
   switch (type) {
     case 'videojs':
-      const player = createVideojsPlayer(
-        ref,
-        dispatchPlayerTimeUpdate,
-        video.urls!,
-        video.live_state,
-      );
+      const player = createVideojsPlayer(ref, dispatchPlayerTimeUpdate, video);
       return {
         destroy: () => player.dispose(),
       };
