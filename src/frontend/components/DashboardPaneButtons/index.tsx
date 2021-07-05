@@ -3,7 +3,6 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { appData } from '../../data/appData';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { flags } from '../../types/AppData';
@@ -112,7 +111,7 @@ export const DashboardPaneButtons = ({
     >
       {objectType === modelName.VIDEOS &&
         object.upload_state === uploadState.PENDING &&
-        isFeatureEnabled(flags.VIDEO_LIVE) && (
+        !(object as Video).live_state && (
           <React.Fragment>
             <DashboardVideoLiveConfigureButton
               video={object as Video}
