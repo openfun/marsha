@@ -1,10 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { Grommet } from 'grommet';
 import React from 'react';
 import { ImportMock } from 'ts-mock-imports';
 
 import * as useVideoModule from '../../data/stores/useVideo';
-import { uploadState, liveState } from '../../types/tracks';
+import { liveState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { wrapInRouter } from '../../utils/tests/router';
@@ -32,6 +33,14 @@ describe('components/DashboardVideoLiveStartButton', () => {
   });
 
   afterAll(useVideoStub.restore);
+  beforeEach(() => {
+    /*
+      make sure to remove all body children, grommet layer gets rendered twice, known issue
+      https://github.com/grommet/grommet/issues/5200
+    */
+    document.body.innerHTML = '';
+    document.body.appendChild(document.createElement('div'));
+  });
 
   const video = videoMockFactory();
 
@@ -60,12 +69,17 @@ describe('components/DashboardVideoLiveStartButton', () => {
 
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveStartButton video={video} />, [
-          {
-            path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
-            render: () => <span>error</span>,
-          },
-        ]),
+        wrapInRouter(
+          <Grommet>
+            <DashboardVideoLiveStartButton video={video} />
+          </Grommet>,
+          [
+            {
+              path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
+              render: () => <span>error</span>,
+            },
+          ],
+        ),
       ),
     );
 
@@ -76,6 +90,13 @@ describe('components/DashboardVideoLiveStartButton', () => {
       name: /start streaming/i,
     });
     fireEvent.click(startButton);
+
+    // Confirmation layer should show up
+    const confirmButton = screen.getByRole('button', { name: /ok/i });
+    screen.getByRole('button', { name: /cancel/i });
+
+    // Clicks on start button, confirmation layer should show up
+    fireEvent.click(confirmButton);
 
     // the state changes to pending, the loader is rendered
     screen.getByText('Loader');
@@ -97,10 +118,14 @@ describe('components/DashboardVideoLiveStartButton', () => {
       },
       { method: 'POST' },
     );
-
+    // wrap the component in a grommet provider to have a valid theme for the Layer component.
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveStartButton video={video} />),
+        wrapInRouter(
+          <Grommet>
+            <DashboardVideoLiveStartButton video={video} />
+          </Grommet>,
+        ),
       ),
     );
 
@@ -111,6 +136,13 @@ describe('components/DashboardVideoLiveStartButton', () => {
       name: /start streaming/i,
     });
     fireEvent.click(startButton);
+
+    // Confirmation layer should show up
+    const confirmButton = screen.getByRole('button', { name: /ok/i });
+    screen.getByRole('button', { name: /cancel/i });
+
+    // Clicks on start button, confirmation layer should show up
+    fireEvent.click(confirmButton);
 
     // the state changes to pending, the loader is rendered
     screen.getByText('Loader');

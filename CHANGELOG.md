@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add a confirmation before starting or stopping a live
+
 ## [3.21.0] - 2021-07-05
 
 ### Added
