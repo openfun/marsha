@@ -6,7 +6,7 @@ import { startLive } from '../../data/sideEffects/startLive';
 import { useVideo } from '../../data/stores/useVideo';
 import { Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
-import { DashboardButton } from '../DashboardPaneButtons';
+import { DashboardConfirmButton } from '../DashboardConfirmButton';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Loader } from '../Loader';
 
@@ -15,6 +15,11 @@ const messages = defineMessages({
     defaultMessage: 'start streaming',
     description: 'Start a video streaming.',
     id: 'components.DashboardVideoLive.startLive',
+  },
+  confirmStartLive: {
+    defaultMessage: 'Are you sure you want to start a video streaming ?',
+    description: 'Confirmation to start a video streaming.',
+    id: 'components.DashboardVideoLive.confirmStartLive',
   },
 });
 
@@ -49,10 +54,10 @@ export const DashboardVideoLiveStartButton = ({
   return (
     <React.Fragment>
       {status === 'pending' && <Loader />}
-      <DashboardButton
+      <DashboardConfirmButton
         label={<FormattedMessage {...messages.startLive} />}
-        primary={true}
-        onClick={startLiveAction}
+        confirmationLabel={<FormattedMessage {...messages.confirmStartLive} />}
+        onConfirm={startLiveAction}
       />
     </React.Fragment>
   );
