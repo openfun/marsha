@@ -6,7 +6,7 @@ import { stopLive } from '../../data/sideEffects/stopLive';
 import { useVideo } from '../../data/stores/useVideo';
 import { Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
-import { DashboardButton } from '../DashboardPaneButtons';
+import { DashboardConfirmButton } from '../DashboardConfirmButton';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { Loader } from '../Loader';
 
@@ -15,6 +15,11 @@ const messages = defineMessages({
     defaultMessage: 'stop streaming',
     description: 'Stop a video streaming.',
     id: 'components.DashboardVideoLiveStopButton.startLive',
+  },
+  confirmStopLive: {
+    defaultMessage: 'Are you sure you want to stop the video streaming ?',
+    description: 'Confirmation to stop the video streaming.',
+    id: 'components.DashboardVideoLiveStopButton.confirmStopLive',
   },
 });
 
@@ -51,10 +56,10 @@ export const DashboardVideoLiveStopButton = ({
   return (
     <React.Fragment>
       {status === 'pending' && <Loader />}
-      <DashboardButton
+      <DashboardConfirmButton
         label={<FormattedMessage {...messages.stopLive} />}
-        primary={true}
-        onClick={stopLiveAction}
+        confirmationLabel={<FormattedMessage {...messages.confirmStopLive} />}
+        onConfirm={stopLiveAction}
       />
     </React.Fragment>
   );
