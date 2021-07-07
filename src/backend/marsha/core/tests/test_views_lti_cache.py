@@ -63,59 +63,59 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         # Calling the same resource a second time with the same LTI parameters
         # should hit the cache and be ultra fast
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.01)
+        self.assertLess(elapsed, 0.01)
 
         # The cache should not be hit on first call if we change the playlist id
         data["context_id"] = "other_playlist"
         with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.01)
+        self.assertLess(elapsed, 0.01)
 
         # The cache should not be hit on first call if we change the domain
         mock_get_consumer_site.return_value = ConsumerSiteFactory()
         with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(
                 url, {**data, "context_id": "other_playlist"}
             )
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.01)
+        self.assertLess(elapsed, 0.01)
 
         # The cache should not be hit on first call if we change the resource id
         url = "/lti/videos/{!s}".format(video2.pk)
         with self.assertNumQueries(4):
             elapsed, resource_video2 = self._fetch_lti_request(url, data)
         self.assertEqual(resource_video2["id"], str(video2.id))
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_video2)
-        self.assertTrue(elapsed < 0.01)
+        self.assertLess(elapsed, 0.01)
 
         # The cache should STILL be hit if the user changes
         data["user_id"] = "222"
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_video2)
-        self.assertTrue(elapsed < 0.01)
+        self.assertLess(elapsed, 0.01)
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
@@ -142,14 +142,14 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         # Calling the same resource a second time with the same LTI parameters
         # should not hit the cache
         with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.1)
 
     @override_switch(SENTRY, active=True)
     def test_views_public_resource(self):
@@ -165,9 +165,9 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.2)
 
         with self.assertNumQueries(0):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertTrue(elapsed < 0.1)
+        self.assertLess(elapsed, 0.1)
