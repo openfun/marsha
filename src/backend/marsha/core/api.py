@@ -265,7 +265,9 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 | permissions.IsVideoOrganizationAdmin
             ]
         elif self.action in ["list"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [
+                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+            ]
         elif self.action in ["create"]:
             permission_classes = [
                 permissions.IsParamsPlaylistAdmin
@@ -317,6 +319,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(
             Q(playlist__user_accesses__user__id=request.user.id)
             | Q(playlist__organization__user_accesses__user__id=request.user.id)
+            | Q(playlist__videos__id__contains=request.user.id)
         )
 
         playlist = request.query_params.get("playlist")
@@ -611,6 +614,7 @@ class DocumentViewSet(
     ObjectPkMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
     """Viewset for the API of the Document object."""
@@ -621,6 +625,50 @@ class DocumentViewSet(
         permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
         | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
     ]
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the actions' self defined permissions if applicable or
+        to the ViewSet's default permissions.
+        """
+        if self.action in ["list"]:
+            permission_classes = [
+                (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+            ]
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    # def list(self, request, *args, **kwargs):
+    #     """List documents through the API."""
+    #     # Limit the queryset to the playlists the user has access directly or through
+    #     # an access they have to an organization
+    #     # queryset = self.get_queryset().filter(
+    #     #     Q(playlist__user_accesses__user__id=request.user.id)
+    #     #     | Q(playlist__organization__user_accesses__user__id=request.user.id)
+    #     #     | Q(playlist__documents__id__contains=request.user.id)
+    #     # )
+    #     #
+    #     # playlist = request.query_params.get("playlist")
+    #     # if playlist is not None:
+    #     #     queryset = queryset.filter(playlist__id=playlist)
+    #     #
+    #     # organization = request.query_params.get("organization")
+    #     # if organization is not None:
+    #     #     queryset = queryset.filter(playlist__organization__id=organization)
+    #     #
+    #     # queryset = queryset.order_by("title")
+    #     #
+    #     # page = self.paginate_queryset(queryset)
+    #     # if page is not None:
+    #     #     serializer = self.get_serializer(page, many=True)
+    #     #     return self.get_paginated_response(serializer.data)
+    #
+    #     queryset = self.get_queryset()
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument

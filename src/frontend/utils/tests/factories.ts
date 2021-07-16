@@ -50,6 +50,7 @@ export const playlistMockFactory = (
     organization: faker.company.companyName(),
     portable_to: [],
     title: faker.name.title(),
+    reachable_from: [],
     users: [],
     ...playlist,
   };

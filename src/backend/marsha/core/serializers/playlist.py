@@ -24,17 +24,26 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "lti_id",
             "organization",
             "portable_to",
+            "reachable_from",
             "title",
             "users",
         ]
 
     portable_to = serializers.SerializerMethodField(read_only=False)
+    reachable_from = serializers.SerializerMethodField(read_only=False)
 
     def get_portable_to(self, obj):
-        """Getter for portable_to attribute instead of PlaylistSerializer to prevent recursion."""
+        """Getter for portable_to instead of PlaylistSerializer to prevent recursion."""
         return [
             {"id": playlist.id, "title": playlist.title}
             for playlist in obj.portable_to.all()
+        ]
+
+    def get_reachable_from(self, obj):
+        """Getter for reachable_from instead of PlaylistSerializer to prevent recursion."""
+        return [
+            {"id": playlist.id, "title": playlist.title}
+            for playlist in obj.reachable_from.all()
         ]
 
     def create(self, validated_data):

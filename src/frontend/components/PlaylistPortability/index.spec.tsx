@@ -66,6 +66,20 @@ describe('<PlaylistPortability />', () => {
       currentPlaylistDeferred.promise,
     );
 
+    fetchMock.get(`/api/videos/?playlist=${currentPlaylist.id}&limit=999`, {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [video],
+    });
+
+    fetchMock.get(`/api/documents/?playlist=${currentPlaylist.id}&limit=999`, {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
     const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
@@ -82,10 +96,10 @@ describe('<PlaylistPortability />', () => {
 
     screen.getByText('Loading playlist...');
 
-    expect(fetchMock.lastCall()![0]).toEqual(
+    expect(fetchMock.calls()[0]![0]).toEqual(
       `/api/playlists/${currentPlaylist.id}/`,
     );
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -117,12 +131,12 @@ describe('<PlaylistPortability />', () => {
 
     await act(async () => updatedPlaylistDeferred.resolve(updatedPlaylist));
 
-    expect(fetchMock.calls()).toHaveLength(3);
+    expect(fetchMock.calls()).toHaveLength(5);
 
-    expect(fetchMock.calls()[1]![0]).toEqual(
+    expect(fetchMock.calls()[3]![0]).toEqual(
       `/api/playlists/${currentPlaylist.id}/`,
     );
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(fetchMock.calls()[3]![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -167,6 +181,20 @@ describe('<PlaylistPortability />', () => {
       `/api/playlists/${currentPlaylist.id}/`,
       currentPlaylistDeferred.promise,
     );
+
+    fetchMock.get(`/api/videos/?playlist=${currentPlaylist.id}&limit=999`, {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [video],
+    });
+
+    fetchMock.get(`/api/documents/?playlist=${currentPlaylist.id}&limit=999`, {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [document],
+    });
 
     const queryClient = new QueryClient();
     render(

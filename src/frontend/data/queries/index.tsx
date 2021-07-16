@@ -8,6 +8,7 @@ import {
 
 import { APIList } from '../../types/api';
 import { Playlist, Thumbnail, TimedText, Video } from '../../types/tracks';
+import { Document } from '../../types/file';
 import { Organization } from '../../types/Organization';
 import { createOne } from './createOne';
 import { fetchList } from './fetchList';
@@ -147,11 +148,25 @@ export const useCreateVideo = (options?: UseCreateVideoOptions) => {
 };
 
 type VideosResponse = APIList<Video>;
-type UseVideosParams = {} | { organization: string };
+type UseVideosParams = {} | { organization: string } | { playlist: string };
 export const useVideos = (
   params: UseVideosParams,
   queryConfig?: UseQueryOptions<VideosResponse, 'videos', VideosResponse>,
 ) => {
   const key = ['videos', params];
   return useQuery<VideosResponse, 'videos'>(key, fetchList, queryConfig);
+};
+
+type DocumentsResponse = APIList<Document>;
+type UseDocumentsParams = {} | { organization: string } | { playlist: string };
+export const useDocuments = (
+  params: UseDocumentsParams,
+  queryConfig?: UseQueryOptions<
+    DocumentsResponse,
+    'documents',
+    DocumentsResponse
+  >,
+) => {
+  const key = ['documents', params];
+  return useQuery<DocumentsResponse, 'documents'>(key, fetchList, queryConfig);
 };

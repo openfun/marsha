@@ -219,6 +219,31 @@ class IsParamsOrganizationAdmin(permissions.BasePermission):
         ).exists()
 
 
+class IsParamsPlaylistInstructor(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    playlist, and has an access to this playlist with an administrator role.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the playlist from the params of body of the request exists
+        and the current logged in user is one of its administrators.
+        """
+        playlist_id = request.data.get("playlist") or request.query_params.get(
+            "playlist"
+        )
+        return models.PlaylistAccess.objects.filter(
+            role=INSTRUCTOR,
+            playlist__id=playlist_id,
+            user__id=request.user.id,
+        ).exists()
+
+
 class IsParamsPlaylistAdmin(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.

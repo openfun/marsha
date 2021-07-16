@@ -2,6 +2,7 @@ import ClipboardJS from 'clipboard';
 import {
   Box,
   Button,
+  Collapsible,
   Form,
   FormField,
   List,
@@ -9,7 +10,7 @@ import {
   Text,
   TextInput,
 } from 'grommet';
-import { AddCircle, Copy, Trash } from 'grommet-icons';
+import { AddCircle, Copy, FormDown, FormNext, Trash } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
@@ -17,8 +18,14 @@ import { toast } from 'react-hot-toast';
 import Dashboard from '../Dashboard';
 import { ErrorMessage } from '../ErrorComponents';
 import { Document } from '../../types/file';
-import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
+import {
+  useDocuments,
+  usePlaylist,
+  useUpdatePlaylist,
+  useVideos,
+} from '../../data/queries';
 import { Playlist, Video } from '../../types/tracks';
+import { SelectContent } from '../SelectContent';
 
 const messages = defineMessages({
   loadingPlaylist: {
@@ -36,6 +43,11 @@ const messages = defineMessages({
     defaultMessage: 'Playlist shared with:',
     description: '',
     id: 'component.PlaylistPortability.sharedListTitle',
+  },
+  reachableListTitle: {
+    defaultMessage: 'Playlist reachable from:',
+    description: '',
+    id: 'component.PlaylistPortability.reachableListTitle',
   },
   shareWithPlaylist: {
     defaultMessage: 'Share with another playlist',
@@ -148,6 +160,49 @@ export const PlaylistPortabilityList = ({
   return null;
 };
 
+interface PlaylistReachableFromListProps {
+  playlist: Playlist;
+}
+
+export const PlaylistReachableFromList = ({
+  playlist,
+}: PlaylistReachableFromListProps) => {
+  const intl = useIntl();
+  if (playlist!.reachable_from.length > 0) {
+    return (
+      <Box margin={{ bottom: 'medium' }}>
+        <Text>
+          <FormattedMessage {...messages.reachableListTitle} />
+        </Text>
+        <List
+          data={playlist?.reachable_from}
+          pad={{ left: 'small', right: 'none' }}
+        >
+          {(reachableFromPlaylist: { title: string; id: string }) => (
+            <Box
+              role="listitem"
+              a11yTitle={intl.formatMessage(
+                messages.hasPortabilityWith,
+                reachableFromPlaylist,
+              )}
+              direction="row-responsive"
+              gap="medium"
+              align="center"
+              pad={{ top: 'small', bottom: 'small' }}
+            >
+              <Text weight="bold">{reachableFromPlaylist.title}</Text>
+              <Text size="small" color="dark-4">
+                {reachableFromPlaylist.id}
+              </Text>
+            </Box>
+          )}
+        </List>
+      </Box>
+    );
+  }
+  return null;
+};
+
 interface PlaylistPortabilityProps {
   object: Video | Document;
 }
@@ -159,6 +214,16 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
   const { data: playlist, status: usePlaylistStatus } = usePlaylist(
     object.playlist.id,
   );
+  const [sharedResourceDisplayed, setSharedResourceDisplayed] =
+    React.useState(false);
+
+  const { data: videos, status: useVideosStatus } = useVideos({
+    playlist: object.playlist.id,
+  });
+
+  const { data: documents, status: useDocumentsStatus } = useDocuments({
+    playlist: object.playlist.id,
+  });
 
   useEffect(() => {
     const clipboard = new ClipboardJS('.copy');
@@ -239,6 +304,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
           </Box>
 
           <Box width="large">
+            <PlaylistReachableFromList playlist={playlist!} />
             <PlaylistPortabilityList
               playlist={playlist!}
               removePlaylistPortability={removePlaylistPortability}
@@ -278,9 +344,29 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
               background="status-warning"
               width="large"
             >
-              <Text>
-                <FormattedMessage {...messages.shareWithPlaylistDetails} />
-              </Text>
+              <Button
+                hoverIndicator="background"
+                onClick={() =>
+                  setSharedResourceDisplayed(!sharedResourceDisplayed)
+                }
+              >
+                <Box direction="row" align="center" pad="xsmall">
+                  {sharedResourceDisplayed ? (
+                    <FormDown color="brand" />
+                  ) : (
+                    <FormNext color="brand" />
+                  )}
+                  <FormattedMessage {...messages.shareWithPlaylistDetails} />
+                </Box>
+              </Button>
+              <Collapsible open={sharedResourceDisplayed}>
+                <SelectContent
+                  playlist={playlist}
+                  videos={videos?.results}
+                  documents={documents?.results}
+                  selectable={false}
+                />
+              </Collapsible>
             </Box>
           </Box>
         </React.Fragment>

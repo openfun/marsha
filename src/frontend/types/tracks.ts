@@ -67,6 +67,7 @@ export interface Playlist {
   lti_id: string;
   organization: string;
   portable_to: PlaylistLite[];
+  reachable_from: PlaylistLite[];
   title: string;
   users: string[];
 }

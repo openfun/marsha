@@ -485,7 +485,7 @@ describe('queries', () => {
   });
 
   describe('useVideos', () => {
-    it('requests the resource list', async () => {
+    it('requests the resource list through organization', async () => {
       const videos = Array(4).fill(videoMockFactory());
       fetchMock.mock('/api/videos/?organization=1&limit=999', videos);
 
@@ -499,6 +499,31 @@ describe('queries', () => {
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/videos/?organization=1&limit=999',
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+      });
+      expect(result.current.data).toEqual(videos);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('requests the resource list through playlist', async () => {
+      const videos = Array(4).fill(videoMockFactory());
+      fetchMock.mock('/api/videos/?playlist=1&limit=999', videos);
+
+      const { result, waitFor } = renderHook(
+        () => useVideos({ playlist: '1' }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        '/api/videos/?playlist=1&limit=999',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

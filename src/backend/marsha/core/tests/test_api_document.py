@@ -120,7 +120,7 @@ class DocumentAPITest(TestCase):
     def test_api_document_fetch_list_anonymous(self):
         """An anonymous should not be able to fetch a list of document."""
         response = self.client.get("/api/documents/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_fetch_list_student(self):
         """A student should not be able to fetch a list of document."""
@@ -134,7 +134,7 @@ class DocumentAPITest(TestCase):
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_fetch_list_instructor(self):
         """An instrustor should not be able to fetch a document list."""
@@ -148,12 +148,12 @@ class DocumentAPITest(TestCase):
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
     def test_api_document_create_anonymous(self):
         """An anonymous should not be able to create a document."""
         response = self.client.post("/api/documents/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_create_student(self):
         """A student should not be able to create a document."""
@@ -167,7 +167,7 @@ class DocumentAPITest(TestCase):
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_instructor(self):
         """An instrustor should not be able to create a document."""
@@ -178,10 +178,10 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.get(
+        response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_delete_anonymous(self):
         """An anonymous should not be able to delete a document."""

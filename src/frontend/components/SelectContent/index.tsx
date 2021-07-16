@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   Grid,
-  Image,
   Tab,
   Tabs,
   Text,
@@ -20,8 +19,9 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
-import { Playlist, Video, videoSize } from '../../types/tracks';
+import { Playlist, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
+import { ResourceThumbnail } from '../reusable/ResourceThumbnail/ResourceThumbnail';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -152,32 +152,14 @@ const AssertedIconStatus = ({
 const ContentCard = ({
   content,
   onClick,
+  selectable,
 }: {
   content: Video | Document;
   onClick: () => void;
+  selectable?: boolean;
 }) => {
   const intl = useIntl();
   const contentTitle = { content_title: content.title };
-
-  let thumbnail;
-  // if ('thumbnail' in content || ('urls' in content && content!.urls)) {
-  if ('thumbnail' in content || 'urls' in content) {
-    const thumbnailUrls =
-      (content.thumbnail &&
-        content.thumbnail.is_ready_to_show &&
-        content.thumbnail.urls) ||
-      content.urls?.thumbnails;
-
-    if (thumbnailUrls) {
-      const resolutions = Object.keys(thumbnailUrls).map(
-        (size) => Number(size) as videoSize,
-      );
-      thumbnail =
-        thumbnailUrls && resolutions
-          ? thumbnailUrls[resolutions[0]]
-          : undefined;
-    }
-  }
 
   return (
     <Tip
@@ -206,25 +188,26 @@ const ContentCard = ({
         </Box>
       }
     >
-      <Card
-        width="large"
-        title={intl.formatMessage(messages.select, contentTitle)}
-        onClick={onClick}
-      >
-        <CardBody height="small">
-          {thumbnail ? (
-            <Image
-              alignSelf="stretch"
-              alt={content.title}
-              fit="cover"
-              fill="vertical"
-              src={thumbnail}
-            />
-          ) : (
-            <IconBox className="icon-file-text2" />
-          )}
-        </CardBody>
-      </Card>
+      {selectable ? (
+        <Card
+          width="large"
+          title={intl.formatMessage(messages.select, contentTitle)}
+          onClick={onClick}
+        >
+          <CardBody height="small">
+            <ResourceThumbnail resource={content} />
+          </CardBody>
+        </Card>
+      ) : (
+        <Card
+          width="large"
+          title={intl.formatMessage(messages.select, contentTitle)}
+        >
+          <CardBody height="small">
+            <ResourceThumbnail resource={content} />
+          </CardBody>
+        </Card>
+      )}
     </Tip>
   );
 };
@@ -235,6 +218,7 @@ interface SelectContentSectionProps {
   newLtiUrl: string;
   items: Nullable<Video[] | Document[]>;
   selectContent: (url: string, title: string) => void;
+  selectable?: boolean;
 }
 
 const SelectContentSection = ({
@@ -243,23 +227,28 @@ const SelectContentSection = ({
   newLtiUrl,
   items,
   selectContent,
+  selectable,
 }: SelectContentSectionProps) => {
   const intl = useIntl();
 
   return (
     <Box>
       <Grid columns="small" gap="small">
-        <Card
-          height="144px"
-          justify="center"
-          background="light-3"
-          align="center"
-          onClick={() => selectContent(newLtiUrl, intl.formatMessage(newTitle))}
-        >
-          <Text alignSelf="center">
-            <FormattedMessage {...addMessage} />
-          </Text>
-        </Card>
+        {selectable && (
+          <Card
+            height="144px"
+            justify="center"
+            background="light-3"
+            align="center"
+            onClick={() =>
+              selectContent(newLtiUrl, intl.formatMessage(newTitle))
+            }
+          >
+            <Text alignSelf="center">
+              <FormattedMessage {...addMessage} />
+            </Text>
+          </Card>
+        )}
 
         {items?.map(
           (item: Video | Document, index: React.Key | null | undefined) => (
@@ -267,6 +256,7 @@ const SelectContentSection = ({
               content={item!}
               key={index}
               onClick={() => selectContent(item!.lti_url!, item!.title)}
+              selectable={selectable}
             />
           ),
         )}
@@ -281,10 +271,11 @@ interface SelectContentProps {
   videos?: Video[];
   new_document_url?: string;
   new_video_url?: string;
-  lti_select_form_action_url: string;
-  lti_select_form_data: {
+  lti_select_form_action_url?: string;
+  lti_select_form_data?: {
     [key: string]: string;
   };
+  selectable?: boolean;
 }
 
 export const SelectContent = ({
@@ -295,13 +286,14 @@ export const SelectContent = ({
   new_video_url,
   lti_select_form_action_url,
   lti_select_form_data,
+  selectable = true,
 }: SelectContentProps) => {
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
   const intl = useIntl();
 
   useEffect(() => {
-    if (formRef.current && contentItemsValue) {
+    if (selectable && formRef.current && contentItemsValue) {
       formRef.current.submit();
     }
   }, [contentItemsValue]);
@@ -320,50 +312,60 @@ export const SelectContent = ({
   }, []);
 
   const selectContent = (ltiUrl: string, title: string) => {
-    const contentItems = {
-      '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
-      '@graph': [
-        {
-          '@type': 'ContentItem',
-          url: ltiUrl,
-          title,
-          frame: [],
-        },
-      ],
-    };
+    if (selectable) {
+      const contentItems = {
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: ltiUrl,
+            title,
+            frame: [],
+          },
+        ],
+      };
 
-    setContentItemsValue(JSON.stringify(contentItems));
+      setContentItemsValue(JSON.stringify(contentItems));
+    }
   };
 
   return (
     <Box pad="medium">
-      <Box justify="center" align="center" direction="row">
-        <Text role="heading" margin="small">
-          <FormattedMessage
-            {...messages.playlistTitle}
-            values={{ title: playlist?.title, id: playlist?.id }}
-          />
-          <Button
-            aria-label={`copy key ${playlist?.id}`}
-            data-clipboard-text={playlist?.id}
-            icon={<Copy />}
-            className="copy"
-          />
-        </Text>
-      </Box>
+      {selectable && (
+        <React.Fragment>
+          <Box justify="center" align="center" direction="row">
+            <Text role="heading" margin="small">
+              <FormattedMessage
+                {...messages.playlistTitle}
+                values={{ title: playlist?.title, id: playlist?.id }}
+              />
+              <Button
+                aria-label={`copy key ${playlist?.id}`}
+                data-clipboard-text={playlist?.id}
+                icon={<Copy />}
+                className="copy"
+              />
+            </Text>
+          </Box>
 
-      <form
-        ref={formRef}
-        action={lti_select_form_action_url}
-        method="POST"
-        encType="application/x-www-form-urlencoded"
-      >
-        {Object.entries(lti_select_form_data!).map(([name, value]) => (
-          <input key={name} type="hidden" name={name} value={value} />
-        ))}
+          <form
+            ref={formRef}
+            action={lti_select_form_action_url}
+            method="POST"
+            encType="application/x-www-form-urlencoded"
+          >
+            {Object.entries(lti_select_form_data!).map(([name, value]) => (
+              <input key={name} type="hidden" name={name} value={value} />
+            ))}
 
-        <input type="hidden" name="content_items" value={contentItemsValue} />
-      </form>
+            <input
+              type="hidden"
+              name="content_items"
+              value={contentItemsValue}
+            />
+          </form>
+        </React.Fragment>
+      )}
 
       <Tabs>
         <Tab title="Videos">
@@ -373,6 +375,7 @@ export const SelectContent = ({
             newLtiUrl={new_video_url!}
             items={videos!}
             selectContent={selectContent}
+            selectable={selectable}
           />
         </Tab>
 
@@ -383,6 +386,7 @@ export const SelectContent = ({
             newLtiUrl={new_document_url!}
             items={documents!}
             selectContent={selectContent}
+            selectable={selectable}
           />
         </Tab>
       </Tabs>

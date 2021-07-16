@@ -574,7 +574,7 @@ class VideoAPITest(TestCase):
         response = self.client.get("/api/videos/")
         self.assertEqual(response.status_code, 401)
 
-    def test_api_video_read_list_token_user(self):
+    def test_api_video_read_list_token_student(self):
         """
         Token user lists videos.
 
@@ -584,7 +584,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["roles"] = ["student"]
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
@@ -592,6 +592,77 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_token_admin(self):
+        """
+        Token user lists videos.
+
+        A token user associated to a video should be able to read a list of videos.
+        It should however be empty as they have no rights on lists of videos.
+        """
+        video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["administrator"]
+
+        response = self.client.get(
+            "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"count": 0, "next": None, "previous": None, "results": []}
+        )
+
+    def test_api_video_read_list_token_instructor(self):
+        """
+        Token user lists videos.
+
+        A token user associated to a video should be able to read a list of videos.
+        It should however be empty as they have no rights on lists of videos.
+        """
+        video = factories.VideoFactory()
+        factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["instructor"]
+
+        response = self.client.get(
+            "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "active_stamp": None,
+                        "description": video.description,
+                        "has_transcript": False,
+                        "id": str(video.id),
+                        "is_ready_to_show": False,
+                        "live_info": {},
+                        "live_state": None,
+                        "live_type": None,
+                        "playlist": {
+                            "id": str(video.playlist.id),
+                            "lti_id": video.playlist.lti_id,
+                            "title": video.playlist.title,
+                        },
+                        "should_use_subtitle_as_transcript": False,
+                        "show_download": True,
+                        "thumbnail": None,
+                        "timed_text_tracks": [],
+                        "title": video.title,
+                        "upload_state": "pending",
+                        "urls": None,
+                        "xmpp": None,
+                    }
+                ],
+            },
         )
 
     def test_api_video_read_list_user_with_no_access(self):
