@@ -87,6 +87,7 @@ run: ## start the development server using Docker
 
 ngrok: ## start the development server using Docker through ngrok
 ngrok: run
+	@$(COMPOSE) stop ngrok
 	@$(COMPOSE) up -d ngrok
 	@echo
 	@echo "$(BOLD)App running at:$(RESET)"
