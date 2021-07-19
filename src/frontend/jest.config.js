@@ -8,6 +8,7 @@ module.exports = {
     'regenerator-runtime/runtime',
     './testSetup.ts',
   ],
+  testEnvironment: 'jsdom',
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
   testURL: 'https://localhost',
 };
