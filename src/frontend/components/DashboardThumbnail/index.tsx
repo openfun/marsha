@@ -112,7 +112,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
     }
   };
 
-  if (shouldRedirect) {
+  if (shouldRedirect && thumbnail) {
     return (
       <Redirect
         push

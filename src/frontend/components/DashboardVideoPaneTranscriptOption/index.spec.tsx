@@ -2,19 +2,16 @@ import { fireEvent, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { ImportMock } from 'ts-mock-imports';
 
 import { DashboardVideoPaneTranscriptOption } from '.';
-import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
+import {
+  timedTextMockFactory,
+  videoMockFactory,
+} from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-
-const useTimedTextTrackStub = ImportMock.mockFunction(
-  useTimedTextTrackModule,
-  'useTimedTextTrack',
-);
 
 jest.mock('../../data/appData', () => ({
   appData: {},
@@ -23,7 +20,6 @@ jest.mock('../../data/appData', () => ({
 describe('<DashboardVideoPaneTranscriptOption />', () => {
   afterEach(jest.resetAllMocks);
 
-  afterAll(useTimedTextTrackStub.restore);
   const video = videoMockFactory({
     id: '443',
     timed_text_tracks: [],
@@ -32,8 +28,6 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('renders nothing if there is no timed text track', () => {
-    useTimedTextTrackStub.returns([]);
-
     const { container } = render(
       wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
     );
@@ -41,14 +35,14 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('renders nothing if there is already at least a transcript', () => {
-    useTimedTextTrackStub.returns([
-      {
+    useTimedTextTrack.getState().addMultipleResources([
+      timedTextMockFactory({
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.TRANSCRIPT,
         upload_state: uploadState.READY,
-      },
+      }),
     ]);
 
     const { container } = render(
@@ -58,14 +52,14 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('renders nothing if there is no subtitle', () => {
-    useTimedTextTrackStub.returns([
-      {
+    useTimedTextTrack.getState().addMultipleResources([
+      timedTextMockFactory({
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.CLOSED_CAPTIONING,
         upload_state: uploadState.READY,
-      },
+      }),
     ]);
 
     const { container } = render(
@@ -75,14 +69,14 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('renders the form if there is at least one subtitle and no transcript', () => {
-    useTimedTextTrackStub.returns([
-      {
+    useTimedTextTrack.getState().addMultipleResources([
+      timedTextMockFactory({
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
-      },
+      }),
     ]);
 
     const { getByLabelText } = render(
@@ -98,14 +92,14 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
     const deferred = new Deferred();
     fetchMock.mock('/api/videos/443/', deferred.promise, { method: 'PUT' });
 
-    useTimedTextTrackStub.returns([
-      {
+    useTimedTextTrack.getState().addMultipleResources([
+      timedTextMockFactory({
         id: '42',
         is_ready_to_show: true,
         language: 'fr',
         mode: timedTextMode.SUBTITLE,
         upload_state: uploadState.READY,
-      },
+      }),
     ]);
 
     const { getByLabelText } = render(

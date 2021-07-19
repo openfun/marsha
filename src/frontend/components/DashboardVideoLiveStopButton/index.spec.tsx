@@ -2,9 +2,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import React from 'react';
-import { ImportMock } from 'ts-mock-imports';
 
-import * as useVideoModule from '../../data/stores/useVideo';
+import { useVideo } from '../../data/stores/useVideo';
 import { liveState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
@@ -21,18 +20,12 @@ jest.mock('../Loader', () => ({
   Loader: () => <span>Loader</span>,
 }));
 
-const mockUpdateVideo = jest.fn();
-
-const useVideoStub = ImportMock.mockFunction(useVideoModule, 'useVideo');
-
 describe('components/DashboardVideoLiveStopButton', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
-    useVideoStub.reset();
   });
 
-  afterAll(useVideoStub.restore);
   beforeEach(() => {
     /*
       make sure to remove all body children, grommet layer gets rendered twice, known issue
@@ -45,10 +38,6 @@ describe('components/DashboardVideoLiveStopButton', () => {
   const video = videoMockFactory();
 
   it('renders the stop button', () => {
-    useVideoStub.returns({
-      updateVideo: mockUpdateVideo,
-    });
-
     render(
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoLiveStopButton video={video} />),
@@ -59,10 +48,6 @@ describe('components/DashboardVideoLiveStopButton', () => {
   });
 
   it('clicks on stop live button and fails.', async () => {
-    useVideoStub.returns({
-      updateVideo: mockUpdateVideo,
-    });
-
     fetchMock.mock(`/api/videos/${video.id}/stop-live/`, 400, {
       method: 'POST',
     });
@@ -107,9 +92,6 @@ describe('components/DashboardVideoLiveStopButton', () => {
   });
 
   it('clicks on stop live and it updates the video state', async () => {
-    useVideoStub.returns({
-      updateVideo: mockUpdateVideo,
-    });
     fetchMock.mock(
       `/api/videos/${video.id}/stop-live/`,
       {
@@ -149,7 +131,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
 
     await waitFor(() => expect(fetchMock.called()).toBe(true));
 
-    expect(mockUpdateVideo).toHaveBeenLastCalledWith({
+    expect(useVideo.getState().videos[video.id]).toEqual({
       ...video,
       live_state: liveState.STOPPED,
     });
