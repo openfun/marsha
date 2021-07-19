@@ -1,11 +1,10 @@
 import React from 'react';
 import fetchMock from 'fetch-mock';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import { ImportMock } from 'ts-mock-imports';
 
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { liveState, timedTextMode } from '../../types/tracks';
 import {
   timedTextMockFactory,
@@ -43,11 +42,6 @@ jest.mock('../../data/appData', () => ({
   }),
 }));
 
-const useTimedTextTrackStub = ImportMock.mockFunction(
-  useTimedTextTrackModule,
-  'useTimedTextTrack',
-);
-
 jest.mock('../../utils/converse', () => ({
   converseMounter: jest.fn(() => jest.fn()),
 }));
@@ -81,7 +75,6 @@ describe('PublicVideoDashboard', () => {
     jest.clearAllMocks();
   });
   it('displays the video player alone', async () => {
-    useTimedTextTrackStub.returns([]);
     const video = videoMockFactory({
       urls: {
         manifests: {
@@ -136,7 +129,7 @@ describe('PublicVideoDashboard', () => {
         mode: timedTextMode.TRANSCRIPT,
       }),
     ];
-    useTimedTextTrackStub.returns(timedTextTracks);
+    useTimedTextTrack.getState().addMultipleResources(timedTextTracks);
     const video = videoMockFactory({
       has_transcript: true,
       show_download: true,
@@ -197,7 +190,7 @@ describe('PublicVideoDashboard', () => {
         mode: timedTextMode.SUBTITLE,
       }),
     ];
-    useTimedTextTrackStub.returns(timedTextTracks);
+    useTimedTextTrack.getState().addMultipleResources(timedTextTracks);
     const video = videoMockFactory({
       has_transcript: false,
       show_download: true,
@@ -254,7 +247,6 @@ describe('PublicVideoDashboard', () => {
     expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
   });
   it('displays the video player and the chat', async () => {
-    useTimedTextTrackStub.returns([]);
     const video = videoMockFactory({
       live_state: liveState.RUNNING,
       urls: {

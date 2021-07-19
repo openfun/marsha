@@ -1,9 +1,7 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { ImportMock } from 'ts-mock-imports';
 
-import * as useTimedTextTrackModule from '../../data/stores/useTimedTextTrack';
 import { createPlayer } from '../../Player/createPlayer';
 import { liveState, timedTextMode, uploadState } from '../../types/tracks';
 import { VideoPlayerInterface } from '../../types/VideoPlayer';
@@ -24,11 +22,6 @@ jest.mock('../../Player/createPlayer', () => ({
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
-
-const useTimedTextTrackStub = ImportMock.mockFunction(
-  useTimedTextTrackModule,
-  'useTimedTextTrack',
-);
 
 const mockVideo = videoMockFactory({
   description: 'Some description',
