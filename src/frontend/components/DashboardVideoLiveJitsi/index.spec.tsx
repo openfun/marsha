@@ -54,7 +54,13 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    const { rerender } = render(<DashboardVideoLiveJitsi video={video} />);
+    const { rerender } = render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={jest.fn()}
+      />,
+    );
     const toolbarButtons = [
       'microphone',
       'camera',
@@ -115,11 +121,16 @@ describe('<DashboardVideoLiveJitsi />', () => {
       expect.any(String),
     );
     expect(events.recordingStatusChanged).toBeDefined();
+    expect(events.participantRoleChanged).toBeDefined();
+    expect(events.videoConferenceLeft).toBeDefined();
+    expect(events.videoConferenceJoined).toBeDefined();
 
     // state switch to running, recording must start
     rerender(
       <DashboardVideoLiveJitsi
         video={{ ...video, live_state: liveState.RUNNING }}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={jest.fn()}
       />,
     );
 
@@ -136,6 +147,8 @@ describe('<DashboardVideoLiveJitsi />', () => {
     rerender(
       <DashboardVideoLiveJitsi
         video={{ ...video, live_state: liveState.STOPPING }}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={jest.fn()}
       />,
     );
 
@@ -167,7 +180,13 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    render(<DashboardVideoLiveJitsi video={video} />);
+    render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={jest.fn()}
+      />,
+    );
 
     expect(events.recordingStatusChanged).toBeDefined();
 
@@ -201,5 +220,137 @@ describe('<DashboardVideoLiveJitsi />', () => {
       'stopRecording',
       expect.any(String),
     );
+  });
+
+  it('calls setCanStartLive when role changes', () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+    const mockCanStartLive = jest.fn();
+
+    render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        setCanStartLive={mockCanStartLive}
+        setCanShowStartButton={jest.fn()}
+      />,
+    );
+
+    expect(mockCanStartLive).not.toHaveBeenCalled();
+
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
+    expect(mockCanStartLive).toHaveBeenLastCalledWith(true);
+
+    // simulates user is no longer moderator
+    dispatch('participantRoleChanged', {
+      role: 'participant',
+    });
+
+    expect(mockCanStartLive).toHaveBeenLastCalledWith(false);
+  });
+
+  it('calls setCanStartLive and setCanShowStartButton when participant leave the conference', () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+    const mockCanStartLive = jest.fn();
+    const mockCanShowStartButton = jest.fn();
+
+    render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        setCanStartLive={mockCanStartLive}
+        setCanShowStartButton={mockCanShowStartButton}
+      />,
+    );
+
+    expect(mockCanStartLive).not.toHaveBeenCalled();
+    expect(mockCanShowStartButton).not.toHaveBeenCalled();
+
+    // simulates user leave the conference
+    dispatch('videoConferenceLeft', {});
+
+    expect(mockCanStartLive).toHaveBeenLastCalledWith(false);
+    expect(mockCanShowStartButton).toHaveBeenLastCalledWith(false);
+  });
+
+  it('calls setCanShowStartButton when participant join the conference', () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+    const mockCanShowStartButton = jest.fn();
+
+    render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={mockCanShowStartButton}
+      />,
+    );
+
+    expect(mockCanShowStartButton).not.toHaveBeenCalled();
+
+    // simulates user leave the conference
+    dispatch('videoConferenceJoined', {});
+
+    expect(mockCanShowStartButton).toHaveBeenLastCalledWith(true);
   });
 });

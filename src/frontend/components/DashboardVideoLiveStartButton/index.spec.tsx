@@ -40,11 +40,16 @@ describe('components/DashboardVideoLiveStartButton', () => {
   it('renders the start button', () => {
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveStartButton video={video} />),
+        wrapInRouter(
+          <DashboardVideoLiveStartButton video={video} canStartLive={true} />,
+        ),
       ),
     );
 
-    screen.getByRole('button', { name: /start streaming/i });
+    const button = screen.getByRole('button', {
+      name: /start streaming/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(false);
   });
 
   it('clicks on start live button and fails.', async () => {
@@ -56,7 +61,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <Grommet>
-            <DashboardVideoLiveStartButton video={video} />
+            <DashboardVideoLiveStartButton video={video} canStartLive={true} />
           </Grommet>,
           [
             {
@@ -105,7 +110,7 @@ describe('components/DashboardVideoLiveStartButton', () => {
       wrapInIntlProvider(
         wrapInRouter(
           <Grommet>
-            <DashboardVideoLiveStartButton video={video} />
+            <DashboardVideoLiveStartButton video={video} canStartLive={true} />
           </Grommet>,
         ),
       ),
@@ -135,5 +140,20 @@ describe('components/DashboardVideoLiveStartButton', () => {
       ...video,
       live_state: liveState.STARTING,
     });
+  });
+
+  it('disables the start button when canStartLive is false', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoLiveStartButton video={video} canStartLive={false} />,
+        ),
+      ),
+    );
+
+    const button = screen.getByRole('button', {
+      name: /Only moderators can start a live/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
   });
 });

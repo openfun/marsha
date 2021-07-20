@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from 'grommet';
-import React, { lazy, useEffect } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { appData } from '../../data/appData';
@@ -68,6 +68,8 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
+  const [canStartLive, setCanStartLive] = useState(false);
+  const [canShowStartButton, setCanShowStartButton] = useState(false);
   const pollForVideo = async () => {
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
@@ -103,6 +105,13 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     }
   }, [video.live_state]);
 
+  useEffect(() => {
+    if (video.live_type === LiveModeType.RAW) {
+      setCanStartLive(true);
+      setCanShowStartButton(true);
+    }
+  }, []);
+
   return (
     <Box>
       <Heading level={2}>
@@ -112,7 +121,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         <DashboardVideoLiveRaw video={video} />
       )}
       {video.live_type === LiveModeType.JITSI && (
-        <DashboardVideoLiveJitsi video={video} />
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanShowStartButton={setCanShowStartButton}
+          setCanStartLive={setCanStartLive}
+        />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
         {video.live_state === liveState.CREATING && (
@@ -128,7 +141,12 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                 type={LiveModeType.JITSI}
               />
             )}
-            <DashboardVideoLiveStartButton video={video} />
+            {canShowStartButton && (
+              <DashboardVideoLiveStartButton
+                video={video}
+                canStartLive={canStartLive}
+              />
+            )}
           </React.Fragment>
         )}
         {video.live_state === liveState.STARTING && (

@@ -5,10 +5,16 @@ import { Video, liveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 
 interface DashboardVideoLiveJitsiProps {
+  setCanStartLive: (canStartLive: boolean) => void;
+  setCanShowStartButton: (canShowStartButton: boolean) => void;
   video: Video;
 }
 
-const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
+const DashboardVideoLiveJitsi = ({
+  setCanStartLive,
+  setCanShowStartButton,
+  video,
+}: DashboardVideoLiveJitsiProps) => {
   const jitsiNode = useRef(null);
   const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
@@ -120,6 +126,23 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
       if (event.on) {
         retryStartRecordingDelay.current = retryDelayStep;
       }
+    });
+
+    _jitsi.addListener('participantRoleChanged', (event) => {
+      if (event.role === 'moderator') {
+        setCanStartLive(true);
+      } else {
+        setCanStartLive(false);
+      }
+    });
+
+    _jitsi.addListener('videoConferenceJoined', () => {
+      setCanShowStartButton(true);
+    });
+
+    _jitsi.addListener('videoConferenceLeft', () => {
+      setCanStartLive(false);
+      setCanShowStartButton(false);
     });
 
     if (video.live_state === liveState.RUNNING) {
