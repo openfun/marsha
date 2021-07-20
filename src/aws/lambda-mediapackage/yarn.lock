@@ -777,10 +777,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@26.0.23":
-  version "26.0.23"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.23.tgz#a1b7eab3c503b80451d019efb588ec63522ee4e7"
-  integrity sha512-ZHLmWMJ9jJ9PTiT58juykZpL7KjwJywFN3Rr2pTSkyQfydf/rk22yS7W8p5DaVUMQ2BQC7oYiU3FjbTM/mYrOA==
+"@types/jest@26.0.24":
+  version "26.0.24"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.24.tgz#943d11976b16739185913a1936e0de0c4a7d595a"
+  integrity sha512-E/X5Vib8BWqZNRlDxj9vYXhsDwPYbPINqKF9BsnSoon4RQ0D9moEuLD8txgyypFLH7J4+Lho9Nr/c8H0Fi+17w==
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
@@ -795,10 +795,10 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.2.3.tgz#ef65165aea2924c9359205bf748865b8881753c0"
   integrity sha512-PijRCG/K3s3w1We6ynUKdxEc5AcuuH3NBmMDP8uvKVp6X43UY7NQlTzczakXP3DJR0F4dfNQIGjU2cUeRYs2AA==
 
-"@types/request-promise-native@1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.17.tgz#74a2d7269aebf18b9bdf35f01459cf0a7bfc7fab"
-  integrity sha512-05/d0WbmuwjtGMYEdHIBZ0tqMJJQ2AD9LG2F6rKNBGX1SSFR27XveajH//2N/XYtual8T9Axwl+4v7oBtPUZqg==
+"@types/request-promise-native@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.18.tgz#437ee2d0b772e01c9691a983b558084b4b3efc2c"
+  integrity sha512-tPnODeISFc/c1LjWyLuZUY+Z0uLB3+IMfNoQyDEi395+j6kTFTTRAqjENjoPJUid4vHRGEozoTrcTrfZM+AcbA==
   dependencies:
     "@types/request" "*"
 
@@ -958,10 +958,10 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-aws-sdk@2.939.0:
-  version "2.939.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.939.0.tgz#c07c9d726bcb2ffdb69016f880ae310ad72f36a5"
-  integrity sha512-2KEAtTlVMDcpHP6+P9JU+mXTNhX3KZ0StW0Qi87oh8EUoRITZj64FrUylNvrCg69thCliAcNzBdlA1g5Iq+qEA==
+aws-sdk@2.949.0:
+  version "2.949.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.949.0.tgz#b36a7f8d1631d58922a6e2b9fd28f7cbcc4b4fa7"
+  integrity sha512-n9vqtsLPmSvJcvYvBLBbI1n4GZokwc/5zgHZD7VxdioLNXo1nHQ3VUi4MiW+3kIN40NUNf+Gc5vpc82yNYCvsw==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3115,7 +3115,7 @@ universalify@^0.1.2:
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
 
 "update-state@file:../utils/update-state":
-  version "3.20.1"
+  version "3.21.0"
   dependencies:
     request "2.88.2"
     request-promise-native "1.0.9"
