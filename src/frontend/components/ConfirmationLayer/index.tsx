@@ -17,7 +17,7 @@ const messages = defineMessages({
 });
 
 interface ConfirmationLayerProps {
-  confirmationLabel: JSX.Element;
+  confirmationLabel: JSX.Element | string;
   onConfirm: MouseEventHandler;
   onCancel: KeyboardEventHandler | MouseEventHandler;
 }
