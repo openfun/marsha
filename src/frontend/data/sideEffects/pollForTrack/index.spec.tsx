@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
 import { pollForTrack } from '.';
+import { addResource } from '../../stores/generics';
 import { requestStatus } from '../../../types/api';
 import { modelName } from '../../../types/models';
 import { report } from '../../../utils/errors/report';
@@ -16,6 +17,10 @@ jest.mock('../../appData', () => ({
   appData: {
     jwt: 'some token',
   },
+}));
+
+jest.mock('../../stores/generics', () => ({
+  addResource: jest.fn(),
 }));
 
 describe('sideEffects/pollForTrack', () => {
@@ -58,14 +63,13 @@ describe('sideEffects/pollForTrack', () => {
       ).toHaveLength(1);
     });
 
+    const track = timedTextMockFactory({
+      id: 'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+      is_ready_to_show: true,
+    });
     fetchMock.mock(
       '/api/timedtexttracks/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
-      JSON.stringify(
-        timedTextMockFactory({
-          id: 'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
-          is_ready_to_show: true,
-        }),
-      ),
+      JSON.stringify(track),
       {
         method: 'GET',
         overwriteRoutes: true,
@@ -86,6 +90,7 @@ describe('sideEffects/pollForTrack', () => {
     });
 
     expect(await promise).toEqual(requestStatus.SUCCESS);
+    expect(addResource).toHaveBeenCalledWith('timedtexttracks', track);
   });
 
   it('polls a document, backing off until it is ready and resolves with a success', async () => {
