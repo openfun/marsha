@@ -23,9 +23,7 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<TimedTextListItem />', () => {
-  jest.useFakeTimers();
-
-  beforeEach(() =>
+  beforeEach(() => {
     fetchMock.mock(
       '/api/timedtexttracks/',
       {
@@ -41,10 +39,15 @@ describe('<TimedTextListItem />', () => {
         },
       },
       { method: 'OPTIONS' },
-    ),
-  );
+    );
+    jest.useFakeTimers();
+  });
 
-  afterEach(() => fetchMock.restore());
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+    fetchMock.restore();
+  });
 
   it('renders a track, showing its language and status', async () => {
     render(
@@ -95,8 +98,7 @@ describe('<TimedTextListItem />', () => {
     };
 
     {
-      const deferred = new Deferred();
-      fetchMock.mock('/api/timedtexttracks/1/', deferred.promise, {
+      fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track), {
         method: 'GET',
       });
 
@@ -119,32 +121,26 @@ describe('<TimedTextListItem />', () => {
       ).not.toBeTruthy();
 
       // first backend call
-      jest.advanceTimersByTime(1000 * 10 + 200);
+      jest.runOnlyPendingTimers();
       await waitFor(() =>
         expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
       );
-      await act(async () => deferred.resolve(JSON.stringify(track)));
 
       expect(screen.queryByText('Ready')).toBeNull();
       screen.getByText('Processing');
     }
 
-    let timer: number = 15;
-
     for (let i = 2; i <= 20; i++) {
       fetchMock.restore();
-      const deferred = new Deferred();
-      fetchMock.mock('/api/timedtexttracks/1/', deferred.promise, {
+      fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(track), {
         method: 'GET',
       });
 
-      timer = timer * i;
-      jest.advanceTimersByTime(1000 * timer + 200);
+      jest.runOnlyPendingTimers();
       await waitFor(() => {
         // Expect only 1 call since we restore the mock before each one
-        expect(fetchMock.calls('/api/timedtexttracks/1/').length).toEqual(1);
+        expect(fetchMock.calls('/api/timedtexttracks/1/')).toHaveLength(1);
       });
-      await act(async () => deferred.resolve(JSON.stringify(track)));
       expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/');
       expect(screen.queryByText('Ready')).toBeNull();
       screen.getByText('Processing');
@@ -176,7 +172,7 @@ describe('<TimedTextListItem />', () => {
       ).not.toBeTruthy();
 
       // first backend call
-      jest.advanceTimersByTime(1000 * 10 + 200);
+      jest.runOnlyPendingTimers();
       await waitFor(() =>
         expect(fetchMock.lastCall()![0]).toEqual('/api/timedtexttracks/1/'),
       );
@@ -193,7 +189,7 @@ describe('<TimedTextListItem />', () => {
       fetchMock.mock('/api/timedtexttracks/1/', JSON.stringify(updatedTrack));
 
       // Second backend call
-      jest.advanceTimersByTime(1000 * 30 + 200);
+      jest.runOnlyPendingTimers();
       rerender(
         wrapInIntlProvider(
           wrapInRouter(<TimedTextListItem track={updatedTrack} />),
