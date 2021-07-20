@@ -1,10 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
 
-import { CHAT_ROUTE } from '../Chat/route';
-import { PLAYER_ROUTE } from '../routes';
-import { modelName } from '../../types/models';
 import {
   LiveModeType,
   liveState,
@@ -24,9 +21,21 @@ jest.mock('../DashboardVideoLiveRaw', () => (props: { video: Video }) => (
   <span title={props.video.id} />
 ));
 
-jest.mock('../DashboardVideoLiveJitsi', () => (props: { video: Video }) => (
-  <span title={props.video.id}>jitsi</span>
-));
+let mockCanShowStartButton = false;
+jest.mock(
+  '../DashboardVideoLiveJitsi',
+  () =>
+    (props: {
+      video: Video;
+      setCanShowStartButton: (canShowStartButton: boolean) => void;
+    }) => {
+      if (mockCanShowStartButton) {
+        props.setCanShowStartButton(true);
+      }
+
+      return <span title={props.video.id}>jitsi</span>;
+    },
+);
 
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => jest.useFakeTimers());
@@ -34,6 +43,7 @@ describe('components/DashboardVideoLive', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
+    mockCanShowStartButton = false;
   });
 
   const video = videoMockFactory({
@@ -81,7 +91,7 @@ describe('components/DashboardVideoLive', () => {
     screen.getByRole('button', { name: /Launch Jitsi LiveStream/i });
   });
 
-  it('shows only the start button when status is IDLE and live type is JITSI', async () => {
+  it('hides the start button when status is IDLE and live type is JITSI but user not in conference', async () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -98,10 +108,62 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    await screen.findByRole('button', { name: /start streaming/i });
+    expect(
+      screen.queryByRole('button', {
+        name: /Only moderators can start a live/i,
+      }),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /Launch Jitsi LiveStream/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows the start button when status is IDLE, live_type is JITSI and user in the conference', async () => {
+    const { rerender } = render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{
+                ...video,
+                live_state: liveState.IDLE,
+                live_type: LiveModeType.JITSI,
+              }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    expect(
+      screen.queryByRole('button', {
+        name: /Only moderators can start a live/i,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Launch Jitsi LiveStream/i }),
+    ).not.toBeInTheDocument();
+
+    mockCanShowStartButton = true;
+    rerender(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{
+                ...video,
+                live_state: liveState.IDLE,
+                live_type: LiveModeType.JITSI,
+              }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    await screen.findByRole('button', {
+      name: /Only moderators can start a live/i,
+    });
   });
 
   it('shows the live and stop button when the status is LIVE', () => {

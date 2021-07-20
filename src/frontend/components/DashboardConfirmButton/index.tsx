@@ -4,7 +4,7 @@ import { ConfirmationLayer } from '../ConfirmationLayer';
 import { DashboardButton } from '../DashboardPaneButtons';
 
 interface DashboardConfirmButtonProps extends ButtonProps {
-  confirmationLabel: JSX.Element;
+  confirmationLabel: JSX.Element | string;
   onConfirm: MouseEventHandler;
 }
 

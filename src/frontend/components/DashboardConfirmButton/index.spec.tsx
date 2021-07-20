@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { DashboardConfirmButton } from '.';
@@ -12,10 +11,7 @@ const props = {
 };
 
 jest.mock('../../data/appData', () => ({
-  appData: {
-    document: null,
-    jwt: 'cool_token_m8',
-  },
+  appData: {},
 }));
 
 describe('<DashboardConfirmButton />', () => {
@@ -29,7 +25,6 @@ describe('<DashboardConfirmButton />', () => {
     document.body.appendChild(document.createElement('div'));
   });
 
-  // render twice component why ? if I comment it second test is ok
   it('renders the component and expected elements are present', () => {
     render(
       wrapInIntlProvider(
@@ -40,7 +35,27 @@ describe('<DashboardConfirmButton />', () => {
         />,
       ),
     );
-    screen.getByRole('button', { name: /start a live/i });
+    const button = screen.getByRole('button', {
+      name: /start a live/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(false);
+  });
+
+  it('renders the component and expected elements are present and the button is disabled', () => {
+    render(
+      wrapInIntlProvider(
+        <DashboardConfirmButton
+          confirmationLabel={props.confirmationLabel}
+          disabled={true}
+          label={props.label}
+          onConfirm={props.onConfirm}
+        />,
+      ),
+    );
+    const button = screen.getByRole('button', {
+      name: /start a live/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
   });
 
   it('renders the confirmation box when the button is fired', () => {

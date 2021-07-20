@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { startLive } from '../../data/sideEffects/startLive';
@@ -14,28 +14,37 @@ const messages = defineMessages({
   startLive: {
     defaultMessage: 'start streaming',
     description: 'Start a video streaming.',
-    id: 'components.DashboardVideoLive.startLive',
+    id: 'components.DashboardVideoLiveStartButton.startLive',
   },
   confirmStartLive: {
     defaultMessage: 'Are you sure you want to start a video streaming ?',
     description: 'Confirmation to start a video streaming.',
-    id: 'components.DashboardVideoLive.confirmStartLive',
+    id: 'components.DashboardVideoLiveStartButton.confirmStartLive',
+  },
+  startLiveHelper: {
+    defaultMessage: 'Only moderators can start a live',
+    description:
+      'Helper message explaining why the start live button is disabled',
+    id: 'components.DashboardVideoLiveStartButton.startLiveHelper',
   },
 });
 
 type startLiveStatus = 'pending' | 'error';
 
 interface DashboardVideoLiveStartButtonProps {
+  canStartLive: boolean;
   video: Video;
 }
 
 export const DashboardVideoLiveStartButton = ({
+  canStartLive,
   video,
 }: DashboardVideoLiveStartButtonProps) => {
   const [status, setStatus] = useState<Nullable<startLiveStatus>>(null);
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
+  const intl = useIntl();
 
   const startLiveAction = useCallback(async () => {
     setStatus('pending');
@@ -55,8 +64,13 @@ export const DashboardVideoLiveStartButton = ({
     <React.Fragment>
       {status === 'pending' && <Loader />}
       <DashboardConfirmButton
-        label={<FormattedMessage {...messages.startLive} />}
-        confirmationLabel={<FormattedMessage {...messages.confirmStartLive} />}
+        disabled={!canStartLive}
+        label={
+          canStartLive
+            ? intl.formatMessage(messages.startLive)
+            : intl.formatMessage(messages.startLiveHelper)
+        }
+        confirmationLabel={intl.formatMessage(messages.confirmStartLive)}
         onConfirm={startLiveAction}
       />
     </React.Fragment>
