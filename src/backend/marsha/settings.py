@@ -266,6 +266,7 @@ class Base(Configuration):
     # XMPP Settings
     LIVE_CHAT_ENABLED = values.BooleanValue(False)
     XMPP_BOSH_URL = values.Value(None)
+    XMPP_WEBSOCKET_URL = values.Value(None)
     XMPP_CONFERENCE_DOMAIN = values.Value(None)
     XMPP_PRIVATE_ADMIN_JID = values.Value(None)
     XMPP_PRIVATE_SERVER_PORT = values.Value(5222)
