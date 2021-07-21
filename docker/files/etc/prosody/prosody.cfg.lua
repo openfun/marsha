@@ -39,7 +39,9 @@ use_libevent = true
 
 
 cross_domain_bosh = true
+cross_domain_websocket = true
 consider_bosh_secure = true
+consider_websocket_secure = true
 
 -- This is the list of modules Prosody will load on startup.
 -- It looks for mod_modulename.lua in the plugins folder, so make sure that exists too.
@@ -172,6 +174,7 @@ VirtualHost "prosody"
     allow_empty_token = false;  
     modules_enabled = {
         "bosh";
+        "websocket";
     }
     c2s_require_encryption = false
 
