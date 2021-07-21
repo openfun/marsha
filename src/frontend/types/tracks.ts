@@ -68,7 +68,8 @@ export interface Playlist {
 
 /* XMPP representation */
 export interface XMPP {
-  bosh_url: string;
+  bosh_url: Nullable<string>;
+  websocket_url: Nullable<string>;
   conference_url: string;
   prebind_url: string;
   jid: string;

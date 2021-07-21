@@ -30,6 +30,7 @@ describe('converseMounter', () => {
 
     const xmpp = {
       bosh_url: 'https://xmpp-server.com/http-bind',
+      websocket_url: null,
       conference_url:
         '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
       prebind_url: 'https://xmpp-server.com/http-pre-bind',
@@ -78,6 +79,7 @@ describe('converseMounter', () => {
         spoiler: false,
         toggle_occupants: false,
       },
+      websocket_url: null,
       whitelisted_plugins: ['marsha'],
     });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(1);
