@@ -52,6 +52,7 @@ export const converseMounter = () => {
           spoiler: false,
           toggle_occupants: false,
         },
+        websocket_url: xmpp.websocket_url,
         whitelisted_plugins: ['marsha'],
       });
       hasBeenInitialized = true;
