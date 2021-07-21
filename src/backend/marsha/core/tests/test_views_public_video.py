@@ -167,7 +167,7 @@ class VideoPublicViewTestCase(TestCase):
         self.assertEqual(context.get("modelName"), "videos")
 
     @override_settings(LIVE_CHAT_ENABLED=True)
-    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_WEBSOCKET_URL="ws://xmpp-server.com/xmpp-websocket")
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
@@ -256,7 +256,8 @@ class VideoPublicViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": RAW,
                 "xmpp": {
-                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "bosh_url": None,
+                    "websocket_url": "ws://xmpp-server.com/xmpp-websocket?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
