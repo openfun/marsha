@@ -411,6 +411,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_type": RAW,
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "websocket_url": None,
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },

@@ -1,4 +1,6 @@
 """Utils for XMPP server."""
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+
 from django.conf import settings
 
 import jwt
@@ -170,3 +172,16 @@ def generate_jwt(room_name, user_id, affiliation, expires_at):
         },
         settings.XMPP_JWT_SHARED_SECRET,
     )
+
+
+def add_jwt_token_to_url(url, token):
+    """Add a JWT token to a XMPP url."""
+    if url is None:
+        return None
+
+    generated_url = list(urlparse(url))
+    generated_query_string = dict(parse_qs(generated_url[4]))
+    generated_query_string.update({"token": token})
+    generated_url[4] = urlencode(generated_query_string)
+
+    return urlunparse(generated_url)

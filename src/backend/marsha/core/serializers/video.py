@@ -1,6 +1,6 @@
 """Structure of Video related models API responses with Django Rest Framework serializers."""
 from datetime import timedelta
-from urllib.parse import parse_qs, quote_plus, urlencode, urlparse, urlunparse
+from urllib.parse import quote_plus
 
 from django.conf import settings
 from django.urls import reverse
@@ -501,13 +501,14 @@ class VideoSerializer(VideoBaseSerializer):
                 "owner" if is_admin or is_instructor else "member",
                 timezone.now() + timedelta(days=1),
             )
-            bosh_url = list(urlparse(settings.XMPP_BOSH_URL))
-            bosh_query_string = dict(parse_qs(bosh_url[4]))
-            bosh_query_string.update({"token": token})
-            bosh_url[4] = urlencode(bosh_query_string)
 
             return {
-                "bosh_url": urlunparse(bosh_url),
+                "bosh_url": xmpp_utils.add_jwt_token_to_url(
+                    settings.XMPP_BOSH_URL, token
+                ),
+                "websocket_url": xmpp_utils.add_jwt_token_to_url(
+                    settings.XMPP_WEBSOCKET_URL, token
+                ),
                 "conference_url": f"{obj.id}@{settings.XMPP_CONFERENCE_DOMAIN}",
                 "jid": settings.XMPP_DOMAIN,
             }
