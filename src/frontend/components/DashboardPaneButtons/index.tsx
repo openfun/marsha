@@ -1,7 +1,6 @@
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import styled from 'styled-components';
 
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
@@ -12,7 +11,7 @@ import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigur
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { useUploadManager } from '../UploadManager';
-import { withLink } from '../withLink/withLink';
+import { DashboardButtonWithLink } from './DashboardButtons';
 
 const messages = {
   [modelName.VIDEOS]: defineMessages({
@@ -56,33 +55,6 @@ const messages = {
     },
   }),
 };
-
-export const DashboardButton = styled(Button)`
-  flex-grow: 1;
-  flex-basis: 8rem;
-  max-width: 50%;
-  position: relative;
-
-  :first-child {
-    margin-right: 1rem;
-  }
-
-  :last-child {
-    margin-left: 1rem;
-  }
-`;
-
-export const DashboardButtonBeta = styled(DashboardButton)`
-  :after {
-    color: #ff6a00;
-    content: '(BETA)';
-    font-size: 0.5em;
-    position: absolute;
-    top: -0.4em;
-  }
-`;
-
-export const DashboardButtonWithLink = withLink(DashboardButton);
 
 /** Props shape for the DashboardVideoPaneButtons component. */
 export interface DashboardPaneButtonsProps {
