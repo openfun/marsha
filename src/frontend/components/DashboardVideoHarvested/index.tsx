@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import {
   DashboardButton,
   DashboardButtonWithLink,
-} from '../DashboardPaneButtons';
+} from '../DashboardPaneButtons/DashboardButtons';
 import { PLAYER_ROUTE } from '../routes';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { updateResource } from '../../data/sideEffects/updateResource';

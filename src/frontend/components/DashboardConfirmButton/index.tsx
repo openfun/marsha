@@ -1,7 +1,7 @@
 import { ButtonProps } from 'grommet';
 import React, { MouseEventHandler, useState } from 'react';
 import { ConfirmationLayer } from '../ConfirmationLayer';
-import { DashboardButton } from '../DashboardPaneButtons';
+import { DashboardButton } from '../DashboardPaneButtons/DashboardButtons';
 
 interface DashboardConfirmButtonProps extends ButtonProps {
   confirmationLabel: JSX.Element | string;
