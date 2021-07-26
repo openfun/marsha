@@ -3,10 +3,7 @@ import React, { useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
-import {
-  DashboardButton,
-  DashboardButtonWithLink,
-} from '../DashboardPaneButtons';
+import { DashboardButtonWithLink } from '../DashboardPaneButtons/DashboardButtons';
 import { Chat } from '../Chat';
 import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
