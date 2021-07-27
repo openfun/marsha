@@ -125,6 +125,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           video={video}
           setCanShowStartButton={setCanShowStartButton}
           setCanStartLive={setCanStartLive}
+          isInstructor={true}
         />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
