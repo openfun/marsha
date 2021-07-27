@@ -1,5 +1,6 @@
 import { Nullable } from '../utils/types';
 import { Document } from './file';
+import { XMPP } from './XMPP';
 
 /** Base shape for all resources to extend. */
 export interface Resource {
@@ -69,15 +70,6 @@ export interface Playlist {
   portable_to: PlaylistLite[];
   title: string;
   users: string[];
-}
-
-/* XMPP representation */
-export interface XMPP {
-  bosh_url: Nullable<string>;
-  websocket_url: Nullable<string>;
-  conference_url: string;
-  prebind_url: string;
-  jid: string;
 }
 
 /** A timed text track record as it exists on the backend. */
