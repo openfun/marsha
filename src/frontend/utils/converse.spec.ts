@@ -78,9 +78,9 @@ describe('converseMounter', () => {
         spoiler: false,
         toggle_occupants: false,
       },
-      whitelisted_plugins: ['marsha'],
+      whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
     });
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(1);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith('marsha', {
       initialize: expect.any(Function),
     });
@@ -91,6 +91,6 @@ describe('converseMounter', () => {
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.insertInto).toHaveBeenCalledTimes(1);
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(1);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
   });
 });
