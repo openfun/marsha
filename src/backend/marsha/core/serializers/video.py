@@ -529,19 +529,13 @@ class VideoSerializer(VideoBaseSerializer):
             For other users, an empty dictionnary is returned.
         """
         can_return_live_info = self.context.get("can_return_live_info", False)
+        live_info = {}
 
-        if obj.live_state is None or can_return_live_info is False:
-            return {}
-
-        live_info = {
-            "medialive": {
-                "input": {
-                    "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
-                }
-            },
-        }
-
-        if settings.JITSI_ENABLED and obj.live_type == JITSI:
+        if (
+            obj.live_state is not None
+            and settings.JITSI_ENABLED
+            and obj.live_type == JITSI
+        ):
             live_info.update(
                 {
                     "jitsi": {
@@ -552,6 +546,19 @@ class VideoSerializer(VideoBaseSerializer):
                     }
                 }
             )
+
+        if obj.live_state is None or can_return_live_info is False:
+            return live_info
+
+        live_info.update(
+            {
+                "medialive": {
+                    "input": {
+                        "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
+                    }
+                },
+            }
+        )
 
         return live_info
 

@@ -17,6 +17,7 @@ from ..defaults import (
     DELETED,
     HARVESTED,
     IDLE,
+    JITSI,
     PENDING,
     RAW,
     READY,
@@ -538,6 +539,138 @@ class VideoLTIViewTestCase(TestCase):
                 "live_state": RUNNING,
                 "live_info": {},
                 "live_type": RAW,
+                "xmpp": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
+        self.assertEqual(context.get("environment"), "test")
+        self.assertEqual(context.get("release"), "1.2.3")
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_settings(JITSI_ENABLED=True)
+    def test_views_lti_video_student_live_mode_on_with_jitsi(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the format of the response for a live video requested by a student."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
+            playlist__consumer_site=passport.consumer_site,
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "chanel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+            live_type=JITSI,
+            upload_state=PENDING,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "username": "jane_doe",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["course"],
+            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
+        )
+
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(
+            context.get("static"),
+            {"svg": {"icons": "/static/svg/icons.svg"}},
+        )
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_stamp": None,
+                "is_ready_to_show": True,
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": PENDING,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": RUNNING,
+                "live_info": {
+                    "jitsi": {
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "config_overwrite": {},
+                        "interface_config_overwrite": {},
+                    },
+                },
+                "live_type": JITSI,
                 "xmpp": None,
             },
         )
