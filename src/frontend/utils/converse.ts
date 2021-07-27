@@ -5,7 +5,11 @@ import 'converse.js/dist/icons.js';
 
 import { converse } from './window';
 import { getDecodedJwt } from '../data/appData';
-import { XMPP } from '../types/tracks';
+import { useJoinParticipant } from '../data/stores/useJoinParticipant';
+import { useParticipantWorkflow } from '../data/stores/useParticipantWorkflow';
+import { Participant } from '../types/Participant';
+import { Video } from '../types/tracks';
+import { MessageType, EventType, XMPP } from '../types/XMPP';
 
 export const converseMounter = () => {
   let hasBeenInitialized = false;
@@ -14,15 +18,6 @@ export const converseMounter = () => {
     if (hasBeenInitialized) {
       converse.insertInto(document.querySelector(containerName)!);
     } else {
-      converse.plugins.add('marsha', {
-        initialize() {
-          const _converse = this._converse;
-
-          window.addEventListener('beforeunload', () => {
-            _converse.api.user.logout();
-          });
-        },
-      });
       converse.initialize({
         allow_contact_requests: false,
         allow_logout: false,
@@ -53,7 +48,143 @@ export const converseMounter = () => {
           toggle_occupants: false,
         },
         websocket_url: xmpp.websocket_url,
-        whitelisted_plugins: ['marsha'],
+        whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
+      });
+      converse.plugins.add('marsha', {
+        initialize() {
+          const _converse = this._converse;
+
+          window.addEventListener('beforeunload', () => {
+            _converse.api.user.logout();
+          });
+        },
+      });
+      converse.plugins.add('marsha-join-discussion', {
+        initialize() {
+          const _converse = this._converse;
+
+          _converse.on('initialized', () => {
+            _converse.connection.addHandler(
+              (message: any) => {
+                if (
+                  message.getAttribute('type') === MessageType.GROUPCHAT &&
+                  message.getAttribute('event') ===
+                    EventType.PARTICIPANTASKTOMOUNT
+                ) {
+                  const jid = message.getAttribute('from');
+                  const username = converse.env.Strophe.getResourceFromJid(jid);
+                  useJoinParticipant
+                    .getState()
+                    .addParticipantAskingToJoin({ id: jid, name: username });
+                } else if (
+                  message.getAttribute('type') === MessageType.EVENT &&
+                  message.getAttribute('event') === EventType.ACCEPT
+                ) {
+                  useParticipantWorkflow.getState().setAccepted();
+                } else if (
+                  message.getAttribute('type') === MessageType.EVENT &&
+                  message.getAttribute('event') === EventType.REJECT
+                ) {
+                  useParticipantWorkflow.getState().setRejected();
+                } else if (
+                  message.getAttribute('type') === MessageType.EVENT &&
+                  message.getAttribute('event') === EventType.KICK
+                ) {
+                  useParticipantWorkflow.getState().setKicked();
+                } else if (
+                  message.getAttribute('type') === MessageType.GROUPCHAT &&
+                  message.getAttribute('event') === EventType.LEAVE
+                ) {
+                  const jid = message.getAttribute('from');
+                  const username = converse.env.Strophe.getResourceFromJid(jid);
+                  useJoinParticipant
+                    .getState()
+                    .removeParticipantInDiscussion({ id: jid, name: username });
+                }
+                return true;
+              },
+              null,
+              'message',
+              null,
+              null,
+              null,
+            );
+
+            const askParticipantToJoin = () => {
+              const msg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: xmpp.conference_url,
+                type: MessageType.GROUPCHAT,
+                event: EventType.PARTICIPANTASKTOMOUNT,
+              });
+              _converse.connection.send(msg);
+            };
+
+            const acceptParticipantToJoin = (
+              participant: Participant,
+              video: Video,
+            ) => {
+              // only instructors or admin has update persmissions
+              if (!getDecodedJwt().permissions.can_update) {
+                return;
+              }
+
+              const msg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: participant.id,
+                type: MessageType.EVENT,
+                event: EventType.ACCEPT,
+              });
+              _converse.connection.send(msg);
+            };
+
+            const rejectParticipantToJoin = (participant: Participant) => {
+              // only instructors or admin has update persmission
+              if (!getDecodedJwt().permissions.can_update) {
+                return;
+              }
+              const msg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: participant.id,
+                type: MessageType.EVENT,
+                event: EventType.REJECT,
+              });
+              _converse.connection.send(msg);
+            };
+
+            const kickParticipant = (participant: Participant) => {
+              // only instructors or admin has update persmission
+              if (!getDecodedJwt().permissions.can_update) {
+                return;
+              }
+              const msg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: participant.id,
+                type: MessageType.EVENT,
+                event: EventType.KICK,
+              });
+              _converse.connection.send(msg);
+            };
+
+            const participantLeaves = () => {
+              const msg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: xmpp.conference_url,
+                type: MessageType.GROUPCHAT,
+                event: EventType.LEAVE,
+              });
+              _converse.connection.send(msg);
+            };
+
+            Object.assign(converse, {
+              acceptParticipantToJoin,
+              askParticipantToJoin,
+              kickParticipant,
+              rejectParticipantToJoin,
+              participantLeaves,
+            });
+          });
+        },
       });
       hasBeenInitialized = true;
     }
