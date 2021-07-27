@@ -11,6 +11,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { ErrorComponentsProps } from '../ErrorComponents';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { Loader } from '../Loader';
+import { PUBLIC_JITSI_ROUTE } from '../PublicVideoLiveJitsi/route';
 import { RedirectOnLoad } from '../RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
 import { PLAYER_ROUTE } from '../routes';
@@ -28,6 +29,7 @@ const DashboardDocument = lazy(() => import('../DashboardDocument'));
 const DashboardVideo = lazy(() => import('../DashboardVideo'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
+const PublicVideoLiveJitsi = lazy(() => import('../PublicVideoLiveJitsi'));
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -66,6 +68,17 @@ export const Routes = () => (
                   <DocumentPlayer document={appData.document} />
                 </InstructorWrapper>
               );
+            }
+
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+          }}
+        />
+        <Route
+          exact
+          path={PUBLIC_JITSI_ROUTE()}
+          render={() => {
+            if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
+              return <PublicVideoLiveJitsi video={appData.video} />;
             }
 
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;

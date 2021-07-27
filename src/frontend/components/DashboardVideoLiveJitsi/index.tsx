@@ -5,16 +5,25 @@ import { Video, liveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 
 interface DashboardVideoLiveJitsiProps {
+  setCanStartLive?: undefined;
+  setCanShowStartButton?: undefined;
+  video: Video;
+  isInstructor?: false;
+}
+
+interface DashboardVideoLiveJitsiInstructorProps {
   setCanStartLive: (canStartLive: boolean) => void;
   setCanShowStartButton: (canShowStartButton: boolean) => void;
   video: Video;
+  isInstructor: true;
 }
 
 const DashboardVideoLiveJitsi = ({
-  setCanStartLive,
-  setCanShowStartButton,
+  setCanStartLive = () => undefined,
+  setCanShowStartButton = () => undefined,
   video,
-}: DashboardVideoLiveJitsiProps) => {
+  isInstructor = false,
+}: DashboardVideoLiveJitsiProps | DashboardVideoLiveJitsiInstructorProps) => {
   const jitsiNode = useRef(null);
   const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
@@ -32,7 +41,7 @@ const DashboardVideoLiveJitsi = ({
     });
 
   const startRecording = (jitsiApi: JitsiMeetExternalAPI) => {
-    if (jitsiIsRecording.current) {
+    if (!isInstructor || jitsiIsRecording.current) {
       return;
     }
 
@@ -128,22 +137,24 @@ const DashboardVideoLiveJitsi = ({
       }
     });
 
-    _jitsi.addListener('participantRoleChanged', (event) => {
-      if (event.role === 'moderator') {
-        setCanStartLive(true);
-      } else {
+    if (isInstructor) {
+      _jitsi.addListener('participantRoleChanged', (event) => {
+        if (event.role === 'moderator') {
+          setCanStartLive(true);
+        } else {
+          setCanStartLive(false);
+        }
+      });
+
+      _jitsi.addListener('videoConferenceJoined', () => {
+        setCanShowStartButton(true);
+      });
+
+      _jitsi.addListener('videoConferenceLeft', () => {
         setCanStartLive(false);
-      }
-    });
-
-    _jitsi.addListener('videoConferenceJoined', () => {
-      setCanShowStartButton(true);
-    });
-
-    _jitsi.addListener('videoConferenceLeft', () => {
-      setCanStartLive(false);
-      setCanShowStartButton(false);
-    });
+        setCanShowStartButton(false);
+      });
+    }
 
     if (video.live_state === liveState.RUNNING) {
       startRecording(_jitsi);
@@ -153,13 +164,15 @@ const DashboardVideoLiveJitsi = ({
   };
 
   useEffect(() => {
-    const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-    endpoints.current = video.live_info.medialive!.input.endpoints.map(
-      (endpoint) => {
-        const matches = endpoint.match(endpointIdentifier)!;
-        return `${matches[1]}/marsha/${matches[2]}`;
-      },
-    ) as string[];
+    if (isInstructor) {
+      const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
+      endpoints.current = video.live_info.medialive!.input.endpoints.map(
+        (endpoint) => {
+          const matches = endpoint.match(endpointIdentifier)!;
+          return `${matches[1]}/marsha/${matches[2]}`;
+        },
+      ) as string[];
+    }
     initialiseJitsi();
 
     return () => jitsi?.dispose();

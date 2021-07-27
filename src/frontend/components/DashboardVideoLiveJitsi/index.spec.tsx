@@ -59,6 +59,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={video}
         setCanStartLive={jest.fn()}
         setCanShowStartButton={jest.fn()}
+        isInstructor={true}
       />,
     );
     const toolbarButtons = [
@@ -131,6 +132,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={{ ...video, live_state: liveState.RUNNING }}
         setCanStartLive={jest.fn()}
         setCanShowStartButton={jest.fn()}
+        isInstructor={true}
       />,
     );
 
@@ -149,6 +151,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={{ ...video, live_state: liveState.STOPPING }}
         setCanStartLive={jest.fn()}
         setCanShowStartButton={jest.fn()}
+        isInstructor={true}
       />,
     );
 
@@ -185,6 +188,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={video}
         setCanStartLive={jest.fn()}
         setCanShowStartButton={jest.fn()}
+        isInstructor={true}
       />,
     );
 
@@ -251,6 +255,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={video}
         setCanStartLive={mockCanStartLive}
         setCanShowStartButton={jest.fn()}
+        isInstructor={true}
       />,
     );
 
@@ -301,6 +306,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={video}
         setCanStartLive={mockCanStartLive}
         setCanShowStartButton={mockCanShowStartButton}
+        isInstructor={true}
       />,
     );
 
@@ -343,6 +349,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         video={video}
         setCanStartLive={jest.fn()}
         setCanShowStartButton={mockCanShowStartButton}
+        isInstructor={true}
       />,
     );
 
@@ -352,5 +359,32 @@ describe('<DashboardVideoLiveJitsi />', () => {
     dispatch('videoConferenceJoined', {});
 
     expect(mockCanShowStartButton).toHaveBeenLastCalledWith(true);
+  });
+
+  it('does not start recording when isInstructor is False', () => {
+    const video = videoMockFactory({
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(<DashboardVideoLiveJitsi video={video} isInstructor={false} />);
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any({}),
+    );
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
   });
 });

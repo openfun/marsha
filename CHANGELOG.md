@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Playlist portability management through LTI (resource sharing between courses)
 - Command to clean all development environments having a living stack on AWS medialive
   and mediapackage
+- Allow a participant to join a Jitsi conference
 
 ## [3.23.0] - 2021-08-23
 

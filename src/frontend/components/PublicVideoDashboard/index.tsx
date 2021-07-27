@@ -14,11 +14,13 @@ import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useVideo } from '../../data/stores/useVideo';
 import { modelName } from '../../types/models';
 import {
+  LiveModeType,
   liveState,
   timedTextMode,
   TimedTextTranscript,
   Video,
 } from '../../types/tracks';
+import { JoinDiscussionAskButton } from '../JoinDiscussionAskButton';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -38,17 +40,29 @@ const PublicVideoDashboard = ({
     switch (video.live_state) {
       case liveState.RUNNING:
         return (
-          <Box direction="row">
-            <Box basis={video.xmpp ? 'xlarge' : 'auto'}>
-              <VideoPlayer
-                video={video}
-                playerType={playerType}
-                timedTextTracks={[]}
-              />
+          <Box>
+            <Box direction="row">
+              <Box basis={video.xmpp ? 'xlarge' : 'auto'}>
+                <VideoPlayer
+                  video={video}
+                  playerType={playerType}
+                  timedTextTracks={[]}
+                />
+              </Box>
+              {video.xmpp && (
+                <Box>
+                  <Chat video={video} />
+                </Box>
+              )}
             </Box>
-            {video.xmpp && (
-              <Box>
-                <Chat video={video} />
+            {video.xmpp && video.live_type === LiveModeType.JITSI && (
+              <Box
+                direction="row"
+                margin="small"
+                alignContent="center"
+                justify="center"
+              >
+                <JoinDiscussionAskButton />
               </Box>
             )}
           </Box>
