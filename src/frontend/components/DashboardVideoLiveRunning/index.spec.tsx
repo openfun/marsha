@@ -74,31 +74,17 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
     screen.getByText('chat component');
   });
 
-  it('shows and hides the chat during a jitsi live.', () => {
+  it('shows chat directly during a jitsi live.', () => {
     const video = videoMockFactory({
       live_type: LiveModeType.JITSI,
     });
 
-    const { debug } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoLiveRunning video={video} />),
       ),
     );
 
-    const showChatButton = screen.getByRole('button', { name: /show chat/ });
-    expect(screen.queryByText('chat component')).not.toBeInTheDocument();
-
-    // show chat
-    fireEvent.click(showChatButton);
-
     screen.getByText('chat component');
-    screen.getByText('standalone: true');
-
-    const hideChatButton = screen.getByRole('button', { name: /hide chat/ });
-
-    // hide chat
-    fireEvent.click(hideChatButton);
-
-    expect(screen.queryByText('chat component')).not.toBeInTheDocument();
   });
 });
