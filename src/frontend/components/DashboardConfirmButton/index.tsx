@@ -1,17 +1,17 @@
+import { ButtonProps } from 'grommet';
 import React, { MouseEventHandler, useState } from 'react';
 import { ConfirmationLayer } from '../ConfirmationLayer';
 import { DashboardButton } from '../DashboardPaneButtons';
 
-interface DashboardConfirmButtonProps {
-  label: JSX.Element;
+interface DashboardConfirmButtonProps extends ButtonProps {
   confirmationLabel: JSX.Element;
   onConfirm: MouseEventHandler;
 }
 
 export const DashboardConfirmButton = ({
-  label,
   confirmationLabel,
   onConfirm,
+  ...buttonProps
 }: DashboardConfirmButtonProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -27,9 +27,9 @@ export const DashboardConfirmButton = ({
   return (
     <React.Fragment>
       <DashboardButton
-        label={label}
         primary={true}
         onClick={requireConfirmAction}
+        {...buttonProps}
       />
       {showConfirm && (
         <ConfirmationLayer
