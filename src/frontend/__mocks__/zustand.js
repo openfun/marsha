@@ -9,7 +9,16 @@ const storeResetFns = new Set();
 const create = (createState) => {
   const store = actualCreate(createState);
   const initialState = store.getState();
-  storeResetFns.add(() => store.setState(initialState, true));
+  storeResetFns.add(() => {
+    if (typeof initialState === 'object' && initialState !== null) {
+      Object.keys(initialState).forEach((key) => {
+        if (Array.isArray(initialState[key])) {
+          initialState[key] = [];
+        }
+      });
+    }
+    store.setState(initialState, true);
+  });
   return store;
 };
 
