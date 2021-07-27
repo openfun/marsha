@@ -112,7 +112,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         <DashboardVideoLiveRaw video={video} />
       )}
       {video.live_type === LiveModeType.JITSI && (
-        <DashboardVideoLiveJitsi video={video} />
+        <DashboardVideoLiveJitsi video={video} isInstructor={true} />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
         {video.live_state === liveState.CREATING && (

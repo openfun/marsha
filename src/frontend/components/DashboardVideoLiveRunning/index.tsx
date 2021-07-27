@@ -9,6 +9,7 @@ import { CHAT_ROUTE } from '../Chat/route';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
 import { LiveModeType, Video } from '../../types/tracks';
+import { DashboardJoinDiscussion } from '../DashboardJoinDiscussion';
 
 const messages = defineMessages({
   showLive: {
@@ -40,10 +41,6 @@ interface DashboardVideoLiveRunningProps {
 export const DashboardVideoLiveRunning = ({
   video,
 }: DashboardVideoLiveRunningProps) => {
-  const [displayChat, setDisplayChat] = useState(false);
-  const displayChatMessage = displayChat
-    ? messages.hideChat
-    : messages.showChat;
   return (
     <Box direction="column" fill={true}>
       <Box direction="row">
@@ -61,15 +58,14 @@ export const DashboardVideoLiveRunning = ({
             />
           </React.Fragment>
         )}
-        {video.live_type === LiveModeType.JITSI && (
-          <DashboardButton
-            label={<FormattedMessage {...displayChatMessage} />}
-            onClick={() => setDisplayChat(!displayChat)}
-          />
-        )}
         <DashboardVideoLiveStopButton video={video} />
       </Box>
-      {displayChat && <Chat video={video} standalone={true} />}
+      {video.live_type === LiveModeType.JITSI && (
+        <React.Fragment>
+          <DashboardJoinDiscussion />
+          <Chat video={video} standalone={true} />
+        </React.Fragment>
+      )}
     </Box>
   );
 };

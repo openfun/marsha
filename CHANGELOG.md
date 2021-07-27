@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add a confirmation before starting or stopping a live
 - Use a tabbed navigation on LTI resource views
+- Alow a participant to join a Jitsi conference
 
 ## [3.21.0] - 2021-07-05
 

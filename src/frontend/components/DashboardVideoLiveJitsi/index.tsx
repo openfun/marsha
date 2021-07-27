@@ -6,9 +6,13 @@ import { report } from '../../utils/errors/report';
 
 interface DashboardVideoLiveJitsiProps {
   video: Video;
+  isInstructor?: boolean;
 }
 
-const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
+const DashboardVideoLiveJitsi = ({
+  video,
+  isInstructor = false,
+}: DashboardVideoLiveJitsiProps) => {
   const jitsiNode = useRef(null);
   const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
@@ -26,7 +30,7 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
     });
 
   const startRecording = (jitsiApi: JitsiMeetExternalAPI) => {
-    if (jitsiIsRecording.current) {
+    if (!isInstructor || jitsiIsRecording.current) {
       return;
     }
 
@@ -130,13 +134,15 @@ const DashboardVideoLiveJitsi = ({ video }: DashboardVideoLiveJitsiProps) => {
   };
 
   useEffect(() => {
-    const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-    endpoints.current = video.live_info.medialive!.input.endpoints.map(
-      (endpoint) => {
-        const matches = endpoint.match(endpointIdentifier)!;
-        return `${matches[1]}/marsha/${matches[2]}`;
-      },
-    ) as string[];
+    if (isInstructor) {
+      const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
+      endpoints.current = video.live_info.medialive!.input.endpoints.map(
+        (endpoint) => {
+          const matches = endpoint.match(endpointIdentifier)!;
+          return `${matches[1]}/marsha/${matches[2]}`;
+        },
+      ) as string[];
+    }
     initialiseJitsi();
 
     return () => jitsi?.dispose();

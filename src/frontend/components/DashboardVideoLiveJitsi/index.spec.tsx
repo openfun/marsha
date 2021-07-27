@@ -54,7 +54,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    const { rerender } = render(<DashboardVideoLiveJitsi video={video} />);
+    const { rerender } = render(
+      <DashboardVideoLiveJitsi video={video} isInstructor={true} />,
+    );
     const toolbarButtons = [
       'microphone',
       'camera',
@@ -120,6 +122,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     rerender(
       <DashboardVideoLiveJitsi
         video={{ ...video, live_state: liveState.RUNNING }}
+        isInstructor={true}
       />,
     );
 
@@ -136,6 +139,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     rerender(
       <DashboardVideoLiveJitsi
         video={{ ...video, live_state: liveState.STOPPING }}
+        isInstructor={true}
       />,
     );
 
@@ -167,7 +171,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    render(<DashboardVideoLiveJitsi video={video} />);
+    render(<DashboardVideoLiveJitsi video={video} isInstructor={true} />);
 
     expect(events.recordingStatusChanged).toBeDefined();
 
@@ -197,6 +201,33 @@ describe('<DashboardVideoLiveJitsi />', () => {
       mode: 'stream',
       rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
     });
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+  });
+
+  it('does not start recording when isInstructor is False', () => {
+    const video = videoMockFactory({
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(<DashboardVideoLiveJitsi video={video} isInstructor={false} />);
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any({}),
+    );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',
       expect.any(String),
