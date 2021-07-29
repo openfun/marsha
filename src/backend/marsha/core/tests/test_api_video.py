@@ -14,6 +14,7 @@ from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
     CREATING,
+    DELETED,
     HARVESTING,
     IDLE,
     LIVE_CHOICES,
@@ -25,6 +26,7 @@ from ..defaults import (
     STOPPING,
 )
 from ..utils.api_utils import generate_hash
+from ..utils.medialive_utils import ManifestMissingException
 
 
 RSA_KEY_MOCK = b"""
@@ -3205,6 +3207,53 @@ class VideoAPITest(TestCase):
                 "stopped_at": "1533686400",
             },
         )
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def test_api_video_update_live_state_stopped_missing_manifest(self):
+        """Updating state to stopped should set video to DELETED if manifest is missing."""
+        video = factories.VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            upload_state=PENDING,
+            live_state=STOPPING,
+            live_info={"mediapackage": {"channel": {"id": "channel1"}}},
+            live_type=RAW,
+        )
+        data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "state": "stopped",
+        }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
+
+        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.core.api.delete_aws_element_stack"
+        ) as delete_aws_element_stack_mock, mock.patch(
+            "marsha.core.api.create_mediapackage_harvest_job"
+        ) as create_mediapackage_harvest_job_mock, mock.patch(
+            "marsha.core.api.delete_mediapackage_channel"
+        ) as delete_mediapackage_channel_mock, mock.patch.object(
+            api, "close_room"
+        ) as mock_close_room:
+            create_mediapackage_harvest_job_mock.side_effect = ManifestMissingException
+            response = self.client.patch(
+                "/api/videos/{!s}/update-live-state/".format(video.id),
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            delete_aws_element_stack_mock.assert_called_once()
+            create_mediapackage_harvest_job_mock.assert_called_once()
+            delete_mediapackage_channel_mock.assert_called_once()
+            mock_close_room.assert_called_once_with(video.id)
+
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        self.assertEqual(video.live_state, None)
+        self.assertEqual(video.upload_state, DELETED)
+        self.assertEqual(video.live_info, None)
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_idle(self):
