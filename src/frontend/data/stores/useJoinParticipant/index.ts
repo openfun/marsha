@@ -7,7 +7,7 @@ type State = {
   addParticipantAskingToJoin: (particpant: Participant) => void;
   addParticipantToDiscussion: (participant: Participant) => void;
   removeParticipantAskingToJoin: (participant: Participant) => void;
-  removeParticipantInDiscussion: (participant: Participant) => void;
+  removeParticipantFromDiscussion: (participant: Participant) => void;
   moveParticipantToDiscussion: (participant: Participant) => void;
 };
 
@@ -37,7 +37,7 @@ export const useJoinParticipant = create<State>((set, get) => ({
       ),
     });
   },
-  removeParticipantInDiscussion: (participantToRemove: Participant) => {
+  removeParticipantFromDiscussion: (participantToRemove: Participant) => {
     const participantsInDiscussion = get().participantsInDiscussion;
     set({
       participantsInDiscussion: participantsInDiscussion.filter(

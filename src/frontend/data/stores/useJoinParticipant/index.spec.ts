@@ -34,7 +34,7 @@ describe('useJoinParticipant', () => {
     );
   });
 
-  it('executes addParticipantToDiscussion/removeParticipantInDiscussion', () => {
+  it('executes addParticipantToDiscussion/removeParticipantFromDiscussion', () => {
     expect(useJoinParticipant.getState()).toEqual(
       expect.objectContaining({
         participantsAskingToJoin: [],
@@ -56,7 +56,7 @@ describe('useJoinParticipant', () => {
       }),
     );
 
-    useJoinParticipant.getState().removeParticipantInDiscussion(participant);
+    useJoinParticipant.getState().removeParticipantFromDiscussion(participant);
 
     expect(useJoinParticipant.getState()).toEqual(
       expect.objectContaining({

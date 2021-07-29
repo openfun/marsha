@@ -2,7 +2,6 @@ import { Button } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
 import { Participant } from '../../types/Participant';
 import { converse } from '../../utils/window';
 
@@ -21,10 +20,6 @@ interface DashboardJoinDiscussionRejectButtonProps {
 export const DashboardJoinDiscussionRejectButton = ({
   participant,
 }: DashboardJoinDiscussionRejectButtonProps) => {
-  const removeParticipantAskingToJoin = useJoinParticipant(
-    (state) => state.removeParticipantAskingToJoin,
-  );
-
   const onClick = () => {
     converse.rejectParticipantToJoin(participant);
   };

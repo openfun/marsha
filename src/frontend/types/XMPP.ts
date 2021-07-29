@@ -1,23 +1,26 @@
-import { Nullable } from '../utils/types'
+import { Nullable } from '../utils/types';
 
 /* XMPP representation */
 export interface XMPP {
   bosh_url: Nullable<string>;
-  websocket_url: Nullable<string>;
   conference_url: string;
-  prebind_url: string;
   jid: string;
+  prebind_url: string;
+  websocket_url: Nullable<string>;
 }
 
 export enum MessageType {
-  GROUPCHAT = 'groupchat',
   EVENT = 'event',
+  GROUPCHAT = 'groupchat',
 }
 
 export enum EventType {
   ACCEPT = 'accept',
-  REJECT = 'reject',
+  ACCEPTED = 'accepted',
   KICK = 'kick',
+  KICKED = 'kicked',
   LEAVE = 'leave',
-  PARTICIPANTASKTOMOUNT = 'participantAskToMount',
+  PARTICIPANT_ASK_TO_JOIN = 'participantAskToJoin',
+  REJECT = 'reject',
+  REJECTED = 'rejected',
 }

@@ -38,6 +38,10 @@ describe('<DashboardJoinDiscussion />', () => {
 
     // reject the request
     fireEvent.click(rejectJohnDoe);
+    act(() => {
+      // remove participant 1 from the waiting list
+      useJoinParticipant.getState().removeParticipantAskingToJoin(participant1);
+    });
 
     // nobody is in the waiting list
     expect(screen.queryByTestId('ask-participant1')).not.toBeInTheDocument();
@@ -61,6 +65,10 @@ describe('<DashboardJoinDiscussion />', () => {
 
     // accept the participant 2
     fireEvent.click(acceptParticipant2);
+    act(() => {
+      // add participant 2 to the waiting list
+      useJoinParticipant.getState().moveParticipantToDiscussion(participant2);
+    });
 
     // participant 2 is in the discussion
     const inParticipant2 = screen.getByTestId('in-participant2');
@@ -71,6 +79,12 @@ describe('<DashboardJoinDiscussion />', () => {
 
     // kick off participant 2
     fireEvent.click(kickButton);
+    act(() => {
+      // remove participant 2 from the waiting list
+      useJoinParticipant
+        .getState()
+        .removeParticipantFromDiscussion(participant2);
+    });
 
     // nobody in the waiting list nor in the discussion
     expect(screen.queryByTestId('ask-participant1')).not.toBeInTheDocument();
