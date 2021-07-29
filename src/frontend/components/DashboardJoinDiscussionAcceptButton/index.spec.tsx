@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import * as mockWindow from '../../utils/window';
 import { DashboardJoinDiscussionAcceptButton } from '.';
@@ -33,9 +32,6 @@ describe('<DashboardJoinDiscussionAcceptButton />', () => {
     fireEvent.click(acceptButton);
 
     expect(mockWindow.converse.acceptParticipantToJoin).toHaveBeenCalledWith(
-      participant,
-    );
-    expect(useJoinParticipant.getState().participantsInDiscussion).toContain(
       participant,
     );
   });

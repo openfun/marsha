@@ -67,15 +67,27 @@ export const converseMounter = () => {
             _converse.connection.addHandler(
               (message: any) => {
                 if (
+                  getDecodedJwt().permissions.can_update &&
                   message.getAttribute('type') === MessageType.GROUPCHAT &&
                   message.getAttribute('event') ===
-                    EventType.PARTICIPANTASKTOMOUNT
+                    EventType.PARTICIPANT_ASK_TO_JOIN
                 ) {
                   const jid = message.getAttribute('from');
                   const username = converse.env.Strophe.getResourceFromJid(jid);
                   useJoinParticipant
                     .getState()
                     .addParticipantAskingToJoin({ id: jid, name: username });
+                } else if (
+                  getDecodedJwt().permissions.can_update &&
+                  message.getAttribute('type') === MessageType.GROUPCHAT &&
+                  message.getAttribute('event') === EventType.ACCEPTED
+                ) {
+                  const participant = JSON.parse(
+                    message.getAttribute('participant'),
+                  );
+                  useJoinParticipant
+                    .getState()
+                    .moveParticipantToDiscussion(participant);
                 } else if (
                   message.getAttribute('type') === MessageType.EVENT &&
                   message.getAttribute('event') === EventType.ACCEPT
@@ -87,11 +99,34 @@ export const converseMounter = () => {
                 ) {
                   useParticipantWorkflow.getState().setRejected();
                 } else if (
+                  getDecodedJwt().permissions.can_update &&
+                  message.getAttribute('type') === MessageType.GROUPCHAT &&
+                  message.getAttribute('event') === EventType.REJECTED
+                ) {
+                  const participant = JSON.parse(
+                    message.getAttribute('participant'),
+                  );
+                  useJoinParticipant
+                    .getState()
+                    .removeParticipantAskingToJoin(participant);
+                } else if (
                   message.getAttribute('type') === MessageType.EVENT &&
                   message.getAttribute('event') === EventType.KICK
                 ) {
                   useParticipantWorkflow.getState().setKicked();
                 } else if (
+                  getDecodedJwt().permissions.can_update &&
+                  message.getAttribute('type') === MessageType.GROUPCHAT &&
+                  message.getAttribute('event') === EventType.KICKED
+                ) {
+                  const participant = JSON.parse(
+                    message.getAttribute('participant'),
+                  );
+                  useJoinParticipant
+                    .getState()
+                    .removeParticipantFromDiscussion(participant);
+                } else if (
+                  getDecodedJwt().permissions.can_update &&
                   message.getAttribute('type') === MessageType.GROUPCHAT &&
                   message.getAttribute('event') === EventType.LEAVE
                 ) {
@@ -99,7 +134,10 @@ export const converseMounter = () => {
                   const username = converse.env.Strophe.getResourceFromJid(jid);
                   useJoinParticipant
                     .getState()
-                    .removeParticipantInDiscussion({ id: jid, name: username });
+                    .removeParticipantFromDiscussion({
+                      id: jid,
+                      name: username,
+                    });
                 }
                 return true;
               },
@@ -115,7 +153,7 @@ export const converseMounter = () => {
                 from: _converse.connection.jid,
                 to: xmpp.conference_url,
                 type: MessageType.GROUPCHAT,
-                event: EventType.PARTICIPANTASKTOMOUNT,
+                event: EventType.PARTICIPANT_ASK_TO_JOIN,
               });
               _converse.connection.send(msg);
             };
@@ -129,6 +167,7 @@ export const converseMounter = () => {
                 return;
               }
 
+              // send messge to use to accept joining the discussion
               const msg = converse.env.$msg({
                 from: _converse.connection.jid,
                 to: participant.id,
@@ -136,6 +175,16 @@ export const converseMounter = () => {
                 event: EventType.ACCEPT,
               });
               _converse.connection.send(msg);
+
+              // broadcast message to other instructors to sync participant states
+              const acceptedMsg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: xmpp.conference_url,
+                type: MessageType.GROUPCHAT,
+                event: EventType.ACCEPTED,
+                participant: JSON.stringify(participant),
+              });
+              _converse.connection.send(acceptedMsg);
             };
 
             const rejectParticipantToJoin = (participant: Participant) => {
@@ -150,6 +199,15 @@ export const converseMounter = () => {
                 event: EventType.REJECT,
               });
               _converse.connection.send(msg);
+
+              const rejectedMsg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: xmpp.conference_url,
+                type: MessageType.GROUPCHAT,
+                event: EventType.REJECTED,
+                participant: JSON.stringify(participant),
+              });
+              _converse.connection.send(rejectedMsg);
             };
 
             const kickParticipant = (participant: Participant) => {
@@ -164,6 +222,15 @@ export const converseMounter = () => {
                 event: EventType.KICK,
               });
               _converse.connection.send(msg);
+
+              const kickedMsg = converse.env.$msg({
+                from: _converse.connection.jid,
+                to: xmpp.conference_url,
+                type: MessageType.GROUPCHAT,
+                event: EventType.KICKED,
+                participant: JSON.stringify(participant),
+              });
+              _converse.connection.send(kickedMsg);
             };
 
             const participantLeaves = () => {

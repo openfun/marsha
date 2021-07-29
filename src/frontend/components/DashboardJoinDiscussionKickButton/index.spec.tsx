@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import * as mockWindow from '../../utils/window';
 import { DashboardJoinDiscussionKickButton } from '.';
@@ -21,8 +20,6 @@ describe('<DashboardJoinDiscussionKickButton />', () => {
       id: 'participant1',
       name: 'John Doe',
     };
-    // add participant in discussion
-    useJoinParticipant.getState().addParticipantToDiscussion(participant);
 
     render(
       wrapInIntlProvider(
@@ -36,9 +33,6 @@ describe('<DashboardJoinDiscussionKickButton />', () => {
 
     fireEvent.click(kickButton);
 
-    expect(
-      useJoinParticipant.getState().participantsInDiscussion,
-    ).not.toContain(participant);
     expect(mockWindow.converse.kickParticipant).toHaveBeenCalledWith(
       participant,
     );

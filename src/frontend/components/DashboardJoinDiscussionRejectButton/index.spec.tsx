@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import * as mockWindow from '../../utils/window';
 import { DashboardJoinDiscussionRejectButton } from '.';
@@ -21,8 +20,6 @@ describe('<DashboardJoinDiscussionRejectButton />', () => {
       id: 'participant1',
       name: 'John Doe',
     };
-    // add participant in discussion
-    useJoinParticipant.getState().addParticipantAskingToJoin(participant);
 
     render(
       wrapInIntlProvider(
