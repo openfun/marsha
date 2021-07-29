@@ -23,9 +23,11 @@ from .lti import LTIUser
 from .models import Document, Organization, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
+    ManifestMissingException,
     create_live_stream,
     create_mediapackage_harvest_job,
     delete_aws_element_stack,
+    delete_mediapackage_channel,
     start_live_channel,
     stop_live_channel,
 )
@@ -587,10 +589,19 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             live_info.update({"stopped_at": stamp})
             video.upload_state = defaults.HARVESTING
             video.live_info = live_info
-            create_mediapackage_harvest_job(video)
             delete_aws_element_stack(video)
             if settings.LIVE_CHAT_ENABLED:
                 close_room(video.id)
+            try:
+                create_mediapackage_harvest_job(video)
+            except ManifestMissingException:
+                delete_mediapackage_channel(
+                    video.live_info.get("mediapackage").get("channel").get("id")
+                )
+                video.upload_state = defaults.DELETED
+                video.live_state = None
+                video.live_info = None
+                video.live_type = None
 
         video.save()
 

@@ -5,6 +5,13 @@ import os
 from django.conf import settings
 
 import boto3
+import requests
+
+
+class ManifestMissingException(Exception):
+    """Exception used when a mediapackage manifest is missing."""
+
+    pass
 
 
 aws_credentials = {
@@ -283,6 +290,12 @@ def stop_live_channel(channel_id):
 
 def create_mediapackage_harvest_job(video):
     """Create a mediapackage harvest job."""
+    request = requests.get(
+        video.live_info.get("mediapackage").get("endpoints").get("hls").get("url")
+    )
+    if request.status_code == 404:
+        raise ManifestMissingException
+
     hls_endpoint = (
         video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
     )
