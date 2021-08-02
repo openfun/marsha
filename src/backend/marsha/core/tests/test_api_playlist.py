@@ -674,7 +674,7 @@ class PlaylistAPITest(TestCase):
         video = factories.VideoFactory()
         other_playlist = factories.PlaylistFactory()
 
-        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -693,19 +693,15 @@ class PlaylistAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        # video.playlist.refresh_from_db()
-        video_playlist = video.playlist
-        # video_playlist.refresh_from_db()
-        assert video_playlist.portable_to.count() == 1
-        assert video_playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [other_playlist])
 
-    def test_delete_playlist_portability_through_video_token_instructor(self):
+    def test_remove_playlist_portability_through_video_token_instructor(self):
         """Playlist instructors or admins should be able to update playlists."""
         video = factories.VideoFactory()
         other_playlist = factories.PlaylistFactory()
         video.playlist.portable_to.add(other_playlist)
 
-        assert video.playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [other_playlist])
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -724,18 +720,14 @@ class PlaylistAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        # video.playlist.refresh_from_db()
-        video_playlist = video.playlist
-        # video_playlist.refresh_from_db()
-        assert video_playlist.portable_to.count() == 0
-        assert not video_playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
 
     def test_update_playlist_portability_through_video_token_instructor(self):
         """Playlist instructors or admins should be able to update playlists."""
         video = factories.VideoFactory()
         other_playlist = factories.PlaylistFactory()
 
-        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -757,17 +749,15 @@ class PlaylistAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        video_playlist = video.playlist
-        assert video_playlist.portable_to.count() == 1
-        assert video_playlist.portable_to.filter(id=other_playlist.id)
-        assert other_playlist.reachable_from.filter(id=video_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [other_playlist])
+        self.assertQuerysetEqual(other_playlist.reachable_from.all(), [video.playlist])
 
     def test_add_playlist_portability_through_video_token_instructor_self_id(self):
         """Adding self id as playlist portability should be filtered."""
         video = factories.VideoFactory()
         other_playlist = factories.PlaylistFactory()
 
-        assert not video.playlist.portable_to.filter(id=other_playlist.id)
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -786,5 +776,4 @@ class PlaylistAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        video_playlist = video.playlist
-        assert video_playlist.portable_to.count() == 0
+        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])

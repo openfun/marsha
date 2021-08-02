@@ -30,7 +30,9 @@ export const usePlaylist = (
   return useQuery<Playlist, 'playlists'>(key, fetchOne, queryConfig);
 };
 
-type UseUpdatePlaylistData = Partial<Playlist>;
+type UseUpdatePlaylistData = Partial<
+  Omit<Playlist, 'portable_to'> & { portable_to: string[] }
+>;
 type UseUpdatePlaylistError =
   | { code: 'exception' }
   | {

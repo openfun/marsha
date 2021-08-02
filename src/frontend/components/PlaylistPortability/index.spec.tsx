@@ -129,8 +129,8 @@ describe('<PlaylistPortability />', () => {
       },
       method: 'PATCH',
       body: JSON.stringify({
-        portable_to: currentPlaylist.portable_to
-          .concat(otherPlaylist)
+        portable_to: currentPlaylist
+          .portable_to!.concat(otherPlaylist)
           .map((playlist) => playlist.id),
       }),
     });
@@ -182,7 +182,7 @@ describe('<PlaylistPortability />', () => {
     );
     await act(async () => currentPlaylistDeferred.resolve(currentPlaylist));
 
-    currentPlaylist.portable_to.map((playlist) => {
+    currentPlaylist.portable_to!.map((playlist) => {
       screen.getByRole('listitem', {
         name: `Shared with ${playlist.title}`,
       });

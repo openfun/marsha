@@ -58,12 +58,9 @@ describe('<Dashboard />', () => {
       render(
         wrapInIntlProvider(
           wrapInRouter(
-            <QueryClientProvider client={queryClient}>
-              <Suspense fallback={<Loader />}>
-                <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
-              </Suspense>
-              ,
-            </QueryClientProvider>,
+            <Suspense fallback={<Loader />}>
+              <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+            </Suspense>,
           ),
         ),
       );
@@ -82,15 +79,12 @@ describe('<Dashboard />', () => {
       render(
         wrapInIntlProvider(
           wrapInRouter(
-            <QueryClientProvider client={queryClient}>
-              <Suspense fallback={<Loader />}>
-                <Dashboard
-                  document={mockDocument}
-                  objectType={modelName.DOCUMENTS}
-                />
-              </Suspense>
-              ,
-            </QueryClientProvider>,
+            <Suspense fallback={<Loader />}>
+              <Dashboard
+                document={mockDocument}
+                objectType={modelName.DOCUMENTS}
+              />
+            </Suspense>,
           ),
         ),
       );

@@ -1,11 +1,10 @@
-import { MessageDescriptor } from '@formatjs/intl';
+import ClipboardJS from 'clipboard';
 import {
   Box,
   Button,
   Card,
   CardBody,
   Grid,
-  Heading,
   Image,
   Tab,
   Tabs,
@@ -14,15 +13,15 @@ import {
 } from 'grommet';
 import { Copy, DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
 import { Icon } from 'grommet-icons/icons';
+import { MessageDescriptor } from '@formatjs/intl';
 import React, { useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
 import { Playlist, Video, videoSize } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
-import ClipboardJS from 'clipboard';
-import { toast } from 'react-hot-toast';
 
 const messages = defineMessages({
   playlistTitle: {

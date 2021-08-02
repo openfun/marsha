@@ -503,8 +503,6 @@ class LTISelectView(TemplateResponseMixin, View):
             context={"request": self.request},
         ).data
 
-        playlist = PlaylistLiteSerializer(playlist).data
-
         new_uuid = str(uuid.uuid4())
         app_data = _get_base_app_data()
 
@@ -533,7 +531,7 @@ class LTISelectView(TemplateResponseMixin, View):
                 "new_video_url": new_video_url,
                 "documents": documents,
                 "videos": videos,
-                "playlist": playlist,
+                "playlist": PlaylistLiteSerializer(playlist).data,
             }
         )
         return app_data

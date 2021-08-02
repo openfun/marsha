@@ -1,3 +1,4 @@
+import ClipboardJS from 'clipboard';
 import {
   Box,
   Button,
@@ -9,17 +10,16 @@ import {
   TextInput,
 } from 'grommet';
 import { AddCircle, Copy, Trash } from 'grommet-icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { toast } from 'react-hot-toast';
 
-import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
+import { DashboardContainer } from '../Dashboard';
+import { Document } from '../../types/file';
 import { ErrorMessage } from '../ErrorComponents';
 import { LTINav } from '../LTINav';
 import { Video } from '../../types/tracks';
-import { Document } from '../../types/file';
-import { DashboardContainer } from '../Dashboard';
-import ClipboardJS from 'clipboard';
-import { toast } from 'react-hot-toast';
+import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
 
 const messages = defineMessages({
   loadingPlaylist: {
@@ -88,11 +88,11 @@ interface PlaylistPortabilityProps {
 
 export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
   const intl = useIntl();
-  const [newPortabilityID, setNewPortabilityID] = React.useState('');
+  const [newPortabilityID, setNewPortabilityID] = useState('');
 
-  const { data, status } = usePlaylist(object.playlist.id);
-  const playlist = data;
-  const usePlaylistStatus = status;
+  const { data: playlist, status: usePlaylistStatus } = usePlaylist(
+    object.playlist.id,
+  );
 
   useEffect(() => {
     const clipboard = new ClipboardJS('.copy');
@@ -132,29 +132,29 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
       break;
 
     case 'success':
-      function addPlaylistPortability() {
+      const addPlaylistPortability = () => {
         mutation.mutate({
-          portable_to: playlist?.portable_to
-            .map((portedToPlaylist) => {
+          portable_to: playlist
+            ?.portable_to!.map((portedToPlaylist) => {
               return portedToPlaylist.id;
             })
             .concat(newPortabilityID),
         });
         setNewPortabilityID('');
-      }
+      };
 
-      function removePlaylistPortability(oldPortabilityID: string) {
+      const removePlaylistPortability = (oldPortabilityID: string) => {
         mutation.mutate({
-          portable_to: playlist?.portable_to
-            .filter(
+          portable_to: playlist
+            ?.portable_to!.filter(
               (portedToPlaylist) => portedToPlaylist.id !== oldPortabilityID,
             )
             .map((portedToPlaylist) => portedToPlaylist.id),
         });
-      }
+      };
 
       let portabilityList: JSX.Element = <React.Fragment />;
-      if (playlist!.portable_to.length > 0) {
+      if (playlist!.portable_to!.length > 0) {
         portabilityList = (
           <Box>
             <Text>
@@ -165,15 +165,14 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
               pad={{ left: 'small', right: 'none' }}
               action={(item, index) => (
                 <Button
-                  aria-label={intl.formatMessage(
-                    messages.removePortability,
-                    item,
-                  )}
+                  aria-label={intl.formatMessage(messages.removePortability, {
+                    title: item.title,
+                  })}
                   key={index}
                   plain
                   icon={<Trash />}
                   onClick={() => {
-                    removePlaylistPortability(item.id);
+                    removePlaylistPortability(item.id!);
                   }}
                 />
               )}
