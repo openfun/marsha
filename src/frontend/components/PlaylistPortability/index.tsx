@@ -13,13 +13,13 @@ import { AddCircle, Copy, Trash } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
+import { UseMutationResult } from 'react-query';
 
-import { DashboardContainer } from '../Dashboard';
-import { Document } from '../../types/file';
+import { Dashboard } from '../Dashboard';
 import { ErrorMessage } from '../ErrorComponents';
-import { LTINav } from '../LTINav';
-import { Video } from '../../types/tracks';
+import { Document } from '../../types/file';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
+import { Playlist, Video } from '../../types/tracks';
 
 const messages = defineMessages({
   loadingPlaylist: {
@@ -82,6 +82,63 @@ const messages = defineMessages({
   },
 });
 
+interface PlaylistPortabilityListProps {
+  playlist: Playlist;
+  removePlaylistPortability: (oldPortabilityID: string) => void;
+}
+
+export const PlaylistPortabilityList = ({
+  playlist,
+  removePlaylistPortability,
+}: PlaylistPortabilityListProps) => {
+  const intl = useIntl();
+  if (playlist!.portable_to!.length > 0) {
+    return (
+      <Box>
+        <Text>
+          <FormattedMessage {...messages.sharedListTitle} />
+        </Text>
+        <List
+          data={playlist?.portable_to}
+          pad={{ left: 'small', right: 'none' }}
+          action={(item, index) => (
+            <Button
+              aria-label={intl.formatMessage(messages.removePortability, {
+                title: item.title,
+              })}
+              key={index}
+              plain
+              icon={<Trash />}
+              onClick={() => {
+                removePlaylistPortability(item.id!);
+              }}
+            />
+          )}
+        >
+          {(reachableFromPlaylist: { title: string; id: string }) => (
+            <Box
+              role="listitem"
+              a11yTitle={intl.formatMessage(
+                messages.hasPortabilityWith,
+                reachableFromPlaylist,
+              )}
+              direction="row-responsive"
+              gap="medium"
+              align="center"
+            >
+              <Text weight="bold">{reachableFromPlaylist.title}</Text>
+              <Text size="small" color="dark-4">
+                {reachableFromPlaylist.id}
+              </Text>
+            </Box>
+          )}
+        </List>
+      </Box>
+    );
+  }
+  return <React.Fragment />;
+};
+
 interface PlaylistPortabilityProps {
   object: Video | Document;
 }
@@ -116,6 +173,27 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
     },
   });
 
+  const addPlaylistPortability = () => {
+    mutation.mutate({
+      portable_to: playlist
+        ?.portable_to!.map((portedToPlaylist) => {
+          return portedToPlaylist.id;
+        })
+        .concat(newPortabilityID),
+    });
+    setNewPortabilityID('');
+  };
+
+  const removePlaylistPortability = (oldPortabilityID: string) => {
+    mutation.mutate({
+      portable_to: playlist
+        ?.portable_to!.filter(
+          (portedToPlaylist) => portedToPlaylist.id !== oldPortabilityID,
+        )
+        .map((portedToPlaylist) => portedToPlaylist.id),
+    });
+  };
+
   let content: JSX.Element;
   switch (usePlaylistStatus) {
     case 'idle':
@@ -132,72 +210,12 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
       break;
 
     case 'success':
-      const addPlaylistPortability = () => {
-        mutation.mutate({
-          portable_to: playlist
-            ?.portable_to!.map((portedToPlaylist) => {
-              return portedToPlaylist.id;
-            })
-            .concat(newPortabilityID),
-        });
-        setNewPortabilityID('');
-      };
-
-      const removePlaylistPortability = (oldPortabilityID: string) => {
-        mutation.mutate({
-          portable_to: playlist
-            ?.portable_to!.filter(
-              (portedToPlaylist) => portedToPlaylist.id !== oldPortabilityID,
-            )
-            .map((portedToPlaylist) => portedToPlaylist.id),
-        });
-      };
-
-      let portabilityList: JSX.Element = <React.Fragment />;
-      if (playlist!.portable_to!.length > 0) {
-        portabilityList = (
-          <Box>
-            <Text>
-              <FormattedMessage {...messages.sharedListTitle} />
-            </Text>
-            <List
-              data={playlist?.portable_to}
-              pad={{ left: 'small', right: 'none' }}
-              action={(item, index) => (
-                <Button
-                  aria-label={intl.formatMessage(messages.removePortability, {
-                    title: item.title,
-                  })}
-                  key={index}
-                  plain
-                  icon={<Trash />}
-                  onClick={() => {
-                    removePlaylistPortability(item.id!);
-                  }}
-                />
-              )}
-            >
-              {(reachableFromPlaylist: { title: string; id: string }) => (
-                <Box
-                  role="listitem"
-                  a11yTitle={intl.formatMessage(
-                    messages.hasPortabilityWith,
-                    reachableFromPlaylist,
-                  )}
-                  direction="row-responsive"
-                  gap="medium"
-                  align="center"
-                >
-                  <Text weight="bold">{reachableFromPlaylist.title}</Text>
-                  <Text size="small" color="dark-4">
-                    {reachableFromPlaylist.id}
-                  </Text>
-                </Box>
-              )}
-            </List>
-          </Box>
-        );
-      }
+      const portabilityList = (
+        <PlaylistPortabilityList
+          playlist={playlist!}
+          removePlaylistPortability={removePlaylistPortability}
+        />
+      );
 
       content = (
         <React.Fragment>
@@ -264,11 +282,10 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
   }
 
   return (
-    <DashboardContainer>
-      <LTINav object={object} />
+    <Dashboard object={object}>
       <Box align="center" pad={{ top: 'small' }}>
         {content}
       </Box>
-    </DashboardContainer>
+    </Dashboard>
   );
 };

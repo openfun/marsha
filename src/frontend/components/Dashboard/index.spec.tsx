@@ -59,7 +59,7 @@ describe('<Dashboard />', () => {
         wrapInIntlProvider(
           wrapInRouter(
             <Suspense fallback={<Loader />}>
-              <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+              <Dashboard object={mockVideo} objectType={modelName.VIDEOS} />
             </Suspense>,
           ),
         ),
@@ -81,7 +81,7 @@ describe('<Dashboard />', () => {
           wrapInRouter(
             <Suspense fallback={<Loader />}>
               <Dashboard
-                document={mockDocument}
+                object={mockDocument}
                 objectType={modelName.DOCUMENTS}
               />
             </Suspense>,

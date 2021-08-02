@@ -125,7 +125,7 @@ export const Routes = () => (
             if (appData.modelName === modelName.DOCUMENTS) {
               return (
                 <Dashboard
-                  document={appData.document!}
+                  object={appData.document!}
                   objectType={modelName.DOCUMENTS}
                 />
               );
@@ -134,7 +134,7 @@ export const Routes = () => (
             if (appData.modelName === modelName.VIDEOS) {
               return (
                 <Dashboard
-                  video={appData.video!}
+                  object={appData.video!}
                   objectType={modelName.VIDEOS}
                 />
               );
