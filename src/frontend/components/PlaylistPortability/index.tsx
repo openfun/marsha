@@ -220,13 +220,6 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
       break;
 
     case 'success':
-      const portabilityList = (
-        <PlaylistPortabilityList
-          playlist={playlist!}
-          removePlaylistPortability={removePlaylistPortability}
-        />
-      );
-
       content = (
         <React.Fragment>
           <Box align="center" direction="row" pad={{ top: 'small' }}>
@@ -247,7 +240,10 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
           </Box>
 
           <Box width="large">
-            {portabilityList}
+            <PlaylistPortabilityList
+              playlist={playlist!}
+              removePlaylistPortability={removePlaylistPortability}
+            />
             <Box>
               <Form onSubmit={addPlaylistPortability}>
                 <FormField
