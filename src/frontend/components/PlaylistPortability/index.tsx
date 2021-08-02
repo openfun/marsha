@@ -64,6 +64,11 @@ const messages = defineMessages({
     description: 'Message when playlist update failed.',
     id: 'component.PlaylistPortability.updatePlaylistFail',
   },
+  addPortability: {
+    defaultMessage: 'add share',
+    description: 'Accessible message for adding a portability.',
+    id: 'component.PlaylistPortability.addPortability',
+  },
   removePortability: {
     defaultMessage: 'Delete sharing with {title}',
     description: 'Accessible message for removing a portability.',
@@ -79,6 +84,11 @@ const messages = defineMessages({
     defaultMessage: '{text} copied!',
     description: 'Message displayed when playlist info are copied.',
     id: 'components.PlaylistPortability.copied',
+  },
+  copy: {
+    defaultMessage: 'Copy key {text}.',
+    description: 'Accessible message for copying a playlist id.',
+    id: 'components.PlaylistPortability.copy',
   },
 });
 
@@ -226,7 +236,9 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
                 values={{ title: playlist?.title, id: playlist?.id }}
               />
               <Button
-                aria-label={`copy key ${playlist?.id}`}
+                aria-label={intl.formatMessage(messages.copy, {
+                  text: playlist?.id,
+                })}
                 data-clipboard-text={playlist?.id}
                 icon={<Copy />}
                 className="copy"
@@ -256,7 +268,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
                     />
                     <Button
                       type="submit"
-                      aria-label="add share"
+                      aria-label={intl.formatMessage(messages.addPortability)}
                       icon={<AddCircle />}
                     />
                   </Box>
