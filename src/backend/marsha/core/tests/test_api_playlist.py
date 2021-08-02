@@ -755,7 +755,6 @@ class PlaylistAPITest(TestCase):
     def test_add_playlist_portability_through_video_token_instructor_self_id(self):
         """Adding self id as playlist portability should be filtered."""
         video = factories.VideoFactory()
-        other_playlist = factories.PlaylistFactory()
 
         self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
 
