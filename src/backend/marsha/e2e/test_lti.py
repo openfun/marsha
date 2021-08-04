@@ -462,7 +462,7 @@ def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
     assert (
         content == f"Belongs to playlist {video.playlist.title} ({video.playlist.id})"
     )
-    page.fill('[placeholder="Paste playlist uuid"]', str(new_playlist.id))
+    page.fill('[placeholder="Paste playlist id"]', str(new_playlist.id))
 
     page.click('[aria-label="add share"]')
 
