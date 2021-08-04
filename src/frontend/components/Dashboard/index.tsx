@@ -29,7 +29,7 @@ interface DashboardProps {
  * Will also be used to manage related tracks such as timed text when they are available.
  * @param video The video object from AppData. We need it to populate the component before polling starts.
  */
-export const Dashboard = ({ object, objectType, children }: DashboardProps) => {
+const Dashboard = ({ object, objectType, children }: DashboardProps) => {
   return (
     <DashboardContainer>
       <LTINav object={object} />

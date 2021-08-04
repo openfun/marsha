@@ -2,6 +2,7 @@ import * as faker from 'faker';
 import { Document } from '../../types/file';
 import {
   Playlist,
+  PlaylistLite,
   Thumbnail,
   TimedText,
   timedTextMode,
@@ -20,6 +21,17 @@ export const organizationMockFactory = (
     name: faker.company.companyName(),
     users: [],
     ...organization,
+  };
+};
+
+export const playlistLiteMockFactory = (
+  playlist: Partial<PlaylistLite> = {},
+): PlaylistLite => {
+  return {
+    id: faker.datatype.uuid(),
+    lti_id: faker.datatype.string(),
+    title: faker.name.title(),
+    ...playlist,
   };
 };
 

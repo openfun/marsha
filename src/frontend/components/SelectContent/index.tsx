@@ -304,7 +304,9 @@ export const SelectContent = ({
     if (formRef.current && contentItemsValue) {
       formRef.current.submit();
     }
+  }, [contentItemsValue]);
 
+  useEffect(() => {
     const clipboard = new ClipboardJS('.copy');
     clipboard.on('success', (event) => {
       toast.success(intl.formatMessage(messages.copied, { text: event.text }));
@@ -315,7 +317,7 @@ export const SelectContent = ({
     });
 
     return () => clipboard.destroy();
-  }, [contentItemsValue]);
+  }, []);
 
   const selectContent = (ltiUrl: string, title: string) => {
     const contentItems = {

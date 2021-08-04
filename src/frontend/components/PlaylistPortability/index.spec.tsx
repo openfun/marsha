@@ -4,6 +4,7 @@ import React from 'react';
 
 import { PlaylistPortability } from '.';
 import {
+  playlistLiteMockFactory,
   playlistMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
@@ -15,7 +16,6 @@ import { Grommet } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import MatchMedia from 'jest-matchmedia-mock';
 import { Toaster } from 'react-hot-toast';
-import { theme } from '../../utils/theme/theme';
 
 let matchMedia: MatchMedia;
 
@@ -155,7 +155,7 @@ describe('<PlaylistPortability />', () => {
 
   it('shows current playlist portability', async () => {
     const currentPlaylist = playlistMockFactory({
-      portable_to: [playlistMockFactory(), playlistMockFactory()],
+      portable_to: [playlistLiteMockFactory(), playlistLiteMockFactory()],
     });
 
     const video = videoMockFactory({

@@ -13,9 +13,8 @@ import { AddCircle, Copy, Trash } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
-import { UseMutationResult } from 'react-query';
 
-import { Dashboard } from '../Dashboard';
+import Dashboard from '../Dashboard';
 import { ErrorMessage } from '../ErrorComponents';
 import { Document } from '../../types/file';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
@@ -50,7 +49,7 @@ const messages = defineMessages({
     id: 'component.PlaylistPortability.shareWithPlaylistDetails',
   },
   shareWithPlaylistPlaceholder: {
-    defaultMessage: 'Paste playlist uuid',
+    defaultMessage: 'Paste playlist id',
     description: 'Helper text for adding a new portability.',
     id: 'component.PlaylistPortability.shareWithPlaylistPlaceholder',
   },
@@ -102,14 +101,14 @@ export const PlaylistPortabilityList = ({
   removePlaylistPortability,
 }: PlaylistPortabilityListProps) => {
   const intl = useIntl();
-  if (playlist!.portable_to!.length > 0) {
+  if (playlist.portable_to.length > 0) {
     return (
       <Box>
         <Text>
           <FormattedMessage {...messages.sharedListTitle} />
         </Text>
         <List
-          data={playlist?.portable_to}
+          data={playlist.portable_to}
           pad={{ left: 'small', right: 'none' }}
           action={(item, index) => (
             <Button
@@ -146,7 +145,7 @@ export const PlaylistPortabilityList = ({
       </Box>
     );
   }
-  return <React.Fragment />;
+  return null;
 };
 
 interface PlaylistPortabilityProps {

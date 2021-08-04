@@ -16,7 +16,6 @@ import { flags } from './types/AppData';
 import { report } from './utils/errors/report';
 import { isFeatureEnabled } from './utils/isFeatureEnabled';
 
-import { ReactQueryDevtools } from 'react-query/devtools';
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
@@ -127,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
           <App />
           <GlobalStyles />
         </Grommet>
-        {/*<ReactQueryDevtools initialIsOpen={false} />*/}
       </QueryClientProvider>
       ,
     </RawIntlProvider>,
