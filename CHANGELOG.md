@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a confirmation before starting or stopping a live
 - Use a tabbed navigation on LTI resource views
 - Only jitsi moderators can start a live
+- Management command deleting orphan mediapackage channel
 
 ## [3.21.0] - 2021-07-05
 
