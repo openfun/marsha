@@ -15,12 +15,12 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.1",
     "@types/request-promise-native": "1.0.18",
     "jest": "27.0.6",
     "prettier": "2.3.2"
   },
   "dependencies": {
-    "aws-sdk": "2.960.0"
+    "aws-sdk": "2.967.0"
   }
 }
