@@ -15,3 +15,4 @@
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
+- [Dependabot](https://github.com/dependabot/dependabot-core) <49699333+dependabot[bot]@users.noreply.github.com>
