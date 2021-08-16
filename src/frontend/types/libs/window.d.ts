@@ -6,6 +6,7 @@ export {};
 declare global {
   interface Window {
     converse: {
+      joinRoomWithNickname: () => void;
       acceptParticipantToMount: (participant: Participant) => void;
       askParticipantToMount: () => void;
       kickParticipant: (participant: Participant) => void;

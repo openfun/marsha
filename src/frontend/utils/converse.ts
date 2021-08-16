@@ -7,6 +7,7 @@ import { converse } from './window';
 import { getDecodedJwt } from '../data/appData';
 import { useJoinParticipant } from '../data/stores/useJoinParticipant';
 import { useParticipantWorkflow } from '../data/stores/useParticipantWorkflow';
+import { useUserWorkflow } from '../data/stores/useUserWorkflow';
 import { XMPP } from '../types/tracks';
 import { Participant } from '../types/Participant';
 
@@ -61,6 +62,14 @@ export const converseMounter = () => {
         initialize() {
           const _converse = this._converse;
 
+          _converse.api.listen.on('enteredNewRoom', (model: any) => {
+            useUserWorkflow.getState().setJoinRoom(model.attributes.nick)
+            if (useUserWorkflow.getState().asking) {
+              converse.askParticipantToMount();
+              useUserWorkflow.getState().setAsking(false);
+            }
+          });
+
           _converse.on('initialized', () => {
             _converse.connection.addHandler(
               (message: any) => {
@@ -109,14 +118,25 @@ export const converseMounter = () => {
               null,
             );
 
+            const joinRoomWithNickname = () => {
+              if (useUserWorkflow.getState().nickname != undefined) {
+                _converse.api.rooms.open(xmpp.conference_url, {'nick': useUserWorkflow.getState().nickname})
+              } else 
+                console.log("User have no nickname to join the room with")
+            }
+
             const askParticipantToMount = () => {
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: 'groupchat',
-                event: 'participantAskToMount',
-              });
-              _converse.connection.send(msg);
+              if (useUserWorkflow.getState().onRoom) {
+                const msg = converse.env.$msg({
+                  from: _converse.connection.jid,
+                  to: xmpp.conference_url,
+                  type: 'groupchat',
+                  event: 'participantAskToMount',
+                });
+                _converse.connection.send(msg);
+              } else {
+                console.log("User not connected to the group tchat");
+              }
             };
 
             const acceptParticipantToMount = (participant: Participant) => {
@@ -160,6 +180,7 @@ export const converseMounter = () => {
             };
 
             Object.assign(converse, {
+              joinRoomWithNickname,
               acceptParticipantToMount,
               askParticipantToMount,
               kickParticipant,
