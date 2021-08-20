@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add user group to admin site
+
 ## [3.22.0] - 2021-08-19
 
 ### Added
