@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add user group to admin site
 
+### Fixed
+
+- Add aws permission to list mediapackage harvest jobs (fixes unusable 3.22.0 version)
+
 ## [3.22.0] - 2021-08-19
 
 ### Added

@@ -148,7 +148,8 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
         "mediapackage:ListChannels",
         "mediapackage:UpdateOriginEndpoint",
         "mediapackage:TagResource",
-        "mediapackage:CreateHarvestJob"
+        "mediapackage:CreateHarvestJob",
+        "mediapackage:ListHarvestJobs"
       ],
       "Resource": "*"
     },
