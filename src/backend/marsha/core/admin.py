@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -164,6 +165,7 @@ admin_site = MarshaAdminSite(name="admin")
 admin_site.register(waffle_admin.Flag, waffle_admin.FlagAdmin)
 admin_site.register(waffle_admin.Sample, waffle_admin.SampleAdmin)
 admin_site.register(waffle_admin.Switch, waffle_admin.SwitchAdmin)
+admin_site.register(Group)
 
 
 class UserOrganizationsInline(admin.TabularInline):
