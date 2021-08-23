@@ -158,6 +158,22 @@ class Video(BaseFile):
             live_state__isnull=False
         )
 
+    def get_medialive_input(self):
+        """Return the medialive input info if existing."""
+        return self.live_info.get("medialive").get("input")
+
+    def get_medialive_channel(self):
+        """Return the medialive channel info if existing."""
+        return self.live_info.get("medialive").get("channel")
+
+    def get_mediapackage_channel(self):
+        """Return the mediapackage channel info if existing."""
+        return self.live_info.get("mediapackage").get("channel")
+
+    def get_mediapackage_endpoints(self):
+        """Return the mediapackage enspoints info."""
+        return self.live_info.get("mediapackage").get("endpoints")
+
 
 class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""
