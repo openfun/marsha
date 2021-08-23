@@ -462,7 +462,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
-        start_live_channel(video.live_info.get("medialive").get("channel").get("id"))
+        start_live_channel(video.get_medialive_channel().get("id"))
         if settings.LIVE_CHAT_ENABLED:
             create_room(video.id)
 
@@ -510,7 +510,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
-        stop_live_channel(video.live_info.get("medialive").get("channel").get("id"))
+        stop_live_channel(video.get_medialive_channel().get("id"))
 
         video.live_state = defaults.STOPPING
         video.save()
@@ -595,9 +595,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             try:
                 create_mediapackage_harvest_job(video)
             except ManifestMissingException:
-                delete_mediapackage_channel(
-                    video.live_info.get("mediapackage").get("channel").get("id")
-                )
+                delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
                 video.upload_state = defaults.DELETED
                 video.live_state = None
                 video.live_info = None
