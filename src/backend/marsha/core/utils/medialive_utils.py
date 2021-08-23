@@ -290,16 +290,12 @@ def stop_live_channel(channel_id):
 
 def create_mediapackage_harvest_job(video):
     """Create a mediapackage harvest job."""
-    request = requests.get(
-        video.live_info.get("mediapackage").get("endpoints").get("hls").get("url")
-    )
+    request = requests.get(video.get_mediapackage_endpoints().get("hls").get("url"))
     if request.status_code == 404:
         raise ManifestMissingException
 
-    hls_endpoint = (
-        video.live_info.get("mediapackage").get("endpoints").get("hls").get("id")
-    )
-    channel_id = video.live_info.get("mediapackage").get("channel").get("id")
+    hls_endpoint = video.get_mediapackage_endpoints().get("hls").get("id")
+    channel_id = video.get_mediapackage_channel().get("id")
 
     # split channel id to take the stamp in it {env}_{pk}_{stamp}
     elements = channel_id.split("_")
@@ -325,16 +321,13 @@ def delete_aws_element_stack(video):
     """
     # Medialive
     # First delete the channel
-    medialive_client.delete_channel(
-        ChannelId=video.live_info.get("medialive").get("channel").get("id")
-    )
+    medialive_client.delete_channel(ChannelId=video.get_medialive_channel().get("id"))
 
     # Once channel deleted we have to wait until input is detached
     input_waiter = medialive_client.get_waiter("input_detached")
-    input_waiter.wait(InputId=video.live_info.get("medialive").get("input").get("id"))
-    medialive_client.delete_input(
-        InputId=video.live_info.get("medialive").get("input").get("id")
-    )
+    medialive_input_id = video.get_medialive_input().get("id")
+    input_waiter.wait(InputId=medialive_input_id)
+    medialive_client.delete_input(InputId=medialive_input_id)
 
 
 def _get_items(  # nosec
