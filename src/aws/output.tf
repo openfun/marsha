@@ -16,6 +16,7 @@ output "iam_trusted_signer_access_key_id" {
 
 output "iam_secret_access_key" {
   value = aws_iam_access_key.marsha_access_key.secret
+  sensitive = true
 }
 
 output "medialive_role_arn" {
