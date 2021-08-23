@@ -15,6 +15,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   and mediapackage
 - Allow a participant to join a Jitsi conference
 
+### Changed
+
+- Merge overlapping played segments for xAPI events
+
 ## [3.23.0] - 2021-08-23
 
 ### Added
