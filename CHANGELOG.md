@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.23.0] - 2021-08-23
+
 ### Added
 
 - Add user group to admin site
@@ -824,7 +826,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.22.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.23.0...master
+[3.23.0]: https://github.com/openfun/marsha/compare/v3.22.0...v3.23.0
 [3.22.0]: https://github.com/openfun/marsha/compare/v3.21.0...v3.22.0
 [3.21.0]: https://github.com/openfun/marsha/compare/v3.20.1...v3.21.0
 [3.20.1]: https://github.com/openfun/marsha/compare/v3.20.0...v3.20.1
