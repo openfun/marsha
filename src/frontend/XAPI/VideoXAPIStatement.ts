@@ -52,39 +52,60 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
     return this.playedSegments;
   }
 
+  mergeSegments(playedSegments: string[]): string {
+    return (
+      playedSegments
+        // remove non complete segments
+        .filter((segment) => segment.indexOf('[.]') >= 0)
+        // split segments to have begin and end segment in an array
+        .map((segment) => segment.split('[.]'))
+        // cast segment from string to number
+        .reduce((acc: number[][], curr: string[]): number[][] => {
+          acc.push([Number(curr[0]), Number(curr[1])]);
+
+          return acc;
+        }, [])
+        // sort segment bounds in ascending order
+        .map((segment) => segment.sort((a, b) => a - b))
+        // sort segments (numerically)
+        .sort((a: number[], b: number[]): number => {
+          return a[0] - b[0];
+        })
+        // once sorted, merge overlapped segments
+        .reduce((acc: number[][], curr: number[], i: number): number[][] => {
+          acc.push(curr);
+          if (i === 0) {
+            return acc;
+          }
+          // segment starting point included in previous segment
+          if (acc[i][0] <= acc[i - 1][1]) {
+            // segments included in previous segments
+            if (acc[i][1] <= acc[i - 1][1]) {
+              // remove "i"nth segments
+              acc.splice(i, 1);
+            } else {
+              // remove overlapping part of the current segment with the previous segment
+              acc[i - 1][1] = acc[i][1];
+              acc.splice(i, 1);
+            }
+          }
+          return acc;
+        }, [])
+        // recast segments from arrays to string
+        .map((segment) => segment.join('[.]'))
+        .join('[,]')
+    );
+  }
+
   getProgress(): number {
     const segments = this.getPlayedSegment().split('[,]');
 
     const progressLength = segments
-      // remove non complete segments
-      .filter((segment) => segment.indexOf('[.]') >= 0)
       // split segments to have begin and end segment in an array
       .map((segment) => segment.split('[.]'))
       // cast segment from string to number
       .reduce((acc: number[][], curr: string[]): number[][] => {
         acc.push([Number(curr[0]), Number(curr[1])]);
-
-        return acc;
-      }, [])
-      // sort segments (numerically)
-      .sort((a: number[], b: number[]): number => {
-        return a[0] - b[0];
-      })
-      // once sorted, merge overlapped segments
-      .reduce((acc: number[][], curr: number[], i: number): number[][] => {
-        acc.push(curr);
-        if (i === 0) {
-          return acc;
-        }
-
-        if (acc[i][0] < acc[i - 1][1]) {
-          // overlapping segments: this segment's starting point is less than last segment's end point.
-          acc[i][0] = acc[i - 1][1];
-
-          if (acc[i][0] > acc[i][1]) {
-            acc[i][1] = acc[i][0];
-          }
-        }
 
         return acc;
       }, [])
@@ -389,7 +410,7 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
     const playedSegments =
       this.playedSegments.length === 0 ? [] : this.playedSegments.split('[,]');
     playedSegments.push(`${this.startSegment}[.]${time}`);
-    this.playedSegments = playedSegments.join('[,]');
+    this.playedSegments = this.mergeSegments(playedSegments);
     this.startSegment = null;
   }
 }

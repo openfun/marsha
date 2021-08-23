@@ -31,6 +31,46 @@ describe('VideoXAPIStatement', () => {
     });
   });
 
+  describe('VideoXAPIStatement.mergeSegments', () => {
+    it('merges overlapping time segments', () => {
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+
+      expect(xapiStatement.mergeSegments(['0[.]5', '10[.]22'])).toBe(
+        '0[.]5[,]10[.]22',
+      );
+      expect(xapiStatement.mergeSegments(['0[.]5', '4[.]22'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['0[.]5', '3[.]4'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['0[.]5', '22[.]10'])).toBe(
+        '0[.]5[,]10[.]22',
+      );
+      expect(xapiStatement.mergeSegments(['0[.]5', '22[.]4'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['0[.]5', '4[.]3'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['5[.]0', '10[.]22'])).toBe(
+        '0[.]5[,]10[.]22',
+      );
+      expect(xapiStatement.mergeSegments(['5[.]0', '4[.]22'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['5[.]0', '3[.]4'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['5[.]0', '22[.]10'])).toBe(
+        '0[.]5[,]10[.]22',
+      );
+      expect(xapiStatement.mergeSegments(['5[.]0', '22[.]4'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['5[.]0', '4[.]3'])).toBe('0[.]5');
+
+      // edge case tests (when start and end bounds are identical on adjacent segments)
+      expect(xapiStatement.mergeSegments(['0[.]5', '5[.]22'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['0[.]5', '22[.]5'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['0[.]5', '3[.]5'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['0[.]5', '5[.]3'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['5[.]0', '5[.]22'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['5[.]0', '22[.]5'])).toBe('0[.]22');
+      expect(xapiStatement.mergeSegments(['5[.]0', '3[.]5'])).toBe('0[.]5');
+      expect(xapiStatement.mergeSegments(['5[.]0', '5[.]3'])).toBe('0[.]5');
+
+      // merge identical segments
+      expect(xapiStatement.mergeSegments(['0[.]5', '0[.]5'])).toBe('0[.]5');
+    });
+  });
+
   describe('VideoXAPIStatement.initialized', () => {
     it('post an initialized statement with only required extensions', () => {
       fetchMock.mock(`${XAPI_ENDPOINT}/`, 204);
@@ -498,25 +538,17 @@ describe('VideoXAPIStatement', () => {
       });
       expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22[,]15');
       xapiStatement.paused({ time: 55 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]55');
       xapiStatement.played({ time: 55 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55[,]55',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]55[,]55');
       xapiStatement.paused({ time: 99.33 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]99.33');
       xapiStatement.played({ time: 99.33 });
       expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33[,]99.33',
+        '0[.]5[,]12[.]99.33[,]99.33',
       );
       xapiStatement.paused({ time: 100 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55[,]55[.]99.33[,]99.33[.]100',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]100');
     });
   });
 
@@ -545,13 +577,9 @@ describe('VideoXAPIStatement', () => {
       });
       expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]22[,]15');
       xapiStatement.paused({ time: 55 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]55');
       xapiStatement.played({ time: 55 });
-      expect(xapiStatement.getPlayedSegment()).toBe(
-        '0[.]5[,]12[.]22[,]15[.]55[,]55',
-      );
+      expect(xapiStatement.getPlayedSegment()).toBe('0[.]5[,]12[.]55[,]55');
 
       expect(xapiStatement.getProgress()).toEqual(0.48);
     });
