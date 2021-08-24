@@ -340,7 +340,7 @@ jobs:
                 dockerize \
                   -wait tcp://localhost:5432 \
                   -timeout 60s \
-                    ~/.local/bin/pytest marsha/core/tests
+                    ~/.local/bin/pytest marsha --ignore=marsha/e2e
 
   # ---- Front-end jobs ----
   build-front:
