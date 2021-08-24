@@ -191,7 +191,7 @@ prosody-admin: ## create prosody admin user
 
 test:  ## Run django tests for the marsha project.
 	@echo "$(BOLD)Running tests$(RESET)"
-	bin/pytest marsha/core/tests/
+	bin/pytest marsha --ignore=marsha/e2e
 .PHONY: test
 
 build-e2e: ## build the e2e container
