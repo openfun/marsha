@@ -32,7 +32,7 @@ describe('queries/updateOne', () => {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
     });
     expect(response).toEqual({ key: 'value' });
@@ -54,7 +54,7 @@ describe('queries/updateOne', () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
     });
     expect(response).toEqual({ key: 'value' });
@@ -82,7 +82,7 @@ describe('queries/updateOne', () => {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
     });
   });
@@ -112,7 +112,7 @@ describe('queries/updateOne', () => {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
     });
   });
@@ -148,7 +148,7 @@ describe('queries/updateOne', () => {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
     });
   });
