@@ -22,6 +22,8 @@ import { UploadManager } from '../UploadManager';
 import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
 
 const Dashboard = lazy(() => import('../Dashboard'));
+const DashboardDocument = lazy(() => import('../DashboardDocument'));
+const DashboardVideo = lazy(() => import('../DashboardVideo'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
 
@@ -121,19 +123,17 @@ export const Routes = () => (
           render={() => {
             if (appData.modelName === modelName.DOCUMENTS) {
               return (
-                <Dashboard
-                  document={appData.document!}
-                  objectType={modelName.DOCUMENTS}
-                />
+                <Dashboard object={appData.document!}>
+                  <DashboardDocument document={appData.document!} />
+                </Dashboard>
               );
             }
 
             if (appData.modelName === modelName.VIDEOS) {
               return (
-                <Dashboard
-                  video={appData.video!}
-                  objectType={modelName.VIDEOS}
-                />
+                <Dashboard object={appData.video!}>
+                  <DashboardVideo video={appData.video!} />
+                </Dashboard>
               );
             }
 

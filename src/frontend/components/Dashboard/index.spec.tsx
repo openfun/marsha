@@ -2,15 +2,16 @@ import { render, screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
 
 import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import {
   documentMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
+import Dashboard from './index';
+import DashboardDocument from '../DashboardDocument';
+import DashboardVideo from '../DashboardVideo';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { Loader } from '../Loader';
-import Dashboard from './index';
 import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('../DashboardVideo', () => (props: { video: Video }) => (
@@ -56,7 +57,9 @@ describe('<Dashboard />', () => {
         wrapInIntlProvider(
           wrapInRouter(
             <Suspense fallback={<Loader />}>
-              <Dashboard video={mockVideo} objectType={modelName.VIDEOS} />
+              <Dashboard object={mockVideo}>
+                <DashboardVideo video={mockVideo} />
+              </Dashboard>
             </Suspense>,
           ),
         ),
@@ -77,10 +80,9 @@ describe('<Dashboard />', () => {
         wrapInIntlProvider(
           wrapInRouter(
             <Suspense fallback={<Loader />}>
-              <Dashboard
-                document={mockDocument}
-                objectType={modelName.DOCUMENTS}
-              />
+              <Dashboard object={mockDocument}>
+                <DashboardDocument document={mockDocument} />
+              </Dashboard>
             </Suspense>,
           ),
         ),
