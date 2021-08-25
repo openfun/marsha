@@ -11,6 +11,7 @@ import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { useVideo } from '../../data/stores/useVideo';
 import { useDocument } from '../../data/stores/useDocument';
+import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
 
 const messages = defineMessages({
   linkDashboard: {
@@ -24,6 +25,12 @@ const messages = defineMessages({
     description: `Title for the Instructor View. Describes the area appearing right above, which is a preview
       of what the student will see there.`,
     id: 'components.LTINav.linkPreview',
+  },
+  linkPlaylist: {
+    defaultMessage: 'Playlist',
+    description: `Title for the playlist view, where the user can see the current playlist id, and will be able to
+      manage portability.`,
+    id: 'components.LTINav.linkPlaylist',
   },
 });
 
@@ -76,6 +83,12 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
         {canAccessPreview && (
           <NavItem to={PLAYER_ROUTE(appData.modelName)}>
             <FormattedMessage {...messages.linkPreview} />
+          </NavItem>
+        )}
+
+        {canAccessDashboard && (
+          <NavItem to={PLAYLIST_ROUTE(appData.modelName)}>
+            <FormattedMessage {...messages.linkPlaylist} />
           </NavItem>
         )}
       </Nav>
