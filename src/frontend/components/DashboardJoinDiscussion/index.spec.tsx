@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { DashboardJoinDiscussion } from '.';
 
@@ -24,9 +25,10 @@ describe('<DashboardJoinDiscussion />', () => {
       name: 'Jane Doe',
     };
 
+    const video = videoMockFactory();
     useJoinParticipant.getState().addParticipantAskingToJoin(participant1);
 
-    render(wrapInIntlProvider(<DashboardJoinDiscussion />));
+    render(wrapInIntlProvider(<DashboardJoinDiscussion video={video} />));
 
     // participant 1 is in the waiting list
     const askParticipant1 = screen.getByTestId('ask-participant1');

@@ -62,7 +62,7 @@ export const DashboardVideoLiveRunning = ({
       </Box>
       {video.live_type === LiveModeType.JITSI && (
         <React.Fragment>
-          <DashboardJoinDiscussion />
+          <DashboardJoinDiscussion video={video} />
           <Chat video={video} standalone={true} />
         </React.Fragment>
       )}

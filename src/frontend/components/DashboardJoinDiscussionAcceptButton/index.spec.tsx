@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import * as mockWindow from '../../utils/window';
 import { DashboardJoinDiscussionAcceptButton } from '.';
@@ -21,9 +22,14 @@ describe('<DashboardJoinDiscussionAcceptButton />', () => {
       name: 'John Doe',
     };
 
+    const video = videoMockFactory();
+
     render(
       wrapInIntlProvider(
-        <DashboardJoinDiscussionAcceptButton participant={participant} />,
+        <DashboardJoinDiscussionAcceptButton
+          participant={participant}
+          video={video}
+        />,
       ),
     );
 
@@ -33,6 +39,7 @@ describe('<DashboardJoinDiscussionAcceptButton />', () => {
 
     expect(mockWindow.converse.acceptParticipantToJoin).toHaveBeenCalledWith(
       participant,
+      video,
     );
   });
 });
