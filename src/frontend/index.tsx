@@ -15,9 +15,12 @@ import { appData, getDecodedJwt } from './data/appData';
 import { flags } from './types/AppData';
 import { report } from './utils/errors/report';
 import { isFeatureEnabled } from './utils/isFeatureEnabled';
+
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { theme } from './utils/theme/theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Toaster } from 'react-hot-toast';
 
 if (isFeatureEnabled(flags.SENTRY) && appData.sentry_dsn) {
   Sentry.init({
@@ -98,13 +101,33 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     );
   }
 
+  const queryClient = new QueryClient();
+
   // Render our actual component tree
   ReactDOM.render(
     <RawIntlProvider value={intl}>
-      <Grommet theme={theme} style={{ height: '100%' }}>
-        <App />
-        <GlobalStyles />
-      </Grommet>
+      <QueryClientProvider client={queryClient}>
+        <Grommet theme={theme} style={{ height: '100%' }}>
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  background: theme.global.colors['status-ok'],
+                },
+              },
+              error: {
+                style: {
+                  color: theme.global.colors.white,
+                  background: theme.global.colors['accent-2'],
+                },
+              },
+            }}
+          />
+          <App />
+          <GlobalStyles />
+        </Grommet>
+      </QueryClientProvider>
+      ,
     </RawIntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );
