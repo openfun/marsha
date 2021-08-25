@@ -4,9 +4,10 @@ import 'converse.js/dist/emojis.js';
 import 'converse.js/dist/icons.js';
 
 import { converse } from './window';
-import { getDecodedJwt } from '../data/appData';
+import { appData, getDecodedJwt } from '../data/appData';
 import { useJoinParticipant } from '../data/stores/useJoinParticipant';
 import { useParticipantWorkflow } from '../data/stores/useParticipantWorkflow';
+import { useVideo } from '../data/stores/useVideo';
 import { Participant } from '../types/Participant';
 import { Video } from '../types/tracks';
 import { MessageType, EventType, XMPP } from '../types/XMPP';
@@ -92,6 +93,17 @@ export const converseMounter = () => {
                   message.getAttribute('type') === MessageType.EVENT &&
                   message.getAttribute('event') === EventType.ACCEPT
                 ) {
+                  // retrieve current video in store
+                  const video = useVideo.getState().getVideo(appData.video!);
+                  // update video with jitsi info
+                  useVideo.getState().addResource({
+                    ...video,
+                    live_info: {
+                      ...video.live_info,
+                      jitsi: JSON.parse(message.getAttribute('jitsi')),
+                    },
+                  });
+
                   useParticipantWorkflow.getState().setAccepted();
                 } else if (
                   message.getAttribute('type') === MessageType.EVENT &&
@@ -162,17 +174,18 @@ export const converseMounter = () => {
               participant: Participant,
               video: Video,
             ) => {
-              // only instructors or admin has update persmissions
+              // only instructors or admin has update permissions
               if (!getDecodedJwt().permissions.can_update) {
                 return;
               }
 
-              // send messge to use to accept joining the discussion
+              // send message to user to accept joining the discussion
               const msg = converse.env.$msg({
                 from: _converse.connection.jid,
                 to: participant.id,
                 type: MessageType.EVENT,
                 event: EventType.ACCEPT,
+                jitsi: JSON.stringify(video.live_info.jitsi),
               });
               _converse.connection.send(msg);
 
@@ -188,7 +201,7 @@ export const converseMounter = () => {
             };
 
             const rejectParticipantToJoin = (participant: Participant) => {
-              // only instructors or admin has update persmission
+              // only instructors or admin has update permissions
               if (!getDecodedJwt().permissions.can_update) {
                 return;
               }
@@ -211,7 +224,7 @@ export const converseMounter = () => {
             };
 
             const kickParticipant = (participant: Participant) => {
-              // only instructors or admin has update persmission
+              // only instructors or admin has update permissions
               if (!getDecodedJwt().permissions.can_update) {
                 return;
               }

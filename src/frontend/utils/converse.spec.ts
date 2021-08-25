@@ -1,6 +1,8 @@
 import { converseMounter } from './converse';
 import * as mockWindow from './window';
 
+import { videoMockFactory } from './tests/factories';
+
 jest.mock('./window', () => ({
   converse: {
     initialize: jest.fn(),
@@ -11,8 +13,12 @@ jest.mock('./window', () => ({
   },
 }));
 let mockDecodedJwtToken = {};
+const mockVideo = videoMockFactory();
 jest.mock('../data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
+  appData: {
+    video: mockVideo,
+  },
 }));
 
 describe('converseMounter', () => {

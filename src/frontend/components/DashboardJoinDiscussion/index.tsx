@@ -6,6 +6,7 @@ import { DashboardJoinDiscussionAcceptButton } from '../DashboardJoinDiscussionA
 import { DashboardJoinDiscussionRejectButton } from '../DashboardJoinDiscussionRejectButton';
 import { DashboardJoinDiscussionKickButton } from '../DashboardJoinDiscussionKickButton';
 import { useJoinParticipant } from '../../data/stores/useJoinParticipant';
+import { Video } from '../../types/tracks';
 
 const messages = defineMessages({
   participantAsking: {
@@ -22,7 +23,13 @@ const messages = defineMessages({
   },
 });
 
-export const DashboardJoinDiscussion = () => {
+interface DashboardJoinDiscussionProps {
+  video: Video;
+}
+
+export const DashboardJoinDiscussion = ({
+  video,
+}: DashboardJoinDiscussionProps) => {
   const { participantsAskingToJoin, participantsInDiscussion } =
     useJoinParticipant((state) => ({
       participantsAskingToJoin: state.participantsAskingToJoin,
@@ -43,7 +50,10 @@ export const DashboardJoinDiscussion = () => {
             {participant.name}{' '}
           </Text>
           <FormattedMessage {...messages.participantAsking} />
-          <DashboardJoinDiscussionAcceptButton participant={participant} />
+          <DashboardJoinDiscussionAcceptButton
+            participant={participant}
+            video={video}
+          />
           <DashboardJoinDiscussionRejectButton participant={participant} />
         </Box>
       ))}
