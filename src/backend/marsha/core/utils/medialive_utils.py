@@ -50,7 +50,7 @@ def create_mediapackage_channel(key):
     # Create mediapackage channel
     channel = mediapackage_client.create_channel(
         Id=f"{settings.AWS_BASE_NAME}_{key}",
-        Tags={"environment": settings.AWS_BASE_NAME},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
     )
 
     # Add primary U/P to SSM parameter store
@@ -59,7 +59,10 @@ def create_mediapackage_channel(key):
         Description=f"{key} MediaPackage Primary Ingest Username",
         Value=channel["HlsIngest"]["IngestEndpoints"][0]["Password"],
         Type="String",
-        Tags=[{"Key": "environment", "Value": settings.AWS_BASE_NAME}],
+        Tags=[
+            {"Key": "environment", "Value": settings.AWS_BASE_NAME},
+            {"Key": "app", "Value": "marsha"},
+        ],
     )
 
     # Add Secondary U/P to SSM Parameter store
@@ -68,7 +71,10 @@ def create_mediapackage_channel(key):
         Description=f"{key} MediaPackage Secondary Ingest Username",
         Value=channel["HlsIngest"]["IngestEndpoints"][1]["Password"],
         Type="String",
-        Tags=[{"Key": "environment", "Value": settings.AWS_BASE_NAME}],
+        Tags=[
+            {"Key": "environment", "Value": settings.AWS_BASE_NAME},
+            {"Key": "app", "Value": "marsha"},
+        ],
     )
 
     # Create a HLS endpoint. This endpoint will be used to watch the stream.
@@ -86,7 +92,7 @@ def create_mediapackage_channel(key):
             "ProgramDateTimeIntervalSeconds": 0,
             "SegmentDurationSeconds": settings.LIVE_SEGMENT_DURATION_SECONDS,
         },
-        Tags={"environment": settings.AWS_BASE_NAME},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
     )
 
     return [channel, hls_endpoint]
@@ -140,7 +146,7 @@ def create_medialive_input(key):
             {"StreamName": f"{key}-primary"},
             {"StreamName": f"{key}-secondary"},
         ],
-        Tags={"environment": settings.AWS_BASE_NAME},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
     )
 
     return medialive_input
@@ -228,7 +234,7 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
         Name=f"{settings.AWS_BASE_NAME}_{key}",
         RoleArn=settings.AWS_MEDIALIVE_ROLE_ARN,
         EncoderSettings=encoder_settings,
-        Tags={"environment": settings.AWS_BASE_NAME},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
     )
 
     return medialive_channel
