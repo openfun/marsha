@@ -162,7 +162,7 @@ describe('queries', () => {
   describe('useUpdatePlaylist', () => {
     it('updates the resource', async () => {
       const playlist = playlistMockFactory();
-      fetchMock.put(`/api/playlists/${playlist.id}/`, playlist);
+      fetchMock.patch(`/api/playlists/${playlist.id}/`, playlist);
 
       const { result, waitFor } = renderHook(
         () => useUpdatePlaylist(playlist.id),
@@ -183,7 +183,7 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify({
           title: 'updated title',
         }),
@@ -194,7 +194,7 @@ describe('queries', () => {
 
     it('fails to update the resource', async () => {
       const playlist = playlistMockFactory();
-      fetchMock.put(`/api/playlists/${playlist.id}/`, 400);
+      fetchMock.patch(`/api/playlists/${playlist.id}/`, 400);
 
       const { result, waitFor } = renderHook(
         () => useUpdatePlaylist(playlist.id),
@@ -215,7 +215,7 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify({
           title: 'updated title',
         }),
