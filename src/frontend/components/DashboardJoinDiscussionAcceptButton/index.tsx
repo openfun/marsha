@@ -3,6 +3,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { Participant } from '../../types/Participant';
+import { Video } from '../../types/tracks';
 import { converse } from '../../utils/window';
 
 const messages = defineMessages({
@@ -15,10 +16,12 @@ const messages = defineMessages({
 
 interface DashboardJoinDiscussionAcceptButtonProps {
   participant: Participant;
+  video: Video;
 }
 
 export const DashboardJoinDiscussionAcceptButton = ({
   participant,
+  video,
 }: DashboardJoinDiscussionAcceptButtonProps) => {
   const onClick = () => {
     converse.acceptParticipantToJoin(participant, video);
