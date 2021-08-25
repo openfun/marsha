@@ -1,32 +1,37 @@
-import { MessageDescriptor } from '@formatjs/intl';
+import ClipboardJS from 'clipboard';
 import {
   Box,
+  Button,
   Card,
   CardBody,
   Grid,
-  Heading,
   Image,
   Tab,
   Tabs,
   Text,
   Tip,
 } from 'grommet';
-import { DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
+import { Copy, DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
 import { Icon } from 'grommet-icons/icons';
 import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { toast } from 'react-hot-toast';
+import {
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+  useIntl,
+} from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from '../../types/file';
-import { Video, videoSize } from '../../types/tracks';
+import { Playlist, Video, videoSize } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 
 const messages = defineMessages({
-  title: {
-    defaultMessage: 'Select LTI content',
-    description: `Title for the LTI content selector, where the LTI Consumer can see the available video and documents
-      , and will be able to select them.`,
-    id: 'components.SelectContent.title',
+  playlistTitle: {
+    defaultMessage: 'Playlist {title} ({id})',
+    description: 'Title for the current playlist.',
+    id: 'component.SelectContent.playlistTitle',
   },
   addVideo: {
     defaultMessage: 'Add a video',
@@ -87,6 +92,11 @@ const messages = defineMessages({
     defaultMessage: 'LTI Content title',
     description: `Label for LTI title content input.`,
     id: 'components.SelectContent.titleEdit',
+  },
+  copied: {
+    defaultMessage: '{text} copied!',
+    description: 'Message displayed when playlist info are copied.',
+    id: 'components.SelectContent.copied',
   },
 });
 
@@ -270,6 +280,7 @@ const SelectContentSection = ({
 };
 
 interface SelectContentProps {
+  playlist?: Playlist;
   documents?: Document[];
   videos?: Video[];
   new_document_url?: string;
@@ -281,6 +292,7 @@ interface SelectContentProps {
 }
 
 export const SelectContent = ({
+  playlist,
   documents,
   videos,
   new_document_url,
@@ -290,12 +302,26 @@ export const SelectContent = ({
 }: SelectContentProps) => {
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
+  const intl = useIntl();
 
   useEffect(() => {
     if (formRef.current && contentItemsValue) {
       formRef.current.submit();
     }
   }, [contentItemsValue]);
+
+  useEffect(() => {
+    const clipboard = new ClipboardJS('.copy');
+    clipboard.on('success', (event) => {
+      toast.success(intl.formatMessage(messages.copied, { text: event.text }));
+    });
+
+    clipboard.on('error', (event) => {
+      toast.error(event.text);
+    });
+
+    return () => clipboard.destroy();
+  }, []);
 
   const selectContent = (ltiUrl: string, title: string) => {
     const contentItems = {
@@ -315,6 +341,21 @@ export const SelectContent = ({
 
   return (
     <Box pad="medium">
+      <Box justify="center" align="center" direction="row">
+        <Text role="heading" margin="small">
+          <FormattedMessage
+            {...messages.playlistTitle}
+            values={{ title: playlist?.title, id: playlist?.id }}
+          />
+          <Button
+            aria-label={`copy key ${playlist?.id}`}
+            data-clipboard-text={playlist?.id}
+            icon={<Copy />}
+            className="copy"
+          />
+        </Text>
+      </Box>
+
       <form
         ref={formRef}
         action={lti_select_form_action_url}

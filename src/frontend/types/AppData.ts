@@ -1,7 +1,7 @@
 import { Nullable } from '../utils/types';
 import { Document } from './file';
 import { modelName } from './models';
-import { Video } from './tracks';
+import { Playlist, Video } from './tracks';
 
 export enum appState {
   ERROR = 'error',
@@ -37,6 +37,7 @@ export interface AppData {
     };
   };
   player?: string;
+  playlist?: Playlist;
   flags?: {
     [key in flags]?: boolean;
   };

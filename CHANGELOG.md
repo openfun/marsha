@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Playlist portability management through LTI (resource sharing between courses)
+
 ## [3.23.0] - 2021-08-23
 
 ### Added

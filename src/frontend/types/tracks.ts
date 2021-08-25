@@ -51,6 +51,11 @@ export enum timedTextMode {
   CLOSED_CAPTIONING = 'cc',
 }
 
+export interface PlaylistLite extends Resource {
+  title?: string | Nullable<Extract<Playlist, 'title'>>;
+  lti_id?: string | Nullable<Extract<Playlist, 'lti_id'>>;
+}
+
 export interface Playlist {
   consumer_site: string;
   created_by: Nullable<string>;
@@ -61,7 +66,7 @@ export interface Playlist {
   is_public: boolean;
   lti_id: string;
   organization: string;
-  portable_to: [];
+  portable_to: PlaylistLite[];
   title: string;
   users: string[];
 }

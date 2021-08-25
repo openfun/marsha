@@ -5,11 +5,13 @@ import { Grommet } from 'grommet';
 import { appData } from '../../data/appData';
 import {
   documentMockFactory,
+  playlistMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
 import { SelectContent } from './index';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { uploadState } from '../../types/tracks';
+import { Toaster } from 'react-hot-toast';
 
 jest.mock('../../data/appData', () => ({
   appData: {
@@ -33,7 +35,12 @@ describe('<SelectContent />', () => {
     render(
       wrapInIntlProvider(
         <Grommet>
+          <Toaster />
           <SelectContent
+            playlist={playlistMockFactory({
+              id: '1',
+              title: 'Playlist 1',
+            })}
             documents={[
               documentMockFactory({
                 id: '1',
@@ -64,6 +71,8 @@ describe('<SelectContent />', () => {
         </Grommet>,
       ),
     );
+
+    screen.getByText('Playlist Playlist 1 (1)');
 
     const video1 = screen.getByTitle('Select Video 1');
     expect(video1.getElementsByTagName('img')[0]).toHaveAttribute(

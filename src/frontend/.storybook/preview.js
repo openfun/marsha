@@ -4,6 +4,9 @@ import { wrapInIntlProvider } from '../utils/tests/intl';
 import { Grommet } from 'grommet';
 import { theme } from '../utils/theme/theme';
 import { GlobalStyles } from '../utils/theme/baseStyles';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { RawIntlProvider } from 'react-intl';
+import { wrapInRouter } from '../utils/tests/router';
 
 const customViewports = {
   moodleIframe: {
@@ -31,12 +34,19 @@ export const parameters = {
   },
 };
 
+const queryClient = new QueryClient();
+
 export const decorators = [
   (Story) =>
     wrapInIntlProvider(
-      <Grommet theme={theme} style={{ height: '100%' }}>
-        <Story />
-        <GlobalStyles />
-      </Grommet>,
+      wrapInRouter(
+        <QueryClientProvider client={queryClient}>
+          <Grommet theme={theme} style={{ height: '100%' }}>
+            <Story />
+            <GlobalStyles />
+          </Grommet>
+          ,
+        </QueryClientProvider>,
+      ),
     ),
 ];
