@@ -164,7 +164,10 @@ class MediaLiveUtilsTestCase(TestCase):
             mediapackage_stubber.add_response(
                 "create_channel",
                 service_response=mediapackage_create_channel_response,
-                expected_params={"Id": f"test_{key}", "Tags": {"environment": "test"}},
+                expected_params={
+                    "Id": f"test_{key}",
+                    "Tags": {"environment": "test", "app": "marsha"},
+                },
             )
             ssm_stubber.add_response(
                 "put_parameter",
@@ -174,7 +177,10 @@ class MediaLiveUtilsTestCase(TestCase):
                     "Description": "video-key MediaPackage Primary Ingest Username",
                     "Value": "password1",
                     "Type": "String",
-                    "Tags": [{"Key": "environment", "Value": "test"}],
+                    "Tags": [
+                        {"Key": "environment", "Value": "test"},
+                        {"Key": "app", "Value": "marsha"},
+                    ],
                 },
             )
             ssm_stubber.add_response(
@@ -185,7 +191,10 @@ class MediaLiveUtilsTestCase(TestCase):
                     "Description": "video-key MediaPackage Secondary Ingest Username",
                     "Value": "password2",
                     "Type": "String",
-                    "Tags": [{"Key": "environment", "Value": "test"}],
+                    "Tags": [
+                        {"Key": "environment", "Value": "test"},
+                        {"Key": "app", "Value": "marsha"},
+                    ],
                 },
             )
             mediapackage_stubber.add_response(
@@ -205,7 +214,7 @@ class MediaLiveUtilsTestCase(TestCase):
                         "ProgramDateTimeIntervalSeconds": 0,
                         "SegmentDurationSeconds": 5,
                     },
-                    "Tags": {"environment": "test"},
+                    "Tags": {"environment": "test", "app": "marsha"},
                 },
             )
 
@@ -253,7 +262,7 @@ class MediaLiveUtilsTestCase(TestCase):
                         {"StreamName": "video-key-primary"},
                         {"StreamName": "video-key-secondary"},
                     ],
-                    "Tags": {"environment": "test"},
+                    "Tags": {"environment": "test", "app": "marsha"},
                 },
             )
 
@@ -620,7 +629,7 @@ class MediaLiveUtilsTestCase(TestCase):
                             },
                         ],
                     },
-                    "Tags": {"environment": "test"},
+                    "Tags": {"environment": "test", "app": "marsha"},
                 },
             )
 
