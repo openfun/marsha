@@ -11,6 +11,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Playlist portability management through LTI (resource sharing between courses)
+- Command to clean all development environments having a living stack on AWS medialive
+  and mediapackage
 
 ## [3.23.0] - 2021-08-23
 
