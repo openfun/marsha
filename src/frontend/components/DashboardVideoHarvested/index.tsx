@@ -39,7 +39,7 @@ export const DashboardVideoHarvested = ({
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
-  const [error, setError] = useState();
+  const [error, setError] = useState<unknown>();
 
   const onClick = async () => {
     const updatedVideo = {

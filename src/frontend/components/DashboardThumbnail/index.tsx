@@ -41,7 +41,7 @@ interface DashboardThumbnailProps {
 export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<unknown>();
   const pollInterval = useRef(-1);
 
   const { uploadManagerState } = useUploadManager();
@@ -94,8 +94,8 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
         cleanup();
         addThumbnail(incomingThumbnail);
       }
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setError(err);
     }
   };
 
@@ -107,8 +107,8 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
       }
 
       setShouldRedirect(true);
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setError(err);
     }
   };
 
