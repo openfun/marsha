@@ -127,7 +127,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
           <GlobalStyles />
         </Grommet>
       </QueryClientProvider>
-      ,
     </RawIntlProvider>,
     document.querySelector('#marsha-frontend-root'),
   );
