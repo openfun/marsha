@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
-import { Grommet } from 'grommet';
+import React, { Suspense } from 'react';
+import { Grommet, Tab } from 'grommet';
 
 import { appData } from '../../data/appData';
 import {
@@ -8,7 +8,7 @@ import {
   playlistMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
-import { SelectContent } from './index';
+import { SelectContent, SelectContentTabProps } from './index';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
 import { uploadState } from '../../types/tracks';
 import { Toaster } from 'react-hot-toast';
@@ -25,6 +25,35 @@ jest.mock('../../data/appData', () => ({
 jest.mock('../Loader', () => ({
   Loader: () => <span>Loader</span>,
 }));
+
+jest.mock('../../settings', () => ({
+  APPS: ['custom_app'],
+}));
+
+const mockCustomSelectContentTab = ({
+  selectContent,
+}: SelectContentTabProps) => (
+  <Tab title="Custom app tab">
+    <p
+      onClick={() =>
+        selectContent(
+          'custom-select-content-url',
+          'Custom select content title',
+        )
+      }
+    >
+      Select app content
+    </p>
+  </Tab>
+);
+
+jest.mock(
+  '../../apps/custom_app/SelectContentTab',
+  () => mockCustomSelectContentTab,
+  {
+    virtual: true,
+  },
+);
 
 window.HTMLFormElement.prototype.submit = jest.fn();
 
@@ -340,5 +369,45 @@ describe('<SelectContent />', () => {
       }),
     });
     expect(form).toHaveAttribute('action', '/lti/select/');
+  });
+
+  it('loads app tab', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <Suspense fallback="Loading...">
+          <SelectContent
+            lti_select_form_action_url={appData.lti_select_form_action_url!}
+            lti_select_form_data={{
+              lti_response_url: 'https://example.com/lti',
+              lti_message_type: 'ContentItemSelection',
+            }}
+          />
+        </Suspense>,
+      ),
+    );
+
+    const customAppTab = await screen.findByRole('tab', {
+      name: 'Custom app tab',
+    });
+    fireEvent.click(customAppTab);
+    fireEvent.click(screen.getByText('Select app content'));
+
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+
+    expect(container.querySelector('form')).toHaveFormValues({
+      lti_response_url: 'https://example.com/lti',
+      lti_message_type: 'ContentItemSelection',
+      content_items: JSON.stringify({
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: 'custom-select-content-url',
+            title: 'Custom select content title',
+            frame: [],
+          },
+        ],
+      }),
+    });
   });
 });
