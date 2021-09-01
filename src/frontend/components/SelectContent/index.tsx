@@ -13,7 +13,7 @@ import {
 } from 'grommet';
 import { Copy, DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
 import { Icon } from 'grommet-icons/icons';
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import {
   defineMessages,
@@ -26,6 +26,8 @@ import styled from 'styled-components';
 import { Document } from '../../types/file';
 import { Playlist, Video, videoSize } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
+import { APPS } from '../../settings';
+import { Loader } from '../Loader';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -241,7 +243,7 @@ interface SelectContentSectionProps {
   selectContent: (url: string, title: string) => void;
 }
 
-const SelectContentSection = ({
+export const SelectContentSection = ({
   addMessage,
   newTitle,
   newLtiUrl,
@@ -303,6 +305,12 @@ export const SelectContent = ({
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
   const intl = useIntl();
+
+  const tabs: React.LazyExoticComponent<
+    React.ComponentType<SelectContentTabProps>
+  >[] = APPS.map((name) =>
+    lazy(() => import(`../../apps/${name}/SelectContentTab`)),
+  );
 
   useEffect(() => {
     if (formRef.current && contentItemsValue) {
@@ -389,7 +397,17 @@ export const SelectContent = ({
             selectContent={selectContent}
           />
         </Tab>
+
+        <Suspense fallback={<Loader />}>
+          {tabs.map((LazyComponent, index) => (
+            <LazyComponent key={index} selectContent={selectContent} />
+          ))}
+        </Suspense>
       </Tabs>
     </Box>
   );
 };
+
+export interface SelectContentTabProps {
+  selectContent: (url: string, title: string) => void;
+}
