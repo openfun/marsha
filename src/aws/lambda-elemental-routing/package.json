@@ -21,6 +21,6 @@
     "prettier": "2.3.2"
   },
   "dependencies": {
-    "aws-sdk": "2.978.0"
+    "aws-sdk": "2.983.0"
   }
 }

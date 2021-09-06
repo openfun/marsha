@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.978.0"
+    "aws-sdk": "2.983.0"
   },
   "devDependencies": {
     "@types/jest": "27.0.1",
