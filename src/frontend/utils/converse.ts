@@ -36,6 +36,7 @@ export const converseMounter = () => {
         jid: xmpp.jid,
         modtools_disable_assign: true,
         muc_instant_rooms: false,
+        muc_show_join_leave: false,
         nickname: getDecodedJwt().user?.username,
         root: document.querySelector(containerName),
         show_client_info: false,
@@ -52,6 +53,7 @@ export const converseMounter = () => {
         whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
       });
       converse.plugins.add('marsha', {
+        dependencies: ['converse-muc'],
         initialize() {
           const _converse = this._converse;
 
@@ -61,8 +63,48 @@ export const converseMounter = () => {
         },
       });
       converse.plugins.add('marsha-join-discussion', {
+        dependencies: ['converse-muc'],
         initialize() {
           const _converse = this._converse;
+          let joinedRoom = false;
+
+          _converse.on('chatRoomInitialized', (model: any) => {
+            model.session.on(
+              'change:connection_status',
+              (currentSession: any) => {
+                if (
+                  currentSession.get('connection_status') ===
+                  converse.ROOMSTATUS.ENTERED
+                ) {
+                  joinedRoom = true;
+                }
+
+                if (
+                  currentSession.get('connection_status') ===
+                  converse.ROOMSTATUS.DISCONNECTED
+                ) {
+                  joinedRoom = false;
+                }
+
+                if (
+                  currentSession.get('connection_status') ===
+                    converse.ROOMSTATUS.NICKNAME_REQUIRED &&
+                  useParticipantWorkflow.getState().asked
+                ) {
+                  useParticipantWorkflow
+                    .getState()
+                    .setUsernameAlreadyExisting();
+                }
+              },
+            );
+          });
+
+          _converse.on('enteredNewRoom', (model: any) => {
+            joinedRoom = true;
+            if (useParticipantWorkflow.getState().asked) {
+              askParticipantToJoin();
+            }
+          });
 
           _converse.on('initialized', () => {
             _converse.connection.addHandler(
@@ -159,110 +201,124 @@ export const converseMounter = () => {
               null,
               null,
             );
+          });
 
-            const askParticipantToJoin = () => {
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: MessageType.GROUPCHAT,
-                event: EventType.PARTICIPANT_ASK_TO_JOIN,
-              });
-              _converse.connection.send(msg);
-            };
+          const askParticipantToJoin = async (username?: string) => {
+            if (!joinedRoom && !username) {
+              throw Error('must be in the room before asking to join');
+            }
+            // test if current user joined the room
+            if (!joinedRoom && username) {
+              const room = await _converse.api.rooms.get(
+                xmpp.conference_url,
+                {},
+                false,
+              );
+              // try to join the room
+              return room.join(username);
+            }
 
-            const acceptParticipantToJoin = (
-              participant: Participant,
-              video: Video,
-            ) => {
-              // only instructors or admin has update permissions
-              if (!getDecodedJwt().permissions.can_update) {
-                return;
-              }
-
-              // send message to user to accept joining the discussion
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: participant.id,
-                type: MessageType.EVENT,
-                event: EventType.ACCEPT,
-                jitsi: JSON.stringify(video.live_info.jitsi),
-              });
-              _converse.connection.send(msg);
-
-              // broadcast message to other instructors to sync participant states
-              const acceptedMsg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: MessageType.GROUPCHAT,
-                event: EventType.ACCEPTED,
-                participant: JSON.stringify(participant),
-              });
-              _converse.connection.send(acceptedMsg);
-            };
-
-            const rejectParticipantToJoin = (participant: Participant) => {
-              // only instructors or admin has update permissions
-              if (!getDecodedJwt().permissions.can_update) {
-                return;
-              }
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: participant.id,
-                type: MessageType.EVENT,
-                event: EventType.REJECT,
-              });
-              _converse.connection.send(msg);
-
-              const rejectedMsg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: MessageType.GROUPCHAT,
-                event: EventType.REJECTED,
-                participant: JSON.stringify(participant),
-              });
-              _converse.connection.send(rejectedMsg);
-            };
-
-            const kickParticipant = (participant: Participant) => {
-              // only instructors or admin has update permissions
-              if (!getDecodedJwt().permissions.can_update) {
-                return;
-              }
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: participant.id,
-                type: MessageType.EVENT,
-                event: EventType.KICK,
-              });
-              _converse.connection.send(msg);
-
-              const kickedMsg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: MessageType.GROUPCHAT,
-                event: EventType.KICKED,
-                participant: JSON.stringify(participant),
-              });
-              _converse.connection.send(kickedMsg);
-            };
-
-            const participantLeaves = () => {
-              const msg = converse.env.$msg({
-                from: _converse.connection.jid,
-                to: xmpp.conference_url,
-                type: MessageType.GROUPCHAT,
-                event: EventType.LEAVE,
-              });
-              _converse.connection.send(msg);
-            };
-
-            Object.assign(converse, {
-              acceptParticipantToJoin,
-              askParticipantToJoin,
-              kickParticipant,
-              rejectParticipantToJoin,
-              participantLeaves,
+            const msg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: xmpp.conference_url,
+              type: MessageType.GROUPCHAT,
+              event: EventType.PARTICIPANT_ASK_TO_JOIN,
             });
+            _converse.connection.send(msg);
+          };
+
+          const acceptParticipantToJoin = (
+            participant: Participant,
+            video: Video,
+          ) => {
+            // only instructors or admin has update permissions
+            if (!getDecodedJwt().permissions.can_update) {
+              return;
+            }
+
+            // send message to user to accept joining the discussion
+            const msg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: participant.id,
+              type: MessageType.EVENT,
+              event: EventType.ACCEPT,
+              jitsi: JSON.stringify(video.live_info.jitsi),
+            });
+            _converse.connection.send(msg);
+
+            // broadcast message to other instructors to sync participant states
+            const acceptedMsg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: xmpp.conference_url,
+              type: MessageType.GROUPCHAT,
+              event: EventType.ACCEPTED,
+              participant: JSON.stringify(participant),
+            });
+            _converse.connection.send(acceptedMsg);
+          };
+
+          const rejectParticipantToJoin = (participant: Participant) => {
+            // only instructors or admin has update permissions
+            if (!getDecodedJwt().permissions.can_update) {
+              return;
+            }
+            const msg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: participant.id,
+              type: MessageType.EVENT,
+              event: EventType.REJECT,
+            });
+            _converse.connection.send(msg);
+
+            const rejectedMsg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: xmpp.conference_url,
+              type: MessageType.GROUPCHAT,
+              event: EventType.REJECTED,
+              participant: JSON.stringify(participant),
+            });
+            _converse.connection.send(rejectedMsg);
+          };
+
+          const kickParticipant = (participant: Participant) => {
+            // only instructors or admin has update permissions
+            if (!getDecodedJwt().permissions.can_update) {
+              return;
+            }
+            const msg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: participant.id,
+              type: MessageType.EVENT,
+              event: EventType.KICK,
+            });
+            _converse.connection.send(msg);
+
+            const kickedMsg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: xmpp.conference_url,
+              type: MessageType.GROUPCHAT,
+              event: EventType.KICKED,
+              participant: JSON.stringify(participant),
+            });
+            _converse.connection.send(kickedMsg);
+          };
+
+          const participantLeaves = () => {
+            const msg = converse.env.$msg({
+              from: _converse.connection.jid,
+              to: xmpp.conference_url,
+              type: MessageType.GROUPCHAT,
+              event: EventType.LEAVE,
+            });
+            _converse.connection.send(msg);
+          };
+
+          Object.assign(converse, {
+            acceptParticipantToJoin,
+            askParticipantToJoin,
+            kickParticipant,
+            rejectParticipantToJoin,
+            participantLeaves,
           });
         },
       });

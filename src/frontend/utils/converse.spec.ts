@@ -73,6 +73,7 @@ describe('converseMounter', () => {
       jid: 'xmpp-server.com',
       modtools_disable_assign: true,
       muc_instant_rooms: false,
+      muc_show_join_leave: false,
       nickname: 'jane_doe',
       root: expect.any(HTMLDivElement),
       show_client_info: false,
@@ -90,8 +91,16 @@ describe('converseMounter', () => {
     });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith('marsha', {
+      dependencies: ['converse-muc'],
       initialize: expect.any(Function),
     });
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      'marsha-join-discussion',
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
     expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
 
     // second call, converse is already initialized, we mount it in the dom.
