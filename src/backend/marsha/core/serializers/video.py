@@ -402,6 +402,7 @@ class VideoSerializer(VideoBaseSerializer):
             "description",
             "id",
             "is_ready_to_show",
+            "is_scheduled",
             "timed_text_tracks",
             "thumbnail",
             "title",
@@ -409,6 +410,7 @@ class VideoSerializer(VideoBaseSerializer):
             "urls",
             "show_download",
             "should_use_subtitle_as_transcript",
+            "starting_at",
             "has_transcript",
             "playlist",
             "live_info",
@@ -420,6 +422,7 @@ class VideoSerializer(VideoBaseSerializer):
             "id",
             "active_stamp",
             "is_ready_to_show",
+            "is_scheduled",
             "urls",
             "has_transcript",
             "live_info",
@@ -436,6 +439,27 @@ class VideoSerializer(VideoBaseSerializer):
     has_transcript = serializers.SerializerMethodField()
     live_info = serializers.SerializerMethodField()
     xmpp = serializers.SerializerMethodField()
+
+    def validate_starting_at(self, value):
+        """Add extra controls for starting_at field."""
+        # Checks current starting_at is not already over
+        if (
+            self.instance.starting_at is not None
+            and value != self.instance.starting_at
+            and self.instance.starting_at < timezone.now()
+        ):
+            raise serializers.ValidationError(
+                f"Field starting_at {self.instance.starting_at} is already "
+                + "past and can't be updated!"
+            )
+        # Checks live_state is null as expected when scheduling a live
+        if self.instance.live_state is not None:
+            raise serializers.ValidationError(
+                "Field starting_at can't be changed, video live is "
+                + "not in default mode."
+            )
+
+        return value
 
     def get_xmpp(self, obj):
         """Chat info.

@@ -1,5 +1,5 @@
 """Tests for the Video API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import random
 from unittest import mock
@@ -185,7 +185,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": "1533686400",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": "ready",
                 "thumbnail": None,
                 "timed_text_tracks": [
@@ -294,7 +296,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": "pending",
                 "timed_text_tracks": [],
                 "thumbnail": None,
@@ -344,7 +348,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": state,
                 "timed_text_tracks": [],
                 "thumbnail": None,
@@ -481,6 +487,7 @@ class VideoAPITest(TestCase):
                 "has_transcript": False,
                 "id": str(video.id),
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -491,6 +498,7 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
+                "starting_at": None,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "title": video.title,
@@ -553,6 +561,7 @@ class VideoAPITest(TestCase):
                 "has_transcript": False,
                 "id": str(video.id),
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -563,6 +572,7 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
+                "starting_at": None,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "title": video.title,
@@ -660,6 +670,7 @@ class VideoAPITest(TestCase):
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
@@ -674,6 +685,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -684,6 +696,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video.title,
@@ -749,6 +762,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video_1.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -759,6 +773,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video_1.title,
@@ -772,6 +787,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video_2.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -782,6 +798,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video_2.title,
@@ -861,6 +878,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -871,6 +889,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video.title,
@@ -925,6 +944,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -935,6 +955,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video.title,
@@ -1018,6 +1039,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1028,6 +1050,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video.title,
@@ -1081,6 +1104,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video_1.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1091,6 +1115,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video_1.title,
@@ -1104,6 +1129,7 @@ class VideoAPITest(TestCase):
                         "has_transcript": False,
                         "id": str(video_2.id),
                         "is_ready_to_show": False,
+                        "is_scheduled": False,
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1114,6 +1140,7 @@ class VideoAPITest(TestCase):
                         },
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
+                        "starting_at": None,
                         "thumbnail": None,
                         "timed_text_tracks": [],
                         "title": video_2.title,
@@ -1265,6 +1292,7 @@ class VideoAPITest(TestCase):
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -1275,6 +1303,7 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
+                "starting_at": None,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "title": "Some video",
@@ -1423,6 +1452,7 @@ class VideoAPITest(TestCase):
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -1433,9 +1463,76 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
+                "starting_at": None,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "title": "Some video",
+                "upload_state": "pending",
+                "urls": None,
+                "xmpp": None,
+            },
+        )
+
+    def test_api_video_create_with_scheduled_date_gets_ignored(self):
+        """
+        Create video with right access.
+
+        Try to init field starting_at and property is_scheduled on creation. Data are ignored.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(user.id)
+        jwt_token.payload["user"] = {
+            "id": str(user.id),
+            "username": user.username,
+        }
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        # try to set starting_at and is_scheduled
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some title",
+                "starting_at": timezone.now() + timedelta(days=100),
+                "is_scheduled": True,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+
+        # starting_at is None by default, is_scheduled is False
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "description": "",
+                "has_transcript": False,
+                "id": str(models.Video.objects.get().id),
+                "is_ready_to_show": False,
+                "is_scheduled": False,
+                "live_info": {},
+                "live_state": None,
+                "live_type": None,
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": "Some title",
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
@@ -1508,6 +1605,137 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(video.title, "my new title")
+
+    def test_api_video_update_detail_token_scheduled_date_future(self):
+        """
+        Update video with scheduled date.
+
+        Users should be able to update the starting_date of their video through the API
+        as long as starting_date is in the future.
+        """
+        video = factories.VideoFactory(title="my title")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (timezone.now() + timedelta(hours=1)).replace(microsecond=0)
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+
+    def test_api_video_update_detail_token_scheduled_date_past(self):
+        """
+        Try to schedule a video with a date in the past.
+
+        Users can't update the starting_date of their video through the API if starting_date
+        is in the past.
+        """
+        init_starting_at = timezone.now() + timedelta(hours=1)
+        video = factories.VideoFactory(title="my title", starting_at=init_starting_at)
+        self.assertTrue(video.is_scheduled)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # try to set a date in the past
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (timezone.now() - timedelta(days=10)).replace(microsecond=0)
+        data = {"title": "title required", "starting_at": starting_at}
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        # data didn't change and an error is thrown
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "starting_at": [
+                    f"{starting_at} is not a valid date, date should be planned after!"
+                ]
+            },
+        )
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, init_starting_at)
+        self.assertTrue(video.is_scheduled)
+
+    def test_api_video_update_detail_token_scheduled_date_to_none(self):
+        """
+        Update starting_at to None.
+
+        Users can update the starting_date of their video through the API to None to cancel the
+        scheduled mode.
+        """
+        starting_at = timezone.now() + timedelta(minutes=10)
+        video = factories.VideoFactory(title="my title", starting_at=starting_at)
+        self.assertTrue(video.is_scheduled)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        data = {"title": "title required", "starting_at": None}
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, None)
+        self.assertFalse(video.is_scheduled)
+
+    def test_api_video_update_detail_token_scheduled_with_previous_starting_at_already_past(
+        self,
+    ):
+        """starting_at is in the past, it can't be updated anymore."""
+        intial_starting_at = timezone.now() + timedelta(days=10)
+        video = factories.VideoFactory(starting_at=intial_starting_at)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # now is set to after initial starting_at
+        now = intial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # even if we try to update the starting_at in the future date, as previous one is past
+            # it can't get updated.
+            new_starting_at = now + timedelta(days=10)
+            response = self.client.put(
+                f"/api/videos/{video.id}/",
+                {"starting_at": new_starting_at, "title": "Required title"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            content = json.loads(response.content)
+            self.assertEqual(
+                content,
+                {
+                    "starting_at": [
+                        (
+                            f"Field starting_at {intial_starting_at} "
+                            + "is already past and can't be updated!"
+                        )
+                    ]
+                },
+            )
+            self.assertEqual(response.status_code, 400)
 
     def test_api_video_update_detail_token_user_description(self):
         """Token users should be able to update the description of their video through the API."""
@@ -1741,6 +1969,152 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.title, "existing title")
 
+    def test_api_video_patch_by_instructor_scheduling_date_future(self):
+        """
+        Updating starting_at with date in the future.
+
+        Instructors and administrators with a token should be able to patch fields
+        starting_at on their video through the API as long as date is in the future.
+        """
+        video = factories.VideoFactory(starting_at=None)
+
+        # starting_at is None there is no event scheduled
+        self.assertFalse(video.is_scheduled)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # starting_at gets updated to a date in the future
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (timezone.now() + timedelta(hours=1)).replace(microsecond=0)
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            {"starting_at": starting_at, "is_scheduled": False},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        # video is now a scheduled one
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, None)
+        self.assertEqual(video.starting_at, starting_at)
+
+        # we now try to set starting_at to a date in the past and it musn't be allowed
+        past_starting_at = (timezone.now() - timedelta(hours=1)).replace(microsecond=0)
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            {"starting_at": past_starting_at},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        # data didn't change and an error is thrown
+        self.assertEqual(
+            content,
+            {
+                "starting_at": [
+                    f"{past_starting_at} is not a valid date, date should be planned after!"
+                ]
+            },
+        )
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+
+        # we now set the date to null to cancel the event
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            {"starting_at": None},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        # request got approved
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+
+        # video is not a scheduled one anymore
+        self.assertFalse(video.is_scheduled)
+        self.assertEqual(video.starting_at, None)
+
+    def test_api_patch_video_with_previous_starting_at_already_past(self):
+        """Date is already set in video and is in the past, it can't be updated anymore."""
+        intial_starting_at = timezone.now() + timedelta(days=10)
+        video = factories.VideoFactory(starting_at=intial_starting_at)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # now is set after video.starting_at
+        now = intial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # even if we try to update the starting_at in the future date, as previous one is past
+            # it can't get updated.
+            new_starting_at = now + timedelta(days=100)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/",
+                {"starting_at": new_starting_at, "title": "Required title"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            content = json.loads(response.content)
+            self.assertEqual(
+                content,
+                {
+                    "starting_at": [
+                        (
+                            f"Field starting_at {intial_starting_at} "
+                            + "is already past and can't be updated!"
+                        )
+                    ]
+                },
+            )
+            self.assertEqual(response.status_code, 400)
+
+    def test_api_patch_video_with_live_state_set(self):
+        """Check we can't update starting_date if live_state is not null."""
+        for live_choice in LIVE_CHOICES:
+            video = factories.VideoFactory(
+                live_state=live_choice[0],
+                live_type=RAW,
+            )
+            self.assertFalse(video.is_scheduled)
+
+            jwt_token = AccessToken()
+            jwt_token.payload["resource_id"] = str(video.id)
+            jwt_token.payload["roles"] = [
+                random.choice(["instructor", "administrator"])
+            ]
+            jwt_token.payload["permissions"] = {"can_update": True}
+
+            starting_at = timezone.now() + timedelta(days=10)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/",
+                {"starting_at": starting_at, "title": "Required title"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+            content = json.loads(response.content)
+            self.assertEqual(
+                content,
+                {
+                    "starting_at": (
+                        [
+                            (
+                                "Field starting_at can't be changed, video live is not "
+                                + "in default mode."
+                            )
+                        ]
+                    )
+                },
+            )
+            self.assertEqual(response.status_code, 400)
+
     def test_api_video_patch_by_organization_admin(self):
         """Organization admins can patch videos on the API."""
         user = factories.UserFactory()
@@ -1932,6 +2306,45 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(video.title, "updated title")
+
+    def test_api_update_video_with_live_state_set(self):
+        """Check we can't update starting_date if live_state is not null."""
+        for live_choice in LIVE_CHOICES:
+            video = factories.VideoFactory(
+                live_state=live_choice[0],
+                live_type=RAW,
+            )
+            self.assertFalse(video.is_scheduled)
+
+            jwt_token = AccessToken()
+            jwt_token.payload["resource_id"] = str(video.id)
+            jwt_token.payload["roles"] = [
+                random.choice(["instructor", "administrator"])
+            ]
+            jwt_token.payload["permissions"] = {"can_update": True}
+            starting_at = timezone.now() + timedelta(hours=1)
+            response = self.client.put(
+                f"/api/videos/{video.id}/",
+                {"starting_at": starting_at, "title": "Required title"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+            content = json.loads(response.content)
+            self.assertEqual(
+                content,
+                {
+                    "starting_at": (
+                        [
+                            (
+                                "Field starting_at can't be changed, video live is not "
+                                + "in default mode."
+                            )
+                        ]
+                    )
+                },
+            )
+            self.assertEqual(response.status_code, 400)
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
@@ -2590,7 +3003,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": "pending",
                 "thumbnail": None,
                 "timed_text_tracks": [],
@@ -2677,7 +3092,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": "pending",
                 "thumbnail": None,
                 "timed_text_tracks": [],
@@ -2885,7 +3302,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": "pending",
                 "thumbnail": None,
                 "timed_text_tracks": [],
@@ -3075,7 +3494,9 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "upload_state": PENDING,
                 "thumbnail": None,
                 "timed_text_tracks": [],

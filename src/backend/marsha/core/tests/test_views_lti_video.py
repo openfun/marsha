@@ -104,7 +104,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -222,7 +224,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": PENDING,
@@ -367,7 +371,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": PENDING,
@@ -503,7 +509,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": PENDING,
@@ -622,7 +630,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -700,7 +710,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": video.upload_state,
@@ -824,7 +836,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": video.upload_state,
@@ -936,7 +950,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": video.upload_state,
@@ -1050,7 +1066,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": video.upload_state,
@@ -1353,7 +1371,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -1441,7 +1461,9 @@ class VideoLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",

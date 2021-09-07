@@ -141,7 +141,9 @@ class DevelopmentLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
+                "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
                 "upload_state": "pending",
@@ -209,6 +211,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             {
                 "active_stamp": None,
                 "is_ready_to_show": False,
+                "is_scheduled": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -218,6 +221,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "title": video.title,
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
+                "starting_at": None,
                 "has_transcript": False,
                 "playlist": {
                     "id": str(video.playlist.id),

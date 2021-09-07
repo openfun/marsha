@@ -61,6 +61,7 @@ class VideoPublicViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -106,6 +107,7 @@ class VideoPublicViewTestCase(TestCase):
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
+                "starting_at": None,
                 "has_transcript": False,
                 "playlist": {
                     "id": str(video.playlist.id),
@@ -234,6 +236,7 @@ class VideoPublicViewTestCase(TestCase):
             {
                 "active_stamp": "1569309880",
                 "is_ready_to_show": True,
+                "is_scheduled": False,
                 "show_download": True,
                 "description": video.description,
                 "id": str(video.id),
@@ -249,6 +252,7 @@ class VideoPublicViewTestCase(TestCase):
                     "thumbnails": {},
                 },
                 "should_use_subtitle_as_transcript": False,
+                "starting_at": None,
                 "has_transcript": False,
                 "playlist": {
                     "id": str(video.playlist.id),
