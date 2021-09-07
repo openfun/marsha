@@ -18,9 +18,10 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
+      "converse": ["types/libs/converse"],
       "intl-pluralrules": ["types/libs/intl-pluralrules"],
-      "vtt.js": ["types/libs/vtt.js"],
-      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"]
+      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
+      "vtt.js": ["types/libs/vtt.js"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

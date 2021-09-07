@@ -175,6 +175,7 @@ VirtualHost "prosody"
     modules_enabled = {
         "bosh";
         "websocket";
+        "smacks";
     }
     c2s_require_encryption = false
 
