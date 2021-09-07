@@ -1,10 +1,13 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
+from unittest import mock
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
+from django.utils import timezone
 
 import pytz
 from safedelete.models import SOFT_DELETE_CASCADE
@@ -93,3 +96,54 @@ class VideoModelsTestCase(TestCase):
             video = VideoFactory(live_state=live_choice[0], live_type=RAW)
 
             self.assertEqual(video.is_ready_to_show, True)
+
+    def test_models_video_is_scheduled_none(self):
+        """Checks that with a starting_at set to None video is not in the scheduled mode."""
+        video = VideoFactory(starting_at=None)
+        self.assertFalse(video.is_scheduled)
+        self.assertEqual(video.live_state, None)
+
+    def test_models_video_is_scheduled_with_state(self):
+        """The property is_scheduled is set according to starting_at and live_state."""
+        starting_at = timezone.now() + timedelta(hours=11)
+        video = VideoFactory(starting_at=starting_at)
+        # Video is in the scheduled mode
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, None)
+
+        # With any live_state other than None, is_scheduled is False
+        for live_choice in LIVE_CHOICES:
+            video = VideoFactory(
+                live_state=live_choice[0],
+                live_type=RAW,
+                starting_at=starting_at,
+            )
+
+            self.assertFalse(video.is_scheduled)
+
+    def test_models_video_is_scheduled_with_date_constraint(self):
+        """
+        Testing the switch of is_scheduled with time over now.
+
+        The property is_scheduled is set according to starting_at. It gets automaticaly
+        updated to not scheduled if date is over.
+        """
+        starting_at = timezone.now() - timedelta(hours=1)
+        # Can't set with a date in the past
+        with self.assertRaises(ValidationError) as error:
+            VideoFactory(starting_at=starting_at)
+
+        self.assertEqual(
+            error.exception.messages,
+            [f"{starting_at} is not a valid date, date should be planned after!"],
+        )
+        # Set to now plus 1 second and wait
+        video = VideoFactory(starting_at=timezone.now() + timedelta(seconds=1))
+        # Video is scheduled
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, None)
+
+        # Mock now to the future to check video gets set to not scheduled
+        future = timezone.now() + timedelta(hours=1)
+        with mock.patch.object(timezone, "now", return_value=future):
+            self.assertFalse(video.is_scheduled)

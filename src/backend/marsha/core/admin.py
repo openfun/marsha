@@ -283,8 +283,14 @@ class SignTrackInline(admin.TabularInline):
 class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
-    fields = BaseFileAdmin.fields + ("is_public",)
-    list_display = BaseFileAdmin.list_display + ("is_public",)
+    fields = BaseFileAdmin.fields + (
+        "starting_at",
+        "is_public",
+    )
+    list_display = BaseFileAdmin.list_display + (
+        "starting_at",
+        "is_public",
+    )
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")
 
