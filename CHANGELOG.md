@@ -44,6 +44,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Command to clean all development environments having a living stack on AWS
   medialive and mediapackage
 - Allow a participant to join a Jitsi conference
+- Video model add a `starting_at` field and the notion is_scheduled
 
 ### Changed
 
