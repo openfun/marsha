@@ -2,11 +2,13 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
 from ..defaults import DELETED, HARVESTED, LIVE_CHOICES, LIVE_TYPE_CHOICES
 from ..utils.time_utils import to_timestamp
+from ..validators import validate_date_is_future
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
 
@@ -16,6 +18,13 @@ class Video(BaseFile):
 
     RESOURCE_NAME = "videos"
 
+    starting_at = models.DateTimeField(
+        blank=True,
+        verbose_name=_("starting at"),
+        help_text=_("date and time at which a video live is scheduled"),
+        null=True,
+        validators=[validate_date_is_future],
+    )
     should_use_subtitle_as_transcript = models.BooleanField(
         default=False,
         verbose_name=_("use subtitle as transcript"),
@@ -53,7 +62,6 @@ class Video(BaseFile):
         null=True,
         blank=True,
     )
-
     is_public = models.BooleanField(
         default=False,
         verbose_name=_("is video public"),
@@ -131,6 +139,20 @@ class Video(BaseFile):
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
     @property
+    def is_scheduled(self):
+        """Whether this video is scheduled or not.
+
+        Video is considered in scheduled mode when live hasn't started yet and date
+        is planned in the future.
+        """
+        # pylint:disable=unexpected-keyword-arg
+        return (
+            self.starting_at is not None
+            and self.starting_at > timezone.now()
+            and self.live_state is None
+        )
+
+    @property
     def is_ready_to_show(self):
         """Whether the file is ready to display (ie) has been sucessfully uploaded.
 
@@ -147,15 +169,21 @@ class Video(BaseFile):
         """Clause used in lti.utils.get_or_create_resource to filter the videos.
 
         Only show videos that have successfully gone through the upload process,
-        or live streams that are in the running state.
+        or live streams that are in the running state or videos that are in the scheduled mode.
 
         Returns
         -------
         models.Q
             A condition added to a QuerySet
         """
-        return models.Q(uploaded_on__isnull=False, live_state__isnull=True) | models.Q(
-            live_state__isnull=False
+        return (
+            models.Q(uploaded_on__isnull=False, live_state__isnull=True)
+            | models.Q(live_state__isnull=False)
+            | models.Q(
+                starting_at__isnull=False,
+                starting_at__gte=timezone.now(),
+                live_state__isnull=True,
+            )
         )
 
     def get_medialive_input(self):
