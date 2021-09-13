@@ -1247,6 +1247,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context,
             {
+                "appName": "",
                 "environment": "test",
                 "flags": {
                     "sentry": True,

@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   stories: ['../components/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
@@ -9,4 +11,11 @@ module.exports = {
       },
     },
   ],
+  webpackFinal: (config) => ({
+    ...config,
+    resolve: {
+      ...config.resolve,
+      modules: [path.resolve(__dirname, '..'), 'node_modules'],
+    },
+  }),
 };
