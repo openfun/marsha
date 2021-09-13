@@ -149,6 +149,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             {
                 "frontend": "LTI",
                 "modelName": self.model.RESOURCE_NAME,
+                "appName": self.request.resolver_match.app_name,
             }
         )
         return app_data

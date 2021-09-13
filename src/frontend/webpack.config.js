@@ -34,6 +34,7 @@ const config = {
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    modules: [__dirname, 'node_modules'],
     fallback: {
       buffer: require.resolve('buffer/'),
       stream: require.resolve('stream-browserify'),

@@ -1,5 +1,6 @@
 import { modelName } from '../../types/models';
 import { parseDataElements } from './parseDataElements';
+import { AppData } from '../../types/AppData';
 
 describe.only('utils/parseDataElements', () => {
   describe('parseDataElements()', () => {
@@ -13,6 +14,7 @@ describe.only('utils/parseDataElements', () => {
 
       const data = parseDataElements(dataElement);
       expect(data.video).toEqual(context.resource);
+      expect(data.resource).toEqual(undefined);
     });
 
     it('parses the data-context and creates a document attribute', () => {
@@ -25,9 +27,10 @@ describe.only('utils/parseDataElements', () => {
 
       const data = parseDataElements(dataElement);
       expect(data.document).toEqual(context.resource);
+      expect(data.resource).toEqual(undefined);
     });
 
-    it('throws an error when the model name is not supported', () => {
+    it('leaves the context unmodified when the model is unknown', () => {
       const dataElement = document.createElement('div');
       const context = {
         modelName: modelName.THUMBNAILS,
@@ -35,9 +38,8 @@ describe.only('utils/parseDataElements', () => {
       };
       dataElement.setAttribute('data-context', JSON.stringify(context));
 
-      expect(() => {
-        parseDataElements(dataElement);
-      }).toThrowError(`Model ${modelName.THUMBNAILS} not supported`);
+      const data = parseDataElements(dataElement);
+      expect(data).toEqual(context);
     });
   });
 });

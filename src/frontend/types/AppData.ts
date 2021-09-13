@@ -20,7 +20,9 @@ export interface AppData {
   videos?: Video[];
   document?: Nullable<Document>;
   documents?: Document[];
+  resource?: any;
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
+  appName: string;
   new_document_url?: string;
   new_video_url?: string;
   lti_select_form_action_url?: string;

@@ -83,13 +83,24 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   );
 
   let App: () => JSX.Element;
-  try {
-    const { Routes } = await import(`./components/${appData.frontend}Routes`);
-    App = Routes;
-  } catch (e) {
-    throw new Error(
-      `${appData.frontend} is not an expected value for appData.frontend`,
-    );
+  if (appData.appName) {
+    try {
+      const { Routes } = await import(`./apps/${appData.appName}/Routes`);
+      App = Routes;
+    } catch (e) {
+      throw new Error(
+        `${appData.appName} is not an expected value for appData.appName (${e})`,
+      );
+    }
+  } else {
+    try {
+      const { Routes } = await import(`./components/${appData.frontend}Routes`);
+      App = Routes;
+    } catch (e) {
+      throw new Error(
+        `${appData.frontend} is not an expected value for appData.frontend (${e})`,
+      );
+    }
   }
 
   const queryClient = new QueryClient();
