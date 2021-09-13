@@ -999,6 +999,20 @@ workflows:
             tags:
               only: /.*/
 
+      # Check changelog validity
+      - check-changelog:
+          filters:
+            branches:
+              ignore: master
+            tags:
+              ignore: /.*/
+      - lint-changelog:
+          filters:
+            branches:
+              ignore: master
+            tags:
+              ignore: /.*/
+
       # Front-end jobs
       #
       # Build (and later lint and test the front-end app)
@@ -1119,12 +1133,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - check-changelog:
-          filters:
-            branches:
-              ignore: master
-            tags:
-              ignore: /.*/
       - test-e2e:
           name: test-e2e-firefox
           browser: firefox
