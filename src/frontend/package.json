@@ -81,7 +81,7 @@
     "@types/intl": "1.2.0",
     "buffer": "6.0.3",
     "clipboard": "2.0.8",
-    "converse.js": "<9",
+    "converse.js": "<8",
     "core-js": "3.17.3",
     "custom-event-polyfill": "1.0.7",
     "grommet": "2.17.5",
