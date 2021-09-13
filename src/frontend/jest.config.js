@@ -1,4 +1,5 @@
 module.exports = {
+  moduleDirectories: [__dirname, 'node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',

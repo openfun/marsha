@@ -8,16 +8,13 @@ export const parseDataElements = (element: Element): AppData => {
     switch (context.modelName) {
       case modelName.VIDEOS:
         context.video = context.resource;
+        delete context.resource;
         break;
       case modelName.DOCUMENTS:
         context.document = context.resource;
+        delete context.resource;
         break;
-      default:
-        throw new Error(`Model ${context.modelName} not supported`);
     }
-
-    delete context.resource;
   }
-
   return context;
 };
