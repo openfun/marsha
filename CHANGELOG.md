@@ -13,8 +13,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Playlist portability management through LTI (resource sharing between courses)
-- Command to clean all development environments having a living stack on AWS medialive
-  and mediapackage
+- Command to clean all development environments having a living stack on AWS
+  medialive and mediapackage
 - Allow a participant to join a Jitsi conference
 
 ### Changed
@@ -33,7 +33,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Add aws permission to list mediapackage harvest jobs (fixes unusable 3.22.0 version)
+- Add aws permission to list mediapackage harvest jobs
+  (fixes unusable 3.22.0 version)
 
 ## [3.22.0] - 2021-08-19
 
@@ -70,7 +71,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display a waiting message while live is not available
 - Add Playrwright testing (with basic cloud storage mocking)
 - Update circleci config to version 2.1
-- Add a parametrized cicrcleci job to run e2e tests on 3 browsers (chromium, firefox and webkit)
+- Add a parametrized cicrcleci job to run e2e tests on 3 browsers
+  (chromium, firefox and webkit)
 - Move DevelopmentLTIView to a new development directory
 - Add a variable to set frontend video polling interval
 - Add a component responsible to manage public video dashboard
@@ -109,9 +111,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Chat feature implementing XMPP protocol
 - Add a prosody server in docker-compose stack
-- Add a LTI select view to allow LTI consumers to add a LTI content through Deep Linking
+- Add a LTI select view to allow LTI consumers to add a LTI content through
+  Deep Linking
 - Display chat box without video player
-- Add a tests.utils module to share LTI request signature and refactor related tests
+- Add a tests.utils module to share LTI request signature and refactor related
+  tests
 - Install storybook
 - Add a button to easily copy RTMP infos
 
@@ -136,8 +140,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add a series of components to power breadcrumbs.
 - Add a frontend component to use SVG icons in Marsha.
-- Add ngrok to serve marsha on a public domain and automate CloudFront configuration
-  via terraform when needed
+- Add ngrok to serve marsha on a public domain and automate CloudFront
+  configuration via terraform when needed
 
 ### Fixed
 
@@ -477,7 +481,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Support critical features (video & document playback) in IE 11.
-- Introduce a new setting AWS_BASE_NAME to prefix all AWS settings in the project.
+- Introduce a new setting AWS_BASE_NAME to prefix all AWS settings in the
+  project.
 - Use sentry to track errors in the front application.
 - New lambda responsible to migrate migrations on AWS.
 
@@ -500,15 +505,18 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactor the LTI view to be generic for all the resources we want to manage
 - Video model is a special File model
 - pluralize thumbnail url
-- Simplify template to frontend communication by using JSON instead of multiple data-attributes
+- Simplify template to frontend communication by using JSON instead of 
+  multiple data-attributes
 - Rename all is_ready_to_* model properties to is_ready_to_show
-- Change filename when a user downloads a resource.
-  For video it has the following pattern: {playlist title}_{uploaded timestamp}.mp4
-  For document it has the following pattern: {playlist_title}_{document_title}.{document_extension}
-- Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
-- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
-  (a critical feature for us)
-- Upgrade crowdin image used in circle-ci to version 2.0.31 including tar command
+- Change filename pattern when a user downloads a resource.
+  For video: {playlist title}_{uploaded timestamp}.mp4
+  For document: {playlist_title}_{document_title}.{document_extension}
+- Change gunicorn configuration to increase number of threads, worker class
+  and worker tmpdir
+- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt
+  files (a critical feature for us)
+- Upgrade crowdin image used in circle-ci to version 2.0.31 including tar
+  command
 - Upgrade to python 3.7
 - Refactor resource models to share code
 
@@ -526,9 +534,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Change gunicorn configuration to increase number of threads, worker class and worker tmpdir
-- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt files
-  (a critical feature for us)
+- Change gunicorn configuration to increase number of threads, worker class
+  and worker tmpdir
+- Upgrade @openfun/subsrt in lambda-encode. Patched version parses most of srt
+  files (a critical feature for us)
 
 ## [2.10.1] - 2019-08-13
 
@@ -643,9 +652,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - LRS credentials can be configured at the consumer site level.
-- Configure in the consumer site admin panel if by default videos can show a download link.
-- Do not allow video modification when the consumer site used is not the one used
-  to create the video.
+- Configure in the consumer site admin panel if by default videos can show
+  a download link.
+- Do not allow video modification when the consumer site used is not the one
+  used to create the video.
 
 ### Changed
 
@@ -661,9 +671,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Replace the `CLOUDFRONT_URL` setting by a `CLOUDFRONT_DOMAIN` setting to uniformize with what
-  django-storages is doing and share the same settings.
-- Downgrade django-storages to 1.6.3, the last version compatible with ManifestStaticFilesStorage
+- Replace the `CLOUDFRONT_URL` setting by a `CLOUDFRONT_DOMAIN` setting to
+  uniformize with what django-storages is doing and share the same settings.
+- Downgrade django-storages to 1.6.3, the last version compatible with
+  ManifestStaticFilesStorage
 
 ## [2.5.0] - 2019-03-25
 
@@ -679,7 +690,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Ease video download for user. It is possible to click on a link to download a video.
+- Ease video download for user. It is possible to click on a link to download
+  a video.
 
 ### Fixed
 
@@ -713,13 +725,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Run `webpack` in production mode for builds that will be deployed; shaves 75+% on the bundle size
+- Run `webpack` in production mode for builds that will be deployed; shaves 
+  75+% on the bundle size
 
 ## [2.2.0] - 2019-02-05
 
 ### Added
 
-- Improve admin views (show/search ID, configure site portability, performance,...)
+- Improve admin views (show/search ID, configure site portability,
+  performance,...)
 - Log a warning on LTI exceptions for easier diagnostic
 - Introduce Saga and use it to get timed text tracks
 
@@ -732,15 +746,18 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Manage xAPI statements in backend application.
-- Listen to plyr player events and send xAPI statements to the backend application.
-- Installation of Grommet in the front application. Will be used to theme our application.
+- Listen to plyr player events and send xAPI statements to the backend
+  application.
+- Installation of Grommet in the front application. Will be used to theme our
+  application.
 - Display upload progress when a resource is uploaded.
 - Configure application healthcheck.
 - Show a thumbnail of the video on the Dashboard when it is ready to play.
 
 ### Fixed
 
-- Remove the `styledComponentWithProps` we used to type styled components thanks to a newer version of the library
+- Remove the `styledComponentWithProps` we used to type styled components
+  thanks to a newer version of the library
 - Rework `Jest` config to use babel
 - Replace our button with Grommet's.
 
@@ -748,7 +765,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fix database migration that was removing the `resource_id` field a bit too fast and replace
+- Fix database migration that was removing the `resource_id` field a bit too
+  fast and replace
   it by just a data migration ensuring backward compatibility
 - Hide the timed text track pane from the dashboard
 
@@ -773,14 +791,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fix initiate upload to update only the targeted object and not the whole database table
+- Fix initiate upload to update only the targeted object and not the whole
+  database table
 
 ## [1.2.0] - 2019-01-15
 
 ### Added
 
-- Add automatic portability between consumer sites for friend websites or different environments
-  of the same website
+- Add automatic portability between consumer sites for friend websites or
+  different environments of the same website
 - Enforce either the `consumer site` or the `playlist` field is set on a LTI
   passport, and not both
 - Improve admin pages for the playlist and video models
@@ -789,18 +808,21 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Improve test to secure portability of a video to the same playlist on another site, making sure
-  it has precedence over a video linked to another playlist on the other site
+- Improve test to secure portability of a video to the same playlist on another
+  site, making sure it has precedence over a video linked to another playlist
+  on the other site
 - Isolate route definitions to avoid circular dependencies in the frontend
 - Add unicity test timed text tracks to confirm soft deleted records are ignored
 - Copy related tracks correctly when duplicating a video
-- Replace the `upload-policy` API endpoint by `initiate-upload` that reset the upload
+- Replace the `upload-policy` API endpoint by `initiate-upload` that reset the
+  upload
   state and returns the AWS S3 upload policy in a single POST query
 - Add field `is_ready_to_play` to compensate removing field `state`
-- Rename `state` field to `upload_state` as it does not represent the state of the object
-  anymore but the state of the latest upload attempted on this object
-- Enforce read-only on `upload_state` and `active_stamp` fields as they should only be
-  updated by AWS via the `update-state` API endpoint
+- Rename `state` field to `upload_state` as it does not represent the state of
+  the object anymore but the state of the latest upload attempted on this
+  object
+- Enforce read-only on `upload_state` and `active_stamp` fields as they should
+  only be updated by AWS via the `update-state` API endpoint
 
 ## [1.1.2] - 2019-01-11
 
@@ -828,8 +850,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Prepare the app to handle timedtexttracks (full functionality yet to come)
 - Add an API schema view
 - Extend timed text track language choices to all Django languages
-- Create a JWT token for every roles not just instructors (needed to add context to xAPI requests)
-- Allow timed text track list GET requests on the API (permissions are fixed in a separate commit)
+- Create a JWT token for every roles not just instructors (needed to add
+  context to xAPI requests)
+- Allow timed text track list GET requests on the API (permissions are fixed
+  in a separate commit)
 - Switch to redux for frontend state management
 - Add a link to the dashboard from the video form
 - Split Dashboard video matters into a separate component
