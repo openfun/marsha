@@ -1,5 +1,18 @@
 {
   "extends": [
     "github>openfun/renovate-configuration"
+  ],
+  "packageRules": [
+    {
+      "enabled": false,
+      "groupName": "ignored js dependencies",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "converse.js",
+        "node-fetch"
+      ]
+    }
   ]
 }
