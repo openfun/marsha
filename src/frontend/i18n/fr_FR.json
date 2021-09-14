@@ -15,6 +15,62 @@
     "description": "",
     "message": "Utiliser les sous-titres comme transcription"
   },
+  "component.PlaylistPortability.addPortability": {
+    "description": "Accessible message for adding a portability.",
+    "message": "ajouter un partage"
+  },
+  "component.PlaylistPortability.hasPortabilityWith": {
+    "description": "Accessible message for displaying a portability with a playlist.",
+    "message": "Partagé avec {title}"
+  },
+  "component.PlaylistPortability.loadingPlaylist": {
+    "description": "Accessible message for the spinner while loading the playlist in dashboard view.",
+    "message": "Chargement de la liste de lecture..."
+  },
+  "component.PlaylistPortability.playlistTitle": {
+    "description": "Title for the current playlist.",
+    "message": "Appartient à la liste de lecture {title} ({id})"
+  },
+  "component.PlaylistPortability.removePortability": {
+    "description": "Accessible message for removing a portability.",
+    "message": "Supprimer le partage avec {title}"
+  },
+  "component.PlaylistPortability.shareWithPlaylist": {
+    "description": "Input label for adding a new portability.",
+    "message": "Partager avec une autre liste de lecture"
+  },
+  "component.PlaylistPortability.shareWithPlaylistDetails": {
+    "description": "Helper text to explain what sharing will do.",
+    "message": "Le partage de cette liste de lecture donnera accès à toutes ces ressources."
+  },
+  "component.PlaylistPortability.shareWithPlaylistPlaceholder": {
+    "description": "Helper text for adding a new portability.",
+    "message": "Coller l'identifiant de la liste de lecture"
+  },
+  "component.PlaylistPortability.sharedListTitle": {
+    "description": "",
+    "message": "Liste de lecture partagée avec :"
+  },
+  "component.PlaylistPortability.updatePlaylistFail": {
+    "description": "Message when playlist update failed.",
+    "message": "Liste de lecture non mise à jour !"
+  },
+  "component.PlaylistPortability.updatePlaylistSuccess": {
+    "description": "Message when playlist update is successful.",
+    "message": "Liste de lecture mise à jour."
+  },
+  "component.SelectContent.playlistTitle": {
+    "description": "Title for the current playlist.",
+    "message": "Liste de lecture {title} ({id})"
+  },
+  "components.ConfirmationLayer.Cancel": {
+    "description": "Label for the cancel button",
+    "message": "Annuler"
+  },
+  "components.ConfirmationLayer.Confirmation": {
+    "description": "Label for the confirmation button",
+    "message": "Ok"
+  },
   "components.Dashboard.DashboardPaneButtons.documents.btnPlay": {
     "description": "Dashboard button to display the existing document, if there is one.",
     "message": "Afficher"
@@ -47,10 +103,6 @@
     "description": "Dashboard button to configure a live streaming",
     "message": "Configurer un direct"
   },
-  "components.Dashboard.title": {
-    "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
-    "message": "Tableau de bord"
-  },
   "components.DashboardDocument.filename": {
     "description": "Document filename.",
     "message": "Nom de fichier"
@@ -78,6 +130,26 @@
   "components.DashboardDocumentTitleForm.form.success": {
     "description": "message display when the title is successfully updated",
     "message": "Titre mis à jour"
+  },
+  "components.DashboardJoinDiscussion.participantAsking": {
+    "description": "Message to inform the instructor that a participant is asking to join the discussion",
+    "message": "demande à rejoindre la discussion."
+  },
+  "components.DashboardJoinDiscussion.participantInDiscussion": {
+    "description": "Message to inform the instructor that a participant has joined the discussion",
+    "message": "a rejoint la discussion."
+  },
+  "components.DashboardJoinDiscussionAcceptButton.acceptParticipant": {
+    "description": "Accept the participant in the discussion",
+    "message": "accepter"
+  },
+  "components.DashboardJoinDiscussionKickButton.kickParticipant": {
+    "description": "Kick the participant out of the discussion",
+    "message": "expulser le participant"
+  },
+  "components.DashboardJoinDiscussionRejectButton.rejectParticipant": {
+    "description": "Reject the participant who requests to join the discussion",
+    "message": "refuser"
   },
   "components.DashboardThumbnail.error": {
     "description": "Generic error message when we fail to create a thumbnail.",
@@ -131,10 +203,6 @@
     "description": "DashboardVideoLive main title.",
     "message": "Lien de streaming"
   },
-  "components.DashboardVideoLive.startLive": {
-    "description": "Start a video streaming.",
-    "message": "commencer le streaming"
-  },
   "components.DashboardVideoLive.url": {
     "description": "Video url streaming.",
     "message": "url"
@@ -170,6 +238,22 @@
   "components.DashboardVideoLiveRunning.showLive": {
     "description": "button to redirect use to video player.",
     "message": "afficher le direct"
+  },
+  "components.DashboardVideoLiveStartButton.confirmStartLive": {
+    "description": "Confirmation to start a video streaming.",
+    "message": "Êtes-vous certain de vouloir démarrer un direct ?"
+  },
+  "components.DashboardVideoLiveStartButton.startLive": {
+    "description": "Start a video streaming.",
+    "message": "démarrer le direct"
+  },
+  "components.DashboardVideoLiveStartButton.startLiveHelper": {
+    "description": "Helper message explaining why the start live button is disabled",
+    "message": "Seul un modérateur peut lancer un direct"
+  },
+  "components.DashboardVideoLiveStopButton.confirmStopLive": {
+    "description": "Confirmation to stop the video streaming.",
+    "message": "Êtes-vous certain de vouloir arrêter le direct ?"
   },
   "components.DashboardVideoLiveStopButton.startLive": {
     "description": "Stop a video streaming.",
@@ -291,6 +375,54 @@
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Aperçu instructeur 👆"
   },
+  "components.JoinDiscussionAskButton.askInstructor": {
+    "description": "Ask the instructor to join the discussion",
+    "message": "Envoyer une demande pour rejoindre la discussion"
+  },
+  "components.JoinDiscussionAskButton.cancel": {
+    "description": "Label used by the cancel button",
+    "message": "Annuler"
+  },
+  "components.JoinDiscussionAskButton.chooseUsername": {
+    "description": "Title displayed in the layer to ask the user to choose a username in order to connect to the chat",
+    "message": "Choisissez un nom d'utilisateur"
+  },
+  "components.JoinDiscussionAskButton.confirm": {
+    "description": "Label used by the confirm button",
+    "message": "Valider"
+  },
+  "components.JoinDiscussionAskButton.rejected": {
+    "description": "Text to tell participant his/her request is not accepted",
+    "message": "Votre demande de rejoindre la discussion n'a pas été acceptée."
+  },
+  "components.JoinDiscussionAskButton.username": {
+    "description": "label used by the input text to write the username to choose",
+    "message": "nom d'utilisateur"
+  },
+  "components.JoinDiscussionAskButton.usernameAlreadyExists": {
+    "description": "Error message shown when the connection to the chat failed if the username is already in use.",
+    "message": "Ce nom d'utilisateur est déjà utilisé, merci d'en choisir un nouveau"
+  },
+  "components.JoinDiscussionAskButton.waitingInstructor": {
+    "description": "Text that replace the JoinDiscussion button before the instructor response.",
+    "message": "En attente de réponse d'un instructeur"
+  },
+  "components.JoinDiscussionLeaveButton.leaveDiscussion": {
+    "description": "Leave the discussion",
+    "message": "Quitter la discussion"
+  },
+  "components.LTINav.linkDashboard": {
+    "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
+    "message": "Tableau de bord"
+  },
+  "components.LTINav.linkPlaylist": {
+    "description": "Title for the playlist view, where the user can see the current playlist id, and will be able to\n      manage portability.",
+    "message": "Liste de lecture"
+  },
+  "components.LTINav.linkPreview": {
+    "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
+    "message": "Prévisualiser"
+  },
   "components.ObjectStatusPicker.CREATING": {
     "description": "Live video in creation status",
     "message": "Création en cours"
@@ -347,6 +479,14 @@
     "description": "Status information for a video/audio/timed text track",
     "message": "Téléversement en cours"
   },
+  "components.PlaylistPortability.copied": {
+    "description": "Message displayed when playlist info are copied.",
+    "message": "{text} copié !"
+  },
+  "components.PlaylistPortability.copy": {
+    "description": "Accessible message for copying a playlist id.",
+    "message": "Copie de la clé {text}."
+  },
   "components.SelectContent.addDocument": {
     "description": "Text displayed on a button to add a new document.",
     "message": "Ajouter un document"
@@ -362,6 +502,10 @@
   "components.SelectContent.confirm": {
     "description": "Text displayed on a button to confirm content selection.",
     "message": "Sélectionner"
+  },
+  "components.SelectContent.copied": {
+    "description": "Message displayed when playlist info are copied.",
+    "message": "{text} copié !"
   },
   "components.SelectContent.newDocument": {
     "description": "Default LTI consumer title for a new document.",
@@ -386,10 +530,6 @@
   "components.SelectContent.select": {
     "description": "Title used for a video or a document select.",
     "message": "Sélectionner {content_title}"
-  },
-  "components.SelectContent.title": {
-    "description": "Title for the LTI content selector, where the LTI Consumer can see the available video and documents\n      , and will be able to select them.",
-    "message": "Sélectionner un contenu LTI"
   },
   "components.SelectContent.titleEdit": {
     "description": "Label for LTI title content input.",
