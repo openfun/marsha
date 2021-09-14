@@ -1,7 +1,7 @@
 """Marsha URLs configuration."""
 
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from rest_framework.renderers import CoreJSONRenderer
 from rest_framework.routers import DefaultRouter
@@ -64,7 +64,6 @@ urlpatterns = [
     ),
     path("api/", include(router.urls)),
     path("xapi/", XAPIStatementView.as_view(), name="xapi"),
-    path("", SiteView.as_view(), name="site"),
 ]
 
 if settings.DEBUG:
@@ -85,3 +84,7 @@ if "dummy" in settings.STORAGE_BACKEND:
             name="local-document-upload",
         ),
     ]
+
+urlpatterns += [
+    re_path(".*", SiteView.as_view(), name="site"),
+]
