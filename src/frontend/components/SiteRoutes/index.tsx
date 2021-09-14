@@ -13,7 +13,7 @@ import { UploadsView } from '../UploadsView';
 const queryClient = new QueryClient();
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
-  <BrowserRouter basename="/site">
+  <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <BreadCrumbsProvider>
         <UploadManager>
