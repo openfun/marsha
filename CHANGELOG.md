@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Add missing translations
+
 ## [3.24.0] - 2021-09-13
 
 ### Added
