@@ -43,7 +43,7 @@ const messages = defineMessages({
   },
   shareWithPlaylistDetails: {
     defaultMessage:
-      'Sharing this playlist will grant access to all this resources.',
+      'Sharing this playlist will grant access to all these resources.',
     description: 'Helper text to explain what sharing will do.',
     id: 'component.PlaylistPortability.shareWithPlaylistDetails',
   },
