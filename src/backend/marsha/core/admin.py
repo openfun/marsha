@@ -166,6 +166,7 @@ admin_site.register(waffle_admin.Flag, waffle_admin.FlagAdmin)
 admin_site.register(waffle_admin.Sample, waffle_admin.SampleAdmin)
 admin_site.register(waffle_admin.Switch, waffle_admin.SwitchAdmin)
 admin_site.register(Group)
+admin.autodiscover()
 
 
 class UserOrganizationsInline(admin.TabularInline):
