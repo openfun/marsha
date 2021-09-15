@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Prepare backend to manage apps
+
 ### Changed
 
 - Postpone AWS creation stack to the first live start action
