@@ -44,8 +44,10 @@ declare namespace converse {
     bosh_service_url?: Nullable<string>;
     clear_cache_on_logout?: boolean;
     discover_connection_methods?: boolean;
+    enable_smacks?: boolean;
     hide_muc_participants?: boolean;
     jid?: string;
+    loglevel?: string;
     modtools_disable_assign?: boolean;
     muc_instant_rooms?: boolean;
     muc_nickname_from_jid?: boolean;
