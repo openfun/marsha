@@ -36,7 +36,7 @@ describe('converseMounter', () => {
 
     const xmpp = {
       bosh_url: 'https://xmpp-server.com/http-bind',
-      websocket_url: null,
+      websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       conference_url:
         '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
       prebind_url: 'https://xmpp-server.com/http-pre-bind',
@@ -69,6 +69,7 @@ describe('converseMounter', () => {
       bosh_service_url: 'https://xmpp-server.com/http-bind',
       clear_cache_on_logout: true,
       discover_connection_methods: false,
+      enable_smacks: true,
       hide_muc_participants: true,
       jid: 'xmpp-server.com',
       modtools_disable_assign: true,
@@ -86,7 +87,7 @@ describe('converseMounter', () => {
         spoiler: false,
         toggle_occupants: false,
       },
-      websocket_url: null,
+      websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
     });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
