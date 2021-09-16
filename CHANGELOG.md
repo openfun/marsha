@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- enable smacks in converse conf when websocket is used
+  https://modules.prosody.im/mod_smacks
+
 ## [3.24.1] - 2021-09-14
 
 ### Fixed

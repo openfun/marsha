@@ -32,6 +32,7 @@ export const converseMounter = () => {
         bosh_service_url: xmpp.bosh_url,
         clear_cache_on_logout: true,
         discover_connection_methods: false,
+        enable_smacks: !!xmpp.websocket_url,
         hide_muc_participants: true,
         jid: xmpp.jid,
         modtools_disable_assign: true,
