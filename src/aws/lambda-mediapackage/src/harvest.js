@@ -44,7 +44,7 @@ const harvestJobSucceeded = async (harvestJob, lambdaFunctionName) => {
     .promise();
 
   // The harvest id has this pattern : {environment}_{pk}_{stamp}
-  // splitting it give us the information we need
+  // splitting it gives us the information we need
   const [environment, pk, stamp] = harvestJob.id.split('_');
   // build the hls manifest url
   const manifestUrl = `https://${CLOUDFRONT_ENDPOINT}/${harvestJob.s3_destination.manifest_key}`;
@@ -175,7 +175,7 @@ const harvestJobFailed = async (harvestJob) => {
 
   if (existingHarvestJobs.HarvestJobs.length === 3) {
     console.log(
-      `harvesjob for channel ${harvestJob.channel_id} failed 3 times. Change video state to DELETED`,
+      `harves job for channel ${harvestJob.channel_id} failed 3 times. Video state changed to DELETED`,
     );
     // update state
     return updateState(`${pk}/video/${pk}/${stamp}`, 'deleted');
