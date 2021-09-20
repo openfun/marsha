@@ -8,7 +8,7 @@
   "description": "Convert a source video to all the formats used in Marsha",
   "dependencies": {
     "@openfun/subsrt": "1.0.4",
-    "aws-sdk": "2.987.0",
+    "aws-sdk": "2.991.0",
     "he": "1.2.0",
     "jimp": "0.16.1",
     "update-state": "file:../utils/update-state"
@@ -25,7 +25,7 @@
     "@types/jest": "27.0.1",
     "@types/request-promise-native": "1.0.18",
     "jest": "27.2.0",
-    "prettier": "2.4.0"
+    "prettier": "2.4.1"
   },
   "resolutions": {
     "merge": "^2.0.0",
