@@ -23,13 +23,9 @@ class LTIPassportAdminTestCase(TestCase):
         )
         self.assertContains(
             response,
-            """<div class="readonly">{oauth_consumer_key}</div>""".format(
-                oauth_consumer_key=lti_passport.oauth_consumer_key
-            ),
+            f"""<div class="readonly">{lti_passport.oauth_consumer_key}</div>""",
         )
         self.assertContains(
             response,
-            """<div class="readonly">{shared_secret}</div>""".format(
-                shared_secret=escape(lti_passport.shared_secret)
-            ),
+            f"""<div class="readonly">{escape(lti_passport.shared_secret)}</div>""",
         )

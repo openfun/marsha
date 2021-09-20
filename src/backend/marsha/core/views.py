@@ -180,11 +180,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         except LTIException as error:
             app_data = _manage_exception(error)
         else:
-            cache_key = "app_data|{model:s}|{domain:s}|{context:s}|{resource!s}".format(
-                model=self.model.__name__,
-                domain=lti.get_consumer_site().domain,
-                context=lti.context_id,
-                resource=lti.resource_id,
+            cache_key = (
+                f"app_data|{self.model.__name__}|{lti.get_consumer_site().domain}|{lti.context_id}"
+                f"|{lti.resource_id}"
             )
             try:
                 app_data = self._get_app_data(cache_key=cache_key, lti=lti)
@@ -340,9 +338,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         dictionary
             context with configuration data for the frontend
         """
-        cache_key = "app_data|public|{model:s}|{resource_id:s}".format(
-            model=self.model.__name__, resource_id=str(self.kwargs["uuid"])
-        )
+        cache_key = f"app_data|public|{self.model.__name__}|{self.kwargs['uuid']}"
         try:
             app_data = self._get_app_data(
                 cache_key=cache_key, resource_id=self.kwargs["uuid"]

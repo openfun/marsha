@@ -67,7 +67,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -189,7 +189,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -337,7 +337,7 @@ class VideoLTIViewTestCase(TestCase):
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
             mock_jwt_encode.return_value = "xmpp_jwt"
-            response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+            response = self.client.post(f"/lti/videos/{video.pk}", data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
@@ -478,7 +478,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -577,7 +577,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(response, '<script src="https://example.com/test.js" >')
@@ -605,7 +605,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -699,7 +699,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -810,7 +810,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -926,7 +926,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1044,7 +1044,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1167,7 +1167,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1212,7 +1212,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(f"/lti/videos/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1239,7 +1239,7 @@ class VideoLTIViewTestCase(TestCase):
         """Validate the response returned in case of an LTI exception."""
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
-        response = self.client.post("/lti/videos/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(f"/lti/videos/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1299,7 +1299,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1336,7 +1336,7 @@ class VideoLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(
@@ -1373,7 +1373,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -1402,14 +1402,15 @@ class VideoLTIViewTestCase(TestCase):
                         "language": transcript.language,
                         "upload_state": "ready",
                         "source_url": (
-                            "https://abc.cloudfront.net/{!s}/"
-                            "timedtext/source/1569309880_{!s}_ts?response-content-disposition="
-                            "attachment%3B+filename%3Dfoo-bar_1569309880.srt"
-                        ).format(video.id, transcript.language),
+                            f"https://abc.cloudfront.net/{video.id}/"
+                            f"timedtext/source/1569309880_{transcript.language}_ts?"
+                            "response-content-disposition=attachment%3B+filename%3Dfoo-bar"
+                            "_1569309880.srt"
+                        ),
                         "url": (
-                            "https://abc.cloudfront.net/{!s}/timedtext/"
-                            "1569309880_{!s}_ts.vtt"
-                        ).format(video.id, transcript.language),
+                            f"https://abc.cloudfront.net/{video.id}/timedtext/"
+                            f"1569309880_{transcript.language}_ts.vtt"
+                        ),
                         "video": str(video.id),
                     }
                 ],
@@ -1460,7 +1461,7 @@ class VideoLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")

@@ -113,13 +113,14 @@ class LTI:
             request_domain
             and request_domain != consumer_site.domain
             and not (
-                request_domain.endswith(".{:s}".format(consumer_site.domain))
+                request_domain.endswith(f".{consumer_site.domain}")
                 or validate_host(request_domain, settings.ALLOWED_HOSTS)
             )
         ):
             raise LTIException(
-                "Host domain ({:s}) does not match registered passport ({:s}).".format(
-                    request_domain, consumer_site.domain
+                (
+                    f"Host domain ({request_domain}) does not match registered passport "
+                    f"({consumer_site.domain})."
                 )
             )
 
@@ -184,9 +185,7 @@ class LTI:
             )
         except LTIPassport.DoesNotExist as err:
             raise LTIException(
-                "Could not find a valid passport for this oauth consumer key: {:s}.".format(
-                    consumer_key
-                )
+                f"Could not find a valid passport for this oauth consumer key: {consumer_key}."
             ) from err
 
     def get_course_info(self):

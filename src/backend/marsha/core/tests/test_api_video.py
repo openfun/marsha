@@ -71,7 +71,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a video detail."""
         video = factories.VideoFactory()
-        response = self.client.get("/api/videos/{!s}/".format(video.id))
+        response = self.client.get(f"/api/videos/{video.id}/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -87,8 +87,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -102,8 +102,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(other_video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{other_video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -119,8 +119,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -152,8 +152,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -162,6 +162,7 @@ class VideoAPITest(TestCase):
             "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         )
         thumbnails_dict = {
+            # pylint: disable=consider-using-f-string
             str(resolution): thumbnails_template.format(video.pk, resolution)
             for resolution in resolutions
         }
@@ -171,6 +172,7 @@ class VideoAPITest(TestCase):
             "?response-content-disposition=attachment%3B+filename%3Dfoo-bar_1533686400.mp4"
         )
         mp4_dict = {
+            # pylint: disable=consider-using-f-string
             str(resolution): mp4_template.format(video.pk, resolution)
             for resolution in resolutions
         }
@@ -237,8 +239,8 @@ class VideoAPITest(TestCase):
         # Try getting another video
         other_video = factories.VideoFactory()
         response = self.client.get(
-            "/api/videos/{!s}/".format(other_video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{other_video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -257,8 +259,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -277,8 +279,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)
@@ -328,8 +330,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn('"urls":null', response.content.decode("utf-8"))
@@ -385,8 +387,8 @@ class VideoAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
-                "/api/videos/{!s}/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -417,7 +419,7 @@ class VideoAPITest(TestCase):
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
-            response = self.client.get("/api/videos/{!s}/".format(video.id))
+            response = self.client.get(f"/api/videos/{video.id}/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -589,7 +591,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
 
         response = self.client.get(
-            "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -1145,8 +1147,8 @@ class VideoAPITest(TestCase):
 
         # Get the video linked to the JWT token
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -1208,7 +1210,7 @@ class VideoAPITest(TestCase):
         """A token user should not be able to create a video."""
         jwt_token = AccessToken()
         response = self.client.post(
-            "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 401)
         self.assertFalse(models.Video.objects.exists())
@@ -1481,8 +1483,8 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory(title="my title")
         data = {"title": "my new title"}
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
+            f"/api/videos/{video.id}/",
+            data,
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 401)
@@ -1498,9 +1500,9 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "my new title"}
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1516,15 +1518,15 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         data["description"] = "my new description"
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1540,17 +1542,17 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         self.assertIsNone(data["active_stamp"])
         data["active_stamp"] = "1533686400"
 
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1566,17 +1568,17 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         self.assertEqual(data["upload_state"], "pending")
         data["upload_state"] = "ready"
 
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1594,9 +1596,9 @@ class VideoAPITest(TestCase):
         data = {"upload_state": "ready"}
 
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
@@ -1612,9 +1614,9 @@ class VideoAPITest(TestCase):
         data = {"upload_state": "ready"}
 
         response = self.client.patch(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
@@ -1634,9 +1636,9 @@ class VideoAPITest(TestCase):
         data = {"active_stamp": "1533686400"}
 
         response = self.client.patch(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
 
@@ -1654,16 +1656,16 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
         data["id"] = "my new id"
 
         response = self.client.put(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1681,9 +1683,9 @@ class VideoAPITest(TestCase):
 
         data = {"title": "my new title"}
         response = self.client.put(
-            "/api/videos/{!s}/".format(video_update.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video_update.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
 
@@ -1702,9 +1704,9 @@ class VideoAPITest(TestCase):
         data = {"description": "my new description"}
 
         response = self.client.patch(
-            "/api/videos/{!s}/".format(video.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -1730,7 +1732,7 @@ class VideoAPITest(TestCase):
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
-            json.dumps({"title": "updated title"}),
+            {"title": "updated title"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -1934,7 +1936,7 @@ class VideoAPITest(TestCase):
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
         video = factories.VideoFactory()
-        response = self.client.delete("/api/videos/{!s}/".format(video.id))
+        response = self.client.delete(f"/api/videos/{video.id}/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -1953,8 +1955,8 @@ class VideoAPITest(TestCase):
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
             response = self.client.delete(
-                "/api/videos/{!s}/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 403)
             self.assertTrue(models.Video.objects.filter(id=video.id).exists())
@@ -1965,7 +1967,7 @@ class VideoAPITest(TestCase):
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
 
-            response = self.client.delete("/api/videos/{!s}/".format(video.id))
+            response = self.client.delete(f"/api/videos/{video.id}/")
 
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
@@ -2107,8 +2109,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.delete(
-            "/api/videos/{!s}/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -2129,7 +2131,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
 
         response = self.client.delete(
-            "/api/videos/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
         self.assertTrue(models.Video.objects.filter(id=video.id).exists())
@@ -2149,9 +2151,7 @@ class VideoAPITest(TestCase):
         """Anonymous users are not allowed to initiate an upload."""
         video = factories.VideoFactory()
 
-        response = self.client.post(
-            "/api/videos/{!s}/initiate-upload/".format(video.id)
-        )
+        response = self.client.post(f"/api/videos/{video.id}/initiate-upload/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -2168,8 +2168,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/videos/{!s}/initiate-upload/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -2197,8 +2197,8 @@ class VideoAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2242,8 +2242,8 @@ class VideoAPITest(TestCase):
 
         # Try initiating an upload for the other video
         response = self.client.post(
-            "/api/videos/{!s}/initiate-upload/".format(other_video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{other_video.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -2257,9 +2257,7 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id)
-            )
+            response = self.client.post(f"/api/videos/{video.id}/initiate-upload/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -2295,8 +2293,8 @@ class VideoAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
@@ -2337,8 +2335,8 @@ class VideoAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2404,8 +2402,8 @@ class VideoAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
@@ -2444,8 +2442,8 @@ class VideoAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/videos/{!s}/initiate-upload/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2487,7 +2485,7 @@ class VideoAPITest(TestCase):
         """Anonymous users are not allowed to initiate a live."""
         video = factories.VideoFactory()
 
-        response = self.client.post("/api/videos/{!s}/initiate-live/".format(video.id))
+        response = self.client.post(f"/api/videos/{video.id}/initiate-live/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -2504,8 +2502,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/videos/{!s}/initiate-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/initiate-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -2517,8 +2515,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            "/api/videos/{!s}/initiate-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/initiate-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -2533,9 +2531,7 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post(
-                "/api/videos/{!s}/initiate-live/".format(video.id)
-            )
+            response = self.client.post(f"/api/videos/{video.id}/initiate-live/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -2579,9 +2575,9 @@ class VideoAPITest(TestCase):
             api, "create_live_stream", return_value=live_info
         ):
             response = self.client.post(
-                "/api/videos/{!s}/initiate-live/".format(video.id),
+                f"/api/videos/{video.id}/initiate-live/",
                 {"type": "raw"},
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -2666,9 +2662,9 @@ class VideoAPITest(TestCase):
             api, "create_live_stream", return_value=live_info
         ):
             response = self.client.post(
-                "/api/videos/{!s}/initiate-live/".format(video.id),
+                f"/api/videos/{video.id}/initiate-live/",
                 {"type": "jitsi"},
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -2758,9 +2754,9 @@ class VideoAPITest(TestCase):
             api, "create_live_stream", return_value=live_info
         ):
             response = self.client.post(
-                "/api/videos/{!s}/initiate-live/".format(video.id),
+                f"/api/videos/{video.id}/initiate-live/",
                 {"type": "invalid"},
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
@@ -2771,7 +2767,7 @@ class VideoAPITest(TestCase):
         """Anonymous users are not allowed to start a live."""
         video = factories.VideoFactory()
 
-        response = self.client.post("/api/videos/{!s}/start-live/".format(video.id))
+        response = self.client.post(f"/api/videos/{video.id}/start-live/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -2788,8 +2784,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/videos/{!s}/start-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/start-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -2801,8 +2797,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            "/api/videos/{!s}/start-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/start-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -2817,7 +2813,7 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post("/api/videos/{!s}/start-live/".format(video.id))
+            response = self.client.post(f"/api/videos/{video.id}/start-live/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -2874,8 +2870,8 @@ class VideoAPITest(TestCase):
         ) as mock_jwt_encode:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
-                "/api/videos/{!s}/start-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_create_room.assert_called_once_with(video.id)
         self.assertEqual(response.status_code, 200)
@@ -2942,8 +2938,8 @@ class VideoAPITest(TestCase):
         # start a live video,
         with mock.patch.object(api, "start_live_channel"):
             response = self.client.post(
-                "/api/videos/{!s}/start-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 400)
 
@@ -2963,8 +2959,8 @@ class VideoAPITest(TestCase):
         # start a live video,
         with mock.patch.object(api, "start_live_channel"):
             response = self.client.post(
-                "/api/videos/{!s}/start-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 400)
 
@@ -2972,7 +2968,7 @@ class VideoAPITest(TestCase):
         """Anonymous users are not allowed to stop a live."""
         video = factories.VideoFactory()
 
-        response = self.client.post("/api/videos/{!s}/stop-live/".format(video.id))
+        response = self.client.post(f"/api/videos/{video.id}/stop-live/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -2989,8 +2985,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/videos/{!s}/stop-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/stop-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -3002,8 +2998,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            "/api/videos/{!s}/stop-live/".format(video.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/videos/{video.id}/stop-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -3018,7 +3014,7 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post("/api/videos/{!s}/stop-live/".format(video.id))
+            response = self.client.post(f"/api/videos/{video.id}/stop-live/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -3065,8 +3061,8 @@ class VideoAPITest(TestCase):
         # start a live video,
         with mock.patch.object(api, "stop_live_channel"):
             response = self.client.post(
-                "/api/videos/{!s}/stop-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/stop-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -3127,8 +3123,8 @@ class VideoAPITest(TestCase):
         # start a live video,
         with mock.patch.object(api, "stop_live_channel"):
             response = self.client.post(
-                "/api/videos/{!s}/stop-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/stop-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 400)
 
@@ -3148,8 +3144,8 @@ class VideoAPITest(TestCase):
         # start a live video,
         with mock.patch.object(api, "stop_live_channel"):
             response = self.client.post(
-                "/api/videos/{!s}/stop-live/".format(video.id),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/videos/{video.id}/stop-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 400)
 
@@ -3171,7 +3167,7 @@ class VideoAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(
-                "/api/videos/{!s}/update-live-state/".format(video.id),
+                f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3216,7 +3212,7 @@ class VideoAPITest(TestCase):
             api, "close_room"
         ) as mock_close_room:
             response = self.client.patch(
-                "/api/videos/{!s}/update-live-state/".format(video.id),
+                f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3268,7 +3264,7 @@ class VideoAPITest(TestCase):
         ) as mock_close_room:
             create_mediapackage_harvest_job_mock.side_effect = ManifestMissingException
             response = self.client.patch(
-                "/api/videos/{!s}/update-live-state/".format(video.id),
+                f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3302,7 +3298,7 @@ class VideoAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
-            "/api/videos/{!s}/update-live-state/".format(video.id),
+            f"/api/videos/{video.id}/update-live-state/",
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3335,7 +3331,7 @@ class VideoAPITest(TestCase):
         }
         signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
-            "/api/videos/{!s}/update-live-state/".format(video.id),
+            f"/api/videos/{video.id}/update-live-state/",
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3363,7 +3359,7 @@ class VideoAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         response = self.client.patch(
-            "/api/videos/{!s}/update-live-state/".format(video.id),
+            f"/api/videos/{video.id}/update-live-state/",
             data,
             content_type="application/json",
             HTTP_X_MARSHA_SIGNATURE=signature,
@@ -3416,7 +3412,7 @@ class VideoAPITest(TestCase):
             "marsha.core.api.create_mediapackage_harvest_job"
         ) as create_mediapackage_harvest_job_mock:
             response = self.client.patch(
-                "/api/videos/{!s}/update-live-state/".format(video.id),
+                f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,

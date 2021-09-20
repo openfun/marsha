@@ -103,7 +103,7 @@ class Video(BaseFile):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{pk!s}/video/{pk!s}/{stamp:s}".format(pk=self.pk, stamp=stamp)
+        return f"{self.pk}/video/{self.pk}/{stamp}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.
@@ -290,13 +290,8 @@ class TimedTextTrack(BaseTrack):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{video!s}/timedtexttrack/{pk!s}/{stamp:s}_{language:s}{mode:s}".format(
-            video=self.video.pk,
-            pk=self.pk,
-            stamp=stamp,
-            language=self.language,
-            mode="_{:s}".format(self.mode) if self.mode else "",
-        )
+        mode = f"_{self.mode}" if self.mode else ""
+        return f"{self.video.pk}/timedtexttrack/{self.pk}/{stamp}_{self.language}{mode}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.
@@ -379,6 +374,4 @@ class Thumbnail(AbstractImage):
 
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
-        return "{video!s}/thumbnail/{pk!s}/{stamp:s}".format(
-            video=self.video.pk, pk=self.pk, stamp=stamp
-        )
+        return f"{self.video.pk}/thumbnail/{self.pk}/{stamp}"

@@ -26,7 +26,7 @@ class UpdateStateAPITest(TestCase):
         video = VideoFactory(id="f87b5f26-da60-49f2-9d71-a816e68a207f")
         data = {
             "extraParameters": {"resolutions": [144, 240, 480]},
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -50,7 +50,7 @@ class UpdateStateAPITest(TestCase):
         video = VideoFactory(id="9eeef843-bc43-4e01-825d-658aa5bca49f")
         data = {
             "extraParameters": {},
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "processing",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -100,7 +100,7 @@ class UpdateStateAPITest(TestCase):
         )
         data = {
             "extraParameters": {"resolutions": [240, 480, 720]},
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "harvested",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -128,7 +128,7 @@ class UpdateStateAPITest(TestCase):
         video = VideoFactory(id="c804e019-c622-4b76-aa43-33f2317bdc7e")
         data = {
             "extraParameters": {},
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "error",
         }
         signature = generate_hash(
@@ -157,8 +157,9 @@ class UpdateStateAPITest(TestCase):
         )
         data = {
             "extraParameters": {},
-            "key": "{!s}/timedtexttrack/{!s}/1533686400_fr_cc".format(
-                timed_text_track.video.pk, timed_text_track.id
+            "key": (
+                f"{timed_text_track.video.pk}/timedtexttrack/{timed_text_track.id}/"
+                "1533686400_fr_cc"
             ),
             "state": "ready",
         }
@@ -183,9 +184,9 @@ class UpdateStateAPITest(TestCase):
         """Trying to update the state of a video that does not exist should return a 404."""
         data = {
             "extraParameters": {},
-            "key": "{!s}/video/{!s}/1533686400".format(
-                "9f14ad28-dd35-49b1-a723-84d57884e4cb",
-                "1ed1b113-2b87-42af-863a-11232f7bf88f",
+            "key": (
+                "9f14ad28-dd35-49b1-a723-84d57884e4cb/video/1ed1b113-2b87-42af-863a-11232f7bf88f"
+                "/1533686400"
             ),
             "state": "ready",
         }
@@ -204,7 +205,7 @@ class UpdateStateAPITest(TestCase):
         """Trying to update the state of an upload with invalid data should return a 400."""
         video = VideoFactory()
         data = {
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "reedo",
             "signature": "123abc",
         }
@@ -225,7 +226,7 @@ class UpdateStateAPITest(TestCase):
         video = VideoFactory(id="4b8cb66c-4de4-4112-8be4-470db992a19e")
         data = {
             "extraParameters": {},
-            "key": "{video!s}/video/{video!s}/1533686400".format(video=video.pk),
+            "key": f"{video.pk}/video/{video.pk}/1533686400",
             "state": "ready",
         }
         signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
@@ -251,7 +252,7 @@ class UpdateStateAPITest(TestCase):
 
         data = {
             "extraParameters": {},
-            "key": "{doc!s}/document/{doc!s}/1533686400.pdf".format(doc=document.pk),
+            "key": f"{document.pk}/document/{document.pk}/1533686400.pdf",
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -278,7 +279,7 @@ class UpdateStateAPITest(TestCase):
 
         data = {
             "extraParameters": {},
-            "key": "{doc!s}/document/{doc!s}/1533686400".format(doc=document.pk),
+            "key": f"{document.pk}/document/{document.pk}/1533686400",
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))

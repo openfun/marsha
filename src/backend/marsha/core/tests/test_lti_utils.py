@@ -455,9 +455,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (a-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (a-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -692,9 +692,8 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (a-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (a-playlist) and/or consumer site (example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -849,9 +848,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (a-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (a-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -1264,9 +1263,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (another-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (another-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
 
@@ -1413,9 +1412,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (another-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (another-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
 
@@ -1665,9 +1664,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (another-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (another-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -1913,9 +1912,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (another-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (another-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -2162,9 +2161,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist ({:s}) and/or consumer site "
-                "(example.com).".format(model.__name__, playlist.lti_id)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                f"is not portable to your playlist ({playlist.lti_id}) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created
@@ -2317,9 +2316,9 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(
             context.exception.args[0],
             (
-                "The {!s} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but is not "
-                "portable to your playlist (another-playlist) and/or consumer site "
-                "(example.com).".format(model.__name__)
+                f"The {model.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already exists but "
+                "is not portable to your playlist (another-playlist) and/or consumer site "
+                "(example.com)."
             ),
         )
         # No new playlist or resource are created

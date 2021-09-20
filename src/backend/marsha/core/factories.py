@@ -9,6 +9,10 @@ from factory.django import DjangoModelFactory
 from marsha.core import models
 
 
+# usage of format function here is wanted in this file
+# pylint: disable=consider-using-f-string
+
+
 class PlaylistLTIPassportFactory(DjangoModelFactory):
     """Factory to create LTI passport for a playlist."""
 
