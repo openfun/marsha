@@ -26,7 +26,7 @@ class DocumentAPITest(TestCase):
         """Anonymous users should not be able to fetch a document."""
         document = DocumentFactory()
 
-        response = self.client.get("/api/documents/{!s}/".format(document.id))
+        response = self.client.get(f"/api/documents/{document.id}/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -43,8 +43,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/documents/{!s}/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -71,8 +71,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/documents/{!s}/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -108,8 +108,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.get(
-            "/api/documents/{!s}/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
@@ -132,7 +132,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 404)
 
@@ -146,7 +146,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 404)
 
@@ -165,7 +165,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.post(
-            "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 404)
 
@@ -179,14 +179,16 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.get(
-            "/api/documents/", HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token)
+            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 404)
 
     def test_api_document_delete_anonymous(self):
         """An anonymous should not be able to delete a document."""
         document = DocumentFactory()
-        response = self.client.delete("/api/documents/{!s}/".format(document.id))
+        response = self.client.delete(
+            f"/api/documents/{document.id}/",
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_api_document_delete_student(self):
@@ -199,8 +201,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
-            "/api/documents/{!s}/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -214,15 +216,15 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.delete(
-            "/api/documents/{!s}/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 405)
 
     def test_api_document_update_anonymous(self):
         """An anonymous should not be able to update a document."""
         document = DocumentFactory()
-        response = self.client.put("/api/documents/{!s}/".format(document.id))
+        response = self.client.put(f"/api/documents/{document.id}/")
         self.assertEqual(response.status_code, 401)
 
     def test_api_document_update_student(self):
@@ -236,9 +238,9 @@ class DocumentAPITest(TestCase):
         data = {"title": "new title"}
 
         response = self.client.put(
-            "/api/documents/{!s}/".format(document.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
@@ -254,9 +256,9 @@ class DocumentAPITest(TestCase):
         data = {"title": "new title"}
 
         response = self.client.put(
-            "/api/documents/{!s}/".format(document.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
@@ -272,9 +274,9 @@ class DocumentAPITest(TestCase):
         data = {"title": "new title"}
 
         response = self.client.put(
-            "/api/documents/{!s}/".format(document.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -293,9 +295,9 @@ class DocumentAPITest(TestCase):
         data = {"title": "new title.pdf"}
 
         response = self.client.put(
-            "/api/documents/{!s}/".format(document.id),
-            json.dumps(data),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -306,9 +308,7 @@ class DocumentAPITest(TestCase):
     def test_api_document_initiate_upload_anonymous(self):
         """Anonymous user should not be able to initiate an upload."""
         document = DocumentFactory()
-        response = self.client.post(
-            "/api/documents/{!s}/initiate-upload/".format(document.id)
-        )
+        response = self.client.post(f"/api/documents/{document.id}/initiate-upload/")
         self.assertEqual(response.status_code, 401)
 
     def test_api_document_initiate_upload_student(self):
@@ -321,8 +321,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.post(
-            "/api/documents/{!s}/initiate-upload/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -336,8 +336,8 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            "/api/documents/{!s}/initiate-upload/".format(document.id),
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            f"/api/documents/{document.id}/initiate-upload/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -359,9 +359,9 @@ class DocumentAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/documents/{!s}/initiate-upload/".format(document.id),
-                json.dumps({"filename": "foo.pdf", "mimetype": "application/pdf"}),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/documents/{document.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
 
@@ -414,9 +414,9 @@ class DocumentAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/documents/{!s}/initiate-upload/".format(document.id),
-                json.dumps({"filename": "foo", "mimetype": "application/pdf"}),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/documents/{document.id}/initiate-upload/",
+                {"filename": "foo", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
 
@@ -469,9 +469,9 @@ class DocumentAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                "/api/documents/{!s}/initiate-upload/".format(document.id),
-                json.dumps({"filename": "foo", "mimetype": ""}),
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                f"/api/documents/{document.id}/initiate-upload/",
+                {"filename": "foo", "mimetype": ""},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
 

@@ -33,7 +33,7 @@ class LTITestCase(TestCase):
         that our LTI verification works.
         """
         resource_id = uuid.uuid4()
-        url = "http://testserver/lti/videos/{!s}".format(resource_id)
+        url = f"http://testserver/lti/videos/{resource_id}"
         lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url=url,
             lti_parameters={
@@ -51,9 +51,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
 
         # If we alter the signature (e.g. add "a" to it), the verification should fail
-        lti_parameters["oauth_signature"] = "{:s}a".format(
-            lti_parameters["oauth_signature"]
-        )
+        lti_parameters["oauth_signature"] = f"{lti_parameters['oauth_signature']}a"
         request = self.factory.post(url, lti_parameters)
         lti = LTI(request, resource_id)
         with self.assertRaises(LTIException):
@@ -65,7 +63,7 @@ class LTITestCase(TestCase):
         When the http referer is missing the request should still be authorized.
         """
         resource_id = uuid.uuid4()
-        url = "http://testserver/lti/videos/{!s}".format(resource_id)
+        url = f"http://testserver/lti/videos/{resource_id}"
         lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url=url,
             lti_parameters={
@@ -81,9 +79,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
 
         # If we alter the signature (e.g. add "a" to it), the verification should fail
-        lti_parameters["oauth_signature"] = "{:s}a".format(
-            lti_parameters["oauth_signature"]
-        )
+        lti_parameters["oauth_signature"] = f"{lti_parameters['oauth_signature']}a"
         request = self.factory.post(url, lti_parameters)
         lti = LTI(request, resource_id)
         with self.assertRaises(LTIException):
@@ -354,7 +350,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -375,7 +371,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -396,7 +392,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -420,7 +416,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -446,7 +442,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -472,7 +468,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -496,7 +492,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -553,7 +549,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -577,7 +573,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -600,7 +596,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -624,7 +620,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",
@@ -647,7 +643,7 @@ class LTITestCase(TestCase):
         }
         resource_id = uuid.uuid4()
         request = self.factory.post(
-            "/lti/videos/{!s}".format(resource_id),
+            f"/lti/videos/{resource_id}",
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti-video/",

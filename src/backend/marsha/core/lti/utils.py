@@ -113,13 +113,8 @@ def get_or_create_resource(model, lti):
         pass
     else:
         raise PortabilityError(
-            "The {!s} ID {!s} already exists but is not portable to your playlist ({!s}) "
-            "and/or consumer site ({!s}).".format(
-                model.__name__,
-                resource.id,
-                lti.context_id,
-                lti.get_consumer_site().domain,
-            )
+            f"The {model.__name__} ID {resource.id} already exists but is not portable to your "
+            f"playlist ({lti.context_id}) and/or consumer site ({lti.get_consumer_site().domain})."
         )
 
     playlist, _ = Playlist.objects.get_or_create(

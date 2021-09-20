@@ -21,11 +21,9 @@ class UpdateStateSerializerTest(TestCase):
     def test_serializers_update_state_valid_data(self):
         """The serializer should return the validated data."""
         valid_keys = [
-            "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
+            f"{uuid4()}/video/{uuid4()}/0123456789",
             *[
-                "{!s}/timedtexttrack/{!s}/0123456789_{:s}_{:s}".format(
-                    uuid4(), uuid4(), language, mode
-                )
+                f"{uuid4()}/timedtexttrack/{uuid4()}/0123456789_{language}_{mode}"
                 for language in ["fr", "ast", "zh-hans"]
                 for mode, _ in TimedTextTrack.MODE_CHOICES
             ],
@@ -43,7 +41,7 @@ class UpdateStateSerializerTest(TestCase):
     def test_serializers_update_state_missing_field(self):
         """All fields in the serializer are required."""
         valid_data = {
-            "key": "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
+            "key": f"{uuid4()}/video/{uuid4()}/0123456789",
             "state": random.choice(("ready", "error")),
             "extraParameters": {"foo": "bar"},
         }
@@ -65,13 +63,13 @@ class UpdateStateSerializerTest(TestCase):
             "a2f27fde973a4e898dcacc59e01d255c",
         )
         invalid_keys = (
-            ["{!s}/video/{!s}/0123456789".format(u, uuid4()) for u in invalid_uuids]
-            + ["{!s}/video/{!s}/0123456789".format(uuid4(), u) for u in invalid_uuids]
+            [f"{u}/video/{uuid4()}/0123456789" for u in invalid_uuids]
+            + [f"{uuid4()}/video/{u}/0123456789" for u in invalid_uuids]
             + [
-                "{!s}/pideos/{!s}/0123456789".format(uuid4(), uuid4()),
-                "{!s}/video/{!s}/012345678a".format(uuid4(), uuid4()),
-                "{!s}/timedtexttrack/{!s}/0123456789_f1".format(uuid4(), uuid4()),
-                "{!s}/timedtexttrack/{!s}/0123456789_fr_cf".format(uuid4(), uuid4()),
+                f"{uuid4()}/pideos/{uuid4()}/0123456789",
+                f"{uuid4()}/video/{uuid4()}/012345678a",
+                f"{uuid4()}/timedtexttrack/{uuid4()}/0123456789_f1",
+                f"{uuid4()}/timedtexttrack/{uuid4()}/0123456789_fr_cf",
             ]
         )
         for key in invalid_keys:
@@ -95,7 +93,7 @@ class UpdateStateSerializerTest(TestCase):
         }
         for state, message in invalid_states.items():
             invalid_data = {
-                "key": "{!s}/video/{!s}/0123456789".format(uuid4(), uuid4()),
+                "key": f"{uuid4()}/video/{uuid4()}/0123456789",
                 "state": state,
                 "extraParameters": {"foo": "bar"},
             }
@@ -107,7 +105,7 @@ class UpdateStateSerializerTest(TestCase):
         """The serializer has a method that helps to extract key elements."""
         resource_id, object_id = uuid4(), uuid4()
         valid_data = {
-            "key": "{!s}/video/{!s}/1533686400".format(resource_id, object_id),
+            "key": f"{resource_id}/video/{object_id}/1533686400",
             "state": "ready",
             "extraParameters": {"foo": "bar"},
         }
@@ -129,7 +127,7 @@ class UpdateStateSerializerTest(TestCase):
         """Serializer should extract extension from the key parameter."""
         resource_id, object_id = uuid4(), uuid4()
         valid_data = {
-            "key": "{!s}/document/{!s}/1533686400.pdf".format(resource_id, object_id),
+            "key": f"{resource_id}/document/{object_id}/1533686400.pdf",
             "state": "ready",
             "extraParameters": {"foo": "bar"},
         }

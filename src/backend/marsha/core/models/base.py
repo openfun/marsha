@@ -117,20 +117,18 @@ class BaseModel(SafeDeleteModel):
 
         """
         errors = []
-        model_full_name: str = "{}.{}".format(
-            cls._meta.app_label, cls._meta.object_name
-        )
+        model_full_name: str = f"{cls._meta.app_label}.{cls._meta.object_name}"
 
         try:
             db_table = cls._meta.original_attrs["db_table"]
         except KeyError:
             errors.append(
                 checks.Error(
-                    "The model '{}' must define the 'db_table' attribute on its "
+                    f"The model '{model_full_name}' must define the 'db_table' attribute on its "
                     "'Meta' class. It must not be prefixed with the name of the "
-                    "app or the project.".format(model_full_name),
-                    hint="Add 'db_table = \"{}\"' to the 'Meta' class of the "
-                    "model '{}'".format(cls._meta.model_name, model_full_name),
+                    "app or the project.",
+                    hint=f"Add 'db_table = \"{cls._meta.model_name}\"' to the 'Meta' class of the "
+                    "model '{model_full_name}'",
                     obj=cls,
                     id="marsha.models.E007",
                 )
@@ -147,13 +145,11 @@ class BaseModel(SafeDeleteModel):
                 if db_table.startswith(prefix):
                     errors.append(
                         checks.Error(
-                            "The model 'db_table' attribute of the model '{}'  must not "
-                            "be prefixed with the name of the app ('{}') or the project "
-                            "('{}').".format(
-                                model_full_name, app_prefix, module_prefix
-                            ),
-                            hint="Change to 'db_table = \"{}\"' in the 'Meta' class of the "
-                            "model '{}'".format(cls._meta.model_name, model_full_name),
+                            f"The model 'db_table' attribute of the model '{model_full_name}' "
+                            f"must not be prefixed with the name of the app ('{app_prefix}') or "
+                            f"the project ('{module_prefix}').",
+                            hint=f"Change to 'db_table = \"{cls._meta.model_name}\"' in the 'Meta'"
+                            f" class of the model '{model_full_name}'",
                             obj=cls,
                             id="marsha.models.E008",
                         )
@@ -174,7 +170,7 @@ class BaseModel(SafeDeleteModel):
         """
         fields_by_model = _get_fields_by_source_model(cls)
         errors = []
-        model_full_name = "{}.{}".format(cls._meta.app_label, cls._meta.object_name)
+        model_full_name = f"{cls._meta.app_label}.{cls._meta.object_name}"
 
         m2m_fields = [
             field
@@ -191,14 +187,10 @@ class BaseModel(SafeDeleteModel):
             if field.remote_field.through._meta.auto_created:
                 errors.append(
                     checks.Error(
-                        "The field '{}' of the model '{}' is a ManyToManyField but "
-                        "without a 'through' model defined".format(
-                            field.name, model_full_name
-                        ),
-                        hint="Add the attribute 'through' to the field '{}' of the model '{}' "
-                        "and define the appropriate model".format(
-                            field.name, model_full_name
-                        ),
+                        f"The field '{field.name}' of the model '{model_full_name}' is a "
+                        "ManyToManyField but without a 'through' model defined",
+                        hint=f"Add the attribute 'through' to the field '{field.name}' of the "
+                        "model '{model_full_name}' and define the appropriate model",
                         obj=cls,
                         id="marsha.models.E009",
                     )

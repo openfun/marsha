@@ -81,7 +81,7 @@ class XAPIStatement:
                     to_locale(settings.LANGUAGE_CODE).replace("_", "-"): video.title
                 },
             },
-            "id": "uuid://{id}".format(id=str(video.id)),
+            "id": f"uuid://{video.id}",
             "objectType": "Activity",
         }
 

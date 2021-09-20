@@ -48,7 +48,7 @@ class DocumentLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/documents/{!s}".format(document.pk), data)
+        response = self.client.post(f"/lti/documents/{document.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -114,7 +114,7 @@ class DocumentLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/documents/{!s}".format(document.pk), data)
+        response = self.client.post(f"/lti/documents/{document.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -176,7 +176,7 @@ class DocumentLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post("/lti/documents/{!s}".format(document.pk), data)
+        response = self.client.post(f"/lti/documents/{document.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -231,7 +231,7 @@ class DocumentLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/documents/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(f"/lti/documents/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -266,7 +266,7 @@ class DocumentLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post("/lti/documents/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(f"/lti/documents/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -291,7 +291,7 @@ class DocumentLTIViewTestCase(TestCase):
         """Validate the response returned in case of an LTI exception."""
         role = random.choice(["instructor", "student"])
         data = {"resource_link_id": "123", "roles": role, "context_id": "abc"}
-        response = self.client.post("/lti/documents/{!s}".format(uuid.uuid4()), data)
+        response = self.client.post(f"/lti/documents/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
