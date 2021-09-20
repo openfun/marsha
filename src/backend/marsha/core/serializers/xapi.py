@@ -31,7 +31,7 @@ class XAPIStatementSerializer(serializers.Serializer):
     result = ExtensionSerializer(required=False)
 
     id = serializers.RegexField(
-        re.compile("^{uuid}$".format(uuid=UUID_REGEX)),
+        re.compile(f"^{UUID_REGEX}$"),
         required=False,
         default=str(uuid.uuid4()),
     )
@@ -40,5 +40,5 @@ class XAPIStatementSerializer(serializers.Serializer):
         """Check if there is no extra arguments in the submitted payload."""
         unknown_keys = set(self.initial_data.keys()) - set(self.fields.keys())
         if unknown_keys:
-            raise ValidationError("Got unknown fields: {}".format(unknown_keys))
+            raise ValidationError(f"Got unknown fields: {unknown_keys}")
         return attrs

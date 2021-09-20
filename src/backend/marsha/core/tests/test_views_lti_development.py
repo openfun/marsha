@@ -54,7 +54,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "launch_presentation_locale": "fr",
         }
         response = self.client.post(
-            "/lti/videos/{!s}".format(video.pk),
+            f"/lti/videos/{video.pk}",
             data,
             HTTP_REFERER="https://example.com",
         )
@@ -110,7 +110,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
         }
         response = self.client.post(
-            "/lti/videos/{!s}".format(video.pk),
+            f"/lti/videos/{video.pk}",
             data,
             HTTP_REFERER="https://example.com",
         )
@@ -185,7 +185,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
         response = self.client.post(
-            "/lti/videos/{!s}".format(uuid.uuid4()),
+            f"/lti/videos/{uuid.uuid4()}",
             data,
             HTTP_REFERER="https://example.com",
         )
@@ -260,7 +260,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         }
 
         with self.assertRaises(ImproperlyConfigured):
-            self.client.post("/lti/videos/{!s}".format(video.pk), data)
+            self.client.post(f"/lti/videos/{video.pk}", data)
 
     @override_settings(DEBUG=True)
     @override_settings(BYPASS_LTI_VERIFICATION=True)
@@ -281,7 +281,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
             "launch_presentation_locale": "fr",
         }
-        response = self.client.post("/lti/videos/{!s}".format(video.pk), data)
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")

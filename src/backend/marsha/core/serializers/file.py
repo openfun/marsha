@@ -84,10 +84,9 @@ class DocumentSerializer(serializers.ModelSerializer):
             The document's filename
 
         """
-        return "{playlist_title:s}_{title:s}{extension:s}".format(
-            playlist_title=slugify(obj.playlist.title),
-            title=slugify(obj.title),
-            extension=self._get_extension_string(obj),
+        return (
+            f"{slugify(obj.playlist.title)}_{slugify(obj.title)}"
+            f"{self._get_extension_string(obj)}"
         )
 
     def get_url(self, obj):
@@ -109,17 +108,9 @@ class DocumentSerializer(serializers.ModelSerializer):
             return None
 
         url = (
-            "{protocol:s}://{cloudfront:s}/{pk!s}/document/{stamp:s}{extension:s}"
-            "?response-content-disposition={content_disposition:s}"
-        ).format(
-            protocol=settings.AWS_S3_URL_PROTOCOL,
-            cloudfront=settings.CLOUDFRONT_DOMAIN,
-            pk=obj.pk,
-            stamp=time_utils.to_timestamp(obj.uploaded_on),
-            content_disposition=quote_plus(
-                "attachment; filename=" + self.get_filename(obj)
-            ),
-            extension=self._get_extension_string(obj),
+            f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}/document/"
+            f"{time_utils.to_timestamp(obj.uploaded_on)}{self._get_extension_string(obj)}?response"
+            f"-content-disposition={quote_plus('attachment; filename=' + self.get_filename(obj))}"
         )
 
         # Sign the document urls only if the functionality is activated
@@ -150,6 +141,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             The title without the extension if there is one.
 
         """
+        # pylint: disable=consider-using-f-string
         match = re.match(
             r"^(?P<title>.*)(\.{extension_regex:s})$".format(
                 extension_regex=EXTENSION_REGEX

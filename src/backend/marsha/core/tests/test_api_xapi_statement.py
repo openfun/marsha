@@ -56,7 +56,7 @@ class XAPIStatementApiTest(TestCase):
 
         response = self.client.post(
             "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
         )
@@ -77,7 +77,7 @@ class XAPIStatementApiTest(TestCase):
 
         response = self.client.post(
             "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
         )
@@ -115,7 +115,7 @@ class XAPIStatementApiTest(TestCase):
 
         response = self.client.post(
             "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
         )
@@ -166,7 +166,7 @@ class XAPIStatementApiTest(TestCase):
 
         response = self.client.post(
             "/xapi/",
-            HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
         )
@@ -211,7 +211,7 @@ class XAPIStatementApiTest(TestCase):
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
                 "/xapi/",
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
             )
@@ -249,7 +249,7 @@ class XAPIStatementApiTest(TestCase):
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
                 "/xapi/",
-                HTTP_AUTHORIZATION="Bearer {!s}".format(jwt_token),
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
             )

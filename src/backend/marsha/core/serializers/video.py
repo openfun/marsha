@@ -125,26 +125,15 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         content_disposition: string or None
             Add a response-content-disposition query string to url if present
         """
-        base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
-            protocol=settings.AWS_S3_URL_PROTOCOL,
-            cloudfront=settings.CLOUDFRONT_DOMAIN,
-            video=obj.video.pk,
-        )
+        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
-        url = "{base:s}/{object_path}/{stamp:s}_{language:s}{mode:s}".format(
-            base=base,
-            stamp=stamp,
-            language=obj.language,
-            mode="_{:s}".format(obj.mode) if obj.mode else "",
-            object_path=object_path,
-        )
+        mode = f"_{obj.mode}" if obj.mode else ""
+        url = f"{base}/{object_path}/{stamp}_{obj.language:s}{mode:s}"
         if extension:
-            url = "{url:s}.{extension:s}".format(url=url, extension=extension)
+            url = f"{url}.{extension}"
 
         if content_disposition:
-            url = "{url:s}?response-content-disposition={content_disposition:s}".format(
-                url=url, content_disposition=content_disposition
-            )
+            url = f"{url}?response-content-disposition={content_disposition}"
         return url
 
     def get_source_url(self, obj):
@@ -166,15 +155,11 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         """
         if obj.uploaded_on and obj.extension:
             stamp = time_utils.to_timestamp(obj.uploaded_on)
-            filename = "{playlist_title:s}_{stamp:s}.{extension:s}".format(
-                playlist_title=slugify(obj.video.playlist.title),
-                stamp=stamp,
-                extension=obj.extension,
-            )
+            filename = f"{slugify(obj.video.playlist.title)}_{stamp}.{obj.extension}"
             url = self._generate_url(
                 obj,
                 "timedtext/source",
-                content_disposition=quote_plus("attachment; filename=" + filename),
+                content_disposition=quote_plus(f"attachment; filename={filename}"),
             )
 
             # Sign the url only if the functionality is activated
@@ -277,20 +262,11 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
         """
         if obj.uploaded_on:
-            base = "{protocol:s}://{cloudfront:s}/{video!s}".format(
-                protocol=settings.AWS_S3_URL_PROTOCOL,
-                cloudfront=settings.CLOUDFRONT_DOMAIN,
-                video=obj.video.pk,
-            )
+            base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
             urls = {}
+            stamp = time_utils.to_timestamp(obj.uploaded_on)
             for resolution in settings.VIDEO_RESOLUTIONS:
-                urls[
-                    resolution
-                ] = "{base:s}/thumbnails/{stamp:s}_{resolution:d}.jpg".format(
-                    base=base,
-                    stamp=time_utils.to_timestamp(obj.uploaded_on),
-                    resolution=resolution,
-                )
+                urls[resolution] = f"{base}/thumbnails/{stamp}_{resolution}.jpg"
             return urls
         return None
 
@@ -373,37 +349,25 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         urls = {"mp4": {}, "thumbnails": {}}
 
-        base = "{protocol:s}://{cloudfront:s}/{pk!s}".format(
-            protocol=settings.AWS_S3_URL_PROTOCOL,
-            cloudfront=settings.CLOUDFRONT_DOMAIN,
-            pk=obj.pk,
-        )
+        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
         date_less_than = timezone.now() + timedelta(
             seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
         )
-        filename = "{playlist_title:s}_{stamp:s}.mp4".format(
-            playlist_title=slugify(obj.playlist.title), stamp=stamp
-        )
+        filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
+        content_disposition = quote_plus(f"attachment; filename={filename}")
         for resolution in obj.resolutions:
             # MP4
             mp4_url = (
-                "{base:s}/mp4/{stamp:s}_{resolution:d}.mp4"
-                "?response-content-disposition={content_disposition:s}"
-            ).format(
-                base=base,
-                stamp=stamp,
-                resolution=resolution,
-                content_disposition=quote_plus("attachment; filename=" + filename),
+                f"{base}/mp4/{stamp}_{resolution}.mp4"
+                f"?response-content-disposition={content_disposition}"
             )
 
             # Thumbnails
             urls["thumbnails"][resolution] = thumbnail_urls.get(
                 resolution,
-                "{base:s}/thumbnails/{stamp:s}_{resolution:d}.0000000.jpg".format(
-                    base=base, stamp=stamp, resolution=resolution
-                ),
+                f"{base}/thumbnails/{stamp}_{resolution}.0000000.jpg",
             )
 
             # Sign the urls of mp4 videos only if the functionality is activated
@@ -419,13 +383,11 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         # Adaptive Bit Rate manifests
         urls["manifests"] = {
-            "hls": "{base:s}/cmaf/{stamp:s}.m3u8".format(base=base, stamp=stamp),
+            "hls": f"{base}/cmaf/{stamp}.m3u8",
         }
 
         # Previews
-        urls["previews"] = "{base:s}/previews/{stamp:s}_100.jpg".format(
-            base=base, stamp=stamp
-        )
+        urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
 
         return urls
 

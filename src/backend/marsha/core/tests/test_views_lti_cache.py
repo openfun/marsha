@@ -51,7 +51,7 @@ class CacheLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = video1.playlist.consumer_site
 
-        url = "/lti/videos/{!s}".format(video1.pk)
+        url = f"/lti/videos/{video1.pk}"
         data = {
             "resource_link_id": video1.lti_id,
             "context_id": video1.playlist.lti_id,
@@ -99,7 +99,7 @@ class CacheLTIViewTestCase(TestCase):
         self.assertLess(elapsed, 0.01)
 
         # The cache should not be hit on first call if we change the resource id
-        url = "/lti/videos/{!s}".format(video2.pk)
+        url = f"/lti/videos/{video2.pk}"
         with self.assertNumQueries(4):
             elapsed, resource_video2 = self._fetch_lti_request(url, data)
         self.assertEqual(resource_video2["id"], str(video2.id))
@@ -130,7 +130,7 @@ class CacheLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = video.playlist.consumer_site
 
-        url = "/lti/videos/{!s}".format(video.pk)
+        url = f"/lti/videos/{video.pk}"
         data = {
             "resource_link_id": video.lti_id,
             "context_id": video.playlist.lti_id,
@@ -160,7 +160,7 @@ class CacheLTIViewTestCase(TestCase):
             resolutions=[144, 240],
             is_public=True,
         )
-        url = "/videos/{!s}".format(video.pk)
+        url = f"/videos/{video.pk}"
 
         with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url)

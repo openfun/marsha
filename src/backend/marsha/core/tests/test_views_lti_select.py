@@ -259,9 +259,7 @@ class SelectLTIViewTestCase(TestCase):
                 "context_id": "sent_lti_context_id",
             },
         )
-        lti_parameters["oauth_signature"] = "{:s}a".format(
-            lti_parameters["oauth_signature"]
-        )
+        lti_parameters["oauth_signature"] = f"{lti_parameters['oauth_signature']}a"
 
         response = self.client.post(
             "/lti/select/", lti_parameters, HTTP_REFERER="https://testserver"

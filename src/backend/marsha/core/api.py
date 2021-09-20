@@ -874,7 +874,7 @@ class XAPIStatementView(APIView):
             video = Video.objects.get(pk=user.id)
         except Video.DoesNotExist:
             return Response(
-                {"reason": "video with id {id} does not exist".format(id=user.id)},
+                {"reason": f"video with id {user.id} does not exist"},
                 status=404,
             )
 

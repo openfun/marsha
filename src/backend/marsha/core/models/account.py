@@ -133,6 +133,7 @@ class LTIPassport(BaseModel):
 
     def __str__(self):
         """Get the string representation of an instance."""
+        # pylint: disable=consider-using-f-string
         result = "{key:s}{type:s}".format(
             key=self.oauth_consumer_key,
             type=" [cs]"
