@@ -280,12 +280,14 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
             # Create a short-lived JWT token for the video
             jwt_token = AccessToken()
+
+            # Token only has a context_id if we are in a lti context.
+            if lti:
+                jwt_token.payload["context_id"] = lti.context_id
+
             jwt_token.payload.update(
                 {
                     "session_id": session_id,
-                    "context_id": lti.context_id
-                    if lti
-                    else app_data["resource"]["playlist"]["lti_id"],
                     "resource_id": str(lti.resource_id)
                     if lti
                     else app_data["resource"]["id"],
