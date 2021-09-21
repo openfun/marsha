@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Add missing translations
+- Erase `context_id` key from the token generated in a public context
 
 ## [3.24.0] - 2021-09-13
 

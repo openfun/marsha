@@ -120,6 +120,7 @@ class VideoPublicViewTestCase(TestCase):
         )
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(context.get("modelName"), "videos")
+        self.assertIsNone(context.get("context_id"))
 
     def test_video_not_publicly_accessible(self):
         """Validate it is impossible to access to a non public video."""
