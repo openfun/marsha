@@ -1,7 +1,7 @@
 import { Nullable } from '../utils/types';
 
 export interface DecodedJwt {
-  context_id: string;
+  context_id?: string;
   email: string;
   roles: string[];
   session_id: string;
