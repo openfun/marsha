@@ -13,6 +13,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - enable smacks in converse conf when websocket is used
   https://modules.prosody.im/mod_smacks
 
+### Fixed
+
+- Trigger XAPI initialized action before a first play 
+  for a live video
+
 ## [3.24.1] - 2021-09-14
 
 ### Fixed
