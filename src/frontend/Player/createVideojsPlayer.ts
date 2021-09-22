@@ -131,7 +131,7 @@ export const createVideojsPlayer = (
   };
   let currentTrack = getCurrentTrack();
 
-  player.on('canplaythrough', () => {
+  const initialize = () => {
     if (isInitialized) {
       return;
     }
@@ -146,7 +146,9 @@ export const createVideojsPlayer = (
 
     xapiStatement.initialized(contextExtensions);
     isInitialized = true;
-  });
+  };
+
+  player.on('canplaythrough', initialize);
 
   player.on('playing', () => {
     xapiStatement.played({
@@ -187,6 +189,15 @@ export const createVideojsPlayer = (
   /**************** Interacted event *************************/
   const interacted = (qualityLevels?: QualityLevels): void => {
     if (!isInitialized) {
+      // For a live video, no event to detect when the video is fully initialized is triggered
+      // before the first "play" action. To mitigate this, we can call "initialize"
+      // on the first "interact" action and we don't log this interaction. The first interact
+      // action is when the first quality to play is chosen, the default one. To choose it,
+      // all quality available must be read in the HLS manifest. So we can consider at this
+      // time that the video is initialized.
+      if (video.live_state) {
+        initialize();
+      }
       return;
     }
     let quality: string | number;
