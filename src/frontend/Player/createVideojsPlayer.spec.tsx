@@ -268,7 +268,7 @@ describe('createVideoJsPlayer', () => {
     player.trigger('canplaythrough');
     expect(mockXAPIStatementInterface.initialized).toHaveBeenCalled();
 
-    player.trigger('playing');
+    player.trigger('play');
     expect(mockXAPIStatementInterface.played).toHaveBeenCalled();
 
     player.trigger('pause');
