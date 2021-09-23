@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Trigger XAPI initialized action before a first play 
   for a live video
+- listen video play event instead of playing to send the XAPI played event
 
 ## [3.24.1] - 2021-09-14
 

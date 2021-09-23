@@ -13,7 +13,7 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from '../types/libs/video.js/extend';
-import { liveState, Video, videoSize, VideoUrls } from '../types/tracks';
+import { Video, videoSize } from '../types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -150,7 +150,7 @@ export const createVideojsPlayer = (
 
   player.on('canplaythrough', initialize);
 
-  player.on('playing', () => {
+  player.on('play', () => {
     xapiStatement.played({
       time: player.currentTime(),
     });
