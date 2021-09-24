@@ -10,14 +10,18 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- enable smacks in converse conf when websocket is used
+- Enable smacks in converse conf when websocket is used
   https://modules.prosody.im/mod_smacks
+
+### Changed
+
+- Request initial MUC config before modifying it
 
 ### Fixed
 
 - Trigger XAPI initialized action before a first play 
   for a live video
-- listen video play event instead of playing to send the XAPI played event
+- Listen video play event instead of playing to send the XAPI played event
 
 ## [3.24.1] - 2021-09-14
 
