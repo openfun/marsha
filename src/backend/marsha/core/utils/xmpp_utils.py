@@ -38,7 +38,7 @@ def create_room(room_name):
     """Create and configure a room.
 
     Documentation to create and configure a room:
-    https://xmpp.org/extensions/xep-0045.html#createroom
+    https://xmpp.org/extensions/xep-0045.html#createroom-reserved
 
     Parameters
     ----------
@@ -54,6 +54,51 @@ def create_room(room_name):
         )
     )
 
+    # request the default config when a room is created
+    default_config_iq = client.SendAndWaitForResponse(
+        xmpp.Iq(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
+            frm=settings.XMPP_PRIVATE_ADMIN_JID,
+            typ="get",
+            queryNS=xmpp.NS_MUC_OWNER,
+        )
+    )
+
+    data = []
+    fileds_to_exclude = [
+        "muc#roomconfig_persistentroom",
+        "muc#roomconfig_publicroom",
+        "muc#roomconfig_allowpm",
+        "muc#roomconfig_allowinvites",
+        "muc#roomconfig_changesubject",
+    ]
+
+    # Remove config we want to modify
+    for children in default_config_iq.getQueryPayload()[0].getChildren():
+        if (
+            children.getName() == "field"
+            and children.getAttr("var") not in fileds_to_exclude
+        ):
+            data.append(children)
+
+    # Add our own config
+    data = data + [
+        # Room is persistent
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_persistentroom", value=1),
+        # Room is not publicly searchable
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_publicroom", value=0),
+        # Nobody can send private message
+        xmpp.DataField(
+            typ="list-single",
+            name="muc#roomconfig_allowpm",
+            value="none",
+        ),
+        # Room invitations are disabled
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_allowinvites", value=0),
+        # Nobody can change the subject
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_changesubject", value=0),
+    ]
+
     client.send(
         xmpp.Iq(
             to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
@@ -63,33 +108,7 @@ def create_room(room_name):
             payload=[
                 xmpp.DataForm(
                     typ="submit",
-                    data=[
-                        xmpp.DataField(
-                            typ="hidden", name="FORM_TYPE", value=xmpp.NS_MUC_ROOMCONFIG
-                        ),
-                        # Make Room Persistent?
-                        xmpp.DataField(
-                            typ="boolean", name="muc#roomconfig_persistentroom", value=1
-                        ),
-                        # Make room publicly searchable?
-                        xmpp.DataField(
-                            typ="boolean", name="muc#roomconfig_publicroom", value=0
-                        ),
-                        # Nobody can send private message
-                        xmpp.DataField(
-                            typ="list-single",
-                            name="muc#roomconfig_allowpm",
-                            value="none",
-                        ),
-                        # Nobody can send private message
-                        xmpp.DataField(
-                            typ="boolean", name="muc#roomconfig_allowinvites", value=0
-                        ),
-                        # Nobody can change the subject
-                        xmpp.DataField(
-                            typ="boolean", name="muc#roomconfig_changesubject", value=0
-                        ),
-                    ],
+                    data=data,
                 )
             ],
         )
