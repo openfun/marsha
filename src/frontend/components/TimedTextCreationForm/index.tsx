@@ -3,18 +3,17 @@ import { normalizeColor } from 'grommet/utils';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
-import Select from 'react-select';
-import { ActionMeta, ValueType } from 'react-select/src/types';
+import Select, { ActionMeta } from 'react-select';
 import styled from 'styled-components';
 
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from '../../types/models';
-import { TimedText, timedTextMode } from '../../types/tracks';
+import { timedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';
-import { Maybe } from '../../utils/types';
+import { Maybe, Nullable } from '../../utils/types';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
@@ -61,10 +60,6 @@ interface TimedTextCreationFormProps {
   mode: timedTextMode;
 }
 
-const isSelectOption = (
-  option: ValueType<SelectOption, false>,
-): option is SelectOption => (option as SelectOption).value !== undefined;
-
 /**
  * Component. Displays a form that allows the user to create a new timedtexttrack.
  */
@@ -92,10 +87,10 @@ export const TimedTextCreationForm = ({
     choices.filter((language) => !excludedLanguages.includes(language.value));
 
   const onSelectChange = (
-    option: ValueType<SelectOption, false>,
+    option: Nullable<SelectOption>,
     { action }: ActionMeta<SelectOption>,
   ) => {
-    if (action === 'select-option' && option && isSelectOption(option)) {
+    if (action === 'select-option' && option) {
       setNewTTLanguage(option.value);
     }
   };
