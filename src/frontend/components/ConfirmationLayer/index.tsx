@@ -1,6 +1,5 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, KeyboardEventHandler } from 'react';
 import { Box, Button, Layer, Text } from 'grommet';
-import { KeyboardEventHandler } from 'react-select';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
