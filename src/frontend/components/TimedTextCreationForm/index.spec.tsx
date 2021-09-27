@@ -90,7 +90,7 @@ describe('<TimedTextCreationForm />', () => {
     await screen.findByText('Add a language');
 
     screen.getByText('Select...');
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     fireEvent.change(input!, { target: { value: 'French' } });
     fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
     fireEvent.click(screen.getByText('French'));
@@ -137,7 +137,7 @@ describe('<TimedTextCreationForm />', () => {
     );
     await screen.findByText('Add a language');
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     fireEvent.change(input!, { target: { value: 'French' } });
     fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
     fireEvent.click(screen.getByText('French'));
