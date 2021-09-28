@@ -19,7 +19,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
 from . import defaults, forms, permissions, serializers, storage
-from .lti import LTIUser
 from .models import Document, Organization, Playlist, Thumbnail, TimedTextTrack, Video
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
@@ -869,7 +868,6 @@ class XAPIStatementView(APIView):
 
         """
         user = request.user
-        lti_user = LTIUser(user)
         try:
             video = Video.objects.get(pk=user.id)
         except Video.DoesNotExist:
@@ -891,9 +889,9 @@ class XAPIStatementView(APIView):
         if not partial_xapi_statement.is_valid():
             return Response(partial_xapi_statement.errors, status=400)
 
-        # xapi statement enriched with video and lti_user informations
+        # xapi statement enriched with video and jwt_token informations
         xapi_statement = XAPIStatement(
-            video, partial_xapi_statement.validated_data, lti_user
+            video, partial_xapi_statement.validated_data, user.token
         )
 
         # Log the statement in the xapi logger
