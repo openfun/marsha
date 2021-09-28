@@ -87,10 +87,6 @@ class VideoLTIViewTestCase(TestCase):
             {"can_access_dashboard": True, "can_update": True},
         )
         self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
-        self.assertDictEqual(
             jwt_token.payload["user"],
             {
                 "username": "jane_doe",
@@ -214,10 +210,6 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": True},
-        )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         self.assertEqual(context.get("state"), "success")
@@ -364,10 +356,6 @@ class VideoLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": True},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
@@ -504,10 +492,6 @@ class VideoLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
 
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
@@ -630,10 +614,6 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": True},
-        )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         self.assertEqual(context.get("state"), "success")
@@ -836,10 +816,6 @@ class VideoLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
 
         self.assertEqual(context.get("state"), "success")
 
@@ -951,10 +927,6 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
-        )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         self.assertEqual(context.get("state"), "success")
@@ -1070,10 +1042,6 @@ class VideoLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
 
         self.assertEqual(context.get("state"), "success")
 
@@ -1184,10 +1152,6 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
-        )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": None},
         )
         self.assertEqual(context.get("modelName"), "videos")
 
