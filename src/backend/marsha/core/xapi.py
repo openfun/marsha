@@ -14,7 +14,7 @@ class XAPIStatement:
 
     statement = None
 
-    def __init__(self, video, statement, lti_user):
+    def __init__(self, video, statement, jwt_token):
         """Compute a valid xapi satement.
 
         Parameters
@@ -40,15 +40,15 @@ class XAPIStatement:
                 }
             }
 
-        lti_user : Type[lti.LTIUser]
-            Object representing data stored in the JWT Token and related to the user authenticated
-            with LTI
+        jwt_token : Type[rest_framework_simplejwt.tokens.AccessToken]
+            A jwt token containing the context used to enrich the xapi statement
 
         """
-        try:
-            user_id = lti_user.user.get("id")
-        except AttributeError:
-            user_id = lti_user.session_id
+        user_id = (
+            jwt_token.payload["user"].get("id")
+            if jwt_token.payload.get("user")
+            else jwt_token.payload["session_id"]
+        )
 
         homepage = video.playlist.consumer_site.domain
 
@@ -69,12 +69,12 @@ class XAPIStatement:
             {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
         )
 
-        try:
+        if jwt_token.payload.get("context_id"):
             statement["context"]["contextActivities"].update(
                 {
                     "parent": [
                         {
-                            "id": lti_user.context_id,
+                            "id": jwt_token.payload["context_id"],
                             "objectType": "Activity",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
@@ -83,8 +83,6 @@ class XAPIStatement:
                     ]
                 }
             )
-        except AttributeError:
-            pass
 
         statement["actor"] = {
             "objectType": "Agent",
