@@ -3,14 +3,11 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from rest_framework_simplejwt.tokens import AccessToken
+
 from ..defaults import RAW, RUNNING
 from ..factories import VideoFactory
-from ..lti import LTIUser
 from ..xapi import XAPI, XAPIStatement, requests
-
-
-class MockLtiUser:
-    """Mock LTIUser class."""
 
 
 class XAPIStatmentTest(TestCase):
@@ -24,17 +21,9 @@ class XAPIStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        mock_token_user = mock.MagicMock()
-        mock_token = mock.MagicMock()
-        type(mock_token).payload = mock.PropertyMock(
-            return_value={
-                "session_id": "bar",
-                "context_id": "course-v1:ufr+mathematics+0001",
-            }
-        )
-        type(mock_token_user).token = mock.PropertyMock(return_value=mock_token)
-
-        lti_user = LTIUser(mock_token_user)
+        jwt_token = AccessToken()
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
 
         base_statement = {
             "context": {
@@ -59,7 +48,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, lti_user)
+        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -67,7 +56,10 @@ class XAPIStatmentTest(TestCase):
             statement["actor"],
             {
                 "objectType": "Agent",
-                "account": {"name": "bar", "homePage": "http://example.com"},
+                "account": {
+                    "name": "326c0689-48c1-493e-8d2d-9fb0c289de7f",
+                    "homePage": "http://example.com",
+                },
             },
         )
         self.assertEqual(
@@ -115,19 +107,10 @@ class XAPIStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        mock_token_user = mock.MagicMock()
-        mock_token = mock.MagicMock()
-        type(mock_token).payload = mock.PropertyMock(
-            return_value={
-                "user": {
-                    "id": "foo",
-                },
-                "context_id": "course-v1:ufr+mathematics+0001",
-            }
-        )
-        type(mock_token_user).token = mock.PropertyMock(return_value=mock_token)
-
-        lti_user = LTIUser(mock_token_user)
+        jwt_token = AccessToken()
+        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
 
         base_statement = {
             "context": {
@@ -152,7 +135,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, lti_user)
+        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -160,7 +143,10 @@ class XAPIStatmentTest(TestCase):
             statement["actor"],
             {
                 "objectType": "Agent",
-                "account": {"name": "foo", "homePage": "http://example.com"},
+                "account": {
+                    "name": "b2584aa405540758db2a6278521b6478",
+                    "homePage": "http://example.com",
+                },
             },
         )
         self.assertEqual(
@@ -209,19 +195,10 @@ class XAPIStatmentTest(TestCase):
             live_type=RAW,
         )
 
-        mock_token_user = mock.MagicMock()
-        mock_token = mock.MagicMock()
-        type(mock_token).payload = mock.PropertyMock(
-            return_value={
-                "user": {
-                    "id": "foo",
-                },
-                "context_id": "course-v1:ufr+mathematics+0001",
-            }
-        )
-        type(mock_token_user).token = mock.PropertyMock(return_value=mock_token)
-
-        lti_user = LTIUser(mock_token_user)
+        jwt_token = AccessToken()
+        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
 
         base_statement = {
             "context": {
@@ -246,7 +223,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, lti_user)
+        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -254,7 +231,10 @@ class XAPIStatmentTest(TestCase):
             statement["actor"],
             {
                 "objectType": "Agent",
-                "account": {"name": "foo", "homePage": "http://example.com"},
+                "account": {
+                    "name": "b2584aa405540758db2a6278521b6478",
+                    "homePage": "http://example.com",
+                },
             },
         )
         self.assertEqual(
@@ -301,16 +281,8 @@ class XAPIStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        mock_token_user = mock.MagicMock()
-        mock_token = mock.MagicMock()
-        type(mock_token).payload = mock.PropertyMock(
-            return_value={
-                "session_id": "bar",
-            }
-        )
-        type(mock_token_user).token = mock.PropertyMock(return_value=mock_token)
-
-        lti_user = LTIUser(mock_token_user)
+        jwt_token = AccessToken()
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
 
         base_statement = {
             "context": {
@@ -335,7 +307,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, lti_user)
+        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -343,7 +315,10 @@ class XAPIStatmentTest(TestCase):
             statement["actor"],
             {
                 "objectType": "Agent",
-                "account": {"name": "bar", "homePage": "http://example.com"},
+                "account": {
+                    "name": "326c0689-48c1-493e-8d2d-9fb0c289de7f",
+                    "homePage": "http://example.com",
+                },
             },
         )
         self.assertEqual(
