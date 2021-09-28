@@ -292,7 +292,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     if lti
                     else app_data["resource"]["id"],
                     "roles": lti.roles if lti else [NONE],
-                    "course": lti.get_course_info() if lti else {},
                     "locale": locale,
                     "permissions": permissions,
                     "maintenance": settings.MAINTENANCE_MODE,

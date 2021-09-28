@@ -74,10 +74,6 @@ class DocumentLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": True},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
-        )
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "documents")
@@ -140,10 +136,6 @@ class DocumentLTIViewTestCase(TestCase):
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": False},
         )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "amd", "course_name": "litterature", "course_run": "00003"},
-        )
 
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
@@ -201,10 +193,6 @@ class DocumentLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": False, "can_update": False},
-        )
-        self.assertDictEqual(
-            jwt_token.payload["course"],
-            {"school_name": "ufr", "course_name": "mathematics", "course_run": "00001"},
         )
 
         self.assertEqual(context.get("state"), "success")
