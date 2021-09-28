@@ -69,6 +69,23 @@ class XAPIStatement:
             {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
         )
 
+        try:
+            statement["context"]["contextActivities"].update(
+                {
+                    "parent": [
+                        {
+                            "id": lti_user.context_id,
+                            "objectType": "Activity",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/course"
+                            },
+                        }
+                    ]
+                }
+            )
+        except AttributeError:
+            pass
+
         statement["actor"] = {
             "objectType": "Agent",
             "account": {"name": user_id, "homePage": homepage},
@@ -84,25 +101,6 @@ class XAPIStatement:
             "id": f"uuid://{video.id}",
             "objectType": "Activity",
         }
-
-        object_extensions = {}
-        if lti_user.course.get("school_name") is not None:
-            object_extensions[
-                "https://w3id.org/xapi/acrossx/extensions/school"
-            ] = lti_user.course["school_name"]
-
-        if lti_user.course.get("course_name") is not None:
-            object_extensions[
-                "http://adlnet.gov/expapi/activities/course"
-            ] = lti_user.course["course_name"]
-
-        if lti_user.course.get("course_run") is not None:
-            object_extensions[
-                "http://adlnet.gov/expapi/activities/module"
-            ] = lti_user.course["course_run"]
-
-        if object_extensions:
-            statement["object"]["definition"]["extensions"] = object_extensions
 
         self.statement = statement
 
