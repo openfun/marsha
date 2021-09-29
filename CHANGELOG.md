@@ -45,6 +45,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   medialive and mediapackage
 - Allow a participant to join a Jitsi conference
 - Video model add a `starting_at` field and the notion is_scheduled
+- Add email in JWT token
 
 ### Changed
 

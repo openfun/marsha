@@ -300,8 +300,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
             if user_id:
                 jwt_token.payload["user"] = {
-                    "username": lti.username,
+                    "email": lti.email,
                     "id": user_id,
+                    "username": lti.username,
                 }
 
             app_data["jwt"] = str(jwt_token)

@@ -13,6 +13,7 @@ export interface DecodedJwt {
   };
   maintenance: boolean;
   user?: {
+    email: Nullable<string>;
     id: string;
     username: Nullable<string>;
   };

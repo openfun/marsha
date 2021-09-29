@@ -63,8 +63,9 @@ class DocumentLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -125,8 +126,9 @@ class DocumentLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -183,8 +185,9 @@ class DocumentLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
