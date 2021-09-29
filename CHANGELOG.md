@@ -47,6 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Video model add a `starting_at` field and the notion is_scheduled
 - Add email in JWT token
 - Add liveRegistration model to save registrations to scheduled events
+- Add DRF read and create liveRegistration endpoints
 
 ### Changed
 
