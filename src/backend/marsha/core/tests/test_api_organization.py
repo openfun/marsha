@@ -26,6 +26,7 @@ class OrganizationAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {
             "id": str(user.id),
+            "email": user.email,
             "username": user.username,
         }
 
@@ -53,6 +54,7 @@ class OrganizationAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {
             "id": str(user.id),
+            "email": user.email,
             "username": user.username,
         }
 
