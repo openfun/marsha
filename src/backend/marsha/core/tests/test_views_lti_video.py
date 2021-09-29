@@ -64,6 +64,7 @@ class VideoLTIViewTestCase(TestCase):
             "user_id": "56255f3807599c377bf0e5bf072359fd",
             "launch_presentation_locale": "fr",
             "lis_person_sourcedid": "jane_doe",
+            "lis_person_contact_email_primary": "jane@test-mooc.fr",
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
@@ -89,8 +90,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertDictEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": "jane@test-mooc.fr",
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
 
@@ -202,8 +204,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -349,8 +352,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -487,8 +491,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -612,8 +617,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -817,8 +823,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -931,8 +938,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -1047,8 +1055,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             jwt_token.payload["user"],
             {
-                "username": "jane_doe",
+                "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
