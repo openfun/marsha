@@ -161,3 +161,13 @@ class DocumentFactory(DjangoModelFactory):
     title = factory.Sequence("Document {:03d}".format)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("document#{:d}".format)
+
+
+class LiveRegistrationFactory(DjangoModelFactory):
+    """Factory for the LiveRegistration model."""
+
+    email = factory.Sequence("user{:d}@fun-mooc.fr".format)
+    video = factory.SubFactory(VideoFactory)
+
+    class Meta:  # noqa
+        model = models.LiveRegistration

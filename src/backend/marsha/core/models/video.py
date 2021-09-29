@@ -403,3 +403,69 @@ class Thumbnail(AbstractImage):
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.video.pk}/thumbnail/{self.pk}/{stamp}"
+
+
+class LiveRegistration(BaseModel):
+    """Model representing a scheduling live registration."""
+
+    RESOURCE_NAME = "liveregistrations"
+
+    email = models.EmailField(_("email address"), db_index=True)
+
+    consumer_site = models.ForeignKey(
+        blank=True,
+        help_text=_("Only present for lti users."),
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="liveregistrations",
+        to="ConsumerSite",
+        verbose_name=_("LTI consumer site"),
+    )
+
+    lti_user_id = models.CharField(
+        blank=True,
+        db_index=True,
+        help_text=_(
+            "Unique identifier for the user on the tool consumer, only present for lti users."
+        ),
+        max_length=150,
+        null=True,
+        verbose_name=_("LTI user identifier"),
+    )
+
+    should_send_reminders = models.BooleanField(
+        default=False,
+        help_text=_("whether user reminders are enabled for this live"),
+        verbose_name=_("should send reminders"),
+    )
+
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name="liveregistrations",
+        verbose_name=_("Video"),
+    )
+
+    class Meta:
+        """Options for the `liveregistrations` model."""
+
+        db_table = "live_registration"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("email", "consumer_site", "video"),
+                condition=models.Q(deleted=None),
+                name="liveregistration_unique_email_consumer_site_video_idx",
+            ),
+            models.UniqueConstraint(
+                fields=["email", "video"],
+                condition=models.Q(deleted=None, consumer_site=None),
+                name="liveregistration_unique_email_video_with_consumer_site_none",
+            ),
+            models.UniqueConstraint(
+                condition=models.Q(("deleted", None)),
+                fields=("lti_user_id", "consumer_site", "video"),
+                name="liveregistration_unique_video_lti_idx",
+            ),
+        ]
+
+        verbose_name = _("live registration")
