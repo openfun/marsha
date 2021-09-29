@@ -46,6 +46,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow a participant to join a Jitsi conference
 - Video model add a `starting_at` field and the notion is_scheduled
 - Add email in JWT token
+- Add liveRegistration model to save registrations to scheduled events
 
 ### Changed
 
