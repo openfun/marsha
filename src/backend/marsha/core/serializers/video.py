@@ -3,6 +3,7 @@ from datetime import timedelta
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -12,7 +13,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
-from ..models import Thumbnail, TimedTextTrack, Video
+from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
@@ -284,6 +285,121 @@ class InitLiveStateSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the initiate-live API endpoint."""
 
     type = serializers.ChoiceField(LIVE_TYPE_CHOICES)
+
+
+class LiveRegistrationSerializer(serializers.ModelSerializer):
+    """Serializer for liveRegistration model."""
+
+    class Meta:  # noqa
+        model = LiveRegistration
+        fields = (
+            "email",
+            "id",
+            "consumer_site",
+            "lti_user_id",
+            "should_send_reminders",
+            "video",
+        )
+        read_only_fields = (
+            "id",
+            "consumer_site",
+            "lti_user_id",
+            "video",
+        )
+
+    # Make sure video UUID is converted to a string during serialization
+    video = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
+
+    def validate(self, attrs):
+        """Control or set data with token informations.
+
+        Force the video field to the video of the JWT Token if any.
+        Check email, if present in the token, is equal to the one in the request.
+        Set lti informations if they are present in the token. Control integrity
+        errors and set specific messages.
+
+        Parameters
+        ----------
+        data : dictionary
+            Dictionary of the deserialized values of each field after validation.
+
+        Returns
+        -------
+        dictionary
+            The "data" dictionary is returned after modification.
+
+        """
+        # User here is a video as it comes from the JWT
+        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
+        user = self.context["request"].user
+        video = get_object_or_404(Video, pk=user.id)
+        if video.is_scheduled is False:
+            raise serializers.ValidationError(
+                {"video": f"video with id {user.id} doesn't accept registration."}
+            )
+
+        if not attrs.get("video_id") and isinstance(user, TokenUser):
+            attrs["video_id"] = user.id
+            # consumer_site is defined if context_id exists in the token
+            attrs["consumer_site"] = (
+                Playlist.objects.get(
+                    lti_id=user.token.payload["context_id"]
+                ).consumer_site
+                if user.token.payload.get("context_id") is not None
+                else None
+            )
+
+            if user.token.payload.get("user") is not None:
+                attrs["lti_user_id"] = user.token.payload["user"]["id"]
+
+                # If email is present in token, we make sure the one sent is the one expected
+                if user.token.payload["user"].get("email") is not None:
+                    if attrs["email"] != user.token.payload["user"].get("email"):
+                        raise serializers.ValidationError(
+                            {
+                                "email": "You are not authorized to register with a specific email"
+                                f" {attrs['email']}. You can only use the email from your "
+                                "authentication."
+                            }
+                        )
+
+                # We can identify the user for this context_id, we make sure this user hasn't
+                # already registered for this video. It's only relevant if context_id is defined.
+                if (
+                    user.token.payload.get("context_id") is not None
+                    and LiveRegistration.objects.filter(
+                        consumer_site=attrs["consumer_site"],
+                        deleted=None,
+                        lti_user_id=attrs["lti_user_id"],
+                        video=video,
+                    ).exists()
+                ):
+                    raise serializers.ValidationError(
+                        {
+                            "lti_user_id": "This identified user is already "
+                            "registered for this video and consumer site."
+                        }
+                    )
+
+            # Controls this email hasn't already been used for this video and this consumer
+            # site. Consumer site can be defined or not, in both case, it will raise the same
+            # error.
+            if LiveRegistration.objects.filter(
+                consumer_site=attrs["consumer_site"],
+                deleted=None,
+                email=attrs["email"],
+                video=video,
+            ).exists():
+                raise serializers.ValidationError(
+                    {
+                        "email": f"{attrs['email']} is already "
+                        "registered for this video and consumer site."
+                    }
+                )
+
+        return super().validate(attrs)
 
 
 class VideoBaseSerializer(serializers.ModelSerializer):
