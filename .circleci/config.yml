@@ -131,7 +131,7 @@ jobs:
 
   build-lambda-docker:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:202107-02
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -938,7 +938,7 @@ jobs:
 
   lambda-publish:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:202107-02
     working_directory: ~/marsha
     steps:
       - checkout
