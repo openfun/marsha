@@ -48,6 +48,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add email in JWT token
 - Add liveRegistration model to save registrations to scheduled events
 - Add DRF read and create liveRegistration endpoints
+- Allow DRF list action for liveRegistration endpoint
 
 ### Changed
 
