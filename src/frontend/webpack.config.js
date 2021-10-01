@@ -23,7 +23,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: __dirname + '/../backend/marsha/static/js/build',
-    chunkFilename: '[id].[fullhash].index.js',
+    chunkFilename: '[name].[contenthash].js',
     clean: true,
   },
 
