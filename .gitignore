@@ -132,7 +132,7 @@ playwright-screenshots
 playwright-videos
 
 # Assets
-./data/
+/data
 
 # Terraform
 .terraform

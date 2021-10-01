@@ -397,7 +397,13 @@ class Build(Base):
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
     STATICFILES_STORAGE = values.Value(
-        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
+    )
+    STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
+        r"^js\/build\/[0-9]*\..*\.js(\.map)?$"
+    )
+    STATIC_POSTPROCESS_MAP_IGNORE_REGEX = values.Value(
+        r"^js\/build\/[0-9]*\..*\.js\.map$"
     )
 
 
@@ -471,7 +477,13 @@ class Production(Base):
     ALLOWED_HOSTS = values.ListValue(None)
 
     STATICFILES_STORAGE = values.Value(
-        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
+    )
+    STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
+        r"^js\/build\/[0-9]*\..*\.js(\.map)?$"
+    )
+    STATIC_POSTPROCESS_MAP_IGNORE_REGEX = values.Value(
+        r"^js\/build\/[0-9]*\..*\.js\.map$"
     )
 
     AWS_BASE_NAME = values.Value("production")
