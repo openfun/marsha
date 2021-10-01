@@ -688,6 +688,7 @@ class DocumentViewSet(
 class LiveRegistrationViewSet(
     ObjectPkMixin,
     mixins.CreateModelMixin,
+    mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
@@ -713,40 +714,28 @@ class LiveRegistrationViewSet(
                 if user.token.payload.get("context_id")
                 else None
             )
+            filters = {"consumer_site": consumer_site, "video__id": user.id}
+            if self.kwargs.get("pk"):
+                filters["pk"] = self.kwargs["pk"]
+
             # admin and instructors can access all registrations from the same consumer site
             if user.token.payload.get("roles") and any(
                 role in ["administrator", "instructor"]
                 for role in user.token.payload["roles"]
             ):
-                return LiveRegistration.objects.filter(
-                    id=self.kwargs["pk"],
-                    consumer_site=consumer_site,
-                    video__id=user.id,
-                )
+                return LiveRegistration.objects.filter(**filters)
             # others can only read their registration
             if user.token.payload.get("user"):
                 if user.token.payload["user"].get("email"):
-                    # token has an email
-                    return LiveRegistration.objects.filter(
-                        id=self.kwargs["pk"],
-                        email=user.token.payload["user"]["email"],
-                        consumer_site=consumer_site,
-                        video__id=user.id,
-                    )
+                    filters["email"] = user.token.payload["user"]["email"]
+                    return LiveRegistration.objects.filter(**filters)
                 # token has no email, user has access to this registration if it's the right
                 # combination of lti_user_id and consumer_site
                 if user.token.payload["user"].get("id") and user.token.payload.get(
                     "context_id"
                 ):
-                    playlist = Playlist.objects.get(
-                        lti_id=user.token.payload["context_id"]
-                    )
-                    return LiveRegistration.objects.filter(
-                        id=self.kwargs["pk"],
-                        consumer_site=playlist.consumer_site,
-                        lti_user_id=user.token.payload["user"]["id"],
-                        video__id=user.id,
-                    )
+                    filters["lti_user_id"] = user.token.payload["user"]["id"]
+                    return LiveRegistration.objects.filter(**filters)
 
         return LiveRegistration.objects.none()
 
