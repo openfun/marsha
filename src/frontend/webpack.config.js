@@ -1,6 +1,7 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
+const config = {
   // Disable production-specific optimizations by default
   // They can be re-enabled by running the cli with `--mode=production` or making a separate
   // webpack config for production.
@@ -23,12 +24,12 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: __dirname + '/../backend/marsha/static/js/build',
-    chunkFilename: '[name].[contenthash].js',
+    chunkFilename: '[id].[fullhash].index.js',
     clean: true,
   },
 
-  // Enable sourcemaps for debugging webpack's output.
-  devtool: 'source-map',
+  // Enable eval source map for debugging webpack's output.
+  devtool: 'eval',
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
@@ -70,4 +71,24 @@ module.exports = {
       },
     ],
   },
+};
+
+module.exports = (_, argv) => {
+  if (argv.mode === 'production') {
+    config.output.chunkFilename = '[name].[contenthash].js';
+
+    config.optimization = {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          parallel: process.env.CI ? 4 : true,
+        }),
+      ],
+    };
+
+    config.devtool = 'source-map';
+  }
+
+  return config;
 };
