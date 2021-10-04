@@ -84,7 +84,6 @@
     "clipboard": "2.0.8",
     "converse.js": "<8",
     "core-js": "3.18.1",
-    "custom-event-polyfill": "1.0.7",
     "grommet": "2.18.0",
     "iframe-resizer": "4.3.2",
     "intl": "1.2.5",
