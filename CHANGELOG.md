@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- IE11 is no longer supported
+
 ## [3.25.0] - 2021-09-29
 
 ### Added

@@ -17,7 +17,7 @@ module.exports = {
       {
         corejs: 3,
         forceAllTransforms: true,
-        targets: 'last 1 version, >0.2%, IE 11',
+        targets: 'last 1 version, >0.2%, not IE <= 11',
         useBuiltIns: 'entry',
       },
     ],
