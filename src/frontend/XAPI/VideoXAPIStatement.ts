@@ -13,6 +13,7 @@ import {
   SeekedResultExtensions,
   TerminatedResultExtensions,
   VerbDefinition,
+  XapiResourceType,
 } from '../types/XAPI';
 import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { Nullable } from '../utils/types';
@@ -388,6 +389,26 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
     this.send(data);
   }
 
+  downloaded(quality: string | number): void {
+    const data: DataPayload = {
+      context: {
+        extensions: {
+          [ContextExtensionsDefinition.sessionId]: this.sessionId,
+          [ContextExtensionsDefinition.quality]: quality,
+          [ContextExtensionsDefinition.length]: this.duration,
+        },
+      },
+      verb: {
+        display: {
+          'en-US': 'downloaded',
+        },
+        id: VerbDefinition.downloaded,
+      },
+    };
+
+    this.send(data);
+  }
+
   private send(data: DataPayload) {
     // duration is set when initialized is called.
     // While initialized is not called, no statement should be sent to the xapi server.
@@ -395,7 +416,7 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
       return;
     }
 
-    sendXAPIStatement(data, this.jwt);
+    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO);
   }
 
   private addStartSegment(time: number) {

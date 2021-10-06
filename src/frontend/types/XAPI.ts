@@ -1,5 +1,10 @@
 import { Nullable } from '../utils/types';
 
+export enum XapiResourceType {
+  DOCUMENT = 'document',
+  VIDEO = 'video',
+}
+
 export interface DataPayload {
   context?: {
     extensions: {
@@ -46,6 +51,10 @@ export enum ContextExtensionsDefinition {
   volume = 'https://w3id.org/xapi/video/extensions/volume',
 }
 
+export enum ContextDocumentExtensionsDefinition {
+  sessionId = 'https://w3id.org/xapi/cmi5/context/extensions/sessionid',
+}
+
 export enum ResultExtensionsDefinition {
   playedSegment = 'https://w3id.org/xapi/video/extensions/played-segments',
   progress = 'https://w3id.org/xapi/video/extensions/progress',
@@ -56,6 +65,7 @@ export enum ResultExtensionsDefinition {
 
 export enum VerbDefinition {
   completed = 'http://adlnet.gov/expapi/verbs/completed',
+  downloaded = 'http://id.tincanapi.com/verb/downloaded',
   initialized = 'http://adlnet.gov/expapi/verbs/initialized',
   interacted = 'http://adlnet.gov/expapi/verbs/interacted',
   paused = 'https://w3id.org/xapi/video/verbs/paused',

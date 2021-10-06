@@ -11,6 +11,7 @@ import {
   PlayedResultExtensions,
   SeekedResultExtensions,
   TerminatedResultExtensions,
+  XapiResourceType,
 } from '../types/XAPI';
 import { VideoXAPIStatement } from './VideoXAPIStatement';
 import { LiveXAPIStatement } from './LiveXapiStatement';
@@ -26,10 +27,19 @@ export interface VideoXAPIStatementInterface {
     resultExtensions: InteractedResultExtensions,
     contextExtensions: InteractedContextExtensions,
   ): void;
+  downloaded(quality: string | number): void;
 }
 
-export const sendXAPIStatement = (data: DataPayload, jwt: string) => {
-  fetch(`${XAPI_ENDPOINT}/`, {
+export interface DocumentXapiStatementInterface {
+  downloaded(): void;
+}
+
+export const sendXAPIStatement = (
+  data: DataPayload,
+  jwt: string,
+  resourceType: XapiResourceType,
+) => {
+  fetch(`${XAPI_ENDPOINT}/${resourceType}/`, {
     body: JSON.stringify({
       ...data,
       id: uuidv4(),
