@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { mocked } from 'ts-jest/utils';
 
 import VideoPlayer from '../components/VideoPlayer';
 
@@ -14,6 +13,7 @@ import { VideoXAPIStatementInterface, XAPIStatement } from '../XAPI';
 const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
   initialized: jest.fn(),
   completed: jest.fn(),
+  downloaded: jest.fn(),
   interacted: jest.fn(),
   paused: jest.fn(),
   played: jest.fn(),

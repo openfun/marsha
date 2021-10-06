@@ -10,6 +10,7 @@ import {
   SeekedResultExtensions,
   TerminatedResultExtensions,
   VerbDefinition,
+  XapiResourceType,
 } from '../types/XAPI';
 import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { Nullable } from '../utils/types';
@@ -116,6 +117,8 @@ export class LiveXAPIStatement implements VideoXAPIStatementInterface {
 
   completed(time: number): void {}
 
+  downloaded(quality: string | number): void {}
+
   terminated(resultExtensions: TerminatedResultExtensions): void {
     if (this.startSegment !== null) {
       this.paused({ time: resultExtensions.time });
@@ -185,7 +188,7 @@ export class LiveXAPIStatement implements VideoXAPIStatementInterface {
   }
 
   private send(data: DataPayload) {
-    sendXAPIStatement(data, this.jwt);
+    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO);
   }
 
   private addStartSegment(time: number) {

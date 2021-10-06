@@ -9,7 +9,7 @@ describe('LiveXapiStatement', () => {
   afterEach(() => fetchMock.reset());
 
   it('post an initialized statement with all extensions', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
@@ -27,7 +27,7 @@ describe('LiveXapiStatement', () => {
       videoPlaybackSize: '1080x960',
       volume: 1,
     });
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
 
     const requestParameters = lastCall![1]!;
 
@@ -60,14 +60,14 @@ describe('LiveXapiStatement', () => {
   });
 
   it('sends a play statement', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
     xapiStatement.played({
       time: 42.321,
     });
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
 
     const requestParameters = lastCall![1]!;
 
@@ -92,14 +92,14 @@ describe('LiveXapiStatement', () => {
   });
 
   it('sends a pause statement', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
     xapiStatement.played({ time: 0 });
     xapiStatement.paused({ time: 10 });
 
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
 
     const requestParameters = lastCall![1]!;
 
@@ -125,7 +125,7 @@ describe('LiveXapiStatement', () => {
   });
 
   it('sends terminated statement', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
@@ -133,7 +133,7 @@ describe('LiveXapiStatement', () => {
       time: 50,
     });
 
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
 
     const requestParameters = lastCall![1]!;
 
@@ -159,7 +159,7 @@ describe('LiveXapiStatement', () => {
   });
 
   it('sends a terminated statement with a segment started and not closed', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
@@ -168,7 +168,7 @@ describe('LiveXapiStatement', () => {
       time: 50,
     });
 
-    const calls = fetchMock.calls(`${XAPI_ENDPOINT}/`);
+    const calls = fetchMock.calls(`${XAPI_ENDPOINT}/video/`);
 
     const pausedCall = calls[1];
 
@@ -205,7 +205,7 @@ describe('LiveXapiStatement', () => {
   });
 
   it('sends an interacted event with all context entensions', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/`, 204, {
+    fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
       overwriteRoutes: true,
     });
     const xapiStatement = new LiveXAPIStatement('jwt', 'abcd');
@@ -226,7 +226,7 @@ describe('LiveXapiStatement', () => {
       },
     );
 
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/`);
+    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
 
     const requestParameters = lastCall![1]!;
 
