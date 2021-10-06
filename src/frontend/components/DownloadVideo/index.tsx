@@ -1,11 +1,14 @@
 import { Box } from 'grommet';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
+import videojs, { VideoJsPlayer } from 'video.js';
 
+import { appData, getDecodedJwt } from '../../data/appData';
 import { videoSize, VideoUrls } from '../../types/tracks';
+import { VideoXAPIStatement } from '../../XAPI/VideoXAPIStatement';
 
 const messages = defineMessages({
   downloadVideo: {
@@ -40,12 +43,32 @@ export const DownloadVideo = ({ urls }: { urls: VideoUrls }) => {
   const resolutions = Object.keys(urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
+  const player = useRef<VideoJsPlayer>();
+  useEffect(() => {
+    player.current = Object.values(videojs.getPlayers())[0];
+  }, []);
+  const onDownload = (size: videoSize) => {
+    if (player.current) {
+      const callback = () => {
+        const videoXAPIStatement = new VideoXAPIStatement(
+          appData.jwt!,
+          getDecodedJwt().session_id,
+        );
+        videoXAPIStatement.setDuration(player.current!.duration());
+        videoXAPIStatement.downloaded(size);
+        window.removeEventListener('blur', callback);
+      };
+      window.addEventListener('blur', callback);
+    }
+  };
   const elements: JSX.Element[] = ([1080, 720, 480] as downloadableSize[])
     .filter((size) => resolutions.includes(size))
     .reduce((acc: JSX.Element[], size: downloadableSize) => {
       acc.push(
         <Fragment key={`fragment-${size}`}>
-          <a href={urls.mp4[size]}>{size}p</a>
+          <a onClick={() => onDownload(size)} href={urls.mp4[size]} download>
+            {size}p
+          </a>
           &nbsp;
           <Tooltip
             overlay={<FormattedMessage {...messages[size]} />}
