@@ -69,7 +69,11 @@ urlpatterns = [
         name="schema",
     ),
     path("api/", include(router.urls)),
-    path("xapi/", XAPIStatementView.as_view(), name="xapi"),
+    re_path(
+        r"^xapi/(?P<resource>video|document)/$",
+        XAPIStatementView.as_view(),
+        name="xapi",
+    ),
 ]
 
 if settings.DEBUG:

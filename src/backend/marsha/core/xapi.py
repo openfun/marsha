@@ -9,10 +9,96 @@ from django.utils.translation import to_locale
 import requests
 
 
-class XAPIStatement:
-    """Object to work on a XAPI Statement."""
+def get_xapi_statement(resource):
+    """Return the xapi object statement based on the required resource type."""
+    if resource == "video":
+        return XAPIVideoStatement
+
+    if resource == "document":
+        return XAPIDocumentStatement
+
+    raise NotImplementedError
+
+
+class XAPIStatementMixin:
+    """Mixin used by xapi statements."""
 
     statement = None
+
+    def get_statement(self):
+        """Return the enriched statement."""
+        return self.statement
+
+    def get_user_id(self, jwt_token):
+        """Return the user id if present in the JWT token or the session_is otherwise."""
+        return (
+            jwt_token.payload["user"].get("id")
+            if jwt_token.payload.get("user")
+            else jwt_token.payload["session_id"]
+        )
+
+    def get_homepage(self, resource):
+        """Return the domain associated to the playlist consumer site."""
+        return resource.playlist.consumer_site.domain
+
+
+class XAPIDocumentStatement(XAPIStatementMixin):
+    """Object managing statement for document objects."""
+
+    def __init__(self, document, statement, jwt_token):
+        """Compute a valid xapi download activity statement."""
+        user_id = self.get_user_id(jwt_token)
+
+        homepage = self.get_homepage(document)
+
+        activity_type = "http://id.tincanapi.com/activitytype/document"
+
+        if re.match(r"^http(s?):\/\/.*", homepage) is None:
+            homepage = f"http://{homepage}"
+
+        if "id" not in statement:
+            statement["id"] = str(uuid.uuid4())
+
+        statement["timestamp"] = timezone.now().isoformat()
+
+        if jwt_token.payload.get("context_id"):
+            statement["context"].update(
+                {
+                    "contextActivities": {
+                        "parent": [
+                            {
+                                "id": jwt_token.payload["context_id"],
+                                "objectType": "Activity",
+                                "definition": {
+                                    "type": "http://adlnet.gov/expapi/activities/course"
+                                },
+                            }
+                        ]
+                    }
+                }
+            )
+
+        statement["actor"] = {
+            "objectType": "Agent",
+            "account": {"name": user_id, "homePage": homepage},
+        }
+
+        statement["object"] = {
+            "definition": {
+                "type": activity_type,
+                "name": {
+                    to_locale(settings.LANGUAGE_CODE).replace("_", "-"): document.title
+                },
+            },
+            "id": f"uuid://{document.id}",
+            "objectType": "Activity",
+        }
+
+        self.statement = statement
+
+
+class XAPIVideoStatement(XAPIStatementMixin):
+    """Object managing statement for video objects."""
 
     def __init__(self, video, statement, jwt_token):
         """Compute a valid xapi satement.
@@ -44,13 +130,9 @@ class XAPIStatement:
             A jwt token containing the context used to enrich the xapi statement
 
         """
-        user_id = (
-            jwt_token.payload["user"].get("id")
-            if jwt_token.payload.get("user")
-            else jwt_token.payload["session_id"]
-        )
+        user_id = self.get_user_id(jwt_token)
 
-        homepage = video.playlist.consumer_site.domain
+        homepage = self.get_homepage(video)
 
         activity_type = "https://w3id.org/xapi/video/activity-type/video"
 
@@ -101,10 +183,6 @@ class XAPIStatement:
         }
 
         self.statement = statement
-
-    def get_statement(self):
-        """Return the enriched statement."""
-        return self.statement
 
 
 class XAPI:

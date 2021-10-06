@@ -8,8 +8,7 @@ from django.test import TestCase
 import requests
 from rest_framework_simplejwt.tokens import AccessToken
 
-from ..factories import VideoFactory
-from ..models import Video
+from ..factories import DocumentFactory, VideoFactory
 
 
 # We don't enforce arguments documentation in tests
@@ -21,7 +20,7 @@ class XAPIStatementApiTest(TestCase):
 
     def test_xapi_statement_api_with_anonymous_user(self):
         """Anonymous users should not be allowed to send xAPI statement."""
-        response = self.client.post("/xapi/")
+        response = self.client.post("/xapi/video/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -38,11 +37,6 @@ class XAPIStatementApiTest(TestCase):
             "id": "John Doe",
             "username": "john_doe",
         }
-        jwt_token.payload["course"] = {
-            "school_name": None,
-            "course_name": None,
-            "course_run": None,
-        }
 
         data = {
             "verb": {
@@ -55,7 +49,7 @@ class XAPIStatementApiTest(TestCase):
         }
 
         response = self.client.post(
-            "/xapi/",
+            "/xapi/video/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -76,7 +70,7 @@ class XAPIStatementApiTest(TestCase):
         data = {"foo": "bar"}
 
         response = self.client.post(
-            "/xapi/",
+            "/xapi/video/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -92,15 +86,10 @@ class XAPIStatementApiTest(TestCase):
             },
         )
 
-    @mock.patch("marsha.core.api.Video.objects.get", side_effect=Video.DoesNotExist)
-    def test_xapi_statement_with_invalid_video(self, video_model_mock):
+    def test_xapi_statement_with_invalid_video(self):
         """The video in the JWT Token does not exist in our database."""
-        video = VideoFactory(
-            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
-            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
-        )
         jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["resource_id"] = str(uuid.uuid4())
         jwt_token.payload["roles"] = ["student"]
 
         data = {
@@ -114,7 +103,7 @@ class XAPIStatementApiTest(TestCase):
         }
 
         response = self.client.post(
-            "/xapi/",
+            "/xapi/video/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -122,11 +111,8 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    @mock.patch("marsha.core.api.Video.objects.get")
     @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_with_request_error_to_lrs(
-        self, xapi_mock, video_model_mock
-    ):
+    def test_xapi_statement_with_request_error_to_lrs(self, xapi_mock):
         """Sending a request to the LRS fails. The response should reflect this failure."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -138,11 +124,6 @@ class XAPIStatementApiTest(TestCase):
         jwt_token.payload["user"] = {
             "id": "John Doe",
             "username": "john_doe",
-        }
-        jwt_token.payload["course"] = {
-            "school_name": None,
-            "course_name": None,
-            "course_run": None,
         }
 
         data = {
@@ -160,12 +141,11 @@ class XAPIStatementApiTest(TestCase):
         mock_response.status_code.return_value = 400
 
         exception = requests.exceptions.HTTPError(response=mock_response)
-        video_model_mock.return_value = video
         xapi_instance = xapi_mock.return_value
         xapi_instance.send.side_effect = exception
 
         response = self.client.post(
-            "/xapi/",
+            "/xapi/video/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -176,8 +156,7 @@ class XAPIStatementApiTest(TestCase):
             response.json().get("status"), "Impossible to send xAPI request to LRS."
         )
 
-    @mock.patch("marsha.core.api.Video.objects.get")
-    def test_xapi_statement_with_request_to_lrs_successful(self, video_model_mock):
+    def test_xapi_statement_with_request_to_lrs_successful(self):
         """Successful request should return a 204 status code."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -190,11 +169,6 @@ class XAPIStatementApiTest(TestCase):
             "id": "John Doe",
             "username": "john_doe",
         }
-        jwt_token.payload["course"] = {
-            "school_name": None,
-            "course_name": None,
-            "course_run": None,
-        }
 
         data = {
             "verb": {
@@ -206,11 +180,9 @@ class XAPIStatementApiTest(TestCase):
             },
         }
 
-        video_model_mock.return_value = video
-
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
-                "/xapi/",
+                "/xapi/video/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
@@ -218,8 +190,7 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 204)
 
-    @mock.patch("marsha.core.api.Video.objects.get")
-    def test_xapi_statement_with_missing_user(self, video_model_mock):
+    def test_xapi_statement_with_missing_user(self):
         """Missing user parameter in JWT will fail request to LRS."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -229,11 +200,6 @@ class XAPIStatementApiTest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["session_id"] = str(uuid.uuid4())
         jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["course"] = {
-            "school_name": None,
-            "course_name": None,
-            "course_run": None,
-        }
 
         data = {
             "verb": {
@@ -245,10 +211,47 @@ class XAPIStatementApiTest(TestCase):
             },
         }
 
-        video_model_mock.return_value = video
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
-                "/xapi/",
+                "/xapi/video/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data=json.dumps(data),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 204)
+
+    def test_xapi_statement_document_resource(self):
+        """Successful request for a document should return a 204."""
+        document = DocumentFactory(
+            playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
+            playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
+        )
+        jwt_token = AccessToken()
+        session_id = str(uuid.uuid4())
+        jwt_token.payload["resource_id"] = str(document.id)
+        jwt_token.payload["session_id"] = session_id
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user"] = {
+            "id": "John Doe",
+            "username": "john_doe",
+        }
+
+        data = {
+            "verb": {
+                "id": "http://id.tincanapi.com/verb/downloaded",
+                "display": {"en-US": "downloaded"},
+            },
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": session_id
+                }
+            },
+        }
+
+        with mock.patch("marsha.core.api.XAPI.send", return_value=None):
+            response = self.client.post(
+                "/xapi/document/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",

@@ -6,12 +6,18 @@ from django.test import TestCase, override_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..defaults import RAW, RUNNING
-from ..factories import VideoFactory
-from ..xapi import XAPI, XAPIStatement, requests
+from ..factories import DocumentFactory, VideoFactory
+from ..xapi import (
+    XAPI,
+    XAPIDocumentStatement,
+    XAPIVideoStatement,
+    get_xapi_statement,
+    requests,
+)
 
 
-class XAPIStatmentTest(TestCase):
-    """Test the XAPIStatement class."""
+class XAPIVideoStatmentTest(TestCase):
+    """Test the XAPIVideoStatement class."""
 
     def test_xapi_statement_missing_user(self):
         """Missing lti user should fallback on session_id."""
@@ -48,7 +54,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
+        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -135,7 +141,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
+        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -223,7 +229,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
+        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -307,7 +313,7 @@ class XAPIStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIStatement(video, base_statement, jwt_token)
+        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
         statement = xapi_statement.get_statement()
 
         self.assertIsNotNone(statement["timestamp"])
@@ -349,6 +355,225 @@ class XAPIStatmentTest(TestCase):
         self.assertEqual(statement["result"], base_statement["result"])
 
 
+class XAPIDocumentStatementTest(TestCase):
+    """Test the XAPIDocumentStatement class."""
+
+    @override_settings(LANGUAGE_CODE="en-us")
+    def test_xapi_statement_enrich_statement(self):
+        """XAPI statement sent by the front application should be enriched."""
+        document = DocumentFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test document xapi",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "verb": {
+                "display": {"en-US": "downloaded"},
+                "id": "http://id.tincanapi.com/verb/downloaded",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
+        statement = xapi_statement.get_statement()
+
+        self.assertIsNotNone(statement["timestamp"])
+        self.assertEqual(
+            statement["actor"],
+            {
+                "objectType": "Agent",
+                "account": {
+                    "name": "b2584aa405540758db2a6278521b6478",
+                    "homePage": "http://example.com",
+                },
+            },
+        )
+        self.assertEqual(
+            statement["object"],
+            {
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/document",
+                    "name": {"en-US": "test document xapi"},
+                },
+                "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
+                "objectType": "Activity",
+            },
+        )
+        self.assertEqual(
+            statement["context"],
+            {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                },
+                "contextActivities": {
+                    "parent": [
+                        {
+                            "id": "course-v1:ufr+mathematics+0001",
+                            "objectType": "Activity",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/course"
+                            },
+                        }
+                    ],
+                },
+            },
+        )
+        self.assertEqual(statement["verb"], base_statement["verb"])
+        self.assertEqual(statement["id"], base_statement["id"])
+
+    @override_settings(LANGUAGE_CODE="en-us")
+    def test_xapi_statement_missing_context_id(self):
+        """Parent contextActivities should be missing without context_id."""
+        document = DocumentFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test document xapi",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "verb": {
+                "display": {"en-US": "downloaded"},
+                "id": "http://id.tincanapi.com/verb/downloaded",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
+        statement = xapi_statement.get_statement()
+
+        self.assertIsNotNone(statement["timestamp"])
+        self.assertEqual(
+            statement["actor"],
+            {
+                "objectType": "Agent",
+                "account": {
+                    "name": "b2584aa405540758db2a6278521b6478",
+                    "homePage": "http://example.com",
+                },
+            },
+        )
+        self.assertEqual(
+            statement["object"],
+            {
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/document",
+                    "name": {"en-US": "test document xapi"},
+                },
+                "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
+                "objectType": "Activity",
+            },
+        )
+        self.assertEqual(
+            statement["context"],
+            {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                },
+            },
+        )
+        self.assertEqual(statement["verb"], base_statement["verb"])
+        self.assertEqual(statement["id"], base_statement["id"])
+
+    @override_settings(LANGUAGE_CODE="en-us")
+    def test_xapi_statement_missing_user_id(self):
+        """Missing lti user should fallback on session_id."""
+        document = DocumentFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test document xapi",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "verb": {
+                "display": {"en-US": "downloaded"},
+                "id": "http://id.tincanapi.com/verb/downloaded",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
+        statement = xapi_statement.get_statement()
+
+        self.assertIsNotNone(statement["timestamp"])
+        self.assertEqual(
+            statement["actor"],
+            {
+                "objectType": "Agent",
+                "account": {
+                    "name": "326c0689-48c1-493e-8d2d-9fb0c289de7f",
+                    "homePage": "http://example.com",
+                },
+            },
+        )
+        self.assertEqual(
+            statement["object"],
+            {
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/document",
+                    "name": {"en-US": "test document xapi"},
+                },
+                "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
+                "objectType": "Activity",
+            },
+        )
+        self.assertEqual(
+            statement["context"],
+            {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                },
+                "contextActivities": {
+                    "parent": [
+                        {
+                            "id": "course-v1:ufr+mathematics+0001",
+                            "objectType": "Activity",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/course"
+                            },
+                        }
+                    ],
+                },
+            },
+        )
+        self.assertEqual(statement["verb"], base_statement["verb"])
+        self.assertEqual(statement["id"], base_statement["id"])
+
+
 class XAPITest(TestCase):
     """Test the xapi module."""
 
@@ -381,3 +606,22 @@ class XAPITest(TestCase):
             },
         )
         self.assertEqual(kwargs["json"], statement)
+
+
+class GetXapiStatementTest(TestCase):
+    """Test get_xapi_statement function."""
+
+    def test_get_xapi_statement_with_video(self):
+        """With video parameter must return XAPIVideoStatement."""
+        statement_class = get_xapi_statement("video")
+        self.assertEqual(statement_class, XAPIVideoStatement)
+
+    def test_get_xapi_statement_with_document(self):
+        """With document parameter must return XAPIDocumentStatement."""
+        statement_class = get_xapi_statement("document")
+        self.assertEqual(statement_class, XAPIDocumentStatement)
+
+    def test_get_xapi_statement_with_unknown_resource(self):
+        """With unknown resource must throw an exception."""
+        with self.assertRaises(NotImplementedError):
+            get_xapi_statement("unknown")
