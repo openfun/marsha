@@ -8,6 +8,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.http import HttpResponseNotFound
 from django.utils import timezone
 
 import requests
@@ -41,7 +42,7 @@ from .utils.medialive_utils import (
 from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
 from .utils.xmpp_utils import close_room, create_room
-from .xapi import XAPI, XAPIStatement
+from .xapi import XAPI, get_xapi_statement
 
 
 logger = logging.getLogger(__name__)
@@ -915,7 +916,7 @@ class XAPIStatementView(APIView):
     permission_classes = [permissions.IsVideoToken]
     http_method_names = ["post"]
 
-    def post(self, request):
+    def post(self, request, resource):
         """Send a xAPI statement to a defined LRS.
 
         Parameters
@@ -930,16 +931,22 @@ class XAPIStatementView(APIView):
             HttpResponse to reflect if the XAPI request failed or is successful
 
         """
-        user = request.user
         try:
-            video = Video.objects.get(pk=user.id)
-        except Video.DoesNotExist:
+            statement_object = get_xapi_statement(resource)
+        except NotImplementedError:
+            return HttpResponseNotFound()
+
+        user = request.user
+        model = apps.get_model(app_label="core", model_name=resource)
+        try:
+            object_instance = model.objects.get(pk=user.id)
+        except model.DoesNotExist:
             return Response(
-                {"reason": f"video with id {user.id} does not exist"},
+                {"reason": f"{resource} with id {user.id} does not exist"},
                 status=404,
             )
 
-        consumer_site = video.playlist.consumer_site
+        consumer_site = object_instance.playlist.consumer_site
 
         # xapi statements are sent to a consumer-site-specific logger. We assume that the logger
         # name respects the following convention: "xapi.[consumer site domain]",
@@ -953,8 +960,8 @@ class XAPIStatementView(APIView):
             return Response(partial_xapi_statement.errors, status=400)
 
         # xapi statement enriched with video and jwt_token informations
-        xapi_statement = XAPIStatement(
-            video, partial_xapi_statement.validated_data, user.token
+        xapi_statement = statement_object(
+            object_instance, partial_xapi_statement.validated_data, user.token
         )
 
         # Log the statement in the xapi logger
