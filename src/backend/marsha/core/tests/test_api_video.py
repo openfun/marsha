@@ -3039,7 +3039,6 @@ class VideoAPITest(TestCase):
             },
         )
 
-    @override_settings(JITSI_ENABLED=True)
     def test_api_video_instructor_initiate_jitsi_live(self):
         """An instructor should be able to initiate a jitsi live."""
         video = factories.VideoFactory(

@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - IE11 is no longer supported
+- JITSI_ENABLED feature flag
 
 ## [3.25.0] - 2021-09-29
 

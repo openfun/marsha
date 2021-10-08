@@ -4,9 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
-import { flags } from '../../types/AppData';
 import { uploadState, LiveModeType, Video } from '../../types/tracks';
-import { isFeatureEnabled } from '../../utils/isFeatureEnabled';
 import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
@@ -89,12 +87,10 @@ export const DashboardPaneButtons = ({
               video={object as Video}
               type={LiveModeType.RAW}
             />
-            {isFeatureEnabled(flags.JITSI) && (
-              <DashboardVideoLiveConfigureButton
-                video={object as Video}
-                type={LiveModeType.JITSI}
-              />
-            )}
+            <DashboardVideoLiveConfigureButton
+              video={object as Video}
+              type={LiveModeType.JITSI}
+            />
           </React.Fragment>
         )}
       <DashboardButtonWithLink

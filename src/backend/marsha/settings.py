@@ -287,7 +287,6 @@ class Base(Configuration):
     LIVE_GOP_SIZE = values.FloatValue(4)
 
     # JITSI SETTINGS
-    JITSI_ENABLED = values.BooleanValue(False)
     JITSI_EXTERNAL_API_URL = values.Value("https://meet.jit.si/external_api.js")
     JITSI_DOMAIN = values.Value("meet.jit.si")
     JITSI_CONFIG_OVERWRITE = values.DictValue({})
