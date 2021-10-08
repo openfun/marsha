@@ -32,6 +32,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Request initial MUC config before modifying it
+- Only a webinar using jitsi can be created
 
 ### Fixed
 
