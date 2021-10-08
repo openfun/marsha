@@ -45,7 +45,6 @@ class VideoLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "get_consumer_site")
     @override_settings(SENTRY_DSN="https://sentry.dsn")
     @override_settings(RELEASE="1.2.3")
-    @override_settings(JITSI_ENABLED=True)
     @override_settings(VIDEO_PLAYER="videojs")
     @override_switch(SENTRY, active=True)
     def test_views_lti_video_post_instructor(self, mock_get_consumer_site, mock_verify):
@@ -134,7 +133,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
-        self.assertEqual(context.get("flags"), {"sentry": True, "jitsi": True})
+        self.assertEqual(context.get("flags"), {"sentry": True})
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
