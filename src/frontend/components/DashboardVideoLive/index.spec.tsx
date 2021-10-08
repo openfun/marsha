@@ -88,7 +88,7 @@ describe('components/DashboardVideoLive', () => {
     );
 
     await screen.findByRole('button', { name: /start streaming/i });
-    screen.getByRole('button', { name: /Launch Jitsi LiveStream/i });
+    screen.getByRole('button', { name: /Create a webinar/i });
   });
 
   it('hides the start button when status is IDLE and live type is JITSI but user not in conference', async () => {
