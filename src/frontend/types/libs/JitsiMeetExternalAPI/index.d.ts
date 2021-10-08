@@ -42,6 +42,14 @@ declare namespace JitsiMeetExternalAPI {
         };
       };
     };
+    conferenceInfo?: {
+      alwaysVisible: string[];
+      autoHide: string[];
+    };
+    disablePolls?: boolean;
+    hideConferenceSubject?: boolean;
+    hideConferenceTimer?: boolean;
+    doNotStoreRoom?: boolean;
     resolution?: number;
     toolbarButtons?: string[];
   };
