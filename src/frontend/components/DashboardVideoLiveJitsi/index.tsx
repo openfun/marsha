@@ -66,22 +66,15 @@ const DashboardVideoLiveJitsi = ({
       'camera',
       'closedcaptions',
       'desktop',
-      'embedmeeting',
       'fullscreen',
       'fodeviceselection',
       'hangup',
       'profile',
-      'chat',
-      'etherpad',
-      'sharedvideo',
-      'shareaudio',
       'settings',
       'raisehand',
       'videoquality',
       'filmstrip',
-      'invite',
       'feedback',
-      'stats',
       'shortcuts',
       'tileview',
       'select-background',
@@ -104,6 +97,32 @@ const DashboardVideoLiveJitsi = ({
               },
             },
           },
+          // Controls the visibility and behavior of the top header conference info labels.
+          // If a label's id is not in any of the 2 arrays, it will not be visible at all on the header.
+          conferenceInfo: {
+            // those labels will not be hidden in tandem with the toolbox.
+            alwaysVisible: [
+              'recording',
+              // 'local-recording'
+            ],
+            // those labels will be auto-hidden in tandem with the toolbox buttons.
+            autoHide: [
+              // 'subject',
+              // 'conference-timer',
+              // 'participants-count',
+              // 'e2ee',
+              // 'transcribing',
+              // 'video-quality',
+              // 'insecure-room'
+            ],
+          },
+          disablePolls: true,
+          // Disables storing the room name to the recents list
+          doNotStoreRoom: true,
+          // Hides the conference subject
+          hideConferenceSubject: true,
+          // Hides the conference timer.
+          hideConferenceTimer: true,
           resolution: 720,
           toolbarButtons,
           ...video.live_info.jitsi!.config_overwrite,
