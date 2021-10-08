@@ -3,6 +3,7 @@ import React from 'react';
 
 import { LiveModeType, liveState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
+import { wrapInIntlProvider } from '../../utils/tests/intl';
 import DashboardVideoLiveJitsi from '.';
 
 let events: any = {};
@@ -55,12 +56,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     global.JitsiMeetExternalAPI = mockJitsi;
 
     const { rerender } = render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
     );
     const toolbarButtons = [
       'microphone',
@@ -130,12 +133,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     // state switch to running, recording must start
     rerender(
-      <DashboardVideoLiveJitsi
-        video={{ ...video, live_state: liveState.RUNNING }}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={{ ...video, live_state: liveState.RUNNING }}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
@@ -149,12 +154,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     // state switch to stopping, recording must stop
     rerender(
-      <DashboardVideoLiveJitsi
-        video={{ ...video, live_state: liveState.STOPPING }}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={{ ...video, live_state: liveState.STOPPING }}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(mockExecuteCommand).toHaveBeenCalledWith('stopRecording', 'stream');
@@ -186,12 +193,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(events.recordingStatusChanged).toBeDefined();
@@ -253,12 +262,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     const mockCanStartLive = jest.fn();
 
     render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        setCanStartLive={mockCanStartLive}
-        setCanShowStartButton={jest.fn()}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={mockCanStartLive}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(mockCanStartLive).not.toHaveBeenCalled();
@@ -304,12 +315,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     const mockCanShowStartButton = jest.fn();
 
     render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        setCanStartLive={mockCanStartLive}
-        setCanShowStartButton={mockCanShowStartButton}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={mockCanStartLive}
+          setCanShowStartButton={mockCanShowStartButton}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(mockCanStartLive).not.toHaveBeenCalled();
@@ -347,12 +360,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     const mockCanShowStartButton = jest.fn();
 
     render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={mockCanShowStartButton}
-        isInstructor={true}
-      />,
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={mockCanShowStartButton}
+          isInstructor={true}
+        />,
+      ),
     );
 
     expect(mockCanShowStartButton).not.toHaveBeenCalled();

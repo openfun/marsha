@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { DashboardVideoLiveInfo } from '../DashboardVideoLiveInfo';
 import { Video, liveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 
@@ -211,7 +212,16 @@ const DashboardVideoLiveJitsi = ({
     }
   }, [video.live_state]);
 
-  return <Box height={'large'} ref={jitsiNode} />;
+  return (
+    <Box>
+      <Box height={'large'} ref={jitsiNode} />
+      {isInstructor && (
+        <Box justify="start" direction="row">
+          <DashboardVideoLiveInfo video={video} />
+        </Box>
+      )}
+    </Box>
+  );
 };
 
 export default DashboardVideoLiveJitsi;

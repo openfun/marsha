@@ -23,7 +23,7 @@ const messages = defineMessages({
     id: 'components.DashboardVideoLive.raw',
   },
   jitsi: {
-    defaultMessage: 'Jitsi Streaming',
+    defaultMessage: 'Webinar',
     description: 'DashboardVideoLive jitsi title.',
     id: 'components.DashboardVideoLive.jitsi',
   },
