@@ -20,8 +20,8 @@ const messages = defineMessages({
     id: 'components.Dashboard.DashboardPaneButtons.videos.raw',
   },
   jitsi: {
-    defaultMessage: 'Launch Jitsi LiveStream',
-    description: 'Dashboard button to launch jitsi livestream',
+    defaultMessage: 'Create a webinar',
+    description: 'Dashboard button to create a webinar',
     id: 'components.Dashboard.DashboardPaneButtons.videos.jitsi',
   },
 });

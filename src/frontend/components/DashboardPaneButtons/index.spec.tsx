@@ -47,7 +47,7 @@ describe('<DashboardPaneButtons />', () => {
     }
   });
 
-  it('displays the configure live and jitsi button', () => {
+  it('displays the create webinar button', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -59,8 +59,7 @@ describe('<DashboardPaneButtons />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Configure a live streaming' });
-    screen.getByRole('button', { name: 'Launch Jitsi LiveStream' });
+    screen.getByRole('button', { name: 'Create a webinar' });
   });
 
   it('hides the configure live button when live state is not null', () => {
@@ -80,7 +79,7 @@ describe('<DashboardPaneButtons />', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Configure a live streaming' }),
+      screen.queryByRole('button', { name: 'Create a webinar' }),
     ).toBeNull();
   });
 

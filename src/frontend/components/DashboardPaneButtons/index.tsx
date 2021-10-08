@@ -82,16 +82,10 @@ export const DashboardPaneButtons = ({
       {objectType === modelName.VIDEOS &&
         object.upload_state === uploadState.PENDING &&
         !(object as Video).live_state && (
-          <React.Fragment>
-            <DashboardVideoLiveConfigureButton
-              video={object as Video}
-              type={LiveModeType.RAW}
-            />
-            <DashboardVideoLiveConfigureButton
-              video={object as Video}
-              type={LiveModeType.JITSI}
-            />
-          </React.Fragment>
+          <DashboardVideoLiveConfigureButton
+            video={object as Video}
+            type={LiveModeType.JITSI}
+          />
         )}
       <DashboardButtonWithLink
         label={
