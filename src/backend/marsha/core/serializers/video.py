@@ -644,7 +644,7 @@ class VideoSerializer(VideoBaseSerializer):
             },
         }
 
-        if settings.JITSI_ENABLED and obj.live_type == JITSI:
+        if obj.live_type == JITSI:
             live_info.update(
                 {
                     "jitsi": {

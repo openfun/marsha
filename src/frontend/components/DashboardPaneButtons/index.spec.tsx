@@ -2,7 +2,6 @@ import { cleanup, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { DashboardPaneButtons } from '.';
-import { flags } from '../../types/AppData';
 import { modelName } from '../../types/models';
 import { liveState, uploadState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
@@ -12,19 +11,11 @@ import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
-let mockFlags = {};
 jest.mock('../../data/appData', () => ({
-  appData: {
-    video: {},
-    get flags() {
-      return mockFlags;
-    },
-  },
+  appData: {},
 }));
 
 describe('<DashboardPaneButtons />', () => {
-  beforeEach(() => (mockFlags = {}));
-
   it('only renders the "Watch" button if the video is ready', async () => {
     render(
       wrapInIntlProvider(
@@ -56,23 +47,7 @@ describe('<DashboardPaneButtons />', () => {
     }
   });
 
-  it('displays the configure live button', () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardPaneButtons
-            object={videoMockFactory({ id: 'vid1', upload_state: PENDING })}
-            objectType={modelName.VIDEOS}
-          />,
-        ),
-      ),
-    );
-
-    screen.getByRole('button', { name: 'Configure a live streaming' });
-  });
-
   it('displays the configure live and jitsi button', () => {
-    mockFlags = { [flags.JITSI]: true };
     render(
       wrapInIntlProvider(
         wrapInRouter(

@@ -29,7 +29,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import JITSI, SENTRY
+from .defaults import SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -244,7 +244,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 {
                     "flags": {
                         SENTRY: switch_is_active(SENTRY),
-                        JITSI: settings.JITSI_ENABLED,
                     },
                     "resource": self.serializer_class(
                         resource,
