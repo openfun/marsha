@@ -13,6 +13,14 @@
         "converse.js",
         "node-fetch"
       ]
+    },
+    {
+      "enabled": false,
+      "groupName": "ignored python dependencies",
+      "matchManagers": ["setup-cfg"],
+      "matchPackageNames": [
+        "PyJWT"
+      ]
     }
   ]
 }
