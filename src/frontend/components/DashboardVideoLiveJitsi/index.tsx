@@ -1,9 +1,14 @@
 import { Box } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { DashboardVideoLiveInfo } from '../DashboardVideoLiveInfo';
+import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
 import { Video, liveState } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { converse } from '../../utils/window';
+import { PLAYER_ROUTE } from '../routes';
+import { modelName } from '../../types/models';
 
 interface DashboardVideoLiveJitsiProps {
   setCanStartLive?: undefined;
@@ -31,6 +36,8 @@ const DashboardVideoLiveJitsi = ({
   const endpoints = useRef<string[]>();
   const retryDelayStep = 2000;
   const retryStartRecordingDelay = useRef(retryDelayStep);
+  const reset = useParticipantWorkflow((state) => state.reset);
+  const history = useHistory();
 
   const loadJitsiScript = () =>
     new Promise((resolve) => {
@@ -156,6 +163,15 @@ const DashboardVideoLiveJitsi = ({
         retryStartRecordingDelay.current = retryDelayStep;
       }
     });
+
+    if (!isInstructor) {
+      _jitsi.addListener('videoConferenceLeft', () => {
+        _jitsi.dispose();
+        converse.participantLeaves();
+        reset();
+        history.push(PLAYER_ROUTE(modelName.VIDEOS));
+      });
+    }
 
     if (isInstructor) {
       _jitsi.addListener('participantRoleChanged', (event) => {
