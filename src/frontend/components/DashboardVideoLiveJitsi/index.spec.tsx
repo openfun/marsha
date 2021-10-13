@@ -1,9 +1,12 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { LiveModeType, liveState } from '../../types/tracks';
 import { videoMockFactory } from '../../utils/tests/factories';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { wrapInRouter } from '../../utils/tests/router';
+import * as mockWindow from '../../utils/window';
+import { PLAYER_ROUTE } from '../routes';
 import DashboardVideoLiveJitsi from '.';
 
 let events: any = {};
@@ -12,13 +15,20 @@ const dispatch = (eventName: string, eventObject: any) => {
 };
 
 const mockExecuteCommand = jest.fn();
+const mockDispose = jest.fn();
 const mockJitsi = jest.fn().mockImplementation(() => ({
+  dispose: mockDispose,
   executeCommand: mockExecuteCommand,
   addListener: (eventName: string, callback: (event: any) => void) => {
     events[eventName] = callback;
   },
 }));
 jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('../../utils/window', () => ({
+  converse: {
+    participantLeaves: jest.fn(),
+  },
+}));
 
 describe('<DashboardVideoLiveJitsi />', () => {
   beforeEach(() => {
@@ -403,5 +413,41 @@ describe('<DashboardVideoLiveJitsi />', () => {
       'stopRecording',
       expect.any(String),
     );
+  });
+  it('redirects to the player when user leaves the conference and is not an instructor', () => {
+    const video = videoMockFactory({
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInRouter(
+        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+        [
+          {
+            path: PLAYER_ROUTE(),
+            render: ({ match }) => {
+              return <span>{'video player'}</span>;
+            },
+          },
+        ],
+      ),
+    );
+
+    // simulates user leave the conference
+    dispatch('videoConferenceLeft', {});
+
+    expect(mockDispose).toHaveBeenCalled();
+    expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
+    screen.getByText('video player');
   });
 });

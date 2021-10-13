@@ -17,6 +17,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add DRF read and create liveRegistration endpoints
 - Allow DRF list action for liveRegistration endpoint
 
+### Changed
+
+- Redirect participant to the player once jitsi conference left
+
 ### Removed
 
 - IE11 is no longer supported

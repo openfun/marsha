@@ -25,15 +25,13 @@ const messages = defineMessages({
 
 type stopLiveStatus = 'pending' | 'error';
 
-interface DashboardVideoLiveStartButtonProps {
+interface DashboardVideoLiveStopButtonProps {
   video: Video;
-  jitsi?: JitsiMeetExternalAPI;
 }
 
 export const DashboardVideoLiveStopButton = ({
-  jitsi,
   video,
-}: DashboardVideoLiveStartButtonProps) => {
+}: DashboardVideoLiveStopButtonProps) => {
   const [status, setStatus] = useState<Nullable<stopLiveStatus>>(null);
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
