@@ -60,7 +60,7 @@ const DashboardVideoLiveJitsi = ({
     jitsiIsRecording.current = true;
   };
 
-  const initialiseJitsi = async () => {
+  const initialiseJitsi = async (forcePrejoinPageEnabled = false) => {
     if (!window.JitsiMeetExternalAPI) {
       await loadJitsiScript();
     }
@@ -92,49 +92,55 @@ const DashboardVideoLiveJitsi = ({
       'security',
     ];
 
+    const configOverwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions = {
+      constraints: {
+        video: {
+          height: {
+            ideal: 720,
+            max: 720,
+            min: 240,
+          },
+        },
+      },
+      // Controls the visibility and behavior of the top header conference info labels.
+      // If a label's id is not in any of the 2 arrays, it will not be visible at all on the header.
+      conferenceInfo: {
+        // those labels will not be hidden in tandem with the toolbox.
+        alwaysVisible: [
+          'recording',
+          // 'local-recording'
+        ],
+        // those labels will be auto-hidden in tandem with the toolbox buttons.
+        autoHide: [
+          // 'subject',
+          // 'conference-timer',
+          // 'participants-count',
+          // 'e2ee',
+          // 'transcribing',
+          // 'video-quality',
+          // 'insecure-room'
+        ],
+      },
+      disablePolls: true,
+      // Disables storing the room name to the recents list
+      doNotStoreRoom: true,
+      // Hides the conference subject
+      hideConferenceSubject: true,
+      // Hides the conference timer.
+      hideConferenceTimer: true,
+      resolution: 720,
+      toolbarButtons,
+      ...video.live_info.jitsi!.config_overwrite,
+    };
+
+    if (forcePrejoinPageEnabled) {
+      configOverwrite.prejoinPageEnabled = true;
+    }
+
     const _jitsi = new window.JitsiMeetExternalAPI(
       video.live_info.jitsi!.domain!,
       {
-        configOverwrite: {
-          constraints: {
-            video: {
-              height: {
-                ideal: 720,
-                max: 720,
-                min: 240,
-              },
-            },
-          },
-          // Controls the visibility and behavior of the top header conference info labels.
-          // If a label's id is not in any of the 2 arrays, it will not be visible at all on the header.
-          conferenceInfo: {
-            // those labels will not be hidden in tandem with the toolbox.
-            alwaysVisible: [
-              'recording',
-              // 'local-recording'
-            ],
-            // those labels will be auto-hidden in tandem with the toolbox buttons.
-            autoHide: [
-              // 'subject',
-              // 'conference-timer',
-              // 'participants-count',
-              // 'e2ee',
-              // 'transcribing',
-              // 'video-quality',
-              // 'insecure-room'
-            ],
-          },
-          disablePolls: true,
-          // Disables storing the room name to the recents list
-          doNotStoreRoom: true,
-          // Hides the conference subject
-          hideConferenceSubject: true,
-          // Hides the conference timer.
-          hideConferenceTimer: true,
-          resolution: 720,
-          toolbarButtons,
-          ...video.live_info.jitsi!.config_overwrite,
-        },
+        configOverwrite,
         interfaceConfigOverwrite: {
           HIDE_INVITE_MORE_HEADER: true,
           TOOLBAR_BUTTONS: toolbarButtons,
@@ -187,8 +193,10 @@ const DashboardVideoLiveJitsi = ({
       });
 
       _jitsi.addListener('videoConferenceLeft', () => {
+        _jitsi.dispose();
         setCanStartLive(false);
         setCanShowStartButton(false);
+        initialiseJitsi(true);
       });
     }
 

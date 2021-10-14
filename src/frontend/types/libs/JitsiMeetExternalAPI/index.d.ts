@@ -50,6 +50,7 @@ declare namespace JitsiMeetExternalAPI {
     hideConferenceSubject?: boolean;
     hideConferenceTimer?: boolean;
     doNotStoreRoom?: boolean;
+    prejoinPageEnabled?: boolean;
     resolution?: number;
     toolbarButtons?: string[];
   };
