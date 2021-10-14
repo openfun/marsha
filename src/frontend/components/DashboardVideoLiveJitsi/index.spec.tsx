@@ -334,15 +334,103 @@ describe('<DashboardVideoLiveJitsi />', () => {
         />,
       ),
     );
+    const toolbarButtons = [
+      'microphone',
+      'camera',
+      'closedcaptions',
+      'desktop',
+      'fullscreen',
+      'fodeviceselection',
+      'hangup',
+      'profile',
+      'settings',
+      'raisehand',
+      'videoquality',
+      'filmstrip',
+      'feedback',
+      'shortcuts',
+      'tileview',
+      'select-background',
+      'help',
+      'mute-everyone',
+      'mute-video-everyone',
+      'security',
+    ];
+    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
+      configOverwrite: {
+        constraints: {
+          video: {
+            height: {
+              ideal: 720,
+              max: 720,
+              min: 240,
+            },
+          },
+        },
+        conferenceInfo: {
+          alwaysVisible: ['recording'],
+
+          autoHide: [],
+        },
+        disablePolls: true,
+        doNotStoreRoom: true,
+        hideConferenceSubject: true,
+        hideConferenceTimer: true,
+        resolution: 720,
+        toolbarButtons,
+      },
+      interfaceConfigOverwrite: {
+        HIDE_INVITE_MORE_HEADER: true,
+        TOOLBAR_BUTTONS: toolbarButtons,
+      },
+      parentNode: expect.any(HTMLElement),
+      roomName: video.id,
+    });
 
     expect(mockCanStartLive).not.toHaveBeenCalled();
     expect(mockCanShowStartButton).not.toHaveBeenCalled();
+    expect(mockJitsi).toHaveBeenCalledTimes(1);
 
     // simulates user leave the conference
     dispatch('videoConferenceLeft', {});
 
     expect(mockCanStartLive).toHaveBeenLastCalledWith(false);
     expect(mockCanShowStartButton).toHaveBeenLastCalledWith(false);
+    expect(mockDispose).toHaveBeenCalled();
+
+    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
+      configOverwrite: {
+        constraints: {
+          video: {
+            height: {
+              ideal: 720,
+              max: 720,
+              min: 240,
+            },
+          },
+        },
+        conferenceInfo: {
+          alwaysVisible: ['recording'],
+
+          autoHide: [],
+        },
+        disablePolls: true,
+        doNotStoreRoom: true,
+        hideConferenceSubject: true,
+        hideConferenceTimer: true,
+        prejoinPageEnabled: true,
+        resolution: 720,
+        toolbarButtons,
+      },
+      interfaceConfigOverwrite: {
+        HIDE_INVITE_MORE_HEADER: true,
+        TOOLBAR_BUTTONS: toolbarButtons,
+      },
+      parentNode: expect.any(HTMLElement),
+      roomName: video.id,
+    });
+
+    expect(mockJitsi).toHaveBeenCalledTimes(2);
   });
 
   it('calls setCanShowStartButton when participant join the conference', () => {

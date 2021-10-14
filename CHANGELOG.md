@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Redirect participant to the player once jitsi conference left
+- Redirect instructor to the waiting jitsi page once conference left
 
 ### Removed
 
