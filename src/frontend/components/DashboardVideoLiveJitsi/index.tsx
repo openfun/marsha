@@ -2,6 +2,7 @@ import { Box } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { getDecodedJwt } from '../../data/appData';
 import { DashboardVideoLiveInfo } from '../DashboardVideoLiveInfo';
 import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
 import { Video, liveState } from '../../types/tracks';
@@ -9,6 +10,7 @@ import { report } from '../../utils/errors/report';
 import { converse } from '../../utils/window';
 import { PLAYER_ROUTE } from '../routes';
 import { modelName } from '../../types/models';
+import { useAsyncEffect } from '../../utils/useAsyncEffect';
 
 interface DashboardVideoLiveJitsiProps {
   setCanStartLive?: undefined;
@@ -148,6 +150,9 @@ const DashboardVideoLiveJitsi = ({
         },
         parentNode: jitsiNode.current!,
         roomName: video.id,
+        userInfo: {
+          displayName: getDecodedJwt().user?.username,
+        },
       },
     );
 
@@ -207,7 +212,7 @@ const DashboardVideoLiveJitsi = ({
     setJitsi(_jitsi);
   };
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (isInstructor) {
       const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
       endpoints.current = video.live_info.medialive!.input.endpoints.map(
@@ -217,7 +222,7 @@ const DashboardVideoLiveJitsi = ({
         },
       ) as string[];
     }
-    initialiseJitsi();
+    await initialiseJitsi();
 
     return () => jitsi?.dispose();
   }, []);

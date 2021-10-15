@@ -21,6 +21,11 @@ const mockVideo = videoMockFactory({
 });
 
 jest.mock('../../data/appData', () => ({
+  getDecodedJwt: () => ({
+    user: {
+      username: 'jane_doe',
+    },
+  }),
   appData: {
     video: mockVideo,
   },
