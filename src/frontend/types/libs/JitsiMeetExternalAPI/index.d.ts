@@ -1,3 +1,5 @@
+import { Nullable } from '../../../utils/types';
+
 export as namespace JitsiMeetExternalAPI;
 export = JitsiMeetExternalAPI;
 
@@ -9,6 +11,10 @@ declare class JitsiMeetExternalAPI {
       interfaceConfigOverwrite?: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
       parentNode?: HTMLElement;
       roomName?: string;
+      userInfo?: {
+        email?: Nullable<string>;
+        displayName?: Nullable<string>;
+      };
     },
   );
 

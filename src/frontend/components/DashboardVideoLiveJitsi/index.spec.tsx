@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { LiveModeType, liveState } from '../../types/tracks';
@@ -29,9 +29,19 @@ jest.mock('../../utils/window', () => ({
     participantLeaves: jest.fn(),
   },
 }));
+let mockDecodedJwtToken = {};
+jest.mock('../../data/appData', () => ({
+  getDecodedJwt: () => mockDecodedJwtToken,
+}));
 
 describe('<DashboardVideoLiveJitsi />', () => {
   beforeEach(() => {
+    mockDecodedJwtToken = {
+      user: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      },
+    };
     events = {};
     jest.clearAllMocks();
     jest.useFakeTimers('modern');
@@ -126,6 +136,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
       },
       parentNode: expect.any(HTMLElement),
       roomName: video.id,
+      userInfo: {
+        displayName: 'jane_doe',
+      },
     });
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
@@ -177,6 +190,110 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockExecuteCommand).toHaveBeenCalledWith('stopRecording', 'stream');
 
     expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
+  });
+
+  it('configures jitsi without username', () => {
+    const decodedTokenWithoutUser = [
+      {},
+      {
+        user: {
+          id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        },
+      },
+    ];
+
+    decodedTokenWithoutUser.forEach((decodedToken) => {
+      mockDecodedJwtToken = decodedToken;
+      const video = videoMockFactory({
+        live_info: {
+          medialive: {
+            input: {
+              endpoints: [
+                'rtmp://1.2.3.4:1935/stream-key-primary',
+                'rtmp://4.3.2.1:1935/stream-key-secondary',
+              ],
+            },
+          },
+          jitsi: {
+            domain: 'meet.jit.si',
+            external_api_url: 'https://meet.jit.si/external_api.js',
+            config_overwrite: {},
+            interface_config_overwrite: {},
+          },
+        },
+        live_state: liveState.CREATING,
+        live_type: LiveModeType.JITSI,
+      });
+      global.JitsiMeetExternalAPI = mockJitsi;
+
+      render(
+        wrapInIntlProvider(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
+      );
+      const toolbarButtons = [
+        'microphone',
+        'camera',
+        'closedcaptions',
+        'desktop',
+        'fullscreen',
+        'fodeviceselection',
+        'hangup',
+        'profile',
+        'settings',
+        'raisehand',
+        'videoquality',
+        'filmstrip',
+        'feedback',
+        'shortcuts',
+        'tileview',
+        'select-background',
+        'help',
+        'mute-everyone',
+        'mute-video-everyone',
+        'security',
+      ];
+      expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
+        configOverwrite: {
+          constraints: {
+            video: {
+              height: {
+                ideal: 720,
+                max: 720,
+                min: 240,
+              },
+            },
+          },
+          conferenceInfo: {
+            alwaysVisible: ['recording'],
+
+            autoHide: [],
+          },
+          disablePolls: true,
+          doNotStoreRoom: true,
+          hideConferenceSubject: true,
+          hideConferenceTimer: true,
+          resolution: 720,
+          toolbarButtons,
+        },
+        interfaceConfigOverwrite: {
+          HIDE_INVITE_MORE_HEADER: true,
+          TOOLBAR_BUTTONS: toolbarButtons,
+        },
+        parentNode: expect.any(HTMLElement),
+        roomName: video.id,
+        userInfo: {
+          displayName: undefined,
+        },
+      });
+      cleanup();
+      jest.clearAllMocks();
+    });
   });
 
   it('manages recording interruption', async () => {
@@ -385,6 +502,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
       },
       parentNode: expect.any(HTMLElement),
       roomName: video.id,
+      userInfo: {
+        displayName: 'jane_doe',
+      },
     });
 
     expect(mockCanStartLive).not.toHaveBeenCalled();
@@ -428,6 +548,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
       },
       parentNode: expect.any(HTMLElement),
       roomName: video.id,
+      userInfo: {
+        displayName: 'jane_doe',
+      },
     });
 
     expect(mockJitsi).toHaveBeenCalledTimes(2);
