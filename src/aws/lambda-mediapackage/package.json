@@ -18,11 +18,11 @@
     "@types/jest": "27.0.2",
     "@types/request-promise-native": "1.0.18",
     "fetch-mock-jest": "1.5.1",
-    "jest": "27.2.5",
+    "jest": "27.3.0",
     "prettier": "2.4.1"
   },
   "dependencies": {
-    "aws-sdk": "2.1004.0",
+    "aws-sdk": "2.1009.0",
     "m3u8-parser": "4.7.0",
     "node-fetch": "2.6.2",
     "update-state": "file:../utils/update-state"
