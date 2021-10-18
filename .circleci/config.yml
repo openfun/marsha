@@ -91,6 +91,20 @@ jobs:
             # Get the longuest line width (ignoring release links)
             test $(cat CHANGELOG.md | grep -Ev "^\[.*\]: https://github.com/openfun" | wc -L) -le 80
 
+  # Check that renovate configuration file is valid
+  check-renovate-configuration:
+    docker:
+      - image: renovate/renovate
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Run renovate-config-validator command
+          command: renovate-config-validator
+
   # Docker/back-end jobs
   # Build job
   # Build the Docker image ready for production
@@ -1012,6 +1026,12 @@ workflows:
               ignore: master
             tags:
               ignore: /.*/
+
+      # Check Renovate configuration
+      - check-renovate-configuration:
+          filters:
+            tags:
+              only: /.*/
 
       # Front-end jobs
       #
