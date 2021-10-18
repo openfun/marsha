@@ -24,6 +24,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Redirect instructor to the waiting jitsi page once conference left
 - Only a webinar using jitsi can be created
 
+### Changed
+
+- On app load instructor is redirected to the dashboard when the video
+  is a live
+
 ### Removed
 
 - IE11 is no longer supported
