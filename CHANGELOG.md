@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Redirect participant to the player once jitsi conference left
 - Redirect instructor to the waiting jitsi page once conference left
 - Only a webinar using jitsi can be created
+- Hide timed text pane when video is not a VOD
 
 ### Changed
 
