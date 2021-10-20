@@ -9,6 +9,7 @@ import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
 import { appData, getDecodedJwt } from '../data/appData';
+import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
 import {
   QualityLevels,
   VideoJsExtendedSourceObject,
@@ -98,6 +99,11 @@ export const createVideojsPlayer = (
   }
 
   const tracks = player.remoteTextTracks();
+
+  useTranscriptTimeSelector.subscribe(
+    (time) => player.currentTime(time as number),
+    (state) => state.time,
+  );
 
   /************************** XAPI **************************/
 

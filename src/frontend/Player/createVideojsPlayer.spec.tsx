@@ -3,6 +3,7 @@ import React from 'react';
 
 import VideoPlayer from '../components/VideoPlayer';
 
+import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { liveState, timedTextMode, uploadState } from '../types/tracks';
 import { isMSESupported } from '../utils/isMSESupported';
@@ -138,6 +139,7 @@ describe('createVideoJsPlayer', () => {
       nativeAudioTracks: false,
       nativeVideoTracks: false,
     });
+    player.dispose();
   });
 
   it('creates videojs player without HLS compat and configures it', () => {
@@ -207,6 +209,7 @@ describe('createVideoJsPlayer', () => {
         default: '480',
       },
     });
+    player.dispose();
   });
 
   it('configures for a live video', () => {
@@ -241,6 +244,7 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.autoplay).toBe(true);
     expect(player.options_.liveui).toBe(true);
     expect(player.options_.playbackRates).toEqual([]);
+    player.dispose();
   });
 
   it('sends xapi events', () => {
@@ -296,5 +300,44 @@ describe('createVideoJsPlayer', () => {
 
     window.dispatchEvent(new Event('unload'));
     expect(mockXAPIStatementInterface.terminated).toHaveBeenCalled();
+    player.dispose();
+  });
+
+  it('changes current time when useTranscriptTimeSelector is modified', () => {
+    const video = videoMockFactory({
+      urls: {
+        manifests: {
+          hls: 'https://d2zihajmogu5jn.cloudfront.net/sintel/master.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      live_state: liveState.RUNNING,
+    });
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={video}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
+
+    // when the video is not played yet, the currentTime
+    // is not modified. It is the initTime that is modified.
+    // Playing a video in our tests is not possible because we don't have
+    // a real browser implementing media sources.
+    // If cache_.initTime is modified, we know player.currentTime(seconds)
+    // has been called.
+    expect(player.cache_.initTime).toEqual(0);
+    useTranscriptTimeSelector.getState().setTime(10);
+
+    expect(player.cache_.initTime).toEqual(10);
+    player.dispose();
   });
 });
