@@ -17,6 +17,9 @@ declare module 'video.js' {
     videojs_quality_selector_plugin_is_paused?: boolean;
     videojs_quality_selector_plugin_currentime?: number;
     videojs_quality_selector_plugin_default?: string;
+    cache_: {
+      initTime: number;
+    };
     // videojs-http-source-selector
     httpSourceSelector: () => void;
     qualitySelector: () => {
