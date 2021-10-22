@@ -41,7 +41,7 @@
   },
   "component.PlaylistPortability.shareWithPlaylistDetails": {
     "description": "Helper text to explain what sharing will do.",
-    "message": "Le partage de cette liste de lecture donnera accès à toutes ces ressources."
+    "message": "Le partage de cette liste de lecture donnera accès à toutes ses ressources."
   },
   "component.PlaylistPortability.shareWithPlaylistPlaceholder": {
     "description": "Helper text for adding a new portability.",
@@ -96,8 +96,8 @@
     "message": "Téléverser une vidéo"
   },
   "components.Dashboard.DashboardPaneButtons.videos.jitsi": {
-    "description": "Dashboard button to launch jitsi livestream",
-    "message": "Démarrer un direct avec Jitsi"
+    "description": "Dashboard button to create a webinar",
+    "message": "Créer un webinaire"
   },
   "components.Dashboard.DashboardPaneButtons.videos.raw": {
     "description": "Dashboard button to configure a live streaming",
@@ -181,7 +181,7 @@
   },
   "components.DashboardVideoLive.jitsi": {
     "description": "DashboardVideoLive jitsi title.",
-    "message": "Direct Jitsi"
+    "message": "Webinaire"
   },
   "components.DashboardVideoLive.liveCreating": {
     "description": "Helptext explainig to wait until the live is created.",
@@ -206,6 +206,14 @@
   "components.DashboardVideoLive.url": {
     "description": "Video url streaming.",
     "message": "url"
+  },
+  "components.DashboardVideoLiveInfo.copied": {
+    "description": "Message displayed when endpoints info are copied.",
+    "message": "Copié !"
+  },
+  "components.DashboardVideoLiveInfo.liveInfo": {
+    "description": "Message that displays live rtmp information",
+    "message": "Vous voulez utiliser une source de streaming externe, trouvez les adresses RTMP ici"
   },
   "components.DashboardVideoLiveRaw.copied": {
     "description": "Message displayed when endpoints info are copied.",
@@ -479,6 +487,38 @@
     "description": "Status information for a video/audio/timed text track",
     "message": "Téléversement en cours"
   },
+  "components.OrganizationView.OrganizationPlaylists.emptyTable": {
+    "description": "Empty state for the table in the organization view list of playlists.",
+    "message": "Il n'y a pas encore de liste de lecture pour cette organisation."
+  },
+  "components.OrganizationView.OrganizationPlaylists.loadingPlaylists": {
+    "description": "Accessible message for the spinner in the list of playlists for an organization.",
+    "message": "Chargement des listes de lecture..."
+  },
+  "components.OrganizationView.OrganizationPlaylists.thConsumerSite": {
+    "description": "Column title for the consumer site column in the list of playlists.",
+    "message": "Site client"
+  },
+  "components.OrganizationView.OrganizationPlaylists.thLTIId": {
+    "description": "Column title for the LTI ID column in the list of playlists.",
+    "message": "Identifiant LTI"
+  },
+  "components.OrganizationView.OrganizationPlaylists.thTitle": {
+    "description": "Column title for the title column in the list of playlists.",
+    "message": "Titre"
+  },
+  "components.OrganizationView.OrganizationPlaylists.title": {
+    "description": "Title for the list of playlists in the organization view.",
+    "message": "Listes de lecture"
+  },
+  "components.OrganizationView.defaultTitle": {
+    "description": "Default title for the organization view when the organization has not loaded.",
+    "message": "Organisation"
+  },
+  "components.OrganizationView.titleVideos": {
+    "description": "Title for the list of videos in the organization view.",
+    "message": "Vidéos"
+  },
   "components.PlaylistPortability.copied": {
     "description": "Message displayed when playlist info are copied.",
     "message": "{text} copié !"
@@ -486,6 +526,18 @@
   "components.PlaylistPortability.copy": {
     "description": "Accessible message for copying a playlist id.",
     "message": "Copie de la clé {text}."
+  },
+  "components.PlaylistView.addVideos": {
+    "description": "Title for the part of the playlist view that lets users add new videos.",
+    "message": "Ajouter de nouvelles vidéos"
+  },
+  "components.PlaylistView.defaultTitle": {
+    "description": "Default title for the playlist view when the playlist has not loaded.",
+    "message": "Liste de lecture"
+  },
+  "components.PlaylistView.titleVideos": {
+    "description": "Title for the list of videos in the playlist view.",
+    "message": "Vidéos"
   },
   "components.SelectContent.addDocument": {
     "description": "Text displayed on a button to add a new document.",
@@ -538,6 +590,10 @@
   "components.SelectContent.uploaded": {
     "description": "Text helper displayed if a video or a document is uploaded.",
     "message": "Téléversé"
+  },
+  "components.SidebarUploadsIndicator.title": {
+    "description": "Message for the sidebar uploads indicator link.",
+    "message": "Téléversements de fichiers"
   },
   "components.SiteHeader.logInBtn": {
     "description": "Text for the login button in the header of the marsha site",
@@ -626,6 +682,166 @@
   "components.UploadableObjectProgress.progressLabel": {
     "description": "Accessibility message for the upload progress bar.",
     "message": "Progression du téléversement"
+  },
+  "components.UploadableObjectStatusBadge.deleted": {
+    "description": "Badge text for an uploadable object that was deleted.",
+    "message": "Supprimé"
+  },
+  "components.UploadableObjectStatusBadge.error": {
+    "description": "Badge text for an uploadable object that encountered an error.",
+    "message": "Erreur"
+  },
+  "components.UploadableObjectStatusBadge.harvested": {
+    "description": "Badge text for an uploadable object that was harvested.",
+    "message": "Récupéré"
+  },
+  "components.UploadableObjectStatusBadge.harvesting": {
+    "description": "Badge text for an uploadable object for which harvesting is in progress..",
+    "message": "En cours de récupération"
+  },
+  "components.UploadableObjectStatusBadge.pending": {
+    "description": "Badge text for an uploadable object that has no file at all and is still pending.",
+    "message": "En attente"
+  },
+  "components.UploadableObjectStatusBadge.processing": {
+    "description": "Badge text for an uploadable object that is currently processing",
+    "message": "En cours de traitement"
+  },
+  "components.UploadableObjectStatusBadge.ready": {
+    "description": "Badge text for an uploadable object that is ready.",
+    "message": "Disponible"
+  },
+  "components.UploadableObjectStatusBadge.uploading": {
+    "description": "Badge text for an uploadable object that is currently uploading.",
+    "message": "Téléversement en cours"
+  },
+  "components.UploadsView.completedUploads": {
+    "description": "Title for the part of the view where completed uploads are displayed, if there are any.",
+    "message": "Téléversements terminés"
+  },
+  "components.UploadsView.noOngoingUploads": {
+    "description": "Help message on the uploads view when there are no ongoing file uploads.",
+    "message": "Il n'y a aucun téléversement en cours."
+  },
+  "components.UploadsView.title": {
+    "description": "Title for the file uploads view and its related breadcrumb",
+    "message": "Téléversements de fichiers"
+  },
+  "components.VideoCreateForm.createVideo": {
+    "description": "Button text for the button to submit the video creation form.",
+    "message": "Créer la vidéo"
+  },
+  "components.VideoCreateForm.playlistFieldEmpty": {
+    "description": "Error message when the playlist ID field is required and left empty in the video create form.",
+    "message": "L'identifiant de la liste de lecture est requis pour créer une nouvelle vidéo."
+  },
+  "components.VideoCreateForm.step1Loading": {
+    "description": "Accessible message for the spinner while creating a video in step 1.",
+    "message": "Création de la vidéo en cours..."
+  },
+  "components.VideoCreateForm.step1Title": {
+    "description": "Title for the first step in the video creation form.",
+    "message": "Détails de la vidéo"
+  },
+  "components.VideoCreateForm.step2Title": {
+    "description": "Title for the second step in the video creation form.",
+    "message": "Sélection de fichier"
+  },
+  "components.VideoCreateForm.step3Message": {
+    "description": "Helptext message for the processing part of the video create form.",
+    "message": "Vous pouvez utiliser le gestionnaire de téléversement de fichiers pour surveiller les téléversements en cours, ou aller à la page vidéo pour commencer à ajouter des sous-titres."
+  },
+  "components.VideoCreateForm.step3Subtitle": {
+    "description": "Subtitle for the processing part of the video create form.",
+    "message": "Vidéo en cours de création"
+  },
+  "components.VideoCreateForm.step3Title": {
+    "description": "Title for the third step in the video creation form.",
+    "message": "En cours de traitement"
+  },
+  "components.VideoCreateForm.stepCompleted": {
+    "description": "Accessibility helper to mark completed steps in the video creation form.",
+    "message": "Terminé : "
+  },
+  "components.VideoCreateForm.stepCurrent": {
+    "description": "Accessibility helper to mark completed steps in the video creation form.",
+    "message": "En cours : "
+  },
+  "components.VideoCreateForm.stepIndicatorTitle": {
+    "description": "Accessibility title for the video creation progress indicator widget.",
+    "message": "Vidéo en cours de création"
+  },
+  "components.VideoCreateForm.titleFieldEmpty": {
+    "description": "Error message when the title field left empty in the video create form.",
+    "message": "Le titre est requis pour créer une nouvelle vidéo."
+  },
+  "components.VideoCreateForm.videoLTIId": {
+    "description": "Label for the video LTI ID field in the video creation form.",
+    "message": "Identifiant LTI"
+  },
+  "components.VideoCreateForm.videoPlaylist": {
+    "description": "Label for the playlist ID field in the video creation form.",
+    "message": "Identifiant de la liste de lecture"
+  },
+  "components.VideoCreateForm.videoTitle": {
+    "description": "Label for the video title field in the video creation form.",
+    "message": "Titre"
+  },
+  "components.VideoView.defaultTitle": {
+    "description": "Default title for the video view when the video has not loaded.",
+    "message": "Vidéo"
+  },
+  "components.VideoView.loadingTimedTextTracks": {
+    "description": "Accessible message for the spinner while loading the subtitles in the video view.",
+    "message": "Chargement des sous-titres et transcripts..."
+  },
+  "components.VideoView.loadingVideo": {
+    "description": "Accessible message for the spinner while loading the video in video view.",
+    "message": "Chargement de la vidéo..."
+  },
+  "components.VideoView.tabSubtitlesTitle": {
+    "description": "Title for the subtitles & timed text tab in the video view.",
+    "message": "Sous-titres & transcripts"
+  },
+  "components.VideoView.tabThumbnailTitle": {
+    "description": "Title for the thumbnail tab in the video view.",
+    "message": "Vignette"
+  },
+  "components.VideoView.tabVideoPendingMessage": {
+    "description": "Helpful message for the video tab in video view when there is no video file.",
+    "message": "Il n'y a actuellement aucun fichier vidéo pour cette vidéo. Vous pouvez en ajouter un en déposant ou en sélectionnant un fichier ci-dessous."
+  },
+  "components.VideoView.tabVideoProcessingMessage": {
+    "description": "Loading message for the video tab in video view while the video is processing.",
+    "message": "La vidéo est en cours de traitement. Vous pourrez la voir ou la remplacer ici une fois qu'elle sera terminée."
+  },
+  "components.VideoView.tabVideoTitle": {
+    "description": "Title for the video tab in the video view.",
+    "message": "Vidéo"
+  },
+  "components.VideoView.tabVideoUploadingMessage": {
+    "description": "Loading message for the video tab in video view while the video is uploading.",
+    "message": "La vidéo est en cours de téléversement. Vous pourrez la voir ou la remplacer ici une fois qu'elle aura été traitée."
+  },
+  "components.VideosList.emptyTable": {
+    "description": "Empty state for the table in the videos list.",
+    "message": "Il n'y a pas encore de vidéo dans cette liste de lecture."
+  },
+  "components.VideosList.loadingVideosList": {
+    "description": "Accessible message for the spinner while loading videos in the videos list.",
+    "message": "Chargement des vidéos..."
+  },
+  "components.VideosList.thPlaylistTitle": {
+    "description": "Column title for the playlist title column in the list of videos.",
+    "message": "Liste de lecture"
+  },
+  "components.VideosList.thTitle": {
+    "description": "Column title for the title column in the list of videos.",
+    "message": "Titre"
+  },
+  "components.VideosList.thUploadState": {
+    "description": "Column title for the upload state column in the list of videos.",
+    "message": "État du téléversement"
   },
   "components.WaitingLiveVideo.message": {
     "description": "Message for the waiting live video component",
