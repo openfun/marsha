@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-25 06:25+0000\n"
-"PO-Revision-Date: 2021-09-14 11:31\n"
+"POT-Creation-Date: 2021-10-07 14:19+0000\n"
+"PO-Revision-Date: 2021-10-22 07:48\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -23,79 +23,79 @@ msgid "{marsha_name} administration"
 msgstr "administración de {marsha_name}"
 
 #: marsha/core/admin.py:175 marsha/core/admin.py:198
-#: marsha/core/models/account.py:391 marsha/core/models/account.py:423
-#: marsha/core/models/account.py:476
+#: marsha/core/models/account.py:392 marsha/core/models/account.py:424
+#: marsha/core/models/account.py:477
 msgid "organization"
 msgstr "organización"
 
 #: marsha/core/admin.py:176 marsha/core/admin.py:199
-#: marsha/core/models/account.py:392
+#: marsha/core/models/account.py:393
 msgid "organizations"
 msgstr "organización"
 
 #: marsha/core/admin.py:190 marsha/core/admin.py:241
-#: marsha/core/models/account.py:51 marsha/core/models/account.py:320
-#: marsha/core/models/account.py:468 marsha/core/models/playlist.py:172
+#: marsha/core/models/account.py:51 marsha/core/models/account.py:321
+#: marsha/core/models/account.py:469 marsha/core/models/playlist.py:172
 msgid "user"
 msgstr "usuario"
 
 #: marsha/core/admin.py:191 marsha/core/admin.py:242
-#: marsha/core/models/account.py:52 marsha/core/models/account.py:214
-#: marsha/core/models/account.py:383 marsha/core/models/playlist.py:63
+#: marsha/core/models/account.py:52 marsha/core/models/account.py:215
+#: marsha/core/models/account.py:384 marsha/core/models/playlist.py:63
 msgid "users"
 msgstr "usuarios"
 
-#: marsha/core/admin.py:207 marsha/core/admin.py:208 marsha/core/admin.py:313
-#: marsha/core/admin.py:314 marsha/core/models/account.py:203
+#: marsha/core/admin.py:207 marsha/core/admin.py:208 marsha/core/admin.py:319
+#: marsha/core/admin.py:320 marsha/core/models/account.py:204
 msgid "portable to"
 msgstr ""
 
-#: marsha/core/admin.py:249 marsha/core/models/account.py:251
+#: marsha/core/admin.py:249 marsha/core/models/account.py:252
 msgid "consumer site"
 msgstr ""
 
-#: marsha/core/admin.py:250 marsha/core/models/account.py:252
+#: marsha/core/admin.py:250 marsha/core/models/account.py:253
 msgid "consumer sites"
 msgstr ""
 
-#: marsha/core/admin.py:289
+#: marsha/core/admin.py:295 marsha/core/models/video.py:446
 msgid "Video"
 msgstr "Video"
 
-#: marsha/core/admin.py:296 marsha/core/models/video.py:68
-#: marsha/core/models/video.py:184 marsha/core/models/video.py:347
+#: marsha/core/admin.py:302 marsha/core/models/video.py:76
+#: marsha/core/models/video.py:212 marsha/core/models/video.py:370
 msgid "video"
 msgstr "video"
 
-#: marsha/core/admin.py:297 marsha/core/models/video.py:69
+#: marsha/core/admin.py:303 marsha/core/models/video.py:77
 msgid "videos"
 msgstr "videos"
 
-#: marsha/core/admin.py:304
+#: marsha/core/admin.py:310
 msgid "user access"
 msgstr ""
 
-#: marsha/core/admin.py:305
+#: marsha/core/admin.py:311
 msgid "users accesses"
 msgstr ""
 
-#: marsha/core/admin.py:323
+#: marsha/core/admin.py:329
 msgid "Document"
 msgstr ""
 
-#: marsha/core/admin.py:330 marsha/core/models/file.py:161
+#: marsha/core/admin.py:336 marsha/core/models/file.py:161
 msgid "document"
 msgstr ""
 
-#: marsha/core/admin.py:331 marsha/core/models/file.py:162
+#: marsha/core/admin.py:337 marsha/core/models/file.py:162
 msgid "documents"
 msgstr ""
 
-#: marsha/core/admin.py:397
+#: marsha/core/admin.py:403
 msgid "Playlist"
 msgstr ""
 
-#: marsha/core/admin.py:435 marsha/core/models/account.py:131
+#: marsha/core/admin.py:441 marsha/core/models/account.py:131
 msgid "LTI passport"
 msgstr "pasaporte LTI"
 
@@ -175,7 +175,7 @@ msgstr "instructor"
 msgid "student"
 msgstr "estudiante"
 
-#: marsha/core/models/account.py:60 marsha/core/models/account.py:398
+#: marsha/core/models/account.py:60 marsha/core/models/account.py:399
 msgid " [deleted]"
 msgstr ""
 
@@ -207,217 +207,217 @@ msgstr ""
 msgid "LTI passports"
 msgstr ""
 
-#: marsha/core/models/account.py:145
+#: marsha/core/models/account.py:146
 msgid "{:s}[deleted]"
 msgstr ""
 
-#: marsha/core/models/account.py:152
+#: marsha/core/models/account.py:153
 msgid "You should set either a Consumer Site or a Playlist, but not both."
 msgstr ""
 
-#: marsha/core/models/account.py:157
+#: marsha/core/models/account.py:158
 msgid "You must set either a Consumer Site or a Playlist."
 msgstr ""
 
-#: marsha/core/models/account.py:191
+#: marsha/core/models/account.py:192
 msgid "display name"
 msgstr ""
 
-#: marsha/core/models/account.py:192
+#: marsha/core/models/account.py:193
 msgid "name of the consumer site."
 msgstr ""
 
-#: marsha/core/models/account.py:196
+#: marsha/core/models/account.py:197
 msgid "domain name"
 msgstr ""
 
-#: marsha/core/models/account.py:197
+#: marsha/core/models/account.py:198
 msgid "base domain allowed for consumer site."
 msgstr ""
 
-#: marsha/core/models/account.py:205
+#: marsha/core/models/account.py:206
 msgid "consumer sites to which all resources in this consumer site are portable."
 msgstr ""
 
-#: marsha/core/models/account.py:215
+#: marsha/core/models/account.py:216
 msgid "users who have been granted access to this consumer site."
 msgstr ""
 
-#: marsha/core/models/account.py:219
+#: marsha/core/models/account.py:220
 msgid "LRS authentication token"
 msgstr ""
 
-#: marsha/core/models/account.py:220
+#: marsha/core/models/account.py:221
 msgid "LRS authentication token used to communicate with a remote LRS"
 msgstr ""
 
-#: marsha/core/models/account.py:226
+#: marsha/core/models/account.py:227
 msgid "LRS url"
 msgstr ""
 
-#: marsha/core/models/account.py:227
+#: marsha/core/models/account.py:228
 msgid "LRS url used to communicate with a remote LRS"
 msgstr ""
 
-#: marsha/core/models/account.py:233
+#: marsha/core/models/account.py:234
 msgid "xAPI version"
 msgstr "versión xAPI"
 
-#: marsha/core/models/account.py:234
+#: marsha/core/models/account.py:235
 msgid "xAPI version used by the remote LRS server"
 msgstr ""
 
-#: marsha/core/models/account.py:240
+#: marsha/core/models/account.py:241
 msgid "show video download"
 msgstr ""
 
-#: marsha/core/models/account.py:242
+#: marsha/core/models/account.py:243
 msgid "default value used for every newly created video to determine if the links to download a video are shown by default."
 msgstr ""
 
-#: marsha/core/models/account.py:258 marsha/core/models/file.py:128
+#: marsha/core/models/account.py:259 marsha/core/models/file.py:128
 #: marsha/core/models/playlist.py:106
 msgid "{:s} [deleted]"
 msgstr ""
 
-#: marsha/core/models/account.py:275
+#: marsha/core/models/account.py:276
 msgid "source site"
 msgstr ""
 
-#: marsha/core/models/account.py:276
+#: marsha/core/models/account.py:277
 msgid "consumer site that is portable."
 msgstr ""
 
-#: marsha/core/models/account.py:283
+#: marsha/core/models/account.py:284
 msgid "target site"
 msgstr ""
 
-#: marsha/core/models/account.py:284
+#: marsha/core/models/account.py:285
 msgid "consumer site to which portability is automatic."
 msgstr ""
 
-#: marsha/core/models/account.py:293
+#: marsha/core/models/account.py:294
 msgid "consumer site portability"
 msgstr ""
 
-#: marsha/core/models/account.py:294
+#: marsha/core/models/account.py:295
 msgid "consumer site portabilities"
 msgstr ""
 
-#: marsha/core/models/account.py:307 marsha/core/models/playlist.py:155
+#: marsha/core/models/account.py:308 marsha/core/models/playlist.py:155
 #, python-brace-format
 msgid "{source} was portable to {target}"
 msgstr ""
 
-#: marsha/core/models/account.py:308 marsha/core/models/playlist.py:156
+#: marsha/core/models/account.py:309 marsha/core/models/playlist.py:156
 #, python-brace-format
 msgid "{source} is portable to {target}"
 msgstr ""
 
-#: marsha/core/models/account.py:321
+#: marsha/core/models/account.py:322
 msgid "user with access to the consumer site"
 msgstr ""
 
-#: marsha/core/models/account.py:328 marsha/core/models/account.py:415
+#: marsha/core/models/account.py:329 marsha/core/models/account.py:416
 msgid "site"
 msgstr ""
 
-#: marsha/core/models/account.py:329
+#: marsha/core/models/account.py:330
 msgid "consumer site to which the user has access"
 msgstr ""
 
-#: marsha/core/models/account.py:336 marsha/core/models/account.py:484
+#: marsha/core/models/account.py:337 marsha/core/models/account.py:485
 #: marsha/core/models/playlist.py:188
 msgid "role"
 msgstr ""
 
-#: marsha/core/models/account.py:337 marsha/core/models/account.py:485
+#: marsha/core/models/account.py:338 marsha/core/models/account.py:486
 #: marsha/core/models/playlist.py:189
 msgid "role granted to the user on the consumer site"
 msgstr ""
 
-#: marsha/core/models/account.py:345
+#: marsha/core/models/account.py:346
 msgid "consumer site access"
 msgstr ""
 
-#: marsha/core/models/account.py:346
+#: marsha/core/models/account.py:347
 msgid "consumer site accesses"
-msgstr ""
-
-#: marsha/core/models/account.py:363
-#, python-brace-format
-msgid "{user} was {role} of {consumer_site}"
 msgstr ""
 
 #: marsha/core/models/account.py:364
 #, python-brace-format
+msgid "{user} was {role} of {consumer_site}"
+msgstr ""
+
+#: marsha/core/models/account.py:365
+#, python-brace-format
 msgid "{user} is {role} of {consumer_site}"
 msgstr ""
 
-#: marsha/core/models/account.py:371
+#: marsha/core/models/account.py:372
 msgid "name"
 msgstr ""
 
-#: marsha/core/models/account.py:371
+#: marsha/core/models/account.py:372
 msgid "name of the organization"
 msgstr ""
 
-#: marsha/core/models/account.py:378
+#: marsha/core/models/account.py:379
 msgid "consumer sites on which this organization is present"
 msgstr ""
 
-#: marsha/core/models/account.py:384
+#: marsha/core/models/account.py:385
 msgid "users who have been granted access to this organization"
 msgstr ""
 
-#: marsha/core/models/account.py:416
+#: marsha/core/models/account.py:417
 msgid "consumer site having this organization"
 msgstr ""
 
-#: marsha/core/models/account.py:424
+#: marsha/core/models/account.py:425
 msgid "organization in this consumer site"
 msgstr ""
 
-#: marsha/core/models/account.py:433
+#: marsha/core/models/account.py:434
 msgid "organization in consumer site"
 msgstr ""
 
-#: marsha/core/models/account.py:434
+#: marsha/core/models/account.py:435
 msgid "organizations in consumer sites"
-msgstr ""
-
-#: marsha/core/models/account.py:450
-#, python-brace-format
-msgid "{organization} was in {consumer_site}"
 msgstr ""
 
 #: marsha/core/models/account.py:451
 #, python-brace-format
+msgid "{organization} was in {consumer_site}"
+msgstr ""
+
+#: marsha/core/models/account.py:452
+#, python-brace-format
 msgid "{organization} is in {consumer_site}"
 msgstr ""
 
-#: marsha/core/models/account.py:469
+#: marsha/core/models/account.py:470
 msgid "user who has access to the organization"
 msgstr ""
 
-#: marsha/core/models/account.py:477
+#: marsha/core/models/account.py:478
 msgid "organization to which the user has access"
 msgstr ""
 
-#: marsha/core/models/account.py:493
+#: marsha/core/models/account.py:494
 msgid "organization access"
 msgstr ""
 
-#: marsha/core/models/account.py:494
+#: marsha/core/models/account.py:495
 msgid "organization accesses"
 msgstr ""
 
-#: marsha/core/models/account.py:511
+#: marsha/core/models/account.py:512
 #, python-brace-format
 msgid "{user} was {role} of {organization}"
 msgstr ""
 
-#: marsha/core/models/account.py:513
+#: marsha/core/models/account.py:514
 #, python-brace-format
 msgid "{user} is {role} of {organization}"
 msgstr ""
@@ -523,7 +523,7 @@ msgstr ""
 msgid "file extension"
 msgstr ""
 
-#: marsha/core/models/file.py:148 marsha/core/models/video.py:253
+#: marsha/core/models/file.py:148 marsha/core/models/video.py:281
 msgid "extension"
 msgstr ""
 
@@ -615,120 +615,160 @@ msgstr ""
 msgid "playlist accesses"
 msgstr ""
 
-#: marsha/core/models/video.py:21
+#: marsha/core/models/video.py:23
+msgid "starting at"
+msgstr ""
+
+#: marsha/core/models/video.py:24
+msgid "date and time at which a video live is scheduled"
+msgstr ""
+
+#: marsha/core/models/video.py:30
 msgid "use subtitle as transcript"
 msgstr ""
 
-#: marsha/core/models/video.py:23
+#: marsha/core/models/video.py:32
 msgid "When there is at least one subtitle but no transcript this flag allows to use subtitles as transcripts."
 msgstr ""
 
-#: marsha/core/models/video.py:31
+#: marsha/core/models/video.py:40
 msgid "video sizes"
 msgstr ""
 
-#: marsha/core/models/video.py:32
+#: marsha/core/models/video.py:41
 msgid "List of available sizes for this video"
 msgstr ""
 
-#: marsha/core/models/video.py:37
+#: marsha/core/models/video.py:46
 msgid "Live info"
 msgstr ""
 
-#: marsha/core/models/video.py:38
+#: marsha/core/models/video.py:47
 msgid "Information needed to manage live streaming"
 msgstr ""
 
-#: marsha/core/models/video.py:42
+#: marsha/core/models/video.py:51
 msgid "live state"
 msgstr ""
 
-#: marsha/core/models/video.py:43
+#: marsha/core/models/video.py:52
 msgid "state of the live mode."
 msgstr ""
 
-#: marsha/core/models/video.py:50
+#: marsha/core/models/video.py:59
 msgid "type of live"
 msgstr ""
 
-#: marsha/core/models/video.py:51
+#: marsha/core/models/video.py:60
 msgid "type of live."
 msgstr ""
 
-#: marsha/core/models/video.py:59
+#: marsha/core/models/video.py:67
 msgid "is video public"
 msgstr ""
 
-#: marsha/core/models/video.py:60
+#: marsha/core/models/video.py:68
 msgid "Is the video publicly accessible?"
 msgstr ""
 
-#: marsha/core/models/video.py:185
+#: marsha/core/models/video.py:213
 msgid "video for which this track is"
 msgstr ""
 
-#: marsha/core/models/video.py:192
+#: marsha/core/models/video.py:220
 msgid "language"
 msgstr ""
 
-#: marsha/core/models/video.py:193
+#: marsha/core/models/video.py:221
 msgid "language of this track"
 msgstr ""
 
-#: marsha/core/models/video.py:209
+#: marsha/core/models/video.py:237
 msgid "audio track"
 msgstr ""
 
-#: marsha/core/models/video.py:210
+#: marsha/core/models/video.py:238
 msgid "audio tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:230
+#: marsha/core/models/video.py:258
 msgid "Subtitle"
 msgstr ""
 
-#: marsha/core/models/video.py:231
+#: marsha/core/models/video.py:259
 msgid "Transcript"
 msgstr ""
 
-#: marsha/core/models/video.py:232
+#: marsha/core/models/video.py:260
 msgid "Closed captioning"
 msgstr ""
 
-#: marsha/core/models/video.py:236
+#: marsha/core/models/video.py:264
 msgid "mode"
 msgstr ""
 
-#: marsha/core/models/video.py:240
+#: marsha/core/models/video.py:268
 msgid "Activate a special mode for this timed text track: simple subtitles, closed captioning (for deaf or hard of hearing viewers) or transcription (complete text below aside of the player)."
 msgstr ""
 
-#: marsha/core/models/video.py:250
+#: marsha/core/models/video.py:278
 msgid "timed text track extension"
 msgstr ""
 
-#: marsha/core/models/video.py:260
+#: marsha/core/models/video.py:288
 msgid "timed text track"
 msgstr ""
 
-#: marsha/core/models/video.py:261
+#: marsha/core/models/video.py:289
 msgid "timed text tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:328
+#: marsha/core/models/video.py:351
 msgid "signs language track"
 msgstr ""
 
-#: marsha/core/models/video.py:329
+#: marsha/core/models/video.py:352
 msgid "signs language tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:348
+#: marsha/core/models/video.py:371
 msgid "video for which this thumbnail is"
 msgstr ""
 
-#: marsha/core/models/video.py:357
+#: marsha/core/models/video.py:380
 msgid "thumbnail"
+msgstr ""
+
+#: marsha/core/models/video.py:413
+msgid "email address"
+msgstr ""
+
+#: marsha/core/models/video.py:417
+msgid "Only present for lti users."
+msgstr ""
+
+#: marsha/core/models/video.py:422
+msgid "LTI consumer site"
+msgstr ""
+
+#: marsha/core/models/video.py:429
+msgid "Unique identifier for the user on the tool consumer, only present for lti users."
+msgstr ""
+
+#: marsha/core/models/video.py:433
+msgid "LTI user identifier"
+msgstr ""
+
+#: marsha/core/models/video.py:438
+msgid "whether user reminders are enabled for this live"
+msgstr ""
+
+#: marsha/core/models/video.py:439
+msgid "should send reminders"
+msgstr ""
+
+#: marsha/core/models/video.py:471
+msgid "live registration"
 msgstr ""
 
 #: marsha/core/serializers/playlist.py:53
