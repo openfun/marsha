@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.26.0] - 2021-10-22
+
 ### Added
 
 - Add video and document downloading xAPI events
@@ -915,7 +917,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.25.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.26.0...master
+[3.26.0]: https://github.com/openfun/marsha/compare/v3.25.0...v3.26.0
 [3.25.0]: https://github.com/openfun/marsha/compare/v3.24.1...v3.25.0
 [3.24.1]: https://github.com/openfun/marsha/compare/v3.24.0...v3.24.1
 [3.24.0]: https://github.com/openfun/marsha/compare/v3.23.0...v3.24.0
