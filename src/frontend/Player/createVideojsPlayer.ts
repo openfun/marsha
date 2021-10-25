@@ -101,8 +101,8 @@ export const createVideojsPlayer = (
   const tracks = player.remoteTextTracks();
 
   useTranscriptTimeSelector.subscribe(
-    (time) => player.currentTime(time as number),
     (state) => state.time,
+    (time) => player.currentTime(time),
   );
 
   /************************** XAPI **************************/
