@@ -460,6 +460,7 @@ jobs:
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
           DOCKERIZE_VERSION: v0.6.1
           DJANGO_ALLOW_ASYNC_UNSAFE: 1
+          DEBUG: pw:browser*
       - image: circleci/postgres:10.3-alpine-ram
         auth:
           username: $DOCKER_USER
@@ -472,6 +473,10 @@ jobs:
     parameters:
       browser:
         description: "Playwright browser"
+        default: "firefox"
+        type: string
+      browser_channel:
+        description: "Playwright browser channel"
         default: "firefox"
         type: string
     steps:
@@ -489,6 +494,10 @@ jobs:
           working_directory: ~/marsha/src/frontend
           command: yarn build
       - run:
+          name: Copy iframe resizer
+          working_directory: ~/marsha/src/frontend
+          command: yarn copy-iframe-resizer
+      - run:
           name: Ensure << parameters.browser >> browser is installed
           command: python -m playwright install "<< parameters.browser >>"
       - run:
@@ -502,13 +511,24 @@ jobs:
           command: |
                 mkdir -p /data/media \
                 && cp -r marsha/e2e/media /data/media/e2e
+      - when:
+          condition:
+            equal: [ chrome, << parameters.browser_channel >> ]
+          steps:
+            - run:
+                name: Install chrome
+                command: python -m playwright install chrome
       - run:
           name: Run e2e tests
           command: |
                 dockerize \
                   -wait tcp://localhost:5432 \
                   -timeout 60s \
-                    ~/.local/bin/pytest --browser "<< parameters.browser >>" marsha/e2e
+                    ~/.local/bin/pytest --tracing on \
+                    --browser-channel "<< parameters.browser_channel >>" \
+                    --browser "<< parameters.browser >>" marsha/e2e
+      - store_artifacts:
+          path: ~/marsha/src/backend/test-results
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
@@ -1156,18 +1176,21 @@ workflows:
       - test-e2e:
           name: test-e2e-firefox
           browser: firefox
+          browser_channel: firefox
           filters:
             tags:
               only: /.*/
       - test-e2e:
           name: test-e2e-chromium
           browser: chromium
+          browser_channel: chrome
           filters:
             tags:
               only: /.*/
       - test-e2e:
           name: test-e2e-webkit
           browser: webkit
+          browser_channel: webkit
           filters:
             tags:
               only: /.*/
