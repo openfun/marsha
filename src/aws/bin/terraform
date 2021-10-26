@@ -3,6 +3,7 @@
 set -eo pipefail
 
 declare MARSHA_TERRAFORM_ENV_FILE
+declare -r TERRAFORM_VERSION="1.0.9"
 
 function _check_workspace() {
     current_workspace=$(
@@ -10,7 +11,7 @@ function _check_workspace() {
             -u "$(id -u)" \
             -v "${PWD}/:/app" \
             -w "/app" \
-            "hashicorp/terraform:0.14.5" \
+            "hashicorp/terraform:${TERRAFORM_VERSION}" \
             workspace show
     ) 
 
@@ -57,7 +58,7 @@ function terraform() {
         -v "${PWD}/:/app" \
         -w "/app" \
         --env-file ./env.d/${MARSHA_TERRAFORM_ENV_FILE} \
-        "hashicorp/terraform:1.0.5" \
+        "hashicorp/terraform:${TERRAFORM_VERSION}" \
         "$@"
     else
         docker run --rm -it \
@@ -66,7 +67,7 @@ function terraform() {
         -w "/app" \
         --env-file ./env.d/${MARSHA_TERRAFORM_ENV_FILE} \
         -e TF_VAR_marsha_base_url="${NGROK_URL}" \
-        "hashicorp/terraform:1.0.5" \
+        "hashicorp/terraform:${TERRAFORM_VERSION}" \
         "$@"
     fi
 }
