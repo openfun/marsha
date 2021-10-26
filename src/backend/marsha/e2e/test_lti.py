@@ -289,7 +289,8 @@ def test_lti_select(page: Page, live_server: LiveServer):
         .replace(": ", ":")
     )
     assert document_content_items not in lti_select_iframe.content()
-    lti_select_iframe.click(f'[title="Select {document.title}"]')
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click(f'[title="Select {document.title}"]')
     lti_select_iframe.wait_for_selector("dd")
     assert document_content_items in lti_select_iframe.content()
 
@@ -316,7 +317,8 @@ def test_lti_select(page: Page, live_server: LiveServer):
         .replace(": ", ":")
     )
     assert video_content_items not in lti_select_iframe.content()
-    lti_select_iframe.click(f'[title="Select {video.title}"]')
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click(f'[title="Select {video.title}"]')
     assert video_content_items in lti_select_iframe.content()
     assert Video.objects.count() == 1
 
