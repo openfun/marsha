@@ -52,7 +52,7 @@ function terraform() {
 
     # Run Terraform commands in the docker container passing our environment variables
 
-    if [[ -z ${NGROK_URL} ]]; then
+    if [[ -z ${NGROK_URL} ]] || [[ ${MARSHA_TERRAFORM_ENV_FILE} != "development" ]]; then
         docker run --rm -it \
         -u "$(id -u)" \
         -v "${PWD}/:/app" \
