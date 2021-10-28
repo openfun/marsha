@@ -120,10 +120,9 @@ jobs:
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
+      # Activate docker-in-docker
       - setup_remote_docker:
-          docker_layer_caching: true
-          version: 19.03.13
+          version: 20.10.7
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -171,9 +170,9 @@ jobs:
     steps:
       # Checkout repository sources
       - checkout
-      # Activate docker-in-docker (with layers caching enabled)
+      # Activate docker-in-docker
       - setup_remote_docker:
-          docker_layer_caching: true
+          version: 20.10.7
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -852,10 +851,9 @@ jobs:
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
+      # Activate docker-in-docker
       - setup_remote_docker:
-          docker_layer_caching: true
-          version: 19.03.13
+          version: 20.10.7
       - *docker_login
       - run:
           name: Build production image (using cached layers)
@@ -917,9 +915,9 @@ jobs:
       - checkout
       # Generate a version.json file describing app release
       - <<: *generate-version-file
-      # Activate docker-in-docker (with layers caching enabled)
+      # Activate docker-in-docker
       - setup_remote_docker:
-          docker_layer_caching: true
+          version: 20.10.7
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -980,7 +978,7 @@ jobs:
       - <<: *generate-version-file
       - *docker_login
       - run:
-          name: Build production image (using cached layers)
+          name: Build production image
           command: ./bin/lambda build ${CIRCLE_SHA1}
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
