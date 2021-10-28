@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Prepare backend to manage apps
 - Prepare frontend to manage apps
 - Add BBB backend app
+- Add BBB frontend app
 
 ### Changed
 
