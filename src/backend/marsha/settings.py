@@ -113,6 +113,7 @@ class Base(Configuration):
         "waffle",
         "rest_framework",
         "marsha.core.apps.CoreConfig",
+        "marsha.bbb.apps.BbbConfig",
     ]
 
     MIDDLEWARE = [
@@ -232,6 +233,11 @@ class Base(Configuration):
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
     AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.SecretValue()
+
+    # BBB
+    BBB_ENABLED = values.BooleanValue(False)
+    BBB_API_ENDPOINT = values.Value()
+    BBB_API_SECRET = values.SecretValue()
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
@@ -394,6 +400,7 @@ class Build(Base):
     AWS_BASE_NAME = values.Value("")
     AWS_MEDIALIVE_ROLE_ARN = values.Value("")
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
+    BBB_API_SECRET = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
     STATICFILES_STORAGE = values.Value(
         "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"

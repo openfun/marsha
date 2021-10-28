@@ -29,7 +29,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import SENTRY
+from .defaults import BBB, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -78,6 +78,7 @@ def _get_base_app_data():
         "environment": settings.ENVIRONMENT,
         "flags": {
             SENTRY: switch_is_active(SENTRY),
+            BBB: settings.BBB_ENABLED,
         },
         "release": settings.RELEASE,
         "sentry_dsn": settings.SENTRY_DSN,
@@ -87,6 +88,84 @@ def _get_base_app_data():
             }
         },
     }
+
+
+def build_jwt_token(
+    permissions, session_id, lti=None, playlist_id=None, resource_id=None
+):
+    """Build a JWT token.
+
+    Parameters
+    ----------
+    permissions: Type[Dict]
+        permissions to add to the token.
+
+    session_id: Type[str]
+        session id to add to the token.
+
+    lti: Type[LTI]
+        LTI request.
+
+    playlist_id: Type[str]
+        playlist id to add to the token.
+
+    resource_id: Type[str]
+        resource id to add to the token.
+
+    Returns
+    -------
+    AccessToken
+        JWT token containing:
+        - session_id
+        - resource_id
+        - roles
+        - locale
+        - permissions
+        - maintenance
+        - user:
+            - email
+            - id
+            - username
+            - user_fullname
+    """
+    user_id = getattr(lti, "user_id", None) if lti else None
+
+    try:
+        locale = (
+            react_locale(lti.launch_presentation_locale)
+            if lti
+            else settings.REACT_LOCALES[0]
+        )
+    except ImproperlyConfigured:
+        locale = settings.REACT_LOCALES[0]
+
+    # Create a short-lived JWT token for the resource selection
+    jwt_token = AccessToken()
+
+    if lti:
+        jwt_token.payload["context_id"] = lti.context_id
+
+    if playlist_id:
+        jwt_token.payload["playlist_id"] = playlist_id
+
+    jwt_token.payload.update(
+        {
+            "session_id": session_id,
+            "resource_id": str(lti.resource_id) if lti else resource_id,
+            "roles": lti.roles if lti else [NONE],
+            "locale": locale,
+            "permissions": permissions,
+            "maintenance": settings.MAINTENANCE_MODE,
+        }
+    )
+    if user_id:
+        jwt_token.payload["user"] = {
+            "email": lti.email,
+            "id": user_id,
+            "username": lti.username,
+            "user_fullname": lti.user_fullname,
+        }
+    return jwt_token
 
 
 class SiteView(mixins.WaffleSwitchMixin, TemplateView):
@@ -245,6 +324,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 {
                     "flags": {
                         SENTRY: switch_is_active(SENTRY),
+                        BBB: settings.BBB_ENABLED,
                     },
                     "resource": self.serializer_class(
                         resource,
@@ -269,42 +349,12 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            try:
-                locale = (
-                    react_locale(lti.launch_presentation_locale)
-                    if lti
-                    else settings.REACT_LOCALES[0]
-                )
-            except ImproperlyConfigured:
-                locale = settings.REACT_LOCALES[0]
-
-            # Create a short-lived JWT token for the video
-            jwt_token = AccessToken()
-
-            # Token only has a context_id if we are in a lti context.
-            if lti:
-                jwt_token.payload["context_id"] = lti.context_id
-
-            jwt_token.payload.update(
-                {
-                    "session_id": session_id,
-                    "resource_id": str(lti.resource_id)
-                    if lti
-                    else app_data["resource"]["id"],
-                    "roles": lti.roles if lti else [NONE],
-                    "locale": locale,
-                    "permissions": permissions,
-                    "maintenance": settings.MAINTENANCE_MODE,
-                }
+            jwt_token = build_jwt_token(
+                permissions=permissions,
+                session_id=session_id,
+                lti=lti,
+                resource_id=app_data["resource"]["id"],
             )
-
-            if user_id:
-                jwt_token.payload["user"] = {
-                    "email": lti.email,
-                    "id": user_id,
-                    "username": lti.username,
-                }
-
             app_data["jwt"] = str(jwt_token)
 
         return app_data
@@ -532,6 +582,18 @@ class LTISelectView(TemplateResponseMixin, View):
                 "playlist": PlaylistLiteSerializer(playlist).data,
             }
         )
+
+        session_id = str(uuid.uuid4())
+        permissions = {"can_access_dashboard": False, "can_update": False}
+
+        jwt_token = build_jwt_token(
+            permissions=permissions,
+            session_id=session_id,
+            lti=lti,
+            playlist_id=str(playlist.id),
+        )
+        app_data["jwt"] = str(jwt_token)
+
         return app_data
 
     # pylint: disable=unused-argument
