@@ -1,6 +1,6 @@
 """LTI module that supports LTI 1.0."""
 import re
-from urllib.parse import urlparse
+from urllib.parse import unquote_plus, urlparse
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -324,6 +324,20 @@ class LTI:
         return self.request.POST.get("lis_person_sourcedid") or self.request.POST.get(
             "ext_user_username"
         )
+
+    @property
+    def user_fullname(self):
+        """Fullname of the authenticated user.
+
+        Returns
+        -------
+        string
+            The fullname of the authenticated user.
+        """
+        fullname = self.request.POST.get("lis_person_name_full")
+        if fullname:
+            return unquote_plus(fullname)
+        return None
 
     @property
     def email(self):

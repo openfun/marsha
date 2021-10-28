@@ -234,6 +234,7 @@ jobs:
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
+          DJANGO_BBB_API_SECRET: bbb-api-secret
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -312,6 +313,7 @@ jobs:
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
+          DJANGO_BBB_API_SECRET: bbb-api-secret
       - image: circleci/postgres:10.3-alpine-ram
         auth:
           username: $DOCKER_USER
@@ -457,8 +459,10 @@ jobs:
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
+          DJANGO_BBB_API_SECRET: bbb-api-secret
           DOCKERIZE_VERSION: v0.6.1
           DJANGO_ALLOW_ASYNC_UNSAFE: 1
+          DJANGO_BBB_ENABLED: 1
           DEBUG: pw:browser*
       - image: circleci/postgres:10.3-alpine-ram
         auth:

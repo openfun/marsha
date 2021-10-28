@@ -21,6 +21,11 @@ DJANGO_AWS_ACCESS_KEY_ID=yourAwsAccesKey
 DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKeyId
 DJANGO_AWS_S3_REGION_NAME=eu-west-1
 
+# BBB server credentials
+DJANGO_BBB_ENABLED=False
+DJANGO_BBB_API_ENDPOINT=https://example.com/bbb/api
+DJANGO_BBB_API_SECRET=BbbSecret
+
 # Cloudfront Signed URLs for mp4 files
 DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE=False
 DJANGO_CLOUDFRONT_DOMAIN=yourCloudfrontUrl

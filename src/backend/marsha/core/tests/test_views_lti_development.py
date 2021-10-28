@@ -75,6 +75,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -124,7 +125,12 @@ class DevelopmentLTIViewTestCase(TestCase):
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
-            {"username": None, "id": "56255f3807599c377bf0e5bf072359fd", "email": None},
+            {
+                "email": None,
+                "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": None,
+                "user_fullname": None,
+            },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
@@ -196,6 +202,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             jwt_token.payload["user"],
             {
                 "username": "jane_doe",
+                "user_fullname": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "email": None,
             },
