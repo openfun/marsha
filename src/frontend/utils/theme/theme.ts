@@ -130,6 +130,11 @@ export const theme = {
       round: false,
     },
   },
+  formField: {
+    label: {
+      size: '1.5rem',
+    },
+  },
   tab: {
     color: 'text',
     border: {
@@ -140,7 +145,10 @@ export const theme = {
       },
     },
     pad: 'small',
-    margin: 'small',
+    margin: {
+      vertical: 'small',
+      horizontal: 'none',
+    },
   },
   tip: {
     content: {

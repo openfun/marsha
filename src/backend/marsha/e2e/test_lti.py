@@ -8,7 +8,7 @@ from django.conf import settings
 from django.test import override_settings
 from django.utils import timezone
 
-from playwright.async_api import Page
+from playwright.sync_api import Page
 import pytest
 from pytest_django.live_server_helper import LiveServer
 
@@ -59,6 +59,7 @@ def _preview_video(live_server, page, video_uploaded=False):
         "custom_component_display_name": "LTI Consumer",
         "lti_version": "LTI-1p0",
         "lis_person_sourcedid": "John",
+        "lis_person_name_full": "John Doe",
         "lti_message_type": "basic-lti-launch-request",
         "launch_presentation_return_url": "",
         "lis_result_sourcedid": "course-v1%3Aufr%2Bmathematics%2B0001:"
@@ -78,6 +79,7 @@ def _preview_video(live_server, page, video_uploaded=False):
             "custom_component_display_name",
             "lti_version",
             "lis_person_sourcedid",
+            "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
             "lis_result_sourcedid",
@@ -138,6 +140,7 @@ def _preview_document(live_server, page, document_uploaded=False):
         "custom_component_display_name": "LTI Consumer",
         "lti_version": "LTI-1p0",
         "lis_person_sourcedid": "John",
+        "lis_person_name_full": "John Doe",
         "lti_message_type": "basic-lti-launch-request",
         "launch_presentation_return_url": "",
         "lis_result_sourcedid": "course-v1%3Aufr%2Bmathematics%2B0001:"
@@ -157,6 +160,7 @@ def _preview_document(live_server, page, document_uploaded=False):
             "custom_component_display_name",
             "lti_version",
             "lis_person_sourcedid",
+            "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
             "lis_result_sourcedid",
