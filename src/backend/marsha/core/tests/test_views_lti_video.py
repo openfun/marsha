@@ -92,6 +92,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": "jane@test-mooc.fr",
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
 
@@ -133,7 +134,7 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
-        self.assertEqual(context.get("flags"), {"sentry": True})
+        self.assertEqual(context.get("flags"), {"BBB": False, "sentry": True})
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -206,6 +207,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -354,6 +356,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -493,6 +496,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -619,6 +623,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -825,6 +830,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -940,6 +946,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -1057,6 +1064,7 @@ class VideoLTIViewTestCase(TestCase):
                 "email": None,
                 "id": "56255f3807599c377bf0e5bf072359fd",
                 "username": "jane_doe",
+                "user_fullname": None,
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
@@ -1250,6 +1258,7 @@ class VideoLTIViewTestCase(TestCase):
                 "appName": "",
                 "environment": "test",
                 "flags": {
+                    "BBB": False,
                     "sentry": True,
                 },
                 "frontend": "LTI",

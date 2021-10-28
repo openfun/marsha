@@ -569,6 +569,9 @@ class LTITestCase(TestCase):
             "oauth_consumer_key": "ABC123",
             "tool_consumer_instance_name": "ufr",
             "context_title": "mathematics",
+            "lis_person_name_given": "Jane",
+            "lis_person_name_family": "Doe",
+            "lis_person_name_full": "Jane+Doe",
             "ext_user_username": "jane_doe",
         }
         resource_id = uuid.uuid4()
@@ -603,6 +606,59 @@ class LTITestCase(TestCase):
         )
         lti = LTI(request, resource_id)
         self.assertIsNone(lti.username)
+
+    def test_lti_user_fullname_undefined(self):
+        """Return None if lis_person_name_full is undefined."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "lis_person_name_given": "Jane",
+            "lis_person_name_family": "Doe",
+            "ext_user_username": "jane_doe",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            f"/lti/videos/{resource_id}",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.user_fullname, None)
+
+    def test_lti_user_fullname_moodle_format(self):
+        """Return fullname for moodle request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+            "lis_person_name_given": "Jane",
+            "lis_person_name_family": "Doe",
+            "lis_person_name_full": "Jane+Doe",
+            "ext_user_username": "jane_doe",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            f"/lti/videos/{resource_id}",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.user_fullname, "Jane Doe")
 
     def test_lti_email(self):
         """Email value is returned when present."""

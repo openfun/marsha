@@ -76,6 +76,9 @@ urlpatterns = [
     ),
 ]
 
+if settings.BBB_ENABLED:
+    urlpatterns += [path("", include("marsha.bbb.urls"))]
+
 if settings.DEBUG:
     urlpatterns += [
         path("development/", DevelopmentLTIView.as_view(), name="lti-development-view"),
