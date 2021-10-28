@@ -11,10 +11,12 @@ export interface DecodedJwt {
     can_access_dashboard: boolean;
     can_update: boolean;
   };
+  playlist_id?: string;
   maintenance: boolean;
   user?: {
     email: Nullable<string>;
     id: string;
     username: Nullable<string>;
+    user_fullname: Nullable<string>;
   };
 }

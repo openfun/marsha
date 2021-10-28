@@ -6,4 +6,4 @@ export const API_LIST_DEFAULT_PARAMS = {
   offset: 0,
 };
 
-export const APPS = [];
+export const APPS = ['bbb'];

@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         <Grommet theme={theme} style={{ height: '100%' }}>
           <Toaster
             toastOptions={{
+              duration: 5000,
               success: {
                 style: {
                   background: theme.global.colors['status-ok'],
