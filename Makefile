@@ -153,7 +153,7 @@ lint-black:  ## Run the black tool and update files that need to
 
 lint-flake8:  ## Run the flake8 tool
 	@echo "$(BOLD)Running flake8$(RESET)"
-	@$(COMPOSE_RUN_APP) flake8 marsha --format=abspath
+	@$(COMPOSE_RUN_APP) flake8 marsha
 .PHONY: lint-flake8
 
 lint-isort:  ## automatically re-arrange python imports in code base
