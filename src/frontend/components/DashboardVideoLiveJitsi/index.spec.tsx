@@ -70,7 +70,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           interface_config_overwrite: {},
         },
       },
-      live_state: liveState.CREATING,
+      live_state: liveState.IDLE,
       live_type: LiveModeType.JITSI,
     });
     global.JitsiMeetExternalAPI = mockJitsi;
@@ -221,7 +221,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
             interface_config_overwrite: {},
           },
         },
-        live_state: liveState.CREATING,
+        live_state: liveState.IDLE,
         live_type: LiveModeType.JITSI,
       });
       global.JitsiMeetExternalAPI = mockJitsi;
@@ -332,9 +332,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     expect(events.recordingStatusChanged).toBeDefined();
 
-    expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
-      mode: 'stream',
-      rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+    await waitFor(() => {
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      });
     });
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',

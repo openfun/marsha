@@ -16,7 +16,7 @@ const mockVideo = videoMockFactory({
       interface_config_overwrite: {},
     },
   },
-  live_state: liveState.CREATING,
+  live_state: liveState.IDLE,
   live_type: LiveModeType.JITSI,
 });
 

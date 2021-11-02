@@ -355,26 +355,24 @@ describe('PublicVideoDashboard', () => {
   });
 
   it('displays the WaitingLiveVideo component when live is not ready', () => {
-    [liveState.IDLE, liveState.CREATING, liveState.STARTING].forEach(
-      (state) => {
-        const video = videoMockFactory({
-          live_state: state,
-        });
-        render(
-          wrapInIntlProvider(
-            wrapInRouter(
-              <PublicVideoDashboard video={video} playerType="videojs" />,
-            ),
+    [liveState.IDLE, liveState.STARTING].forEach((state) => {
+      const video = videoMockFactory({
+        live_state: state,
+      });
+      render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <PublicVideoDashboard video={video} playerType="videojs" />,
           ),
-        );
+        ),
+      );
 
-        screen.getByText('Live will begin soon');
-        screen.getByText(
-          'The live is going to start. You can wait here, the player will start once the live is ready.',
-        );
+      screen.getByText('Live will begin soon');
+      screen.getByText(
+        'The live is going to start. You can wait here, the player will start once the live is ready.',
+      );
 
-        cleanup();
-      },
-    );
+      cleanup();
+    });
   });
 });
