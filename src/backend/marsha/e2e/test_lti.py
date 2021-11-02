@@ -7,7 +7,6 @@ import uuid
 from django.conf import settings
 from django.test import override_settings
 from django.utils import timezone
-from django.utils.html import escape
 
 from playwright.async_api import Page
 import pytest
@@ -298,20 +297,18 @@ def test_lti_select(page: Page, live_server: LiveServer):
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     video_content_items = (
-        escape(
-            json.dumps(
-                {
-                    "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
-                    "@graph": [
-                        {
-                            "@type": "ContentItem",
-                            "url": f"{live_server}/lti/videos/{video.id}",
-                            "title": f"{video.title}",
-                            "frame": [],
-                        }
-                    ],
-                }
-            )
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server}/lti/videos/{video.id}",
+                        "title": f"{video.title}",
+                        "frame": [],
+                    }
+                ],
+            }
         )
         .replace(", ", ",")
         .replace(": ", ":")
@@ -319,6 +316,7 @@ def test_lti_select(page: Page, live_server: LiveServer):
     assert video_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
         lti_select_iframe.click(f'[title="Select {video.title}"]')
+    lti_select_iframe.wait_for_selector("dd")
     assert video_content_items in lti_select_iframe.content()
     assert Video.objects.count() == 1
 
