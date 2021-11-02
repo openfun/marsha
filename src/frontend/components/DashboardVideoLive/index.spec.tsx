@@ -203,7 +203,7 @@ describe('components/DashboardVideoLive', () => {
     );
 
     screen.getByText(
-      'Live streaming is starting. Wait before starting your stream.',
+      'Live streaming is starting. This can take a few minutes.',
     );
     expect(fetchMock.called()).not.toBeTruthy();
 
@@ -216,7 +216,7 @@ describe('components/DashboardVideoLive', () => {
       Authorization: 'Bearer cool_token_m8',
     });
     screen.getByText(
-      'Live streaming is starting. Wait before starting your stream.',
+      'Live streaming is starting. This can take a few minutes.',
     );
 
     // The live will be running in further response

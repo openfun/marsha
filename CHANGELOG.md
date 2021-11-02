@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Postpone AWS creation stack to the first live start action
+
 ## [3.26.0] - 2021-10-22
 
 ### Added
