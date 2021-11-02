@@ -12,7 +12,7 @@ jest.mock('../../data/appData', () => ({}));
 
 const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
   uploadState;
-const { CREATING, IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
+const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
   describe('upload state', () => {
@@ -350,29 +350,6 @@ describe('<ObjectStatusPicker />', () => {
       );
 
       screen.getByText('Live is stopping');
-    });
-
-    it('renders status info for an object in live state CREATING', () => {
-      const object = {
-        id: uuidv4(),
-        live_state: CREATING,
-        upload_state: PENDING,
-      } as UploadableObject;
-
-      render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
-      );
-
-      screen.getByText('Creating');
     });
   });
 });

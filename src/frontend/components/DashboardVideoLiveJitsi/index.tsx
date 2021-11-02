@@ -33,7 +33,7 @@ const DashboardVideoLiveJitsi = ({
   isInstructor = false,
 }: DashboardVideoLiveJitsiProps | DashboardVideoLiveJitsiInstructorProps) => {
   const jitsiNode = useRef(null);
-  const [jitsi, setJitsi] = useState<JitsiMeetExternalAPI>();
+  const jitsi = useRef<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
   const endpoints = useRef<string[]>();
   const retryDelayStep = 2000;
@@ -205,46 +205,33 @@ const DashboardVideoLiveJitsi = ({
       });
     }
 
-    if (video.live_state === liveState.RUNNING) {
-      startRecording(_jitsi);
-    }
-
-    setJitsi(_jitsi);
+    jitsi.current = _jitsi;
   };
 
   useAsyncEffect(async () => {
-    if (isInstructor) {
+    if (!jitsi.current) {
+      await initialiseJitsi();
+    }
+    if (video.live_state === liveState.RUNNING && video.live_info.medialive) {
       const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-      endpoints.current = video.live_info.medialive!.input.endpoints.map(
+      endpoints.current = video.live_info.medialive.input.endpoints.map(
         (endpoint) => {
           const matches = endpoint.match(endpointIdentifier)!;
           return `${matches[1]}/marsha/${matches[2]}`;
         },
-      ) as string[];
-    }
-    await initialiseJitsi();
-
-    return () => jitsi?.dispose();
-  }, []);
-
-  useEffect(() => {
-    if (jitsi && video.live_state === liveState.RUNNING) {
-      startRecording(jitsi);
+      );
+      startRecording(jitsi.current!);
     }
 
-    if (
-      jitsi &&
-      video.live_state === liveState.STOPPING &&
-      jitsiIsRecording.current
-    ) {
-      jitsi.executeCommand('stopRecording', 'stream');
+    if (video.live_state === liveState.STOPPING && jitsiIsRecording.current) {
+      jitsi.current!.executeCommand('stopRecording', 'stream');
     }
-  }, [video.live_state]);
+  }, [video.live_state, video.live_info.medialive]);
 
   return (
     <Box>
       <Box height={'large'} ref={jitsiNode} />
-      {isInstructor && (
+      {isInstructor && video.live_info.medialive && (
         <Box justify="start" direction="row">
           <DashboardVideoLiveInfo video={video} />
         </Box>

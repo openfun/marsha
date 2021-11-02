@@ -32,15 +32,8 @@ const messages = defineMessages({
     description: 'Video url streaming.',
     id: 'components.DashboardVideoLive.url',
   },
-  liveCreating: {
-    defaultMessage:
-      'Live streaming is being created. You will be able to start it in a few seconds',
-    description: 'Helptext explainig to wait until the live is created.',
-    id: 'components.DashboardVideoLive.liveCreating',
-  },
   liveStarting: {
-    defaultMessage:
-      'Live streaming is starting. Wait before starting your stream.',
+    defaultMessage: 'Live streaming is starting. This can take a few minutes.',
     description: 'Helptext explainig to wait until the live is ready.',
     id: 'components.DashboardVideoLive.liveStarting',
   },
@@ -92,15 +85,8 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   };
 
   useEffect(() => {
-    const intervalMs = {
-      [liveState.STARTING]: 15000,
-      [liveState.CREATING]: 2000,
-    };
-    if (
-      video.live_state === liveState.STARTING ||
-      video.live_state === liveState.CREATING
-    ) {
-      const interval = setInterval(pollForVideo, intervalMs[video.live_state]);
+    if (video.live_state === liveState.STARTING) {
+      const interval = setInterval(pollForVideo, 15000);
       return () => clearInterval(interval);
     }
   }, [video.live_state]);
@@ -129,11 +115,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
-        {video.live_state === liveState.CREATING && (
-          <Text>
-            <FormattedMessage {...messages.liveCreating} />
-          </Text>
-        )}
         {video.live_state === liveState.IDLE && (
           <React.Fragment>
             {video.live_type === LiveModeType.RAW && (
