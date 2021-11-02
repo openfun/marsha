@@ -5,14 +5,13 @@ module.exports = async (channel, event, context) => {
   const status = event.detail.state;
 
   const correspondingStatus = {
-    'CREATED': 'idle',
-    'RUNNING': 'running',
-    'STOPPED': 'stopped',
-  }
+    RUNNING: 'running',
+    STOPPED: 'stopped',
+  };
 
   if (!correspondingStatus[status]) {
     throw new Error(
-      `Expected status are CREATED, RUNNING and STOPPED. ${status} received`,
+      `Expected status are RUNNING and STOPPED. ${status} received`,
     );
   }
 
