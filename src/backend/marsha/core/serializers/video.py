@@ -12,7 +12,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
+from ..defaults import JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
@@ -276,7 +276,7 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the UpdateLiveState API endpoint."""
 
     state = serializers.ChoiceField(
-        tuple(c for c in LIVE_CHOICES if c[0] in (IDLE, RUNNING, STOPPED))
+        tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
     )
     logGroupName = serializers.CharField()
 
@@ -440,7 +440,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if obj.live_state is not None:
+        if obj.live_info is not None:
             # Adaptive Bit Rate manifests
             return {
                 "manifests": {
@@ -630,19 +630,24 @@ class VideoSerializer(VideoBaseSerializer):
         Dictionnary
             A dictionnary containing all info needed to manage a live stream for an admin.
             For other users, an empty dictionnary is returned.
+            The data are filtered to only return RTMP endpoints and jitsi configuration if needed.
+            All other data are sensitive, used only by the backend and must never be exposed.
         """
         can_return_live_info = self.context.get("can_return_live_info", False)
 
         if obj.live_state is None or can_return_live_info is False:
             return {}
 
-        live_info = {
-            "medialive": {
-                "input": {
-                    "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
-                }
-            },
-        }
+        live_info = {}
+
+        if obj.live_info is not None:
+            live_info = {
+                "medialive": {
+                    "input": {
+                        "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
+                    }
+                },
+            }
 
         if obj.live_type == JITSI:
             live_info.update(
