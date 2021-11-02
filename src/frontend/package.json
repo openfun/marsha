@@ -113,6 +113,6 @@
     "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.6.2",
-    "zustand": "3.6.2"
+    "zustand": "3.6.3"
   }
 }
