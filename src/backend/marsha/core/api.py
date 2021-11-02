@@ -38,6 +38,7 @@ from .utils.medialive_utils import (
     delete_mediapackage_channel,
     start_live_channel,
     stop_live_channel,
+    wait_medialive_channel_is_created,
 )
 from .utils.s3_utils import create_presigned_post
 from .utils.time_utils import to_timestamp
@@ -426,23 +427,14 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
         video = self.get_object()
-        key = f"{video.pk}_{stamp}"
 
-        live_info = create_live_stream(key)
+        video.live_type = serializer.validated_data["type"]
+        video.upload_state = defaults.PENDING
+        video.live_state = defaults.IDLE
+        video.uploaded_on = None
 
-        Video.objects.filter(pk=pk).update(
-            live_info=live_info,
-            live_type=serializer.validated_data["type"],
-            upload_state=defaults.PENDING,
-            live_state=defaults.CREATING,
-            uploaded_on=None,
-        )
-
-        video.refresh_from_db()
+        video.save()
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
@@ -486,6 +478,13 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 },
                 400,
             )
+
+        if video.live_info is None:
+            now = timezone.now()
+            stamp = to_timestamp(now)
+            key = f"{video.pk}_{stamp}"
+            video.live_info = create_live_stream(key)
+            wait_medialive_channel_is_created(video.get_medialive_channel().get("id"))
 
         start_live_channel(video.get_medialive_channel().get("id"))
         if settings.LIVE_CHAT_ENABLED:

@@ -799,6 +799,24 @@ class MediaLiveUtilsTestCase(TestCase):
 
             medialive_utils.delete_aws_element_stack(video)
 
+    def test_wait_medialive_channel_is_created(self):
+        """Should call describe_channel while state is not IDLE."""
+        with Stubber(medialive_utils.medialive_client) as medialive_stubber:
+            medialive_stubber.add_response(
+                "describe_channel",
+                expected_params={"ChannelId": "medialive_channel1"},
+                service_response={"State": "CREATING"},
+            )
+
+            medialive_stubber.add_response(
+                "describe_channel",
+                expected_params={"ChannelId": "medialive_channel1"},
+                service_response={"State": "IDLE"},
+            )
+
+            medialive_utils.wait_medialive_channel_is_created("medialive_channel1")
+            medialive_stubber.assert_no_pending_responses()
+
     def test_list_mediapackage_channels(self):
         """Should recursively get all mediapackage channels."""
         with Stubber(
