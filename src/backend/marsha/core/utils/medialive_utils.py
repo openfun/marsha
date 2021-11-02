@@ -284,6 +284,14 @@ def create_live_stream(key):
     }
 
 
+def wait_medialive_channel_is_created(channel_id):
+    """Wait until medialive channel is created."""
+    input_waiter = medialive_client.get_waiter("channel_created")
+    input_waiter.wait(
+        ChannelId=channel_id, WaiterConfig={"Delay": 1, "MaxAttempts": 20}
+    )
+
+
 def start_live_channel(channel_id):
     """Start an existing medialive channel."""
     medialive_client.start_channel(ChannelId=channel_id)

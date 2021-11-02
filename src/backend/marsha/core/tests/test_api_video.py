@@ -13,10 +13,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
-    CREATING,
     DELETED,
     HARVESTING,
     IDLE,
+    JITSI,
     LIVE_CHOICES,
     PENDING,
     RAW,
@@ -2963,35 +2963,11 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # initiate a live video,
-        # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        live_info = {
-            "medialive": {
-                "input": {
-                    "id": "medialive_input_1",
-                    "endpoints": ["https://live_endpoint1", "https://live_endpoint2"],
-                },
-                "channel": {"id": "medialive_channel_1"},
-            },
-            "mediapackage": {
-                "id": "mediapackage_channel_1",
-                "endpoints": {
-                    "hls": {
-                        "id": "endpoint1",
-                        "url": "https://channel_endpoint1/live.m3u8",
-                    },
-                },
-            },
-        }
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
-            api, "create_live_stream", return_value=live_info
-        ):
-            response = self.client.post(
-                f"/api/videos/{video.id}/initiate-live/",
-                {"type": "raw"},
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
+        response = self.client.post(
+            f"/api/videos/{video.id}/initiate-live/",
+            {"type": "raw"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -3009,13 +2985,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "thumbnail": None,
                 "timed_text_tracks": [],
-                "urls": {
-                    "manifests": {
-                        "hls": "https://channel_endpoint1/live.m3u8",
-                    },
-                    "mp4": {},
-                    "thumbnails": {},
-                },
+                "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
@@ -3023,17 +2993,8 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
-                "live_state": "creating",
-                "live_info": {
-                    "medialive": {
-                        "input": {
-                            "endpoints": [
-                                "https://live_endpoint1",
-                                "https://live_endpoint2",
-                            ],
-                        }
-                    },
-                },
+                "live_state": "idle",
+                "live_info": {},
                 "xmpp": None,
                 "live_type": "raw",
             },
@@ -3051,35 +3012,11 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # initiate a live video,
-        # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        live_info = {
-            "medialive": {
-                "input": {
-                    "id": "medialive_input_1",
-                    "endpoints": ["https://live_endpoint1", "https://live_endpoint2"],
-                },
-                "channel": {"id": "medialive_channel_1"},
-            },
-            "mediapackage": {
-                "id": "mediapackage_channel_1",
-                "endpoints": {
-                    "hls": {
-                        "id": "endpoint1",
-                        "url": "https://channel_endpoint1/live.m3u8",
-                    },
-                },
-            },
-        }
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
-            api, "create_live_stream", return_value=live_info
-        ):
-            response = self.client.post(
-                f"/api/videos/{video.id}/initiate-live/",
-                {"type": "jitsi"},
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
+        response = self.client.post(
+            f"/api/videos/{video.id}/initiate-live/",
+            {"type": "jitsi"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -3097,13 +3034,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "thumbnail": None,
                 "timed_text_tracks": [],
-                "urls": {
-                    "manifests": {
-                        "hls": "https://channel_endpoint1/live.m3u8",
-                    },
-                    "mp4": {},
-                    "thumbnails": {},
-                },
+                "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
                 "playlist": {
@@ -3111,145 +3042,47 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
-                "live_state": "creating",
+                "live_state": "idle",
                 "live_info": {
-                    "medialive": {
-                        "input": {
-                            "endpoints": [
-                                "https://live_endpoint1",
-                                "https://live_endpoint2",
-                            ],
-                        }
-                    },
                     "jitsi": {
+                        "config_overwrite": {},
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
-                        "config_overwrite": {},
                         "interface_config_overwrite": {},
-                    },
+                    }
                 },
-                "live_type": "jitsi",
+                "live_type": JITSI,
                 "xmpp": None,
             },
         )
 
-    def test_api_video_instructor_initiate_live_invalid_type(self):
-        """A 400 response should be return if the live type is invalid."""
+    @override_settings(LIVE_CHAT_ENABLED=False)
+    def test_api_instructor_start_non_created_live(self):
+        """AWS stack should be created if not existing yet."""
         video = factories.VideoFactory(
-            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
-            playlist__title="foo bar",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-        )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-
-        # initiate a live video,
-        # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        live_info = {
-            "medialive": {
-                "input": {
-                    "id": "medialive_input_1",
-                    "endpoints": ["https://live_endpoint1", "https://live_endpoint2"],
-                },
-                "channel": {"id": "medialive_channel_1"},
-            },
-            "mediapackage": {
-                "id": "mediapackage_channel_1",
-                "endpoints": {
-                    "hls": {
-                        "id": "endpoint1",
-                        "url": "https://channel_endpoint1/live.m3u8",
-                    },
-                },
-            },
-        }
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
-            api, "create_live_stream", return_value=live_info
-        ):
-            response = self.client.post(
-                f"/api/videos/{video.id}/initiate-live/",
-                {"type": "invalid"},
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
-        self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
-
-        self.assertEqual(content, {"type": ['"invalid" is not a valid choice.']})
-
-    def test_api_video_start_live_anonymous_user(self):
-        """Anonymous users are not allowed to start a live."""
-        video = factories.VideoFactory()
-
-        response = self.client.post(f"/api/videos/{video.id}/start-live/")
-
-        self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "Authentication credentials were not provided."}
-        )
-
-    def test_api_video_instructor_start_live_in_read_only(self):
-        """An instructor with read_only set to true should not be able to start a live."""
-        video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
-
-        response = self.client.post(
-            f"/api/videos/{video.id}/start-live/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_video_student_start_live(self):
-        """A student should not be able to start a live."""
-        video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-
-        response = self.client.post(
-            f"/api/videos/{video.id}/start-live/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
-        )
-
-    def test_api_video_start_live_staff_or_user(self):
-        """Users authenticated via a session should not be able to start a live."""
-        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
-            self.client.login(username=user.username, password="test")
-            video = factories.VideoFactory()
-
-            response = self.client.post(f"/api/videos/{video.id}/start-live/")
-            self.assertEqual(response.status_code, 401)
-            content = json.loads(response.content)
-            self.assertEqual(
-                content, {"detail": "Authentication credentials were not provided."}
-            )
-
-    @override_settings(LIVE_CHAT_ENABLED=True)
-    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
-    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
-    @override_settings(XMPP_DOMAIN="xmpp-server.com")
-    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_api_video_instructor_start_live(self):
-        """An instructor should be able to start a live with a chat room."""
-        video = factories.VideoFactory(
-            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             upload_state=PENDING,
             live_state=IDLE,
-            live_info={
+            live_type=JITSI,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+
+        # start a live video,
+        with mock.patch.object(api, "start_live_channel"), mock.patch.object(
+            api, "create_live_stream"
+        ) as mock_create_live_stream, mock.patch.object(
+            api, "wait_medialive_channel_is_created"
+        ), mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            mock_create_live_stream.return_value = {
                 "medialive": {
                     "input": {
                         "id": "medialive_input_1",
@@ -3269,27 +3102,12 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
-            },
-            live_type=RAW,
-        )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
-
-        # start a live video,
-        with mock.patch.object(api, "start_live_channel"), mock.patch.object(
-            api, "create_room"
-        ) as mock_create_room, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            }
             response = self.client.post(
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
-            mock_create_room.assert_called_once_with(video.id)
+
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -3323,6 +3141,12 @@ class VideoAPITest(TestCase):
                 },
                 "live_state": "starting",
                 "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                    },
                     "medialive": {
                         "input": {
                             "endpoints": [
@@ -3332,13 +3156,8 @@ class VideoAPITest(TestCase):
                         }
                     },
                 },
-                "live_type": RAW,
-                "xmpp": {
-                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
-                    "websocket_url": None,
-                    "conference_url": f"{video.id}@conference.xmpp-server.com",
-                    "jid": "xmpp-server.com",
-                },
+                "live_type": JITSI,
+                "xmpp": None,
             },
         )
 
@@ -3701,40 +3520,6 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.live_state, None)
         self.assertEqual(video.upload_state, DELETED)
         self.assertEqual(video.live_info, None)
-
-    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    def test_api_video_update_live_state_idle(self):
-        """Updating state to idle."""
-        video = factories.VideoFactory(
-            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
-            upload_state=PENDING,
-            live_state=CREATING,
-            live_info={},
-            live_type=RAW,
-        )
-        data = {
-            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
-            "state": "idle",
-        }
-        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.patch(
-            f"/api/videos/{video.id}/update-live-state/",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
-
-        video.refresh_from_db()
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.live_state, IDLE)
-        self.assertEqual(
-            video.live_info,
-            {
-                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
-            },
-        )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
