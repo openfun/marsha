@@ -18,6 +18,7 @@ describe('queries/fetchOne', () => {
     fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
     const response = await fetchOne({
+      meta: undefined,
       pageParam: undefined,
       queryKey: ['model-name', 1],
     });
@@ -37,6 +38,7 @@ describe('queries/fetchOne', () => {
     fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
     const response = await fetchOne({
+      meta: undefined,
       pageParam: undefined,
       queryKey: ['model-name', 1],
     });
@@ -58,7 +60,11 @@ describe('queries/fetchOne', () => {
     );
 
     await expect(
-      fetchOne({ pageParam: undefined, queryKey: ['model-name', 1] }),
+      fetchOne({
+        meta: undefined,
+        pageParam: undefined,
+        queryKey: ['model-name', 1],
+      }),
     ).rejects.toThrowError('Failed to perform the request');
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
@@ -75,7 +81,11 @@ describe('queries/fetchOne', () => {
     fetchMock.mock('/api/model-name/1/', 404);
 
     await expect(
-      fetchOne({ pageParam: undefined, queryKey: ['model-name', 1] }),
+      fetchOne({
+        meta: undefined,
+        pageParam: undefined,
+        queryKey: ['model-name', 1],
+      }),
     ).rejects.toThrowError('Failed to get /model-name/1/.');
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
