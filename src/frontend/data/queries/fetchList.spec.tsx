@@ -18,6 +18,7 @@ describe('queries/fetchList', () => {
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
+      meta: undefined,
       pageParam: undefined,
       queryKey: ['model-name'],
     });
@@ -37,6 +38,7 @@ describe('queries/fetchList', () => {
     fetchMock.mock('/api/model-name/?key=value&limit=999', { key: 'value' });
 
     const response = await fetchList({
+      meta: undefined,
       pageParam: undefined,
       queryKey: ['model-name', { key: 'value' }],
     });
@@ -58,6 +60,7 @@ describe('queries/fetchList', () => {
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
+      meta: undefined,
       pageParam: undefined,
       queryKey: ['model-name'],
     });
@@ -79,7 +82,11 @@ describe('queries/fetchList', () => {
     );
 
     await expect(
-      fetchList({ pageParam: undefined, queryKey: ['model-name'] }),
+      fetchList({
+        meta: undefined,
+        pageParam: undefined,
+        queryKey: ['model-name'],
+      }),
     ).rejects.toThrowError('Failed to perform the request');
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/?limit=999');
@@ -96,7 +103,11 @@ describe('queries/fetchList', () => {
     fetchMock.mock('/api/model-name/?limit=999', 404);
 
     await expect(
-      fetchList({ pageParam: undefined, queryKey: ['model-name'] }),
+      fetchList({
+        meta: undefined,
+        pageParam: undefined,
+        queryKey: ['model-name'],
+      }),
     ).rejects.toThrowError('Failed to get list of model-name.');
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/?limit=999');
