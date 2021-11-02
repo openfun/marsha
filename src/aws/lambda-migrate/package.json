@@ -3,7 +3,7 @@
   "name": "aws-marsha-migrate",
   "version": "3.26.0",
   "engines": {
-    "node": "14"
+    "node": "16"
   },
   "description": "Tasks to run when we want to execute a migration on AWS services",
   "repository": {
@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1013.0"
+    "aws-sdk": "2.1019.0"
   },
   "devDependencies": {
     "jest": "27.3.1",
