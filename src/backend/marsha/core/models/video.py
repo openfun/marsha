@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import DELETED, HARVESTED, LIVE_CHOICES, LIVE_TYPE_CHOICES
+from ..defaults import DELETED, HARVESTED, IDLE, LIVE_CHOICES, LIVE_TYPE_CHOICES
 from ..utils.time_utils import to_timestamp
 from ..validators import validate_date_is_future
 from .base import BaseModel
@@ -149,7 +149,7 @@ class Video(BaseFile):
         return (
             self.starting_at is not None
             and self.starting_at > timezone.now()
-            and self.live_state is None
+            and self.live_state == IDLE
         )
 
     @property
@@ -182,7 +182,7 @@ class Video(BaseFile):
             | models.Q(
                 starting_at__isnull=False,
                 starting_at__gte=timezone.now(),
-                live_state__isnull=True,
+                live_state=IDLE,
             )
         )
 

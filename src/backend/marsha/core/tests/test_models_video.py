@@ -15,6 +15,7 @@ from safedelete.models import SOFT_DELETE_CASCADE
 from ..defaults import (
     DELETED,
     HARVESTED,
+    IDLE,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     RAW,
@@ -107,19 +108,28 @@ class VideoModelsTestCase(TestCase):
         """The property is_scheduled is set according to starting_at and live_state."""
         starting_at = timezone.now() + timedelta(hours=11)
         video = VideoFactory(starting_at=starting_at)
-        # Video is in the scheduled mode
-        self.assertTrue(video.is_scheduled)
+        # Video is not in the scheduled mode
+        self.assertFalse(video.is_scheduled)
         self.assertEqual(video.live_state, None)
+
+        # change state so video is now scheduled
+        video.live_state = IDLE
+        video.live_type = RAW
+        video.save()
+
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, IDLE)
 
         # With any live_state other than None, is_scheduled is False
         for live_choice in LIVE_CHOICES:
-            video = VideoFactory(
-                live_state=live_choice[0],
-                live_type=RAW,
-                starting_at=starting_at,
-            )
+            if live_choice[0] != IDLE:
+                video = VideoFactory(
+                    live_state=live_choice[0],
+                    live_type=RAW,
+                    starting_at=starting_at,
+                )
 
-            self.assertFalse(video.is_scheduled)
+                self.assertFalse(video.is_scheduled)
 
     def test_models_video_is_scheduled_with_date_constraint(self):
         """
@@ -131,17 +141,21 @@ class VideoModelsTestCase(TestCase):
         starting_at = timezone.now() - timedelta(hours=1)
         # Can't set with a date in the past
         with self.assertRaises(ValidationError) as error:
-            VideoFactory(starting_at=starting_at)
+            VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
 
         self.assertEqual(
             error.exception.messages,
             [f"{starting_at} is not a valid date, date should be planned after!"],
         )
         # Set to now plus 1 second and wait
-        video = VideoFactory(starting_at=timezone.now() + timedelta(seconds=1))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(seconds=1),
+        )
         # Video is scheduled
         self.assertTrue(video.is_scheduled)
-        self.assertEqual(video.live_state, None)
+        self.assertEqual(video.live_state, IDLE)
 
         # Mock now to the future to check video gets set to not scheduled
         future = timezone.now() + timedelta(hours=1)
