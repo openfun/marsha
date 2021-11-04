@@ -3514,6 +3514,79 @@ class LiveRegistrationApiTest(TestCase):
             ],
         )
 
+    def test_list_liveregistration_role_student_email_wrong_token_email(
+        self,
+    ):
+        """
+        Student can fetch his liveregistration even if his token has the wrong email.
+
+        A registration already exists for this user and this consumer site, but the user token
+        shows a different email, the user still should be considered as already registered.
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+
+        # liveregistration for the same video and lti_user_id and same consumer_site
+        liveregistration = LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+
+        # token doesn't have the same email than the registration
+        jwt_token = AccessToken()
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user"] = {
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Chachou",
+            "email": "anotheremail@test-fun.fr",
+        }
+        response = self.client.get(
+            "/api/liveregistrations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "email": "chantal@test-fun-mooc.fr",
+                    "id": str(liveregistration.id),
+                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                    "should_send_reminders": False,
+                    "video": str(video.id),
+                }
+            ],
+        )
+
+        # if we try to set a new registration with the email in the token, it won't be allowed
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "anotheremail@test-fun.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "lti_user_id": [
+                    "This identified user is already registered "
+                    "for this video and consumer site."
+                ]
+            },
+        )
+
     def test_list_liveregistration_role_student_email_none_consumer_none(
         self,
     ):
