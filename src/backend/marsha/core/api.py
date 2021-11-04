@@ -706,7 +706,7 @@ class LiveRegistrationViewSet(
         """
         user = self.request.user
 
-        if user.token.payload is not None:
+        if user.token.payload:
             consumer_site = (
                 Playlist.objects.get(
                     lti_id=user.token.payload["context_id"]
@@ -728,8 +728,12 @@ class LiveRegistrationViewSet(
             if user.token.payload.get("user"):
                 if user.token.payload["user"].get("email"):
                     filters["email"] = user.token.payload["user"]["email"]
-                    return LiveRegistration.objects.filter(**filters)
-                # token has no email, user has access to this registration if it's the right
+                    # check first if a liveRegistration exists with the email in the token
+                    if LiveRegistration.objects.filter(**filters).count() > 0:
+                        return LiveRegistration.objects.filter(**filters)
+                    else:
+                        filters.pop("email", None)
+                # token has email or not, user has access to this registration if it's the right
                 # combination of lti_user_id and consumer_site
                 if user.token.payload["user"].get("id") and user.token.payload.get(
                     "context_id"

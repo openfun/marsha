@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Users with empty email in their token can register to scheduled webinars
+- Users with wrong email in token is properly detected as registered
 
 ## [3.26.0] - 2021-10-22
 
