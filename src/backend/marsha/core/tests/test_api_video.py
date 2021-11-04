@@ -1613,7 +1613,11 @@ class VideoAPITest(TestCase):
         Users should be able to update the starting_date of their video through the API
         as long as starting_date is in the future.
         """
-        video = factories.VideoFactory(title="my title")
+        video = factories.VideoFactory(
+            title="my title",
+            live_state=IDLE,
+            live_type=JITSI,
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1643,7 +1647,12 @@ class VideoAPITest(TestCase):
         is in the past.
         """
         init_starting_at = timezone.now() + timedelta(hours=1)
-        video = factories.VideoFactory(title="my title", starting_at=init_starting_at)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+            starting_at=init_starting_at,
+            title="my title",
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1682,7 +1691,9 @@ class VideoAPITest(TestCase):
         scheduled mode.
         """
         starting_at = timezone.now() + timedelta(minutes=10)
-        video = factories.VideoFactory(title="my title", starting_at=starting_at)
+        video = factories.VideoFactory(
+            live_state=IDLE, live_type=JITSI, starting_at=starting_at, title="my title"
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1706,7 +1717,9 @@ class VideoAPITest(TestCase):
     ):
         """starting_at is in the past, it can't be updated anymore."""
         intial_starting_at = timezone.now() + timedelta(days=10)
-        video = factories.VideoFactory(starting_at=intial_starting_at)
+        video = factories.VideoFactory(
+            live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -1976,7 +1989,9 @@ class VideoAPITest(TestCase):
         Instructors and administrators with a token should be able to patch fields
         starting_at on their video through the API as long as date is in the future.
         """
-        video = factories.VideoFactory(starting_at=None)
+        video = factories.VideoFactory(
+            live_state=IDLE, live_type=JITSI, starting_at=None
+        )
 
         # starting_at is None there is no event scheduled
         self.assertFalse(video.is_scheduled)
@@ -1999,7 +2014,7 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         # video is now a scheduled one
         self.assertTrue(video.is_scheduled)
-        self.assertEqual(video.live_state, None)
+        self.assertEqual(video.live_state, IDLE)
         self.assertEqual(video.starting_at, starting_at)
 
         # we now try to set starting_at to a date in the past and it musn't be allowed
@@ -2044,7 +2059,9 @@ class VideoAPITest(TestCase):
     def test_api_patch_video_with_previous_starting_at_already_past(self):
         """Date is already set in video and is in the past, it can't be updated anymore."""
         intial_starting_at = timezone.now() + timedelta(days=10)
-        video = factories.VideoFactory(starting_at=intial_starting_at)
+        video = factories.VideoFactory(
+            live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -2076,44 +2093,45 @@ class VideoAPITest(TestCase):
             self.assertEqual(response.status_code, 400)
 
     def test_api_patch_video_with_live_state_set(self):
-        """Check we can't update starting_date if live_state is not null."""
+        """Check we can't update starting_date if live_state is not IDLE."""
         for live_choice in LIVE_CHOICES:
-            video = factories.VideoFactory(
-                live_state=live_choice[0],
-                live_type=RAW,
-            )
-            self.assertFalse(video.is_scheduled)
+            if live_choice[0] != IDLE:
+                video = factories.VideoFactory(
+                    live_state=live_choice[0],
+                    live_type=RAW,
+                )
+                self.assertFalse(video.is_scheduled)
 
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(video.id)
-            jwt_token.payload["roles"] = [
-                random.choice(["instructor", "administrator"])
-            ]
-            jwt_token.payload["permissions"] = {"can_update": True}
+                jwt_token = AccessToken()
+                jwt_token.payload["resource_id"] = str(video.id)
+                jwt_token.payload["roles"] = [
+                    random.choice(["instructor", "administrator"])
+                ]
+                jwt_token.payload["permissions"] = {"can_update": True}
 
-            starting_at = timezone.now() + timedelta(days=10)
-            response = self.client.patch(
-                f"/api/videos/{video.id}/",
-                {"starting_at": starting_at, "title": "Required title"},
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-                content_type="application/json",
-            )
+                starting_at = timezone.now() + timedelta(days=10)
+                response = self.client.patch(
+                    f"/api/videos/{video.id}/",
+                    {"starting_at": starting_at, "title": "Required title"},
+                    HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                    content_type="application/json",
+                )
 
-            content = json.loads(response.content)
-            self.assertEqual(
-                content,
-                {
-                    "starting_at": (
-                        [
-                            (
-                                "Field starting_at can't be changed, video live is not "
-                                + "in default mode."
-                            )
-                        ]
-                    )
-                },
-            )
-            self.assertEqual(response.status_code, 400)
+                content = json.loads(response.content)
+                self.assertEqual(
+                    content,
+                    {
+                        "starting_at": (
+                            [
+                                (
+                                    "Field starting_at can't be changed, video live is not "
+                                    + "in default mode."
+                                )
+                            ]
+                        )
+                    },
+                )
+                self.assertEqual(response.status_code, 400)
 
     def test_api_video_patch_by_organization_admin(self):
         """Organization admins can patch videos on the API."""
@@ -2310,41 +2328,42 @@ class VideoAPITest(TestCase):
     def test_api_update_video_with_live_state_set(self):
         """Check we can't update starting_date if live_state is not null."""
         for live_choice in LIVE_CHOICES:
-            video = factories.VideoFactory(
-                live_state=live_choice[0],
-                live_type=RAW,
-            )
-            self.assertFalse(video.is_scheduled)
+            if live_choice[0] != IDLE:
+                video = factories.VideoFactory(
+                    live_state=live_choice[0],
+                    live_type=RAW,
+                )
+                self.assertFalse(video.is_scheduled)
 
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(video.id)
-            jwt_token.payload["roles"] = [
-                random.choice(["instructor", "administrator"])
-            ]
-            jwt_token.payload["permissions"] = {"can_update": True}
-            starting_at = timezone.now() + timedelta(hours=1)
-            response = self.client.put(
-                f"/api/videos/{video.id}/",
-                {"starting_at": starting_at, "title": "Required title"},
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-                content_type="application/json",
-            )
+                jwt_token = AccessToken()
+                jwt_token.payload["resource_id"] = str(video.id)
+                jwt_token.payload["roles"] = [
+                    random.choice(["instructor", "administrator"])
+                ]
+                jwt_token.payload["permissions"] = {"can_update": True}
+                starting_at = timezone.now() + timedelta(hours=1)
+                response = self.client.put(
+                    f"/api/videos/{video.id}/",
+                    {"starting_at": starting_at, "title": "Required title"},
+                    HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                    content_type="application/json",
+                )
 
-            content = json.loads(response.content)
-            self.assertEqual(
-                content,
-                {
-                    "starting_at": (
-                        [
-                            (
-                                "Field starting_at can't be changed, video live is not "
-                                + "in default mode."
-                            )
-                        ]
-                    )
-                },
-            )
-            self.assertEqual(response.status_code, 400)
+                content = json.loads(response.content)
+                self.assertEqual(
+                    content,
+                    {
+                        "starting_at": (
+                            [
+                                (
+                                    "Field starting_at can't be changed, video live is not "
+                                    + "in default mode."
+                                )
+                            ]
+                        )
+                    },
+                )
+                self.assertEqual(response.status_code, 400)
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""

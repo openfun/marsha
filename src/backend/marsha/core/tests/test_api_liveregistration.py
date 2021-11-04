@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..defaults import IDLE, RAW
 from ..factories import (
     ConsumerSiteFactory,
     LiveRegistrationFactory,
@@ -1224,7 +1225,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with no user's info can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token with no context_id and no user informations
         jwt_token = AccessToken()
@@ -1254,7 +1259,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with no user info can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         jwt_token = AccessToken()
@@ -1285,7 +1294,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with user info, no email & no context_id can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1320,7 +1333,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with user info, no email & context_id can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has same context_id than the video
         jwt_token = AccessToken()
@@ -1355,7 +1372,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with no email can create a liveRegistration from other context_id than video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         # token has different context_id than the video
@@ -1391,7 +1412,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with email should be able to create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has email and no context_id
         jwt_token = AccessToken()
@@ -1425,7 +1450,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Token with user info can create a liveRegistration in the same context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has email and same context_id than the video
         jwt_token = AccessToken()
@@ -1460,7 +1489,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """User with token from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         # token has email and different context_id than the video
@@ -1496,7 +1529,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student users can create a liveRegistration with no context_id or user info in token."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has no user info and no context_id
         jwt_token = AccessToken()
@@ -1527,7 +1564,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has same context_id than the video and no user informations
         jwt_token = AccessToken()
@@ -1559,7 +1600,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_playlist = PlaylistFactory()
         self.assertTrue(video.is_scheduled)
         # token has different context_id than the video and no user informations
@@ -1592,7 +1637,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student users should be able to create a liveRegistration with no context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1626,7 +1675,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token has same context_id than the video and user informations
         jwt_token = AccessToken()
@@ -1662,7 +1715,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Student can create a liveRegistration in a different context_id than the video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         # token has same context_id than the video and user informations
@@ -1699,7 +1756,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/instructors from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         jwt_token = AccessToken()
@@ -1735,7 +1796,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors can create a liveRegistration with no context_id & user in token."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1765,7 +1830,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1796,7 +1865,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors can create a liveRegistration linked to their token's context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_playlist = PlaylistFactory()
         self.assertTrue(video.is_scheduled)
         # token has no user information
@@ -1830,7 +1903,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors can create a liveRegistration with no context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1864,7 +1941,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -1899,7 +1980,11 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Admin/Intructors from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_playlist = PlaylistFactory()
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
@@ -1936,7 +2021,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Same email can be used for the same video if context_id is different."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # no consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
@@ -1982,7 +2067,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Same email can be used for the same video if context_id is different."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
@@ -2028,7 +2113,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Same email can be used for the same video if context_id is different."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
@@ -2077,7 +2162,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Same email can be used for the same video if context_id is different."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         self.assertTrue(video.is_scheduled)
         # registration with consumer_site
         LiveRegistrationFactory(
@@ -2127,7 +2212,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Same email can be used for the same video if context_id is different."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         self.assertTrue(video.is_scheduled)
         # registration with consumer_site
         LiveRegistrationFactory(
@@ -2176,7 +2261,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_create_role_none_restrict_email_context_none(self):
         """Users with email in their token can only register for their email."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token with no context_id
         jwt_token = AccessToken()
@@ -2208,7 +2297,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_create_role_none_restrict_email_context_with(self):
         """Users with role and email in token can only register for their email."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token with context_id
         jwt_token = AccessToken()
@@ -2240,7 +2333,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_create_roles_restrict_email_context_with(self):
         """Users with role and email in token can only register for their email."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2276,7 +2373,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_create_roles_restrict_email_context_none(self):
         """Users with role and email in token can only register for their email."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         self.assertTrue(video.is_scheduled)
         # token with no context_id
         jwt_token = AccessToken()
@@ -2359,7 +2460,7 @@ class LiveRegistrationApiTest(TestCase):
     def test_api_liveregistration_create_cant_register_when_no_email(self):
         """Can't register to a scheduled video if there is no email."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2381,7 +2482,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Trio email/consumer_site/video must be unique."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
@@ -2420,7 +2521,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Duo email/video must be unique when consumer_site is not defined."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with no consumer_site
         LiveRegistrationFactory(email="salome@test-fun-mooc.fr", video=video)
         self.assertTrue(video.is_scheduled)
@@ -2454,7 +2555,7 @@ class LiveRegistrationApiTest(TestCase):
         Same combination email/video/lti_user_id can be used for different consumer site.
         """
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         LiveRegistrationFactory(
@@ -2509,7 +2610,7 @@ class LiveRegistrationApiTest(TestCase):
         Same combination email/video/lti_user_id can be used for different consumer site.
         """
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         LiveRegistrationFactory(
@@ -2565,7 +2666,7 @@ class LiveRegistrationApiTest(TestCase):
         consumer_site is not defined.
         """
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # no consumer_site is defined
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
@@ -2616,7 +2717,7 @@ class LiveRegistrationApiTest(TestCase):
         used to identify a user in this case.
         """
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             video=video,
@@ -2655,8 +2756,16 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Same email can be used for two different videos when token has no context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=5))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(hours=1))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=5),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(hours=1),
+        )
         # registration with no consumer_site
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
         # token with no context_id leading to no consumer_site
@@ -2691,8 +2800,16 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Same email can be used for different videos when token has context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=5))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(hours=1))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=5),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(hours=1),
+        )
         # registration with consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -2732,8 +2849,16 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Same email can be used for different videos when token has no context_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=5))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(hours=1))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=5),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(hours=1),
+        )
         # registration with no consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -2776,8 +2901,16 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """Same email can be used for different videos with token context_id/lti_user_id."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=5))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(hours=1))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=5),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(hours=1),
+        )
         # registration with consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -2820,7 +2953,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_update_put_anonymous_not_allowed(self):
         """Anonymous can't update liveregistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
         response = self.client.put(
             "/api/liveregistrations/",
@@ -2835,7 +2972,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_update_patch_anonymous_not_allowed(self):
         """Anonymous can't update liveregistration."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
 
         response = self.client.patch(
@@ -2851,7 +2992,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_update_put_with_token_not_allowed(self):
         """Update method is not allowed."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2869,7 +3014,11 @@ class LiveRegistrationApiTest(TestCase):
 
     def test_api_liveregistration_update_with_token_patch_not_allowed(self):
         """Patch update is not allowed."""
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -2910,7 +3059,7 @@ class LiveRegistrationApiTest(TestCase):
     ):
         """Token with wrong resource_id should render a 404."""
         starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(starting_at=starting_at)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         liveregistration = LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
@@ -2947,8 +3096,16 @@ class LiveRegistrationApiTest(TestCase):
         be fetched only for an undefined consumer site and for the same video.
         """
         user = UserFactory()
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # consumer_site is not defined
         liveregistration = LiveRegistrationFactory(
             email=user.email, lti_user_id=user.id, video=video
@@ -3006,8 +3163,16 @@ class LiveRegistrationApiTest(TestCase):
         for the same video and same consumer site.
         """
         user = UserFactory()
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # consumer_site is defined
         liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
@@ -3072,8 +3237,16 @@ class LiveRegistrationApiTest(TestCase):
         Duo email/consumer_site or consumer_site/lti_user_id for a defined consumer_site is
         needed to read a liveregistration.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # liveregistration for the same video and lti_user_id but different consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -3122,8 +3295,16 @@ class LiveRegistrationApiTest(TestCase):
         If token has no email, the user can read liveregistrations of this video for the
         same duo consumer_site/lti_user_id.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         # liveregistration for the right video, lti_user_id and consumer_site
         liveregistration = LiveRegistrationFactory(
@@ -3199,8 +3380,16 @@ class LiveRegistrationApiTest(TestCase):
         be fetched only for an undefined consumer site and for the same video.
         """
         user = UserFactory()
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # consumer_site is not defined
         liveregistration = LiveRegistrationFactory(
             email=user.email, lti_user_id=user.id, video=video
@@ -3259,8 +3448,16 @@ class LiveRegistrationApiTest(TestCase):
         for the same video and the same consumer site.
         """
         user = UserFactory()
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        video2 = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # consumer_site is defined
         liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
@@ -3326,8 +3523,16 @@ class LiveRegistrationApiTest(TestCase):
         Duo email/consumer_site or consumer_site/lti_user_id for a defined consumer_site is
         needed to read a liveregistration.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         # liveregistration for the same video and lti_user_id but different consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -3377,8 +3582,16 @@ class LiveRegistrationApiTest(TestCase):
         If token has no email, the user can read liveregistrations of this video for the
         same duo consumer_site/lti_user_id.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         # liveregistration for the right video, lti_user_id and consumer_site
         liveregistration = LiveRegistrationFactory(
@@ -3454,8 +3667,16 @@ class LiveRegistrationApiTest(TestCase):
         Will not receive liveregistrations other than the one corresponding to their consumer_site.
         If token has email, liveregistrations aren't filtered by this email.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -3533,8 +3754,16 @@ class LiveRegistrationApiTest(TestCase):
         Token has no consumer_site, liveregistrations will be filtered by undefined consumer_site.
         Token has email, liveregistrations aren't filtered by this email.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         # liveregistration with no consumer_site
         liveregistration = LiveRegistrationFactory(
@@ -3609,8 +3838,16 @@ class LiveRegistrationApiTest(TestCase):
         Will not receive liveregistrations other than the one corresponding to their consumer_site.
         Token has no email, liveregistrations aren't filtered by token's user's id.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
@@ -3688,8 +3925,16 @@ class LiveRegistrationApiTest(TestCase):
         Token has no consumer_site, liveregistrations will be filtered by undefined consumer_site.
         Token has no email, liveregistrations aren't filtered by token's user's id.
         """
-        video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
-        other_video = VideoFactory(starting_at=timezone.now() + timedelta(days=100))
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
         other_consumer = ConsumerSiteFactory()
         # liveregistration with no consumer_site
         liveregistration = LiveRegistrationFactory(
