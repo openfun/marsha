@@ -12,7 +12,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..defaults import JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
+from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
@@ -569,7 +569,7 @@ class VideoSerializer(VideoBaseSerializer):
                 + "past and can't be updated!"
             )
         # Checks live_state is null as expected when scheduling a live
-        if self.instance.live_state is not None:
+        if self.instance.live_state != IDLE:
             raise serializers.ValidationError(
                 "Field starting_at can't be changed, video live is "
                 + "not in default mode."
