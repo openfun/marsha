@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Postpone AWS creation stack to the first live start action
 - Scheduled videos have a live_state set to IDLE
 
+### Fixed
+
+- Users with empty email in their token can register to scheduled webinars
+
 ## [3.26.0] - 2021-10-22
 
 ### Added
