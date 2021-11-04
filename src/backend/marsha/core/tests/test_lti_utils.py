@@ -10,7 +10,7 @@ from django.utils import timezone
 from pylti.common import LTIOAuthServer
 
 from .. import factories, models
-from ..defaults import LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
+from ..defaults import IDLE, LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
 from ..lti import LTI
 from ..lti.utils import (
     PortabilityError,
@@ -177,6 +177,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -278,6 +280,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -453,6 +457,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -708,6 +714,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1000,7 +1008,11 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             is_portable_to_playlist=True,
-            factory_parameters={"starting_at": timezone.now() + timedelta(hours=1)},
+            factory_parameters={
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1042,7 +1054,11 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             is_portable_to_playlist=True,
-            factory_parameters={"starting_at": timezone.now() + timedelta(hours=1)},
+            factory_parameters={
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -1101,6 +1117,8 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             is_portable_to_playlist=True,
             factory_parameters={
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1180,6 +1198,8 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             is_portable_to_playlist=False,
             factory_parameters={
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1269,6 +1289,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1369,6 +1391,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1627,6 +1651,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1722,6 +1748,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -1823,6 +1851,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -2082,6 +2112,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -2347,6 +2379,8 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -2618,7 +2652,11 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_not_portable_instructor(
             factories.VideoFactory,
             models.Video,
-            {"starting_at": timezone.now() + timedelta(hours=1)},
+            {
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2715,7 +2753,11 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_other_pl_site_not_portable_student(
             factories.VideoFactory,
             models.Video,
-            {"starting_at": timezone.now() + timedelta(hours=1)},
+            {
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -2806,7 +2848,11 @@ class PortabilityLTITestCase(TestCase):
         self._test_lti_get_resource_wrong_lti_id_intructor(
             factories.VideoFactory,
             models.Video,
-            {"starting_at": timezone.now() + timedelta(hours=1)},
+            {
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -3018,6 +3064,8 @@ class LTISelectTestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
@@ -3118,7 +3166,11 @@ class LTISelectTestCase(TestCase):
         self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
             factories.VideoFactory,
             models.Video,
-            {"starting_at": timezone.now() + timedelta(hours=1)},
+            {
+                "live_state": IDLE,
+                "live_type": RAW,
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
@@ -3226,6 +3278,8 @@ class LTISelectTestCase(TestCase):
             factories.VideoFactory,
             models.Video,
             {
+                "live_state": IDLE,
+                "live_type": RAW,
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )

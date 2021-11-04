@@ -12,7 +12,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..defaults import JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
+from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
@@ -558,22 +558,23 @@ class VideoSerializer(VideoBaseSerializer):
 
     def validate_starting_at(self, value):
         """Add extra controls for starting_at field."""
-        # Checks current starting_at is not already over
-        if (
-            self.instance.starting_at is not None
-            and value != self.instance.starting_at
-            and self.instance.starting_at < timezone.now()
-        ):
-            raise serializers.ValidationError(
-                f"Field starting_at {self.instance.starting_at} is already "
-                + "past and can't be updated!"
-            )
-        # Checks live_state is null as expected when scheduling a live
-        if self.instance.live_state is not None:
-            raise serializers.ValidationError(
-                "Field starting_at can't be changed, video live is "
-                + "not in default mode."
-            )
+        # Field starting at has a new value
+        if value != self.instance.starting_at:
+            # Check live_state is in IDLE state as expected when scheduling a live
+            if self.instance.live_state != IDLE:
+                raise serializers.ValidationError(
+                    "Field starting_at can't be changed, video live is "
+                    + "not in default mode."
+                )
+            # Initial value is already past, it can't be updated anymore
+            if (
+                self.instance.starting_at is not None
+                and self.instance.starting_at < timezone.now()
+            ):
+                raise serializers.ValidationError(
+                    f"Field starting_at {self.instance.starting_at} is already "
+                    + "past and can't be updated!"
+                )
 
         return value
 
