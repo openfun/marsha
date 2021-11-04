@@ -182,6 +182,25 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_date_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A video scheduled that exists for the requested playlist and consumer site should be
+        returned to an instructor even if date is past.
+        """
+        """
+        todo with date in the past
+        self._test_lti_get_resource_same_playlist_same_site_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )"""
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
@@ -281,6 +300,51 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-1-2 scheduled video with a date past.
+
+        A video that exists for the requested playlist and consumer site should be returned
+        to a student if was supposed to be scheduled, date is past, but hasn't been started.
+        """
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        video = factories.VideoFactory(
+            starting_at=initial_starting_at,
+            playlist__consumer_site=passport.consumer_site,
+        )
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertIsNone(video.live_state)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_same_playlist_same_site_student_ready_to_show(
@@ -456,6 +520,28 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-2-1-1.
+
+        The existing video scheduled should be returned if a student or instructor tries to
+        retrieve a video that is scheduled but on another consumer site if it is marked as portable
+        to another consumer site.
+        ""
+        *****todo with date in the past*****
+
+        self._test_lti_get_resource_other_site_playlist_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_playlist_portable_ready_to_show(
@@ -711,6 +797,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-2-2-1.
+
+        Same as 1-2-1-1 but portability is automatic from the site of the video scheduled
+        to the site of the passport.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_site_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_auto_portable_ready_to_show(self, mock_verify):
@@ -1004,6 +1109,19 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-1-1 for scheduled video.""
+         *****todo with date in the past*****
+        self._test_lti_get_resource_other_site_pl_auto_portable_instructor(
+            factories.VideoFactory,
+            models.Video,
+            is_portable_to_playlist=True,
+            factory_parameters={"starting_at": timezone.now() + timedelta(hours=1)},
+        )"""
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1044,6 +1162,20 @@ class PortabilityLTITestCase(TestCase):
             is_portable_to_playlist=True,
             factory_parameters={"starting_at": timezone.now() + timedelta(hours=1)},
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_student(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-1-2 for scheduled video.""
+        //*****todo with date in the past*****
+        self._test_lti_get_resource_other_site_pl_auto_portable_student(
+            factories.VideoFactory,
+            models.Video,
+            is_portable_to_playlist=True,
+            factory_parameters={"starting_at": timezone.now() + timedelta(hours=1)},
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_student(
@@ -1104,6 +1236,22 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_not_ready_to_show_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-2-1 for video scheduled not in default mode.""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_site_pl_auto_portable_instructor(
+            factories.VideoFactory,
+            models.Video,
+            is_portable_to_playlist=True,
+            factory_parameters={
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_not_ready_to_show_instructor(
@@ -1183,6 +1331,27 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-4-1 for Video.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
+        already existing for a consumer site but not portable to another consumer site, even if it
+        is scheduled.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_site_pl_auto_portable_instructor(
+            factories.VideoFactory,
+            models.Video,
+            is_portable_to_playlist=False,
+            factory_parameters={
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_not_portable_instructor(self, mock_verify):
@@ -1272,6 +1441,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-2-4-2 for a scheduled video.
+
+        No video is returned to a student trying to access a video that is existing for a
+        consumer site but not portable to another consumer site.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_site_not_portable_student(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_not_portable_student(self, mock_verify):
@@ -1372,6 +1560,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-3-1-1 for scheduled Video.
+
+        The existing video should be returned if a student or instructor tries to retrieve a
+        video that is scheduled but linked to another playlist if it is marked as portable
+        to another playlist.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_playlist_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )"""
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_portable_ready_to_show(self, mock_verify):
@@ -1632,6 +1839,26 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-3-2-1 for video scheduled.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
+        existing in a playlist but not portable to another playlist, even if it
+        is scheduled.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_playlist_not_portable_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1 for Document.
 
@@ -1725,6 +1952,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-3-2-2 for scheduled video.
+
+        No video is returned to a student trying to access a video that is existing in another
+        playlist but not portable to another playlist, even if it is scheduled.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_playlist_not_portable_student(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_student(self, mock_verify):
@@ -1826,6 +2072,26 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-1-1 for video scheduled.
+
+        The existing video should be returned if a student or instructor tries to retrieve a
+        video that is scheduled but in another playlist on another consumer site if it is
+        marked as portable to another playlist AND to another consumer site.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_pl_site_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_portable_ready_to_show(self, mock_verify):
@@ -2085,6 +2351,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-2-1 for scheduled Video.
+
+        Same as 1-4-1-1-1 but portability is automatic from the site of the video to the site
+        of the passport.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_pl_site_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_auto_portable_ready_to_show(
@@ -2350,6 +2635,25 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video scheduled.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_pl_pl_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_pl_auto_portable_ready_to_show(
@@ -2622,6 +2926,24 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above cases 1-4-1-4-1 and 1-4-2-1 for Video scheduled.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video already
+        existing in a playlist and another consumer site but not portable either to another
+        playlist or to another consumer site, even if it is scheduled.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_pl_site_not_portable_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {"starting_at": timezone.now() + timedelta(hours=1)},
+        )
+        """
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-4-1 and 1-4-2-1 for Document.
 
@@ -2719,6 +3041,24 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-4-2 and 1-4-2-2 for Video scheduled.
+
+        No video is returned to a student trying to access a video that is existing in another
+        playlist on another consumer site but not portable either to another playlist or to
+        another consumer site, even if it is scheduled.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_other_pl_site_not_portable_student(
+            factories.VideoFactory,
+            models.Video,
+            {"starting_at": timezone.now() + timedelta(hours=1)},
+        )
+        """
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-4-2 and 1-4-2-2 for Document.
 
@@ -2808,6 +3148,21 @@ class PortabilityLTITestCase(TestCase):
             models.Video,
             {"starting_at": timezone.now() + timedelta(hours=1)},
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_wrong_lti_id_intructor(self, mock_verify):
+        """Above case 2-1 for Video scheduled.
+
+        A new video should be created and returned if an instructor tries to access an unknown
+        video for an existing playlist.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_resource_wrong_lti_id_intructor(
+            factories.VideoFactory,
+            models.Video,
+            {"starting_at": timezone.now() + timedelta(hours=1)},
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_wrong_lti_id_intructor(self, mock_verify):
@@ -3023,6 +3378,25 @@ class LTISelectTestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A video scheduled that exists for the requested playlist and consumer site should be
+        selectable by an instructor.
+        *****todo with date in the past*****
+        ""
+        self._test_lti_get_selectable_resource_same_playlist_same_site_instructor(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3120,6 +3494,23 @@ class LTISelectTestCase(TestCase):
             models.Video,
             {"starting_at": timezone.now() + timedelta(hours=1)},
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video scheduled.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {"starting_at": timezone.now() + timedelta(hours=1)},
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_ready_to_show(
@@ -3229,6 +3620,25 @@ class LTISelectTestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_not_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-2-1 for Video scheduled.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        ""
+        *****todo with date in the past*****
+        self._test_lti_get_selectable_resource_other_pl_pl_auto_portable_not_ready_to_show(
+            factories.VideoFactory,
+            models.Video,
+            {
+                "starting_at": timezone.now() + timedelta(hours=1),
+            },
+        )
+        """
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_not_ready_to_show(

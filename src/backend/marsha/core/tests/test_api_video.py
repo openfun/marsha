@@ -92,6 +92,45 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_api_video_read_detail_scheduled_video_student(self):
+        """Student users should be allowed to read a scheduled video detail."""
+        starting_at = timezone.now() + timedelta(days=100)
+        video = factories.VideoFactory(live_state=IDLE,
+            live_type=RAW,starting_at=starting_at)
+        self.assertTrue(video.is_scheduled)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_video_read_detail_scheduled_past_video_student(self):
+        """Student users should be allowed to read a scheduled video detail that is past."""
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        video = factories.VideoFactory(live_state=IDLE,
+            live_type=RAW,starting_at=initial_starting_at)
+        self.assertTrue(video.is_scheduled)
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            self.assertFalse(video.is_scheduled)
+            jwt_token = AccessToken()
+            jwt_token.payload["resource_id"] = str(video.id)
+            jwt_token.payload["roles"] = ["student"]
+            jwt_token.payload["permissions"] = {"can_update": False}
+            # Get the video linked to the JWT token
+            response = self.client.get(
+                f"/api/videos/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            self.assertEqual(response.status_code, 200)
+            content = json.loads(response.content)
+
     def test_api_video_read_detail_student_other_video(self):
         """Student users should not be allowed to read an other video detail."""
         video = factories.VideoFactory()

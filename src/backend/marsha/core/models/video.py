@@ -169,7 +169,8 @@ class Video(BaseFile):
         """Clause used in lti.utils.get_or_create_resource to filter the videos.
 
         Only show videos that have successfully gone through the upload process,
-        or live streams that are in the running state or videos that are in the scheduled mode.
+        or live streams that are in the running state or videos that are in the scheduled mode
+        and are not started yet.
 
         Returns
         -------
@@ -181,7 +182,6 @@ class Video(BaseFile):
             | models.Q(live_state__isnull=False)
             | models.Q(
                 starting_at__isnull=False,
-                starting_at__gte=timezone.now(),
                 live_state=IDLE,
             )
         )
