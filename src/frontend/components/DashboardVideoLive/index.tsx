@@ -1,7 +1,6 @@
 import { Box, Heading, Text } from 'grommet';
 import React, { lazy, useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-
 import { appData } from '../../data/appData';
 import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
@@ -10,6 +9,7 @@ import { report } from '../../utils/errors/report';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
 import { DashboardVideoLiveRunning } from '../DashboardVideoLiveRunning';
 import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
+import { ScheduledVideoForm } from '../ScheduledVideoForm';
 
 const DashboardVideoLiveRaw = lazy(() => import('../DashboardVideoLiveRaw'));
 const DashboardVideoLiveJitsi = lazy(
@@ -63,6 +63,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   }));
   const [canStartLive, setCanStartLive] = useState(false);
   const [canShowStartButton, setCanShowStartButton] = useState(false);
+  const [displayScheduledForm, setDisplayScheduledForm] = useState(video.live_state==liveState.IDLE);
   const pollForVideo = async () => {
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
@@ -85,6 +86,9 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   };
 
   useEffect(() => {
+    if (displayScheduledForm && video.live_state!=liveState.IDLE){
+      setDisplayScheduledForm(false)
+    }
     if (video.live_state === liveState.STARTING) {
       const interval = setInterval(pollForVideo, 15000);
       return () => clearInterval(interval);
@@ -150,6 +154,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Text>
         )}
       </Box>
+      {displayScheduledForm && <ScheduledVideoForm video={video} />}
     </Box>
   );
 };

@@ -65,6 +65,13 @@ export const theme = {
     },
     extend: 'padding: 0.5rem 1rem;',
   },
+  /*calendar: {
+    day: {
+      extend: `border-radius: 1em;height:1.5em;padding:1em;`,
+    },
+    extend: `border: 0;height:100%;`,
+  },*/
+
   global: {
     colors: {
       ...colorsGeneric,
@@ -73,6 +80,11 @@ export const theme = {
     input: {
       weight: '400',
     },
+    /*size: {
+      medium: {
+        width: 'inherit',
+      },
+    },*/
   },
   heading: {
     level: {

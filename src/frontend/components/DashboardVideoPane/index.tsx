@@ -113,7 +113,6 @@ interface DashboardVideoPaneProps {
 export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   const intl = useIntl();
   const [error, setError] = useState(false);
-
   const { uploadManagerState } = useUploadManager();
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,

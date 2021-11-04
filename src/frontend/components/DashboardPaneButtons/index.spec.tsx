@@ -59,7 +59,7 @@ describe('<DashboardPaneButtons />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Create a webinar' });
+    screen.getByRole('button', { name: 'Create a webinar now' });
   });
 
   it('hides the configure live button when live state is not null', () => {

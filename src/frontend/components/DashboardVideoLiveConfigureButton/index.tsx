@@ -20,8 +20,8 @@ const messages = defineMessages({
     id: 'components.Dashboard.DashboardPaneButtons.videos.raw',
   },
   jitsi: {
-    defaultMessage: 'Create a webinar',
-    description: 'Dashboard button to create a webinar',
+    defaultMessage: 'Create a webinar now',
+    description: 'Dashboard button to create a webinar now',
     id: 'components.Dashboard.DashboardPaneButtons.videos.jitsi',
   },
 });

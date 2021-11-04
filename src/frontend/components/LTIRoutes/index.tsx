@@ -11,18 +11,20 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { ErrorComponentsProps } from '../ErrorComponents';
 import { InstructorWrapper } from '../InstructorWrapper';
 import { Loader } from '../Loader';
+import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
+import { PLAYER_ROUTE } from '../routes';
+import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
+import { PlaylistPortability } from '../PlaylistPortability';
 import { PUBLIC_JITSI_ROUTE } from '../PublicVideoLiveJitsi/route';
 import { RedirectOnLoad } from '../RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
-import { PLAYER_ROUTE } from '../routes';
-import { SelectContent } from '../SelectContent/';
-import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
-import { UploadForm } from '../UploadForm';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UploadForm } from '../UploadForm';
 import { UploadManager } from '../UploadManager';
-import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
-import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
-import { PlaylistPortability } from '../PlaylistPortability';
+import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
+import { SelectContent } from '../SelectContent/';
+import { SUBSCRIBE_SCHEDULED_ROUTE } from '../SubscribeScheduledVideo/route';
+import { WaitingLiveVideo } from '../WaitingLiveVideo';
 
 const Dashboard = lazy(() => import('../Dashboard'));
 const DashboardDocument = lazy(() => import('../DashboardDocument'));
@@ -30,6 +32,9 @@ const DashboardVideo = lazy(() => import('../DashboardVideo'));
 const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
 const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
 const PublicVideoLiveJitsi = lazy(() => import('../PublicVideoLiveJitsi'));
+const SubscribeScheduledVideo = lazy(
+  () => import('../SubscribeScheduledVideo'),
+);
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -69,7 +74,6 @@ export const Routes = () => (
                 </InstructorWrapper>
               );
             }
-
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
@@ -80,7 +84,6 @@ export const Routes = () => (
             if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
               return <PublicVideoLiveJitsi video={appData.video} />;
             }
-
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
@@ -179,6 +182,24 @@ export const Routes = () => (
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
+
+        <Route
+          exact
+          path={SUBSCRIBE_SCHEDULED_ROUTE()}
+          render={() => {
+            if (
+              appData.modelName === modelName.VIDEOS &&
+              appData.video!.starting_at 
+            ) {
+              if (appData.video!.is_scheduled) {
+                return <SubscribeScheduledVideo video={appData.video!} />;
+              }
+              return <WaitingLiveVideo video={appData.video!} />;
+            }
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+          }}
+        />
+
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </Switch>
     </Suspense>

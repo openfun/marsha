@@ -1,4 +1,10 @@
-import { cleanup, render, screen, act } from '@testing-library/react';
+import {
+  cleanup,
+  render,
+  screen,
+  act,
+  queryByRole,
+} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
 
@@ -12,6 +18,7 @@ import { wrapInRouter } from '../../utils/tests/router';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
 import { DashboardVideoPane } from '.';
+import { random } from 'faker';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('../../data/appData', () => ({
@@ -381,5 +388,43 @@ describe('<DashboardVideoPane />', () => {
 
     screen.getByRole('button', { name: 'watch' });
     screen.getByRole('button', { name: 'publish the video' });
+  });
+
+  it("doesn't show the schedule form when the video has a live_state defined", async () => {
+    for (const state of Object.values(liveState)) {
+      render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <Suspense fallback="loading...">
+              <DashboardVideoPane
+                video={videoMockFactory({
+                  live_state: state,
+                  live_info: {
+                    medialive: {
+                      input: {
+                        endpoints: [
+                          'https://live_endpoint1',
+                          'https://live_endpoint2',
+                        ],
+                      },
+                    },
+                  },
+                  live_type: LiveModeType.RAW,
+                  upload_state: uploadState.PENDING,
+                })}
+              />
+            </Suspense>,
+          ),
+        ),
+      );
+
+      expect(
+        screen.queryByRole('heading', { name: /schedule a webinar/i }),
+      ).toEqual(null);
+      expect(screen.queryByRole('textbox')).toEqual(null);
+      expect(screen.queryByRole('button', { name: /submit/i })).toEqual(null);
+
+      cleanup();
+    }
   });
 });

@@ -8,6 +8,7 @@ import { LiveModeType } from '../../types/tracks';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
+import { SUBSCRIBE_SCHEDULED_ROUTE } from '../SubscribeScheduledVideo/route';
 import { RedirectVideo } from './RedirectVideo';
 
 let mockCanUpdate: boolean;
@@ -43,6 +44,10 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
+        },
       ]),
     );
 
@@ -73,6 +78,10 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
+        },
       ]),
     );
 
@@ -100,6 +109,10 @@ describe('RedirectVideo', () => {
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
+        },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
         },
       ]),
     );
@@ -129,9 +142,81 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
+        },
       ]),
     );
 
     screen.getByText('Error Component: notFound');
+  });
+
+  it('redirects to the scheduled view when the starting date is set to past', () => {
+    mockCanUpdate = false;
+    const video = videoMockFactory({
+      is_ready_to_show: false,
+      starting_at: '2000-01-01',
+    });
+
+    render(
+      wrapInRouter(<RedirectVideo video={video} />, [
+        {
+          path: DASHBOARD_ROUTE(modelName.VIDEOS),
+          render: () => <span>dashboard</span>,
+        },
+        {
+          path: FULL_SCREEN_ERROR_ROUTE(),
+          render: ({ match }) => (
+            <span>{`Error Component: ${match.params.code}`}</span>
+          ),
+        },
+        {
+          path: PLAYER_ROUTE(modelName.VIDEOS),
+          render: () => <span>video player</span>,
+        },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
+        },
+      ]),
+    );
+
+    screen.getByText('subscribe');
+  });
+
+  it('redirects to the scheduled view when the starting date is set to future', () => {
+    const startingAt = new Date();
+    startingAt.setDate(startingAt.getDate() + 10);
+    mockCanUpdate = false;
+    const video = videoMockFactory({
+      is_ready_to_show: false,
+      starting_at: `{startingAt.getFullYear()}-{startingAt.getMonth() + 1}-{startingAt.getDate() + 1}`,
+    });
+
+    render(
+      wrapInRouter(<RedirectVideo video={video} />, [
+        {
+          path: DASHBOARD_ROUTE(modelName.VIDEOS),
+          render: () => <span>dashboard</span>,
+        },
+        {
+          path: FULL_SCREEN_ERROR_ROUTE(),
+          render: ({ match }) => (
+            <span>{`Error Component: ${match.params.code}`}</span>
+          ),
+        },
+        {
+          path: PLAYER_ROUTE(modelName.VIDEOS),
+          render: () => <span>video player</span>,
+        },
+        {
+          path: SUBSCRIBE_SCHEDULED_ROUTE(),
+          render: () => <span>subscribe</span>,
+        },
+      ]),
+    );
+
+    screen.getByText('subscribe');
   });
 });
