@@ -347,15 +347,15 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                 Playlist.objects.get(
                     lti_id=user.token.payload["context_id"]
                 ).consumer_site
-                if user.token.payload.get("context_id") is not None
+                if user.token.payload.get("context_id")
                 else None
             )
 
-            if user.token.payload.get("user") is not None:
+            if user.token.payload.get("user"):
                 attrs["lti_user_id"] = user.token.payload["user"]["id"]
 
                 # If email is present in token, we make sure the one sent is the one expected
-                if user.token.payload["user"].get("email") is not None:
+                if user.token.payload["user"].get("email"):
                     if attrs["email"] != user.token.payload["user"].get("email"):
                         raise serializers.ValidationError(
                             {
@@ -368,7 +368,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                 # We can identify the user for this context_id, we make sure this user hasn't
                 # already registered for this video. It's only relevant if context_id is defined.
                 if (
-                    user.token.payload.get("context_id") is not None
+                    user.token.payload.get("context_id")
                     and LiveRegistration.objects.filter(
                         consumer_site=attrs["consumer_site"],
                         deleted=None,
@@ -558,13 +558,13 @@ class VideoSerializer(VideoBaseSerializer):
 
     def validate_starting_at(self, value):
         """Add extra controls for starting_at field."""
-        # Field starting at has a new value
+        # Field starting_at has a new value
         if value != self.instance.starting_at:
             # Check live_state is in IDLE state as expected when scheduling a live
             if self.instance.live_state != IDLE:
                 raise serializers.ValidationError(
                     "Field starting_at can't be changed, video live is "
-                    + "not in default mode."
+                    "not in default mode."
                 )
             # Initial value is already past, it can't be updated anymore
             if (
@@ -573,7 +573,7 @@ class VideoSerializer(VideoBaseSerializer):
             ):
                 raise serializers.ValidationError(
                     f"Field starting_at {self.instance.starting_at} is already "
-                    + "past and can't be updated!"
+                    "past and can't be updated!"
                 )
 
         return value

@@ -3471,6 +3471,7 @@ class LiveRegistrationApiTest(TestCase):
             email="chantal@test-fun-mooc.fr",
             video=video,
         )
+
         # liveregistration for the same video, same email and for another consumer_site
         LiveRegistrationFactory(
             email=user.email,
@@ -3998,4 +3999,42 @@ class LiveRegistrationApiTest(TestCase):
                     "video": str(video.id),
                 },
             ],
+        )
+
+    def test_api_liveregistration_create_role_none_email_empty(self):
+        """Users with an empty email can register by setting one."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        # token with context_id
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["user"] = {
+            "email": "",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "saved@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "email": "saved@test-fun-mooc.fr",
+                "id": str(created_liveregistration.id),
+                "consumer_site": str(video.playlist.consumer_site_id),
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "video": str(video.id),
+            },
         )

@@ -1743,7 +1743,7 @@ class VideoAPITest(TestCase):
                     "starting_at": [
                         (
                             f"Field starting_at {intial_starting_at} "
-                            + "is already past and can't be updated!"
+                            "is already past and can't be updated!"
                         )
                     ]
                 },
@@ -2085,7 +2085,7 @@ class VideoAPITest(TestCase):
                     "starting_at": [
                         (
                             f"Field starting_at {intial_starting_at} "
-                            + "is already past and can't be updated!"
+                            "is already past and can't be updated!"
                         )
                     ]
                 },
@@ -2125,7 +2125,7 @@ class VideoAPITest(TestCase):
                             [
                                 (
                                     "Field starting_at can't be changed, video live is not "
-                                    + "in default mode."
+                                    "in default mode."
                                 )
                             ]
                         )
@@ -2357,7 +2357,7 @@ class VideoAPITest(TestCase):
                             [
                                 (
                                     "Field starting_at can't be changed, video live is not "
-                                    + "in default mode."
+                                    "in default mode."
                                 )
                             ]
                         )
