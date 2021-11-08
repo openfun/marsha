@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Postpone AWS creation stack to the first live start action
 - Scheduled videos have a live_state set to IDLE
+- Allow access to videos with a scheduled date past
 
 ### Fixed
 
