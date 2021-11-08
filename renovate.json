@@ -13,6 +13,15 @@
         "converse.js",
         "node-fetch"
       ]
+    },
+    {
+      "enabled": false,
+      "matchPaths": [
+        "src/aws/*"
+      ],
+      "matchDepTypes": [
+        "engines"
+      ]
     }
   ]
 }
