@@ -184,6 +184,53 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_date_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1.
+
+        A video scheduled that exists for the requested playlist and consumer site should be
+        returned to an instructor even if date is past.
+        """
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            playlist__consumer_site=passport.consumer_site,
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=initial_starting_at,
+        )
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
@@ -285,6 +332,52 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_same_playlist_same_site_student_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-1-2 scheduled video with a date past.
+
+        A video that exists for the requested playlist and consumer site should be returned
+        to a student if was supposed to be scheduled, date is past, but still in ILDE live_state.
+        """
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=initial_starting_at,
+            playlist__consumer_site=passport.consumer_site,
+        )
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_same_playlist_same_site_student_ready_to_show(
@@ -462,6 +555,56 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-2-1-1.
+
+        The existing video should be returned if a student or instructor tries to retrieve a
+        video that was scheduled with a date past but on another consumer site if it is marked as
+        portable to another consumer site even if the date is past as long as it's still in IDLE
+        live_state.
+        """
+
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_consumer_site=True,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_playlist_portable_ready_to_show(
@@ -719,6 +862,57 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-2-2-1.
+
+        Same as 1-2-1-1 but portability is automatic from the site of the scheduled video with
+        a date past but still in IDLE live_state to the site of the passport.
+        """
+
+        consumer_site = factories.ConsumerSiteFactory(domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        video = factories.VideoFactory(
+            playlist__is_portable_to_consumer_site=False,
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=initial_starting_at,
+        )
+
+        # Add automatic portability from the site of the resource to the site of the passport
+        models.ConsumerSitePortability.objects.create(
+            source_site=video.playlist.consumer_site, target_site=consumer_site
+        )
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_auto_portable_ready_to_show(self, mock_verify):
@@ -1016,6 +1210,65 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-1-1 for scheduled video that are past but still in IDLE live_state."""
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        # Add automatic portability from the playlist of the video to another playlist sharing
+        # the same lti_id
+        target_playlist = factories.PlaylistFactory(lti_id=video.playlist.lti_id)
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=target_playlist
+        )
+
+        nb_playlist = models.Playlist.objects.count()
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            with self.assertRaises(PortabilityError) as context:
+                get_or_create_resource(models.Video, lti)
+            self.assertEqual(
+                context.exception.args[0],
+                (
+                    f"The {models.Video.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 "
+                    "already exists but is not portable to your playlist (a-playlist) and/or "
+                    "consumer site (example.com)."
+                ),
+            )
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), nb_playlist)
+            self.assertEqual(models.Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1060,6 +1313,60 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_student(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-1-2 for scheduled video that have a date that is past but is still
+        in IDLE live_state.
+
+        """
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+
+        # Add automatic portability from the playlist of the video to another playlist sharing
+        # the same lti_id
+        target_playlist = factories.PlaylistFactory(lti_id=video.playlist.lti_id)
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=target_playlist
+        )
+
+        nb_playlist = models.Playlist.objects.count()
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            self.assertIsNone(get_or_create_resource(models.Video, lti))
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), nb_playlist)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_student(
@@ -1122,6 +1429,65 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_not_ready_to_show_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-3-2-1 for video scheduled that have a date that is past but still a
+        live_state equals to IDLE."""
+
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_consumer_site=False,
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=initial_starting_at,
+        )
+
+        # Add automatic portability from the playlist of the video to another playlist sharing
+        # the same lti_id
+        target_playlist = factories.PlaylistFactory(lti_id=video.playlist.lti_id)
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=target_playlist
+        )
+
+        nb_playlist = models.Playlist.objects.count()
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            with self.assertRaises(PortabilityError) as context:
+                get_or_create_resource(models.Video, lti)
+            self.assertEqual(
+                context.exception.args[0],
+                (
+                    f"The {models.Video.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 "
+                    "already exists but is not portable to your playlist (a-playlist) and/or"
+                    " consumer site (example.com)."
+                ),
+            )
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), nb_playlist)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_not_ready_to_show_instructor(
@@ -1203,6 +1569,62 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-2-4-1 for scheduled videos that are past but still with an IDLE live_state.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
+        already existing for a consumer site but not portable to another consumer site, even if it
+        is scheduled and date is past.
+        """
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+
+        nb_playlist = models.Playlist.objects.count()
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            with self.assertRaises(PortabilityError) as context:
+                get_or_create_resource(models.Video, lti)
+            self.assertEqual(
+                context.exception.args[0],
+                (
+                    f"The {models.Video.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 "
+                    "already exists but is not portable to your playlist (a-playlist) and/or "
+                    "consumer site (example.com)."
+                ),
+            )
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), nb_playlist)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_not_portable_instructor(self, mock_verify):
@@ -1294,6 +1716,47 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_site_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-2-4-2 for a scheduled video with a date past but still in IDLE live_state.
+
+        No video is returned to a student trying to access a video that is existing for a
+        consumer site but not portable to another consumer site.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            self.assertIsNone(get_or_create_resource(models.Video, lti))
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_site_not_portable_student(self, mock_verify):
@@ -1396,6 +1859,51 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-3-1-1 for scheduled Video with a date past but still in IDLE live_state.
+
+        The existing video should be returned if a student or instructor tries to retrieve a
+        video that is scheduled but linked to another playlist if it is marked as portable
+        to another playlist.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__consumer_site=passport.consumer_site,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_portable_ready_to_show(self, mock_verify):
@@ -1658,6 +2166,58 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-3-2-1 for video scheduled with a date past and IDLE live_state.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video that is
+        existing in a playlist but not portable to another playlist, even if it
+        is scheduled  a date past and IDLE live_state.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            lti_id="df7",
+            playlist__lti_id="a-playlist",
+            playlist__consumer_site=passport.consumer_site,
+            playlist__is_portable_to_playlist=False,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            with self.assertRaises(PortabilityError) as context:
+                get_or_create_resource(models.Video, lti)
+            self.assertEqual(
+                context.exception.args[0],
+                (
+                    f"The {models.Video.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 "
+                    "already exists but is not portable to your playlist (another-playlist) "
+                    "and/or consumer site (example.com)."
+                ),
+            )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1 for Document.
 
@@ -1753,6 +2313,53 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_playlist_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-3-2-2 for scheduled video with a date past and live_state to IDLE.
+
+        No video is returned to a student trying to access a video that is existing in another
+        playlist but not portable to another playlist, even if it is scheduled with a date past
+        and live_state to IDLE.
+        """
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__consumer_site=passport.consumer_site,
+            playlist__is_portable_to_playlist=False,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": "Student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # originally video is scheduled
+        self.assertTrue(video.is_scheduled)
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            self.assertIsNone(get_or_create_resource(models.Video, lti))
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_student(self, mock_verify):
@@ -1856,6 +2463,51 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-1-1 for video scheduled with a date past and live_state to IDLE.
+
+        The existing video should be returned if a student or instructor tries to retrieve a
+        video that is scheduled but in another playlist on another consumer site if it is
+        marked as portable to another playlist AND to another consumer site.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_playlist=True,
+            playlist__is_portable_to_consumer_site=True,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_portable_ready_to_show(self, mock_verify):
@@ -2117,6 +2769,55 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-2-1 for scheduled Video with a date past and live_state to IDLE.
+
+        Same as 1-4-1-1-1 but portability is automatic from the site of the video to the site
+        of the passport.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        consumer_site = factories.ConsumerSiteFactory(domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(consumer_site=consumer_site)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_playlist=True,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        # Add automatic portability from the site of the video to the site of the passport
+        models.ConsumerSitePortability.objects.create(
+            source_site=video.playlist.consumer_site, target_site=consumer_site
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_auto_portable_ready_to_show(
@@ -2384,6 +3085,56 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video scheduled with a date past and live_state to IDLE.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        playlist = factories.PlaylistFactory(consumer_site__domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site=playlist.consumer_site
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        # Add automatic portability from the playlist of the video to the requested playlist
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=playlist
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": playlist.lti_id,
+            "roles": random.choice(["Student", "Instructor"]),
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            retrieved_resource = get_or_create_resource(models.Video, lti)
+            self.assertIsInstance(retrieved_resource, models.Video)
+            self.assertEqual(retrieved_resource, video)
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 2)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_pl_auto_portable_ready_to_show(
@@ -2660,6 +3411,61 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_not_portable_instructor(
+        self, mock_verify
+    ):
+        """Above cases 1-4-1-4-1 and 1-4-2-1 for Video scheduled with a date past and IDLE state.
+
+        A PortabilityError should be raised if an instructor tries to retrieve a video already
+        existing in a playlist and another consumer site but not portable either to another
+        playlist or to another consumer site, even if it is scheduled with a date past and
+        live_state to IDLE.
+        """
+        initial_starting_at = timezone.now() + timedelta(hours=1)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            with self.assertRaises(PortabilityError) as context:
+                get_or_create_resource(models.Video, lti)
+            self.assertEqual(
+                context.exception.args[0],
+                (
+                    f"The {models.Video.__name__} ID 77fbf317-3e99-41bd-819c-130531313139 already "
+                    "exists but is not portable to your playlist (another-playlist) and/or "
+                    "consumer site (example.com)."
+                ),
+            )
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-4-1 and 1-4-2-1 for Document.
 
@@ -2761,6 +3567,51 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_other_pl_site_not_portable_student(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-4-2 and 1-4-2-2 for Video scheduled with a date past and IDLE state.
+
+        No video is returned to a student trying to access a video that is existing in another
+        playlist on another consumer site but not portable either to another playlist or to
+        another consumer site, even if it is scheduled with a date past and live_state to IDLE.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": "another-playlist",
+            "roles": "Student",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+            self.assertIsNone(get_or_create_resource(models.Video, lti))
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 1)
+            self.assertEqual(models.Video.objects.count(), 1)
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-4-2 and 1-4-2-2 for Document.
 
@@ -2854,6 +3705,55 @@ class PortabilityLTITestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_video_scheduled_past_wrong_lti_id_intructor(self, mock_verify):
+        """Above case 2-1 for Video scheduled with a date past and live_state to IDLE.
+
+        A new video should be created and returned if an instructor tries to access an unknown
+        video for an existing playlist.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__consumer_site=passport.consumer_site,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": "new_lti_id",
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, uuid.uuid4())
+            lti.verify()
+            new_resource = get_or_create_resource(models.Video, lti)
+
+            # A new resource is created
+            self.assertEqual(models.Video.objects.count(), 2)
+            self.assertIsInstance(new_resource, models.Video)
+            self.assertEqual(
+                new_resource, models.Video.objects.exclude(id=video.id).get()
+            )
+            self.assertEqual(new_resource.playlist, video.playlist)
+            self.assertEqual(new_resource.upload_state, "pending")
+            self.assertIsNone(new_resource.uploaded_on)
+            self.assertEqual(new_resource.lti_id, "new_lti_id")
+
+            # No new playlist is created
+            self.assertEqual(models.Playlist.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_document_wrong_lti_id_intructor(self, mock_verify):
@@ -3071,6 +3971,45 @@ class LTISelectTestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_past_same_playlist_same_site_instructor(
+        self, mock_verify
+    ):
+        """Above case 1-1-1 for a scheduled video with a date past and live_state to IDLE.
+
+        A video scheduled with a date past and live_state to IDLE that exists for the requested
+        playlist and consumer site should be selectable by an instructor.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site__domain="example.com"
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__consumer_site=passport.consumer_site,
+            starting_at=initial_starting_at,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "Instructor",
+            "tool_consumer_instance_guid": video.playlist.consumer_site.domain,
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+
+            self.assertIn(video, get_selectable_resources(models.Video, lti))
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3172,6 +4111,52 @@ class LTISelectTestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-1 for Video scheduled with a date past and live_state to IDLE.
+
+        Same as 1-4-1-1-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        playlist = factories.PlaylistFactory(consumer_site__domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site=playlist.consumer_site
+        )
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            playlist__is_portable_to_playlist=False,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        # Add automatic portability from the playlist of the video to the requested playlist
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=playlist
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+
+            self.assertIn(video, get_selectable_resources(models.Video, lti))
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_ready_to_show(
@@ -3283,6 +4268,59 @@ class LTISelectTestCase(TestCase):
                 "starting_at": timezone.now() + timedelta(hours=1),
             },
         )
+
+    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_not_ready_to_show(
+        self, mock_verify
+    ):
+        """Above case 1-4-1-3-2-1 for Video scheduled with a date past and live_state to IDLE.
+
+        Same as 1-4-1-1-2-1 but portability is automatic from the playlist of the video to the
+        requested playlist.
+        """
+        initial_starting_at = timezone.now() + timedelta(days=2)
+        playlist = factories.PlaylistFactory(consumer_site__domain="example.com")
+        passport = factories.ConsumerSiteLTIPassportFactory(
+            consumer_site=playlist.consumer_site
+        )
+        video = factories.VideoFactory(
+            id="77fbf317-3e99-41bd-819c-130531313139",
+            live_state=IDLE,
+            live_type=RAW,
+            lti_id="df7",
+            playlist__lti_id="a-playlist",
+            playlist__is_portable_to_playlist=True,
+            playlist__is_portable_to_consumer_site=False,
+            starting_at=initial_starting_at,
+        )
+        # Add automatic portability from the playlist of the video to the requested playlist
+        models.PlaylistPortability.objects.create(
+            source_playlist=video.playlist, target_playlist=playlist
+        )
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": playlist.lti_id,
+            "roles": "Instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        # now is set after video.starting_at
+        now = initial_starting_at + timedelta(days=10)
+        with mock.patch.object(timezone, "now", return_value=now):
+            # date is past, video is no longer in scheduled mode
+            self.assertFalse(video.is_scheduled)
+            self.assertEqual(video.live_state, IDLE)
+            request = self.factory.post(
+                "/", data, HTTP_REFERER="https://example.com/route"
+            )
+            lti = LTI(request, video.pk)
+            lti.verify()
+
+            self.assertIn(video, get_selectable_resources(models.Video, lti))
+
+            # No new playlist or resource are created
+            self.assertEqual(models.Playlist.objects.count(), 2)
+            self.assertEqual(models.Video.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_not_ready_to_show(
