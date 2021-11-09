@@ -9,12 +9,13 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
 from marsha.core import permissions as core_permissions
 from marsha.core.api import ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
-from .models import ApiMeetingException, Meeting
+from .models import Meeting
 
 
 class MeetingViewSet(
@@ -114,9 +115,8 @@ class MeetingViewSet(
         # Updating meeting with sent title and welcome text
         self.update(request, *args, **kwargs)
 
-        meeting = self.get_object()
         try:
-            response = meeting.bbb_create()
+            response = create(meeting=self.get_object())
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}
@@ -146,12 +146,13 @@ class MeetingViewSet(
         """
         if not request.data.get("fullname"):
             return Response({"message": "missing fullname parameter"}, status=400)
-        meeting = self.get_object()
         try:
             roles = request.user.token.payload.get("roles")
             moderator = "administrator" in roles or "instructor" in roles
-            response = meeting.bbb_join(
-                fullname=request.data.get("fullname"), moderator=moderator
+            response = join(
+                meeting=self.get_object(),
+                fullname=request.data.get("fullname"),
+                moderator=moderator,
             )
             status = 200
         except ApiMeetingException as exception:
@@ -179,11 +180,10 @@ class MeetingViewSet(
         Type[rest_framework.response.Response]
             HttpResponse with the serialized meeting.
         """
-        meeting = self.get_object()
         try:
             roles = request.user.token.payload.get("roles")
             moderator = "administrator" in roles or "instructor" in roles
-            response = meeting.bbb_end(moderator=moderator)
+            response = end(meeting=self.get_object(), moderator=moderator)
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}

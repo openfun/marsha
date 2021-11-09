@@ -11,13 +11,6 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from marsha.bbb.utils.bbb_utils import (
-    ApiMeetingException,
-    bbb_api_create,
-    bbb_api_end,
-    bbb_api_get_meeting_infos,
-    bbb_api_join,
-)
 from marsha.core.models import BaseModel, Playlist
 
 
@@ -153,32 +146,3 @@ class Meeting(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
-
-    def bbb_create(self):
-        """Call BBB API to create a meeting."""
-        api_response = bbb_api_create(self)
-        self.started = True
-        self.moderator_password = api_response["moderatorPW"]
-        self.attendee_password = api_response["attendeePW"]
-        self.save()
-        return api_response
-
-    def bbb_end(self, moderator=False):
-        """Call BBB API to end a meeting."""
-        return bbb_api_end(self, moderator)
-
-    def bbb_join(self, fullname, moderator=False):
-        """Call BBB API to join a meeting."""
-        return bbb_api_join(self, fullname, moderator)
-
-    def bbb_get_meeting_infos(self):
-        """Call BBB API to retrieve meeting informations."""
-        try:
-            api_response = bbb_api_get_meeting_infos(self)
-            self.started = api_response["returncode"] == "SUCCESS"
-            self.save()
-            return api_response
-        except ApiMeetingException as exception:
-            self.started = False
-            self.save()
-            raise exception
