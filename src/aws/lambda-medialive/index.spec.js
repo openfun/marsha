@@ -5,8 +5,6 @@ jest.spyOn(console, 'log');
 const mockChannelStateChanged = jest.fn();
 jest.doMock('./src/channelStateChanged', () => mockChannelStateChanged);
 
-const callback = jest.fn();
-
 const lambda = require('./index.js').handler;
 
 describe('lambda', () => {
@@ -40,22 +38,22 @@ describe('lambda', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
     mockChannelStateChanged.mockResolvedValue();
 
-    await lambda(event, context, callback);
+    await lambda(event, context);
 
     expect(mockChannelStateChanged).toHaveBeenCalledWith(
       event.channel,
       event.event_origin,
       context,
     );
-    expect(callback).toHaveBeenCalledTimes(1);
   });
 
-  it('call the callback when an alert is added', async () => {
+  it('returns a resolved promise when an alert is added', async () => {
     const event = {
       event_origin: {
         version: '0',
@@ -81,12 +79,11 @@ describe('lambda', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
-    await lambda(event, context, callback);
-
-    expect(callback).toHaveBeenCalledTimes(1);
+    await lambda(event, context);
   });
 
   it('reports an error when the event type is not handled', async () => {
@@ -114,14 +111,15 @@ describe('lambda', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
-    await lambda(event, context, callback);
+    await expect(lambda(event, context)).rejects.toEqual(
+      'Unknown medialive event',
+    );
 
     expect(mockChannelStateChanged).not.toHaveBeenCalled();
-    expect(callback).toHaveBeenCalledWith('Unknown medialive event');
-    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it('reports an error when channelStateChanged fails', async () => {
@@ -149,19 +147,18 @@ describe('lambda', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
     mockChannelStateChanged.mockRejectedValue('it fails');
 
-    await lambda(event, context, callback);
+    await expect(lambda(event, context)).rejects.toEqual('it fails');
 
     expect(mockChannelStateChanged).toHaveBeenCalledWith(
       event.channel,
       event.event_origin,
       context,
     );
-    expect(callback).toHaveBeenCalledWith('it fails');
-    expect(callback).toHaveBeenCalledTimes(1);
   });
 });

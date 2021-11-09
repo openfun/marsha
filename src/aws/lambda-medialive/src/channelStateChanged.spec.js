@@ -37,18 +37,15 @@ describe('src/channel_state_changed', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
     const channel = { Name: 'test_video-id_stamp' };
 
-    try {
-      await channelStateChanged(channel, event, context);
-    } catch (error) {
-      expect(error.message).toEqual(
-        'Expected status are RUNNING and STOPPED. STARTING received',
-      );
-    }
+    await expect(channelStateChanged(channel, event, context)).rejects.toEqual(
+      Error('Expected status are RUNNING and STOPPED. STARTING received'),
+    );
 
     expect(mockComputeSignature).not.toHaveBeenCalled();
     expect(mockSendRequest).not.toHaveBeenCalled();
@@ -75,12 +72,14 @@ describe('src/channel_state_changed', () => {
     const channel = { Name: 'test_video-id_stamp' };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
     mockComputeSignature.mockReturnValue('foo');
     const expectedBody = {
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
+      requestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       state: 'running',
     };
 
@@ -118,6 +117,7 @@ describe('src/channel_state_changed', () => {
     };
 
     const context = {
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
     };
 
@@ -126,6 +126,7 @@ describe('src/channel_state_changed', () => {
     mockComputeSignature.mockReturnValue('foo');
     const expectedBody = {
       logGroupName: '/aws/lambda/dev-test-marsha-medialive',
+      requestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
       state: 'stopped',
     };
 
