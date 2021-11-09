@@ -4,10 +4,11 @@ from django.urls import reverse
 
 from rest_framework import serializers
 
+from marsha.bbb.utils.bbb_utils import ApiMeetingException, get_meeting_infos
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
-from .models import ApiMeetingException, Meeting
+from .models import Meeting
 
 
 class MeetingSerializer(serializers.ModelSerializer):
@@ -40,7 +41,7 @@ class MeetingSerializer(serializers.ModelSerializer):
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
         try:
-            return obj.bbb_get_meeting_infos()
+            return get_meeting_infos(meeting=obj)
         except ApiMeetingException:
             return None
 
