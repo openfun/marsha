@@ -210,7 +210,7 @@ describe('queries', () => {
   describe('useCreateMeeting', () => {
     it('updates the resource', async () => {
       const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/bbb_create/`, meeting);
+      fetchMock.patch(`/api/meetings/${meeting.id}/create/`, meeting);
 
       const { result, waitFor } = renderHook(
         () => useCreateMeeting(meeting.id),
@@ -224,7 +224,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/bbb_create/`,
+        `/api/meetings/${meeting.id}/create/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -242,7 +242,7 @@ describe('queries', () => {
 
     it('fails to update the resource', async () => {
       const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/bbb_create/`, 400);
+      fetchMock.patch(`/api/meetings/${meeting.id}/create/`, 400);
 
       const { result, waitFor } = renderHook(
         () => useCreateMeeting(meeting.id),
@@ -256,7 +256,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/bbb_create/`,
+        `/api/meetings/${meeting.id}/create/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -276,7 +276,7 @@ describe('queries', () => {
   describe('useJoinMeeting', () => {
     it('updates the resource', async () => {
       const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/bbb_join/`, meeting);
+      fetchMock.patch(`/api/meetings/${meeting.id}/join/`, meeting);
 
       const { result, waitFor } = renderHook(() => useJoinMeeting(meeting.id), {
         wrapper: Wrapper,
@@ -287,7 +287,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/bbb_join/`,
+        `/api/meetings/${meeting.id}/join/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -305,7 +305,7 @@ describe('queries', () => {
 
     it('fails to update the resource', async () => {
       const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/bbb_join/`, 400);
+      fetchMock.patch(`/api/meetings/${meeting.id}/join/`, 400);
 
       const { result, waitFor } = renderHook(() => useJoinMeeting(meeting.id), {
         wrapper: Wrapper,
@@ -316,7 +316,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/bbb_join/`,
+        `/api/meetings/${meeting.id}/join/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
