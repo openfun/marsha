@@ -247,8 +247,7 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
         "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
         body="""<response>
             <returncode>SUCCESS</returncode>
-            <meetingName>Super bbb meeting</meetingName>
-            <meetingID>b3fc0805-c9fb-4e62-b12d-d4472986406b</meetingID>
+            <running>false</running>
         </response>
         """,
         status=200,
