@@ -141,7 +141,7 @@ describe('<DashboardMeeting />', () => {
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/bbb_join/', deferredPatch.promise);
+    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
 
     render(
       wrapInIntlProvider(
@@ -156,7 +156,7 @@ describe('<DashboardMeeting />', () => {
       deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
     );
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/bbb_join/');
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/join/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ describe('<DashboardMeeting />', () => {
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/bbb_join/', deferredPatch.promise);
+    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
 
     const { getByText } = render(
       wrapInIntlProvider(

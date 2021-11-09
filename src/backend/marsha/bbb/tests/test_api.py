@@ -285,7 +285,7 @@ class MeetingAPITest(TestCase):
         """An anonymous should not be able to create a meeting."""
         meeting = MeetingFactory()
 
-        response = self.client.patch(f"/api/meetings/{meeting.id}/bbb_create/")
+        response = self.client.patch(f"/api/meetings/{meeting.id}/create/")
         self.assertEqual(response.status_code, 401)
         mock_create_request.assert_not_called()
 
@@ -298,7 +298,7 @@ class MeetingAPITest(TestCase):
         meeting = MeetingFactory()
         self.client.force_login(user)
 
-        response = self.client.patch(f"/api/meetings/{meeting.id}/bbb_create/")
+        response = self.client.patch(f"/api/meetings/{meeting.id}/create/")
         self.assertEqual(response.status_code, 401)
         mock_create_request.assert_not_called()
 
@@ -312,7 +312,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_create/",
+            f"/api/meetings/{meeting.id}/create/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -335,7 +335,7 @@ class MeetingAPITest(TestCase):
         data = {"title": "new title", "welcome_text": "Hello"}
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_create/",
+            f"/api/meetings/{meeting.id}/create/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -377,7 +377,7 @@ class MeetingAPITest(TestCase):
         data = {"title": meeting.title, "welcome_text": meeting.welcome_text}
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_create/",
+            f"/api/meetings/{meeting.id}/create/",
             data,
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -398,7 +398,7 @@ class MeetingAPITest(TestCase):
         meeting = MeetingFactory()
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_join/",
+            f"/api/meetings/{meeting.id}/join/",
         )
         self.assertEqual(response.status_code, 401)
         mock_get_meeting_infos.assert_not_called()
@@ -413,7 +413,7 @@ class MeetingAPITest(TestCase):
         meeting = MeetingFactory()
         self.client.force_login(user)
 
-        response = self.client.patch(f"/api/meetings/{meeting.id}/bbb_join/")
+        response = self.client.patch(f"/api/meetings/{meeting.id}/join/")
         self.assertEqual(response.status_code, 401)
         mock_join_request.assert_not_called()
 
@@ -431,7 +431,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_join/",
+            f"/api/meetings/{meeting.id}/join/",
             data=json.dumps({"fullname": "John Doe"}),
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -459,7 +459,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_join/",
+            f"/api/meetings/{meeting.id}/join/",
             data=json.dumps({"fullname": "John Doe"}),
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -487,7 +487,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_join/",
+            f"/api/meetings/{meeting.id}/join/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 400)
@@ -502,7 +502,7 @@ class MeetingAPITest(TestCase):
         meeting = MeetingFactory()
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_end/",
+            f"/api/meetings/{meeting.id}/end/",
         )
         self.assertEqual(response.status_code, 401)
         mock_end_request.assert_not_called()
@@ -517,7 +517,7 @@ class MeetingAPITest(TestCase):
         self.client.force_login(user)
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_end/",
+            f"/api/meetings/{meeting.id}/end/",
         )
         self.assertEqual(response.status_code, 401)
         mock_end_request.assert_not_called()
@@ -532,7 +532,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_end/",
+            f"/api/meetings/{meeting.id}/end/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -559,7 +559,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         response = self.client.patch(
-            f"/api/meetings/{meeting.id}/bbb_end/",
+            f"/api/meetings/{meeting.id}/end/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)

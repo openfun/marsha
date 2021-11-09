@@ -37,7 +37,7 @@ describe('<DashboardMeetingForm />', () => {
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/bbb_create/', deferredPatch.promise);
+    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
 
     const { getByText, findByText } = render(
       wrapInIntlProvider(
@@ -57,7 +57,7 @@ describe('<DashboardMeetingForm />', () => {
     await findByText('Meeting created.');
 
     expect(fetchMock.calls()).toHaveLength(1);
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/bbb_create/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/create/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ describe('<DashboardMeetingForm />', () => {
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/bbb_create/', deferredPatch.promise);
+    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
 
     const { getByText, findByText } = render(
       wrapInIntlProvider(
@@ -104,7 +104,7 @@ describe('<DashboardMeetingForm />', () => {
 
     expect(fetchMock.calls()).toHaveLength(1);
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/bbb_create/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/create/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
