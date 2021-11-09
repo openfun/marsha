@@ -89,13 +89,13 @@ describe('<DashboardMeetingInstructor />', () => {
     expect(joinMeetingAction).toHaveBeenCalledTimes(1);
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/bbb_end/', deferredPatch.promise);
+    fetchMock.patch('/api/meetings/1/end/', deferredPatch.promise);
 
     fireEvent.click(screen.getByText('End meeting'));
     await act(async () => deferredPatch.resolve({ message: 'meeting ended' }));
     await findByText('Ending meeting…');
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/bbb_end/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/end/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',

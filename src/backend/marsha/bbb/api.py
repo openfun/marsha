@@ -95,9 +95,9 @@ class MeetingViewSet(
     @action(
         methods=["patch"],
         detail=True,
-        url_path="bbb_create",
+        url_path="create",
     )
-    def bbb_create(self, request, *args, **kwargs):
+    def service_create(self, request, *args, **kwargs):
         """Create a Big Blue Button meeting.
 
         Parameters
@@ -126,10 +126,10 @@ class MeetingViewSet(
     @action(
         methods=["patch"],
         detail=True,
-        url_path="bbb_join",
+        url_path="join",
         permission_classes=[IsAuthenticated],
     )
-    def bbb_join(self, request, *args, **kwargs):
+    def service_join(self, request, *args, **kwargs):
         """Join a Big Blue Button meeting.
 
         Parameters
@@ -163,9 +163,9 @@ class MeetingViewSet(
     @action(
         methods=["patch"],
         detail=True,
-        url_path="bbb_end",
+        url_path="end",
     )
-    def bbb_end(self, request, *args, **kwargs):
+    def service_end(self, request, *args, **kwargs):
         """End a Big Blue Button meeting.
 
         Parameters

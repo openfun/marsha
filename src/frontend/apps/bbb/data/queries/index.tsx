@@ -115,9 +115,9 @@ type MutationMeetingOptions<MeetingResponse, MeetingRequest> =
     MutationMeetingData<MeetingRequest>
   >;
 enum MutationMeetingAction {
-  CREATE = 'bbb_create',
-  END = 'bbb_end',
-  JOIN = 'bbb_join',
+  CREATE = 'create',
+  END = 'end',
+  JOIN = 'join',
 }
 const meetingActionMutation =
   <MeetingResponse, MeetingRequest>(action: MutationMeetingAction) =>
