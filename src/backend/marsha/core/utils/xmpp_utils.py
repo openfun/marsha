@@ -71,6 +71,7 @@ def create_room(room_name):
         "muc#roomconfig_allowpm",
         "muc#roomconfig_allowinvites",
         "muc#roomconfig_changesubject",
+        "muc#roomconfig_membersonly",
     ]
 
     # Remove config we want to modify
@@ -97,6 +98,7 @@ def create_room(room_name):
         xmpp.DataField(typ="boolean", name="muc#roomconfig_allowinvites", value=0),
         # Nobody can change the subject
         xmpp.DataField(typ="boolean", name="muc#roomconfig_changesubject", value=0),
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_membersonly", value=0),
     ]
 
     client.send(
@@ -135,6 +137,34 @@ def close_room(room_name):
         )
     )
 
+    # request the current room config
+    default_config_iq = client.SendAndWaitForResponse(
+        xmpp.Iq(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
+            frm=settings.XMPP_PRIVATE_ADMIN_JID,
+            typ="get",
+            queryNS=xmpp.NS_MUC_OWNER,
+        )
+    )
+
+    data = []
+    fileds_to_exclude = [
+        "muc#roomconfig_membersonly",
+    ]
+
+    # Remove config we want to modify
+    for children in default_config_iq.getQueryPayload()[0].getChildren():
+        if (
+            children.getName() == "field"
+            and children.getAttr("var") not in fileds_to_exclude
+        ):
+            data.append(children)
+
+    # Add our own config
+    data = data + [
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_membersonly", value=1),
+    ]
+
     client.send(
         xmpp.Iq(
             to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
@@ -144,14 +174,7 @@ def close_room(room_name):
             payload=[
                 xmpp.DataForm(
                     typ="submit",
-                    data=[
-                        xmpp.DataField(
-                            typ="hidden", name="FORM_TYPE", value=xmpp.NS_MUC_ROOMCONFIG
-                        ),
-                        xmpp.DataField(
-                            typ="boolean", name="muc#roomconfig_membersonly", value=1
-                        ),
-                    ],
+                    data=data,
                 )
             ],
         )
