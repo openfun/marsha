@@ -166,7 +166,7 @@ describe('components/DashboardVideoLive', () => {
     });
   });
 
-  it('shows the live and stop button when the status is LIVE', () => {
+  it('shows the live and stop button when the status is RUNNING', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -181,7 +181,7 @@ describe('components/DashboardVideoLive', () => {
 
     screen.getByRole('button', { name: /show chat only/i });
     screen.getByRole('button', { name: /show live/i });
-    screen.getByRole('button', { name: /stop streaming/i });
+    screen.getByRole('button', { name: /pause ⏸/i });
   });
 
   it('polls the video when live state is STARTING', async () => {
@@ -249,6 +249,73 @@ describe('components/DashboardVideoLive', () => {
     );
 
     screen.getByRole('button', { name: /show live/i });
-    screen.getByRole('button', { name: /stop streaming/i });
+    screen.getByRole('button', { name: /pause ⏸/i });
+  });
+
+  it('polls the video when live state is STOPPING', async () => {
+    fetchMock.mock(
+      `/api/videos/${video.id}/`,
+      JSON.stringify({ ...video, live_state: liveState.STOPPING }),
+    );
+
+    const { rerender } = render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.STOPPING }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    screen.getByText(
+      'Pause live streaming, please wait a few moments to be able to resume it.',
+    );
+    expect(fetchMock.called()).not.toBeTruthy();
+
+    // First backend call: the live is still stopping
+    jest.advanceTimersByTime(1000 * 15 + 200);
+    await waitFor(() => expect(fetchMock.called()).toBe(true));
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
+    screen.getByText(
+      'Pause live streaming, please wait a few moments to be able to resume it.',
+    );
+
+    // The live will be paused in further response
+    fetchMock.restore();
+    fetchMock.mock(
+      `/api/videos/${video.id}/`,
+      JSON.stringify({ ...video, live_state: liveState.PAUSED }),
+    );
+
+    // Second backend call
+    expect(fetchMock.called()).not.toBeTruthy();
+    jest.advanceTimersByTime(1000 * 15 + 200);
+    await waitFor(() => expect(fetchMock.called()).toBe(true));
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
+
+    rerender(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.PAUSED }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    screen.getByRole('button', { name: /start streaming/i });
   });
 });

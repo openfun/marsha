@@ -33,8 +33,9 @@ export enum uploadState {
 
 export enum liveState {
   IDLE = 'idle',
-  STARTING = 'starting',
+  PAUSED = 'paused',
   RUNNING = 'running',
+  STARTING = 'starting',
   STOPPED = 'stopped',
   STOPPING = 'stopping',
 }
