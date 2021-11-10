@@ -12,7 +12,7 @@ jest.mock('../../data/appData', () => ({}));
 
 const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
   uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveState;
+const { IDLE, PAUSED, RUNNING, STARTING, STOPPED, STOPPING } = liveState;
 
 describe('<ObjectStatusPicker />', () => {
   describe('upload state', () => {
@@ -350,6 +350,29 @@ describe('<ObjectStatusPicker />', () => {
       );
 
       screen.getByText('Live is stopping');
+    });
+
+    it('renders status info for an object in live state PAUSED', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: PAUSED,
+        upload_state: PENDING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Live is paused');
     });
   });
 });

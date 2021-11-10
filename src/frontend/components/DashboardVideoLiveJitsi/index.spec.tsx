@@ -663,4 +663,100 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
     screen.getByText('video player');
   });
+
+  it('allows to restart a streaming once stopped without error', async () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    const { rerender } = render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+
+    expect(events.recordingStatusChanged).toBeDefined();
+
+    await waitFor(() => {
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      });
+    });
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
+
+    // stop streaming
+    rerender(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={{
+            ...video,
+            live_state: liveState.STOPPING,
+          }}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+    expect(mockExecuteCommand).toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
+    // simulates recording interruption without error
+    dispatch('recordingStatusChanged', {
+      on: false,
+      mode: 'stream',
+    });
+
+    // resume streaming
+    rerender(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={{
+            ...video,
+            live_state: liveState.RUNNING,
+          }}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+    await waitFor(() => {
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      });
+    });
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(3);
+  });
 });

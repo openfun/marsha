@@ -12,12 +12,12 @@ import { Loader } from '../Loader';
 
 const messages = defineMessages({
   stopLive: {
-    defaultMessage: 'stop streaming',
+    defaultMessage: 'pause ⏸',
     description: 'Stop a video streaming.',
     id: 'components.DashboardVideoLiveStopButton.startLive',
   },
   confirmStopLive: {
-    defaultMessage: 'Are you sure you want to stop the video streaming ?',
+    defaultMessage: 'Are you sure you want to pause the video streaming ?',
     description: 'Confirmation to stop the video streaming.',
     id: 'components.DashboardVideoLiveStopButton.confirmStopLive',
   },
