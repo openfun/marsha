@@ -7,8 +7,9 @@ from os.path import splitext
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import OperationalError, transaction
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import Http404, HttpResponseNotFound
 from django.utils import timezone
 
 import requests
@@ -31,11 +32,7 @@ from .models import (
 )
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
-    ManifestMissingException,
     create_live_stream,
-    create_mediapackage_harvest_job,
-    delete_aws_element_stack,
-    delete_mediapackage_channel,
     start_live_channel,
     stop_live_channel,
     wait_medialive_channel_is_created,
@@ -469,7 +466,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if video.live_state is None:
             return Response({"error": "Call initiate-live before starting a live"}, 400)
 
-        if video.live_state != defaults.IDLE:
+        if video.live_state not in [defaults.IDLE, defaults.PAUSED]:
             return Response(
                 {
                     "error": (
@@ -537,6 +534,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         stop_live_channel(video.get_medialive_channel().get("id"))
 
         video.live_state = defaults.STOPPING
+        video.live_info.update({"paused_at": to_timestamp(timezone.now())})
         video.save()
         serializer = self.get_serializer(video)
 
@@ -582,49 +580,41 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if not validate_signature(request.headers.get("X-Marsha-Signature"), msg):
             return Response("Forbidden", status=403)
 
-        # Load the video first to return a 404 if not existing
-        video = self.get_object()
+        with transaction.atomic():
+            try:
+                video = Video.objects.select_for_update(nowait=True).get(pk=pk)
+            except Video.DoesNotExist as video_does_not_exists:
+                raise Http404 from video_does_not_exists
+            except OperationalError:
+                return Response({"success": True})
 
-        # Try to update the video with the new live state. If the video has already this live state
-        # we are in a concurrent request and only the first one should be accepted.
-        updated_rows = Video.objects.filter(
-            ~Q(live_state=serializer.validated_data["state"]),
-            pk=video.pk,
-        ).update(live_state=serializer.validated_data["state"])
+            request_ids = video.live_info.get("medialive", {}).get("request_ids", [])
+            if serializer.validated_data["requestId"] in request_ids:
+                return Response({"success": True})
 
-        if updated_rows == 0:
-            # State was alreay updated by an earlier request, we can stop the process here
-            # If we return a status different than 200 the lambda will retry
-            # to update the live state several times.
-            return Response({"success": True})
-
-        video.refresh_from_db()
+            request_ids.append(serializer.validated_data["requestId"])
+            video.live_info["medialive"].update({"request_ids": request_ids})
+            video.save()
 
         live_info = video.live_info
         live_info.update(
             {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
         )
 
-        if video.live_state == defaults.RUNNING:
-            live_info.update({"started_at": stamp})
-            video.live_info = live_info
+        if serializer.validated_data["state"] == defaults.RUNNING:
+            video.live_state = defaults.RUNNING
+            live_info.pop("paused_at", None)
+            if live_info.get("started_at") is None:
+                live_info.update({"started_at": stamp})
 
-        if video.live_state == defaults.STOPPED:
+        if serializer.validated_data["state"] == defaults.STOPPED:
+            video.live_state = defaults.PAUSED
             live_info.update({"stopped_at": stamp})
-            video.upload_state = defaults.HARVESTING
             video.live_info = live_info
-            delete_aws_element_stack(video)
             if settings.LIVE_CHAT_ENABLED:
                 close_room(video.id)
-            try:
-                create_mediapackage_harvest_job(video)
-            except ManifestMissingException:
-                delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
-                video.upload_state = defaults.DELETED
-                video.live_state = None
-                video.live_info = None
-                video.live_type = None
 
+        video.live_info = live_info
         video.save()
 
         return Response({"success": True})
