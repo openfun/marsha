@@ -246,8 +246,9 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
         responses.GET,
         "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
         body="""<response>
-            <returncode>SUCCESS</returncode>
-            <running>false</running>
+            <returncode>FAILED</returncode>
+            <messageKey>notFound</messageKey>
+            <message>We could not find a meeting with that meeting ID</message>
         </response>
         """,
         status=200,

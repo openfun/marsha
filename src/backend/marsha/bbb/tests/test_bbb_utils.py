@@ -1,9 +1,7 @@
 """Tests for the services in the ``bbb`` app of the Marsha project."""
-from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import requests
 import responses
 
 from marsha.bbb.factories import MeetingFactory
@@ -43,33 +41,52 @@ class MeetingServiceTestCase(TestCase):
             sign_parameters(action="join", parameters=parameters),
         )
 
-    @mock.patch.object(requests, "get")
-    def test_bbb_create_new_meeting(self, mock_create_request):
+    @responses.activate
+    def test_bbb_create_new_meeting(self):
         """Create a meeting in current meeting related server."""
         meeting = MeetingFactory(
+            title="Meeting 001",
             attendee_password="9#R1kuUl3R",
             moderator_password="0$C7Aaz0o",
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = f"""
-        <response>
-            <returncode>SUCCESS</returncode>
-            <meetingID>{meeting.id}</meetingID>
-            <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
-            <parentMeetingID>bbb-none</parentMeetingID>
-            <attendeePW>{meeting.attendee_password}</attendeePW>
-            <moderatorPW>{meeting.moderator_password}</moderatorPW>
-            <createTime>1628693645640</createTime>
-            <voiceBridge>83267</voiceBridge>
-            <dialNumber>613-555-1234</dialNumber>
-            <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
-            <hasUserJoined>false</hasUserJoined>
-            <duration>0</duration>
-            <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
-            <messageKey></messageKey>
-            <message></message>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "attendeePW": "9#R1kuUl3R",
+                        "checksum": "08a4c09eb240bcbcfe7a79a3ce864c7070aabd2a",
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "moderatorPW": "0$C7Aaz0o",
+                        "name": "Meeting 001",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body=f"""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingID>{meeting.id}</meetingID>
+                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
+                <parentMeetingID>bbb-none</parentMeetingID>
+                <attendeePW>{meeting.attendee_password}</attendeePW>
+                <moderatorPW>{meeting.moderator_password}</moderatorPW>
+                <createTime>1628693645640</createTime>
+                <voiceBridge>83267</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
+                <hasUserJoined>false</hasUserJoined>
+                <duration>0</duration>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <messageKey></messageKey>
+                <message></message>
+            </response>
+            """,
+            status=200,
+        )
 
         api_response = create(meeting)
 
@@ -95,34 +112,50 @@ class MeetingServiceTestCase(TestCase):
         )
         self.assertEqual(meeting.started, True)
 
-    @mock.patch.object(requests, "get")
-    def test_bbb_create_new_meeting_no_passwords(self, mock_create_request):
+    @responses.activate
+    def test_bbb_create_new_meeting_no_passwords(self):
         """When starting a meeting, if no passwords exists,
         BBB generates them, and they are stored in meeting instance."""
         meeting = MeetingFactory(
+            title="Meeting 001",
             attendee_password=None,
             moderator_password=None,
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = f"""
-        <response>
-            <returncode>SUCCESS</returncode>
-            <meetingID>{meeting.id}</meetingID>
-            <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
-            <parentMeetingID>bbb-none</parentMeetingID>
-            <attendeePW>attendee_password</attendeePW>
-            <moderatorPW>moderator_password</moderatorPW>
-            <createTime>1628693645640</createTime>
-            <voiceBridge>83267</voiceBridge>
-            <dialNumber>613-555-1234</dialNumber>
-            <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
-            <hasUserJoined>false</hasUserJoined>
-            <duration>0</duration>
-            <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
-            <messageKey></messageKey>
-            <message></message>
-        </response>
-        """
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "dea8e4672ccf67bcd16625e4902c1d5d004b18bc",
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "name": "Meeting 001",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body=f"""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingID>{meeting.id}</meetingID>
+                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
+                <parentMeetingID>bbb-none</parentMeetingID>
+                <attendeePW>attendee_password</attendeePW>
+                <moderatorPW>moderator_password</moderatorPW>
+                <createTime>1628693645640</createTime>
+                <voiceBridge>83267</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
+                <hasUserJoined>false</hasUserJoined>
+                <duration>0</duration>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <messageKey></messageKey>
+                <message></message>
+            </response>
+            """,
+            status=200,
+        )
 
         api_response = create(meeting)
 
@@ -150,18 +183,40 @@ class MeetingServiceTestCase(TestCase):
         self.assertEqual(meeting.attendee_password, "attendee_password")
         self.assertEqual(meeting.moderator_password, "moderator_password")
 
-    @mock.patch.object(requests, "get")
-    def test_bbb_create_existing_meeting(self, mock_create_request):
+    @responses.activate
+    def test_bbb_create_existing_meeting(self):
         """Create a meeting in current meeting related server."""
-        meeting = MeetingFactory()
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>FAILED</returncode>
-            <messageKey>idNotUnique</messageKey>
-            <message>A meeting already exists with that meeting ID.</message>
-        </response>
-        """
+        meeting = MeetingFactory(
+            title="Meeting 001",
+            attendee_password="9#R1kuUl3R",
+            moderator_password="0$C7Aaz0o",
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "attendeePW": "9#R1kuUl3R",
+                        "checksum": "08a4c09eb240bcbcfe7a79a3ce864c7070aabd2a",
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "moderatorPW": "0$C7Aaz0o",
+                        "name": "Meeting 001",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>FAILED</returncode>
+                <messageKey>idNotUnique</messageKey>
+                <message>A meeting already exists with that meeting ID.</message>
+            </response>
+            """,
+            status=200,
+        )
 
         with self.assertRaises(ApiMeetingException) as exception:
             create(meeting)
@@ -275,25 +330,9 @@ class MeetingServiceTestCase(TestCase):
             "You must supply the moderator password for this call.",
         )
 
-    @mock.patch.object(requests, "get")
-    def test_join(self, mock_create_request):
+    def test_join(self):
         """Return a meeting join url."""
         meeting = MeetingFactory()
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>SUCCESS</returncode>
-            <messageKey>successfullyJoined</messageKey>
-            <message>You have joined successfully.</message>
-            <meeting_id>74f4b5fefa00d05889a9095d1c81c51f704a74c0-1632323106549</meeting_id>
-            <user_id>w_cmlgpuqzkqez</user_id>
-            <auth_token>pcwfqes0ugkb</auth_token>
-            <session_token>4vtuguoqsolsqkqi</session_token>
-            <guestStatus>ALLOW</guestStatus>
-            <url>https://10.7.7.1/html5client/join?sessionToken=4vtuguoqsolsqkqi</url>
-        </response>
-        """
-
         api_response = join(meeting, fullname="John Doe")
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
@@ -302,66 +341,79 @@ class MeetingServiceTestCase(TestCase):
             api_response.get("url"),
         )
 
-    @mock.patch.object(requests, "get")
-    def test_infos_started(self, mock_create_request):
+    @responses.activate
+    def test_infos_started(self):
         """Return meeting infos.
         If meeting is found, model instance start is set to True."""
         meeting = MeetingFactory(
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=False
         )
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>SUCCESS</returncode>
-            <meetingName>random-6256545</meetingName>
-            <meetingID>random-6256545</meetingID>
-            <internalMeetingID>ab0da0b4a1f283e94cfefdf32dd761eebd5461ce-1635514947533</internalMeetingID>
-            <createTime>1635514947533</createTime>
-            <createDate>Fri Oct 29 13:42:27 UTC 2021</createDate>
-            <voiceBridge>77581</voiceBridge>
-            <dialNumber>613-555-1234</dialNumber>
-            <attendeePW>trac</attendeePW>
-            <moderatorPW>trusti</moderatorPW>
-            <running>true</running>
-            <duration>0</duration>
-            <hasUserJoined>true</hasUserJoined>
-            <recording>false</recording>
-            <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
-            <startTime>1635514947596</startTime>
-            <endTime>0</endTime>
-            <participantCount>1</participantCount>
-            <listenerCount>0</listenerCount>
-            <voiceParticipantCount>0</voiceParticipantCount>
-            <videoCount>0</videoCount>
-            <maxUsers>0</maxUsers>
-            <moderatorCount>0</moderatorCount>
-            <attendees>
-                <attendee>
-                    <userID>w_2xox6leao03w</userID>
-                    <fullName>User 1907834</fullName>
-                    <role>MODERATOR</role>
-                    <isPresenter>true</isPresenter>
-                    <isListeningOnly>false</isListeningOnly>
-                    <hasJoinedVoice>false</hasJoinedVoice>
-                    <hasVideo>false</hasVideo>
-                    <clientType>HTML5</clientType>
-                </attendee>
-                <attendee>
-                    <userID>w_bau7cr7aefju</userID>
-                    <fullName>User 1907834</fullName>
-                    <role>VIEWER</role>
-                    <isPresenter>false</isPresenter>
-                    <isListeningOnly>false</isListeningOnly>
-                    <hasJoinedVoice>false</hasJoinedVoice>
-                    <hasVideo>false</hasVideo>
-                    <clientType>HTML5</clientType>
-                </attendee>
-            </attendees>
-            <metadata>
-            </metadata>
-            <isBreakout>false</isBreakout>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingName>random-6256545</meetingName>
+                <meetingID>random-6256545</meetingID>
+                <internalMeetingID>ab0da0b4a1f283e94cfefdf32dd761eebd5461ce-1635514947533</internalMeetingID>
+                <createTime>1635514947533</createTime>
+                <createDate>Fri Oct 29 13:42:27 UTC 2021</createDate>
+                <voiceBridge>77581</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <attendeePW>trac</attendeePW>
+                <moderatorPW>trusti</moderatorPW>
+                <running>true</running>
+                <duration>0</duration>
+                <hasUserJoined>true</hasUserJoined>
+                <recording>false</recording>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <startTime>1635514947596</startTime>
+                <endTime>0</endTime>
+                <participantCount>1</participantCount>
+                <listenerCount>0</listenerCount>
+                <voiceParticipantCount>0</voiceParticipantCount>
+                <videoCount>0</videoCount>
+                <maxUsers>0</maxUsers>
+                <moderatorCount>0</moderatorCount>
+                <attendees>
+                    <attendee>
+                        <userID>w_2xox6leao03w</userID>
+                        <fullName>User 1907834</fullName>
+                        <role>MODERATOR</role>
+                        <isPresenter>true</isPresenter>
+                        <isListeningOnly>false</isListeningOnly>
+                        <hasJoinedVoice>false</hasJoinedVoice>
+                        <hasVideo>false</hasVideo>
+                        <clientType>HTML5</clientType>
+                    </attendee>
+                    <attendee>
+                        <userID>w_bau7cr7aefju</userID>
+                        <fullName>User 1907834</fullName>
+                        <role>VIEWER</role>
+                        <isPresenter>false</isPresenter>
+                        <isListeningOnly>false</isListeningOnly>
+                        <hasJoinedVoice>false</hasJoinedVoice>
+                        <hasVideo>false</hasVideo>
+                        <clientType>HTML5</clientType>
+                    </attendee>
+                </attendees>
+                <metadata>
+                </metadata>
+                <isBreakout>false</isBreakout>
+            </response>
+           """,
+            status=200,
+        )
 
         api_response = get_meeting_infos(meeting)
         self.assertDictEqual(
@@ -421,21 +473,34 @@ class MeetingServiceTestCase(TestCase):
         meeting.refresh_from_db()
         self.assertEqual(meeting.started, True)
 
-    @mock.patch.object(requests, "get")
-    def test_infos_not_found(self, mock_create_request):
+    @responses.activate
+    def test_infos_not_found(self):
         """When a meeting is not found on BBB server an exception is raised,
         and model instance start is set to False."""
         meeting = MeetingFactory(
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=True
         )
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>FAILED</returncode>
-            <messageKey>notFound</messageKey>
-            <message>We could not find a meeting with that meeting ID</message>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>FAILED</returncode>
+                <messageKey>notFound</messageKey>
+                <message>We could not find a meeting with that meeting ID</message>
+            </response>
+            """,
+            status=200,
+        )
 
         with self.assertRaises(ApiMeetingException):
             get_meeting_infos(meeting)
