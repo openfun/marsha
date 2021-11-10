@@ -44,7 +44,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       ),
     );
 
-    screen.getByRole('button', { name: /stop streaming/i });
+    screen.getByRole('button', { name: /pause ⏸/i });
   });
 
   it('clicks on stop live button and fails.', async () => {
@@ -72,7 +72,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
     expect(screen.queryByText('Loader')).not.toBeInTheDocument();
 
     const stopButton = screen.getByRole('button', {
-      name: /stop streaming/i,
+      name: /pause ⏸/i,
     });
     fireEvent.click(stopButton);
 
@@ -96,7 +96,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
       `/api/videos/${video.id}/stop-live/`,
       {
         ...video,
-        live_state: liveState.STOPPED,
+        live_state: liveState.PAUSED,
       },
       { method: 'POST' },
     );
@@ -115,7 +115,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
     expect(screen.queryByText('Loader')).not.toBeInTheDocument();
 
     const stopButton = screen.getByRole('button', {
-      name: /stop streaming/i,
+      name: /pause ⏸/i,
     });
     fireEvent.click(stopButton);
 
@@ -133,7 +133,7 @@ describe('components/DashboardVideoLiveStopButton', () => {
 
     expect(useVideo.getState().videos[video.id]).toEqual({
       ...video,
-      live_state: liveState.STOPPED,
+      live_state: liveState.PAUSED,
     });
   });
 });

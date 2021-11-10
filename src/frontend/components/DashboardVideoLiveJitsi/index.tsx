@@ -169,6 +169,11 @@ const DashboardVideoLiveJitsi = ({
         startRecording(_jitsi);
       }
 
+      // Normal stop, set jitsiIsRecording to false to allow a resume
+      if (!event.on && !event.error) {
+        jitsiIsRecording.current = false;
+      }
+
       // recording has started. Reset the retry delay
       if (event.on) {
         retryStartRecordingDelay.current = retryDelayStep;

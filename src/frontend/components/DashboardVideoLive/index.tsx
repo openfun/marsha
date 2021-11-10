@@ -46,9 +46,9 @@ const messages = defineMessages({
   },
   liveStopping: {
     defaultMessage:
-      'Live streaming is ending. The process to transform the live to VOD will begin soon. You can close the window and come back later.',
+      'Pause live streaming, please wait a few moments to be able to resume it.',
     description:
-      'Helptext explaining that the live is ending and the live to VOD process will start.',
+      'Helptext explaining that the live is stopping and will be paused in few moments.',
     id: 'components.DashboardVideoLive.liveStopping',
   },
 });
@@ -75,7 +75,8 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
 
       if (
         incomingVideo.live_state === liveState.RUNNING ||
-        incomingVideo.live_state === liveState.IDLE
+        incomingVideo.live_state === liveState.IDLE ||
+        incomingVideo.live_state === liveState.PAUSED
       ) {
         updateVideo(incomingVideo);
       }
@@ -85,7 +86,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   };
 
   useEffect(() => {
-    if (video.live_state === liveState.STARTING) {
+    if ([liveState.STARTING, liveState.STOPPING].includes(video.live_state!)) {
       const interval = setInterval(pollForVideo, 15000);
       return () => clearInterval(interval);
     }
@@ -115,7 +116,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
         />
       )}
       <Box direction={'row'} justify={'center'} margin={'small'}>
-        {video.live_state === liveState.IDLE && (
+        {[liveState.IDLE, liveState.PAUSED].includes(video.live_state!) && (
           <React.Fragment>
             {video.live_type === LiveModeType.RAW && (
               <DashboardVideoLiveConfigureButton

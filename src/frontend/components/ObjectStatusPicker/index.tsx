@@ -13,7 +13,7 @@ import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
   uploadState;
-const { IDLE, STARTING, RUNNING, STOPPED, STOPPING } = liveStateTrack;
+const { IDLE, PAUSED, RUNNING, STARTING, STOPPED, STOPPING } = liveStateTrack;
 
 const messages = defineMessages({
   [DELETED]: {
@@ -75,6 +75,11 @@ const messages = defineMessages({
     defaultMessage: 'Live is stopping',
     description: 'The video is in live state and is stopping',
     id: 'components.ObjectStatusPicker.STOPPING',
+  },
+  [PAUSED]: {
+    defaultMessage: 'Live is paused',
+    description: 'The video is in live state and is paused',
+    id: 'components.ObjectStatusPicker.PAUSED',
   },
   uploadingObject: {
     defaultMessage: 'Uploading',
