@@ -4,12 +4,11 @@ import json
 import random
 import re
 from unittest import mock
-from unittest.mock import MagicMock
 import uuid
 
 from django.test import TestCase, override_settings
 
-import requests
+import responses
 from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
@@ -30,17 +29,16 @@ class MeetingLTIViewTestCase(TestCase):
 
     maxDiff = None
 
-    @mock.patch.object(requests, "get")
+    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_meeting_student(
-        self, mock_get_consumer_site, mock_verify, mock_create_request
-    ):
+    def test_views_lti_meeting_student(self, mock_get_consumer_site, mock_verify):
         """Validate the response returned for a student request."""
         passport = ConsumerSiteLTIPassportFactory()
         meeting = MeetingFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
         data = {
             "resource_link_id": meeting.lti_id,
@@ -53,13 +51,26 @@ class MeetingLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>SUCCESS</returncode>
-            <running>true</running>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <running>true</running>
+            </response>
+            """,
+            status=200,
+        )
 
         response = self.client.post(f"/lti/meetings/{meeting.id}", data)
         self.assertEqual(response.status_code, 200)
@@ -93,11 +104,11 @@ class MeetingLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(requests, "get")
+    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_meeting_instructor_no_meeting(
-        self, mock_get_consumer_site, mock_verify, mock_create_request
+        self, mock_get_consumer_site, mock_verify
     ):
         """Validate the response returned for an instructor request when there is no file."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -110,13 +121,18 @@ class MeetingLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>SUCCESS</returncode>
-            <running>true</running>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <running>true</running>
+            </response>
+            """,
+            status=200,
+        )
 
         response = self.client.post(f"/lti/meetings/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
@@ -137,17 +153,18 @@ class MeetingLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(requests, "get")
+    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_meeting_instructor_same_playlist(
-        self, mock_get_consumer_site, mock_verify, mock_create_request
+        self, mock_get_consumer_site, mock_verify
     ):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
         meeting = MeetingFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
         data = {
             "resource_link_id": meeting.lti_id,
@@ -160,13 +177,26 @@ class MeetingLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        mock_create_request.return_value.status_code = 200
-        mock_create_request.return_value.content = """
-        <response>
-            <returncode>SUCCESS</returncode>
-            <running>true</running>
-        </response>
-        """
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <running>true</running>
+            </response>
+            """,
+            status=200,
+        )
 
         response = self.client.post(f"/lti/meetings/{meeting.pk}", data)
         self.assertEqual(response.status_code, 200)
@@ -221,11 +251,11 @@ class MeetingLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(requests, "get")
+    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_meeting_connection_error(
-        self, mock_get_consumer_site, mock_verify, mock_create_request: MagicMock
+        self, mock_get_consumer_site, mock_verify
     ):
         """Validate the response returned for an instructor request when there is no file."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -238,24 +268,15 @@ class MeetingLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
-        mock_create_request.side_effect = ConnectionError
+        # mock_create_request.side_effect = ConnectionError
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            body=ConnectionError(),
+            status=200,
+        )
 
         with self.assertRaises(ConnectionError):
-            response = self.client.post(f"/lti/meetings/{uuid.uuid4()}", data)
-            self.assertEqual(response.status_code, 200)
-            self.assertContains(response, "<html>")
-            content = response.content.decode("utf-8")
-
-            match = re.search(
-                '<div id="marsha-frontend-data" data-context="(.*)">', content
-            )
-
-            context = json.loads(html.unescape(match.group(1)))
-            self.assertIsNotNone(context.get("jwt"))
-            self.assertEqual(context.get("state"), "success")
-            self.assertIsNotNone(context.get("resource"))
-            self.assertEqual(context.get("modelName"), "meetings")
-
-            # Make sure we only go through LTI verification once as it is costly
-            # (getting passport + signature)
-            self.assertEqual(mock_verify.call_count, 1)
+            self.client.post(f"/lti/meetings/{uuid.uuid4()}", data)
+        self.assertEqual(mock_verify.call_count, 1)
