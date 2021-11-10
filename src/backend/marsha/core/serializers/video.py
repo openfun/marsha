@@ -279,6 +279,7 @@ class UpdateLiveStateSerializer(serializers.Serializer):
         tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
     )
     logGroupName = serializers.CharField()
+    requestId = serializers.CharField()
 
 
 class InitLiveStateSerializer(serializers.Serializer):
@@ -636,19 +637,29 @@ class VideoSerializer(VideoBaseSerializer):
         """
         can_return_live_info = self.context.get("can_return_live_info", False)
 
-        if obj.live_state is None or can_return_live_info is False:
+        if obj.live_state is None:
             return {}
 
         live_info = {}
 
+        if obj.live_info is not None and obj.live_info.get("paused_at"):
+            live_info.update({"paused_at": obj.live_info["paused_at"]})
+
+        if can_return_live_info is False:
+            return live_info
+
         if obj.live_info is not None:
-            live_info = {
-                "medialive": {
-                    "input": {
-                        "endpoints": obj.live_info["medialive"]["input"]["endpoints"],
-                    }
-                },
-            }
+            live_info.update(
+                {
+                    "medialive": {
+                        "input": {
+                            "endpoints": obj.live_info["medialive"]["input"][
+                                "endpoints"
+                            ],
+                        }
+                    },
+                }
+            )
 
         if obj.live_type == JITSI:
             live_info.update(

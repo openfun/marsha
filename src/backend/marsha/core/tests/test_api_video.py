@@ -13,11 +13,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
-    DELETED,
-    HARVESTING,
     IDLE,
     JITSI,
     LIVE_CHOICES,
+    PAUSED,
     PENDING,
     RAW,
     RUNNING,
@@ -26,7 +25,6 @@ from ..defaults import (
     STOPPING,
 )
 from ..utils.api_utils import generate_hash
-from ..utils.medialive_utils import ManifestMissingException
 
 
 RSA_KEY_MOCK = b"""
@@ -3240,12 +3238,14 @@ class VideoAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 400)
 
-    def test_api_instructor_start_non_idle_live(self):
-        """An instructor should not start a video when not in live mode."""
+    def test_api_instructor_start_non_idle_or_paused_live(self):
+        """An instructor should not start a video its state is not IDLE or PAUSED."""
         video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=PENDING,
-            live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "idle"]),
+            live_state=random.choice(
+                [s[0] for s in LIVE_CHOICES if s[0] not in [PAUSED, IDLE]]
+            ),
             live_type=RAW,
         )
         jwt_token = AccessToken()
@@ -3254,11 +3254,10 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "start_live_channel"):
-            response = self.client.post(
-                f"/api/videos/{video.id}/start-live/",
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
+        response = self.client.post(
+            f"/api/videos/{video.id}/start-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_api_video_stop_live_anonymous_user(self):
@@ -3356,7 +3355,10 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "stop_live_channel"):
+        now = datetime(2021, 11, 16, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
+            api, "stop_live_channel"
+        ):
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3402,6 +3404,7 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
+                    "paused_at": "1637020800",
                 },
                 "live_type": RAW,
                 "xmpp": None,
@@ -3455,11 +3458,33 @@ class VideoAPITest(TestCase):
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=IDLE,
-            live_info={},
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "paused_at": "1637020800",
+            },
             live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "7954d4d1-9dd3-47f4-9542-e7fd5f937fe6",
             "state": "running",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -3480,6 +3505,26 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             video.live_info,
             {
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "started_at": "1533686400",
             },
@@ -3488,26 +3533,46 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     @override_settings(LIVE_CHAT_ENABLED=True)
     def test_api_video_update_live_state_stopped(self):
-        """Updating state to stopped should delete all the AWS elemental stack."""
+        """Receiving stopped event should pause the video."""
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=STOPPING,
-            live_info={},
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
             live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "c31c7ce8-705d-4352-b7f0-e60f2bfa2845",
             "state": "stopped",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "marsha.core.api.delete_aws_element_stack"
-        ) as delete_aws_element_stack_mock, mock.patch(
-            "marsha.core.api.create_mediapackage_harvest_job"
-        ) as create_mediapackage_harvest_job_mock, mock.patch.object(
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
             api, "close_room"
         ) as mock_close_room:
             response = self.client.patch(
@@ -3516,70 +3581,45 @@ class VideoAPITest(TestCase):
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
-            delete_aws_element_stack_mock.assert_called_once()
-            create_mediapackage_harvest_job_mock.assert_called_once()
             mock_close_room.assert_called_once_with(video.id)
 
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.live_state, STOPPED)
-        self.assertEqual(video.upload_state, HARVESTING)
+        self.assertEqual(video.live_state, PAUSED)
+        self.assertEqual(video.upload_state, PENDING)
         self.assertEqual(
             video.live_info,
             {
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": [
+                        "7954d4d1-9dd3-47f4-9542-e7fd5f937fe6",
+                        "c31c7ce8-705d-4352-b7f0-e60f2bfa2845",
+                    ],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
                 "stopped_at": "1533686400",
             },
         )
-
-    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    @override_settings(LIVE_CHAT_ENABLED=True)
-    def test_api_video_update_live_state_stopped_missing_manifest(self):
-        """Updating state to stopped should set video to DELETED if manifest is missing."""
-        video = factories.VideoFactory(
-            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
-            upload_state=PENDING,
-            live_state=STOPPING,
-            live_info={"mediapackage": {"channel": {"id": "channel1"}}},
-            live_type=RAW,
-        )
-        data = {
-            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
-            "state": "stopped",
-        }
-        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "marsha.core.api.delete_aws_element_stack"
-        ) as delete_aws_element_stack_mock, mock.patch(
-            "marsha.core.api.create_mediapackage_harvest_job"
-        ) as create_mediapackage_harvest_job_mock, mock.patch(
-            "marsha.core.api.delete_mediapackage_channel"
-        ) as delete_mediapackage_channel_mock, mock.patch.object(
-            api, "close_room"
-        ) as mock_close_room:
-            create_mediapackage_harvest_job_mock.side_effect = ManifestMissingException
-            response = self.client.patch(
-                f"/api/videos/{video.id}/update-live-state/",
-                data,
-                content_type="application/json",
-                HTTP_X_MARSHA_SIGNATURE=signature,
-            )
-            delete_aws_element_stack_mock.assert_called_once()
-            create_mediapackage_harvest_job_mock.assert_called_once()
-            delete_mediapackage_channel_mock.assert_called_once()
-            mock_close_room.assert_called_once_with(video.id)
-
-        video.refresh_from_db()
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.live_state, None)
-        self.assertEqual(video.upload_state, DELETED)
-        self.assertEqual(video.live_info, None)
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
@@ -3589,9 +3629,34 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=IDLE,
             live_type=RAW,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "49010b0f-63f5-4d5b-9baa-6fc69bbce3eb",
             "state": "running",
         }
         signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
@@ -3614,12 +3679,37 @@ class VideoAPITest(TestCase):
             upload_state=PENDING,
             live_state=IDLE,
             live_type=RAW,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
         )
         invalid_state = random.choice(
-            [s[0] for s in LIVE_CHOICES if s[0] not in [IDLE, RUNNING, STOPPED]]
+            [s[0] for s in LIVE_CHOICES if s[0] not in [RUNNING, STOPPED]]
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "49010b0f-63f5-4d5b-9baa-6fc69bbce3eb",
             "state": invalid_state,
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -3643,6 +3733,7 @@ class VideoAPITest(TestCase):
         """Live state update with an unknown video should fails."""
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "49010b0f-63f5-4d5b-9baa-6fc69bbce3eb",
             "state": "running",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
@@ -3656,33 +3747,51 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    def test_api_video_update_live_state_same_state(self):
-        """Updating with exact same live state should return earlier a status code 200."""
+    def test_api_video_update_live_already_saved_request_id(self):
+        """Updating with an already saved request id should return a 200 earlier."""
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
             live_state=STOPPED,
-            live_info={},
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
             live_type=RAW,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "7954d4d1-9dd3-47f4-9542-e7fd5f937fe6",
             "state": "stopped",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "marsha.core.api.delete_aws_element_stack"
-        ) as delete_aws_element_stack_mock, mock.patch(
-            "marsha.core.api.create_mediapackage_harvest_job"
-        ) as create_mediapackage_harvest_job_mock:
+        with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
-            delete_aws_element_stack_mock.assert_not_called()
-            create_mediapackage_harvest_job_mock.assert_not_called()
 
         self.assertEqual(response.status_code, 200)
