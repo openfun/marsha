@@ -9,6 +9,7 @@ import {
 import { APIList } from '../../types/api';
 import { Playlist, Thumbnail, TimedText, Video } from '../../types/tracks';
 import { Organization } from '../../types/Organization';
+import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { fetchList } from './fetchList';
 import { fetchOne } from './fetchOne';
@@ -154,4 +155,42 @@ export const useVideos = (
 ) => {
   const key = ['videos', params];
   return useQuery<VideosResponse, 'videos'>(key, fetchList, queryConfig);
+};
+
+type usePairingVideoError = { code: 'exception' };
+type usePairingVideoResponse = {
+  secret: string;
+};
+type usePairingVideoOptions = UseMutationOptions<
+  usePairingVideoResponse,
+  usePairingVideoError
+>;
+export const usePairingVideo = (
+  id: string,
+  options?: usePairingVideoOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<usePairingVideoResponse, usePairingVideoError>(
+    () =>
+      actionOne({
+        name: 'videos',
+        id,
+        action: 'pairing-secret',
+        method: 'GET',
+      }),
+    {
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
 };
