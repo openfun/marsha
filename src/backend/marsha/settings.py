@@ -284,7 +284,6 @@ class Base(Configuration):
 
     # LIVE SETTINGS
     NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS = values.Value(14)
-    NB_DAYS_KEEPING_LIVE_IDLE = values.Value(7)
     NB_SECONDS_LIVING_DEV_STACK = values.PositiveIntegerValue(600)
     LIVE_PLAYLIST_WINDOW_SECONDS = values.PositiveIntegerValue(10)
     LIVE_SEGMENT_DURATION_SECONDS = values.PositiveIntegerValue(4)
