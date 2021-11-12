@@ -26,6 +26,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Users with empty email in their token can register to scheduled webinars
 - Users with wrong email in token is properly detected as registered
 
+### Removed
+
+- check_live_idle management command
+
 ## [3.26.0] - 2021-10-22
 
 ### Added
