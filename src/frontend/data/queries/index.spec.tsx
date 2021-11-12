@@ -6,6 +6,7 @@ import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import {
   useCreateVideo,
   useOrganization,
+  usePairingVideo,
   usePlaylist,
   usePlaylists,
   useThumbnail,
@@ -524,6 +525,58 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('usePairingingVideo', () => {
+    it('updates the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.get(`/api/videos/${video.id}/pairing-secret/`, {
+        secret: '12345',
+      });
+
+      const { result, waitFor } = renderHook(() => usePairingVideo(video.id), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate();
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/pairing-secret/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'GET',
+      });
+      expect(result.current.data).toEqual({ secret: '12345' });
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to update the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.get(`/api/videos/${video.id}/pairing-secret/`, 400);
+
+      const { result, waitFor } = renderHook(() => usePairingVideo(video.id), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate();
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/pairing-secret/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'GET',
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
