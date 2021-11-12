@@ -1,4 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+# pylint: disable=too-many-lines
 import json
 import logging
 from mimetypes import guess_extension
@@ -32,7 +33,11 @@ from .models import (
 )
 from .utils.api_utils import validate_signature
 from .utils.medialive_utils import (
+    ManifestMissingException,
     create_live_stream,
+    create_mediapackage_harvest_job,
+    delete_aws_element_stack,
+    delete_mediapackage_channel,
     start_live_channel,
     stop_live_channel,
     wait_medialive_channel_is_created,
@@ -541,6 +546,76 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(
+        methods=["post"],
+        detail=True,
+        url_path="end-live",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+        ],
+    )
+    # pylint: disable=unused-argument
+    def end_live(self, request, pk=None):
+        """end a medialive channel on AWS and delete its stack.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+
+        if video.live_state is None:
+            return Response({"error": "Impossible to stop a non live video."}, 400)
+
+        if video.live_state not in [defaults.IDLE, defaults.PAUSED]:
+            return Response(
+                {
+                    "error": (
+                        "Live video must be stopped before deleting it."
+                        f" Current status is {video.live_state}"
+                    )
+                },
+                400,
+            )
+
+        if video.live_state == defaults.IDLE:
+            video.upload_state = defaults.DELETED
+            video.live_state = None
+            video.live_info = None
+            video.live_type = None
+            video.save()
+            serializer = self.get_serializer(video)
+
+            return Response(serializer.data)
+
+        delete_aws_element_stack(video)
+        if settings.LIVE_CHAT_ENABLED:
+            close_room(video.id)
+        try:
+            create_mediapackage_harvest_job(video)
+            video.live_state = defaults.STOPPED
+            video.upload_state = defaults.HARVESTING
+        except ManifestMissingException:
+            delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
+            video.upload_state = defaults.DELETED
+            video.live_state = None
+            video.live_info = None
+            video.live_type = None
+
+        video.save()
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data)
+
+    @action(
         methods=["patch"],
         detail=True,
         url_path="update-live-state",
@@ -611,8 +686,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             video.live_state = defaults.PAUSED
             live_info.update({"stopped_at": stamp})
             video.live_info = live_info
-            if settings.LIVE_CHAT_ENABLED:
-                close_room(video.id)
 
         video.live_info = live_info
         video.save()
