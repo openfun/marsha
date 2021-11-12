@@ -7,6 +7,7 @@ import { useVideo } from '../../data/stores/useVideo';
 import { API_ENDPOINT } from '../../settings';
 import { Video, liveState, LiveModeType } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
+import { DashboardVideoLiveEndButton } from '../DashboardVideoLiveEndButton';
 import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
 import { DashboardVideoLiveRunning } from '../DashboardVideoLiveRunning';
 import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
@@ -125,10 +126,13 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               />
             )}
             {canShowStartButton && (
-              <DashboardVideoLiveStartButton
-                video={video}
-                canStartLive={canStartLive}
-              />
+              <React.Fragment>
+                <DashboardVideoLiveEndButton video={video} />
+                <DashboardVideoLiveStartButton
+                  video={video}
+                  canStartLive={canStartLive}
+                />
+              </React.Fragment>
             )}
           </React.Fragment>
         )}

@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add BBB backend app
 - Add BBB frontend app
 - Add configuration to filter app with feature flags
+- Start and stop a live
 
 ### Changed
 
