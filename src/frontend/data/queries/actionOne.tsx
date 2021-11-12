@@ -6,16 +6,19 @@ import { appData } from 'data/appData';
  */
 export const actionOne: MutationFunction<
   any,
-  { name: string; id: string; action: string; object: any }
-> = async ({ name, id, action, object }) => {
-  const response = await fetch(`/api/${name}/${id}/${action}/`, {
+  { name: string; id: string; action: string; method?: string; object?: any }
+> = async ({ name, id, action, method, object }) => {
+  const init: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
       ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
     },
-    method: 'PATCH',
-    body: JSON.stringify(object),
-  });
+    method: method || 'PATCH',
+  };
+  if (object) {
+    init.body = JSON.stringify(object);
+  }
+  const response = await fetch(`/api/${name}/${id}/${action}/`, init);
 
   if (!response.ok) {
     if (response.status === 400) {
