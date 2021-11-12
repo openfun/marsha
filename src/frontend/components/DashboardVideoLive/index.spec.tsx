@@ -88,6 +88,7 @@ describe('components/DashboardVideoLive', () => {
     );
 
     await screen.findByRole('button', { name: /start streaming/i });
+    screen.getByRole('button', { name: /end live/i });
     screen.getByRole('button', { name: /Create a webinar/i });
   });
 
@@ -317,5 +318,6 @@ describe('components/DashboardVideoLive', () => {
     );
 
     screen.getByRole('button', { name: /start streaming/i });
+    screen.getByRole('button', { name: /end live/i });
   });
 });
