@@ -13,6 +13,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
+    DELETED,
+    HARVESTING,
     IDLE,
     JITSI,
     LIVE_CHOICES,
@@ -25,6 +27,7 @@ from ..defaults import (
     STOPPING,
 )
 from ..utils.api_utils import generate_hash
+from ..utils.medialive_utils import ManifestMissingException
 
 
 RSA_KEY_MOCK = b"""
@@ -3451,6 +3454,326 @@ class VideoAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 400)
 
+    def test_api_video_end_live_anonymous_user(self):
+        """Anonymous users are not allowed to end a live."""
+        video = factories.VideoFactory()
+
+        response = self.client.post(f"/api/videos/{video.id}/end-live/")
+
+        self.assertEqual(response.status_code, 401)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "Authentication credentials were not provided."}
+        )
+
+    def test_api_video_instructor_end_live_in_read_only(self):
+        """An instructor with read_only set to true should not be able to end a live."""
+        video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": False}
+
+        response = self.client.post(
+            f"/api/videos/{video.id}/end-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_video_student_end_live(self):
+        """A student should not be able to end a live."""
+        video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        response = self.client.post(
+            f"/api/videos/{video.id}/end-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    def test_api_video_end_live_staff_or_user(self):
+        """Users authenticated via a session should not be able to end a live."""
+        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
+            self.client.login(username=user.username, password="test")
+            video = factories.VideoFactory()
+
+            response = self.client.post(f"/api/videos/{video.id}/end-live/")
+            self.assertEqual(response.status_code, 401)
+            content = json.loads(response.content)
+            self.assertEqual(
+                content, {"detail": "Authentication credentials were not provided."}
+            )
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def test_api_video_instructor_end_idle_live(self):
+        """An instructor can end a live in idle state."""
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.post(
+            f"/api/videos/{video.id}/end-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": DELETED,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": video.playlist.title,
+                    "lti_id": video.playlist.lti_id,
+                },
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+            },
+        )
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def test_api_video_instructor_end_paused_live(self):
+        """An instructor can end a live in paused state"""
+        video = factories.VideoFactory(
+            live_state=PAUSED,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        with mock.patch.object(
+            api, "delete_aws_element_stack"
+        ) as mock_delete_aws_element_stack, mock.patch.object(
+            api, "create_mediapackage_harvest_job"
+        ) as mock_create_mediapackage_harvest_job, mock.patch.object(
+            api, "close_room"
+        ) as mock_close_room:
+            response = self.client.post(
+                f"/api/videos/{video.id}/end-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_delete_aws_element_stack.assert_called_once()
+            mock_create_mediapackage_harvest_job.assert_called_once()
+            mock_close_room.assert_called_once_with(video.id)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_ready_to_show": True,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": HARVESTING,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": video.playlist.title,
+                    "lti_id": video.playlist.lti_id,
+                },
+                "live_state": STOPPED,
+                "live_info": {
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                    },
+                },
+                "live_type": JITSI,
+                "xmpp": None,
+            },
+        )
+
+    def test_api_video_instructor_end_paused_live_missing_manifest(self):
+        """An instructor ending a live with a missing manifest should delete the video"""
+        video = factories.VideoFactory(
+            live_state=PAUSED,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "channel": {"id": "channel1"},
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        with mock.patch.object(
+            api, "delete_aws_element_stack"
+        ) as mock_delete_aws_element_stack, mock.patch.object(
+            api, "create_mediapackage_harvest_job", side_effect=ManifestMissingException
+        ) as mock_create_mediapackage_harvest_job, mock.patch(
+            "marsha.core.api.delete_mediapackage_channel"
+        ) as mock_delete_mediapackage_channel:
+            response = self.client.post(
+                f"/api/videos/{video.id}/end-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_delete_aws_element_stack.assert_called_once()
+            mock_create_mediapackage_harvest_job.assert_called_once()
+            mock_delete_mediapackage_channel.assert_called_once()
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": DELETED,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": video.playlist.title,
+                    "lti_id": video.playlist.lti_id,
+                },
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+            },
+        )
+
+    def test_api_video_instructor_end_live_wrong_live_state(self):
+        """An instructor can not end a live not in IDLE or PAUSED state."""
+        video = factories.VideoFactory(
+            live_state=random.choice(
+                [s[0] for s in LIVE_CHOICES if s[0] not in [PAUSED, IDLE]]
+            ),
+            live_type=JITSI,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.post(
+            f"/api/videos/{video.id}/end-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {
+                "error": (
+                    "Live video must be stopped before deleting it."
+                    f" Current status is {video.live_state}"
+                )
+            },
+        )
+
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state(self):
         """Confirm update video live state."""
@@ -3531,7 +3854,6 @@ class VideoAPITest(TestCase):
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    @override_settings(LIVE_CHAT_ENABLED=True)
     def test_api_video_update_live_state_stopped(self):
         """Receiving stopped event should pause the video."""
         video = factories.VideoFactory(
@@ -3572,16 +3894,13 @@ class VideoAPITest(TestCase):
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
-            api, "close_room"
-        ) as mock_close_room:
+        with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
-            mock_close_room.assert_called_once_with(video.id)
 
         video.refresh_from_db()
 
