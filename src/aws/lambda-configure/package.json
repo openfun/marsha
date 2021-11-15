@@ -3,7 +3,7 @@
   "name": "aws-marsha-configure",
   "version": "3.27.0",
   "engines": {
-    "node": "16"
+    "node": "14"
   },
   "description": "Configure AWS via a Lambda for what can not be configured via Terraform for the Marsha video workflow",
   "repository": {
