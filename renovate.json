@@ -21,6 +21,9 @@
       ],
       "matchDepTypes": [
         "engines"
+      ],
+      "matchPackageNames": [
+        "node"
       ]
     }
   ]
