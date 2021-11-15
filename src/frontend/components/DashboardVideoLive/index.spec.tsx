@@ -317,7 +317,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    screen.getByRole('button', { name: /start streaming/i });
+    screen.getByRole('button', { name: /resume streaming/i });
     screen.getByRole('button', { name: /end live/i });
   });
 });
