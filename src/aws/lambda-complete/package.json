@@ -3,7 +3,7 @@
   "name": "aws-marsha-complete",
   "version": "3.27.0",
   "engines": {
-    "node": "16"
+    "node": "14"
   },
   "description": "Tasks to execute when encoding for a video is complete",
   "repository": {
