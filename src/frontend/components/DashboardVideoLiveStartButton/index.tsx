@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import { startLive } from '../../data/sideEffects/startLive';
 import { useVideo } from '../../data/stores/useVideo';
-import { Video } from '../../types/tracks';
+import { liveState, Video } from '../../types/tracks';
 import { Nullable } from '../../utils/types';
 import { DashboardConfirmButton } from '../DashboardConfirmButton';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
@@ -12,7 +12,7 @@ import { Loader } from '../Loader';
 
 const messages = defineMessages({
   startLive: {
-    defaultMessage: 'start streaming',
+    defaultMessage: 'Start streaming',
     description: 'Start a video streaming.',
     id: 'components.DashboardVideoLiveStartButton.startLive',
   },
@@ -20,6 +20,16 @@ const messages = defineMessages({
     defaultMessage: 'Are you sure you want to start a video streaming ?',
     description: 'Confirmation to start a video streaming.',
     id: 'components.DashboardVideoLiveStartButton.confirmStartLive',
+  },
+  resumeLive: {
+    defaultMessage: 'Resume streaming',
+    description: 'Resume a video streaming.',
+    id: 'components.DashboardVideoLiveStartButton.resumeLive',
+  },
+  confirmResumeLive: {
+    defaultMessage: 'Are you sure you want to resume a video streaming ?',
+    description: 'Confirmation to resume a video streaming.',
+    id: 'components.DashboardVideoLiveStartButton.confirmResumeLive',
   },
   startLiveHelper: {
     defaultMessage: 'Only moderators can start a live',
@@ -67,10 +77,18 @@ export const DashboardVideoLiveStartButton = ({
         disabled={!canStartLive}
         label={
           canStartLive
-            ? intl.formatMessage(messages.startLive)
+            ? intl.formatMessage(
+                video.live_state === liveState.IDLE
+                  ? messages.startLive
+                  : messages.resumeLive,
+              )
             : intl.formatMessage(messages.startLiveHelper)
         }
-        confirmationLabel={intl.formatMessage(messages.confirmStartLive)}
+        confirmationLabel={intl.formatMessage(
+          video.live_state === liveState.IDLE
+            ? messages.confirmStartLive
+            : messages.confirmResumeLive,
+        )}
         onConfirm={startLiveAction}
       />
     </React.Fragment>
