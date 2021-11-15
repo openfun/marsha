@@ -35,9 +35,11 @@ describe('components/DashboardVideoLiveStartButton', () => {
     document.body.appendChild(document.createElement('div'));
   });
 
-  const video = videoMockFactory();
-
   it('renders the start button', () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+    });
+
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -53,6 +55,10 @@ describe('components/DashboardVideoLiveStartButton', () => {
   });
 
   it('clicks on start live button and fails.', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+    });
+
     fetchMock.mock(`/api/videos/${video.id}/start-live/`, 400, {
       method: 'POST',
     });
@@ -97,6 +103,10 @@ describe('components/DashboardVideoLiveStartButton', () => {
   });
 
   it('clicks on start live and it updates the video state', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+    });
+
     fetchMock.mock(
       `/api/videos/${video.id}/start-live/`,
       {
@@ -143,6 +153,10 @@ describe('components/DashboardVideoLiveStartButton', () => {
   });
 
   it('disables the start button when canStartLive is false', () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+    });
+
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -155,5 +169,32 @@ describe('components/DashboardVideoLiveStartButton', () => {
       name: /Only moderators can start a live/i,
     }) as HTMLButtonElement;
     expect(button.disabled).toBe(true);
+  });
+
+  it('renders the resume button when live is paused', () => {
+    const video = videoMockFactory({
+      live_state: liveState.PAUSED,
+    });
+
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardVideoLiveStartButton video={video} canStartLive={true} />,
+        ),
+      ),
+    );
+
+    const button = screen.getByRole('button', {
+      name: /resume streaming/i,
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(false);
+
+    fireEvent.click(button);
+
+    // Confirmation layer should show up
+    screen.getByRole('button', { name: /ok/i });
+    screen.getByRole('button', { name: /cancel/i });
+
+    screen.getByText('Are you sure you want to resume a video streaming ?');
   });
 });
