@@ -160,6 +160,7 @@ export const useVideos = (
 type usePairingVideoError = { code: 'exception' };
 type usePairingVideoResponse = {
   secret: string;
+  expires_in: number;
 };
 type usePairingVideoOptions = UseMutationOptions<
   usePairingVideoResponse,

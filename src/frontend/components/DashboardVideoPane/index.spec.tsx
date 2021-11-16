@@ -2,26 +2,34 @@ import { cleanup, render, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
 
-import { modelName } from '../../types/models';
-import { LiveModeType, liveState, uploadState } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import { modelName } from 'types/models';
+import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
 import { DashboardVideoPane } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'cool_token_m8',
     flags: {},
     uploadPollInterval: 60,
   },
 }));
-jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('components/DashboardVideoLivePairing', () => ({
+  DashboardVideoLivePairing: (props: { video: Video }) => (
+    <span title={`Pairing button for ${props.video.id}`} />
+  ),
+}));
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 

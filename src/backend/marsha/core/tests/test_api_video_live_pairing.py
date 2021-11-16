@@ -109,6 +109,9 @@ class PairingDeviceAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(str(video.live_pairing.secret), response.json().get("secret"))
+        self.assertEqual(
+            settings.LIVE_PAIRING_EXPIRATION_SECONDS, response.json().get("expires_in")
+        )
 
     def test_api_video_instructor_pairing_secret_2nd_request(self):
         """An instructor should be able to request several times a live pairing secret."""

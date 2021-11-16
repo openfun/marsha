@@ -38,6 +38,12 @@ jest.mock(
     },
 );
 
+jest.mock('components/DashboardVideoLivePairing', () => ({
+  DashboardVideoLivePairing: (props: { video: Video }) => (
+    <span title={`Pairing button for ${props.video.id}`} />
+  ),
+}));
+
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => jest.useFakeTimers());
 
@@ -476,5 +482,27 @@ describe('components/DashboardVideoLive', () => {
     screen.getByDisplayValue(/maths/i);
     screen.getByText(/wonderful class!/i);
     screen.getByRole('textbox', { name: /description/i });
+  });
+
+  it('shows the pairing button when the status is not STOPPED', () => {
+    for (const state of Object.values(liveState)) {
+      const { getByTitle, queryByTitle } = render(
+        wrapInIntlProvider(
+          wrapInRouter(
+            <Suspense fallback="loading...">
+              <DashboardVideoLive video={{ ...video, live_state: state }} />
+            </Suspense>,
+          ),
+        ),
+      );
+      if (state !== liveState.STOPPED) {
+        getByTitle(`Pairing button for ${video.id}`);
+      } else {
+        expect(
+          queryByTitle(`Pairing button for ${video.id}`),
+        ).not.toBeInTheDocument();
+      }
+      cleanup();
+    }
   });
 });

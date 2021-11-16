@@ -8,6 +8,7 @@ import { API_ENDPOINT } from 'settings';
 import { Video, liveState, LiveModeType } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { DashboardVideoLiveEndButton } from 'components/DashboardVideoLiveEndButton';
+import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { DashboardVideoLiveStartButton } from 'components/DashboardVideoLiveStartButton';
 import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
 import { DashboardVideoLiveConfigureButton } from 'components/DashboardVideoLiveConfigureButton';
@@ -158,6 +159,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Text>
         )}
       </Box>
+      {video.live_state !== liveState.STOPPED && (
+        <Box direction={'row'} justify={'center'} margin={'small'}>
+          <DashboardVideoLivePairing video={video} />
+        </Box>
+      )}
       {video.live_state === liveState.IDLE && (
         <ScheduledVideoForm video={video} />
       )}
