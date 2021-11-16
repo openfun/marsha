@@ -23,11 +23,13 @@ import {
 } from 'react-intl';
 import styled from 'styled-components';
 
-import { Document } from '../../types/file';
-import { Playlist, Video, videoSize } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
-import { APPS } from '../../settings';
-import { Loader } from '../Loader';
+import { Document } from 'types/file';
+import { appNames } from 'types/AppData';
+import { Playlist, Video, videoSize } from 'types/tracks';
+import { Nullable } from 'utils/types';
+import { isFeatureEnabled } from 'utils/isFeatureEnabled';
+import { Loader } from 'components/Loader';
+import { appConfigs } from 'data/appConfigs';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -306,11 +308,17 @@ export const SelectContent = ({
   const formRef = React.useRef<HTMLFormElement>(null);
   const intl = useIntl();
 
-  const tabs: React.LazyExoticComponent<
+  const appTabs: React.LazyExoticComponent<
     React.ComponentType<SelectContentTabProps>
-  >[] = APPS.map((name) =>
-    lazy(() => import(`../../apps/${name}/SelectContentTab`)),
-  );
+  >[] = [];
+  Object.values(appNames).forEach((appName) => {
+    const appConfig = appConfigs[appName];
+    if (appConfig?.flag && !isFeatureEnabled(appConfig.flag)) {
+      return;
+    }
+
+    appTabs.push(lazy(() => import(`../../apps/${appName}/SelectContentTab`)));
+  });
 
   useEffect(() => {
     if (formRef.current && contentItemsValue) {
@@ -399,7 +407,7 @@ export const SelectContent = ({
         </Tab>
 
         <Suspense fallback={<Loader />}>
-          {tabs.map((LazyComponent, index) => (
+          {appTabs.map((LazyComponent, index) => (
             <LazyComponent key={index} selectContent={selectContent} />
           ))}
         </Suspense>
