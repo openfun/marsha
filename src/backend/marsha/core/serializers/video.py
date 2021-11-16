@@ -300,8 +300,15 @@ class LivePairingSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = LivePairing
-        fields = ("secret",)
-        read_only_fields = ("secret",)
+        fields = ("secret", "expires_in")
+        read_only_fields = ("secret", "expires_in")
+
+    expires_in = serializers.SerializerMethodField()
+
+    # pylint: disable=unused-argument
+    def get_expires_in(self, obj):
+        """Returns LivePairing expiration setting."""
+        return settings.LIVE_PAIRING_EXPIRATION_SECONDS
 
 
 class PairingChallengeSerializer(serializers.Serializer):
