@@ -1,38 +1,20 @@
-"""Declare API endpoints with Django RestFramework viewsets."""
-# pylint: disable=too-many-lines
-import json
-import logging
-from mimetypes import guess_extension
-from os.path import splitext
-
-from django.apps import apps
+"""Declare API endpoints for videos with Django RestFramework viewsets."""
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db import OperationalError, transaction
 from django.db.models import Q
-from django.http import Http404, HttpResponseNotFound
+from django.http import Http404
 from django.utils import timezone
 
-import requests
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.models import TokenUser
 
-from . import defaults, forms, permissions, serializers, storage
-from .models import (
-    Document,
-    LiveRegistration,
-    Organization,
-    Playlist,
-    Thumbnail,
-    TimedTextTrack,
-    Video,
-)
-from .utils.api_utils import validate_signature
-from .utils.medialive_utils import (
+from .. import defaults, forms, permissions, serializers, storage
+from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
+from ..utils.api_utils import validate_signature
+from ..utils.medialive_utils import (
     ManifestMissingException,
     create_live_stream,
     create_mediapackage_harvest_job,
@@ -42,219 +24,10 @@ from .utils.medialive_utils import (
     stop_live_channel,
     wait_medialive_channel_is_created,
 )
-from .utils.s3_utils import create_presigned_post
-from .utils.time_utils import to_timestamp
-from .utils.xmpp_utils import close_room, create_room
-from .xapi import XAPI, get_xapi_statement
-
-
-logger = logging.getLogger(__name__)
-
-
-class ObjectPkMixin:
-    """
-    Get the object primary key from the URL path.
-
-    This is useful to avoid making extra requests using view.get_object() on
-    a ViewSet when we only need the object's id, which is available in the URL.
-    """
-
-    def get_object_pk(self):
-        """Get the object primary key from the URL path."""
-        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-        return self.kwargs.get(lookup_url_kwarg)
-
-
-class UserViewSet(viewsets.GenericViewSet):
-    """ViewSet for all user-related interactions."""
-
-    serializer_class = serializers.UserSerializer
-
-    @action(detail=False, permission_classes=[])
-    def whoami(self, request):
-        """
-        Get information on the current user.
-
-        This is the only implemented user-related endpoint.
-        """
-        # If the user is not logged in, the request has no object. Return a 401 so the caller
-        # knows they need to log in first.
-        if (
-            not request.user.is_authenticated
-            or (request.user.id is None)
-            or (request.user.id == "None")
-        ):
-            return Response(status=401)
-
-        # Get an actual user object from the TokenUser id
-        # pylint: disable=invalid-name
-        User = get_user_model()
-        try:
-            user = User.objects.prefetch_related(
-                "organization_accesses", "organization_accesses__organization"
-            ).get(id=request.user.id)
-        except User.DoesNotExist:
-            return Response(status=401)
-
-        return Response(data=self.get_serializer(user).data)
-
-
-class OrganizationViewSet(ObjectPkMixin, viewsets.ModelViewSet):
-    """ViewSet for all organization-related interactions."""
-
-    permission_classes = [permissions.NotAllowed]
-    queryset = Organization.objects.all()
-    serializer_class = serializers.OrganizationSerializer
-
-    def get_permissions(self):
-        """
-        Manage permissions for built-in DRF methods.
-
-        Default to the actions' self defined permissions if applicable or
-        to the ViewSet's default permissions.
-        """
-        if self.action in ["retrieve"]:
-            permission_classes = [permissions.IsOrganizationAdmin]
-        else:
-            try:
-                permission_classes = getattr(self, self.action).kwargs.get(
-                    "permission_classes"
-                )
-            except AttributeError:
-                permission_classes = self.permission_classes
-        return [permission() for permission in permission_classes]
-
-
-class PlaylistViewSet(ObjectPkMixin, viewsets.ModelViewSet):
-    """ViewSet for all playlist-related interactions."""
-
-    permission_classes = [permissions.NotAllowed]
-    queryset = Playlist.objects.all()
-    serializer_class = serializers.PlaylistSerializer
-
-    def get_permissions(self):
-        """
-        Manage permissions for built-in DRF methods.
-
-        Default to the actions' self defined permissions if applicable or
-        to the ViewSet's default permissions.
-        """
-        if self.action in ["list"]:
-            permission_classes = [IsAuthenticated]
-        elif self.action in ["retrieve"]:
-            permission_classes = [
-                # users who are playlist administrators
-                permissions.IsPlaylistAdmin
-                # or users who are administrators of the playlist organization
-                | permissions.IsPlaylistOrganizationAdmin
-                # or
-                | (
-                    # requests made with a JWT token granting instructor or administrator
-                    (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                    # and to an object related to the playlist
-                    & permissions.IsTokenResourceRouteObjectRelatedPlaylist
-                )
-            ]
-        elif self.action in ["create"]:
-            permission_classes = [permissions.IsParamsOrganizationAdmin]
-        elif self.action in ["partial_update", "update"]:
-            permission_classes = [
-                # requests made with a JWT token granting instructor or administrator
-                (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                # and to an object related to the playlist
-                & permissions.IsTokenResourceRouteObjectRelatedPlaylist
-            ]
-        else:
-            try:
-                permission_classes = getattr(self, self.action).kwargs.get(
-                    "permission_classes"
-                )
-            except AttributeError:
-                permission_classes = self.permission_classes
-        return [permission() for permission in permission_classes]
-
-    def list(self, request, *args, **kwargs):
-        """
-        Return a list of playlists.
-
-        By default, filtered to only return to the user what
-        playlists they have access to.
-        """
-        queryset = self.get_queryset().filter(
-            organization__users__id=self.request.user.id
-        )
-
-        organization_id = self.request.query_params.get("organization")
-        if organization_id:
-            queryset = queryset.filter(organization__id=organization_id)
-
-        page = self.paginate_queryset(queryset.order_by("title"))
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset.order_by("title"), many=True)
-        return Response(serializer.data)
-
-
-@api_view(["POST"])
-def update_state(request):
-    """View handling AWS POST request to update the state of an object by key.
-
-    Parameters
-    ----------
-    request : Type[django.http.request.HttpRequest]
-        The request on the API endpoint, it should contain a payload with the following fields:
-            - key: the key of an object in the source bucket as delivered in the upload policy,
-            - state: state of the upload, should be either "ready" or "error",
-            - extraParameters: Dict containing arbitrary data sent from AWS Lambda.
-
-    Returns
-    -------
-    Type[rest_framework.response.Response]
-        HttpResponse acknowledging the success or failure of the state update operation.
-
-    """
-    msg = request.body
-    serializer = serializers.UpdateStateSerializer(data=request.data)
-
-    if serializer.is_valid() is not True:
-        return Response(serializer.errors, status=400)
-
-    # Check if the provided signature is valid against any secret in our list
-    if not validate_signature(request.headers.get("X-Marsha-Signature"), msg):
-        return Response("Forbidden", status=403)
-
-    # Retrieve the elements from the key
-    key_elements = serializer.get_key_elements()
-
-    # Update the object targeted by the "object_id" and "resource_id"
-    model = apps.get_model(app_label="core", model_name=key_elements["model_name"])
-
-    extra_parameters = serializer.validated_data["extraParameters"]
-    if (
-        serializer.validated_data["state"] == defaults.READY
-        and hasattr(model, "extension")
-        and "extension" not in extra_parameters
-    ):
-        # The extension is part of the s3 key name and added in this key
-        # when generated by the initiate upload
-        extra_parameters["extension"] = key_elements.get("extension")
-
-    try:
-        object_instance = model.objects.get(id=key_elements["object_id"])
-    except model.DoesNotExist:
-        return Response({"success": False}, status=404)
-
-    object_instance.update_upload_state(
-        upload_state=serializer.validated_data["state"],
-        uploaded_on=key_elements.get("uploaded_on")
-        if serializer.validated_data["state"] in [defaults.READY, defaults.HARVESTED]
-        else None,
-        **extra_parameters,
-    )
-
-    return Response({"success": True})
+from ..utils.s3_utils import create_presigned_post
+from ..utils.time_utils import to_timestamp
+from ..utils.xmpp_utils import close_room, create_room
+from .base import ObjectPkMixin
 
 
 class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
@@ -693,61 +466,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         return Response({"success": True})
 
 
-class DocumentViewSet(
-    ObjectPkMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
-):
-    """Viewset for the API of the Document object."""
-
-    queryset = Document.objects.all()
-    serializer_class = serializers.DocumentSerializer
-    permission_classes = [
-        permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-        | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-    ]
-
-    @action(methods=["post"], detail=True, url_path="initiate-upload")
-    # pylint: disable=unused-argument
-    def initiate_upload(self, request, pk=None):
-        """Get an upload policy for a file.
-
-        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
-        our AWS S3 source bucket.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request on the API endpoint
-        pk: string
-            The primary key of the Document instance
-
-        Returns
-        -------
-        Type[rest_framework.response.Response]
-            HttpResponse carrying the AWS S3 upload policy as a JSON object.
-
-        """
-        serializer = serializers.InitiateUploadSerializer(data=request.data)
-
-        if serializer.is_valid() is not True:
-            return Response(serializer.errors, status=400)
-
-        extension = splitext(serializer.validated_data["filename"])[
-            1
-        ] or guess_extension(serializer.validated_data["mimetype"])
-
-        response = storage.get_initiate_backend().initiate_document_upload(
-            request, pk, extension
-        )
-
-        # Reset the upload state of the document
-        Document.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
-
-        return Response(response)
-
-
 class LiveRegistrationViewSet(
     ObjectPkMixin,
     mixins.CreateModelMixin,
@@ -975,86 +693,3 @@ class ThumbnailViewSet(
         Thumbnail.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(presigned_post)
-
-
-class XAPIStatementView(APIView):
-    """Viewset managing xAPI requests."""
-
-    permission_classes = [permissions.IsVideoToken]
-    http_method_names = ["post"]
-
-    def post(self, request, resource):
-        """Send a xAPI statement to a defined LRS.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request on the API endpoint.
-            It contains a JSON representing part of the xAPI statement
-
-        Returns
-        -------
-        Type[rest_framework.response.Response]
-            HttpResponse to reflect if the XAPI request failed or is successful
-
-        """
-        try:
-            statement_object = get_xapi_statement(resource)
-        except NotImplementedError:
-            return HttpResponseNotFound()
-
-        user = request.user
-        model = apps.get_model(app_label="core", model_name=resource)
-        try:
-            object_instance = model.objects.get(pk=user.id)
-        except model.DoesNotExist:
-            return Response(
-                {"reason": f"{resource} with id {user.id} does not exist"},
-                status=404,
-            )
-
-        consumer_site = object_instance.playlist.consumer_site
-
-        # xapi statements are sent to a consumer-site-specific logger. We assume that the logger
-        # name respects the following convention: "xapi.[consumer site domain]",
-        # _e.g._ `xapi.foo.education` for the `foo.education` consumer site domain. Note that this
-        # logger should be defined in your settings with an appropriate handler and formatter.
-        xapi_logger = logging.getLogger(f"xapi.{consumer_site.domain}")
-
-        # xapi statement sent by the client but incomplete
-        partial_xapi_statement = serializers.XAPIStatementSerializer(data=request.data)
-        if not partial_xapi_statement.is_valid():
-            return Response(partial_xapi_statement.errors, status=400)
-
-        # xapi statement enriched with video and jwt_token informations
-        xapi_statement = statement_object(
-            object_instance, partial_xapi_statement.validated_data, user.token
-        )
-
-        # Log the statement in the xapi logger
-        xapi_logger.info(json.dumps(xapi_statement.get_statement()))
-
-        if not consumer_site.lrs_url or not consumer_site.lrs_auth_token:
-            return Response(
-                {"reason": "LRS is not configured. This endpoint is not usable."},
-                status=501,
-            )
-
-        xapi = XAPI(
-            consumer_site.lrs_url,
-            consumer_site.lrs_auth_token,
-            consumer_site.lrs_xapi_version,
-        )
-
-        try:
-            xapi.send(xapi_statement)
-        # pylint: disable=invalid-name
-        except requests.exceptions.HTTPError as e:
-            message = "Impossible to send xAPI request to LRS."
-            logger.critical(
-                message,
-                extra={"response": e.response.text, "status": e.response.status_code},
-            )
-            return Response({"status": message}, status=501)
-
-        return Response(status=204)
