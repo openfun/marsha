@@ -1,10 +1,14 @@
 """This module holds the models for the marsha project."""
+import secrets
+
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
+
+from safedelete import HARD_DELETE_NOCASCADE
 
 from ..defaults import DELETED, HARVESTED, IDLE, LIVE_CHOICES, LIVE_TYPE_CHOICES
 from ..utils.time_utils import to_timestamp
@@ -467,3 +471,86 @@ class LiveRegistration(BaseModel):
         ]
 
         verbose_name = _("live registration")
+
+
+class LivePairingManager(models.Manager):
+    """Model manager for a LivePairing"""
+
+    def delete_expired(self):
+        """Deletes all expired LivePairing objects."""
+        expired_date = timezone.now() - timezone.timedelta(
+            seconds=settings.LIVE_PAIRING_EXPIRATION_SECONDS
+        )
+        return self.filter(created_on__lt=expired_date).delete()
+
+
+class LivePairing(BaseModel):
+    """Model representing a live pairing."""
+
+    RESOURCE_NAME = "livepairings"
+    objects = LivePairingManager()
+    _safedelete_policy = HARD_DELETE_NOCASCADE
+
+    secret = models.CharField(
+        max_length=6,
+        unique=True,
+        verbose_name=_("secret"),
+        help_text=_("live pairing secret"),
+    )
+
+    video = models.OneToOneField(
+        to="Video",
+        related_name="live_pairing",
+        verbose_name=_("video"),
+        help_text=_("live pairing video"),
+        # LivePairing is deleted if video is (soft-)deleted
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``LivePairing`` model."""
+
+        db_table = "live_pairing"
+        ordering = ["created_on"]
+        verbose_name = _("live pairing")
+        verbose_name_plural = _("live pairings")
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        return self.video.title
+
+    @classmethod
+    def secret_generator(cls, existing_secrets):
+        """Generates a random 6 digit string."""
+        # Generate a list of all possible 6 digits strings
+        all_secrets = (str(i).zfill(6) for i in range(0, 1_000_000))
+
+        # Difference between all and existing secrets
+        available_secrets = set(all_secrets) - set(existing_secrets)
+
+        # Return one of available secrets
+        return secrets.choice(list(available_secrets))
+
+    def generate_secret(self):
+        """Stores generated secret and expiration date."""
+        existing_secrets = LivePairing.objects.values_list("secret", flat=True)
+        self.secret = self.secret_generator(existing_secrets)
+
+    def save(self, *args, **kwargs):
+        """Enforce secret presence each time an instance is saved."""
+        if not self.pk:
+            self.generate_secret()
+        super().save(*args, **kwargs)
+
+
+class Device(BaseModel):
+    """Model representing a pairable device."""
+
+    RESOURCE_NAME = "device"
+
+    class Meta:
+        """Options for the ``Device`` model."""
+
+        db_table = "device"
+        verbose_name = _("device")
+        verbose_name_plural = _("devices")

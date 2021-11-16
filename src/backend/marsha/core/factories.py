@@ -1,4 +1,6 @@
 """Factories for the ``core`` app of the Marsha project."""
+import uuid
+
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 
@@ -171,3 +173,22 @@ class LiveRegistrationFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.LiveRegistration
+
+
+class LivePairingFactory(DjangoModelFactory):
+    """Factory for the LivePairing model."""
+
+    secret = factory.Sequence("{:06d}".format)
+    video = factory.SubFactory(VideoFactory)
+
+    class Meta:  # noqa
+        model = models.LivePairing
+
+
+class DeviceFactory(DjangoModelFactory):
+    """Factory for the Device model."""
+
+    id = uuid.uuid4()
+
+    class Meta:  # noqa
+        model = models.Device
