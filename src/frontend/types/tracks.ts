@@ -117,10 +117,17 @@ export enum LiveModeType {
   JITSI = 'jitsi',
 }
 
+export interface LiveRegistration extends Resource {
+  email: string;
+  should_send_reminders: boolean;
+  video: Video['id'];
+}
+
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   description: string;
   is_ready_to_show: boolean;
+  is_scheduled: boolean;
   show_download: boolean;
   thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];
@@ -129,6 +136,7 @@ export interface Video extends Resource {
   urls: Nullable<VideoUrls>;
   lti_url?: Nullable<string>;
   should_use_subtitle_as_transcript: boolean;
+  starting_at: Nullable<string>;
   has_transcript: boolean;
   playlist: Playlist;
   live_state: Nullable<liveState>;
