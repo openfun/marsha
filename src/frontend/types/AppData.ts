@@ -14,6 +14,14 @@ export enum flags {
   JITSI = 'jitsi',
 }
 
+/**
+ * Declare your apps here
+ * App name needs to match the folder containing the app in `apps/{myAppName}/`
+ */
+export enum appNames {
+  BBB = 'bbb',
+}
+
 export interface AppData {
   jwt?: string;
   state: appState;
@@ -23,7 +31,7 @@ export interface AppData {
   documents?: Document[];
   resource?: any;
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
-  appName?: 'bbb';
+  appName?: appNames;
   new_document_url?: string;
   new_video_url?: string;
   lti_select_form_action_url?: string;
