@@ -1,18 +1,31 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.http import Http404
 from django.utils import timezone
 
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.models import TokenUser
 
+from marsha.core.defaults import JITSI
+
 from .. import defaults, forms, permissions, serializers, storage
-from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
+from ..models import (
+    Device,
+    LivePairing,
+    LiveRegistration,
+    Playlist,
+    Thumbnail,
+    TimedTextTrack,
+    Video,
+)
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -464,6 +477,120 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.save()
 
         return Response({"success": True})
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="pairing-secret",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def pairing_secret(
+        self,
+        request,
+        pk=None,
+    ):
+        """Generate a secret for pairing an external device to a live stream.
+
+        Deletes expired LivePairing objects.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the generated secret.
+        """
+        LivePairing.objects.delete_expired()
+
+        video = self.get_object()
+        if video.live_type != JITSI:
+            return Response(
+                {"detail": "Matching video is not a Jitsi Live."}, status=400
+            )
+
+        try:
+            live_pairing = LivePairing.objects.get(video=video)
+        except LivePairing.DoesNotExist:
+            live_pairing = LivePairing(video=video)
+
+        for _ in range(2):
+            try:
+                live_pairing.generate_secret()
+                live_pairing.save()
+                break
+            except ValidationError:
+                pass
+
+        serializer = serializers.LivePairingSerializer(instance=live_pairing)
+        return Response(serializer.data)
+
+
+class PairingChallengeThrottle(AnonRateThrottle):
+    """Throttling for pairing challenge requests."""
+
+    def get_ident(self, request):
+        """Identify requests by box_id instead of IP"""
+        try:
+            box_id = request.data.get("box_id")
+            Device.objects.get(pk=box_id)
+            return box_id
+
+        # UUIDField is validated, even with a get.
+        # We must catch ValidationError then.
+        except (Device.DoesNotExist, ValidationError):
+            return None
+
+
+@api_view(["POST"])
+@throttle_classes([PairingChallengeThrottle])
+def pairing_challenge(request):
+    """View handling pairing challenge request to stream from an external device.
+
+    Deletes expired LivePairing objects.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint, it must contains a payload with the following fields:
+            - box_id: uuid from external device.
+            - secret: generated pairing secret.
+
+    Returns
+    -------
+    Type[rest_framework.response.Response]
+        HttpResponse containing live video credentials.
+
+    """
+    LivePairing.objects.delete_expired()
+
+    serializer = serializers.PairingChallengeSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response({"detail": "Invalid request."}, status=400)
+
+    try:
+        live_pairing = LivePairing.objects.get(secret=request.data.get("secret"))
+    except LivePairing.DoesNotExist:
+        return Response({"detail": "Secret not found."}, status=404)
+
+    live_pairing.delete()
+
+    if live_pairing.video.live_type != JITSI:
+        return Response({"detail": "Matching video is not a Jitsi Live."}, status=400)
+
+    Device.objects.get_or_create(id=request.data.get("box_id"))
+
+    return Response(
+        {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{live_pairing.video.id}"}
+    )
 
 
 class LiveRegistrationViewSet(
