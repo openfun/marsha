@@ -1,29 +1,30 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
 
-import {
-  LiveModeType,
-  liveState,
-  uploadState,
-  Video,
-} from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
+import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
 import { DashboardVideoLive } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
-jest.mock('../DashboardVideoLiveRaw', () => (props: { video: Video }) => (
-  <span title={props.video.id} />
-));
+jest.mock('index', () => ({
+  intl: {
+    locale: 'en',
+  },
+}));
+jest.mock(
+  'components/DashboardVideoLiveRaw',
+  () => (props: { video: Video }) => <span title={props.video.id} />,
+);
 
 let mockCanShowStartButton = false;
 jest.mock(
-  '../DashboardVideoLiveJitsi',
+  'components/DashboardVideoLiveJitsi',
   () =>
     (props: {
       video: Video;
@@ -319,5 +320,161 @@ describe('components/DashboardVideoLive', () => {
 
     screen.getByRole('button', { name: /resume streaming/i });
     screen.getByRole('button', { name: /end live/i });
+  });
+
+  it('shows the scheduling form when the status is IDLE', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.IDLE }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+    screen.getByRole('heading', { name: /schedule a webinar/i });
+    screen.getByRole('textbox', { name: /title/i });
+    screen.getByRole('textbox', { name: /description/i });
+    screen.getByText(/starting date and time/i);
+    screen.getByRole('button', { name: /submit/i });
+  });
+
+  it("doesn't show the scheduling form when the status is not IDLE", () => {
+    for (const state of Object.values(liveState)) {
+      if (state !== liveState.IDLE) {
+        render(
+          wrapInIntlProvider(
+            wrapInRouter(
+              <Suspense fallback="loading...">
+                <DashboardVideoLive video={{ ...video, live_state: state }} />
+              </Suspense>,
+            ),
+          ),
+        );
+        expect(screen.queryByRole('textbox')).toEqual(null);
+        expect(
+          screen.queryByRole('heading', { name: /schedule a webinar/i }),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole('textbox', { name: /title/i }),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole('textbox', {
+            name: /description/i,
+          }),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole(/starting date and time/i),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole('button', { name: /submit/i }),
+        ).not.toBeInTheDocument();
+        cleanup();
+      }
+    }
+  });
+
+  it("doesn't show the scheduling form when the status is null", () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive video={{ ...video, live_state: null }} />
+          </Suspense>,
+        ),
+      ),
+    );
+    expect(screen.queryByRole('textbox')).toEqual(null);
+    expect(
+      screen.queryByRole('heading', { name: /schedule a webinar/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: /title/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', {
+        name: /description/i,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole(/starting date and time/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /submit/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("doesn't show the scheduling form when the status is IDLE and starting_at date is past", () => {
+    const startingAtPast = new Date();
+    startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{
+                ...video,
+                live_state: liveState.IDLE,
+                starting_at: startingAtPast.toISOString(),
+              }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+    screen.getByRole('heading', {
+      name: `Webinar was scheduled at ${startingAtPast.toLocaleString('en')}.`,
+    });
+    screen.getByText(
+      /date is past, please, create a new webinar or start this one/i,
+    );
+    expect(screen.queryByRole('textbox')).toEqual(null);
+    expect(
+      screen.queryByRole('heading', { name: /schedule a webinar/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: /title/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', {
+        name: /description/i,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole(/starting date and time/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /submit/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('displays data when the video is scheduled and the status is IDLE', async () => {
+    const dateScheduled = new Date(new Date().getTime() + 10 * 86400000);
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{
+                ...video,
+                description: 'Wonderful class!',
+                live_state: liveState.IDLE,
+                starting_at: dateScheduled.toISOString(),
+                title: 'Maths',
+              }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+    screen.getByRole('textbox', { name: 'Title' });
+    screen.getByRole('heading', {
+      name: `Webinar is scheduled at ${dateScheduled.toLocaleString('en')}.`,
+    });
+    screen.getByDisplayValue(/maths/i);
+    screen.getByText(/wonderful class!/i);
+    screen.getByRole('textbox', { name: /description/i });
   });
 });

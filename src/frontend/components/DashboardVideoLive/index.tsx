@@ -2,19 +2,22 @@ import { Box, Heading, Text } from 'grommet';
 import React, { lazy, useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { appData } from '../../data/appData';
-import { useVideo } from '../../data/stores/useVideo';
-import { API_ENDPOINT } from '../../settings';
-import { Video, liveState, LiveModeType } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { DashboardVideoLiveEndButton } from '../DashboardVideoLiveEndButton';
-import { DashboardVideoLiveStartButton } from '../DashboardVideoLiveStartButton';
-import { DashboardVideoLiveRunning } from '../DashboardVideoLiveRunning';
-import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
+import { appData } from 'data/appData';
+import { useVideo } from 'data/stores/useVideo';
+import { API_ENDPOINT } from 'settings';
+import { Video, liveState, LiveModeType } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { DashboardVideoLiveEndButton } from 'components/DashboardVideoLiveEndButton';
+import { DashboardVideoLiveStartButton } from 'components/DashboardVideoLiveStartButton';
+import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
+import { DashboardVideoLiveConfigureButton } from 'components/DashboardVideoLiveConfigureButton';
+import { ScheduledVideoForm } from 'components/ScheduledVideoForm';
 
-const DashboardVideoLiveRaw = lazy(() => import('../DashboardVideoLiveRaw'));
+const DashboardVideoLiveRaw = lazy(
+  () => import('components/DashboardVideoLiveRaw'),
+);
 const DashboardVideoLiveJitsi = lazy(
-  () => import('../DashboardVideoLiveJitsi'),
+  () => import('components/DashboardVideoLiveJitsi'),
 );
 
 const messages = defineMessages({
@@ -155,6 +158,9 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
           </Text>
         )}
       </Box>
+      {video.live_state === liveState.IDLE && (
+        <ScheduledVideoForm video={video} />
+      )}
     </Box>
   );
 };
