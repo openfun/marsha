@@ -1,4 +1,4 @@
-import { Nullable } from '../utils/types';
+import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { modelName } from './models';
 import { Playlist, Video } from './tracks';
@@ -23,7 +23,7 @@ export interface AppData {
   documents?: Document[];
   resource?: any;
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
-  appName: string;
+  appName?: 'bbb';
   new_document_url?: string;
   new_video_url?: string;
   lti_select_form_action_url?: string;
