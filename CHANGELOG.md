@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Prepare frontend to manage apps
 - Add BBB backend app
 - Add BBB frontend app
+- Add form to create a scheduled video on the Dashboard
 
 ### Changed
 
