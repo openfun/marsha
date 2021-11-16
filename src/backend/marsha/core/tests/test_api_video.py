@@ -3135,10 +3135,10 @@ class VideoAPITest(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         # start a live video,
-        with mock.patch.object(api, "start_live_channel"), mock.patch.object(
-            api, "create_live_stream"
+        with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
+            api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
-            api, "wait_medialive_channel_is_created"
+            api.video, "wait_medialive_channel_is_created"
         ), mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
@@ -3234,7 +3234,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "start_live_channel"):
+        with mock.patch.object(api.video, "start_live_channel"):
             response = self.client.post(
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3360,7 +3360,7 @@ class VideoAPITest(TestCase):
         # start a live video,
         now = datetime(2021, 11, 16, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
-            api, "stop_live_channel"
+            api.video, "stop_live_channel"
         ):
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
@@ -3426,7 +3426,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "stop_live_channel"):
+        with mock.patch.object(api.video, "stop_live_channel"):
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3447,7 +3447,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api, "stop_live_channel"):
+        with mock.patch.object(api.video, "stop_live_channel"):
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3596,11 +3596,11 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         with mock.patch.object(
-            api, "delete_aws_element_stack"
+            api.video, "delete_aws_element_stack"
         ) as mock_delete_aws_element_stack, mock.patch.object(
-            api, "create_mediapackage_harvest_job"
+            api.video, "create_mediapackage_harvest_job"
         ) as mock_create_mediapackage_harvest_job, mock.patch.object(
-            api, "close_room"
+            api.video, "close_room"
         ) as mock_close_room:
             response = self.client.post(
                 f"/api/videos/{video.id}/end-live/",
@@ -3698,11 +3698,13 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         with mock.patch.object(
-            api, "delete_aws_element_stack"
+            api.video, "delete_aws_element_stack"
         ) as mock_delete_aws_element_stack, mock.patch.object(
-            api, "create_mediapackage_harvest_job", side_effect=ManifestMissingException
+            api.video,
+            "create_mediapackage_harvest_job",
+            side_effect=ManifestMissingException,
         ) as mock_create_mediapackage_harvest_job, mock.patch(
-            "marsha.core.api.delete_mediapackage_channel"
+            "marsha.core.api.video.delete_mediapackage_channel"
         ) as mock_delete_mediapackage_channel:
             response = self.client.post(
                 f"/api/videos/{video.id}/end-live/",
