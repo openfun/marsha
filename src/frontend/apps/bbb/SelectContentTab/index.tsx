@@ -11,9 +11,7 @@ import {
 
 import { ErrorMessage } from 'components/ErrorComponents';
 import { SelectContentTabProps } from 'components/SelectContent';
-import { flags } from 'types/AppData';
 import { Nullable } from 'utils/types';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 
 import { useSelectMeeting } from 'apps/bbb/data/queries';
 import { Meeting } from 'apps/bbb/types/models';
@@ -153,10 +151,6 @@ export const SelectContentSection = ({
   items,
   selectContent,
 }: SelectContentSectionProps) => {
-  if (!isFeatureEnabled(flags.BBB)) {
-    return null;
-  }
-
   const intl = useIntl();
 
   return (
@@ -187,10 +181,6 @@ export const SelectContentSection = ({
 };
 
 const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
-  if (!isFeatureEnabled(flags.BBB)) {
-    return null;
-  }
-
   const { data: selectMeeting, status: useSelectMeetingStatus } =
     useSelectMeeting({});
 

@@ -26,10 +26,6 @@ jest.mock('../Loader', () => ({
   Loader: () => <span>Loader</span>,
 }));
 
-jest.mock('../../settings', () => ({
-  APPS: ['custom_app'],
-}));
-
 const mockCustomSelectContentTab = ({
   selectContent,
 }: SelectContentTabProps) => (
@@ -54,6 +50,23 @@ jest.mock(
     virtual: true,
   },
 );
+
+/**
+ * Mock available app type in the front to provide the app used in the test
+ */
+jest.mock('types/AppData.ts', () => ({
+  appNames: {
+    custom_app: 'custom_app',
+  },
+}));
+
+/**
+ * Mock appConfig to override real config because enums are mock
+ * and real values don't exist anymore
+ */
+jest.mock('data/appConfigs.ts', () => ({
+  appConfigs: {},
+}));
 
 window.HTMLFormElement.prototype.submit = jest.fn();
 
