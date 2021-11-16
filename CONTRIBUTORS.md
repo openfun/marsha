@@ -1,4 +1,4 @@
-# Marsha contributors (sorted alphabetically)
+# Marsha contributors
 
 # Please make sure you insert here the email with which your git is configured
 
@@ -14,6 +14,7 @@
 - [Matthieu Huguet](https://github.com/madmatah) <matthieu.huguet@fun-mooc.fr>
 - [Florian Pereira](https://github.com/flo-pereira) <pereira.florian@gmail.com>
 - [Caroline Cramoisan](https://github.com/carofun) <caroline.cramoisan@fun-mooc.fr>
+- [Vassili Rezvoy](https://github.com/RVassili) <vassili.rezvoy@polyconseil.fr>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
