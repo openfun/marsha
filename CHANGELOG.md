@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add frontend components to register an email for scheduled webinars
 - Add API endpoints to pair an external device to Jitsi live videos
 - Add a store in the frontend to control live layout
+- Add frontend components to pair an external device to Jitsi live videos
 
 ### Changed
 
