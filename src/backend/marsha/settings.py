@@ -158,6 +158,9 @@ class Base(Configuration):
         "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
         "PAGE_SIZE": 50,
+        "DEFAULT_THROTTLE_RATES": {
+            "anon": "3/minute",
+        },
     }
 
     # WAFFLE
@@ -296,6 +299,9 @@ class Base(Configuration):
     JITSI_DOMAIN = values.Value("meet.jit.si")
     JITSI_CONFIG_OVERWRITE = values.DictValue({})
     JITSI_INTERFACE_CONFIG_OVERWRITE = values.DictValue({})
+
+    # LIVE PAIRING
+    LIVE_PAIRING_EXPIRATION_SECONDS = 60
 
     # pylint: disable=invalid-name
     @property

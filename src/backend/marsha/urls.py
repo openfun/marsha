@@ -19,6 +19,7 @@ from marsha.core.api import (
     UserViewSet,
     VideoViewSet,
     XAPIStatementView,
+    pairing_challenge,
     update_state,
 )
 from marsha.core.views import (
@@ -62,6 +63,7 @@ urlpatterns = [
     path("videos/<uuid:uuid>", VideoView.as_view(), name="video_public"),
     path("documents/<uuid:uuid>", DocumentView.as_view(), name="document_public"),
     # API
+    path("api/pairing-challenge", pairing_challenge, name="pairing_challenge"),
     path("api/update-state", update_state, name="update_state"),
     path(
         "api/schema",

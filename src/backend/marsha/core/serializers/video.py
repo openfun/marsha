@@ -13,7 +13,14 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
-from ..models import LiveRegistration, Playlist, Thumbnail, TimedTextTrack, Video
+from ..models import (
+    LivePairing,
+    LiveRegistration,
+    Playlist,
+    Thumbnail,
+    TimedTextTrack,
+    Video,
+)
 from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
@@ -286,6 +293,22 @@ class InitLiveStateSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the initiate-live API endpoint."""
 
     type = serializers.ChoiceField(LIVE_TYPE_CHOICES)
+
+
+class LivePairingSerializer(serializers.ModelSerializer):
+    """Serializer for LivePairing model."""
+
+    class Meta:  # noqa
+        model = LivePairing
+        fields = ("secret",)
+        read_only_fields = ("secret",)
+
+
+class PairingChallengeSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the PairingChallenge API endpoint."""
+
+    box_id = serializers.UUIDField()
+    secret = serializers.CharField(min_length=6, max_length=6)
 
 
 class LiveRegistrationSerializer(serializers.ModelSerializer):
