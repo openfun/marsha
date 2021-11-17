@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { startLive } from '../../data/sideEffects/startLive';

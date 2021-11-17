@@ -85,7 +85,7 @@ describe('<JoinDiscussionAskButton />', () => {
         wrapInRouter(<JoinDiscussionAskButton />, [
           {
             path: PUBLIC_JITSI_ROUTE(),
-            render: ({ match }) => {
+            render: () => {
               return <span>{'public video jitsi'}</span>;
             },
           },

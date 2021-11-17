@@ -2,7 +2,6 @@ import fetchMock from 'fetch-mock';
 
 import { XAPI_ENDPOINT } from '../settings';
 import { VerbDefinition } from '../types/XAPI';
-import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
 import { LiveXAPIStatement } from './LiveXapiStatement';
 
 describe('LiveXapiStatement', () => {

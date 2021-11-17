@@ -52,7 +52,7 @@ describe('<DashboardMeetingInstructor />', () => {
 
     const queryClient = new QueryClient();
 
-    const { findByText, getByText, rerender } = render(
+    const { findByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeetingInstructor

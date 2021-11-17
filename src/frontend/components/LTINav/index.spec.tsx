@@ -6,8 +6,7 @@ import {
   documentMockFactory,
   videoMockFactory,
 } from '../../utils/tests/factories';
-import { uploadState, Video } from '../../types/tracks';
-import { Document } from '../../types/file';
+import { uploadState } from '../../types/tracks';
 import { Router } from 'react-router-dom';
 import { PLAYER_ROUTE } from '../routes';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';

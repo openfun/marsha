@@ -14,7 +14,7 @@ type State = {
   setUsernameAlreadyExisting: () => void;
 };
 
-export const useParticipantWorkflow = create<State>((set, get) => ({
+export const useParticipantWorkflow = create<State>((set, _get) => ({
   accepted: false,
   asked: false,
   kicked: false,

@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';

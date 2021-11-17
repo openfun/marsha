@@ -46,7 +46,7 @@ try {
 export let intl: IntlShape;
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
-document.addEventListener('DOMContentLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async () => {
   try {
     if (!window.Intl) {
       await import('intl');

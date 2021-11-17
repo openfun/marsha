@@ -99,7 +99,7 @@ describe('<DashboardMeeting />', () => {
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
 
-    const { getByText, debug, findByText } = render(
+    const { getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeeting />
@@ -118,7 +118,7 @@ describe('<DashboardMeeting />', () => {
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
 
-    const { getByText, debug, findByText } = render(
+    const { findByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeeting />
