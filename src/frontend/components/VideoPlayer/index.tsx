@@ -2,16 +2,24 @@ import { Box } from 'grommet';
 import React, { useRef, useState } from 'react';
 import { Redirect } from 'react-router';
 
-import { WaitingLiveVideo } from '../WaitingLiveVideo';
-import { useThumbnail } from '../../data/stores/useThumbnail';
-import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { createPlayer } from '../../Player/createPlayer';
-import { TimedText, timedTextMode, Video, videoSize } from '../../types/tracks';
-import { VideoPlayerInterface } from '../../types/VideoPlayer';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { Nullable } from '../../utils/types';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { PublicPausedLiveVideo } from 'components/PublicPausedLiveVideo';
+import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
+
+import { useThumbnail } from 'data/stores/useThumbnail';
+import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
+import { useVideoProgress } from 'data/stores/useVideoProgress';
+import { createPlayer } from 'Player/createPlayer';
+import {
+  liveState,
+  TimedText,
+  timedTextMode,
+  Video,
+  videoSize,
+} from 'types/tracks';
+import { VideoPlayerInterface } from 'types/VideoPlayer';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { Nullable } from 'utils/types';
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -31,6 +39,10 @@ const VideoPlayer = ({
 }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
+  const isLiveStarting = !player && video?.live_state;
+  const isLivePausedOrStopping =
+    video?.live_state &&
+    [liveState.STOPPING, liveState.PAUSED].includes(video.live_state);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     (state) => state,
@@ -135,7 +147,13 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {!player && video.live_state && <WaitingLiveVideo />}
+      {isLiveStarting && <WaitingLiveVideo />}
+      {isLivePausedOrStopping && (
+        <PublicPausedLiveVideo
+          video={video}
+          videoNodeRef={videoNodeRef.current!}
+        />
+      )}
     </Box>
   );
 };
