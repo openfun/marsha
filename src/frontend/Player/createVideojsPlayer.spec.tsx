@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import VideoPlayer from '../components/VideoPlayer';
+import VideoPlayer from 'components/VideoPlayer';
+import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
+import { liveState, timedTextMode, uploadState } from 'types/tracks';
+import { isMSESupported } from 'utils/isMSESupported';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
-import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
 import { createVideojsPlayer } from './createVideojsPlayer';
-import { liveState, timedTextMode, uploadState } from '../types/tracks';
-import { isMSESupported } from '../utils/isMSESupported';
-import { videoMockFactory } from '../utils/tests/factories';
-import { wrapInIntlProvider } from '../utils/tests/intl';
-import { VideoXAPIStatementInterface, XAPIStatement } from '../XAPI';
 
 const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
   initialized: jest.fn(),

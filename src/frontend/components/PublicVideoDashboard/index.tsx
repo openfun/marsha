@@ -6,9 +6,10 @@ import { Chat } from 'components/Chat';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { JoinDiscussionAskButton } from 'components/JoinDiscussionAskButton';
+import { SubscribeScheduledVideo } from 'components/SubscribeScheduledVideo';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
-import { SubscribeScheduledVideo } from 'components/SubscribeScheduledVideo';
 import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 import { getDecodedJwt } from 'data/appData';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
@@ -20,8 +21,7 @@ import {
   timedTextMode,
   TimedTextTranscript,
   Video,
-} from '../../types/tracks';
-import { JoinDiscussionAskButton } from '../JoinDiscussionAskButton';
+} from 'types/tracks';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -36,10 +36,16 @@ const PublicVideoDashboard = ({
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
+  const displayJoinDiscussionAskButton =
+    video.xmpp &&
+    video.live_type === LiveModeType.JITSI &&
+    ![liveState.STOPPING, liveState.PAUSED].includes(video.live_state!);
 
   if (video.live_state !== null) {
     switch (video.live_state) {
       case liveState.RUNNING:
+      case liveState.PAUSED:
+      case liveState.STOPPING:
         return (
           <Box>
             <Box direction="row">
@@ -56,7 +62,7 @@ const PublicVideoDashboard = ({
                 </Box>
               )}
             </Box>
-            {video.xmpp && video.live_type === LiveModeType.JITSI && (
+            {displayJoinDiscussionAskButton && (
               <Box
                 direction="row"
                 margin="small"
@@ -69,7 +75,6 @@ const PublicVideoDashboard = ({
           </Box>
         );
       case liveState.STOPPED:
-      case liveState.STOPPING:
         // user has update permission, we redirect him to the dashboard
         if (getDecodedJwt().permissions.can_update) {
           return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;

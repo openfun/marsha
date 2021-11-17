@@ -8,23 +8,25 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
-import { appData, getDecodedJwt } from '../data/appData';
-import { useTranscriptTimeSelector } from '../data/stores/useTranscriptTimeSelector';
+import { appData, getDecodedJwt } from 'data/appData';
+import { getResource } from 'data/sideEffects/getResource';
+import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import {
   QualityLevels,
   VideoJsExtendedSourceObject,
-} from '../types/libs/video.js/extend';
-import { Video, videoSize } from '../types/tracks';
+} from 'types/libs/video.js/extend';
+import { modelName } from 'types/models';
+import { Video, videoSize } from 'types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
-} from '../types/XAPI';
-import { report } from '../utils/errors/report';
-import { isMSESupported } from '../utils/isMSESupported';
-import { Nullable } from '../utils/types';
-import { VideoXAPIStatementInterface, XAPIStatement } from '../XAPI';
+} from 'types/XAPI';
+import { report } from 'utils/errors/report';
+import { isMSESupported } from 'utils/isMSESupported';
+import { Nullable } from 'utils/types';
+import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
-import { intl } from '../index';
+import { intl } from 'index';
 import { Events } from './videojs/qualitySelectorPlugin/types';
 
 export const createVideojsPlayer = (
@@ -166,6 +168,13 @@ export const createVideojsPlayer = (
     xapiStatement.paused({
       time: player.currentTime(),
     });
+  });
+
+  player.on('ended', async () => {
+    // When video is live, fetch the resource to detect live_state modification
+    if (video.live_state !== null) {
+      await getResource(modelName.VIDEOS, video.id);
+    }
   });
 
   /**************** Seeked statement ***********************/
