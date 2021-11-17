@@ -74,7 +74,7 @@ describe('<DashboardMeetingForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
 
-    const { getByText, findByText } = render(
+    const { getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <Toaster />

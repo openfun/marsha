@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { getDecodedJwt } from '../../data/appData';

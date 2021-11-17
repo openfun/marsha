@@ -1,6 +1,5 @@
 import { modelName } from '../../types/models';
 import { parseDataElements } from './parseDataElements';
-import { AppData } from '../../types/AppData';
 
 describe.only('utils/parseDataElements', () => {
   describe('parseDataElements()', () => {

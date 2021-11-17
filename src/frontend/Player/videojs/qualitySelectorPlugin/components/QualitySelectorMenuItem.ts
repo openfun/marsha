@@ -16,7 +16,7 @@ export class QualitySelectorMenuItem extends MenuItem {
   }
 
   qualityRequested(
-    event: Events,
+    _event: Events,
     selectedItem: QualitySelectorMenuItemOptions,
   ) {
     const currentItem = this.options_ as QualitySelectorMenuItemOptions;

@@ -17,6 +17,8 @@
     ],
     "module": "esnext",
     "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "converse": ["types/libs/converse"],
       "intl-pluralrules": ["types/libs/intl-pluralrules"],

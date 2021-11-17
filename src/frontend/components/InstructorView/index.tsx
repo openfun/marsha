@@ -1,4 +1,3 @@
-import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -6,7 +5,6 @@ import styled from 'styled-components';
 
 import { getDecodedJwt } from '../../data/appData';
 import { theme } from '../../utils/theme/theme';
-import { withLink } from '../withLink/withLink';
 import { Document } from '../../types/file';
 import { Video } from '../../types/tracks';
 import { LTINav } from '../LTINav';
@@ -62,8 +60,6 @@ export const InstructorControls = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-
-const BtnWithLink = withLink(Button);
 
 interface InstructorViewProps {
   children: React.ReactNode;

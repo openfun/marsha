@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { uploadState, liveState } from '../../../types/tracks';
+import { liveState } from '../../../types/tracks';
 import { videoMockFactory } from '../../../utils/tests/factories';
 import { startLive } from '.';
 

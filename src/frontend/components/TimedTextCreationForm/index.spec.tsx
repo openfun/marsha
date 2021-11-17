@@ -117,7 +117,7 @@ describe('<TimedTextCreationForm />', () => {
   it('shows an error message and reports the error when it fails to create a timedtexttrack', async () => {
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'POST' });
 
-    const { container, getByText } = render(
+    render(
       wrapInIntlProvider(
         wrapInRouter(
           <TimedTextCreationForm

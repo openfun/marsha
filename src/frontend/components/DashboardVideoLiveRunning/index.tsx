@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useState } from 'react';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { DashboardVideoLiveStopButton } from '../DashboardVideoLiveStopButton';
