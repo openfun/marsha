@@ -152,6 +152,7 @@ export interface Video extends Resource {
       config_overwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions;
       interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
     };
+    paused_at?: string;
   };
   live_type: Nullable<LiveModeType>;
   xmpp: Nullable<XMPP>;

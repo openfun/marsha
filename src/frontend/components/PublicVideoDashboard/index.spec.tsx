@@ -69,6 +69,13 @@ describe('PublicVideoDashboard', () => {
       destroy: jest.fn(),
     });
     mockCanUpdate = false;
+
+    /*
+      make sure to remove all body children, grommet layer gets rendered twice, known issue
+      https://github.com/grommet/grommet/issues/5200
+    */
+    document.body.innerHTML = '';
+    document.body.appendChild(document.createElement('div'));
   });
 
   afterEach(() => {
@@ -288,71 +295,147 @@ describe('PublicVideoDashboard', () => {
     expect(container.querySelector('#converse-container')).toBeInTheDocument();
   });
 
-  it('redirects to the error component when user has no update permission and live state is stopped or stopping', () => {
-    [liveState.STOPPED, liveState.STOPPING].forEach((state) => {
-      const video = videoMockFactory({
-        live_state: state,
-      });
-      render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <PublicVideoDashboard video={video} playerType="videojs" />,
-            [
-              {
-                path: DASHBOARD_ROUTE(),
-                render: ({ match }) => (
-                  <span>{`dashboard ${match.params.objectType}`}</span>
-                ),
-              },
-              {
-                path: FULL_SCREEN_ERROR_ROUTE(),
-                render: ({ match }) => (
-                  <span>{`Error Component: ${match.params.code}`}</span>
-                ),
-              },
-            ],
-          ),
-        ),
-      );
-
-      screen.getByText('Error Component: liveStopped');
-
-      cleanup();
+  it('displays the video player and the waiting message when the live is stopping', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.STOPPING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
     });
+
+    const { container } = render(
+      wrapInIntlProvider(
+        <PublicVideoDashboard video={video} playerType="videojs" />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        video,
+      ),
+    );
+
+    const videoElement = container.querySelector('video')!;
+    expect(videoElement.tabIndex).toEqual(-1);
+    expect(container.querySelector('#converse-container')).toBeInTheDocument();
+    screen.getByText('Webinar is paused');
   });
 
-  it('redirects to the dashboard when user has update permission and live state is stopped or stopping', () => {
-    mockCanUpdate = true;
-    [liveState.STOPPED, liveState.STOPPING].forEach((state) => {
-      const video = videoMockFactory({
-        live_state: state,
-      });
-      render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <PublicVideoDashboard video={video} playerType="videojs" />,
-            [
-              {
-                path: DASHBOARD_ROUTE(),
-                render: ({ match }) => (
-                  <span>{`dashboard ${match.params.objectType}`}</span>
-                ),
-              },
-              {
-                path: FULL_SCREEN_ERROR_ROUTE(),
-                render: ({ match }) => (
-                  <span>{`Error Component: ${match.params.code}`}</span>
-                ),
-              },
-            ],
-          ),
-        ),
-      );
-
-      screen.getByText('dashboard videos');
-
-      cleanup();
+  it('displays the video player and the waiting message when the live is paused', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.PAUSED,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
     });
+
+    const { container } = render(
+      wrapInIntlProvider(
+        <PublicVideoDashboard video={video} playerType="videojs" />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        video,
+      ),
+    );
+
+    const videoElement = container.querySelector('video')!;
+    expect(videoElement.tabIndex).toEqual(-1);
+    expect(container.querySelector('#converse-container')).toBeInTheDocument();
+    screen.getByText('Webinar is paused');
+  });
+
+  it('redirects to the error component when user has no update permission and live state is stopped', () => {
+    const video = videoMockFactory({
+      live_state: liveState.STOPPED,
+    });
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PublicVideoDashboard video={video} playerType="videojs" />,
+          [
+            {
+              path: DASHBOARD_ROUTE(),
+              render: ({ match }) => (
+                <span>{`dashboard ${match.params.objectType}`}</span>
+              ),
+            },
+            {
+              path: FULL_SCREEN_ERROR_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
+      ),
+    );
+
+    screen.getByText('Error Component: liveStopped');
+  });
+
+  it('redirects to the dashboard when user has update permission and live state is stopped', () => {
+    mockCanUpdate = true;
+    const video = videoMockFactory({
+      live_state: liveState.STOPPED,
+    });
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PublicVideoDashboard video={video} playerType="videojs" />,
+          [
+            {
+              path: DASHBOARD_ROUTE(),
+              render: ({ match }) => (
+                <span>{`dashboard ${match.params.objectType}`}</span>
+              ),
+            },
+            {
+              path: FULL_SCREEN_ERROR_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
+      ),
+    );
+
+    screen.getByText('dashboard videos');
   });
 
   it('displays the WaitingLiveVideo component when live is not ready', () => {
