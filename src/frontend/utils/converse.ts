@@ -100,7 +100,7 @@ export const converseMounter = () => {
             );
           });
 
-          _converse.on('enteredNewRoom', (model: any) => {
+          _converse.on('enteredNewRoom', () => {
             joinedRoom = true;
             if (useParticipantWorkflow.getState().asked) {
               askParticipantToJoin();

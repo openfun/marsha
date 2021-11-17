@@ -8,7 +8,7 @@ import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButton
 import { Meeting } from 'apps/bbb/types/models';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useEndMeeting, useJoinMeeting } from 'apps/bbb/data/queries';
+import { useEndMeeting } from 'apps/bbb/data/queries';
 import { Loader } from '../../../components/Loader';
 const DashboardMeetingForm = lazy(
   () => import('apps/bbb/DashboardMeetingForm'),
@@ -54,7 +54,7 @@ const DashboardMeetingInstructor = ({
   const intl = useIntl();
 
   const endMeetingMutation = useEndMeeting(bbbAppData.meeting!.id, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(intl.formatMessage(messages.endingMeetingPending));
       meetingEnded();
     },

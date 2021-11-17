@@ -18,7 +18,7 @@ import { modelName } from '../../types/models';
 import { uploadState, Video } from '../../types/tracks';
 import { Crumb } from '../BreadCrumbs';
 import { ErrorMessage } from '../ErrorComponents';
-import { Loader, Spinner } from '../Loader';
+import { Spinner } from '../Loader';
 import { UploadableObjectStatusBadge } from '../UploadableObjectStatusBadge';
 import { UploadField } from '../UploadField';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';

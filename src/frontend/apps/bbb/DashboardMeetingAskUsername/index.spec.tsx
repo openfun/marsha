@@ -5,7 +5,6 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import DashboardMeetingAskUsername from '.';
 
-const closeAskUserNameAction = jest.fn();
 const onJoin = jest.fn();
 const onCancel = jest.fn();
 

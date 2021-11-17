@@ -1,5 +1,4 @@
 import {
-  act,
   cleanup,
   fireEvent,
   render,
@@ -13,7 +12,6 @@ import { TimedTextListItem } from '.';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { timedTextMode, uploadState } from '../../types/tracks';
 import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { Deferred } from '../../utils/tests/Deferred';
 import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('../../data/appData', () => ({

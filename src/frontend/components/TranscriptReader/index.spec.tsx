@@ -29,7 +29,7 @@ jest.mock('vtt.js', () => ({
         ].forEach((cue) => this.oncue(cue));
       }
       parse() {}
-      oncue(cue: VTTCue) {}
+      oncue(_cue: VTTCue) {}
     },
     StringDecoder: jest.fn(),
   },

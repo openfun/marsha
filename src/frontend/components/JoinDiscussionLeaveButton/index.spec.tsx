@@ -29,7 +29,7 @@ describe('<JoinDiscussionLeaveButton />', () => {
         wrapInRouter(<JoinDiscussionLeaveButton />, [
           {
             path: PLAYER_ROUTE(),
-            render: ({ match }) => {
+            render: () => {
               return <span>{'video player'}</span>;
             },
           },

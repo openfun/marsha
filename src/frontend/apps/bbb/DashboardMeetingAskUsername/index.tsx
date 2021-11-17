@@ -1,6 +1,6 @@
-import { Box, FormField, Layer, Paragraph, TextInput } from 'grommet';
-import React, { KeyboardEventHandler, MouseEventHandler } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { Box, FormField, TextInput } from 'grommet';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
 

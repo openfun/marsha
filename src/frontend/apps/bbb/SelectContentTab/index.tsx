@@ -174,7 +174,7 @@ export const SelectContentSection = ({
           </Text>
         </Card>
 
-        {items?.map((item: Meeting, index: React.Key | null | undefined) => (
+        {items?.map((item: Meeting) => (
           <ContentCard
             content={item!}
             key={item.id}

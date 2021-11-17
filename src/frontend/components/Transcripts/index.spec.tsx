@@ -86,9 +86,7 @@ describe('<Transcripts />', () => {
   it('shows the transcript when the user selects a language', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
 
-    const { getByLabelText, getByText } = render(
-      wrapInIntlProvider(<Transcripts transcripts={transcripts} />),
-    );
+    render(wrapInIntlProvider(<Transcripts transcripts={transcripts} />));
 
     const select = screen.getByLabelText('Show a transcript');
     fireEvent.change(select, { target: { value: '1' } });

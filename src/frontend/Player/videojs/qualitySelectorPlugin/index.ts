@@ -48,7 +48,7 @@ export class QualitySelector extends Plugin {
   }
 
   private changeQuality(
-    event: Events,
+    _event: Events,
     selectedSource: QualitySelectorMenuItemOptions,
   ) {
     const sources = this.player.currentSources();

@@ -51,7 +51,7 @@ describe('<DocumentPlayer />', () => {
       id: '42',
       title: 'foo.pdf',
     });
-    const { container } = render(<DocumentPlayer document={document} />);
+    render(<DocumentPlayer document={document} />);
 
     const toDownload = screen.getByRole('link', { name: 'foo.pdf' });
 

@@ -113,11 +113,11 @@ export class LiveXAPIStatement implements VideoXAPIStatementInterface {
     this.send(data);
   }
 
-  seeked(resultExtensions: SeekedResultExtensions): void {}
+  seeked(_resultExtensions: SeekedResultExtensions): void {}
 
-  completed(time: number): void {}
+  completed(_time: number): void {}
 
-  downloaded(quality: string | number): void {}
+  downloaded(_quality: string | number): void {}
 
   terminated(resultExtensions: TerminatedResultExtensions): void {
     if (this.startSegment !== null) {
