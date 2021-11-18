@@ -519,6 +519,9 @@ jobs:
             equal: [ chrome, << parameters.browser_channel >> ]
           steps:
             - run:
+                name: Build apt cache
+                command: apt update
+            - run:
                 name: Install chrome
                 command: python -m playwright install chrome
       - run:
