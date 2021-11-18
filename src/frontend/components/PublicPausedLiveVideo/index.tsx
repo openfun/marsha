@@ -2,11 +2,14 @@ import { Box, Clock, Layer, Paragraph } from 'grommet';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import videojs from 'video.js';
 
 import { H2 } from 'components/Headings';
+import { getResource } from 'data/sideEffects/getResource';
 import { Video } from 'types/tracks';
+import { modelName } from 'types/models';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
-import { resumeLive } from '../../utils/resumeLive';
+import { resumeLive } from 'utils/resumeLive';
 
 const messages = defineMessages({
   pausedSince: {
