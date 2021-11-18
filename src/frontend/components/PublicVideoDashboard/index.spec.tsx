@@ -26,6 +26,21 @@ jest.mock('index', () => ({
     locale: 'en',
   },
 }));
+jest.mock('utils/resumeLive', () => ({
+  resumeLive: jest.fn().mockResolvedValue(null),
+}));
+jest.mock('video.js', () => ({
+  __esModule: true,
+  default: {
+    getPlayers: () => ({
+      r2d2: {
+        currentSource: () => 'https://live.m3u8',
+        src: jest.fn(),
+      },
+    }),
+  },
+}));
+
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
