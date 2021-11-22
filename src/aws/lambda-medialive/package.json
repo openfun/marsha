@@ -3,7 +3,7 @@
   "name": "aws-marsha-medialive",
   "version": "3.26.0",
   "engines": {
-    "node": "14"
+    "node": "16"
   },
   "description": "Tasks to execute when a medialive event is fired",
   "repository": {
@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "27.0.2",
+    "@types/jest": "27.0.3",
     "@types/request-promise-native": "1.0.18",
     "jest": "27.3.1",
     "prettier": "2.4.1"

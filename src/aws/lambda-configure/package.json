@@ -3,7 +3,7 @@
   "name": "aws-marsha-configure",
   "version": "3.26.0",
   "engines": {
-    "node": "14"
+    "node": "16"
   },
   "description": "Configure AWS via a Lambda for what can not be configured via Terraform for the Marsha video workflow",
   "repository": {
@@ -15,10 +15,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1028.0"
+    "aws-sdk": "2.1033.0"
   },
   "devDependencies": {
-    "@types/jest": "27.0.2",
+    "@types/jest": "27.0.3",
     "aws-sdk-mock": "5.4.0",
     "jest": "27.3.1",
     "prettier": "2.4.1"
