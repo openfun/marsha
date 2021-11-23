@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders AppsInactiveSVG correctly 1`] = `
+.c0 rect {
+  fill: none;
+}
+
+.c0 path {
+  fill: #035ccd;
+}
+
+<svg
+  className="c0"
+  height="54"
+  viewBox="0 0 54 54"
+  width="54"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>
+    Show/Hide Chat
+  </title>
+  <g
+    fillRule="evenodd"
+    stroke="none"
+    strokeWidth="1"
+  >
+    <g
+      transform="translate(-1012 -681)"
+    >
+      <g
+        transform="translate(1012 681)"
+      >
+        <g
+          transform="translate(2.5 2.5)"
+        >
+          <path
+            d="M8.333 16.667h8.334V8.333H8.333v8.334zm12.5 25h8.334v-8.334h-8.334v8.334zm-12.5 0h8.334v-8.334H8.333v8.334zm0-12.5h8.334v-8.334H8.333v8.334zm12.5 0h8.334v-8.334h-8.334v8.334zm12.5-20.834v8.334h8.334V8.333h-8.334zm-12.5 8.334h8.334V8.333h-8.334v8.334zm12.5 12.5h8.334v-8.334h-8.334v8.334zm0 12.5h8.334v-8.334h-8.334v8.334z"
+            fillRule="nonzero"
+          />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+`;
