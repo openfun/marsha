@@ -1,11 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
 
 import { LiveVideoInformationBar } from '.';
 
