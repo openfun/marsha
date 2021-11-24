@@ -2,36 +2,37 @@ import React from 'react';
 import fetchMock from 'fetch-mock';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
-import { liveState, timedTextMode } from '../../types/tracks';
-import {
-  timedTextMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { createPlayer } from '../../Player/createPlayer';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { liveState, timedTextMode } from 'types/tracks';
+import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+import { createPlayer } from 'Player/createPlayer';
 import PublicVideoDashboard from '.';
 
-jest.mock('../../Player/createPlayer', () => ({
+jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
-jest.mock('../../data/sideEffects/getResource', () => ({
+jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn().mockResolvedValue(null),
 }));
-jest.mock('../../data/sideEffects/pollForLive', () => ({
+jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn().mockResolvedValue(null),
 }));
-
+jest.mock('index', () => ({
+  intl: {
+    locale: 'en',
+  },
+}));
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
 
 let mockCanUpdate: boolean;
 const mockVideo = videoMockFactory();
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     video: mockVideo,
   },
@@ -42,7 +43,7 @@ jest.mock('../../data/appData', () => ({
   }),
 }));
 
-jest.mock('../../utils/converse', () => ({
+jest.mock('utils/converse', () => ({
   converseMounter: jest.fn(() => jest.fn()),
 }));
 
@@ -373,6 +374,48 @@ describe('PublicVideoDashboard', () => {
       );
 
       cleanup();
+    });
+  });
+
+  it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+      is_scheduled: false,
+    });
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PublicVideoDashboard video={video} playerType="videojs" />,
+        ),
+      ),
+    );
+
+    screen.getByText('Live will begin soon');
+    screen.getByText(
+      'The live is going to start. You can wait here, the player will start once the live is ready.',
+    );
+  });
+
+  it('displays the SubscribeScheduledVideo component when live_state is IDLE and video is scheduled', async () => {
+    const startingAt = new Date();
+    startingAt.setFullYear(startingAt.getFullYear() + 10);
+
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
+      starting_at: startingAt.toISOString(),
+      is_scheduled: true,
+    });
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PublicVideoDashboard video={video} playerType="videojs" />,
+        ),
+      ),
+    );
+
+    await screen.findByRole('button', { name: /register/i });
+    screen.getByRole('heading', {
+      name: /register to this event starting on /i,
     });
   });
 });

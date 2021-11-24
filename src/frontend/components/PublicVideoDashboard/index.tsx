@@ -2,17 +2,18 @@ import { Box } from 'grommet';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { Chat } from '../Chat';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DownloadVideo } from '../DownloadVideo';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { Transcripts } from '../Transcripts';
-import VideoPlayer from '../VideoPlayer';
-import { WaitingLiveVideo } from '../WaitingLiveVideo';
-import { getDecodedJwt } from '../../data/appData';
-import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
-import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
+import { Chat } from 'components/Chat';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { DownloadVideo } from 'components/DownloadVideo';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { Transcripts } from 'components/Transcripts';
+import VideoPlayer from 'components/VideoPlayer';
+import { SubscribeScheduledVideo } from 'components/SubscribeScheduledVideo';
+import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
+import { getDecodedJwt } from 'data/appData';
+import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useVideo } from 'data/stores/useVideo';
+import { modelName } from 'types/models';
 import {
   LiveModeType,
   liveState,
@@ -76,6 +77,12 @@ const PublicVideoDashboard = ({
 
         // otherwise the user can only see a message
         return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
+      case liveState.IDLE:
+        if (video.is_scheduled) {
+          return <SubscribeScheduledVideo video={video} />;
+        }
+        // waiting message
+        return <WaitingLiveVideo video={video} />;
       default:
         // waiting message
         return <WaitingLiveVideo video={video} />;

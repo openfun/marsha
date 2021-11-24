@@ -1,35 +1,44 @@
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
-import { appData } from '../../data/appData';
-import { modelName } from '../../types/models';
-import { Chat } from '../Chat';
-import { CHAT_ROUTE } from '../Chat/route';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FullScreenError } from '../ErrorComponents';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { ErrorComponentsProps } from '../ErrorComponents';
-import { InstructorWrapper } from '../InstructorWrapper';
-import { Loader } from '../Loader';
-import { PUBLIC_JITSI_ROUTE } from '../PublicVideoLiveJitsi/route';
-import { RedirectOnLoad } from '../RedirectOnLoad';
-import { REDIRECT_ON_LOAD_ROUTE } from '../RedirectOnLoad/route';
-import { PLAYER_ROUTE } from '../routes';
-import { SelectContent } from '../SelectContent/';
-import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
-import { UploadForm } from '../UploadForm';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { UploadManager } from '../UploadManager';
-import { LTIUploadHandlers } from '../UploadManager/LTIUploadHandlers';
-import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
-import { PlaylistPortability } from '../PlaylistPortability';
+import { appData } from 'data/appData';
+import { modelName } from 'types/models';
+import { Chat } from 'components/Chat';
+import { CHAT_ROUTE } from 'components/Chat/route';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FullScreenError } from 'components/ErrorComponents';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { ErrorComponentsProps } from 'components/ErrorComponents';
+import { InstructorWrapper } from 'components/InstructorWrapper';
+import { Loader } from 'components/Loader';
+import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
+import { PLAYER_ROUTE } from 'components/routes';
+import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
+import { PlaylistPortability } from 'components/PlaylistPortability';
+import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
+import { RedirectOnLoad } from 'components/RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { UploadForm } from 'components/UploadForm';
+import { UploadManager } from 'components/UploadManager';
+import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
+import { SelectContent } from 'components/SelectContent/';
+import { SUBSCRIBE_SCHEDULED_ROUTE } from 'components/SubscribeScheduledVideo/route';
+import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 
-const Dashboard = lazy(() => import('../Dashboard'));
-const DashboardDocument = lazy(() => import('../DashboardDocument'));
-const DashboardVideo = lazy(() => import('../DashboardVideo'));
-const DocumentPlayer = lazy(() => import('../DocumentPlayer'));
-const PublicVideoDashboard = lazy(() => import('../PublicVideoDashboard'));
-const PublicVideoLiveJitsi = lazy(() => import('../PublicVideoLiveJitsi'));
+const Dashboard = lazy(() => import('components/Dashboard'));
+const DashboardDocument = lazy(() => import('components/DashboardDocument'));
+const DashboardVideo = lazy(() => import('components/DashboardVideo'));
+const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));
+const PublicVideoDashboard = lazy(
+  () => import('components/PublicVideoDashboard'),
+);
+const PublicVideoLiveJitsi = lazy(
+  () => import('components/PublicVideoLiveJitsi'),
+);
+const SubscribeScheduledVideo = lazy(
+  () => import('components/SubscribeScheduledVideo'),
+);
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -179,6 +188,24 @@ export const Routes = () => (
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
+
+        <Route
+          exact
+          path={SUBSCRIBE_SCHEDULED_ROUTE()}
+          render={() => {
+            if (
+              appData.modelName === modelName.VIDEOS &&
+              appData.video!.starting_at
+            ) {
+              if (appData.video!.is_scheduled) {
+                return <SubscribeScheduledVideo video={appData.video!} />;
+              }
+              return <WaitingLiveVideo video={appData.video!} />;
+            }
+            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+          }}
+        />
+
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </Switch>
     </Suspense>
