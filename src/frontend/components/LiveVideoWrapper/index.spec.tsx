@@ -135,6 +135,35 @@ describe('<LiveVideoWrapper />', () => {
     expect(mockSetPanel).toHaveBeenCalled();
     expect(mockSetPanel).toHaveBeenCalledTimes(1);
     expect(mockSetPanel).toHaveBeenCalledWith(false);
+  });
+
+  it('config the store to use the chat when xmpp is on', () => {
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    const Compo = (
+      <LiveVideoWrapper
+        video={video}
+        configuration={{ type: 'viewer', playerType: 'videojs' }}
+      />
+    );
+
+    render(wrapInRouter(wrapInIntlProvider(Compo)));
 
     expect(mockSetConfig).toHaveBeenCalled();
     expect(mockSetConfig).toHaveBeenCalledTimes(1);
@@ -142,5 +171,30 @@ describe('<LiveVideoWrapper />', () => {
       [LivePanelDetail.CHAT],
       LivePanelDetail.CHAT,
     );
+  });
+
+  it('config the store to use an empty panel when xmpp is off', () => {
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+    });
+    const Compo = (
+      <LiveVideoWrapper
+        video={video}
+        configuration={{ type: 'viewer', playerType: 'videojs' }}
+      />
+    );
+
+    render(wrapInRouter(wrapInIntlProvider(Compo)));
+
+    expect(mockSetConfig).toHaveBeenCalled();
+    expect(mockSetConfig).toHaveBeenCalledTimes(1);
+    expect(mockSetConfig).toHaveBeenCalledWith([], undefined);
   });
 });

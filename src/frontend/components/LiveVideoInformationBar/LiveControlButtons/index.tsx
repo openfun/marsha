@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 
+import {
+  LivePanelDetail,
+  useLivePanelState,
+} from 'data/stores/useLivePanelState';
 import { theme } from 'utils/theme/theme';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 
@@ -32,6 +36,9 @@ const LiveButtonsWrapper = styled(Box)`
 
 export const LiveControlButtons = () => {
   const accepted = useParticipantWorkflow((state) => state.accepted);
+  const isChatAvailable = useLivePanelState((state) =>
+    state.availableDetails.includes(LivePanelDetail.CHAT),
+  );
 
   return (
     <LiveButtonsWrapper direction="row" align="center" responsive={true}>
@@ -39,7 +46,7 @@ export const LiveControlButtons = () => {
 
       <StudentShowViewersButton />
 
-      <StudentShowChatButton />
+      {isChatAvailable && <StudentShowChatButton />}
 
       {accepted ? (
         <StudentLeaveDiscussionButton />

@@ -41,8 +41,14 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
 
   useEffect(() => {
     setPanelVisibility(false);
-    configPanel([LivePanelDetail.CHAT], LivePanelDetail.CHAT);
-  }, [setPanelVisibility, configPanel]);
+
+    //  configure panel to display the chat only when available
+    if (video.xmpp) {
+      configPanel([LivePanelDetail.CHAT], LivePanelDetail.CHAT);
+    } else {
+      configPanel([], undefined);
+    }
+  }, [setPanelVisibility, configPanel, video.xmpp]);
 
   return (
     <LiveStudentLayout
