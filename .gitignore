@@ -123,6 +123,7 @@ venv.bak/
 .mypy_cache/
 
 # Front
+__diff_output__/
 node_modules
 src/frontend/i18n/frontend.json
 src/backend/marsha/static/css
