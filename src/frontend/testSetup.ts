@@ -2,3 +2,6 @@
 import 'jest-styled-components';
 // Jest helpers for testing-library
 import '@testing-library/jest-dom';
+
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
+expect.extend({ toMatchImageSnapshot });
