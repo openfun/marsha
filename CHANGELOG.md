@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add configuration to filter app with feature flags
 - Start and stop a live
 - Add a form to create a scheduled video on the Dashboard
+- Add frontend components to register an email for scheduled webinars
 
 ### Changed
 
