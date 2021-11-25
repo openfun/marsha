@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 
 from ..defaults import DELETED, HARVESTED, IDLE, LIVE_CHOICES, LIVE_TYPE_CHOICES
 from ..utils.time_utils import to_timestamp
-from ..validators import validate_date_is_future
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
 
@@ -23,7 +22,6 @@ class Video(BaseFile):
         verbose_name=_("starting at"),
         help_text=_("date and time at which a video live is scheduled"),
         null=True,
-        validators=[validate_date_is_future],
     )
     should_use_subtitle_as_transcript = models.BooleanField(
         default=False,
