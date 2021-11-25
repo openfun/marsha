@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import random
 from unittest import mock
 
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -138,16 +137,7 @@ class VideoModelsTestCase(TestCase):
         The property is_scheduled is set according to starting_at. It gets automaticaly
         updated to not scheduled if date is over.
         """
-        starting_at = timezone.now() - timedelta(hours=1)
-        # Can't set with a date in the past
-        with self.assertRaises(ValidationError) as error:
-            VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-
-        self.assertEqual(
-            error.exception.messages,
-            [f"{starting_at} is not a valid date, date should be planned after!"],
-        )
-        # Set to now plus 1 second and wait
+        # Set to now plus 1 second
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -161,3 +151,22 @@ class VideoModelsTestCase(TestCase):
         future = timezone.now() + timedelta(hours=1)
         with mock.patch.object(timezone, "now", return_value=future):
             self.assertFalse(video.is_scheduled)
+
+    def test_models_modify_video_object_with_starting_at_in_the_past(self):
+        """Testing we can still update a video after starting_at is over."""
+        # Set to now plus 1 second
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(seconds=1),
+        )
+        # Video is scheduled
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, IDLE)
+
+        # Mock now to the future to check video gets set to not scheduled
+        future = timezone.now() + timedelta(hours=1)
+        with mock.patch.object(timezone, "now", return_value=future):
+            self.assertFalse(video.is_scheduled)
+            video.description = "modify something else than starting_at"
+            video.save()

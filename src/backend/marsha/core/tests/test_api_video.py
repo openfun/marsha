@@ -2368,7 +2368,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(video.title, "updated title")
 
     def test_api_update_video_with_live_state_set(self):
-        """Check we can't update starting_date if live_state is not null."""
+        """Check we can't update starting_date if live_state is not IDLE."""
         for live_choice in LIVE_CHOICES:
             if live_choice[0] != IDLE:
                 video = factories.VideoFactory(
@@ -2406,6 +2406,43 @@ class VideoAPITest(TestCase):
                     },
                 )
                 self.assertEqual(response.status_code, 400)
+
+    def test_api_update_video_with_starting_at_past(self):
+        """Check we can update video if starting_at is past"""
+        starting_at = (timezone.now() + timedelta(seconds=10)).replace(microsecond=0)
+        # first create a scheduled video
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=starting_at,
+        )
+        # Video is scheduled
+        self.assertTrue(video.starting_at > timezone.now())
+        self.assertTrue(video.is_scheduled)
+        self.assertEqual(video.live_state, IDLE)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # Mock now to the future to check video gets set to not scheduled
+        future = timezone.now() + timedelta(hours=1)
+        with mock.patch.object(timezone, "now", return_value=future):
+            self.assertFalse(video.is_scheduled)
+            # starting_at is over, we still want to update the video
+            response = self.client.put(
+                f"/api/videos/{video.id}/",
+                {
+                    "description": "updated description",
+                    "title": "updated title",
+                    "starting_at": starting_at,
+                },
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            self.assertEqual(response.status_code, 200)
+            video.refresh_from_db()
+            self.assertEqual(video.title, "updated title")
+            self.assertEqual(video.description, "updated description")
 
     def test_api_video_delete_detail_anonymous(self):
         """Anonymous users should not be allowed to delete a video."""
@@ -3779,6 +3816,11 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state(self):
         """Confirm update video live state."""
+        # test works with or without a starting_at date
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = random.choice(
+            [None, (timezone.now() + timedelta(hours=1)).replace(microsecond=0)]
+        )
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
@@ -3806,6 +3848,7 @@ class VideoAPITest(TestCase):
                 "paused_at": "1637020800",
             },
             live_type=RAW,
+            starting_at=starting_at,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3827,6 +3870,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.live_state, RUNNING)
+        self.assertEqual(video.starting_at, starting_at)
         self.assertEqual(
             video.live_info,
             {
@@ -3858,6 +3902,12 @@ class VideoAPITest(TestCase):
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_stopped(self):
         """Receiving stopped event should pause the video."""
+        # test works with or without a starting_at date
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = random.choice(
+            [None, (timezone.now() + timedelta(hours=1)).replace(microsecond=0)]
+        )
+
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
@@ -3887,6 +3937,7 @@ class VideoAPITest(TestCase):
                 "started_at": "1533686400",
             },
             live_type=RAW,
+            starting_at=starting_at,
         )
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
@@ -3910,6 +3961,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.live_state, PAUSED)
         self.assertEqual(video.upload_state, PENDING)
+        self.assertEqual(video.starting_at, starting_at)
         self.assertEqual(
             video.live_info,
             {
