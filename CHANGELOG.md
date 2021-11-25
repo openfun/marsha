@@ -33,6 +33,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - check_live_idle management command
+- Remove validate_date_is_future validator on Video model
 
 ## [3.26.0] - 2021-10-22
 

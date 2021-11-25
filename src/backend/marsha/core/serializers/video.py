@@ -561,6 +561,11 @@ class VideoSerializer(VideoBaseSerializer):
         """Add extra controls for starting_at field."""
         # Field starting_at has a new value
         if value != self.instance.starting_at:
+            # New value is past, it can't be updated
+            if value is not None and value < timezone.now():
+                raise serializers.ValidationError(
+                    f"{value} is not a valid date, date should be planned after!"
+                )
             # Check live_state is in IDLE state as expected when scheduling a live
             if self.instance.live_state != IDLE:
                 raise serializers.ValidationError(
