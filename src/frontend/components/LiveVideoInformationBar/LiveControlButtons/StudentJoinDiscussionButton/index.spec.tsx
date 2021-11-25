@@ -6,6 +6,7 @@ import {
   waitFor,
 } from '@testing-library/react';
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 
 import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
@@ -14,6 +15,22 @@ import { wrapInRouter } from 'utils/tests/router';
 import { converse } from 'utils/window';
 
 import { StudentJoinDiscussionButton } from '.';
+
+//  matchMedia is not defined in tests
+//  https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -105,7 +122,14 @@ describe('<StudentJoinDiscussionButton />', () => {
   });
 
   it('clicks on the button to ask to join the discussion and the request is rejected', async () => {
-    render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
+    render(
+      wrapInIntlProvider(
+        <React.Fragment>
+          <Toaster />
+          <StudentJoinDiscussionButton />
+        </React.Fragment>,
+      ),
+    );
 
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
@@ -138,9 +162,11 @@ describe('<StudentJoinDiscussionButton />', () => {
       useParticipantWorkflow.getState().setRejected();
     });
 
-    screen.getByText(
-      'Your request to join the discussion has not been accepted.',
-    );
+    expect(
+      await screen.findByText(
+        'Your request to join the discussion has not been accepted.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('displays the username input text and clicks on cancel button', async () => {
