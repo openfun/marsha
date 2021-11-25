@@ -7,9 +7,10 @@ import { Redirect } from 'react-router-dom';
 import { theme } from 'utils/theme/theme';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { JoinDiscussionSVG } from 'components/SVGIcons/JoinDiscussionSVG';
 import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
+import { JoinDiscussionSVG } from 'components/SVGIcons/JoinDiscussionSVG';
 import { converse } from 'utils/window';
+import toast from 'react-hot-toast';
 
 const messages = defineMessages({
   askInstructor: {
@@ -88,6 +89,7 @@ export const StudentJoinDiscussionButton = () => {
       //  alert teacher for the request through XMPP
       await converse.askParticipantToJoin(username);
     } catch (error) {
+      //  when failling to alert the teacher
       setShowUsernameForm(true);
       return;
     }
@@ -104,12 +106,16 @@ export const StudentJoinDiscussionButton = () => {
     }
   }, [usernameAlreadyExisting]);
 
+  //  if user is rejected : alert user and reset state
+  useEffect(() => {
+    if (rejected) {
+      reset();
+      toast.error(intl.formatMessage(messages.rejected));
+    }
+  }, [rejected, reset]);
+
   if (accepted) {
     return <Redirect to={PUBLIC_JITSI_ROUTE()} />;
-  }
-
-  if (rejected) {
-    return <Text>{intl.formatMessage(messages.rejected)}</Text>;
   }
 
   if (asked) {
