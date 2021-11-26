@@ -259,11 +259,11 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             stamp = to_timestamp(now)
             key = f"{video.pk}_{stamp}"
             video.live_info = create_live_stream(key)
+            if settings.LIVE_CHAT_ENABLED:
+                create_room(video.id)
             wait_medialive_channel_is_created(video.get_medialive_channel().get("id"))
 
         start_live_channel(video.get_medialive_channel().get("id"))
-        if settings.LIVE_CHAT_ENABLED:
-            create_room(video.id)
 
         video.live_state = defaults.STARTING
         video.save()
