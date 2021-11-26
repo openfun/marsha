@@ -84,8 +84,8 @@ class Meeting(BaseModel):
         max_length=50,
         verbose_name=_("Moderator Password"),
         help_text=_(
-            "The password that will join URL can later provide as its password parameter "
-            "to indicate the user will as a moderator."
+            "The password that the join URL can later provide as its password parameter "
+            "to indicate the user will join as a moderator."
         ),
         blank=True,
         null=True,
