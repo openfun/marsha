@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.27.0] - 2021-12-07
+
 ### Added
 
 - Prepare backend to manage apps
@@ -952,7 +954,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.26.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v3.27.0...master
+[3.27.0]: https://github.com/openfun/marsha/compare/v3.26.0...v3.27.0
 [3.26.0]: https://github.com/openfun/marsha/compare/v3.25.0...v3.26.0
 [3.25.0]: https://github.com/openfun/marsha/compare/v3.24.1...v3.25.0
 [3.24.1]: https://github.com/openfun/marsha/compare/v3.24.0...v3.24.1
