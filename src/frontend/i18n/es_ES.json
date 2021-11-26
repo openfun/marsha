@@ -1,4 +1,112 @@
 {
+  "apps.bbb.SelectContent.addMeeting": {
+    "description": "Text displayed on a button to add a new meeting.",
+    "message": "Add a meeting"
+  },
+  "apps.bbb.SelectContent.loadingMeetings": {
+    "description": "Accessible message for the spinner while loading the meetings in lti select view.",
+    "message": "Loading meetings..."
+  },
+  "apps.bbb.SelectContent.newMeeting": {
+    "description": "Default LTI consumer title for a new meeting.",
+    "message": "New meeting"
+  },
+  "apps.bbb.SelectContent.notStarted": {
+    "description": "Text helper displayed if a meeting is not started.",
+    "message": "Not started"
+  },
+  "apps.bbb.SelectContent.select": {
+    "description": "Accessible message for selecting a meeting.",
+    "message": "Select {title}"
+  },
+  "apps.bbb.SelectContent.started": {
+    "description": "Text helper displayed if a meeting is started.",
+    "message": "Started"
+  },
+  "component.DashboardMeeting.loadingMeeting": {
+    "description": "Accessible message for the spinner while loading the meeting in dashboard view.",
+    "message": "Loading meeting..."
+  },
+  "component.DashboardMeeting.startMeetingFail": {
+    "description": "Message when meeting start failed.",
+    "message": "Meeting not started!"
+  },
+  "component.DashboardMeeting.startMeetingSuccess": {
+    "description": "Message when meeting start is successful.",
+    "message": "Meeting started."
+  },
+  "component.DashboardMeetingAskUsername.cancel": {
+    "description": "Button label for discarding ask username form in meeting dashboard view.",
+    "message": "Cancel"
+  },
+  "component.DashboardMeetingAskUsername.join": {
+    "description": "Button label for setting username and joining the meeting in meeting dashboard view.",
+    "message": "Join"
+  },
+  "component.DashboardMeetingAskUsername.label": {
+    "description": "Label for asking username to join the meeting.",
+    "message": "Please enter your name to join the meeting"
+  },
+  "component.DashboardMeetingForm.createMeetingFail": {
+    "description": "Message when meeting creation failed.",
+    "message": "Meeting not created!"
+  },
+  "component.DashboardMeetingForm.createMeetingLabel": {
+    "description": "Label for confirm button in meeting creation form.",
+    "message": "Create meeting in BBB"
+  },
+  "component.DashboardMeetingForm.titleLabel": {
+    "description": "Label for title in meeting creation form.",
+    "message": "Title"
+  },
+  "component.DashboardMeetingForm.welcomeTextLabel": {
+    "description": "Label for welcome text in meeting creation form.",
+    "message": "Welcome text"
+  },
+  "component.DashboardMeetingInfos.listeners": {
+    "description": "Role name for listeners in dashboard meeting info view.",
+    "message": "Listeners"
+  },
+  "component.DashboardMeetingInfos.moderators": {
+    "description": "Role name for moderators in dashboard meeting info view.",
+    "message": "Moderators"
+  },
+  "component.DashboardMeetingInfos.participants": {
+    "description": "Role name for participants in dashboard meeting info view.",
+    "message": "Participants"
+  },
+  "component.DashboardMeetingInstructor.createMeetingFail": {
+    "description": "Message when meeting creation failed.",
+    "message": "Meeting not created!"
+  },
+  "component.DashboardMeetingInstructor.endMeetingLabel": {
+    "description": "Label for ending meeting in instructor dashboard.",
+    "message": "End meeting"
+  },
+  "component.DashboardMeetingInstructor.endingMeetingPending": {
+    "description": "Message when ending meeting is pending.",
+    "message": "Ending meeting…"
+  },
+  "component.DashboardMeetingInstructor.joinMeetingLabel": {
+    "description": "Label for joining meeting in instructor dashboard.",
+    "message": "Join meeting"
+  },
+  "component.DashboardMeetingJoin.blockedPopups": {
+    "description": "Message when browser is blocking popups.",
+    "message": "Your browser is blocking popups."
+  },
+  "component.DashboardMeetingJoin.joinLinkLabel": {
+    "description": "Label for link used to join a meeting.",
+    "message": "Please click here to access meeting."
+  },
+  "component.DashboardMeetingStudent.meetingNotStarted": {
+    "description": "Message when meeting is not started.",
+    "message": "Meeting not started yet."
+  },
+  "component.DashboardMeetingStudent.meetingRedirection": {
+    "description": "Message when meeting is started and redirection should be triggered.",
+    "message": "You should be redirected to the meeting."
+  },
   "component.DashboardVideoPaneDownloadOption.allowDownload": {
     "description": "",
     "message": "Permitir descarga de vídeos"
@@ -183,21 +291,17 @@
     "description": "DashboardVideoLive jitsi title.",
     "message": "Webinar"
   },
-  "components.DashboardVideoLive.liveCreating": {
-    "description": "Helptext explainig to wait until the live is created.",
-    "message": "Live streaming is being created. You will be able to start it in a few seconds"
-  },
   "components.DashboardVideoLive.liveStarting": {
     "description": "Helptext explainig to wait until the live is ready.",
-    "message": "Live streaming is starting. Wait before starting your stream."
+    "message": "Live streaming is starting. This can take a few minutes."
   },
   "components.DashboardVideoLive.liveStopped": {
     "description": "Helptext explaining that the live is ended and the live to VOD process has started.",
     "message": "Live streaming is ended. The process to transform the live to VOD has started. You can close the window and come back later."
   },
   "components.DashboardVideoLive.liveStopping": {
-    "description": "Helptext explaining that the live is ending and the live to VOD process will start.",
-    "message": "Live streaming is ending. The process to transform the live to VOD will begin soon. You can close the window and come back later."
+    "description": "Helptext explaining that the live is stopping and will be paused in few moments.",
+    "message": "Pause live streaming, please wait a few moments to be able to resume it."
   },
   "components.DashboardVideoLive.raw": {
     "description": "DashboardVideoLive main title.",
@@ -206,6 +310,14 @@
   "components.DashboardVideoLive.url": {
     "description": "Video url streaming.",
     "message": "url"
+  },
+  "components.DashboardVideoLiveEndButton.confirmEndLive": {
+    "description": "Confirmation to end the video streaming.",
+    "message": "Are you sure you want to end the video streaming ? This action is definitive"
+  },
+  "components.DashboardVideoLiveEndButton.endLive": {
+    "description": "End a video streaming.",
+    "message": "End live"
   },
   "components.DashboardVideoLiveInfo.copied": {
     "description": "Message displayed when endpoints info are copied.",
@@ -247,13 +359,21 @@
     "description": "button to redirect use to video player.",
     "message": "show live"
   },
+  "components.DashboardVideoLiveStartButton.confirmResumeLive": {
+    "description": "Confirmation to resume a video streaming.",
+    "message": "Are you sure you want to resume a video streaming ?"
+  },
   "components.DashboardVideoLiveStartButton.confirmStartLive": {
     "description": "Confirmation to start a video streaming.",
     "message": "Are you sure you want to start a video streaming ?"
   },
+  "components.DashboardVideoLiveStartButton.resumeLive": {
+    "description": "Resume a video streaming.",
+    "message": "Resume streaming"
+  },
   "components.DashboardVideoLiveStartButton.startLive": {
     "description": "Start a video streaming.",
-    "message": "start streaming"
+    "message": "Start streaming"
   },
   "components.DashboardVideoLiveStartButton.startLiveHelper": {
     "description": "Helper message explaining why the start live button is disabled",
@@ -261,11 +381,11 @@
   },
   "components.DashboardVideoLiveStopButton.confirmStopLive": {
     "description": "Confirmation to stop the video streaming.",
-    "message": "Are you sure you want to stop the video streaming ?"
+    "message": "Are you sure you want to pause the video streaming ?"
   },
   "components.DashboardVideoLiveStopButton.startLive": {
     "description": "Stop a video streaming.",
-    "message": "stop streaming"
+    "message": "pause ⏸"
   },
   "components.DashboardVideoPane.helpTextDeleted": {
     "description": "Dashboard helptext for when the video is in DELETED state",
@@ -431,10 +551,6 @@
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Preview"
   },
-  "components.ObjectStatusPicker.CREATING": {
-    "description": "Live video in creation status",
-    "message": "Creando"
-  },
   "components.ObjectStatusPicker.DELETED": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Eliminado"
@@ -454,6 +570,10 @@
   "components.ObjectStatusPicker.IDLE": {
     "description": "The video is in live state and ready to be start",
     "message": "Ready to start live"
+  },
+  "components.ObjectStatusPicker.PAUSED": {
+    "description": "The video is in live state and is paused",
+    "message": "Live is paused"
   },
   "components.ObjectStatusPicker.PENDING": {
     "description": "Status information for a video/audio/timed text track",
@@ -539,6 +659,78 @@
     "description": "Title for the list of videos in the playlist view.",
     "message": "Videos"
   },
+  "components.PublicPausedLive.message": {
+    "description": "Message for the public when live is paused",
+    "message": "The webinar is paused. When resumed, the video will start again."
+  },
+  "components.PublicPausedLive.pausedSince": {
+    "description": "Information about the time since which the webinar is paused.",
+    "message": "The webinar is paused since"
+  },
+  "components.PublicPausedLive.title": {
+    "description": "Title for the public paused live component",
+    "message": "Webinar is paused"
+  },
+  "components.ScheduledVideo.form.date": {
+    "description": "Label of the input field to add/update the scheduled date and time of the webinar",
+    "message": "Starting date and time"
+  },
+  "components.ScheduledVideo.form.description": {
+    "description": "Label of the input field to add/update the description of the webinar",
+    "message": "Description"
+  },
+  "components.ScheduledVideo.form.error": {
+    "description": "Error message while saving the form",
+    "message": "An error occured while updating the scheduled webinar, please try again."
+  },
+  "components.ScheduledVideo.form.error.starting_at": {
+    "description": "Error message while saving the form, date is not defined or in the past",
+    "message": "Scheduled date must be in the future and have a date and hour defined."
+  },
+  "components.ScheduledVideo.form.error.starting_at_already_past": {
+    "description": "Error message while saving the form, initial scheduled date of this webinar is already past, invit user to create a new webinar or to start this one.",
+    "message": "This webinar has an initial date that is already past, it can't be updated in the future. Please, create a new webinar or start this one."
+  },
+  "components.ScheduledVideo.form.error.title": {
+    "description": "Error on field title, this one cannot be empty",
+    "message": "Title must be defined."
+  },
+  "components.ScheduledVideo.form.intro": {
+    "description": "Title of the form to create or update the scheduled webinar",
+    "message": "Schedule a webinar"
+  },
+  "components.ScheduledVideo.form.placeholder.description": {
+    "description": "Placeholder of the description field in the form",
+    "message": "Description"
+  },
+  "components.ScheduledVideo.form.placeholder.title": {
+    "description": "Placeholder of the title field in the form",
+    "message": "Title"
+  },
+  "components.ScheduledVideo.form.success": {
+    "description": "message to confirm webinar has been updated",
+    "message": "Your webinar has been updated"
+  },
+  "components.ScheduledVideo.form.success.openregistration": {
+    "description": "message to confirm users can now register to the webinar",
+    "message": "Your can now ask users to register to your webinar"
+  },
+  "components.ScheduledVideo.form.title": {
+    "description": "Label of the input field to add/update the title to the webinar",
+    "message": "Title"
+  },
+  "components.ScheduledVideo.infoScheduledEvent": {
+    "description": "Message informing webinar is scheduled and giving the current date.",
+    "message": "Webinar is scheduled at {date}."
+  },
+  "components.ScheduledVideo.infoWasScheduledEvent": {
+    "description": "Message informing webinar was scheduled and giving the initial scheduled date.",
+    "message": "Webinar was scheduled at {date}."
+  },
+  "components.ScheduledVideo.infoWasScheduledEventDescription": {
+    "description": "Message informing that scheduled date is past and telling the user he can either start it or create a new one.",
+    "message": "Date is past, please, create a new webinar or start this one"
+  },
   "components.SelectContent.addDocument": {
     "description": "Text displayed on a button to add a new document.",
     "message": "Añadir un documento"
@@ -598,6 +790,42 @@
   "components.SiteHeader.logInBtn": {
     "description": "Text for the login button in the header of the marsha site",
     "message": "Iniciar sesión"
+  },
+  "components.SubscribScheduledVideo.daysLeft": {
+    "description": "Text message to inform on number of days left before the event starts",
+    "message": "Days left {daysLeft,number} {daysLeft, plural, =0 {day} one {day} other {days}}"
+  },
+  "components.SubscribScheduledVideo.register": {
+    "description": "Title message to register to this event",
+    "message": "Register to this event starting on {date}"
+  },
+  "components.SubscribScheduledVideoEmail.form.email": {
+    "description": "Label of the input field to add an email to subscribe to the event",
+    "message": "Type your email to subscribe"
+  },
+  "components.SubscribScheduledVideoEmail.form.email.default.error": {
+    "description": "Error message to warn the user that his email registration did not work. Ask user to check his email adress otherwise to contact us or to try later.",
+    "message": "Impossible to register your email {email} for this event. Make sure your email is valid otherwise, please try again later or contact us."
+  },
+  "components.SubscribScheduledVideoEmail.form.email.existing.error": {
+    "description": "Error message to warn the user that his email registration did not work because this email is already registered.",
+    "message": "Impossible to register, {email} is already registered for this event with another account."
+  },
+  "components.SubscribScheduledVideoEmail.form.email.invalid.error": {
+    "description": "Error message to warn the user that his email registration did not work because this email is not valid.",
+    "message": "Impossible to register, {email} is not valid."
+  },
+  "components.SubscribScheduledVideoEmail.form.labelRegisterSubmitButton": {
+    "description": "Label of the input to register to the event",
+    "message": "Register"
+  },
+  "components.SubscribScheduledVideoEmail.form.success": {
+    "description": "message display when the email is successfully registered for this event",
+    "message": "Email {email} successfully registered for this event"
+  },
+  "components.SubscribScheduledVideoEmail.waitingMessage": {
+    "description": "Message reminding the user, he has already registered and giving back the starting at date.",
+    "message": "You are registered for this event. Live will start at {date}."
   },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
@@ -858,5 +1086,8 @@
   "message.key": {
     "description": "",
     "message": "Our title"
+  },
+  "zgxKi7": {
+    "message": "{pausedDays} {pausedDays, plural, one {day} other {days}}"
   }
 }
