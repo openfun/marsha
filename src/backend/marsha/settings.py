@@ -237,7 +237,7 @@ class Base(Configuration):
     # BBB
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()
-    BBB_API_SECRET = values.SecretValue()
+    BBB_API_SECRET = values.Value(None)
 
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
