@@ -3154,9 +3154,13 @@ class VideoAPITest(TestCase):
             },
         )
 
-    @override_settings(LIVE_CHAT_ENABLED=False)
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_instructor_start_non_created_live(self):
-        """AWS stack should be created if not existing yet."""
+        """AWS stack and chat room should be created if not existing yet."""
         video = factories.VideoFactory(
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -3176,9 +3180,11 @@ class VideoAPITest(TestCase):
             api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
             api.video, "wait_medialive_channel_is_created"
-        ), mock.patch(
+        ) as mock_wait_medialive_channel_is_created, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch.object(
+            api.video, "create_room"
+        ) as mock_create_room:
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.return_value = {
                 "medialive": {
@@ -3201,6 +3207,129 @@ class VideoAPITest(TestCase):
                     },
                 },
             }
+            response = self.client.post(
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_create_room.assert_called_with(video.id)
+            mock_wait_medialive_channel_is_created.assert_called_with(
+                "medialive_channel_1"
+            )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_ready_to_show": True,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": "pending",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "live_state": "starting",
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                    },
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                },
+                "live_type": JITSI,
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "websocket_url": None,
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                },
+            },
+        )
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    def test_api_instructor_start_already_created_live(self):
+        """AWS stack and chat room should not be created if already existing."""
+        video = factories.VideoFactory(
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            upload_state=PENDING,
+            live_state=IDLE,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+
+        # start a live video,
+        with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
+            api.video, "create_live_stream"
+        ) as mock_create_live_stream, mock.patch.object(
+            api.video, "wait_medialive_channel_is_created"
+        ), mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode, mock.patch.object(
+            api.video, "create_room"
+        ) as mock_create_room:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            mock_create_live_stream.assert_not_called()
+            mock_create_room.assert_not_called()
+
             response = self.client.post(
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3255,7 +3384,12 @@ class VideoAPITest(TestCase):
                     },
                 },
                 "live_type": JITSI,
-                "xmpp": None,
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "websocket_url": None,
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                },
             },
         )
 
