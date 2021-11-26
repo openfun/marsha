@@ -15,6 +15,7 @@ import { StudentLeaveDiscussionButton } from './StudentLeaveDiscussionButton';
 import { StudentShareDocButton } from './StudentShareDocButton';
 import { StudentShowViewersButton } from './StudentShowViewersButton';
 import { StudentShowChatButton } from './StudentShowChatButton';
+import { LiveModeType, liveState, Video } from 'types/tracks';
 
 const LiveButtonsWrapper = styled(Box)`
   div {
@@ -34,11 +35,20 @@ const LiveButtonsWrapper = styled(Box)`
   }
 `;
 
-export const LiveControlButtons = () => {
+interface LiveControlButtonsProps {
+  video: Video;
+}
+
+export const LiveControlButtons = ({ video }: LiveControlButtonsProps) => {
   const accepted = useParticipantWorkflow((state) => state.accepted);
   const isChatAvailable = useLivePanelState((state) =>
     state.availableDetails.includes(LivePanelDetail.CHAT),
   );
+  const displayJoinDiscussionButtons =
+    video.xmpp &&
+    video.live_type === LiveModeType.JITSI &&
+    video.live_state &&
+    ![liveState.STOPPING, liveState.PAUSED].includes(video.live_state);
 
   return (
     <LiveButtonsWrapper direction="row" align="center" responsive={true}>
@@ -48,11 +58,12 @@ export const LiveControlButtons = () => {
 
       {isChatAvailable && <StudentShowChatButton />}
 
-      {accepted ? (
-        <StudentLeaveDiscussionButton />
-      ) : (
-        <StudentJoinDiscussionButton />
-      )}
+      {displayJoinDiscussionButtons &&
+        (accepted ? (
+          <StudentLeaveDiscussionButton />
+        ) : (
+          <StudentJoinDiscussionButton />
+        ))}
     </LiveButtonsWrapper>
   );
 };

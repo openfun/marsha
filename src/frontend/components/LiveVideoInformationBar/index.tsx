@@ -40,7 +40,7 @@ export const LiveVideoInformationBar = ({
     >
       <LiveTitleInformation title={video.title} state={video.live_state} />
 
-      <LiveControlButtons />
+      <LiveControlButtons video={video} />
     </LiveVideoInformationBarWrapper>
   );
 };
