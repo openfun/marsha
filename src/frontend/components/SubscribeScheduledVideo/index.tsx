@@ -7,16 +7,19 @@ import {
   StatusType,
 } from 'grommet';
 import { DateTime } from 'luxon';
-import React, { useState, useRef } from 'react';
-import { Nullable } from 'utils/types';
+import React, { useState, useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
-import { Video } from 'types/tracks';
 import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
-import { SubscribeScheduledVideoEmailForm } from '../SubscribeScheduledVideoEmailForm';
-import { getDecodedJwt } from 'data/appData';
+import { SubscribeScheduledVideoEmailForm } from 'components/SubscribeScheduledVideoEmailForm';
+import { appData, getDecodedJwt } from 'data/appData';
 import { fetchList } from 'data/queries/fetchList';
+import { getResource } from 'data/sideEffects/getResource';
 import { intl as mainIntl } from 'index';
+import { modelName } from 'types/models';
+import { Video } from 'types/tracks';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { Nullable } from 'utils/types';
+
 /** Props shape for the SubscribeScheduledVideo component. */
 interface SubscribeScheduledVideoProps {
   video: Video;
@@ -81,6 +84,17 @@ export const SubscribeScheduledVideo = ({
       }
     }
   };
+
+  useEffect(() => {
+    const interval = window.setInterval(
+      () => getResource(modelName.VIDEOS, video.id),
+      1000 * appData.uploadPollInterval,
+    );
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, []);
 
   useAsyncEffect(async () => {
     await checkAlreadyRegistered();
