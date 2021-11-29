@@ -5,17 +5,23 @@ import {
   waitFor,
   screen,
 } from '@testing-library/react';
-import { Grommet } from 'grommet';
-import { videoMockFactory } from 'utils/tests/factories';
 import fetchMock from 'fetch-mock';
+import { Grommet } from 'grommet';
 import React from 'react';
+import { useVideo } from 'data/stores/useVideo';
+import { liveState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { SubscribeScheduledVideo } from '.';
 let mockDecodedJwt: any;
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
+  appData: { jwt: 'cool_token_m8', uploadPollInterval: 10 },
   getDecodedJwt: () => mockDecodedJwt,
+}));
+jest.mock('data/sideEffects/pollForLive', () => ({
+  pollForLive: jest.fn().mockResolvedValue(null),
 }));
 jest.mock('index', () => ({
   intl: {
@@ -38,6 +44,7 @@ describe('<SubscribeScheduledVideo />', () => {
 
   it('shows the waiting screen when loaded time is past', async () => {
     mockDecodedJwt = {};
+    fetchMock.get(`/api/videos/${video.id}/`, new Deferred().promise);
     const pastDate = new Date();
     pastDate.setFullYear(pastDate.getFullYear() - 10);
 
@@ -57,7 +64,7 @@ describe('<SubscribeScheduledVideo />', () => {
     mockDecodedJwt = {};
     const startingAt = new Date();
     startingAt.setMinutes(startingAt.getMinutes() + 5);
-
+    fetchMock.get(`/api/videos/${video.id}/`, new Deferred().promise);
     render(
       wrapInIntlProvider(
         <Grommet>
@@ -80,8 +87,45 @@ describe('<SubscribeScheduledVideo />', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('confirms that video state is updated after loading', async () => {
+    mockDecodedJwt = {};
+    const startingAt = new Date();
+    startingAt.setMinutes(startingAt.getMinutes() + 5);
+    const newStateVideo = {
+      ...video,
+      live_state: liveState.STARTING,
+    };
+    fetchMock.get(`/api/videos/${video.id}/`, newStateVideo);
+
+    render(
+      wrapInIntlProvider(
+        <Grommet>
+          <SubscribeScheduledVideo
+            video={{ ...video, starting_at: startingAt.toISOString() }}
+          />
+        </Grommet>,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(fetchMock.called(`/api/videos/${video.id}/`)).toBe(false),
+    );
+    expect(useVideo.getState().videos[video.id]).not.toBeDefined();
+    act(() => {
+      // advance time by 1 minutes
+      jest.advanceTimersByTime(1000 * (60 * 1));
+    });
+
+    // one call every 10 seconds
+    await waitFor(() =>
+      expect(fetchMock.calls(`/api/videos/${video.id}/`)).toHaveLength(6),
+    );
+    expect(useVideo.getState().videos[video.id]).toEqual(newStateVideo);
+  });
+
   it('shows the registration form with an input email if token is empty and days change', async () => {
     mockDecodedJwt = {};
+    fetchMock.get(`/api/videos/${video.id}/`, new Deferred().promise);
     const startingAt = new Date();
     startingAt.setDate(startingAt.getDate() + 2);
     startingAt.setMinutes(startingAt.getMinutes() + 1);
@@ -331,6 +375,9 @@ describe('<SubscribeScheduledVideo />', () => {
     fetchMock.get('/api/liveregistrations/?limit=999', {
       count: 1,
     });
+    const getVideoDeferred = new Deferred();
+    fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
+
     render(
       wrapInIntlProvider(
         <Grommet>
@@ -364,6 +411,9 @@ describe('<SubscribeScheduledVideo />', () => {
     fetchMock.get('/api/liveregistrations/?limit=999', {
       count: 0,
     });
+    const getVideoDeferred = new Deferred();
+    fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
+
     mockDecodedJwt = {
       user: {
         email: 'chantal@fun-mooc.fr',
