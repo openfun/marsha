@@ -30,6 +30,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Users with empty email in their token can register to scheduled webinars
 - Users with wrong email in token is properly detected as registered
+- Users waiting on the registration page are redirected if video is started 
+  earlier
 
 ### Removed
 
