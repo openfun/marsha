@@ -2,24 +2,23 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getResource as fetchResource } from '../../data/sideEffects/getResource';
-import { updateResource } from '../../data/sideEffects/updateResource';
-import { addResource, getResource } from '../../data/stores/generics';
-import { requestStatus } from '../../types/api';
-import { modelName } from '../../types/models';
-import { Thumbnail, Video } from '../../types/tracks';
+import { getResource as fetchResource } from 'data/sideEffects/getResource';
+import { updateResource } from 'data/sideEffects/updateResource';
+import { addResource, getResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { Thumbnail, Video } from 'types/tracks';
 import { LTIUploadHandlers } from './LTIUploadHandlers';
 import { UploadManagerContext, UploadManagerStatus } from '.';
 
-jest.mock('../../data/appData', () => ({}));
-jest.mock('../../data/sideEffects/updateResource', () => ({
+jest.mock('data/appData', () => ({}));
+jest.mock('data/sideEffects/updateResource', () => ({
   updateResource: jest.fn(),
 }));
-jest.mock('../../data/stores/generics', () => ({
+jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
   getResource: jest.fn(),
 }));
-jest.mock('../../data/sideEffects/getResource', () => ({
+jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn(),
 }));
 
@@ -94,7 +93,7 @@ describe('<LTIUploadHandlers />', () => {
   });
 
   it('fetch the resource when the upload manager status is UPLOADING', async () => {
-    mockFetResource.mockResolvedValue(requestStatus.SUCCESS);
+    mockFetResource.mockResolvedValue(object);
 
     const { rerender } = render(
       <UploadManagerContext.Provider

@@ -2,7 +2,6 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
 import { getResource } from 'data/sideEffects/getResource';
-import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';
 
 import { videoMockFactory } from './tests/factories';
@@ -41,7 +40,7 @@ describe('resumeLive', () => {
         thumbnails: {},
       },
     });
-    mockGetResource.mockResolvedValue(requestStatus.SUCCESS);
+    mockGetResource.mockResolvedValue(video);
 
     fetchMock.mock(
       'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls.m3u8',
