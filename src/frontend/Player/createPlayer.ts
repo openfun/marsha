@@ -11,7 +11,7 @@ export const createPlayer: VideoPlayerCreator = async (
 ) => {
   if (video.live_state) {
     ref.classList.add('offscreen');
-    await pollForLive(video.urls!);
+    await pollForLive(video);
     ref.classList.remove('offscreen');
   }
 
