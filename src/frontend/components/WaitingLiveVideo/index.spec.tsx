@@ -2,21 +2,20 @@ import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { getResource } from '../../data/sideEffects/getResource';
-import { pollForLive } from '../../data/sideEffects/pollForLive';
-import { requestStatus } from '../../types/api';
-import { modelName } from '../../types/models';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { pollForLive } from 'data/sideEffects/pollForLive';
+import { modelName } from 'types/models';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 import { WaitingLiveVideo } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
-jest.mock('../../data/sideEffects/getResource', () => ({
+jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn(),
 }));
-jest.mock('../../data/sideEffects/pollForLive', () => ({
+jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
 }));
 const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
@@ -51,7 +50,7 @@ describe('WaitingLiveVideo', () => {
     });
 
     mockPollForLive.mockResolvedValue(null);
-    mockGetResource.mockResolvedValue(requestStatus.SUCCESS);
+    mockGetResource.mockResolvedValue(video);
 
     render(wrapInIntlProvider(<WaitingLiveVideo video={video} />));
 
@@ -65,6 +64,6 @@ describe('WaitingLiveVideo', () => {
     });
 
     expect(mockGetResource).toHaveBeenCalledWith(modelName.VIDEOS, video.id);
-    expect(mockPollForLive).toHaveBeenCalledWith(video.urls);
+    expect(mockPollForLive).toHaveBeenCalledWith(video);
   });
 });

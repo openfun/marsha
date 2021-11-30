@@ -49,7 +49,7 @@ interface WaitingLiveVideoProps {
 export const WaitingLiveVideo = ({ video }: WaitingLiveVideoProps) => {
   useAsyncEffect(async () => {
     if (video) {
-      await pollForLive(video.urls!);
+      await pollForLive(video);
       await getResource(modelName.VIDEOS, video.id);
     }
   }, []);

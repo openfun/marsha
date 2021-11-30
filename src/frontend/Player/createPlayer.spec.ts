@@ -1,12 +1,10 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-
-import { videoMockFactory } from '../utils/tests/factories';
+import { liveState } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { videoMockFactory } from 'utils/tests/factories';
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
-import { liveState } from '../types/tracks';
-import { report } from '../utils/errors/report';
-
 jest.mock('jwt-decode', () => {
   return jest.fn().mockImplementation(() => ({
     locale: 'en',
@@ -14,7 +12,7 @@ jest.mock('jwt-decode', () => {
   }));
 });
 
-jest.mock('../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     flags: {},
     jwt: 'foo',
@@ -22,7 +20,7 @@ jest.mock('../data/appData', () => ({
 }));
 
 jest.mock('./createVideojsPlayer');
-jest.mock('../utils/errors/report');
+jest.mock('utils/errors/report');
 
 describe('createPlayer', () => {
   beforeEach(() => {

@@ -1,9 +1,10 @@
-import { requestStatus } from '../../../types/api';
-import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
-import { appData } from '../../appData';
-import { addResource } from '../../stores/generics';
-import { report } from '../../../utils/errors/report';
+import { appData } from 'data/appData';
+import { addResource } from 'data/stores/generics';
+import { requestStatus } from 'types/api';
+import { modelName } from 'types/models';
+import { UploadableObject } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { API_ENDPOINT } from 'settings';
 
 /**
  * Fetch a resource to update its state in our store.
@@ -14,7 +15,7 @@ import { report } from '../../../utils/errors/report';
 export async function getResource(
   resourceName: modelName,
   resourceId: string,
-): Promise<requestStatus> {
+): Promise<UploadableObject | requestStatus.FAILURE> {
   const endpoint = `${API_ENDPOINT}/${resourceName}/${resourceId}/`;
 
   try {
@@ -30,9 +31,9 @@ export async function getResource(
         `Failed to fetch resource ${resourceName} with id ${resourceId}`,
       );
     }
-
-    await addResource(resourceName, await response.json());
-    return requestStatus.SUCCESS;
+    const resource = await response.json();
+    await addResource(resourceName, resource);
+    return resource;
   } catch (error) {
     report(error);
     return requestStatus.FAILURE;

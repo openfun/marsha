@@ -40,13 +40,13 @@ describe('sideEffects/getResource', () => {
       }),
     );
 
-    const status = await getResource(modelName.VIDEOS, video.id);
+    const newVideo = await getResource(modelName.VIDEOS, video.id);
 
-    expect(status).toEqual(requestStatus.SUCCESS);
-    expect(mockAddResource).toHaveBeenCalledWith(modelName.VIDEOS, {
+    expect(newVideo).toEqual({
       ...video,
       title: 'updated title',
     });
+    expect(mockAddResource).toHaveBeenCalledWith(modelName.VIDEOS, newVideo);
   });
 
   it('resolves with a failure and handles it when it fails to get the resource (local)', async () => {
