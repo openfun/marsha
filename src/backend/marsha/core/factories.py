@@ -192,3 +192,13 @@ class DeviceFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.Device
+
+
+class SharedLiveMediaFactory(DjangoModelFactory):
+    """Factory for the SharedLiveMedia model."""
+
+    video = factory.SubFactory(VideoFactory)
+    nb_pages = fuzzy.FuzzyInteger(0, high=10)
+
+    class Meta:  # noqa
+        model = models.SharedLiveMedia

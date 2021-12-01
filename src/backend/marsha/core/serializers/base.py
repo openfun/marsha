@@ -2,6 +2,7 @@
 import re
 
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 
 from rest_framework import serializers
 
@@ -84,3 +85,60 @@ class UpdateStateSerializer(serializers.Serializer):
         elements = KEY_REGEX.match(self.validated_data["key"]).groupdict()
         elements["uploaded_on"] = time_utils.to_datetime(elements["stamp"])
         return elements
+
+
+class UploadableFileWithExtensionSerializerMixin:
+    """Set of function used by uploadable files managing an extension."""
+
+    def _get_filename(self, title, extension=None, prefix=None):
+        """Filename of an object.
+
+        Parameters
+        ----------
+        title : Type[string]
+            The raw object title
+
+        extension: Type[string]
+            The file extension if any
+
+        prefix: Type[string]
+            The file prefix if any
+
+        Returns
+        -------
+        String
+            The document's filename
+
+        """
+
+        prefix = f"{slugify(prefix)}_" if prefix else ""
+
+        extension = f".{extension}" if extension else ""
+
+        return f"{prefix}{slugify(title)}{extension}"
+
+    def validate_title(self, value):
+        """Force extension removal in the title field (if any).
+
+        Parameters
+        ----------
+        value : Type[string]
+            the value sent in the request
+
+        Returns
+        -------
+        String
+            The title without the extension if there is one.
+
+        """
+        # pylint: disable=consider-using-f-string
+        match = re.match(
+            r"^(?P<title>.*)(\.{extension_regex:s})$".format(
+                extension_regex=EXTENSION_REGEX
+            ),
+            value,
+        )
+        if match:
+            return match.group("title")
+
+        return value
