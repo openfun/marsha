@@ -1,12 +1,10 @@
 """Structure of Document related models API responses with Django Rest Framework serializers."""
 from datetime import timedelta
-import re
 from urllib.parse import quote_plus
 
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.text import slugify
 
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
@@ -14,11 +12,13 @@ from rest_framework import serializers
 from ..models import Document
 from ..utils import cloudfront_utils, time_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
-from .base import EXTENSION_REGEX, TimestampField
+from .base import TimestampField, UploadableFileWithExtensionSerializerMixin
 from .playlist import PlaylistLiteSerializer
 
 
-class DocumentSerializer(serializers.ModelSerializer):
+class DocumentSerializer(
+    UploadableFileWithExtensionSerializerMixin, serializers.ModelSerializer
+):
     """A serializer to display a Document resource."""
 
     class Meta:  # noqa
@@ -84,10 +84,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             The document's filename
 
         """
-        return (
-            f"{slugify(obj.playlist.title)}_{slugify(obj.title)}"
-            f"{self._get_extension_string(obj)}"
-        )
+        return self._get_filename(obj.title, obj.extension, obj.playlist.title)
 
     def get_url(self, obj):
         """Url of the Document.
@@ -126,32 +123,6 @@ class DocumentSerializer(serializers.ModelSerializer):
             )
 
         return url
-
-    def validate_title(self, value):
-        """Force extension removal in the title field (if any).
-
-        Parameters
-        ----------
-        value : Type[string]
-            the value sent in the request
-
-        Returns
-        -------
-        String
-            The title without the extension if there is one.
-
-        """
-        # pylint: disable=consider-using-f-string
-        match = re.match(
-            r"^(?P<title>.*)(\.{extension_regex:s})$".format(
-                extension_regex=EXTENSION_REGEX
-            ),
-            value,
-        )
-        if match:
-            return match.group("title")
-
-        return value
 
 
 class DocumentSelectLTISerializer(serializers.ModelSerializer):

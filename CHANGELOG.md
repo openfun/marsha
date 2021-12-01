@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add model and API endpoints to manage a shared live media
+
 ### Changed
 
 - docker image use python 3.10
