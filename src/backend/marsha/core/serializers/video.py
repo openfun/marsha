@@ -317,17 +317,19 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = LiveRegistration
         fields = (
+            "consumer_site",
             "email",
             "id",
-            "consumer_site",
             "lti_user_id",
             "should_send_reminders",
+            "username",
             "video",
         )
         read_only_fields = (
-            "id",
             "consumer_site",
+            "id",
             "lti_user_id",
+            "username",
             "video",
         )
 
@@ -355,6 +357,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             The "data" dictionary is returned after modification.
 
         """
+        attrs["is_registered"] = True
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
@@ -406,6 +409,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                             "registered for this video and consumer site."
                         }
                     )
+
+                # If username is present in the token we catch it
+                if user.token.payload["user"].get("username"):
+                    attrs["username"] = user.token.payload["user"].get("username")
 
             # Controls this email hasn't already been used for this video and this consumer
             # site. Consumer site can be defined or not, in both case, it will raise the same

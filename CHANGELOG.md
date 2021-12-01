@@ -51,6 +51,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add DRF read and create liveRegistration endpoints
 - Allow DRF list action for liveRegistration endpoint
 - Use existing username in jitsi if defined
+- Add fields `is_registered`,`live_attendance`,`username` for liveRegistration
 
 ### Changed
 

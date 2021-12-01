@@ -623,6 +623,7 @@ class LiveRegistrationViewSet(
                 else None
             )
             filters = {"consumer_site": consumer_site, "video__id": user.id}
+            filters["is_registered"] = True
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
