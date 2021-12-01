@@ -84,9 +84,10 @@ describe('<ScheduledVideoForm />', () => {
       name: `Webinar is scheduled at ${startingAt.toLocaleString('en')}.`,
     });
     screen.getByDisplayValue(
-      `${startingAt.getDate()}/${
-        startingAt.getMonth() + 1
-      }/${startingAt.getFullYear()} 10:00 AM`,
+      `${('0' + startingAt.getDate()).slice(-2)}/${(
+        '0' +
+        (startingAt.getMonth() + 1)
+      ).slice(-2)}/${startingAt.getFullYear()} 10:00 AM`,
     );
   });
 
@@ -152,9 +153,10 @@ describe('<ScheduledVideoForm />', () => {
     screen.getByDisplayValue('Webinar on Maths');
     screen.getByDisplayValue('A very nice one');
     screen.getByDisplayValue(
-      `${startingAt.getDate()}/${
-        startingAt.getMonth() + 1
-      }/${startingAt.getFullYear()} 10:00 AM`,
+      `${('0' + startingAt.getDate()).slice(-2)}/${(
+        '0' +
+        (startingAt.getMonth() + 1)
+      ).slice(-2)}/${startingAt.getFullYear()} 10:00 AM`,
     );
 
     expect(useVideo.getState().videos[video.id]).toEqual({
