@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add model and API endpoints to manage a shared live media
+- Add component to display chat, viewers and apps during a live in a panel
 
 ### Changed
 
