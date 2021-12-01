@@ -14,6 +14,7 @@ from marsha.core.api import (
     LiveRegistrationViewSet,
     OrganizationViewSet,
     PlaylistViewSet,
+    SharedLiveMediaViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
     UserViewSet,
@@ -50,6 +51,11 @@ router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thum
 router.register("organizations", OrganizationViewSet, basename="organizations")
 router.register("playlists", PlaylistViewSet, basename="playlists")
 router.register("users", UserViewSet, basename="users")
+router.register(
+    models.SharedLiveMedia.RESOURCE_NAME,
+    SharedLiveMediaViewSet,
+    basename="sharedlivemedias",
+)
 
 urlpatterns = [
     # Admin

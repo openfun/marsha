@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
                     "video",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="sharedlivemedias",
+                        related_name="shared_live_media",
                         to="core.video",
                         verbose_name="Video",
                     ),
