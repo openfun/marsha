@@ -2,10 +2,7 @@ import { getResource } from 'data/sideEffects/getResource';
 import { modelName } from 'types/models';
 import { Video } from 'types/tracks';
 
-export const pollForLive = async (
-  video: Video,
-  timeout: number = 2000,
-): Promise<null> => {
+export const pollForLive = async (video: Video): Promise<null> => {
   try {
     if (!video.urls || !video.urls.manifests.hls) {
       throw new Error('no url defined');
@@ -18,7 +15,12 @@ export const pollForLive = async (
     if (!video.urls || !video.urls.manifests.hls) {
       video = (await getResource(modelName.VIDEOS, video.id)) as Video;
     }
-    await new Promise((resolve) => window.setTimeout(resolve, timeout));
+    await new Promise((resolve) =>
+      window.setTimeout(
+        resolve,
+        !video.urls || !video.urls.manifests.hls ? 30000 : 2000,
+      ),
+    );
 
     return await pollForLive(video);
   }
