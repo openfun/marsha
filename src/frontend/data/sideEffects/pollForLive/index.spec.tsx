@@ -58,6 +58,7 @@ describe('createPlayer', () => {
 
   it('polls while the video has no manifest', async () => {
     const video = videoMockFactory({ urls: null });
+    jest.spyOn(global, 'setTimeout');
     fetchMock.get(`/api/videos/${video.id}/`, video);
 
     fetchMock.get('https://marsha.education/live.m3u8', 200);
@@ -83,11 +84,16 @@ describe('createPlayer', () => {
     });
 
     jest.advanceTimersToNextTimer();
+    // video.url doesn't exist timer must be every 30 seconds
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 30000);
     await waitFor(() =>
       expect(fetchMock.calls(`/api/videos/${video.id}/`)).toHaveLength(2),
     );
     expect(useVideo.getState().videos[video.id]).toEqual(newDataVideo);
+    // video.url exists timer must be every 2 seconds
     jest.advanceTimersToNextTimer();
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 2000);
+
     await waitFor(() => {
       expect(
         fetchMock.calls('https://marsha.education/live.m3u8', {

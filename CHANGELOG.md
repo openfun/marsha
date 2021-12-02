@@ -34,6 +34,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Users waiting on the registration page are redirected if video is started 
   earlier
 - Update store in the WaitingLiveVideo component 
+- Set specific timeout to 30 seconds in pollForLive to update the store
 
 ### Removed
 
