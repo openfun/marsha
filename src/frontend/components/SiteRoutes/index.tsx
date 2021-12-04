@@ -1,7 +1,7 @@
 import { Box, Heading } from 'grommet';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
 import { BreadCrumbs, BreadCrumbsProvider } from '../BreadCrumbs';
@@ -29,12 +29,12 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   </BrowserRouter>
 );
 
-export const Routes = () => {
+const SiteRoutes = () => {
   return (
     <Wrappers>
       <SiteLayout>
         <BreadCrumbs />
-        <Switch>
+        <Routes>
           <Route path={'/uploads'}>
             <UploadsView />
           </Route>
@@ -48,8 +48,10 @@ export const Routes = () => {
               <Heading margin="medium">The main content</Heading>
             </Box>
           </Route>
-        </Switch>
+        </Routes>
       </SiteLayout>
     </Wrappers>
   );
 };
+
+export default SiteRoutes;

@@ -1,6 +1,7 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { H2 } from '../Headings';
@@ -170,15 +171,19 @@ export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
   </Box>
 );
 
-export const FullScreenError: React.FC<ErrorComponentsProps> = ({ code }) => (
-  <FullScreenErrorStyled>
-    <ErrorContent>
-      <H2>
-        <FormattedMessage {...messages[code].title} />
-      </H2>
-      <Paragraph>
-        <FormattedMessage {...messages[code].text} />
-      </Paragraph>
-    </ErrorContent>
-  </FullScreenErrorStyled>
-);
+export const FullScreenError = () => {
+  const { code } = useParams() as ErrorComponentsProps;
+
+  return (
+    <FullScreenErrorStyled>
+      <ErrorContent>
+        <H2>
+          <FormattedMessage {...messages[code].title} />
+        </H2>
+        <Paragraph>
+          <FormattedMessage {...messages[code].text} />
+        </Paragraph>
+      </ErrorContent>
+    </FullScreenErrorStyled>
+  );
+};

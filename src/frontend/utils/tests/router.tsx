@@ -1,18 +1,18 @@
 import React from 'react';
-import { MemoryRouter, Route, Switch } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 export const wrapInRouter = (
   Component: JSX.Element,
-  routes?: { path: string; render: ({ match }: any) => JSX.Element }[],
+  routes?: { path: string; children?: React.ReactNode; element?: React.ReactElement | null;}[],
 ) => (
   <MemoryRouter>
-    <Switch>
+    <Routes>
       {!routes
         ? null
         : routes.map((routeProps) => (
-            <Route exact key={routeProps.path} {...routeProps} />
+            <Route key={routeProps.path} {...routeProps} />
           ))}
-      <Route path="/" render={() => Component} />
-    </Switch>
+      <Route path="/" element={Component} />
+    </Routes>
   </MemoryRouter>
 );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { DashboardButton } from '../DashboardPaneButtons/DashboardButtons';
 import { converse } from '../../utils/window';
@@ -16,13 +16,14 @@ const messages = defineMessages({
   },
 });
 
-export const JoinDiscussionLeaveButton = withRouter(({ history }) => {
+export const JoinDiscussionLeaveButton = () => {
+  const navigate = useNavigate();
   const reset = useParticipantWorkflow((state) => state.reset);
 
   const onClick = () => {
     converse.participantLeaves();
     reset();
-    history.push(PLAYER_ROUTE(modelName.VIDEOS));
+    navigate(PLAYER_ROUTE(modelName.VIDEOS));
   };
 
   return (
@@ -32,4 +33,4 @@ export const JoinDiscussionLeaveButton = withRouter(({ history }) => {
       onClick={onClick}
     />
   );
-});
+};

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { initiateLive } from '../../data/sideEffects/initiateLive';
 import { updateResource } from '../../data/sideEffects/updateResource';
@@ -64,11 +64,11 @@ export const DashboardVideoLiveConfigureButton = ({
   };
 
   if (status === 'success') {
-    return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
+    return <Navigate to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
   }
 
   if (status === 'error') {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
   }
 
   return (

@@ -9,7 +9,7 @@ import {
   organizationMockFactory,
   playlistMockFactory,
 } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { wrapInIntlProvider } from '../../utils/tests/intl';z
 import { OrganizationPlaylists } from './OrganizationPlaylists';
 
 jest.mock('../../data/appData', () => ({

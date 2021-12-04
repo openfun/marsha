@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { Loader } from 'components/Loader';
@@ -16,22 +16,24 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   </MemoryRouter>
 );
 
-export const Routes = () => {
+const BBBRoutes = () => {
   if (isFeatureEnabled(flags.BBB)) {
     return (
       <Wrappers>
         <Suspense fallback={<Loader />}>
-          <Switch>
-            <Route exact path="/" render={() => <DashboardMeeting />} />
-          </Switch>
+          <Routes>
+            <Route path="/" element={<DashboardMeeting />} />
+          </Routes>
         </Suspense>
       </Wrappers>
     );
   } else {
     return (
       <Wrappers>
-        <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
+        <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
       </Wrappers>
     );
   }
 };
+
+export default BBBRoutes;

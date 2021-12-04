@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { startLive } from '../../data/sideEffects/startLive';
 import { useVideo } from '../../data/stores/useVideo';
@@ -67,7 +67,7 @@ export const DashboardVideoLiveStartButton = ({
   }, [video]);
 
   if (status === 'error') {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
   }
 
   return (

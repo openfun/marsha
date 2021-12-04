@@ -1,7 +1,7 @@
 import { Box, Button, Layer, Text, TextInput } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
 import { DashboardButton } from '../DashboardPaneButtons/DashboardButtons';
@@ -100,7 +100,7 @@ export const JoinDiscussionAskButton = () => {
   };
 
   if (accepted) {
-    return <Redirect to={PUBLIC_JITSI_ROUTE()} />;
+    return <Navigate to={PUBLIC_JITSI_ROUTE()} />;
   }
 
   if (rejected) {

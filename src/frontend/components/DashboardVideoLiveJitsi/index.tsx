@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React, { useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { getDecodedJwt } from '../../data/appData';
 import { DashboardVideoLiveInfo } from '../DashboardVideoLiveInfo';
@@ -39,7 +39,7 @@ const DashboardVideoLiveJitsi = ({
   const retryDelayStep = 2000;
   const retryStartRecordingDelay = useRef(retryDelayStep);
   const reset = useParticipantWorkflow((state) => state.reset);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const loadJitsiScript = () =>
     new Promise((resolve) => {
@@ -185,7 +185,7 @@ const DashboardVideoLiveJitsi = ({
         _jitsi.dispose();
         converse.participantLeaves();
         reset();
-        history.push(PLAYER_ROUTE(modelName.VIDEOS));
+        navigate(PLAYER_ROUTE(modelName.VIDEOS));
       });
     }
 

@@ -32,21 +32,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>{`Error Component: `}</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );
@@ -66,21 +64,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>Error Component</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );
@@ -98,21 +94,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>Error Component</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );
@@ -130,21 +124,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+          element: <span>Error Component: notFound</span>
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );
@@ -165,21 +157,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>Error Component</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );
@@ -200,21 +190,19 @@ describe('RedirectVideo', () => {
       wrapInRouter(<RedirectVideo video={video} />, [
         {
           path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>Error Component</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
+          element: <span>video player</span>,
         },
         {
           path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
+          element: <span>subscribe</span>,
         },
       ]),
     );

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import { useParams }  from 'react-router-dom';
 
 import { uploadFile } from '../../data/sideEffects/uploadFile';
 import { getResource } from '../../data/stores/generics';
@@ -14,17 +15,24 @@ import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UploadManager } from '../UploadManager';
 import { UploadForm } from './index';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn()
+}));
+
+const mockUseParams = useParams as jest.MockedFunction<typeof useParams>
+
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     modelName: 'videos',
   },
 }));
-jest.mock('../../data/sideEffects/uploadFile', () => ({
+jest.mock('data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
-jest.mock('../../data/stores/generics', () => ({
+jest.mock('data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
@@ -34,7 +42,6 @@ const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 
 describe('UploadForm', () => {
   const object = videoMockFactory({
-    id: 'video-id',
     timed_text_tracks: [
       {
         active_stamp: 1549385921,
@@ -107,10 +114,14 @@ describe('UploadForm', () => {
 
   it('renders the form by default', async () => {
     mockGetResource.mockResolvedValue(object);
+    mockUseParams.mockReturnValue({
+      objectId: object.id,
+      objectType: modelName.VIDEOS,
+    });
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+          <UploadForm />,
         ),
       ),
     );
@@ -136,16 +147,19 @@ describe('UploadForm', () => {
 
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockResolvedValue(true);
-
+    mockUseParams.mockReturnValue({
+      objectId: object.id,
+      objectType: modelName.VIDEOS,
+    });
     const { container } = render(
       <UploadManager>
         {wrapInIntlProvider(
           wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+            <UploadForm />,
             [
               {
                 path: DASHBOARD_ROUTE(),
-                render: () => <span>dashboard</span>,
+                element: <span>dashboard</span>,
               },
             ],
           ),
@@ -177,16 +191,19 @@ describe('UploadForm', () => {
       400,
     );
     mockGetResource.mockResolvedValue(object);
-
+    mockUseParams.mockReturnValue({
+      objectId: object.id,
+      objectType: modelName.VIDEOS,
+    });
     const { container } = render(
       <UploadManager>
         {wrapInIntlProvider(
           wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+            <UploadForm />,
             [
               {
                 path: FULL_SCREEN_ERROR_ROUTE('policy'),
-                render: () => <span>error policy</span>,
+                element: <span>error policy</span>,
               },
             ],
           ),
@@ -218,19 +235,22 @@ describe('UploadForm', () => {
         method: 'POST',
       },
     );
-
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockRejectedValue(new Error('failed to upload file'));
 
+    mockUseParams.mockReturnValue({
+      objectId: object.id,
+      objectType: modelName.VIDEOS,
+    });
     const { container } = render(
       <UploadManager>
         {wrapInIntlProvider(
           wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
+            <UploadForm />,
             [
               {
                 path: FULL_SCREEN_ERROR_ROUTE('upload'),
-                render: () => <span>error upload</span>,
+                element: <span>error upload</span>,
               },
             ],
           ),

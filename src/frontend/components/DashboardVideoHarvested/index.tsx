@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import {
   DashboardButton,
@@ -56,7 +56,7 @@ export const DashboardVideoHarvested = ({
   };
 
   if (error) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveToVod')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('liveToVod')} />;
   }
 
   return (

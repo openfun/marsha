@@ -9,5 +9,5 @@ export const PLAYLIST_ROUTE = (objectType?: modelName) => {
     return `/playlist/${objectType}`;
   }
 
-  return `/playlist/:objectType(${modelName.VIDEOS}|${modelName.DOCUMENTS})`;
+  return `/playlist/:objectType`;
 };

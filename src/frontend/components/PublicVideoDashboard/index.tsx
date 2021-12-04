@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { Chat } from 'components/Chat';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -77,11 +77,11 @@ const PublicVideoDashboard = ({
       case liveState.STOPPED:
         // user has update permission, we redirect him to the dashboard
         if (getDecodedJwt().permissions.can_update) {
-          return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
+          return <Navigate to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
         }
 
         // otherwise the user can only see a message
-        return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
+        return <Navigate to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
       case liveState.IDLE:
         if (video.is_scheduled) {
           return <SubscribeScheduledVideo video={video} />;

@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Routez } from 'react-router-dom';
 
 import { Deferred } from '../../utils/tests/Deferred';
 import {

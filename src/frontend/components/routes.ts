@@ -11,5 +11,5 @@ export const PLAYER_ROUTE = (
     return `/player/${objectType}`;
   }
 
-  return `/player/:objectType(${modelName.VIDEOS}|${modelName.DOCUMENTS})`;
+  return `/player/*`;
 };

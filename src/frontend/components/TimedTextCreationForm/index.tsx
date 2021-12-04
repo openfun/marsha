@@ -2,7 +2,7 @@ import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Select, { ActionMeta } from 'react-select';
 import styled from 'styled-components';
 
@@ -107,13 +107,12 @@ export const TimedTextCreationForm = ({
   };
 
   if (error === 'schema') {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   if (newTTUploadId) {
     return (
-      <Redirect
-        push
+      <Navigate
         to={UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, newTTUploadId)}
       />
     );

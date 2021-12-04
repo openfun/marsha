@@ -1,15 +1,15 @@
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import { appState } from '../../types/AppData';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { wrapInRouter } from '../../utils/tests/router';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { appState } from 'types/AppData';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { wrapInRouter } from 'utils/tests/router';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from '../routes';
 import { RedirectOnLoad } from './index';
-import { SELECT_CONTENT_ROUTE } from '../SelectContent/route';
+import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 
 let mockState: any;
 let mockVideo: any;
@@ -17,7 +17,7 @@ let mockDocument: any;
 let mockLtiSelectFormData: any;
 let mockModelName: any;
 let mockCanUpdate: boolean;
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     get isEditable() {
       return mockCanUpdate;
@@ -57,10 +57,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('lti'),
+          element: <span>{`Error Component: lti`}</span>
         },
       ]),
     );
@@ -77,10 +75,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+          element: <span>{`Error Component: notFound`}</span>
         },
       ]),
     );
@@ -100,7 +96,7 @@ describe('<RedirectOnLoad />', () => {
         wrapInRouter(<RedirectOnLoad />, [
           {
             path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            element: <span>video player</span>,
           },
         ]),
       );
@@ -122,7 +118,7 @@ describe('<RedirectOnLoad />', () => {
         wrapInRouter(<RedirectOnLoad />, [
           {
             path: PLAYER_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>document player</span>,
+            element: <span>document player</span>,
           },
         ]),
       );
@@ -145,10 +141,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: DASHBOARD_ROUTE(),
-          render: ({ match }) => (
-            <span>{`dashboard ${match.params.objectType}`}</span>
-          ),
+          path: DASHBOARD_ROUTE(modelName.VIDEOS),
+          element: <span>{`dashboard videos`}</span>,
         },
       ]),
     );
@@ -156,7 +150,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('dashboard videos');
   });
 
-  it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
+  it('redirects users to /dashboard/documents when document is not ready to be shown and it has permissions to update it', () => {
     mockState = appState.SUCCESS;
     mockDocument = {
       is_ready_to_show: false,
@@ -169,10 +163,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: DASHBOARD_ROUTE(),
-          render: ({ match }) => (
-            <span>{`dashboard ${match.params.objectType}`}</span>
-          ),
+          path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
+          element: <span>{`dashboard documents`}</span>,
         },
       ]),
     );
@@ -193,10 +185,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+          element: <span>{`Error Component: notFound`}</span>,
         },
       ]),
     );
@@ -217,10 +207,8 @@ describe('<RedirectOnLoad />', () => {
     const { getByText } = render(
       wrapInRouter(<RedirectOnLoad />, [
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+          element: <span>{`Error Component: notFound`}</span>,
         },
       ]),
     );
@@ -235,7 +223,7 @@ describe('<RedirectOnLoad />', () => {
       wrapInRouter(<RedirectOnLoad />, [
         {
           path: SELECT_CONTENT_ROUTE(),
-          render: () => <span>Select LTI content</span>,
+          element: <span>Select LTI content</span>,
         },
       ]),
     );

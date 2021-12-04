@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { appData } from '../../data/appData';
-import { getResource } from '../../data/stores/generics';
-import { modelName } from '../../types/models';
-import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
-import { Maybe } from '../../utils/types';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { IframeHeading } from '../Headings';
-import { LayoutMainArea } from '../LayoutMainArea';
-import { Loader } from '../Loader';
-import { UploadField } from '../UploadField';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { appData } from 'data/appData';
+import { getResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
+import { Maybe } from 'utils/types';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { IframeHeading } from 'components/Headings';
+import { LayoutMainArea } from 'components/LayoutMainArea';
+import { Loader } from 'components/Loader';
+import { UploadField } from 'components/UploadField';
+import { UploadManagerStatus, useUploadManager } from 'components/UploadManager';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -90,12 +90,13 @@ const UploadFormBack = styled.div`
 `;
 
 /** Props shape for the UploadForm component. */
-export interface UploadFormProps {
+type UploadFormParams = {
   objectId: UploadableObject['id'];
   objectType: modelName;
 }
 
-export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
+export const UploadForm = () => {
+  const { objectId, objectType } = useParams() as UploadFormParams;
   const { uploadManagerState, resetUpload } = useUploadManager();
   const objectStatus = uploadManagerState[objectId]?.status;
 
@@ -124,17 +125,16 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
       </Loader>
     );
   }
-
   switch (objectStatus) {
     case UploadManagerStatus.SUCCESS:
     case UploadManagerStatus.UPLOADING:
-      return <Redirect push to={DASHBOARD_ROUTE(appData.modelName)} />;
+      return <Navigate to={DASHBOARD_ROUTE(appData.modelName)} />;
 
     case UploadManagerStatus.ERR_POLICY:
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
+      return <Navigate to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
 
     case UploadManagerStatus.ERR_UPLOAD:
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
+      return <Navigate to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
 
     case UploadManagerStatus.INIT:
     default:

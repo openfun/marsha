@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 import styled from 'styled-components';
 
 import { appData } from '../../data/appData';
@@ -168,11 +168,11 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   }, []);
 
   if (error) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   if (!video.is_ready_to_show && video.upload_state === ERROR) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
   }
 
   switch (video.upload_state) {

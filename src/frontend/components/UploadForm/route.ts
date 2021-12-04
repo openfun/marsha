@@ -13,6 +13,6 @@ export const UPLOAD_FORM_ROUTE = (
   if (objectType) {
     return `/form/${objectType}/${objectId}`;
   } else {
-    return `/form/:objectType(${Object.values(modelName).join('|')})/:objectId`;
+    return `/form/:objectType/:objectId`;
   }
 };

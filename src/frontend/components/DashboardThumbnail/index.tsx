@@ -1,7 +1,7 @@
 import { Box, Button, Text } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
 import { createThumbnail } from '../../data/sideEffects/createThumbnail';
@@ -114,8 +114,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
 
   if (shouldRedirect && thumbnail) {
     return (
-      <Redirect
-        push
+      <Navigate
         to={UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, thumbnail!.id)}
       />
     );

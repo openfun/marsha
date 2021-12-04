@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React, { useRef, useState } from 'react';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PublicPausedLiveVideo } from 'components/PublicPausedLiveVideo';
@@ -98,7 +98,7 @@ const VideoPlayer = ({
 
   // The video is somehow missing and jwt must be set
   if (!video) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   const thumbnailUrls =

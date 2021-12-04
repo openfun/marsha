@@ -30,17 +30,15 @@ describe('RedirectDocument', () => {
       wrapInRouter(<RedirectDocument document={document} />, [
         {
           path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>{`Error Component`}</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>document player</span>,
+          element: <span>document player</span>,
         },
       ]),
     );
@@ -58,17 +56,15 @@ describe('RedirectDocument', () => {
       wrapInRouter(<RedirectDocument document={document} />, [
         {
           path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          element: <span>{`Error Component`}</span>
         },
         {
           path: PLAYER_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>document player</span>,
+          element: <span>document player</span>,
         },
       ]),
     );
@@ -86,17 +82,15 @@ describe('RedirectDocument', () => {
       wrapInRouter(<RedirectDocument document={document} />, [
         {
           path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>dashboard</span>,
+          element: <span>dashboard</span>,
         },
         {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
+          path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+          element: <span>{`Error Component: notFound`}</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.DOCUMENTS),
-          render: () => <span>document player</span>,
+          element: <span>document player</span>,
         },
       ]),
     );

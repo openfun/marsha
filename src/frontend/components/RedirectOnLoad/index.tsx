@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { appData } from '../../data/appData';
 import { appState } from '../../types/AppData';
@@ -15,15 +15,15 @@ export const RedirectOnLoad = () => {
   const resource = appData.document || appData.video || null;
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
   }
 
   if (appData.lti_select_form_data) {
-    return <Redirect push to={SELECT_CONTENT_ROUTE()} />;
+    return <Navigate to={SELECT_CONTENT_ROUTE()} />;
   }
 
   if (!resource) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   switch (appData.modelName) {

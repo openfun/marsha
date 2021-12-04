@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack';
@@ -95,7 +95,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   }, [track.upload_state]);
 
   if (error) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   const language: Maybe<LanguageChoice> =

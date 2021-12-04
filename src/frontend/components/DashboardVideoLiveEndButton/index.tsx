@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { endLive } from '../../data/sideEffects/endLive';
 import { useVideo } from '../../data/stores/useVideo';
@@ -49,7 +49,7 @@ export const DashboardVideoLiveEndButton = ({
   }, [video]);
 
   if (status === 'error') {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />;
   }
 
   return (

@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -77,7 +77,7 @@ interface CrumbProps {
  */
 export const Crumb: React.FC<CrumbProps> = ({ title }) => {
   const key = uuidv4();
-  const { url } = useRouteMatch();
+  const { url } = useMatch();
   const [_, setCrumbs] = useContext(BreadCrumbsContext);
 
   useEffect(() => {

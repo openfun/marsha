@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
 import { useVideo } from '../../data/stores/useVideo';
@@ -21,7 +21,7 @@ const PublicVideoLiveJitsi = ({
   const kicked = useParticipantWorkflow((state) => state.kicked);
 
   if (kicked) {
-    return <Redirect to={PLAYER_ROUTE(modelName.VIDEOS)} />;
+    return <Navigate to={PLAYER_ROUTE(modelName.VIDEOS)} />;
   }
 
   return (

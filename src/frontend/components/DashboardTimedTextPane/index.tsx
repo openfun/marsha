@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { defineMessages } from 'react-intl';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getResourceList } from '../../data/sideEffects/getResourceList';
@@ -48,7 +48,7 @@ export const DashboardTimedTextPane = () => {
   );
 
   if (status === requestStatus.FAILURE) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 
   return (

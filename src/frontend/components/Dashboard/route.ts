@@ -9,5 +9,5 @@ export const DASHBOARD_ROUTE = (objectType?: modelName) => {
     return `/dashboard/${objectType}`;
   }
 
-  return `/dashboard/:objectType(${modelName.VIDEOS}|${modelName.DOCUMENTS})`;
+  return `/dashboard/:objectType`;
 };
