@@ -16,6 +16,7 @@ declare namespace converse {
     participantLeaves: () => void;
     insertInto: (container: HTMLElement) => void;
     initialize: (options: Options) => void;
+    sendMessageWithConverse: (message: string) => void;
     env: any;
     ROOMSTATUS: {
       CONNECTED: 0;
