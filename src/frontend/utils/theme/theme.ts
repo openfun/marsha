@@ -25,6 +25,7 @@ const colorsGeneric = {
   'blue-focus': '#031963',
   'blue-hover': '#2d76d3',
   'blue-off': '#81ade6',
+  'blue-chat': '#0a67de',
   'border-grey': '#979797',
   'dark-1': '#08223c',
   'dark-2': '#183653',
@@ -83,7 +84,7 @@ const colorsMain = {
 
 const chatFonts = {
   primary: {
-    color: '#0249a4',
+    color: '#031963',
     fontFamily: 'Roboto-Medium',
     fontSize: '12px',
     fontWeight: 'bold',
@@ -92,7 +93,7 @@ const chatFonts = {
     lineHeight: '16px',
   },
   secondary: {
-    color: '#035ccd',
+    color: colorsGeneric['blue-chat'],
     fontSize: '12px',
     fontFamily: 'Roboto-Regular',
     fontWeight: 'normal',
@@ -124,7 +125,8 @@ export const theme = {
       ...colorsMain,
     },
     input: {
-      weight: '400',
+      weight: 'normal',
+      extend: `color: ${colorsGeneric['blue-chat']};`,
     },
   },
   heading: {
