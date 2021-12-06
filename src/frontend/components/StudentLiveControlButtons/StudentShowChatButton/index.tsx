@@ -23,8 +23,8 @@ const messages = defineMessages({
 
 export const StudentShowChatButton = () => {
   const intl = useIntl();
-  const { openPanel } = useLivePanelState((state) => ({
-    openPanel: state.setPanelVisibility,
+  const { setPanelVisibility } = useLivePanelState((state) => ({
+    setPanelVisibility: state.setPanelVisibility,
   }));
 
   return (
@@ -32,7 +32,7 @@ export const StudentShowChatButton = () => {
       label={intl.formatMessage(messages.chat)}
       Icon={ChatSVG}
       onClick={() => {
-        openPanel(true, LivePanelItem.CHAT);
+        setPanelVisibility(true, LivePanelItem.CHAT);
       }}
       title={intl.formatMessage(messages.showChat)}
     />
