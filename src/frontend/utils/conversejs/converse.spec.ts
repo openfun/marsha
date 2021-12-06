@@ -1,9 +1,11 @@
+import * as mockWindow from '../window';
+
+import { videoMockFactory } from '../tests/factories';
 import { converseMounter } from './converse';
-import * as mockWindow from './window';
+import { logoutPlugin } from './converse-plugins/logoutPlugin';
+import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
 
-import { videoMockFactory } from './tests/factories';
-
-jest.mock('./window', () => ({
+jest.mock('./../window', () => ({
   converse: {
     initialize: jest.fn(),
     insertInto: jest.fn(),
@@ -14,7 +16,7 @@ jest.mock('./window', () => ({
 }));
 let mockDecodedJwtToken = {};
 const mockVideo = videoMockFactory();
-jest.mock('../data/appData', () => ({
+jest.mock('../../data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
   appData: {
     video: mockVideo,
@@ -51,7 +53,7 @@ describe('converseMounter', () => {
     expect(mockWindow.converse.plugins.add).not.toHaveBeenCalled();
 
     // first call, converse is initialized
-    converseManager('#converse-container', xmpp);
+    converseManager(xmpp);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.initialize).toHaveBeenCalledWith({
@@ -76,39 +78,32 @@ describe('converseMounter', () => {
       muc_instant_rooms: false,
       muc_show_join_leave: false,
       nickname: 'jane_doe',
-      root: expect.any(HTMLDivElement),
       show_client_info: false,
       singleton: true,
-      theme: 'concord',
       view_mode: 'embedded',
-      visible_toolbar_buttons: {
-        call: false,
-        emoji: true,
-        spoiler: false,
-        toggle_occupants: false,
-      },
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
-      whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
+      whitelisted_plugins: [logoutPlugin.name, marshaJoinDiscussionPlugin.name],
     });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith('marsha', {
-      dependencies: ['converse-muc'],
-      initialize: expect.any(Function),
-    });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
-      'marsha-join-discussion',
+      logoutPlugin.name,
       {
         dependencies: ['converse-muc'],
         initialize: expect.any(Function),
       },
     );
-    expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      marshaJoinDiscussionPlugin.name,
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
 
-    // second call, converse is already initialized, we mount it in the dom.
-    converseManager('#converse-container', xmpp);
+    // second call, we just check converse is not initialized a second time
+    converseManager(xmpp);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
-    expect(mockWindow.converse.insertInto).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
   });
 });

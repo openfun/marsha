@@ -1,9 +1,9 @@
 import { Box, BoxExtendedProps } from 'grommet';
 import React, { useEffect } from 'react';
+import { converseMounter } from 'utils/conversejs/converse';
 
 import { useVideo } from '../../data/stores/useVideo';
 import { Video } from '../../types/tracks';
-import { converseMounter } from '../../utils/converse';
 
 interface ChatProps {
   video: Video;
@@ -16,7 +16,7 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
 
   useEffect(() => {
-    converseManager('#converse-container', video.xmpp!);
+    converseManager(video.xmpp!);
   }, []);
 
   const conditionalProps: Partial<BoxExtendedProps> = {};
@@ -27,11 +27,8 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   }
 
   return (
-    <Box
-      align="start"
-      direction="row"
-      id="converse-container"
-      {...conditionalProps}
-    />
+    <Box {...conditionalProps}>
+      {!!standalone ? <div>Instructor Chat</div> : <div>Student Chat</div>}
+    </Box>
   );
 };
