@@ -78,11 +78,11 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
     expect(button).toHaveStyle('background-color: rgb(255, 255, 255);');
     expect(button).toHaveStyle('flex: 1;');
-    expect(button).toHaveStyle('box-shadow: inset 0 -2px #035ccd;');
+    expect(button).toHaveStyle('box-shadow: inset 0 -2px #0a67de;');
 
     const text = screen.getByRole('tab_title');
 
-    expect(text).toHaveStyle('color: rgb(3, 92, 205);');
+    expect(text).toHaveStyle('color: rgb(10, 103, 222)');
     expect(text).toHaveStyle('font-family: Roboto-Bold;');
     expect(text).toHaveStyle('font-size: 10px;');
     expect(text).toHaveStyle('font-weight: bold;');
@@ -105,10 +105,10 @@ describe('<LiveVideoTabPanel /> styles', () => {
       )
       .toJSON();
 
-    expect(tree).toHaveStyleRule('box-shadow', 'inset 0 -2px #0249a4', {
+    expect(tree).toHaveStyleRule('box-shadow', 'inset 0 -2px #031963', {
       modifier: ':hover',
     });
-    expect(tree).toHaveStyleRule('color', '#0249a4', {
+    expect(tree).toHaveStyleRule('color', '#031963', {
       modifier: ':hover div span',
     });
   });
