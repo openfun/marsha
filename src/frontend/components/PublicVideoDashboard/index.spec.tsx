@@ -1,15 +1,16 @@
-import React from 'react';
-import fetchMock from 'fetch-mock';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
+import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
-import { createPlayer } from 'Player/createPlayer';
+
 import PublicVideoDashboard from '.';
 
 jest.mock('Player/createPlayer', () => ({
@@ -58,7 +59,7 @@ jest.mock('data/appData', () => ({
   }),
 }));
 
-jest.mock('utils/converse', () => ({
+jest.mock('utils/conversejs/converse', () => ({
   converseMounter: jest.fn(() => jest.fn()),
 }));
 
