@@ -12,11 +12,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add model and API endpoints to manage a shared live media
 - Add component to display chat, viewers and apps during a live in a panel
+- Add a new chat, using react components and design complying with the mockup
 
 ### Changed
 
 - docker image use python 3.10
 - Rename lambda-encode to lambda-convert
+- Converse.js UI is not used anymore, react components are used instead
 
 ## [3.27.0] - 2021-12-07
 
