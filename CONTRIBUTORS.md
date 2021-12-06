@@ -16,7 +16,7 @@
 - [Caroline Cramoisan](https://github.com/carofun) <caroline.cramoisan@fun-mooc.fr>
 - [Vassili Rezvoy](https://github.com/RVassili) <vassili.rezvoy@polyconseil.fr>
 - [Raphael Fernandes](https://github.com/RaphaelFernandes92) <rfer92@gmail.com>
-
+- [Ronan Le Viennesse](https://github.com/roro-lv) <ronan.le-viennesse@polyconseil.fr>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
