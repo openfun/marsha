@@ -1,7 +1,7 @@
-import { Nullable } from '../../../utils/types';
-import { Participant } from '../../Participant';
-import { Video } from '../../tracks';
-import { XMPP } from '../../XMPP';
+import { Participant } from 'types/Participant';
+import { Video } from 'types/tracks';
+import { XMPP } from 'types/XMPP';
+import { Nullable } from 'utils/types';
 
 export as namespace converse;
 export = converse;
@@ -16,6 +16,7 @@ declare namespace converse {
     participantLeaves: () => void;
     insertInto: (container: HTMLElement) => void;
     initialize: (options: Options) => void;
+    sendMessage: (message: string) => void;
     env: any;
     ROOMSTATUS: {
       CONNECTED: 0;
