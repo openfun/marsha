@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Extract SVG pages from PDF files for shared live media in lambda-convert
 - Add fields `is_registered`,`live_attendance`,`username` for liveRegistration
 - Add DRF endpoint to start attendance monitoring using liveRegistration model 
+- Add a new chat, using react components and design complying with the mockup
 
 ### Changed
 
@@ -24,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Rename lambda-encode to lambda-convert
 - Registrations of a scheduled video from LTI are now based on 
   `lti_user_id`, `consumer_site`, and `context_id`
+- Converse.js UI is not used anymore, react components are used instead
 
 ## [3.27.0] - 2021-12-07
 
