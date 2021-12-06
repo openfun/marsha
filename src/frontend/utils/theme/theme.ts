@@ -81,6 +81,33 @@ const colorsMain = {
   white: '#ffffff',
 };
 
+const chatFonts = {
+  primary: {
+    color: '#0249a4',
+    fontFamily: 'Roboto-Medium',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    height: '16px',
+    letterSpacing: '0.07px',
+    lineHeight: '16px',
+  },
+  secondary: {
+    color: '#035ccd',
+    fontSize: '12px',
+    fontFamily: 'Roboto-Regular',
+    fontWeight: 'normal',
+    letterSpacing: '0.07px',
+    lineHeight: '18px',
+  },
+  tertiary: {
+    color: '#357cd7',
+    fontSize: '9px',
+    fontFamily: 'Roboto-Regular',
+    fontWeight: 'normal',
+    letterSpacing: '-0.2px',
+  },
+};
+
 export const theme = {
   box: {
     extend: 'min-height: initial; min-width: initial;',
@@ -214,5 +241,8 @@ export const theme = {
       maxWidth: 'initial',
       size: '1.5rem',
     },
+  },
+  chat: {
+    chatFonts,
   },
 };
