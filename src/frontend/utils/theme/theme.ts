@@ -1,5 +1,15 @@
 import { rgba } from 'polished';
 
+export const breakpointSize = {
+  mobileS: '320px',
+  mobileM: '375px',
+  mobileL: '425px',
+  tablet: '768px',
+  laptop: '1024px',
+  laptopL: '1440px',
+  desktop: '2560px',
+};
+
 const colorsGeneric = {
   'accent-1': 'brand',
   'accent-2': '#f72b2f',
