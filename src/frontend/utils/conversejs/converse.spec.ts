@@ -1,9 +1,11 @@
+import { videoMockFactory } from 'utils/tests/factories';
+import * as mockWindow from 'utils/window';
+
 import { converseMounter } from './converse';
-import * as mockWindow from './window';
+import { logoutPlugin } from './converse-plugins/logoutPlugin';
+import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
 
-import { videoMockFactory } from './tests/factories';
-
-jest.mock('./window', () => ({
+jest.mock('utils/window', () => ({
   converse: {
     initialize: jest.fn(),
     insertInto: jest.fn(),
@@ -14,7 +16,7 @@ jest.mock('./window', () => ({
 }));
 let mockDecodedJwtToken = {};
 const mockVideo = videoMockFactory();
-jest.mock('../data/appData', () => ({
+jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
   appData: {
     video: mockVideo,
@@ -88,15 +90,21 @@ describe('converseMounter', () => {
         toggle_occupants: false,
       },
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
-      whitelisted_plugins: ['marsha', 'marsha-join-discussion'],
+      whitelisted_plugins: [
+        logoutPlugin.name,
+        marshaJoinDiscussionPlugin.name,
+      ],
     });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith('marsha', {
-      dependencies: ['converse-muc'],
-      initialize: expect.any(Function),
-    });
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
-      'marsha-join-discussion',
+      logoutPlugin.name,
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      marshaJoinDiscussionPlugin.name,
       {
         dependencies: ['converse-muc'],
         initialize: expect.any(Function),
