@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- docker image use python 3.10
+
 ## [3.27.0] - 2021-12-07
 
 ### Added
