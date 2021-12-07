@@ -6,7 +6,7 @@ ARG MEDIAINFO_VERSION=20.09
 RUN wget https://mediaarea.net/download/binary/mediainfo/20.09/MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip && \
     unzip MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip -d /tmp/mediainfo
 
-FROM public.ecr.aws/lambda/nodejs:14 as core
+FROM amazon/aws-lambda-nodejs:14 as core
 
 # COPY mediainfo in core stage
 COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
