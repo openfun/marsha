@@ -226,6 +226,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -337,6 +338,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -389,6 +391,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -528,6 +531,7 @@ class VideoAPITest(TestCase):
                 "description": video.description,
                 "has_transcript": False,
                 "id": str(video.id),
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "live_info": {},
@@ -602,6 +606,7 @@ class VideoAPITest(TestCase):
                 "description": video.description,
                 "has_transcript": False,
                 "id": str(video.id),
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "live_info": {},
@@ -726,6 +731,7 @@ class VideoAPITest(TestCase):
                         "description": video.description,
                         "has_transcript": False,
                         "id": str(video.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -803,6 +809,7 @@ class VideoAPITest(TestCase):
                         "description": video_1.description,
                         "has_transcript": False,
                         "id": str(video_1.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -828,6 +835,7 @@ class VideoAPITest(TestCase):
                         "description": video_2.description,
                         "has_transcript": False,
                         "id": str(video_2.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -919,6 +927,7 @@ class VideoAPITest(TestCase):
                         "description": video.description,
                         "has_transcript": False,
                         "id": str(video.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -985,6 +994,7 @@ class VideoAPITest(TestCase):
                         "description": video.description,
                         "has_transcript": False,
                         "id": str(video.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -1080,6 +1090,7 @@ class VideoAPITest(TestCase):
                         "description": video.description,
                         "has_transcript": False,
                         "id": str(video.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -1145,6 +1156,7 @@ class VideoAPITest(TestCase):
                         "description": video_1.description,
                         "has_transcript": False,
                         "id": str(video_1.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -1170,6 +1182,7 @@ class VideoAPITest(TestCase):
                         "description": video_2.description,
                         "has_transcript": False,
                         "id": str(video_2.id),
+                        "is_public": False,
                         "is_ready_to_show": False,
                         "is_scheduled": False,
                         "live_info": {},
@@ -1333,6 +1346,7 @@ class VideoAPITest(TestCase):
                 "description": "",
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "live_info": {},
@@ -1493,6 +1507,7 @@ class VideoAPITest(TestCase):
                 "description": "",
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "live_info": {},
@@ -1559,6 +1574,7 @@ class VideoAPITest(TestCase):
                 "description": "",
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "live_info": {},
@@ -1995,6 +2011,25 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(video.description, "my new description")
+
+    def test_api_video_patch_detail_token_user_is_public(self):
+        """Instructors and administrators should be able to
+        patch the public flag of their video through the API."""
+        video = factories.VideoFactory(is_public=False)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"is_public": True}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertTrue(video.is_public)
 
     def test_api_video_patch_by_organization_instructor(self):
         """Organization instructors cannot patch videos on the API."""
@@ -3076,6 +3111,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3125,6 +3161,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3226,6 +3263,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3345,6 +3383,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3547,6 +3586,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3710,6 +3750,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3791,6 +3832,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -3895,6 +3937,7 @@ class VideoAPITest(TestCase):
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
