@@ -1,3 +1,5 @@
+import { TextProps } from 'grommet';
+import { ColorType } from 'grommet/utils';
 import { rgba } from 'polished';
 
 export const breakpointSize = {
@@ -82,13 +84,21 @@ const colorsMain = {
   white: '#ffffff',
 };
 
-const chatFonts = {
+interface Font {
+  color?: ColorType;
+  fontFamily?: string;
+  fontSize?: TextProps['size'];
+  fontWeight?: TextProps['weight'];
+  letterSpacing?: string;
+  lineHeight?: string;
+}
+
+const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   primary: {
     color: '#031963',
     fontFamily: 'Roboto-Medium',
     fontSize: '12px',
     fontWeight: 'bold',
-    height: '16px',
     letterSpacing: '0.07px',
     lineHeight: '16px',
   },
