@@ -47,11 +47,11 @@ data "aws_lambda_invocation" "configure_lambda_presets" {
   })
 }
 
-# Encoding
-############
+# Convert
+###########
 
-resource "aws_lambda_function" "marsha_encode_lambda" {
-  function_name    = "${terraform.workspace}-marsha-encode"
+resource "aws_lambda_function" "marsha_convert_lambda" {
+  function_name    = "${terraform.workspace}-marsha-convert"
   image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
   package_type     = "Image"
   role             = aws_iam_role.lambda_invocation_role.arn
@@ -59,7 +59,7 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
   timeout          = "90"
 
   image_config {
-    command = ["/var/task/lambda-encode/index.handler"]
+    command = ["/var/task/lambda-convert/index.handler"]
   }
 
   environment {
@@ -78,7 +78,7 @@ resource "aws_lambda_function" "marsha_encode_lambda" {
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.marsha_encode_lambda.arn
+  function_name = aws_lambda_function.marsha_convert_lambda.arn
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.marsha_source.arn
 }
@@ -111,7 +111,7 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.marsha_complete_lambda.arn
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.marsha_encode_complete_rule.arn
+  source_arn    = aws_cloudwatch_event_rule.marsha_convert_complete_rule.arn
 }
 
 # Migrations
@@ -131,7 +131,7 @@ resource "aws_lambda_function" "marsha_migrate_lambda" {
   environment {
     variables = {
       S3_SOURCE_BUCKET        = aws_s3_bucket.marsha_source.id
-      LAMBDA_ENCODE_NAME      = aws_lambda_function.marsha_encode_lambda.function_name
+      LAMBDA_CONVERT_NAME     = aws_lambda_function.marsha_convert_lambda.function_name
       NODE_ENV                = "production"
     }
   }
@@ -141,7 +141,7 @@ resource "aws_lambda_function" "marsha_migrate_lambda" {
 data "aws_lambda_invocation" "invoke_migration" {
   depends_on    = [
     aws_lambda_function.marsha_migrate_lambda,
-    aws_lambda_function.marsha_encode_lambda
+    aws_lambda_function.marsha_convert_lambda
   ]
   function_name     = aws_lambda_function.marsha_migrate_lambda.function_name
   input             = jsonencode({

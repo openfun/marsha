@@ -16,7 +16,7 @@ COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
 COPY lambda-complete ${LAMBDA_TASK_ROOT}/lambda-complete/
 COPY lambda-configure ${LAMBDA_TASK_ROOT}/lambda-configure/
 COPY lambda-elemental-routing ${LAMBDA_TASK_ROOT}/lambda-elemental-routing/
-COPY lambda-encode ${LAMBDA_TASK_ROOT}/lambda-encode/
+COPY lambda-convert ${LAMBDA_TASK_ROOT}/lambda-convert/
 COPY lambda-medialive ${LAMBDA_TASK_ROOT}/lambda-medialive/
 COPY lambda-mediapackage ${LAMBDA_TASK_ROOT}/lambda-mediapackage/
 COPY lambda-migrate ${LAMBDA_TASK_ROOT}/lambda-migrate/
@@ -33,7 +33,7 @@ FROM core as development
 
 RUN cd lambda-complete && yarn install
 RUN cd lambda-configure && yarn install
-RUN cd lambda-encode && yarn install
+RUN cd lambda-convert && yarn install
 RUN cd lambda-medialive && yarn install
 RUN cd lambda-mediapackage && yarn install
 RUN cd lambda-elemental-routing && yarn install
@@ -46,7 +46,7 @@ FROM core as production
 
 RUN cd lambda-complete && yarn install --frozen-lockfile --production=true
 RUN cd lambda-configure && yarn install --frozen-lockfile --production=true
-RUN cd lambda-encode && yarn install --frozen-lockfile --production=true
+RUN cd lambda-convert && yarn install --frozen-lockfile --production=true
 RUN cd lambda-medialive && yarn install --frozen-lockfile --production=true
 RUN cd lambda-mediapackage && yarn install --frozen-lockfile --production=true
 RUN cd lambda-elemental-routing && yarn install --frozen-lockfile --production=true

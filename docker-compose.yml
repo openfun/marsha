@@ -93,16 +93,16 @@ services:
     entrypoint: ""
     command: echo "I should exit now. Bye."
 
-  lambda_encode:
+  lambda_convert:
     image: marsha/lambda:dev
-    working_dir: /var/task/lambda-encode
-    command: ["/var/task/lambda-encode/index.handler"]
+    working_dir: /var/task/lambda-convert
+    command: ["/var/task/lambda-convert/index.handler"]
     ports:
       - 9000:8080
     env_file:
       - env.d/lambda
     volumes:
-      - "./src/aws/lambda-encode:/var/task/lambda-encode"
+      - "./src/aws/lambda-convert:/var/task/lambda-convert"
       - "./src/aws/utils:/var/task/utils"
     depends_on:
       - lambda_base

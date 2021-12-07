@@ -1,5 +1,5 @@
 process.env.S3_SOURCE_BUCKET = 'test-marsha-source';
-process.env.LAMBDA_ENCODE_NAME = 'test-marsha-encode';
+process.env.LAMBDA_CONVERT_NAME = 'test-marsha-convert';
 
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log');
@@ -49,7 +49,7 @@ describe('0001_encode_timed_text_tracks', () => {
     });
     expect(mockInvokeAsync).toHaveBeenCalledTimes(2);
     expect(mockInvokeAsync).toHaveBeenCalledWith({
-      FunctionName: 'test-marsha-encode',
+      FunctionName: 'test-marsha-convert',
       InvokeArgs: JSON.stringify({
         Records: [
           {
@@ -67,7 +67,7 @@ describe('0001_encode_timed_text_tracks', () => {
       }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
-      FunctionName: 'test-marsha-encode',
+      FunctionName: 'test-marsha-convert',
       InvokeArgs: JSON.stringify({
         Records: [
           {
@@ -131,7 +131,7 @@ describe('0001_encode_timed_text_tracks', () => {
     });
     expect(mockInvokeAsync).toHaveBeenCalledTimes(3);
     expect(mockInvokeAsync).toHaveBeenCalledWith({
-      FunctionName: 'test-marsha-encode',
+      FunctionName: 'test-marsha-convert',
       InvokeArgs: JSON.stringify({
         Records: [
           {
@@ -149,7 +149,7 @@ describe('0001_encode_timed_text_tracks', () => {
       }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
-      FunctionName: 'test-marsha-encode',
+      FunctionName: 'test-marsha-convert',
       InvokeArgs: JSON.stringify({
         Records: [
           {
@@ -167,7 +167,7 @@ describe('0001_encode_timed_text_tracks', () => {
       }),
     });
     expect(mockInvokeAsync).toHaveBeenCalledWith({
-      FunctionName: 'test-marsha-encode',
+      FunctionName: 'test-marsha-convert',
       InvokeArgs: JSON.stringify({
         Records: [
           {

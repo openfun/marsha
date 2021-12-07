@@ -23,7 +23,7 @@ jest.mock("jimp", () => ({
 
 const resizeThumbnails = require("./resizeThumbnails");
 
-describe("lambda-encode/src/resizeThumbnails", () => {
+describe("lambda-convert/src/resizeThumbnails", () => {
   beforeEach(() => {
     console.log.mockReset();
     jest.resetAllMocks();
