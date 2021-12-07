@@ -144,6 +144,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -216,6 +217,7 @@ class DevelopmentLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,

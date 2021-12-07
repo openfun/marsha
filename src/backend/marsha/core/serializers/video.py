@@ -548,6 +548,7 @@ class VideoSerializer(VideoBaseSerializer):
             "active_stamp",
             "description",
             "id",
+            "is_public",
             "is_ready_to_show",
             "is_scheduled",
             "timed_text_tracks",
