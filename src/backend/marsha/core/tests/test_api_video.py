@@ -1297,6 +1297,20 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertFalse(models.Video.objects.exists())
 
+    def test_api_video_create_student(self):
+        """Student users should not be able to create videos."""
+        video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        response = self.client.post(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(models.Video.objects.count(), 1)
+
     def test_api_video_create_staff_or_user(self):
         """Users authenticated via a session should not be able to create videos."""
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
@@ -1646,6 +1660,28 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.title, "my title")
 
+    def test_api_video_update_detail_student(self):
+        """Student users should not be allowed to update a video through the API."""
+        video = factories.VideoFactory(title="my title")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        data = {"title": "my new title"}
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+        video.refresh_from_db()
+        self.assertEqual(video.title, "my title")
+
     def test_api_video_update_detail_token_user_title(self):
         """Token users should be able to update the title of their video through the API."""
         video = factories.VideoFactory(title="my title")
@@ -1901,6 +1937,41 @@ class VideoAPITest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_video_patch_video_anonymous(self):
+        """Anonymous users should not be allowed to patch a video through the API."""
+        video = factories.VideoFactory(title="my title")
+        data = {"title": "my new title"}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "my title")
+
+    def test_api_video_patch_video_student(self):
+        """Student users should not be allowed to patch a video through the API."""
+        video = factories.VideoFactory(title="my title")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        data = {"title": "my new title"}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+        video.refresh_from_db()
+        self.assertEqual(video.title, "my title")
 
     def test_api_video_instructor_patch_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to patch the video."""
@@ -2506,6 +2577,24 @@ class VideoAPITest(TestCase):
             )
             self.assertEqual(response.status_code, 403)
             self.assertTrue(models.Video.objects.filter(id=video.id).exists())
+
+    def test_api_video_delete_detail_student(self):
+        """Student users should not be able to delete a video."""
+        video = factories.VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
 
     def test_api_video_delete_detail_staff_or_user(self):
         """Users authenticated via a session should not be able to delete a video."""
