@@ -1,10 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
+
 import { ChatSVG } from './ChatSVG';
 
-it('renders ChatSVG correctly', () => {
-  const ChatSVGSnapshot = renderer
-    .create(<ChatSVG iconColor={'#035ccd'} />)
-    .toJSON();
-  expect(ChatSVGSnapshot).toMatchSnapshot();
+it('renders ChatSVG correctly', async () => {
+  await renderIconSnapshot(<ChatSVG iconColor="#035ccd" />);
 });

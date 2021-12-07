@@ -1,10 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
+
 import { SpeakerSVG } from './SpeakerSVG';
 
-it('renders SpeakerSVG correctly', () => {
-  const SpeakerSVGSnapshot = renderer
-    .create(<SpeakerSVG iconColor={'#035ccd'} />)
-    .toJSON();
-  expect(SpeakerSVGSnapshot).toMatchSnapshot();
+it('renders SpeakerSVG correctly', async () => {
+  await renderIconSnapshot(<SpeakerSVG iconColor="#035ccd" />);
 });
