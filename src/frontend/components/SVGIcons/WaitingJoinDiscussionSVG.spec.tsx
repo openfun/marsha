@@ -1,10 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
+
 import { WaitingJoinDiscussionSVG } from './WaitingJoinDiscussionSVG';
 
-it('renders WaitingJoinDiscussionSVG correctly', () => {
-  const WaitingJoinDiscussionSVGSnapshot = renderer
-    .create(<WaitingJoinDiscussionSVG iconColor={'#035ccd'} />)
-    .toJSON();
-  expect(WaitingJoinDiscussionSVGSnapshot).toMatchSnapshot();
+it('renders WaitingJoinDiscussionSVG correctly', async () => {
+  await renderIconSnapshot(<WaitingJoinDiscussionSVG iconColor="#035ccd" />);
 });
