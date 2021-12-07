@@ -105,6 +105,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -227,6 +228,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -376,6 +378,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -517,6 +520,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -640,6 +644,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -720,6 +725,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": "1569309880",
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -848,6 +854,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": "1569309880",
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -964,6 +971,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": "1569309880",
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -1082,6 +1090,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": "1569309880",
+                "is_public": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
                 "show_download": True,
@@ -1388,6 +1397,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -1478,6 +1488,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource"),
             {
                 "active_stamp": None,
+                "is_public": False,
                 "is_ready_to_show": False,
                 "is_scheduled": False,
                 "show_download": True,
