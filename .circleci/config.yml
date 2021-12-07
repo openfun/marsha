@@ -191,7 +191,7 @@ jobs:
   # Build backend development environment
   build-back:
     docker:
-      - image: cimg/python:3.9
+      - image: cimg/python:3.10
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -213,7 +213,7 @@ jobs:
   # Build backend translations
   build-back-i18n:
     docker:
-      - image: cimg/python:3.9
+      - image: cimg/python:3.10
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -262,7 +262,7 @@ jobs:
 
   lint-back:
     docker:
-      - image: cimg/python:3.9
+      - image: cimg/python:3.10
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -292,7 +292,7 @@ jobs:
 
   test-back:
     docker:
-      - image: cimg/python:3.9
+      - image: cimg/python:3.10
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
