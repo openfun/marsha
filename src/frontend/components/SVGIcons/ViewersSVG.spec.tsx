@@ -1,10 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
+
 import { ViewersSVG } from './ViewersSVG';
 
-it('renders ViewersSVG correctly', () => {
-  const ViewersSVGSnapshot = renderer
-    .create(<ViewersSVG iconColor={'#035ccd'} />)
-    .toJSON();
-  expect(ViewersSVGSnapshot).toMatchSnapshot();
+it('renders ViewersSVG correctly', async () => {
+  await renderIconSnapshot(<ViewersSVG iconColor="#035ccd" />);
 });
