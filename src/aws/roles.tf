@@ -156,7 +156,7 @@ resource "aws_iam_policy" "lambda_s3_access_policy" {
 EOF
 }
 
-# `lambda-encode` needs read access to the source bucket and write access to the destination
+# `lambda-convert` needs read access to the source bucket and write access to the destination
 # bucket to read timed text files from the former and write them to the latter.
 resource "aws_iam_role_policy_attachment" "lambda_s3_access_policy_attachment" {
   role        = aws_iam_role.lambda_invocation_role.name
@@ -333,7 +333,7 @@ resource "aws_iam_policy" "lambda_migrate_lambda_invoke_policy" {
         "lambda:invokeFunction"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:lambda:*:*:function:${aws_lambda_function.marsha_encode_lambda.function_name}"
+      "Resource": "arn:aws:lambda:*:*:function:${aws_lambda_function.marsha_convert_lambda.function_name}"
     }
   ]
 }

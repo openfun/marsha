@@ -14,7 +14,7 @@ jest.mock("aws-sdk", () => ({
 
 const encodeTimedTextTrack = require("./encodeTimedTextTrack");
 
-describe("lambda-encode/src/encodeTimedTextTrack", () => {
+describe("lambda-convert/src/encodeTimedTextTrack", () => {
   beforeEach(() => {
     mockGetObject.mockReset();
     mockPutObject.mockReset();

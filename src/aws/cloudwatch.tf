@@ -1,5 +1,5 @@
-resource "aws_cloudwatch_event_rule" "marsha_encode_complete_rule" {
-  name        = "${terraform.workspace}-marsha-encode-complete-rule"
+resource "aws_cloudwatch_event_rule" "marsha_convert_complete_rule" {
+  name        = "${terraform.workspace}-marsha-convert-complete-rule"
   description = "Fires each time the encoding of a video source by MediaConvert is completed."
 
   event_pattern = <<PATTERN
@@ -15,8 +15,8 @@ resource "aws_cloudwatch_event_rule" "marsha_encode_complete_rule" {
 PATTERN
 }
 
-resource "aws_cloudwatch_event_target" "marsha_encode_complete_target" {
-  rule      = aws_cloudwatch_event_rule.marsha_encode_complete_rule.name
+resource "aws_cloudwatch_event_target" "marsha_convert_complete_target" {
+  rule      = aws_cloudwatch_event_rule.marsha_convert_complete_rule.name
   target_id = "check_foo"
   arn       = aws_lambda_function.marsha_complete_lambda.arn
 }

@@ -608,7 +608,7 @@ jobs:
             - ./node_modules
           key: v3-lambdas-configure-dependencies-{{ checksum "yarn.lock" }}
 
-  test-lambda-encode:
+  test-lambda-convert:
     docker:
       - image: circleci/node:14
         auth:
@@ -616,24 +616,24 @@ jobs:
           password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-    working_directory: ~/marsha/src/aws/lambda-encode
+    working_directory: ~/marsha/src/aws/lambda-convert
     steps:
       - checkout:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
-            - v3-lambdas-encode-dependencies-
+            - v3-lambdas-convert-dependencies-{{ checksum "yarn.lock" }}
+            - v3-lambdas-convert-dependencies-
       - run:
-          name: Install encode lambda dependencies
+          name: Install convert lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
-          name: Run encode lambda tests
+          name: Run convert lambda tests
           command: yarn test
       - save_cache:
           paths:
             - ./node_modules
-          key: v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
+          key: v3-lambdas-convert-dependencies-{{ checksum "yarn.lock" }}
 
   test-lambda-complete:
     docker:
@@ -762,7 +762,7 @@ jobs:
           name: lint code
           command: yarn prettier --write --list-different '**/*.+(json|js)'
 
-  lint-lambda-encode:
+  lint-lambda-convert:
     docker:
       - image: circleci/node:14
         auth:
@@ -770,15 +770,15 @@ jobs:
           password: $DOCKER_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
-    working_directory: ~/marsha/src/aws/lambda-encode
+    working_directory: ~/marsha/src/aws/lambda-convert
     steps:
       - checkout:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v3-lambdas-encode-dependencies-{{ checksum "yarn.lock" }}
+            - v3-lambdas-convert-dependencies-{{ checksum "yarn.lock" }}
       - run:
-          name: Install encode lambda dependencies
+          name: Install convert lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
@@ -1137,7 +1137,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-lambda-encode:
+      - test-lambda-convert:
           filters:
             tags:
               only: /.*/
@@ -1163,9 +1163,9 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - lint-lambda-encode:
+      - lint-lambda-convert:
           requires:
-            - test-lambda-encode
+            - test-lambda-convert
           filters:
             tags:
               only: /.*/
@@ -1289,7 +1289,7 @@ workflows:
             - build-lambda-docker
             - test-lambda-complete
             - test-lambda-configure
-            - test-lambda-encode
+            - test-lambda-convert
             - test-lambda-medialive
             - test-lambda-mediapackage
             - test-lambda-elemental-routing
