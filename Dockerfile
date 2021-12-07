@@ -1,7 +1,7 @@
 # Marsha, a FUN LTI video provider
 
 # ---- base image to inherit from ----
-FROM python:3.9-buster as base
+FROM python:3.10-bullseye as base
 
 # ---- back-end builder image ----
 FROM base as back-builder
