@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - docker image use python 3.10
+- Rename lambda-encode to lambda-convert
 
 ## [3.27.0] - 2021-12-07
 

@@ -32,7 +32,7 @@ const invokeLambda = async (timedTextTrack) => {
   console.log('invoke lambda');
   await lambda
     .invokeAsync({
-      FunctionName: process.env.LAMBDA_ENCODE_NAME,
+      FunctionName: process.env.LAMBDA_CONVERT_NAME,
       InvokeArgs: JSON.stringify({
         Records: [
           {

@@ -230,7 +230,7 @@ lambda-install-dev-dependencies: ## Install all lambda dependencies
 lambda-install-dev-dependencies: \
 	lambda-install-dev-dependencies-complete \
 	lambda-install-dev-dependencies-configure \
-	lambda-install-dev-dependencies-encode \
+	lambda-install-dev-dependencies-convert \
 	lambda-install-dev-dependencies-medialive \
 	lambda-install-dev-dependencies-mediapackage \
 	lambda-install-dev-dependencies-elemental-routing \
@@ -239,15 +239,15 @@ lambda-install-dev-dependencies: \
 
 lambda-install-dev-dependencies-complete: ## Install dependencies for lambda complete
 	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn install
-.PHONY: lambda-install-dev-dependencies-encode
+.PHONY: lambda-install-dev-dependencies-convert
 
 lambda-install-dev-dependencies-configure: ## Install dependencies for lambda configure
 	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn install
 .PHONY: lambda-install-dev-dependencies-configure
 
-lambda-install-dev-dependencies-encode: ## Install dependencies for lambda encode
-	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn install
-.PHONY: lambda-install-dev-dependencies-encode
+lambda-install-dev-dependencies-convert: ## Install dependencies for lambda convert
+	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn install
+.PHONY: lambda-install-dev-dependencies-convert
 
 lambda-install-dev-dependencies-medialive: ## Install dependencies for lambda medialive
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn install
@@ -269,7 +269,7 @@ test-lambda: ## Run all aws lambda tests
 test-lambda: \
 	test-lambda-complete \
 	test-lambda-configure \
-	test-lambda-encode \
+	test-lambda-convert \
 	test-lambda-medialive \
 	test-lambda-mediapackage \
 	test-lambda-elemental-routing \
@@ -284,9 +284,9 @@ test-lambda-configure: ## test aws lambda configure
 	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn test
 .PHONY: test-lambda-configure
 
-test-lambda-encode: ## test aws lambda encode
-	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn test
-.PHONY: test-lambda-encode
+test-lambda-convert: ## test aws lambda convert
+	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn test
+.PHONY: test-lambda-convert
 
 test-lambda-medialive: ## test aws lambda medialive
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn test
@@ -308,7 +308,7 @@ lint-lambda: ## Run linter an all lambda functions
 lint-lambda: \
 	lint-lambda-complete \
 	lint-lambda-configure \
-	lint-lambda-encode \
+	lint-lambda-convert \
 	lint-lambda-medialive \
 	lint-lambda-mediapackage \
 	lint-lambda-elemental-routing \
@@ -323,9 +323,9 @@ lint-lambda-configure: ## run linter on lambda configure function
 	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn lint
 .PHONY: lint-lambda-configure
 
-lint-lambda-encode: ## run linter on lambda encode function
-	@$(COMPOSE_RUN_LAMBDA) lambda_encode yarn lint
-.PHONY: lint-lambda-encode
+lint-lambda-convert: ## run linter on lambda convert function
+	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn lint
+.PHONY: lint-lambda-convert
 
 lint-lambda-medialive: ## run linter on lambda medialive function
 	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn lint

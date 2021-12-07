@@ -330,12 +330,6 @@ class Base(Configuration):
 
     # pylint: disable=invalid-name
     @property
-    def AWS_LAMBDA_ENCODE_NAME(self):
-        """Lambda encode name."""
-        return f"{self.AWS_BASE_NAME}-marsha-encode"
-
-    # pylint: disable=invalid-name
-    @property
     def SIMPLE_JWT(self):
         """Define settings for `djangorestframework_simplejwt`.
 

@@ -58,7 +58,7 @@ resource "aws_s3_bucket_notification" "marsha_source_bucket_notification" {
   bucket = aws_s3_bucket.marsha_source.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.marsha_encode_lambda.arn
+    lambda_function_arn = aws_lambda_function.marsha_convert_lambda.arn
     events              = ["s3:ObjectCreated:*"]
   }
 }
