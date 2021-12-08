@@ -1,11 +1,10 @@
-import { render } from '@testing-library/react';
 import React from 'react';
+import { render } from '@testing-library/react';
 
+import { Chat } from 'components/Chat';
+import { liveState } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { Chat } from '.';
-import { liveState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
+import { videoMockFactory } from 'utils/tests/factories';
 
 const mockVideo = videoMockFactory({
   id: '5cffe85a-1829-4000-a6ca-a45d4647dc0d',
@@ -19,13 +18,13 @@ const mockVideo = videoMockFactory({
     jid: 'xmpp-server.com',
   },
 });
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     video: mockVideo,
   },
 }));
 
-jest.mock('../../utils/conversejs/converse', () => ({
+jest.mock('utils/conversejs/converse', () => ({
   converseMounter: jest.fn(() => jest.fn()),
 }));
 
@@ -40,11 +39,13 @@ describe('<Chat />', () => {
 
   it('renders the Chat component', () => {
     expect(mockConverseMounter).toHaveBeenCalled();
-    render(wrapInIntlProvider(<Chat video={mockVideo} />));
+    render(<Chat video={mockVideo} />);
 
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
+    // is was called with the container name and the xmpp object
     // is was called with the xmpp object
     expect(mockConverseMounter.mock.results[0].value).toHaveBeenCalledWith(
+      '#converse-container',
       mockVideo.xmpp,
     );
   });

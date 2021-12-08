@@ -10,6 +10,7 @@ import { liveState, timedTextMode } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
+
 import PublicVideoDashboard from '.';
 
 jest.mock('Player/createPlayer', () => ({
@@ -307,7 +308,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#conversejs')).not.toBeInTheDocument();
+    expect(container.querySelector('#converse-container')).toBeInTheDocument();
   });
 
   it('displays the video player and the waiting message when the live is stopping', async () => {
@@ -348,7 +349,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#conversejs')).not.toBeInTheDocument();
+    expect(container.querySelector('#converse-container')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 
@@ -390,7 +391,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#conversejs')).not.toBeInTheDocument();
+    expect(container.querySelector('#converse-container')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 

@@ -5,7 +5,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
 import { EventType, MessageType, XMPP } from 'types/XMPP';
-import { converse } from './../../window';
+import { converse } from 'utils/window';
 
 const PLUGIN_NAME = 'marsha-join-discussion-plugin';
 

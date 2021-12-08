@@ -1,4 +1,4 @@
-import { converse } from './../../window';
+import { converse } from 'utils/window';
 
 const PLUGIN_NAME = 'logout-plugin';
 
