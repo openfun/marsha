@@ -87,7 +87,7 @@
     "@types/react-datepicker": "4.1.7",
     "buffer": "6.0.3",
     "clipboard": "2.0.8",
-    "converse.js": "<8",
+    "converse.js": "8.0.1",
     "core-js": "3.19.1",
     "grommet": "2.19.1",
     "iframe-resizer": "4.3.2",
