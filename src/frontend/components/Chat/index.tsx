@@ -5,6 +5,8 @@ import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
 
+import { StudentChat } from './StudentChat';
+
 interface ChatProps {
   video: Video;
   standalone?: boolean;
@@ -16,7 +18,7 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
 
   useEffect(() => {
-    converseManager('#converse-container', video.xmpp!);
+    converseManager(video.xmpp!);
   }, []);
 
   const conditionalProps: Partial<BoxExtendedProps> = {};
@@ -27,11 +29,15 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   }
 
   return (
-    <Box
-      align="start"
-      direction="row"
-      id="converse-container"
-      {...conditionalProps}
-    />
+    <Box {...conditionalProps}>
+      {!!standalone ? (
+        <div>
+          Instructor Chat
+          <StudentChat />
+        </div>
+      ) : (
+        <StudentChat />
+      )}
+    </Box>
   );
 };
