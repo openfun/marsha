@@ -121,10 +121,11 @@ class LiveRegistrationModelsTestCase(TestCase):
         )
 
     def test_models_liveregistration_field_email_can_be_empty_isregistered_false(self):
-        """Field email can be empty with field is_registered to False"""
+        """Field email can be registered with no other field"""
         LiveRegistrationFactory(
-            email="test@fun-mooc.fr",
-            is_registered=False,
+            email="caroline@fun-mooc.fr",
+            consumer_site=None,
+            lti_user_id=None,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
 
@@ -185,3 +186,31 @@ class LiveRegistrationModelsTestCase(TestCase):
             'violates check constraint "liveregistration_email_or_context_id_user_id"'
             in str(context.exception)
         )
+
+    def test_models_liveregistration_create_object_with_filters(self):
+        """Liveregistration object is created with parameters"""
+        video = VideoFactory()
+        filters = {
+            "consumer_site": video.playlist.consumer_site,
+            "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+        }
+        liveregistration = LiveRegistration(**filters, video=video)
+        liveregistration.save()
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+    def test_models_liveregistration_no_context_with_user_id_no_email(self):
+        """Liveregistration object can't be created with no consumer_site and no email"""
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                consumer_site=None,
+                email=None,
+                is_registered=False,
+                live_attendance={"k1": "v1"},
+                video=video,
+                lti_user_id="4444",
+            )
+            assert (
+                'violates check constraint "liveregistration_email_or_context_id_user_id"'
+                in str(context.exception)
+            )

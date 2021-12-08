@@ -408,7 +408,12 @@ class Thumbnail(AbstractImage):
 
 
 class LiveRegistration(BaseModel):
-    """Model representing a scheduling live registration."""
+    """Model representing a scheduling live registration.
+
+    Video can be played in different consumer_site. A user that has never registered
+    in this consumer_site must registered for this specific one, meaning we can have
+    the combinaison email/video for different consumer site.
+    """
 
     RESOURCE_NAME = "liveregistrations"
 
@@ -470,6 +475,7 @@ class LiveRegistration(BaseModel):
 
         db_table = "live_registration"
         constraints = [
+            # email can register from different consumer_site
             models.UniqueConstraint(
                 fields=("email", "consumer_site", "video"),
                 condition=models.Q(deleted=None),

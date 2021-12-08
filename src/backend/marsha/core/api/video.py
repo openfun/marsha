@@ -8,6 +8,7 @@ from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.db.models.query import EmptyQuerySet
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import mixins, status, viewsets
@@ -46,6 +47,9 @@ from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room
 from .base import ObjectPkMixin
+
+
+# pylint: disable=too-many-lines
 
 
 class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
@@ -598,68 +602,153 @@ def pairing_challenge(request):
     )
 
 
-class LiveRegistrationViewSet(
-    ObjectPkMixin,
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
-):
+class LiveRegistrationViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the LiveRegistration object."""
 
     permission_classes = [permissions.IsVideoToken]
     queryset = LiveRegistration.objects.all()
     serializer_class = serializers.LiveRegistrationSerializer
 
-    def get_queryset(self):
-        """Restrict access to liveRegistration with data contained in the JWT token.
-
-        Access is restricted to liveRegistration related to the video and context_id present in
-        the JWT token. Email or user id from the token can be used as well depending on the role.
-        """
+    def get_filters(self, full_query=True):
+        """Filters are built from the user's token"""
         user = self.request.user
 
         if user.token.payload:
             consumer_site = (
-                Playlist.objects.get(
-                    lti_id=user.token.payload["context_id"]
+                get_object_or_404(
+                    Playlist, lti_id=user.token.payload["context_id"]
                 ).consumer_site
                 if user.token.payload.get("context_id")
                 else None
             )
             filters = {"consumer_site": consumer_site, "video__id": user.id}
-            if self.kwargs.get("pk"):
-                filters["pk"] = self.kwargs["pk"]
+            if full_query:
+                if self.kwargs.get("pk"):
+                    filters["pk"] = self.kwargs["pk"]
 
-            if self.request.query_params.get("is_registered"):
-                filters["is_registered"] = self.request.query_params.get(
-                    "is_registered"
-                )
-            # admin and instructors can access all registrations from the same consumer site
-            if user.token.payload.get("roles") and any(
-                role in ["administrator", "instructor"]
-                for role in user.token.payload["roles"]
-            ):
-                return LiveRegistration.objects.filter(**filters)
+                if self.request.query_params.get("is_registered"):
+                    filters["is_registered"] = self.request.query_params.get(
+                        "is_registered"
+                    )
+                # admin and instructors can access all registrations from the same consumer site
+                if user.token.payload.get("roles") and any(
+                    role in ["administrator", "instructor"]
+                    for role in user.token.payload["roles"]
+                ):
+                    return filters
+
             # others can only read their registration
             if user.token.payload.get("user"):
                 if user.token.payload["user"].get("email"):
-                    filters["email"] = user.token.payload["user"]["email"]
                     # check first if a liveRegistration exists with the email in the token
-                    live_registration = LiveRegistration.objects.filter(**filters)
+                    live_registration = LiveRegistration.objects.filter(
+                        **filters, email=user.token.payload["user"]["email"]
+                    )
                     if live_registration:
-                        return live_registration
+                        return {**filters, "email": user.token.payload["user"]["email"]}
 
-                    filters.pop("email", None)
                 # token has email or not, user has access to this registration if it's the right
                 # combination of lti_user_id and consumer_site
                 if user.token.payload["user"].get("id") and user.token.payload.get(
                     "context_id"
                 ):
-                    filters["lti_user_id"] = user.token.payload["user"]["id"]
-                    return LiveRegistration.objects.filter(**filters)
+                    return {**filters, "lti_user_id": user.token.payload["user"]["id"]}
+
+        return None
+
+    def get_queryset(self):
+        """Restrict access to liveRegistration with data contained in the JWT token.
+
+        Access is restricted to liveRegistration related to the video and context_id present in
+        the JWT token.
+        """
+        filters = self.get_filters()
+        if filters is not None:
+            return LiveRegistration.objects.filter(**filters)
 
         return LiveRegistration.objects.none()
+
+    @action(detail=False, methods=["post"])
+    # pylint: disable=unused-argument
+    def push_attendance(self, request, pk=None):
+        """View handling pushing new attendance"""
+        serializer = serializers.LiveAttendanceSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({"detail": "Invalid request."}, status=400)
+
+        user = self.request.user
+        video = get_object_or_404(Video, pk=user.id)
+        token_user = user.token.payload.get("user")
+        email = (
+            token_user.get("email") if token_user and token_user.get("email") else None
+        )
+        username = (
+            token_user.get("username")
+            if token_user and token_user.get("username")
+            else None
+        )
+
+        live_attendance = self.request.data.get("live_attendance")
+
+        # Check with token parameters, if we have a match
+        filters = self.get_filters(False)
+
+        if filters is not None:
+            # liveregistration might exists with the email/context_id or context_id/lti_user_id
+            try:
+                liveregistration = LiveRegistration.objects.get(**filters)
+                liveregistration.email = email
+                liveregistration.username = username
+                # we don't update with current lti_user_id as field might be used with integrity
+            except LiveRegistration.DoesNotExist:
+                filters.pop("video__id")
+                liveregistration = LiveRegistration(
+                    **filters, email=email, username=username, video=video
+                )
+        else:
+            # this email doesn't exist for this consumer_site, we create it
+            if email:
+                consumer_site = (
+                    Playlist.objects.get(
+                        lti_id=user.token.payload["context_id"]
+                    ).consumer_site
+                    if user.token.payload.get("context_id")
+                    else None
+                )
+                lti_user_id = (
+                    token_user.get("id")
+                    if token_user and token_user.get("id")
+                    else None
+                )
+                liveregistration = LiveRegistration(
+                    consumer_site=consumer_site,
+                    email=email,
+                    lti_user_id=lti_user_id,
+                    username=username,
+                    video=video,
+                )
+            else:
+                # token doesn't have enough information to identify user
+                return Response({"detail": "Unable to identify user"}, status=400)
+
+        # add new live_attendance information
+        if liveregistration.live_attendance:
+            liveregistration.live_attendance = {
+                **live_attendance,
+                **liveregistration.live_attendance,
+            }
+        else:
+            liveregistration.live_attendance = live_attendance
+
+        liveregistration.save()
+
+        return Response(
+            {
+                "id": liveregistration.id,
+                "video": video.id,
+                "live_attendance": liveregistration.live_attendance,
+            }
+        )
 
 
 class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):

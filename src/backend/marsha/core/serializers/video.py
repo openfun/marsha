@@ -319,6 +319,28 @@ class PairingChallengeSerializer(serializers.Serializer):
     secret = serializers.CharField(min_length=6, max_length=6)
 
 
+class LiveAttendanceSerializer(serializers.ModelSerializer):
+    """Serializer for liveRegistration model to monitor attendance."""
+
+    class Meta:  # noqa
+        model = LiveRegistration
+        fields = (
+            "id",
+            "live_attendance",
+            "video",
+        )
+        read_only_fields = (
+            "id",
+            "video",
+        )
+
+        extra_kwargs = {"live_attendance": {"allow_null": False, "required": True}}
+        # Make sure video UUID is converted to a string during serialization
+        video = serializers.PrimaryKeyRelatedField(
+            read_only=True, pk_field=serializers.CharField()
+        )
+
+
 class LiveRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for liveRegistration model."""
 
