@@ -325,17 +325,21 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = LiveRegistration
         fields = (
+            "consumer_site",
             "email",
             "id",
-            "consumer_site",
+            "is_registered",
             "lti_user_id",
             "should_send_reminders",
+            "username",
             "video",
         )
         read_only_fields = (
-            "id",
             "consumer_site",
+            "id",
+            "is_registered",
             "lti_user_id",
+            "username",
             "video",
         )
 
@@ -363,10 +367,15 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             The "data" dictionary is returned after modification.
 
         """
+        attrs["is_registered"] = True
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
         video = get_object_or_404(Video, pk=user.id)
+
+        if not attrs.get("email"):
+            raise serializers.ValidationError({"email": "Email is mandatory"})
+
         if video.is_scheduled is False:
             raise serializers.ValidationError(
                 {"video": f"video with id {user.id} doesn't accept registration."}
@@ -384,7 +393,9 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             )
 
             if user.token.payload.get("user"):
-                attrs["lti_user_id"] = user.token.payload["user"]["id"]
+
+                if user.token.payload["user"].get("id"):
+                    attrs["lti_user_id"] = user.token.payload["user"]["id"]
 
                 # If email is present in token, we make sure the one sent is the one expected
                 if user.token.payload["user"].get("email"):
@@ -401,6 +412,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                 # already registered for this video. It's only relevant if context_id is defined.
                 if (
                     user.token.payload.get("context_id")
+                    and attrs.get("lti_user_id")
                     and LiveRegistration.objects.filter(
                         consumer_site=attrs["consumer_site"],
                         deleted=None,
@@ -414,6 +426,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                             "registered for this video and consumer site."
                         }
                     )
+
+                # If username is present in the token we catch it
+                if user.token.payload["user"].get("username"):
+                    attrs["username"] = user.token.payload["user"].get("username")
 
             # Controls this email hasn't already been used for this video and this consumer
             # site. Consumer site can be defined or not, in both case, it will raise the same

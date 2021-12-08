@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - docker image use python 3.10
 - Rename lambda-encode to lambda-convert
+- Add fields `is_registered`,`live_attendance`,`username` for liveRegistration
 
 ## [3.27.0] - 2021-12-07
 

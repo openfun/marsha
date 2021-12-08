@@ -631,6 +631,10 @@ class LiveRegistrationViewSet(
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
+            if self.request.query_params.get("is_registered"):
+                filters["is_registered"] = self.request.query_params.get(
+                    "is_registered"
+                )
             # admin and instructors can access all registrations from the same consumer site
             if user.token.payload.get("roles") and any(
                 role in ["administrator", "instructor"]

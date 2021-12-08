@@ -46,6 +46,7 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
         )
 
@@ -72,6 +73,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -96,6 +98,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
         )
         # token has no context_id and good email
@@ -118,9 +121,11 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": liveregistration.email,
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "consumer_site": None,
                 "lti_user_id": None,
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -134,6 +139,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -157,9 +163,11 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": liveregistration.email,
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "consumer_site": str(video.playlist.consumer_site_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -170,6 +178,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration has no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
         )
         # token has no context_id and different email
@@ -193,6 +202,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration has consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
             consumer_site=video.playlist.consumer_site,
         )
@@ -225,6 +235,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration has no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
         )
         # token has context_id so different consumer_site
@@ -260,6 +271,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             video=video,
         )
         # token has context_id but different one
@@ -286,6 +298,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration with a consumer_site
         liveregistration = LiveRegistrationFactory(
             video=video,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
         )
@@ -319,8 +332,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -350,9 +364,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         # token with right context_id and lti_user_id
@@ -375,9 +390,11 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": liveregistration.email,
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "consumer_site": str(video.playlist.consumer_site_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -394,9 +411,10 @@ class LiveRegistrationApiTest(TestCase):
         """
         video = VideoFactory()
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf0723DIFF",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf0723DIFF",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -427,8 +445,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         other_playlist = PlaylistFactory()
         # token with different context_id and no email
@@ -459,9 +478,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         other_playlist = PlaylistFactory()
 
@@ -486,9 +506,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            is_registered=True,
+            video=video,
         )
         # token with no context_id and good email
         jwt_token = AccessToken()
@@ -510,9 +531,11 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": liveregistration.email,
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "consumer_site": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -522,10 +545,11 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -548,11 +572,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "id": str(liveregistration.id),
-                "email": liveregistration.email,
                 "consumer_site": str(video.playlist.consumer_site_id),
+                "email": liveregistration.email,
+                "id": str(liveregistration.id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -563,7 +589,9 @@ class LiveRegistrationApiTest(TestCase):
         """Student shouldn't be able to read a liveregistrations part of another consumer site."""
         video = VideoFactory()
         # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(video=video, email="student@aol.com")
+        liveregistration = LiveRegistrationFactory(
+            is_registered=True, email="student@aol.com", video=video
+        )
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -591,7 +619,10 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video, email="student@aol.com", consumer_site=other_consumer_site
+            consumer_site=other_consumer_site,
+            email="student@aol.com",
+            is_registered=True,
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -620,6 +651,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration has no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
+            is_registered=True,
             video=video,
         )
         # token has no context_id and different email
@@ -643,9 +675,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration has consumer_site
         liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
-            video=video,
             consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            is_registered=True,
+            video=video,
         )
         # token has right context_id but different email
         jwt_token = AccessToken()
@@ -675,10 +708,11 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -700,11 +734,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "id": str(liveregistration.id),
-                "email": "student@aol.com",
                 "consumer_site": str(video.playlist.consumer_site_id),
+                "email": "student@aol.com",
+                "id": str(liveregistration.id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -719,10 +755,11 @@ class LiveRegistrationApiTest(TestCase):
         """
         video = VideoFactory()
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf0723DIFF",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -753,9 +790,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -787,10 +825,11 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="student@aol.com",
             consumer_site=other_consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -815,9 +854,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="different@aol.com",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            video=video,
         )
 
         jwt_token = AccessToken()
@@ -840,9 +880,11 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": "different@aol.com",
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "consumer_site": str(video.playlist.consumer_site_id),
                 "lti_user_id": liveregistration.lti_user_id,
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -857,8 +899,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="different@aol.com",
+            is_registered=True,
+            video=video,
         )
 
         # token with no context_id leading to undefined consumer site
@@ -880,11 +923,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "id": str(liveregistration.id),
-                "email": "different@aol.com",
                 "consumer_site": None,
+                "email": "different@aol.com",
+                "id": str(liveregistration.id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -896,8 +941,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="different@aol.com",
+            is_registered=True,
+            video=video,
         )
         # token with context_id leading to another consumer site
         jwt_token = AccessToken()
@@ -924,9 +970,10 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="different@aol.com",
             consumer_site=other_consumer_site,
+            is_registered=True,
+            video=video,
         )
 
         # token with context_id leading to another consumer site
@@ -957,10 +1004,11 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="somemail@aol.com",
             consumer_site=video.playlist.consumer_site,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            is_registered=True,
+            video=video,
         )
         # token with right context_id
         jwt_token = AccessToken()
@@ -981,11 +1029,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "id": str(liveregistration.id),
-                "email": "somemail@aol.com",
                 "consumer_site": str(video.playlist.consumer_site_id),
+                "email": "somemail@aol.com",
+                "id": str(liveregistration.id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1001,8 +1051,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="somemail@aol.com",
+            is_registered=True,
+            video=video,
         )
         # token with no context_id leading to no consumer_site and no email defined
         jwt_token = AccessToken()
@@ -1024,11 +1075,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "somemail@aol.com",
                 "id": str(liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": False,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1044,9 +1097,10 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="administrator@aol.com",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         # token with context_id leading to another consumer site
         jwt_token = AccessToken()
@@ -1077,10 +1131,11 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with a consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             email="administrator@aol.com",
             consumer_site=other_consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         # token with email leading to another consumer site
@@ -1104,7 +1159,7 @@ class LiveRegistrationApiTest(TestCase):
         """Request with wrong video in token."""
         video = VideoFactory()
         # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(video=video)
+        liveregistration = LiveRegistrationFactory(is_registered=True, video=video)
 
         # token with no context_id leading to the same undefined consumer_site
         jwt_token = AccessToken()
@@ -1139,7 +1194,7 @@ class LiveRegistrationApiTest(TestCase):
         other_video = VideoFactory()
         video = VideoFactory()
         # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(video=video)
+        liveregistration = LiveRegistrationFactory(is_registered=True, video=video)
 
         # token with no context_id leading to the same undefined consumer_site
         jwt_token = AccessToken()
@@ -1176,8 +1231,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
+            is_registered=True,
             consumer_site=video.playlist.consumer_site,
+            video=video,
         )
         # token with context_id leading to the same consumer_site
         jwt_token = AccessToken()
@@ -1195,8 +1251,9 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
+            is_registered=True,
             consumer_site=video.playlist.consumer_site,
+            video=video,
         )
         # token with context_id leading to the same consumer_site
         jwt_token = AccessToken()
@@ -1246,11 +1303,57 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_create_username_doesnt_change(
+        self,
+    ):
+        """Field username is not taken into account in the post request"""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        # token with no context_id and no user informations
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {
+                "email": "salome@test-fun-mooc.fr",
+                "should_send_reminders": True,
+                "username": "Sabrina",
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 201)
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": None,
+                "email": "salome@test-fun-mooc.fr",
+                "id": str(created_liveregistration.id),
+                "is_registered": True,
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1281,11 +1384,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1320,11 +1425,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1359,11 +1466,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1399,11 +1508,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1437,11 +1548,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1476,11 +1589,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1516,11 +1631,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1551,11 +1668,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1587,11 +1706,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1624,11 +1745,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1662,11 +1785,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1702,11 +1827,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1743,11 +1870,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1783,11 +1912,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
+                "is_registered": True,
                 "consumer_site": str(other_playlist.consumer_site_id),
+                "email": "salome@test-fun-mooc.fr",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1817,11 +1948,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1852,11 +1985,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
                 "consumer_site": str(video.playlist.consumer_site_id),
+                "email": "salome@test-fun-mooc.fr",
+                "is_registered": True,
+                "id": str(created_liveregistration.id),
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1890,11 +2025,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -1928,11 +2065,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -1967,11 +2106,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2007,11 +2148,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2025,6 +2168,7 @@ class LiveRegistrationApiTest(TestCase):
         # no consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
+            is_registered=True,
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2053,11 +2197,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -2072,6 +2218,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2099,11 +2246,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -2118,6 +2267,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2148,11 +2298,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -2168,6 +2320,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2198,11 +2351,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2218,6 +2373,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2250,11 +2406,13 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2474,7 +2632,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {"email": ["This field is required."]},
+            {"email": ["Email is mandatory"]},
         )
 
     def test_api_liveregistration_create_cant_register_same_email_same_consumer(
@@ -2487,6 +2645,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         self.assertTrue(video.is_scheduled)
@@ -2523,7 +2682,9 @@ class LiveRegistrationApiTest(TestCase):
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with no consumer_site
-        LiveRegistrationFactory(email="salome@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="salome@test-fun-mooc.fr", is_registered=True, video=video
+        )
         self.assertTrue(video.is_scheduled)
         # token with no context_id leading to an undefined consumer_site
         jwt_token = AccessToken()
@@ -2559,10 +2720,11 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=other_consumer_site,
+            email="salome@test-fun-mooc.fr",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
@@ -2585,19 +2747,22 @@ class LiveRegistrationApiTest(TestCase):
         # registration of same video/email/lti_user_id is possible if
         # consumer_site is different
         liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            email="salome@test-fun-mooc.fr",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2614,10 +2779,11 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=other_consumer_site,
+            email="salome@test-fun-mooc.fr",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
@@ -2640,19 +2806,22 @@ class LiveRegistrationApiTest(TestCase):
         # registration of same video/email/lti_user_id is possible if
         # consumer_site is different
         liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            email="salome@test-fun-mooc.fr",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2670,8 +2839,9 @@ class LiveRegistrationApiTest(TestCase):
         # no consumer_site is defined
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
-            video=video,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertTrue(video.is_scheduled)
         self.assertEqual(LiveRegistration.objects.count(), 1)
@@ -2693,16 +2863,18 @@ class LiveRegistrationApiTest(TestCase):
         # lti_user_id has no constraint without consumer_site
         self.assertEqual(LiveRegistration.objects.count(), 2)
         liveregistration = LiveRegistration.objects.get(
-            email="balou@test-fun-mooc.fr", video=video
+            email="balou@test-fun-mooc.fr", is_registered=True, video=video
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "balou@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -2719,10 +2891,11 @@ class LiveRegistrationApiTest(TestCase):
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            email="salome@test-fun-mooc.fr",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
@@ -2767,7 +2940,9 @@ class LiveRegistrationApiTest(TestCase):
             starting_at=timezone.now() + timedelta(hours=1),
         )
         # registration with no consumer_site
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
         # token with no context_id leading to no consumer_site
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video2.id)
@@ -2782,16 +2957,18 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(LiveRegistration.objects.count(), 2)
         liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video2
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video2.id),
             },
         )
@@ -2814,6 +2991,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         # token with right context_id and targeting video2
@@ -2831,16 +3009,18 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(LiveRegistration.objects.count(), 2)
         liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video2
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": None,
                 "should_send_reminders": True,
+                "username": None,
                 "video": str(video2.id),
             },
         )
@@ -2862,6 +3042,7 @@ class LiveRegistrationApiTest(TestCase):
         # registration with no consumer_site
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -2883,16 +3064,18 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(LiveRegistration.objects.count(), 2)
         liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video2
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": None,
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video2.id),
             },
         )
@@ -2915,6 +3098,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -2937,16 +3121,18 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(LiveRegistration.objects.count(), 2)
         liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video2
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site_id),
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video2.id),
             },
         )
@@ -2958,7 +3144,9 @@ class LiveRegistrationApiTest(TestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
         response = self.client.put(
             "/api/liveregistrations/",
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
@@ -2977,7 +3165,9 @@ class LiveRegistrationApiTest(TestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
 
         response = self.client.patch(
             "/api/liveregistrations/",
@@ -2997,7 +3187,9 @@ class LiveRegistrationApiTest(TestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
 
@@ -3019,7 +3211,9 @@ class LiveRegistrationApiTest(TestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
 
@@ -3063,6 +3257,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             video=video,
         )
         # token with no user informations
@@ -3108,19 +3303,32 @@ class LiveRegistrationApiTest(TestCase):
         )
         # consumer_site is not defined
         liveregistration = LiveRegistrationFactory(
-            email=user.email, lti_user_id=user.id, video=video
-        )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
-        LiveRegistrationFactory(email="super@test-fun-mooc.fr", video=video)
-        # liveregistration for another consumer_site
-        LiveRegistrationFactory(
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
             video=video,
+        )
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
+        LiveRegistrationFactory(
+            email="super@test-fun-mooc.fr", is_registered=True, video=video
+        )
+        # liveregistration for another consumer_site
+        LiveRegistrationFactory(
             consumer_site=ConsumerSiteFactory(),
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video,
         )
         # liveregistration for another video and an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        LiveRegistrationFactory(
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video2,
+        )
 
         # no context_id in the token leading to an undefined consumer_site
         jwt_token = AccessToken()
@@ -3146,8 +3354,62 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": None,
                     "email": user.email,
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": str(user.id),
                     "should_send_reminders": False,
+                    "username": None,
+                    "video": str(video.id),
+                }
+            ],
+        )
+
+    def test_list_liveregistration_role_none_email_only_consumer_none(
+        self,
+    ):
+        """
+        User with token can only fetch liveregistrations filtered by their token.
+
+        If token has only email and no context_id, liveregistrations with the same email can
+        be fetched only for an undefined consumer site and for the same video.
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        # consumer_site is not defined
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=None,
+            email="sabrina@fun-test.fr",
+            is_registered=True,
+            video=video,
+        )
+        # no context_id in the token leading to an undefined consumer_site
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        # email in the token
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+        }
+
+        response = self.client.get(
+            "/api/liveregistrations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": None,
+                    "email": "sabrina@fun-test.fr",
+                    "id": str(liveregistration.id),
+                    "is_registered": True,
+                    "lti_user_id": None,
+                    "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
@@ -3177,24 +3439,33 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
+            username=user.username,
             video=video,
         )
         # liveregistration for the same consumer_site, same video but other email
         LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             video=video,
         )
         # liveregistration for the same video, same email and for another consumer_site
         LiveRegistrationFactory(
+            consumer_site=ConsumerSiteFactory(),
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
             video=video,
-            consumer_site=ConsumerSiteFactory(),
         )
         # liveregistration with the same email for another video and for an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        LiveRegistrationFactory(
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video2,
+        )
 
         # context_id in the token
         jwt_token = AccessToken()
@@ -3220,8 +3491,10 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": user.email,
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": str(user.id),
                     "should_send_reminders": False,
+                    "username": user.username,
                     "video": str(video.id),
                 }
             ],
@@ -3251,6 +3524,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3258,6 +3532,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=None,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3310,6 +3585,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3317,6 +3593,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3324,6 +3601,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3331,12 +3609,14 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
         # liveregistration for the same video and lti_user_id but no consumer_site
         LiveRegistrationFactory(
             email="chantal4@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3363,8 +3643,10 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
@@ -3392,19 +3674,32 @@ class LiveRegistrationApiTest(TestCase):
         )
         # consumer_site is not defined
         liveregistration = LiveRegistrationFactory(
-            email=user.email, lti_user_id=user.id, video=video
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video,
         )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
-        LiveRegistrationFactory(email="super@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", is_registered=True, video=video
+        )
+        LiveRegistrationFactory(
+            email="super@test-fun-mooc.fr", is_registered=True, video=video
+        )
         # liveregistration for another consumer_site
         LiveRegistrationFactory(
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
             video=video,
             consumer_site=ConsumerSiteFactory(),
         )
         # liveregistration for another video and an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        LiveRegistrationFactory(
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video2,
+        )
 
         # no context_id in the token leading to an undefined consumer_site
         jwt_token = AccessToken()
@@ -3431,8 +3726,10 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": None,
                     "email": user.email,
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": str(user.id),
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
@@ -3462,6 +3759,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
             video=video,
         )
@@ -3469,18 +3767,25 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             video=video,
         )
 
         # liveregistration for the same video, same email and for another consumer_site
         LiveRegistrationFactory(
+            consumer_site=ConsumerSiteFactory(),
             email=user.email,
+            is_registered=True,
             lti_user_id=user.id,
             video=video,
-            consumer_site=ConsumerSiteFactory(),
         )
         # liveregistration with the same email for another video and for an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        LiveRegistrationFactory(
+            email=user.email,
+            is_registered=True,
+            lti_user_id=user.id,
+            video=video2,
+        )
 
         # context_id in the token
         jwt_token = AccessToken()
@@ -3507,8 +3812,10 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": user.email,
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": str(user.id),
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
@@ -3534,6 +3841,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3552,7 +3860,6 @@ class LiveRegistrationApiTest(TestCase):
             "/api/liveregistrations/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 1)
         self.assertEqual(
@@ -3562,8 +3869,10 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
@@ -3611,6 +3920,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3618,6 +3928,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=None,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3625,6 +3936,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=None,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
@@ -3671,6 +3983,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3678,6 +3991,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3685,6 +3999,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3692,12 +4007,14 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
         # liveregistration for the same video and lti_user_id but no consumer_site
         LiveRegistrationFactory(
             email="chantal4@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3725,12 +4042,55 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 }
             ],
         )
+
+    def test_list_liveregistration_role_student_wrong_is_registered_field(
+        self,
+    ):
+        """
+        Student can fetch list requests but will fetch only their registrations.
+
+        A registration without the flag is_registered set to True is not returned by
+        liveregistrations API endpoint if it's filtered with flag is_registered.
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        # liveregistration for the right video, lti_user_id and consumer_site
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            is_registered=False,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+
+        # token has context_id and no email
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["user"] = {
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Chachou",
+            "email": "chantal@test-fun-mooc.fr",
+        }
+        response = self.client.get(
+            "/api/liveregistrations/?is_registered=True",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 0)
 
     def test_list_liveregistration_role_admin_instruc_email_with_consumer_with(
         self,
@@ -3755,6 +4115,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3763,20 +4124,130 @@ class LiveRegistrationApiTest(TestCase):
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            is_registered=True,
             video=video,
         )
         # liveregistration for the same consumer_site but different video
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
         # liveregistration for the same video and consumer_site but different lti_user_id
         liveregistration2 = LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
+            is_registered=True,
             consumer_site=video.playlist.consumer_site,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # liveregistration for this video but not without is_registered set to False
+        LiveRegistrationFactory(
+            email="chantal4@test-fun-mooc.fr",
+            is_registered=False,
+            consumer_site=video.playlist.consumer_site,
+            lti_user_id="NEWDIFFFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # token has context_id and email
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
+        jwt_token.payload["user"] = {
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Chachou",
+            "email": "chantal@test-fun-mooc.fr",
+        }
+        response = self.client.get(
+            "/api/liveregistrations/?is_registered=True",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "email": "chantal3@test-fun-mooc.fr",
+                    "id": str(liveregistration2.id),
+                    "is_registered": True,
+                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
+                    "should_send_reminders": False,
+                    "username": None,
+                    "video": str(video.id),
+                },
+                {
+                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "email": "chantal@test-fun-mooc.fr",
+                    "id": str(liveregistration.id),
+                    "is_registered": True,
+                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                    "should_send_reminders": False,
+                    "username": None,
+                    "video": str(video.id),
+                },
+            ],
+        )
+
+    def test_list_liveregistration_role_admin_instruc_email_with_consumer_with_no_filtered(
+        self,
+    ):
+        """
+        Admin/instructor can access all registrations that are registered or not
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_consumer = ConsumerSiteFactory()
+        liveregistration = LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            is_registered=False,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # liveregistration for the same video and lti_user_id but different consumer_site
+        LiveRegistrationFactory(
+            email="chantal2@test-fun-mooc.fr",
+            consumer_site=other_consumer,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            is_registered=True,
+            video=video,
+        )
+        # liveregistration for the same consumer_site but different video
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=other_video,
+        )
+        # liveregistration for the same video and consumer_site but different lti_user_id
+        liveregistration2 = LiveRegistrationFactory(
+            email="chantal3@test-fun-mooc.fr",
+            is_registered=True,
+            consumer_site=video.playlist.consumer_site,
+            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # liveregistration for this video but not without is_registered set to False
+        liveregistration3 = LiveRegistrationFactory(
+            email="chantal4@test-fun-mooc.fr",
+            is_registered=False,
+            consumer_site=video.playlist.consumer_site,
+            lti_user_id="NEWDIFFFF3807599c377bf0e5bf072359fd",
             video=video,
         )
         # token has context_id and email
@@ -3795,7 +4266,7 @@ class LiveRegistrationApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(response.json()["count"], 3)
         self.assertEqual(
             response.json()["results"],
             [
@@ -3803,16 +4274,30 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal3@test-fun-mooc.fr",
                     "id": str(liveregistration2.id),
+                    "is_registered": True,
                     "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
+                    "video": str(video.id),
+                },
+                {
+                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "email": "chantal4@test-fun-mooc.fr",
+                    "id": str(liveregistration3.id),
+                    "is_registered": False,
+                    "lti_user_id": "NEWDIFFFF3807599c377bf0e5bf072359fd",
+                    "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
                 {
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": False,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
             ],
@@ -3842,6 +4327,7 @@ class LiveRegistrationApiTest(TestCase):
         # liveregistration with no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3849,12 +4335,14 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         # liveregistration for the same undefined consumer_site but different video
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
@@ -3862,7 +4350,16 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration2 = LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=None,
+            is_registered=True,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # liveregistration for the same video and consumer_site but is_registered false
+        LiveRegistrationFactory(
+            email="chantal4@test-fun-mooc.fr",
+            consumer_site=None,
+            is_registered=False,
+            lti_user_id="NEWFF3807599c377bf0e5bf072359fd",
             video=video,
         )
         # token has an email and no context_id
@@ -3875,7 +4372,7 @@ class LiveRegistrationApiTest(TestCase):
             "email": "chantal@test-fun-mooc.fr",
         }
         response = self.client.get(
-            "/api/liveregistrations/",
+            "/api/liveregistrations/?is_registered=True",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -3888,16 +4385,20 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": None,
                     "email": "chantal3@test-fun-mooc.fr",
                     "id": str(liveregistration2.id),
+                    "is_registered": True,
                     "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
                 {
                     "consumer_site": None,
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
             ],
@@ -3926,6 +4427,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3933,6 +4435,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3940,6 +4443,7 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
@@ -3947,7 +4451,16 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration2 = LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            is_registered=True,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # liveregistration for the same video and consumer_site but is_registered false
+        LiveRegistrationFactory(
+            email="chantal4@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            is_registered=False,
+            lti_user_id="NEWF3807599c377bf0e5bf072359fd",
             video=video,
         )
         # token has context_id and email
@@ -3961,7 +4474,7 @@ class LiveRegistrationApiTest(TestCase):
             "email": None,
         }
         response = self.client.get(
-            "/api/liveregistrations/",
+            "/api/liveregistrations/?is_registered=True",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -3974,16 +4487,20 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal3@test-fun-mooc.fr",
                     "id": str(liveregistration2.id),
+                    "is_registered": True,
                     "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
                 {
                     "consumer_site": str(video.playlist.consumer_site_id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
             ],
@@ -4013,6 +4530,7 @@ class LiveRegistrationApiTest(TestCase):
         # liveregistration with no consumer_site
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -4020,12 +4538,14 @@ class LiveRegistrationApiTest(TestCase):
         LiveRegistrationFactory(
             email="chantal2@test-fun-mooc.fr",
             consumer_site=other_consumer,
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         # liveregistration for the same undefined consumer_site but different video
         LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            is_registered=True,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=other_video,
         )
@@ -4033,9 +4553,19 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration2 = LiveRegistrationFactory(
             email="chantal3@test-fun-mooc.fr",
             consumer_site=None,
+            is_registered=True,
             lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
             video=video,
         )
+        # liveregistration for this video but is_registered set to false
+        LiveRegistrationFactory(
+            email="chantal4@test-fun-mooc.fr",
+            consumer_site=None,
+            is_registered=False,
+            lti_user_id="NEWDIFF3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+
         # token has an email and no context_id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -4046,7 +4576,7 @@ class LiveRegistrationApiTest(TestCase):
             "email": "chantal@test-fun-mooc.fr",
         }
         response = self.client.get(
-            "/api/liveregistrations/",
+            "/api/liveregistrations/?is_registered=True",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -4059,16 +4589,20 @@ class LiveRegistrationApiTest(TestCase):
                     "consumer_site": None,
                     "email": "chantal3@test-fun-mooc.fr",
                     "id": str(liveregistration2.id),
+                    "is_registered": True,
                     "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
                 {
                     "consumer_site": None,
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
+                    "is_registered": True,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "should_send_reminders": False,
+                    "username": None,
                     "video": str(video.id),
                 },
             ],
@@ -4105,9 +4639,82 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": "saved@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
+                "is_registered": True,
                 "consumer_site": str(video.playlist.consumer_site_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
+                "username": "Token",
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_create_context_empty_with_email_token(self):
+        """Users with an empty context and only email in token can register."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        # token with context_id
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["user"] = {
+            "email": "charlotte@test-fun-mooc.fr",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "charlotte@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": None,
+                "email": "charlotte@test-fun-mooc.fr",
+                "id": str(created_liveregistration.id),
+                "is_registered": True,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_create_context_empty_no_email_token(self):
+        """Users with an empty context and empty token can register."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        # token with context_id
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "charlotte@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": None,
+                "email": "charlotte@test-fun-mooc.fr",
+                "id": str(created_liveregistration.id),
+                "is_registered": True,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
