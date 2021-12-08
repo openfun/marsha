@@ -5,6 +5,7 @@ import { Chat } from 'components/Chat';
 import { liveState } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
 import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 
 const mockVideo = videoMockFactory({
   id: '5cffe85a-1829-4000-a6ca-a45d4647dc0d',
@@ -39,13 +40,11 @@ describe('<Chat />', () => {
 
   it('renders the Chat component', () => {
     expect(mockConverseMounter).toHaveBeenCalled();
-    render(<Chat video={mockVideo} />);
+    render(wrapInIntlProvider(<Chat video={mockVideo} />));
 
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
-    // is was called with the container name and the xmpp object
     // is was called with the xmpp object
     expect(mockConverseMounter.mock.results[0].value).toHaveBeenCalledWith(
-      '#converse-container',
       mockVideo.xmpp,
     );
   });

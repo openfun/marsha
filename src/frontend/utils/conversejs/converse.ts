@@ -1,7 +1,4 @@
-import 'converse.js/dist/converse.min.css';
 import 'converse.js/dist/converse.min.js';
-import 'converse.js/dist/emojis.js';
-import 'converse.js/dist/icons.js';
 
 import { getDecodedJwt } from 'data/appData';
 import { XMPP } from 'types/XMPP';
@@ -13,9 +10,10 @@ import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscuss
 export const converseMounter = () => {
   let hasBeenInitialized = false;
 
-  return (containerName: string, xmpp: XMPP) => {
+  return (xmpp: XMPP) => {
     if (hasBeenInitialized) {
-      converse.insertInto(document.querySelector(containerName)!);
+      // tslint:disable-next-line: no-console
+      console.log('Chat has already been initialized.');
     } else {
       chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
@@ -43,7 +41,7 @@ export const converseMounter = () => {
         muc_instant_rooms: false,
         muc_show_join_leave: false,
         nickname: getDecodedJwt().user?.username,
-        root: document.querySelector(containerName),
+        root: null,
         show_client_info: false,
         singleton: true,
         theme: 'concord',

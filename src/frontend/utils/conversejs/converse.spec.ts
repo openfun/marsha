@@ -50,11 +50,10 @@ describe('converseMounter', () => {
 
     // The converse mounter is initialized and converse has not been initialized nor inserted.
     expect(mockWindow.converse.initialize).not.toHaveBeenCalled();
-    expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
     expect(mockWindow.converse.plugins.add).not.toHaveBeenCalled();
 
     // first call, converse is initialized
-    converseManager('#converse-container', xmpp);
+    converseManager(xmpp);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.initialize).toHaveBeenCalledWith({
@@ -79,7 +78,7 @@ describe('converseMounter', () => {
       muc_instant_rooms: false,
       muc_show_join_leave: false,
       nickname: 'jane_doe',
-      root: expect.any(HTMLDivElement),
+      root: null,
       show_client_info: false,
       singleton: true,
       theme: 'concord',
@@ -119,13 +118,5 @@ describe('converseMounter', () => {
         initialize: expect.any(Function),
       },
     );
-    expect(mockWindow.converse.insertInto).not.toHaveBeenCalled();
-
-    // second call, converse is already initialized, we mount it in the dom.
-    converseManager('#converse-container', xmpp);
-
-    expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
-    expect(mockWindow.converse.insertInto).toHaveBeenCalledTimes(1);
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(3);
   });
 });
