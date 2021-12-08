@@ -7,6 +7,7 @@ import { getDecodedJwt } from 'data/appData';
 import { XMPP } from 'types/XMPP';
 import { converse } from 'utils/window';
 
+import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
 
@@ -17,6 +18,7 @@ export const converseMounter = () => {
     if (hasBeenInitialized) {
       converse.insertInto(document.querySelector(containerName)!);
     } else {
+      chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
       marshaJoinDiscussionPlugin.addPlugin(xmpp);
 
@@ -55,6 +57,7 @@ export const converseMounter = () => {
         },
         websocket_url: xmpp.websocket_url,
         whitelisted_plugins: [
+          chatPlugin.name,
           logoutPlugin.name,
           marshaJoinDiscussionPlugin.name,
         ],

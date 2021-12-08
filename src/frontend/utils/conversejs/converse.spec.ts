@@ -2,6 +2,7 @@ import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
 
 import { converseMounter } from './converse';
+import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
 
@@ -91,11 +92,19 @@ describe('converseMounter', () => {
       },
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       whitelisted_plugins: [
+        chatPlugin.name,
         logoutPlugin.name,
         marshaJoinDiscussionPlugin.name,
       ],
     });
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(3);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      chatPlugin.name,
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
       logoutPlugin.name,
       {
@@ -117,6 +126,6 @@ describe('converseMounter', () => {
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.insertInto).toHaveBeenCalledTimes(1);
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(2);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(3);
   });
 });

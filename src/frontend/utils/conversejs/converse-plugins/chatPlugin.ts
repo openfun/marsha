@@ -1,5 +1,5 @@
 import { MessageType, XMPP } from 'types/XMPP';
-import { converse } from './../../window';
+import { converse } from 'utils/window';
 
 const PLUGIN_NAME = 'chat-plugin';
 
@@ -9,7 +9,7 @@ const addChatPlugin = (xmpp: XMPP) =>
     initialize() {
       const _converse = this._converse;
 
-      const sendMessageWithConverse = (message: string): void => {
+      const sendMessage = (message: string): void => {
         const msg = converse.env
           .$msg({
             from: _converse.connection.jid,
@@ -22,7 +22,7 @@ const addChatPlugin = (xmpp: XMPP) =>
       };
 
       Object.assign(converse, {
-        sendMessageWithConverse,
+        sendMessage,
       });
     },
   });
