@@ -308,7 +308,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#converse-container')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
   it('displays the video player and the waiting message when the live is stopping', async () => {
@@ -349,7 +349,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#converse-container')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 
@@ -391,7 +391,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(container.querySelector('#converse-container')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 
