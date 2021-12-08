@@ -1,9 +1,12 @@
-import { SendButtonSVG } from 'components/SVGIcons/SendButtonSVG';
-import { Box, Button, TextInput } from 'grommet';
+import { Box, Button, Text, TextInput } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
-import { converse } from '../../../../utils/window';
+
+import { SendButtonSVG } from 'components/SVGIcons/SendButtonSVG';
+import { converse } from 'utils/window';
+import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   inputBarPlaceholder: {
@@ -18,14 +21,9 @@ const SendButtonStyled = styled(Button)`
   width: 40px;
   height: 40px;
   border: 1px solid;
-  border-color: #035ccd;
+  border-color: ${normalizeColor('blue-chat', theme)};
   border-radius: 6px;
   margin: 5px;
-`;
-
-const TextInputStyled = styled(TextInput)`
-  font-weight: normal;
-  color: #035ccd;
 `;
 
 export const ChatInputBar = () => {
@@ -34,7 +32,7 @@ export const ChatInputBar = () => {
 
   const handleSendMessage = async () => {
     if (chatMessage.length !== 0) {
-      await converse.sendMessageWithConverse(chatMessage);
+      await converse.sendMessage(chatMessage);
       setChatMessage('');
     }
   };
@@ -47,24 +45,28 @@ export const ChatInputBar = () => {
 
   return (
     <Box
-      direction={'row'}
-      align={'center'}
+      direction="row"
+      align="center"
       border={{
-        size: '1px',
-        color: '#035ccd',
+        size: 'xsmall',
+        color: 'blue-chat',
       }}
-      round={'6px'}
-      margin={'10px'}
-      height={'50px'}
+      round="xsmall"
+      margin="10px"
+      height="50px"
     >
-      <TextInputStyled
-        placeholder={intl.formatMessage(messages.inputBarPlaceholder)}
+      <TextInput
+        placeholder={
+          <Text color="blue-chat" size="16px">
+            {intl.formatMessage(messages.inputBarPlaceholder)}
+          </Text>
+        }
         value={chatMessage}
         onChange={(event) => setChatMessage(event.target.value)}
         plain={true}
         focusIndicator={false}
         onKeyPress={(keyPressEvent) => handleKeypress(keyPressEvent)}
-        size={'16px'}
+        size="16px"
       />
       <SendButtonStyled
         onClick={() => handleSendMessage()}
@@ -76,7 +78,7 @@ export const ChatInputBar = () => {
             }}
           >
             <SendButtonSVG
-              iconColor={'#035ccd'}
+              iconColor={'blue-chat'}
               containerStyle={{
                 width: '25px',
                 height: '22px',
