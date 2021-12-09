@@ -1,7 +1,4 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
-from mimetypes import guess_extension
-from os.path import splitext
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
@@ -926,23 +923,26 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
-        serializer = serializers.InitiateUploadSerializer(data=request.data)
+        serializer = serializers.SharedLiveMediaInitiateUploadSerializer(
+            data=request.data
+        )
 
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
-
-        extension = splitext(serializer.validated_data["filename"])[
-            1
-        ] or guess_extension(serializer.validated_data["mimetype"])
 
         now = timezone.now()
         stamp = to_timestamp(now)
 
         shared_live_media = self.get_object()
-        key = shared_live_media.get_source_s3_key(stamp=stamp, extension=extension)
+        key = shared_live_media.get_source_s3_key(
+            stamp=stamp, extension=serializer.validated_data["extension"]
+        )
 
         presigned_post = create_presigned_post(
-            [["content-length-range", 0, settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE]],
+            [
+                ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+                ["content-length-range", 0, settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE],
+            ],
             {},
             key,
         )

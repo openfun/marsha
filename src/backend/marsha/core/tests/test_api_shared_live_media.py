@@ -2136,17 +2136,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMzE0NTcyOD"
-                        "AwXSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM"
-                        "0LTc0NDctNDE0MS05NmZmLTU3NDAzMTVkN2I5OS9zaGFyZWRsaXZlbWVkaWEvYzVjYWQwNTMt"
-                        "MTExYS00ZTBlLThmNzgtZmU0M2RlYzExNTEyLzE2Mzg0MDMyMDAucGRmIn0sIHsieC1hbXotY"
-                        "Wxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogIm"
-                        "F3cy1hY2Nlc3Mta2V5LWlkLzIwMjExMjAyL2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSw"
-                        "geyJ4LWFtei1kYXRlIjogIjIwMjExMjAyVDAwMDAwMFoifV19"
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
+                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
+                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
+                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
+                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
                     ),
                     "x-amz-signature": (
-                        "bef8754f24944ffc960b1b4d2b32cecbf9211e73fd3130a7862dc80f5cb5a071"
+                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
                     ),
                 },
             },
@@ -2196,17 +2197,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMzE0NTcyOD"
-                        "AwXSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM"
-                        "0LTc0NDctNDE0MS05NmZmLTU3NDAzMTVkN2I5OS9zaGFyZWRsaXZlbWVkaWEvYzVjYWQwNTMt"
-                        "MTExYS00ZTBlLThmNzgtZmU0M2RlYzExNTEyLzE2Mzg0MDMyMDAucGRmIn0sIHsieC1hbXotY"
-                        "Wxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogIm"
-                        "F3cy1hY2Nlc3Mta2V5LWlkLzIwMjExMjAyL2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSw"
-                        "geyJ4LWFtei1kYXRlIjogIjIwMjExMjAyVDAwMDAwMFoifV19"
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
+                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
+                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
+                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
+                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
                     ),
                     "x-amz-signature": (
-                        "bef8754f24944ffc960b1b4d2b32cecbf9211e73fd3130a7862dc80f5cb5a071"
+                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
                     ),
                 },
             },
@@ -2216,7 +2218,7 @@ class SharedLiveMediaAPITest(TestCase):
         self.assertEqual(shared_live_media.upload_state, "pending")
 
     def test_api_shared_live_media_initiate_upload_file_without_mimetype(self):
-        """With no mimetype the extension should be ignored."""
+        """With no mimetype the request should fails."""
         shared_live_media = SharedLiveMediaFactory(
             id="c5cad053-111a-4e0e-8f78-fe43dec11512",
             upload_state=random.choice(["ready", "error"]),
@@ -2240,40 +2242,44 @@ class SharedLiveMediaAPITest(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
         self.assertEqual(
             content,
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20211202T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMzE0NTcyOD"
-                        "AwXSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM"
-                        "0LTc0NDctNDE0MS05NmZmLTU3NDAzMTVkN2I5OS9zaGFyZWRsaXZlbWVkaWEvYzVjYWQwNTMt"
-                        "MTExYS00ZTBlLThmNzgtZmU0M2RlYzExNTEyLzE2Mzg0MDMyMDAifSwgeyJ4LWFtei1hbGdvc"
-                        "ml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLW"
-                        "FjY2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ing"
-                        "tYW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
-                    ),
-                    "x-amz-signature": (
-                        "3d6d72f4d8ff2d1c874f6bb0e7298900bc2cc231cab36b53af36e14506cc161c"
-                    ),
-                },
-            },
+            {"mimetype": ["mimetype not guessable"]},
         )
 
-        shared_live_media.refresh_from_db()
-        self.assertEqual(shared_live_media.upload_state, "pending")
+    def test_api_shared_live_media_initiate_upload_file_wrong_mimetype(self):
+        """With a wrong mimetype the request should fails."""
+        shared_live_media = SharedLiveMediaFactory(
+            id="c5cad053-111a-4e0e-8f78-fe43dec11512",
+            upload_state=random.choice(["ready", "error"]),
+            video__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                {"filename": "python extensions", "mimetype": "application/wrong-type"},
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"mimetype": ["application/wrong-type is not a supported mimetype"]},
+        )
 
     def test_api_shared_live_media_initiate_upload_staff_or_user(self):
         """
@@ -2396,17 +2402,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMzE0NTcyOD"
-                        "AwXSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM"
-                        "0LTc0NDctNDE0MS05NmZmLTU3NDAzMTVkN2I5OS9zaGFyZWRsaXZlbWVkaWEvYzVjYWQwNTMt"
-                        "MTExYS00ZTBlLThmNzgtZmU0M2RlYzExNTEyLzE2Mzg0MDMyMDAucGRmIn0sIHsieC1hbXotY"
-                        "Wxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogIm"
-                        "F3cy1hY2Nlc3Mta2V5LWlkLzIwMjExMjAyL2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSw"
-                        "geyJ4LWFtei1kYXRlIjogIjIwMjExMjAyVDAwMDAwMFoifV19"
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
+                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
+                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
+                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
+                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
                     ),
                     "x-amz-signature": (
-                        "bef8754f24944ffc960b1b4d2b32cecbf9211e73fd3130a7862dc80f5cb5a071"
+                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
                     ),
                 },
             },
@@ -2505,17 +2512,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMzE0NTcyOD"
-                        "AwXSwgeyJidWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM"
-                        "0LTc0NDctNDE0MS05NmZmLTU3NDAzMTVkN2I5OS9zaGFyZWRsaXZlbWVkaWEvYzVjYWQwNTMt"
-                        "MTExYS00ZTBlLThmNzgtZmU0M2RlYzExNTEyLzE2Mzg0MDMyMDAucGRmIn0sIHsieC1hbXotY"
-                        "Wxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogIm"
-                        "F3cy1hY2Nlc3Mta2V5LWlkLzIwMjExMjAyL2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSw"
-                        "geyJ4LWFtei1kYXRlIjogIjIwMjExMjAyVDAwMDAwMFoifV19"
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
+                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
+                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
+                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
+                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
                     ),
                     "x-amz-signature": (
-                        "bef8754f24944ffc960b1b4d2b32cecbf9211e73fd3130a7862dc80f5cb5a071"
+                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
                     ),
                 },
             },
