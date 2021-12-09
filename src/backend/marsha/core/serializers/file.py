@@ -1,5 +1,7 @@
 """Structure of Document related models API responses with Django Rest Framework serializers."""
 from datetime import timedelta
+import mimetypes
+from os.path import splitext
 from urllib.parse import quote_plus
 
 from django.conf import settings
@@ -173,3 +175,32 @@ class InitiateUploadSerializer(serializers.Serializer):
 
     filename = serializers.CharField()
     mimetype = serializers.CharField(allow_blank=True)
+
+
+class SharedLiveMediaInitiateUploadSerializer(InitiateUploadSerializer):
+    """An initiate-upload serializer dedicated to shared live media."""
+
+    def validate(self, attrs):
+        """Validate if the mimetype is allowed or not."""
+        # mimetype is provided, we directly check it
+        if attrs["mimetype"] != "":
+            if attrs["mimetype"] not in settings.ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES:
+                raise serializers.ValidationError(
+                    {"mimetype": f"{attrs['mimetype']} is not a supported mimetype"}
+                )
+            attrs["extension"] = mimetypes.guess_extension(attrs["mimetype"])
+
+        # mimetype is not provided, we have to guess it from the extension
+        else:
+            mimetypes.init()
+            extension = splitext(attrs["filename"])[1]
+            mimetype = mimetypes.types_map.get(extension)
+            if mimetype not in settings.ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES:
+                raise serializers.ValidationError(
+                    {"mimetype": "mimetype not guessable"}
+                )
+            # extension is added to the data in order to be used later
+            attrs["extension"] = extension
+            attrs["mimetype"] = mimetype
+
+        return attrs
