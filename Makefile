@@ -67,7 +67,7 @@ build: ## build the app container
 .PHONY: build
 
 build-lambda-dev: ## build all aws lambda
-	@$(COMPOSE) build lambda_base
+	@bin/lambda build dev development
 .PHONY: build-lambda-dev
 
 down: ## Stop and remove containers, networks, images, and volumes

@@ -7,6 +7,9 @@ RUN wget https://mediaarea.net/download/binary/mediainfo/20.09/MediaInfo_CLI_${M
     unzip MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip -d /tmp/mediainfo
 
 FROM amazon/aws-lambda-nodejs:14 as core
+ARG POPPLER_VERSION
+ARG POPPLER_DATA_VERSION
+ARG OPENJPEG_VERSION
 
 # COPY mediainfo in core stage
 COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
@@ -27,6 +30,71 @@ RUN npm install -g yarn
 
 # configure volume for lambda mediapackge
 VOLUME /mnt/transcoded_video
+
+WORKDIR /root
+
+## Install packages needed to compile poppler
+RUN yum install -y \
+   cairo-devel \
+   cmake \
+   cmake3 \
+   fontconfig-devel \
+   gcc \
+   gcc-c++ \
+   gzip \
+   libjpeg-devel \
+   libpng-devel \
+   libtiff-devel \
+   make \
+   tar \
+   xz \
+   zip
+
+## download poppler, poppler-data and openjpeg
+RUN curl -k -o poppler.tar.xz https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz && \
+    tar -xf poppler.tar.xz && \
+    curl -k -o poppler-data.tar.gz https://poppler.freedesktop.org/poppler-data-${POPPLER_DATA_VERSION}.tar.gz && \
+    tar -xf poppler-data.tar.gz && \
+    curl -k -o openjpeg.tar.gz https://codeload.github.com/uclouvain/openjpeg/tar.gz/refs/tags/v${OPENJPEG_VERSION} && \
+    tar -xf openjpeg.tar.gz
+
+## install poppler-data
+RUN cd poppler-data-${POPPLER_DATA_VERSION} && make install
+
+## build and install openjpeg
+RUN mkdir openjpeg-${OPENJPEG_VERSION}/build && \
+    cd openjpeg-${OPENJPEG_VERSION}/build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make && \
+    make install
+
+## build and install poppler
+RUN mkdir poppler-${POPPLER_VERSION}/build && \
+    cd poppler-${POPPLER_VERSION}/build && \
+    cmake3 .. -DCMAKE_BUILD_TYPE=release -DBUILD_GTK_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_QT6_TESTS=OFF \
+    -DBUILD_CPP_TESTS=OFF -DBUILD_MANUAL_TESTS=OFF -DENABLE_BOOST=OFF -DENABLE_CPP=OFF -DENABLE_GLIB=OFF \
+    -DENABLE_GOBJECT_INTROSPECTION=OFF -DENABLE_GTK_DOC=OFF -DENABLE_QT5=OFF -DENABLE_QT6=OFF \
+    -DENABLE_LIBOPENJPEG=openjpeg2 -DENABLE_CMS=none  -DBUILD_SHARED_LIBS=OFF && \
+    make && \
+    make install
+
+## Uninstall packages needed to compile poppler
+RUN yum erase -y \
+   cairo-devel \
+   cmake \
+   cmake3 \
+   fontconfig-devel \
+   gcc \
+   gcc-c++ \
+   libjpeg-devel \
+   libpng-devel \
+   libtiff-devel \
+   make \
+   tar \
+   xz \
+   zip
+
+WORKDIR /var/task
 
 # Image used in developement with development dependencies
 FROM core as development
