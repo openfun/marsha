@@ -11,6 +11,7 @@
     "aws-sdk": "2.1033.0",
     "he": "1.2.0",
     "jimp": "0.16.1",
+    "node-poppler": "5.1.0",
     "update-state": "file:../utils/update-state"
   },
   "repository": {

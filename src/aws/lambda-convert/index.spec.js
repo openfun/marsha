@@ -19,6 +19,9 @@ jest.doMock("./src/resizeThumbnails", () => mockResizeThumbnails);
 const mockCopyDocument = jest.fn();
 jest.doMock("./src/copyDocument", () => mockCopyDocument);
 
+const mockConvertSharedLiveMedia = jest.fn();
+jest.doMock("./src/convertSharedLiveMedia", () => mockConvertSharedLiveMedia);
+
 const lambda = require("./index.js").handler;
 
 const callback = jest.fn();
@@ -37,8 +40,7 @@ describe("lambda", () => {
             s3: {
               bucket: { name: "some bucket" },
               object: {
-                key:
-                  "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/video/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/video/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
               },
             },
           },
@@ -61,8 +63,7 @@ describe("lambda", () => {
             s3: {
               bucket: { name: "some bucket" },
               object: {
-                key:
-                  "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
               },
             },
           },
@@ -86,8 +87,7 @@ describe("lambda", () => {
             s3: {
               bucket: { name: "some bucket" },
               object: {
-                key:
-                  "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/subtitletrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/subtitletrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
               },
             },
           },
@@ -132,8 +132,7 @@ describe("lambda", () => {
             s3: {
               bucket: { name: "source bucket" },
               object: {
-                key:
-                  "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
               },
             },
           },
@@ -157,8 +156,7 @@ describe("lambda", () => {
               name: "source bucket",
             },
             object: {
-              key:
-                "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st",
+              key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st",
             },
           },
         },
@@ -174,9 +172,7 @@ describe("lambda", () => {
         "source bucket",
         "1542967735_fr_st"
       );
-      expect(
-        mockUpdateState
-      ).toHaveBeenCalledWith(
+      expect(mockUpdateState).toHaveBeenCalledWith(
         "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st",
         "ready",
         { extension: "srt" }
@@ -209,8 +205,7 @@ describe("lambda", () => {
               name: "source bucket",
             },
             object: {
-              key:
-                "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/video/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr",
+              key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/video/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr",
             },
           },
         },
@@ -256,8 +251,7 @@ describe("lambda", () => {
               s3: {
                 bucket: { name: "source bucket" },
                 object: {
-                  key:
-                    "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/thumbnail/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
                 },
               },
             },
@@ -287,8 +281,7 @@ describe("lambda", () => {
               s3: {
                 bucket: { name: "source bucket" },
                 object: {
-                  key:
-                    "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
                 },
               },
             },
@@ -311,8 +304,7 @@ describe("lambda", () => {
               s3: {
                 bucket: { name: "source bucket" },
                 object: {
-                  key:
-                    "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
                 },
               },
             },
@@ -329,6 +321,64 @@ describe("lambda", () => {
       expect(mockUpdateState).toHaveBeenCalledWith(
         "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/document/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
         "ready"
+      );
+    });
+  });
+
+  describe("called with a sharedlivemedia object", () => {
+    it("reports an error when a sharedlivemedia has an unexpected format", () => {
+      lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: "source bucket" },
+                object: {
+                  key: "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512",
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback
+      );
+      expect(callback).toHaveBeenCalledWith(
+        "Source sharedlivemedia should be uploaded to a folder of the form " +
+          '"{video_id}/sharedlivemedia/{sharedlivemedia_id}/{stamp}.{extension}".'
+      );
+    });
+
+    it("delegates to convertSharedLiveMedia and call updateState", async () => {
+      mockConvertSharedLiveMedia.mockImplementation(() =>
+        Promise.resolve({ nbPages: 3, extension: "pdf" })
+      );
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: "source bucket" },
+                object: {
+                  key: "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback
+      );
+
+      expect(mockConvertSharedLiveMedia).toHaveBeenCalledWith(
+        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
+        "source bucket"
+      );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
+        "ready",
+        3,
+        "pdf"
       );
     });
   });
