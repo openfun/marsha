@@ -152,6 +152,9 @@ jobs:
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
+      - run:
+          name: Make lambda environment
+          command: make env.d/lambda
       - run: 
           name: Build production image
           command: ./bin/lambda build ${CIRCLE_SHA1}
@@ -583,7 +586,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -610,7 +613,7 @@ jobs:
 
   test-lambda-convert:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -625,6 +628,10 @@ jobs:
             - v3-lambdas-convert-dependencies-{{ checksum "yarn.lock" }}
             - v3-lambdas-convert-dependencies-
       - run:
+          name: Install poppler (needed for pdf conversion)
+          command: make env.d/lambda && bin/install_poppler_circle-ci.sh
+          working_directory: ~/marsha/
+      - run:
           name: Install convert lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
@@ -637,7 +644,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -664,7 +671,7 @@ jobs:
 
   test-lambda-medialive:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -690,7 +697,7 @@ jobs:
 
   test-lambda-mediapackage:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -716,7 +723,7 @@ jobs:
 
   test-lambda-elemental-routing:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -742,7 +749,7 @@ jobs:
 
   lint-lambda-configure:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -764,7 +771,7 @@ jobs:
 
   lint-lambda-convert:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -786,7 +793,7 @@ jobs:
 
   lint-lambda-complete:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -808,7 +815,7 @@ jobs:
 
   lint-lambda-medialive:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -830,7 +837,7 @@ jobs:
 
   lint-lambda-mediapackage:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -852,7 +859,7 @@ jobs:
 
   lint-lambda-elemental-routing:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.18.2
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS

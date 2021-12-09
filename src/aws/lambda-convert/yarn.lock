@@ -2892,6 +2892,14 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
+node-poppler@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-5.1.0.tgz#3324671dc7733a7835f49d8ff4c41ba50a086440"
+  integrity sha512-vmOAbBg4ScC06qwAhnhA9KAeS4LIuZs0X6Ib+8x5B6zdnQKnPFoqcHGchizjvv5oPjmM0fXcem7RecmwZCFVhw==
+  dependencies:
+    camelcase "^6.2.0"
+    upath "^2.0.1"
+
 node-releases@^1.1.71:
   version "1.1.73"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.73.tgz#dd4e81ddd5277ff846b80b52bb40c49edf7a7b20"
@@ -3550,8 +3558,13 @@ universalify@^0.1.2:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
 
+upath@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/upath/-/upath-2.0.1.tgz#50c73dea68d6f6b990f51d279ce6081665d61a8b"
+  integrity sha512-1uEe95xksV1O0CYKXo8vQvN1JEbtJp7lb7C5U9HMsIp6IVwntkH/oNUzyVNQSd4S1sYk2FpSSW44FqMc8qee5w==
+
 "update-state@file:../utils/update-state":
-  version "3.26.0"
+  version "3.27.0"
   dependencies:
     request "2.88.2"
     request-promise-native "1.0.9"

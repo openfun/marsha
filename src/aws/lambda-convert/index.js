@@ -5,6 +5,7 @@ const updateState = require("update-state");
 const encodeTimedTextTrack = require("./src/encodeTimedTextTrack");
 const encodeVideo = require("./src/encodeVideo");
 const resizeThumbnails = require("./src/resizeThumbnails");
+const convertSharedLiveMedia = require("./src/convertSharedLiveMedia");
 const copyDocument = require("./src/copyDocument");
 
 const READY = "ready";
@@ -20,7 +21,13 @@ exports.handler = async (event, context, callback) => {
   const [resourceId, kind, recordId, extendedStamp] = parts;
   if (
     parts.length != 4 ||
-    !["document", "thumbnail", "timedtexttrack", "video"].includes(kind)
+    ![
+      "document",
+      "sharedlivemedia",
+      "thumbnail",
+      "timedtexttrack",
+      "video",
+    ].includes(kind)
   ) {
     let error;
     switch (kind) {
@@ -28,6 +35,11 @@ exports.handler = async (event, context, callback) => {
         error =
           "Source document should be uploaded to a folder of the form " +
           '"{document_id}/document/{document_id}/{stamp}".';
+        break;
+      case "sharedlivemedia":
+        error =
+          "Source sharedlivemedia should be uploaded to a folder of the form " +
+          '"{video_id}/sharedlivemedia/{sharedlivemedia_id}/{stamp}.{extension}".';
         break;
       case "thumbnail":
         error =
@@ -64,6 +76,21 @@ exports.handler = async (event, context, callback) => {
       }
       console.log(
         `Successfully received and copy document ${objectKey} from ${sourceBucket}.`
+      );
+      break;
+
+    case "sharedlivemedia":
+      try {
+        const { nbPages, extension } = await convertSharedLiveMedia(
+          objectKey,
+          sourceBucket
+        );
+        await updateState(objectKey, READY, nbPages, extension);
+      } catch (error) {
+        return callback(error);
+      }
+      console.log(
+        `Successfully received and converted sharedlivemedia ${objectKey} from ${sourceBucket}.`
       );
       break;
 
