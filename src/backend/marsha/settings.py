@@ -304,6 +304,9 @@ class Base(Configuration):
     # LIVE PAIRING
     LIVE_PAIRING_EXPIRATION_SECONDS = 60
 
+    # SHARED LIVE MEDIA SETTINGS
+    ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES = values.ListValue(["application/pdf"])
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
