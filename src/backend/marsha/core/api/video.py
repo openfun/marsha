@@ -842,17 +842,12 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         """Extra context provided to the serializer class."""
         context = super().get_serializer_context()
 
-        user = self.request.user
-        # If the user is a JWT token and has roles check if roles are admin or instructor
-        if (
-            isinstance(user, TokenUser)
-            and user.token.get("roles")
-            and (
-                bool(LTI_ROLES[ADMINISTRATOR] & set(user.token.get("roles")))
-                or bool(LTI_ROLES[INSTRUCTOR] & set(user.token.get("roles")))
-            )
-        ):
-            context.update({"is_admin": True})
+        admin_role_permission = permissions.IsTokenAdmin()
+        instructor_role_permission = permissions.IsTokenInstructor()
+
+        context["is_admin"] = admin_role_permission.has_permission(
+            request=self.request, view=None
+        ) or instructor_role_permission.has_permission(request=self.request, view=None)
 
         return context
 
