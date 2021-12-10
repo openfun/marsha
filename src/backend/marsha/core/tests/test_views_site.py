@@ -54,6 +54,7 @@ class SiteViewTestCase(TestCase):
             {"svg": {"icons": "/static/svg/icons.svg"}},
         )
         self.assertIsNone(context.get("context_id"))
+        self.assertIsNone(context.get("consumer_site"))
 
     @override_switch("site", active=False)
     def test_site_not_accessible(self):

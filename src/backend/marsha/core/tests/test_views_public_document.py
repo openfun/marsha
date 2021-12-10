@@ -77,6 +77,7 @@ class DocumentPublicViewTestCase(TestCase):
         )
         self.assertEqual(context.get("modelName"), "documents")
         self.assertIsNone(context.get("context_id"))
+        self.assertIsNone(context.get("consumer_site"))
 
     def test_document_not_publicly_accessible(self):
         """Validate it is impossible to access to a non public document."""

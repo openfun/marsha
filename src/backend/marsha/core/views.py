@@ -144,6 +144,7 @@ def build_jwt_token(
 
     if lti:
         jwt_token.payload["context_id"] = lti.context_id
+        jwt_token.payload["consumer_site"] = str(lti.get_consumer_site().id)
 
     if playlist_id:
         jwt_token.payload["playlist_id"] = playlist_id
