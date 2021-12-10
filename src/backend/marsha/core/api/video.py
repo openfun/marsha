@@ -27,7 +27,6 @@ from ..models import (
     TimedTextTrack,
     Video,
 )
-from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -103,6 +102,14 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         user = self.request.user
         if isinstance(user, TokenUser):
             context.update(user.token.payload)
+            admin_role_permission = permissions.IsTokenAdmin()
+            instructor_role_permission = permissions.IsTokenInstructor()
+
+            context["is_admin"] = admin_role_permission.has_permission(
+                request=self.request, view=None
+            ) or instructor_role_permission.has_permission(
+                request=self.request, view=None
+            )
 
         return context
 
