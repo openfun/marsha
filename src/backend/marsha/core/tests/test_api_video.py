@@ -21,6 +21,7 @@ from ..defaults import (
     PAUSED,
     PENDING,
     RAW,
+    READY,
     RUNNING,
     STATE_CHOICES,
     STOPPED,
@@ -186,6 +187,19 @@ class VideoAPITest(TestCase):
             upload_state="ready",
             extension="srt",
         )
+        shared_live_media = factories.SharedLiveMediaFactory(
+            video=video,
+            extension="pdf",
+            title="python structures",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            nb_pages=3,
+        )
+        shared_live_media_2 = factories.SharedLiveMediaFactory(
+            nb_pages=None,
+            upload_state=PENDING,
+            video=video,
+        )
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -274,6 +288,529 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [
+                    {
+                        "id": str(shared_live_media_2.id),
+                        "active_stamp": None,
+                        "filename": None,
+                        "is_ready_to_show": False,
+                        "nb_pages": None,
+                        "show_download": True,
+                        "title": None,
+                        "upload_state": "pending",
+                        "urls": None,
+                        "video": str(video.id),
+                    },
+                    {
+                        "id": str(shared_live_media.id),
+                        "active_stamp": "1638230400",
+                        "filename": "python-structures.pdf",
+                        "is_ready_to_show": True,
+                        "nb_pages": 3,
+                        "show_download": True,
+                        "title": "python structures",
+                        "upload_state": "ready",
+                        "urls": {
+                            "pages": {
+                                "1": (
+                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"sharedlivemedias/{shared_live_media.id}/1638230400/1.png"
+                                ),
+                                "2": (
+                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"sharedlivemedias/{shared_live_media.id}/1638230400/2.png"
+                                ),
+                                "3": (
+                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"sharedlivemedias/{shared_live_media.id}/1638230400/3.png"
+                                ),
+                            }
+                        },
+                        "video": str(video.id),
+                    },
+                ],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+            },
+        )
+
+        # Try getting another video
+        other_video = factories.VideoFactory()
+        response = self.client.get(
+            f"/api/videos/{other_video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    @override_settings(
+        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
+        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+    )
+    def test_api_video_read_detail_token_user_nested_shared_live_media_urls_signed(
+        self,
+    ):
+        """
+        An instructor reading video details with nested shared live media and cloudfront signed
+        urls activated should have the urls.media available
+        """
+        resolutions = [144, 240, 480, 720, 1080]
+        video = factories.VideoFactory(
+            id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+            resolutions=resolutions,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        shared_live_media = factories.SharedLiveMediaFactory(
+            id="f16dc536-8cba-473c-a85d-0eb88f64d8f9",
+            extension="pdf",
+            show_download=False,
+            title="python expressions",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            nb_pages=3,
+            video=video,
+        )
+        shared_live_media_2 = factories.SharedLiveMediaFactory(
+            nb_pages=None,
+            upload_state=PENDING,
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        # fix the time so that the url signature is deterministic and can be checked
+        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        ):
+            response = self.client.get(
+                f"/api/videos/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        thumbnails_template = (
+            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
+        )
+        thumbnails_dict = {
+            # pylint: disable=consider-using-f-string
+            str(resolution): thumbnails_template.format(video.pk, resolution)
+            for resolution in resolutions
+        }
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": "1533686400",
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": "ready",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": {
+                    "mp4": {
+                        "144": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_144.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=Hn-h"
+                            "chOvM-DOA2ThXN2CXlG1lJioPxC8tz2RbMuN9hthqYDsGVKlEvVz9gpa1PDz26Cnxaai"
+                            "b-lHXuEDtypQEGypA5E~58iAhCGC-CY8T6W3mRSD2oODAnPCcuaBIpihoXNK81DDGBST"
+                            "rXvscORFP87xZRix4C7tRGESSQwuFzi~HERnkcT6cufWL8ydMrv0OsKvSBt79co6XF2c"
+                            "409A~9TfVEuXT6DY5UCwLUtscGoDTH5dRSRd~XRW7nS2K1KigA-C8zkiiimh2TwBqE2m"
+                            "URR-rOc~e4Kb16IuzRRpnZf0eqrnKHWpG0BGWFEEJzbyD8BwkaaA18Kmr53IWyjTlw__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "240": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_240.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=KNxe"
+                            "uY~6OlOUYpAhSJ5mPqf8hxI6rmnvT34A8B6hROoPTsQZJcKH2b~1hDVmNwX5DOw6TQpm"
+                            "9dAufzyWiQZBZcfLcafOWufmzS36RYlZi8-uzq74Nxl1HkeSCrOphLgwNg7CvN89318S"
+                            "eeayFeCgfIm3zneUKIaZyX2wEl~WUJCtKRvx3Phnsheu-5qcasN-q7WnCPNm7wWTGaVT"
+                            "N624EUNp-8MkmeaSczZLEemXrRWVI7Ekl60SNEMl94fZncouow3nKHp8afy37qdU3jnP"
+                            "CuxtDdyVksGsbDPIMUKCoig22YwJko2yaB~~n~QF~Xq5iBtAr~HX1vtxOqT4d9Mv~g__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "480": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_480.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=HiV0"
+                            "2qb-cWi6dQPBruMm8RThvB8yX~rfY5HV4cIznZsitm1gCW5eEREGICOx3PM3zmZ2aLGL"
+                            "GKBwlDKbXl3ehVRFXkFKU1-p4PBOkbY9YquPwv1syBLvVlDeNzQyqZZzmt1j4xQGtONv"
+                            "oyUqGrRrMkaFa5YPnaOSPYZDLf2SJIQ8OkQr-OEQk6UQVQO7~mMyknG0iTZdQT5HTRus"
+                            "qmw5xFTZitoS6RzTS4G2SR~uKoaxV3ZtZznAHcDBb7tbAvHN6ckSNSs7~9i2e~AJblXt"
+                            "dsX9O3quO9-IPpQsMpihNASp43M8n-7wa1Uln2dY4jDi~JrYBE6jWG1QkjIBFQkcJg__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "720": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_720.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=TKVO"
+                            "yKTl2gS8m2gx7lDdjKslJK7R9IJ0Sal3HpoTHcY6LsRDsEpPqAJsUpoR3m1VLfXSoFPC"
+                            "kQdyFPACwocSceMCDMlEylOZetP102D6SiTFT4OP7Al9MwRtPTVKlh-PDrZ-oQfnBQzX"
+                            "JkwQgK~sqIW87QMT4l36homlwkvQWt3oXa4QoxpE58lgY1GkaHrUcVbwEDojE3qF8X9a"
+                            "4ENuPifUYZttKyBNaeVrnRYcd2E4yQXXzpDpeU360ykFHvZDqRCZvu~U~pgboO8aRbY6"
+                            "4lhdevLVdwgH3ESrOoD6MITKm7jbRwcy85gcU5IpOW~9Wc9Vd3nVvKzdWgnWWr7h~w__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "1080": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_1080.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=HBHL"
+                            "NrEL8xHY~N0kxqdrDtwHLtNq6jsuKMFjU4ro9tyVSUGPlU960c8V23ZMi5KDM1UTvMwF"
+                            "p2TY3ZSOefHaNJvHlwCGpfbscg5mcR5RQBTHvUpFTg2XtvvonzblqcWs6UEY7kSr-wAF"
+                            "9Kviq94x0EeUj43PH7CAJN6q6nXG32fNi1zwyvsXEYCZT6gXyFF6rY9wK1zsE0zgqaR8"
+                            "NLK6dULsuDOg~t2KY33njW51zfQgwH1nW6f9BJwYxyQAAt4UyXUifjOb4ZYEQoEJrSTb"
+                            "8PzvtWsqyTdnOwM8juPknv3Yao8QoVyaE0K84I2BhOE4imVH5T0KskykkoZUHvNGkg__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                    },
+                    "thumbnails": thumbnails_dict,
+                    "manifests": {
+                        "hls": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                            "cmaf/1533686400.m3u8"
+                        ),
+                    },
+                    "previews": (
+                        "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                        "previews/1533686400_100.jpg"
+                    ),
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "shared_live_medias": [
+                    {
+                        "id": str(shared_live_media_2.id),
+                        "active_stamp": None,
+                        "filename": None,
+                        "is_ready_to_show": False,
+                        "nb_pages": None,
+                        "show_download": True,
+                        "title": None,
+                        "upload_state": "pending",
+                        "urls": None,
+                        "video": str(video.id),
+                    },
+                    {
+                        "id": str(shared_live_media.id),
+                        "active_stamp": "1638230400",
+                        "filename": "python-expressions.pdf",
+                        "is_ready_to_show": True,
+                        "nb_pages": 3,
+                        "show_download": False,
+                        "title": "python expressions",
+                        "upload_state": "ready",
+                        "urls": {
+                            "media": (
+                                "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                                "sharedlivemedias/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400/"
+                                "1638230400/1638230400.pdf?response-content-disposition=attachment"
+                                "%3B+filename%3Dpython-expressions.pdf&Expires=1638237600&Signatur"
+                                "e=HtvtqpRx-AQ1FU6t7~xeINxOBu1i9A1pyBgVIppRajdcDAgwStbgdN9OmTYxTKE"
+                                "6CQmkLxYIHxCzjDzSlp7y5CEqGV2pNgBbOu6XullOwkrnHWRo59XlQdkxtAgQjU3Z"
+                                "Yys42ycmvET2u6~QaOjczSekyNLrFvGVr2KhPk9HDq5tDflIDeKPkaaX5tkIlYdFC"
+                                "d-lWvst3sszyfCVxkmnxY6BVelk~keFv-BSqQGT3D0AKGI7r4sz7Q8fiUxDeA1Xyu"
+                                "8UallSYnK9CQDBa0~Ol-tskIc0u8WWV5Xy0hH~y6jSVOYEdFX3M~cK1yjlm4PLIXm"
+                                "FUn2bcP3FRGzXoajPJA__&Key-Pair-Id=cloudfront-access-key-id"
+                            ),
+                            "pages": {
+                                "1": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638"
+                                    "230400/1.png?Expires=1638237600&Signature=FNHHmFZOgUWI-qoZtVY"
+                                    "PzUCNyeLZMP0fBalDvxMcnDaJSn1YN84KmbXDvOhhGDFqu4gxEeW32A~CWHNw"
+                                    "em5d0oF-jdVoDg~r-yvo6h1uDisq3MZ99Ef~4z~VDEe999u3eBAyORqefV591"
+                                    "CroC8bf9OExEGZYWSyVhAlR84P~wGFHMTI2mDQwPhf5qwrhzK1TBfkjXrcI7V"
+                                    "E5DmA9CMrDJ7RYmZJkzYmeEVGdHHRUK9Kg8Wa8DRbqE6DEwFTJtSa6dbDy71c"
+                                    "~1NMPTWrU6KbQlTlXNP5b41HnGGkqrbuU-e5WQUAbZyncDO8KaK7NAjVSXRSp"
+                                    "FJBVVFO-A9VjrGmM7w__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                                "2": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638"
+                                    "230400/2.png?Expires=1638237600&Signature=IitAzY5l7I9o4CzbHnX"
+                                    "rXdN8IaQCtBh-J~dpq-GHGDlowspQ1nlW7hjDgWI1dEtudAdeIoliKtlHOLsV"
+                                    "pfqOtuMJ2qaTgwmV~ZLzQGiMAmWPxKSDCImGEHtxpwUQIJX3aBWOdeISugRC1"
+                                    "dZX5A~cimgkN2ZOALcfeccn~DXHgCWkfY~jA6HcieG0cuLJ7axlQ95YJ9-mLd"
+                                    "cn1NJJlQoSgxoQKhk~54kAKH-vkAkhAHEmo8upGSJ7Z~xaAwxx5geyXmS7z4u"
+                                    "RZQIK7X2lQxMnTNOQP8iiRSN6IUlVno3j2~q1tDprg39pYViEiFq~d-5~hevD"
+                                    "Njbd-4xTwJKTaJU3zw__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                                "3": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638"
+                                    "230400/3.png?Expires=1638237600&Signature=Da7i2-yvuLQwGAwygH3"
+                                    "qZA00ofHH~aean7OX4ustCGtk2d-7GuYhe4ZRM8bNzqj863HWtbQ5t5Y6W63A"
+                                    "AoHX1p57dSH39rBEVHgaLuXpwjAm0wR-y~K33QcwX6HgWZDWEKJQyJCHHHiqz"
+                                    "KTzBJUJJEi7Wtbjnh5aNX5TsBwtvJwUfEapFRPDKeLrVFE9Ago9BqzoKKrACx"
+                                    "7uhdnYXwxjiIK3KYAOwv~CvaO1yJd3cAMx~6HE8uZSzHLmhL8qtJ~QaKVX9nn"
+                                    "8DlSVJxIHhUlSH1aoqSFM-KZDWq0iXyufaIOodIAsdP-xzvdQ-ZvmmwSk7Nhc"
+                                    "XMO8Th0QhcckyYTPHw__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                            },
+                        },
+                        "video": str(video.id),
+                    },
+                ],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+            },
+        )
+
+        # Try getting another video
+        other_video = factories.VideoFactory()
+        response = self.client.get(
+            f"/api/videos/{other_video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    @override_settings(
+        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
+        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+    )
+    def test_api_video_read_detail_token_student_user_nested_shared_live_media_urls_signed(
+        self,
+    ):
+        """
+        A student reading video details with nested shared live media and cloudfront signed
+        urls activated should not have the urls.media available
+        """
+        resolutions = [144, 240, 480, 720, 1080]
+        video = factories.VideoFactory(
+            id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            upload_state="ready",
+            resolutions=resolutions,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        shared_live_media = factories.SharedLiveMediaFactory(
+            id="7d9a2087-79be-4731-bcda-f59c7b8b9699",
+            extension="pdf",
+            show_download=False,
+            title="python expressions",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            nb_pages=3,
+            video=video,
+        )
+        shared_live_media_2 = factories.SharedLiveMediaFactory(
+            nb_pages=None,
+            upload_state=PENDING,
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+
+        # fix the time so that the url signature is deterministic and can be checked
+        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        ):
+            response = self.client.get(
+                f"/api/videos/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        thumbnails_template = (
+            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
+        )
+        thumbnails_dict = {
+            # pylint: disable=consider-using-f-string
+            str(resolution): thumbnails_template.format(video.pk, resolution)
+            for resolution in resolutions
+        }
+
+        self.assertEqual(
+            content,
+            {
+                "description": video.description,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": "1533686400",
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": "ready",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": {
+                    "mp4": {
+                        "144": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_144.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=Hn-h"
+                            "chOvM-DOA2ThXN2CXlG1lJioPxC8tz2RbMuN9hthqYDsGVKlEvVz9gpa1PDz26Cnxaai"
+                            "b-lHXuEDtypQEGypA5E~58iAhCGC-CY8T6W3mRSD2oODAnPCcuaBIpihoXNK81DDGBST"
+                            "rXvscORFP87xZRix4C7tRGESSQwuFzi~HERnkcT6cufWL8ydMrv0OsKvSBt79co6XF2c"
+                            "409A~9TfVEuXT6DY5UCwLUtscGoDTH5dRSRd~XRW7nS2K1KigA-C8zkiiimh2TwBqE2m"
+                            "URR-rOc~e4Kb16IuzRRpnZf0eqrnKHWpG0BGWFEEJzbyD8BwkaaA18Kmr53IWyjTlw__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "240": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_240.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=KNxe"
+                            "uY~6OlOUYpAhSJ5mPqf8hxI6rmnvT34A8B6hROoPTsQZJcKH2b~1hDVmNwX5DOw6TQpm"
+                            "9dAufzyWiQZBZcfLcafOWufmzS36RYlZi8-uzq74Nxl1HkeSCrOphLgwNg7CvN89318S"
+                            "eeayFeCgfIm3zneUKIaZyX2wEl~WUJCtKRvx3Phnsheu-5qcasN-q7WnCPNm7wWTGaVT"
+                            "N624EUNp-8MkmeaSczZLEemXrRWVI7Ekl60SNEMl94fZncouow3nKHp8afy37qdU3jnP"
+                            "CuxtDdyVksGsbDPIMUKCoig22YwJko2yaB~~n~QF~Xq5iBtAr~HX1vtxOqT4d9Mv~g__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "480": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_480.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=HiV0"
+                            "2qb-cWi6dQPBruMm8RThvB8yX~rfY5HV4cIznZsitm1gCW5eEREGICOx3PM3zmZ2aLGL"
+                            "GKBwlDKbXl3ehVRFXkFKU1-p4PBOkbY9YquPwv1syBLvVlDeNzQyqZZzmt1j4xQGtONv"
+                            "oyUqGrRrMkaFa5YPnaOSPYZDLf2SJIQ8OkQr-OEQk6UQVQO7~mMyknG0iTZdQT5HTRus"
+                            "qmw5xFTZitoS6RzTS4G2SR~uKoaxV3ZtZznAHcDBb7tbAvHN6ckSNSs7~9i2e~AJblXt"
+                            "dsX9O3quO9-IPpQsMpihNASp43M8n-7wa1Uln2dY4jDi~JrYBE6jWG1QkjIBFQkcJg__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "720": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_720.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=TKVO"
+                            "yKTl2gS8m2gx7lDdjKslJK7R9IJ0Sal3HpoTHcY6LsRDsEpPqAJsUpoR3m1VLfXSoFPC"
+                            "kQdyFPACwocSceMCDMlEylOZetP102D6SiTFT4OP7Al9MwRtPTVKlh-PDrZ-oQfnBQzX"
+                            "JkwQgK~sqIW87QMT4l36homlwkvQWt3oXa4QoxpE58lgY1GkaHrUcVbwEDojE3qF8X9a"
+                            "4ENuPifUYZttKyBNaeVrnRYcd2E4yQXXzpDpeU360ykFHvZDqRCZvu~U~pgboO8aRbY6"
+                            "4lhdevLVdwgH3ESrOoD6MITKm7jbRwcy85gcU5IpOW~9Wc9Vd3nVvKzdWgnWWr7h~w__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                        "1080": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_1080.mp4?response-content-disposition=attachment%3B"
+                            "+filename%3Dfoo-bar_1533686400.mp4&Expires=1638237600&Signature=HBHL"
+                            "NrEL8xHY~N0kxqdrDtwHLtNq6jsuKMFjU4ro9tyVSUGPlU960c8V23ZMi5KDM1UTvMwF"
+                            "p2TY3ZSOefHaNJvHlwCGpfbscg5mcR5RQBTHvUpFTg2XtvvonzblqcWs6UEY7kSr-wAF"
+                            "9Kviq94x0EeUj43PH7CAJN6q6nXG32fNi1zwyvsXEYCZT6gXyFF6rY9wK1zsE0zgqaR8"
+                            "NLK6dULsuDOg~t2KY33njW51zfQgwH1nW6f9BJwYxyQAAt4UyXUifjOb4ZYEQoEJrSTb"
+                            "8PzvtWsqyTdnOwM8juPknv3Yao8QoVyaE0K84I2BhOE4imVH5T0KskykkoZUHvNGkg__"
+                            "&Key-Pair-Id=cloudfront-access-key-id"
+                        ),
+                    },
+                    "thumbnails": thumbnails_dict,
+                    "manifests": {
+                        "hls": (
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                            "cmaf/1533686400.m3u8"
+                        ),
+                    },
+                    "previews": (
+                        "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                        "previews/1533686400_100.jpg"
+                    ),
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "shared_live_medias": [
+                    {
+                        "id": str(shared_live_media_2.id),
+                        "active_stamp": None,
+                        "filename": None,
+                        "is_ready_to_show": False,
+                        "nb_pages": None,
+                        "show_download": True,
+                        "title": None,
+                        "upload_state": "pending",
+                        "urls": None,
+                        "video": str(video.id),
+                    },
+                    {
+                        "id": str(shared_live_media.id),
+                        "active_stamp": "1638230400",
+                        "filename": "python-expressions.pdf",
+                        "is_ready_to_show": True,
+                        "nb_pages": 3,
+                        "show_download": False,
+                        "title": "python expressions",
+                        "upload_state": "ready",
+                        "urls": {
+                            "pages": {
+                                "1": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638"
+                                    "230400/1.png?Expires=1638237600&Signature=NfKinbQYzJPNgtqsW2Q"
+                                    "mDeX2GziQxlBDOGxsTloXfwtv7FKCDx5fV4N3AAPZZmkSDp8iZbwbgOmCE5HV"
+                                    "Tyz80Nm179Pg5h2omVtuh6xwTIapa-K8g2q6V8TYSL~50LHxJ9zrA3Qc2oJMa"
+                                    "o-o6sOFUutn-bIy4e0ofw8QfevOJI-6OpoJIRyv1ymZAM-7V3GnXtrVHSF0xu"
+                                    "tjBwOLZ2qO8Rj36UYWuXmy3gU2y6KFK4OL1xlrLaiEjL9zfSvmqc4m2gF9~lg"
+                                    "JxTkL0VXLu15r-ib-RXC778Y3pOmJ4rw5i-k~BeloSLG2N7X5qUmaXyDucJvX"
+                                    "S1xJ-CKOcTFHBBRTyQ__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                                "2": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638"
+                                    "230400/2.png?Expires=1638237600&Signature=HPOo5K6YxjmVirqY9h5"
+                                    "NGKTgUPEv3FWkGGr7tCFIDX30h3CUF7rB8nfZ2eGRK3RuzheM3mTGRmEdmzEI"
+                                    "Mxc~rYs7HhRWYSn1i4WAkG6TCxGP3pH5t-lz2zRzwD5I2o8zHWWKzVcM47j8e"
+                                    "X1p9MCZ9ecfQFQyRYjoYp0DLWF3Sz5o0LgFETqEt2lgexLxb7fqxjKx0IJVZa"
+                                    "fdS0wS14ZhR1Y8KDtRM~2zEucew5mpTzDbXe13YwiPQ1ucUKZq6mGa27GE8bt"
+                                    "ngs~MWj9DxOUxRetKbAwsWzfIvAqIUXH8YvMdQfdKgFfYpl3LIPrmbn6Fwrko"
+                                    "8CBi3LJ8CgBekboLEQ__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                                "3": (
+                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                                    "fb/sharedlivemedias/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638"
+                                    "230400/3.png?Expires=1638237600&Signature=ETxx~Ajc06~IxOV~aVq"
+                                    "eS~YuIlDySmWLg2~lbCFFsecfXO9kIx1c6zsWEJbAm-BNppdO9vapXy2wP6kb"
+                                    "HQ~txjN6Y4qtcWNVtp9glgSAgm1tAJFD8x06oFo~HtwVzaybRXdU0CPx1RQzz"
+                                    "R355DuY5iRAZTYRWN0saYwqmC9K~IOWiZeogjVz122OLTeCEVwsZgqHBmuFTL"
+                                    "g0l035MC-ccZlX2Ma1WC3dZkUu8VWpGG2OC5kWrS07zCATLoVzWtSetQIqsXa"
+                                    "PhGio-wDVvNAj1dD5Lmruq-sjIJIbI23qHJa7s9jAPvtiRrrhJilwHEEDwCzr"
+                                    "VcS9u9yEaUiBxAyGUA__&Key-Pair-Id=cloudfront-access-key-id"
+                                ),
+                            },
+                        },
+                        "video": str(video.id),
+                    },
+                ],
                 "live_state": None,
                 "live_info": {},
                 "live_type": None,
@@ -354,6 +891,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": None,
                 "live_info": {},
                 "live_type": None,
@@ -407,6 +945,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": None,
                 "live_info": {},
                 "live_type": None,
@@ -542,6 +1081,7 @@ class VideoAPITest(TestCase):
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
                 },
+                "shared_live_medias": [],
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "starting_at": None,
@@ -617,6 +1157,7 @@ class VideoAPITest(TestCase):
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
                 },
+                "shared_live_medias": [],
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "starting_at": None,
@@ -742,6 +1283,7 @@ class VideoAPITest(TestCase):
                             "lti_id": organization_playlist_1.lti_id,
                             "title": organization_playlist_1.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -820,6 +1362,7 @@ class VideoAPITest(TestCase):
                             "lti_id": organization_1_playlist_1.lti_id,
                             "title": organization_1_playlist_1.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -846,6 +1389,7 @@ class VideoAPITest(TestCase):
                             "lti_id": organization_1_playlist_2.lti_id,
                             "title": organization_1_playlist_2.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -938,6 +1482,7 @@ class VideoAPITest(TestCase):
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -1005,6 +1550,7 @@ class VideoAPITest(TestCase):
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -1101,6 +1647,7 @@ class VideoAPITest(TestCase):
                             "lti_id": first_playlist.lti_id,
                             "title": first_playlist.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -1167,6 +1714,7 @@ class VideoAPITest(TestCase):
                             "lti_id": playlist_1.lti_id,
                             "title": playlist_1.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -1193,6 +1741,7 @@ class VideoAPITest(TestCase):
                             "lti_id": playlist_2.lti_id,
                             "title": playlist_2.title,
                         },
+                        "shared_live_medias": [],
                         "should_use_subtitle_as_transcript": False,
                         "show_download": True,
                         "starting_at": None,
@@ -1371,6 +1920,7 @@ class VideoAPITest(TestCase):
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
                 },
+                "shared_live_medias": [],
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "starting_at": None,
@@ -1532,6 +2082,7 @@ class VideoAPITest(TestCase):
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
                 },
+                "shared_live_medias": [],
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "starting_at": None,
@@ -1599,6 +2150,7 @@ class VideoAPITest(TestCase):
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
                 },
+                "shared_live_medias": [],
                 "should_use_subtitle_as_transcript": False,
                 "show_download": True,
                 "starting_at": None,
@@ -3216,6 +3768,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {},
                 "xmpp": None,
@@ -3266,6 +3819,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {
                     "jitsi": {
@@ -3374,6 +3928,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": "starting",
                 "live_info": {
                     "jitsi": {
@@ -3494,6 +4049,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": "starting",
                 "live_info": {
                     "jitsi": {
@@ -3697,6 +4253,7 @@ class VideoAPITest(TestCase):
                     "title": "foo bar",
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
+                "shared_live_medias": [],
                 "live_state": STOPPING,
                 "live_info": {
                     "medialive": {
@@ -3855,6 +4412,7 @@ class VideoAPITest(TestCase):
                     "title": video.playlist.title,
                     "lti_id": video.playlist.lti_id,
                 },
+                "shared_live_medias": [],
                 "live_state": None,
                 "live_info": {},
                 "live_type": None,
@@ -3943,6 +4501,7 @@ class VideoAPITest(TestCase):
                     "title": video.playlist.title,
                     "lti_id": video.playlist.lti_id,
                 },
+                "shared_live_medias": [],
                 "live_state": STOPPED,
                 "live_info": {
                     "medialive": {
@@ -4042,6 +4601,7 @@ class VideoAPITest(TestCase):
                     "title": video.playlist.title,
                     "lti_id": video.playlist.lti_id,
                 },
+                "shared_live_medias": [],
                 "live_state": None,
                 "live_info": {},
                 "live_type": None,
