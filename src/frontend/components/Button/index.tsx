@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useState, useRef } from 'react';
-import { Box, Button as GrommetButton, Text } from 'grommet';
+import React, { useLayoutEffect, useState, useRef, useContext } from 'react';
+import { Box, Button as GrommetButton, ResponsiveContext, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import styled from 'styled-components';
 
@@ -12,21 +12,38 @@ const StyledGrommetButton = styled(GrommetButton)`
   padding: 0;
 `;
 
-const StyledBox = styled(Box)`
+interface ResponsiveProps {
+  size: string;
+}
+
+const IconBox = styled(Box)`
   display: flex;
-  flex: 1;
-  margin: 0 8px;
+  height: ${({ size }: ResponsiveProps) => (size === 'small' ? '60%' : '80%')};
+  margin: ${({ size }: ResponsiveProps) =>
+    size === 'small' ? '0 6px' : '0 8px'};
   margin-bottom: 6px;
   min-height: 0;
   position: relative;
   width: 100%;
 `;
 
+const TextBox = styled(Box)`
+  display: flex;
+  height: ${({ size }: ResponsiveProps) => (size === 'small' ? '40%' : '20%')};
+  text-align: center;
+  width: 100%;
+`;
+
 const StyledText = styled(Text)`
   font-family: Roboto-Regular;
   font-weight: normal;
-  letter-spacing: -0.13px;
-  white-space: nowrap;
+  font-size: ${({ size }: ResponsiveProps) =>
+    size === 'small' ? '0.7rem' : '0.9rem'};
+  letter-spacing: ${({ size }: ResponsiveProps) =>
+    size === 'small' ? '-0.3px' : '-0.13px'};
+  line-height: ${({ size }: ResponsiveProps) =>
+    size === 'small' ? '0.8rem' : '0.9rem'};
+  margin: auto;
 `;
 
 interface ButtonProps {
@@ -48,6 +65,7 @@ export const Button = ({
   reversed,
   title,
 }: ButtonProps) => {
+  const size = useContext(ResponsiveContext);
   const iconRef = useRef<Nullable<HTMLDivElement>>(null);
   const [iconWidth, setIconWidth] = useState(0);
 
@@ -121,22 +139,24 @@ export const Button = ({
         return (
           <Box align="center" fill>
             {Icon && (
-              <StyledBox role="icon_container" ref={iconRef}>
+              <IconBox role="icon_container" ref={iconRef} size={size}>
                 <Box role="icon_resizer" margin="auto">
                   <Icon containerStyle={containerStyle} iconColor={iconColor} />
                   {badge}
                 </Box>
-              </StyledBox>
+              </IconBox>
             )}
 
             {label && (
-              <StyledText
-                size=".8rem"
-                color={normalizeColor('blue-active', theme)}
-                role="button_title"
-              >
-                {label}
-              </StyledText>
+              <TextBox size={size}>
+                <StyledText
+                  color={normalizeColor('blue-active', theme)}
+                  role="button_title"
+                  size={size}
+                >
+                  {label}
+                </StyledText>
+              </TextBox>
             )}
           </Box>
         );
