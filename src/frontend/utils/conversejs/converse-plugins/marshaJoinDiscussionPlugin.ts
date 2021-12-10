@@ -170,7 +170,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
         participant: Participant,
         video: Video,
       ) => {
-        // only instructors or admin has update permissions
+        // only instructors or admin have update permissions
         if (!getDecodedJwt().permissions.can_update) {
           return;
         }
@@ -197,7 +197,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
       };
 
       const rejectParticipantToJoin = (participant: Participant) => {
-        // only instructors or admin has update permissions
+        // only instructors or admin have update permissions
         if (!getDecodedJwt().permissions.can_update) {
           return;
         }
@@ -220,7 +220,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
       };
 
       const kickParticipant = (participant: Participant) => {
-        // only instructors or admin has update permissions
+        // only instructors or admin have update permissions
         if (!getDecodedJwt().permissions.can_update) {
           return;
         }
