@@ -80,6 +80,9 @@ class VideoLTIViewTestCase(TestCase):
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(
@@ -212,6 +215,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(
@@ -362,6 +368,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(
@@ -504,6 +513,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(
@@ -632,6 +644,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(
@@ -841,6 +856,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(
@@ -958,6 +976,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(
@@ -1077,6 +1098,9 @@ class VideoLTIViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(
@@ -1191,6 +1215,9 @@ class VideoLTIViewTestCase(TestCase):
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(
@@ -1320,6 +1347,9 @@ class VideoLTIViewTestCase(TestCase):
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
         self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(
