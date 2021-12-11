@@ -72,8 +72,6 @@ export const StudentJoinDiscussionButton = () => {
 
     //  save the request in the store
     setAsked();
-    //  hide the form
-    setShowUsernameForm(false);
   };
 
   useEffect(() => {
