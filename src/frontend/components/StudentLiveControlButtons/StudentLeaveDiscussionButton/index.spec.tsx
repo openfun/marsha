@@ -59,7 +59,6 @@ describe('<StudentLeaveDiscussionButton />', () => {
 
     expect(mockRest).toHaveBeenCalled();
     expect(mockRest).toHaveBeenCalledTimes(1);
-    screen.getByText('video player');
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
   });
 });
