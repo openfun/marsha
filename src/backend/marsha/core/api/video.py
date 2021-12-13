@@ -96,8 +96,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
         context = super().get_serializer_context()
-        # The API is only reachable by admin users.
-        context["can_return_live_info"] = True
 
         user = self.request.user
         if isinstance(user, TokenUser):
