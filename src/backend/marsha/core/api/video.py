@@ -21,7 +21,6 @@ from ..models import (
     Device,
     LivePairing,
     LiveRegistration,
-    Playlist,
     SharedLiveMedia,
     Thumbnail,
     TimedTextTrack,
@@ -616,47 +615,41 @@ class LiveRegistrationViewSet(
     def get_queryset(self):
         """Restrict access to liveRegistration with data contained in the JWT token.
 
-        Access is restricted to liveRegistration related to the video and context_id present in
-        the JWT token. Email or user id from the token can be used as well depending on the role.
+        Access is restricted to liveRegistration related to the video, context_id and consumer_site
+        present in the JWT token. Email is ignored. Lti user id from the token can be used as well
+        depending on the role.
         """
         user = self.request.user
 
-        if user.token.payload:
-            consumer_site = (
-                Playlist.objects.get(
-                    lti_id=user.token.payload["context_id"]
-                ).consumer_site
-                if user.token.payload.get("context_id")
-                else None
-            )
-            filters = {"consumer_site": consumer_site, "video__id": user.id}
+        is_lti = (
+            user.token.payload
+            and user.token.payload.get("context_id")
+            and user.token.payload.get("consumer_site")
+            and user.token.payload.get("user")
+            and user.token.payload["user"].get("id")
+        )
+
+        if is_lti:
+            filters = {"video__id": user.id}
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
-            # admin and instructors can access all registrations from the same consumer site
+            filters["lti_id"] = user.token.payload["context_id"]
+            filters["consumer_site"] = user.token.payload["consumer_site"]
+            # admin and instructors can access all registrations of this course
             if user.token.payload.get("roles") and any(
                 role in ["administrator", "instructor"]
                 for role in user.token.payload["roles"]
             ):
                 return LiveRegistration.objects.filter(**filters)
-            # others can only read their registration
-            if user.token.payload.get("user"):
-                if user.token.payload["user"].get("email"):
-                    filters["email"] = user.token.payload["user"]["email"]
-                    # check first if a liveRegistration exists with the email in the token
-                    live_registration = LiveRegistration.objects.filter(**filters)
-                    if live_registration:
-                        return live_registration
 
-                    filters.pop("email", None)
-                # token has email or not, user has access to this registration if it's the right
-                # combination of lti_user_id and consumer_site
-                if user.token.payload["user"].get("id") and user.token.payload.get(
-                    "context_id"
-                ):
-                    filters["lti_user_id"] = user.token.payload["user"]["id"]
-                    return LiveRegistration.objects.filter(**filters)
+            # token has email or not, user has access to this registration if it's the right
+            # combination of lti_user_id, lti_id and consumer_site
+            # email doesn't necessary have a match
+            filters["lti_user_id"] = user.token.payload["user"]["id"]
+            return LiveRegistration.objects.filter(**filters)
 
+        # public context, we can't read any liveregistration
         return LiveRegistration.objects.none()
 
 
