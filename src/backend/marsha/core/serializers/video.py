@@ -22,7 +22,6 @@ from ..models import (
     TimedTextTrack,
     Video,
 )
-from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
 from ..utils import cloudfront_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
 from .base import TimestampField, UploadableFileWithExtensionSerializerMixin
@@ -756,13 +755,10 @@ class VideoSerializer(VideoBaseSerializer):
             "session_id"
         )
         if settings.LIVE_CHAT_ENABLED and user_id and obj.live_state is not None:
-            roles = self.context.get("roles", [])
-            is_admin = bool(LTI_ROLES[ADMINISTRATOR] & set(roles))
-            is_instructor = bool(LTI_ROLES[INSTRUCTOR] & set(roles))
             token = xmpp_utils.generate_jwt(
                 str(obj.id),
                 user_id,
-                "owner" if is_admin or is_instructor else "member",
+                "owner" if self.context.get("is_admin") else "member",
                 timezone.now() + timedelta(days=1),
             )
 
@@ -795,8 +791,6 @@ class VideoSerializer(VideoBaseSerializer):
             The data are filtered to only return RTMP endpoints and jitsi configuration if needed.
             All other data are sensitive, used only by the backend and must never be exposed.
         """
-        can_return_live_info = self.context.get("can_return_live_info", False)
-
         if obj.live_state is None:
             return {}
 
@@ -805,7 +799,7 @@ class VideoSerializer(VideoBaseSerializer):
         if obj.live_info is not None and obj.live_info.get("paused_at"):
             live_info.update({"paused_at": obj.live_info["paused_at"]})
 
-        if can_return_live_info is False:
+        if not self.context.get("is_admin"):
             return live_info
 
         if obj.live_info is not None:

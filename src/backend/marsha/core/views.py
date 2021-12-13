@@ -336,13 +336,9 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "resource": self.serializer_class(
                         resource,
                         context={
-                            "can_return_live_info": lti.is_admin or lti.is_instructor
-                            if lti
-                            else False,
                             "is_admin": lti.is_admin or lti.is_instructor
                             if lti
                             else False,
-                            "roles": lti.roles if lti else [],
                             "user_id": user_id,
                             "session_id": session_id,
                         },
