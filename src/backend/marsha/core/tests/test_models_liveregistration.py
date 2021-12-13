@@ -1,23 +1,16 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import ConsumerSiteFactory, LiveRegistrationFactory, VideoFactory
+from ..factories import LiveRegistrationFactory, VideoFactory
 from ..models import LiveRegistration
 
 
 class LiveRegistrationModelsTestCase(TestCase):
     """Test liveregistration model."""
-
-    def test_models_liveregistration_fields_email_required(self):
-        """The `email` field is required on liveregistration."""
-        with self.assertRaises(ValidationError) as context:
-            LiveRegistrationFactory(email=None)
-        self.assertEqual(context.exception.messages, ["This field cannot be null."])
 
     def test_models_liveregistration_fields_id_unique_consumer_none(self):
         """Duo email/video is unique when consumer_site is None."""
@@ -43,13 +36,14 @@ class LiveRegistrationModelsTestCase(TestCase):
         LiveRegistrationFactory(email="sophie@test-fun-mooc.fr", video=video)
 
     def test_models_liveregistration_fields_lti_id_unique(self):
-        """Combinaison of lti_user_id/consumer_site/video should be unique."""
+        """Combinaison of lti_user_id/lti_id/consumer_site/video should be unique."""
         video = VideoFactory()
         video2 = VideoFactory()
 
         liveregister = LiveRegistrationFactory(
             email="registered@test-fun-mooc.fr",
             video=video,
+            lti_id="Maths 01",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
         )
@@ -59,6 +53,7 @@ class LiveRegistrationModelsTestCase(TestCase):
         LiveRegistrationFactory(
             email="issaved@test-fun-mooc.fr",
             video=video2,
+            lti_id="Maths 01",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
         )
@@ -70,43 +65,112 @@ class LiveRegistrationModelsTestCase(TestCase):
                 LiveRegistrationFactory(
                     email="sophie@test-fun-mooc.fr",
                     lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                    lti_id="Maths 01",
                     consumer_site=video.playlist.consumer_site,
                     video=video,
                 )
-                self.assertEqual(
-                    context.exception.messages,
-                    {"error": "IntegrityError"},
-                )
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_video_lti_idx"',
+            context.exception.args[0],
+        )
 
         # Soft deleted videos should not count for unicity
         liveregister.delete(force_policy=SOFT_DELETE_CASCADE)
         LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
+            lti_id="Maths 01",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
 
-    def test_models_liveregistration_fields_video_email_consumer_site_unique(self):
-        """Combinaison of consumer_site/video/email should be unique."""
-        other_consumer_site = ConsumerSiteFactory()
+    def test_models_liveregistration_fields_video_email_constraint_lti_user_id(self):
+        """lti_user_id is mandatory when lti_id and consumer_site are defined"""
         video = VideoFactory()
-        liveregister = LiveRegistrationFactory(
-            email="registered@test-fun-mooc.fr",
-            video=video,
-            consumer_site=video.playlist.consumer_site,
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 1)
-        # A registration with a different email for the same video but in another lti_context_id
-        # is possible
-        LiveRegistrationFactory(
-            email="registered@test-fun-mooc.fr",
-            video=video,
-            consumer_site=other_consumer_site,
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 2)
 
-        # Trying to create a registration for the same video and consumer site
-        # should raise a database error
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email="registered@test-fun-mooc.fr",
+                    consumer_site=video.playlist.consumer_site,
+                    lti_id="Maths",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_fields_video_email_constraint_lti_id(self):
+        """lti_id is mandatory when lti_user_id and consumer_site are defined"""
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email="registered@test-fun-mooc.fr",
+                    consumer_site=video.playlist.consumer_site,
+                    lti_user_id="5555",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_fields_video_email_constraint_consumer_site(self):
+        """consumer_site is mandatory when lti_user_id and lti_id are defined"""
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email="registered@test-fun-mooc.fr",
+                    lti_id="Maths",
+                    lti_user_id="5555",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_fields_video_email_constraint_lti_user_id__1(self):
+        """Defining only email/lti_id/video is not a possible record."""
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email="registered@test-fun-mooc.fr",
+                    lti_id="Maths",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_fields_video_email_constraint_lti_user_id__3(self):
+        """Defining only email/lti_user_id/video is not a possible record."""
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email="registered@test-fun-mooc.fr",
+                    lti_user_id="555",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_fields_video_email_constraint_lti_user_id__4(self):
+        """Defining only email/consumer_site/video defined is not a possible record."""
+        video = VideoFactory()
+
         with self.assertRaises(IntegrityError) as context:
             with transaction.atomic():
                 LiveRegistrationFactory(
@@ -114,15 +178,85 @@ class LiveRegistrationModelsTestCase(TestCase):
                     consumer_site=video.playlist.consumer_site,
                     video=video,
                 )
-                self.assertEqual(
-                    context,
-                    {"error": "IntegrityError"},
-                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
 
-        # Soft deleted videos should not count for unicity
-        liveregister.delete(force_policy=SOFT_DELETE_CASCADE)
+    def test_models_liveregistration_fields_video_constraint_email_mandatory(self):
+        """email is mandatory when consumer_site is not defined"""
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    email=None,
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_field_email_can_be_empty_consumer_lti_user_id(
+        self,
+    ):
+        """Field email can be empty with lti_id, lti_user_id and consumer_site set."""
+        video = VideoFactory()
         LiveRegistrationFactory(
-            email="registered@test-fun-mooc.fr",
+            email=None,
             consumer_site=video.playlist.consumer_site,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="5555",
             video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+    def test_models_liveregistration_field_email_cant_be_empty_consumer_site(self):
+        """Field email can't be empty with consumer_site not defined."""
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                consumer_site=None,
+                lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                lti_id="55555",
+                video=video,
+            )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_field_email_cant_be_empty_lti_user_id(self):
+        """Field email can't be empty with lti_user_id not defined."""
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                consumer_site=video.playlist.consumer_site,
+                lti_user_id=None,
+                lti_id="5555",
+                video=video,
+            )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
+
+    def test_models_liveregistration_field_email_cant_be_empty_lti_id(self):
+        """Field email can't be empty with lti_id not defined."""
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                consumer_site=video.playlist.consumer_site,
+                lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                lti_id=None,
+                video=video,
+            )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
         )

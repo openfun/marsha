@@ -60,7 +60,7 @@ export const SubscribeScheduledVideo = ({
     DateTime.fromISO(video.starting_at!).setLocale(mainIntl.locale),
   );
   const intl = useIntl();
-
+  const decodedJWT = getDecodedJwt();
   const initDays = () => {
     const diff = startingAt.current
       .diffNow(['days', 'hours', 'minutes', 'seconds'])
@@ -105,27 +105,19 @@ export const SubscribeScheduledVideo = ({
     }
   }, []);
 
-  const hasUserInToken = () => {
-    return getDecodedJwt().user !== undefined;
-  };
-
-  const hasEmailInToken = () => {
-    return hasUserInToken() && getDecodedJwt().user!.email;
-  };
-
-  const canIcheckIfIamRegistered = () => {
+  const isLtiToken = () => {
     return (
-      hasUserInToken() &&
-      (getDecodedJwt().user!.email ||
-        (getDecodedJwt().user!.id && getDecodedJwt().context_id))
+      decodedJWT.context_id &&
+      decodedJWT.consumer_site &&
+      decodedJWT.user !== undefined &&
+      decodedJWT.user!.id
     );
   };
 
   const checkAlreadyRegistered = async () => {
     // check user is already registered
-    // we can only control if a user is registered if he has a token defined with an email
-    // or if he has a context_id and a user.id
-    if (canIcheckIfIamRegistered()) {
+    // we can only control if a user is registered if he has a LTI token
+    if (isLtiToken()) {
       const registrations = await fetchList({
         queryKey: ['liveregistrations'],
         meta: {},
@@ -179,7 +171,7 @@ export const SubscribeScheduledVideo = ({
           ) : (
             <Box margin={'small'}>
               <SubscribeScheduledVideoEmailForm
-                {...(hasEmailInToken()
+                {...(isLtiToken() && getDecodedJwt().user!.email
                   ? { emailToken: getDecodedJwt().user!.email }
                   : {})}
               />

@@ -39,16 +39,16 @@ class LiveRegistrationApiTest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    def test_api_liveregistration_read_token_user_none_consumer_none(
+    def test_api_liveregistration_read_token_public(
         self,
     ):
-        """Token with no user and no context_id can't read liveRegistration detail."""
+        """Token from public context can't read liveRegistration detail."""
         video = VideoFactory()
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
             video=video,
         )
-
+        # token has no consumer_site, no context_id and no user's info
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
 
@@ -59,88 +59,25 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_user_none_consumer_ok(
+    def test_api_liveregistration_read_token_lti_email_set(
         self,
     ):
-        """Token with context_id and no user's info can't read liveRegistration detail.
-
-        If token has no email, we need the context_id leading to consumer_site and
-        lti_user_id to match the registration one.
-        """
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-
-        # token with right context_id but no email or user id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_token_user_with_email_ok_consumer_none(
-        self,
-    ):
-        """Token with email should be allowed to read its liveRegistration detail."""
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
-            video=video,
-        )
-        # token has no context_id and good email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["user"] = {
-            "email": "sarah@openfun.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "John",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": liveregistration.email,
-                "id": str(liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_token_user_with_email_ok_consumer_ok(
-        self,
-    ):
-        """Token with email and context_id can read its liveRegistration."""
+        """Token from lti with email can read its liveRegistration."""
         video = VideoFactory()
         # registration has consumer_site
         liveregistration = LiveRegistrationFactory(
             email="sarah@openfun.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
-        # token has right context_id and right email
+        # token from LTI has context_id, consumer_site and user.id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
         jwt_token.payload["user"] = {
             "email": "sarah@openfun.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
@@ -157,27 +94,36 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": liveregistration.email,
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": False,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_read_token_user_with_email_diff_consumer_none(self):
-        """Token with email can't read the registration if they don't have the right email."""
+    def test_api_liveregistration_read_token_lti_email_none(
+        self,
+    ):
+        """LTI Token with no email can read its registration."""
         video = VideoFactory()
-        # registration has no consumer_site
+        # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
-        # token has no context_id and different email
+
+        # token with right context_id and lti_user_id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
         jwt_token.payload["user"] = {
-            "email": "salmon@openfun.fr",
-            "id": liveregistration.lti_user_id,
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf072359fd",
         }
 
         response = self.client.get(
@@ -185,21 +131,39 @@ class LiveRegistrationApiTest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "email": liveregistration.email,
+                "id": str(liveregistration.id),
+                "lti_id": str(video.playlist.lti_id),
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": False,
+                "video": str(video.id),
+            },
+        )
 
-    def test_api_liveregistration_read_token_user_with_email_diff_consumer_ok(self):
-        """Token with context_id can't read the registration if they don't have the right email."""
+    def test_api_liveregistration_read_token_lti_record_email_diff(self):
+        """LTI's Token can read the registration even if they don't have the right email.
+        A LTI user is identified by the combinaison of consumer_site/lti_user_id/lti_id
+        """
         video = VideoFactory()
         # registration has consumer_site
         liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
-            video=video,
             consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="5555",
+            video=video,
         )
         # token has right context_id but different email
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
         jwt_token.payload["user"] = {
             "email": "salmon@openfun.fr",
             "id": liveregistration.lti_user_id,
@@ -210,9 +174,22 @@ class LiveRegistrationApiTest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        # email is the one used during registration
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "email": "sarah@openfun.fr",
+                "id": str(liveregistration.id),
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "lti_id": str(video.playlist.lti_id),
+                "lti_user_id": "5555",
+                "should_send_reminders": False,
+                "video": str(video.id),
+            },
+        )
 
-    def test_api_liveregistration_read_token_user_with_email_ok_consumer_nok_r_consumer_none(
+    def test_api_liveregistration_read_token_lti_record_consumer_none(
         self,
     ):
         """Control we can only read liveregistration from the same consumer site.
@@ -231,6 +208,8 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
         # token has right email
         jwt_token.payload["user"] = {
             "email": "sarah@openfun.fr",
@@ -245,7 +224,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_user_with_email_ok_consumer_nok_r_consumer_diff(
+    def test_api_liveregistration_read_token_lti_record_consumer_diff(
         self,
     ):
         """Control we can only read liveregistration from the same consumer site.
@@ -258,14 +237,17 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer = ConsumerSiteFactory()
         # registration has consumer_site
         liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
             consumer_site=other_consumer,
+            email="sarah@openfun.fr",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
             video=video,
         )
         # token has context_id but different one
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         # token has right email
         jwt_token.payload["user"] = {
             "email": "sarah@openfun.fr",
@@ -280,14 +262,91 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_user_with_email_none_context_none(self):
-        """Token with no email and no context_id can't read the registration."""
+    def test_api_liveregistration_read_token_lti_record_course_diff(
+        self,
+    ):
+        """Control we can only read liveregistration from the same course.
+
+        The video is portable in an other playlist portable from an other course,
+        the registration should not be return, if this one has been added with
+        a token from a different course.
+        """
+        video = VideoFactory()
+        other_consumer = ConsumerSiteFactory()
+        # registration has consumer_site
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=other_consumer,
+            email="sarah@openfun.fr",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+        # token has context_id but different one
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths 02"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
+        # token has right email
+        jwt_token.payload["user"] = {
+            "email": "sarah@openfun.fr",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "John",
+        }
+
+        response = self.client.get(
+            f"/api/liveregistrations/{liveregistration.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_liveregistration_read_token_lti_record_lti_user_id_diff(
+        self,
+    ):
+        """Control we can only read liveregistration from the same user."""
+        video = VideoFactory()
+        # registration has consumer_site
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            lti_user_id="ID1",
+            lti_id="Maths",
+            video=video,
+        )
+        # token has context_id but different one
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths 02"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
+        # token has right email
+        jwt_token.payload["user"] = {
+            "email": "sarah@openfun.fr",
+            "id": "ID2",
+            "username": "John",
+        }
+
+        response = self.client.get(
+            f"/api/liveregistrations/{liveregistration.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_liveregistration_read_token_public_partially_lti(self):
+        """Token with no email and no consumer_site can't read the registration.
+
+        This case is not supposed to happen. A LTI connection has necessary a
+        consumer_site, context_id and a lti_user_id defined in the token.
+        """
         video = VideoFactory()
         # registration with a consumer_site
         liveregistration = LiveRegistrationFactory(
             video=video,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
         )
 
         jwt_token = AccessToken()
@@ -305,317 +364,44 @@ class LiveRegistrationApiTest(TestCase):
         # combo lti_user_id / consumer_site is needed if token has no email
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_user_with_email_none_context_none_r_consumer_none(
+    def test_api_liveregistration_read_token_public_partially_lti_2(
         self,
     ):
-        """Token with no email and no context_id can't read this registration.
+        """Token with consumer_site and no user's info can't read liveRegistration detail.
 
-        If they're is no context_id in the token leading to no consumer site and in the
-        liveRegistration, even if the lti_user_id is right in the token, it's not enough to
-        access the liveRegistration detail. If token has no email and no context_id it
-        won't be allowed to read the detail of the liveRegistration. This record can only be
-        read with a token containing an email.
-        """
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        # token has right lti_user_id and no context_id like registration
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_token_user_with_email_none_context_with_ok_userid_ok(
-        self,
-    ):
-        """Token with no email can read its registration from the same consumer site.
-
-        LTI users don't necessary have email. Token users with no email in token can only read
-        registration if the registration has the same duo key lti_user_id and consumer_site.
-        lti_user_id are only unique by consumer_site.
+        This case is not supposed to happen. A JWT token from a LTI connection contains
+        context_id, consumer_site and user's keys.
         """
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            email="sarah@openfun.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
-        # token with right context_id and lti_user_id
+        # token with right context_id but no email or user id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": liveregistration.email,
-                "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
+        self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_user_with_email_none_context_with_ok_userid_wrong(
-        self,
-    ):
-        """Token with no email can't read its registration with wrong lti informations.
+    def test_api_liveregistration_read_token_public_partially_lti_3(self):
+        """Token with email can't read the registration.
 
-        LTI users don't necessary have email. Token users with no email in token can only read
-        registration if the registration has the same duo key lti_user_id and consumer_site.
-        lti_user_id are only unique by consumer_site. Duo lti_user_id/consumer_site must
-        match.
+        This case is not supposed to happen. Public token has no user's information, only
+        lti's connections has the key `user` in the JWT token. A JWT token from a LTI
+        connection contains context_id and consumer_site keys.
         """
-        video = VideoFactory()
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf0723DIFF",
-            consumer_site=video.playlist.consumer_site,
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token with a different lti_user_id
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_token_user_with_email_none_context_with_nok_r_consumer_none(
-        self,
-    ):
-        """Token with no email can't read its registration if consumer site is different.
-
-        LTI users don't necessary have email. Token users with no email in token can only read
-        registration if the registration has the same duo key lti_user_id and consumer_site.
-        lti_user_id are only unique by consumer_site.
-        """
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-        other_playlist = PlaylistFactory()
-        # token with different context_id and no email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_token_user_with_email_none_context_with_nok_r_consumer(
-        self,
-    ):
-        """Token with no email can't read its registration with different consumer_site.
-
-        LTI users don't necessary have email. Token users with no email in token can only read
-        registration if the registration has the same duo key lti_user_id and consumer_site.
-        lti_user_id are only unique by consumer_site.
-        """
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            consumer_site=video.playlist.consumer_site,
-        )
-        other_playlist = PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        # context_id from another playlist leading to another consumer site
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_student_email_ok_context_none(self):
-        """Students users can read his liveRegistration if context_id is not defined."""
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-        # token with no context_id and good email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "email": "student@aol.com",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": liveregistration.email,
-                "id": str(liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_student_email_ok_context_ok(self):
-        """Students users should be allowed to read a liveRegistration detail if it's their own."""
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # token with correct context_id
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token with correct user id and email
-        jwt_token.payload["user"] = {
-            "email": "student@aol.com",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "id": str(liveregistration.id),
-                "email": liveregistration.email,
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_student_email_ok_context_nok_r_consumer_none(
-        self,
-    ):
-        """Student shouldn't be able to read a liveregistrations part of another consumer site."""
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(video=video, email="student@aol.com")
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # token with different context_id leading to another consumer_site
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token with correct id and email
-        jwt_token.payload["user"] = {
-            "email": "student@openfun.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "John",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_student_email_ok_context_nok_registration_consumer(
-        self,
-    ):
-        """Student shouldn't be able to read a liveregistrations part of another consumer site."""
-        video = VideoFactory()
-        other_consumer_site = ConsumerSiteFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video, email="student@aol.com", consumer_site=other_consumer_site
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # token with different context_id
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token with correct id and email
-        jwt_token.payload["user"] = {
-            "email": "student@openfun.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "John",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_token_student_with_email_diff_consumer_none(
-        self,
-    ):
-        """Student can't read the registration if they don't have the right email."""
         video = VideoFactory()
         # registration has no consumer_site
         liveregistration = LiveRegistrationFactory(
@@ -625,9 +411,8 @@ class LiveRegistrationApiTest(TestCase):
         # token has no context_id and different email
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
         jwt_token.payload["user"] = {
-            "email": "salmon@openfun.fr",
+            "email": "sarah@openfun.fr",
             "id": liveregistration.lti_user_id,
         }
 
@@ -638,192 +423,22 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_token_student_with_email_diff_consumer_ok(self):
-        """Student can't read the registration if they don't have the right email."""
+    def test_api_liveregistration_read_token_lti_admin_instruct_token_email_ok(self):
+        """Admin/instructor can read any liveregistration part of the course."""
         video = VideoFactory()
-        # registration has consumer_site
+        # registration with another email and lti_user_id
         liveregistration = LiveRegistrationFactory(
-            email="sarah@openfun.fr",
-            video=video,
             consumer_site=video.playlist.consumer_site,
-        )
-        # token has right context_id but different email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": "salmon@openfun.fr",
-            "id": liveregistration.lti_user_id,
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_student_email_none_context_ok_userid_ok(
-        self,
-    ):
-        """Students users don't necessary have an email in token.
-
-        They should be allowed to read a liveRegistration detail if they have the right
-        combination of consumer_site and lti_user_id.
-        """
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # token with right context_id and user's id
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "id": str(liveregistration.id),
-                "email": "student@aol.com",
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_student_email_none_context_ok_userid_nok(
-        self,
-    ):
-        """Students users don't necessary have an email in token.
-
-        They can't read a liveRegistration detail if they don't have the right
-        combination of consumer_site and lti_user_id.
-        """
-        video = VideoFactory()
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf0723DIFF",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token doesn't have the right id
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_student_email_none_context_nok_registration_context_none(
-        self,
-    ):
-        """Students users don't necessary have an email in token.
-
-        They can't read a liveRegistration if they're not in the right context_id
-        or don't have the right duo key consumer_site/lti_user_id.
-        """
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # token has context_id
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_student_email_none_context_nok_registration_context(
-        self,
-    ):
-        """Students users don't necessary have an email in token.
-
-        They can't read a liveRegistration if they're not in the right context_id
-        or don't have the right duo key consumer_site/lti_user_id.
-        """
-        other_consumer_site = ConsumerSiteFactory()
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="student@aol.com",
-            consumer_site=other_consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # context_id leading to another consumer site
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_admin_instruct_email_context_ok(self):
-        """Admin/instructor can read any liveregistrations part of the context_id."""
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
             email="different@aol.com",
-            consumer_site=video.playlist.consumer_site,
+            lti_id="Maths",
+            lti_user_id="4444",
+            video=video,
         )
-
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
             "email": "admin@openfun.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
@@ -840,19 +455,66 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": "different@aol.com",
                 "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "lti_user_id": liveregistration.lti_user_id,
+                "lti_id": "Maths",
                 "should_send_reminders": False,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_read_admin_instruct_email_diff_context_none(self):
-        """Admin/instructor can read any liveregistrations part of the context.
+    def test_api_liveregistration_read_token_lti_admin_instruct_token_email_none(
+        self,
+    ):
+        """Admin/instructor users don't necessary have an email in token.
 
-        Consumer site can be undefined, admin are able to read from undefined
-        context only if their token has no context_id to be in the same consumer
-        site.
+        They should be allowed to read a liveRegistration detail if they are in
+        the right context_id and consumer_site.
+        """
+        video = VideoFactory()
+        # registration with consumer_site
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="somemail@aol.com",
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # token with right context_id
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf0723DIFF",
+        }
+
+        response = self.client.get(
+            f"/api/liveregistrations/{liveregistration.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "email": "somemail@aol.com",
+                "id": str(liveregistration.id),
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": "Maths",
+                "should_send_reminders": False,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_read_token_lti_admin_instruct_email_diff(self):
+        """Admin/instructor can't read public liveregistration.
+
+        Admin could only read this registration, if he had no consumer_site in his token
+        as he necessary has one, it's not possible.
         """
         video = VideoFactory()
         # registration with no consumer site
@@ -863,6 +525,8 @@ class LiveRegistrationApiTest(TestCase):
 
         # token with no context_id leading to undefined consumer site
         jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.id)
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
         jwt_token.payload["user"] = {
@@ -875,48 +539,10 @@ class LiveRegistrationApiTest(TestCase):
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        # Admin/instructor with token with no context_id can read registration
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "id": str(liveregistration.id),
-                "email": "different@aol.com",
-                "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_admin_instruct_email_context_nok_r_consumer_none(
-        self,
-    ):
-        """Admin/instructor can't read a liveregistrations part of another consumer site."""
-        video = VideoFactory()
-        # registration with no consumer site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="different@aol.com",
-        )
-        # token with context_id leading to another consumer site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": "admin@openfun.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "John",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        # Admin/instructor with token with no context_id could only read registration
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_admin_instruct_email_context_nok_registration_consumer(
+    def test_api_liveregistration_read_token_lti_admin_instruct_record_consumer_diff(
         self,
     ):
         """Admin/instructor can't read a liveregistrations part of another consumer site."""
@@ -924,9 +550,11 @@ class LiveRegistrationApiTest(TestCase):
         other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="different@aol.com",
             consumer_site=other_consumer_site,
+            email="admin@openfun.fr",
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
         )
 
         # token with context_id leading to another consumer site
@@ -934,6 +562,7 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
             "email": "admin@openfun.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
@@ -946,162 +575,41 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_admin_instruct_email_none_context_ok(
+    def test_api_liveregistration_read_token_lti_admin_instruct_record_course_diff(
         self,
     ):
-        """Admin/instructor users don't necessary have an email in token.
-
-        They should be allowed to read a liveRegistration detail if they are in
-        the right context_id.
-        """
+        """Admin/instructor can't read a liveregistration part of another course."""
         video = VideoFactory()
+        other_consumer_site = ConsumerSiteFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="somemail@aol.com",
-            consumer_site=video.playlist.consumer_site,
+            consumer_site=other_consumer_site,
+            email="admin@openfun.fr",
+            lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-        # token with right context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf0723DIFF",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "id": str(liveregistration.id),
-                "email": "somemail@aol.com",
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_admin_instruct_email_none_context_ok_but_none(
-        self,
-    ):
-        """Admin/instructor users don't necessary have an email in token.
-
-        They should be allowed to read a liveRegistration detail if they are in the same
-        consumer site. If token has no context_id, the consumer site will not be defined.
-        """
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
             video=video,
-            email="somemail@aol.com",
-        )
-        # token with no context_id leading to no consumer_site and no email defined
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf0723DIFF",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        # admin/instructor can read registrations from no consumer_site as they
-        # have none defined in their token
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "somemail@aol.com",
-                "id": str(liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": False,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_read_admin_instruct_email_none_context_nok_r_consumer_none(
-        self,
-    ):
-        """Admin/instructor can't read liveRegistration of another consumer site.
-
-        They can read any liveRegistration detail even if it's not their own, but they
-        have to be in the same consumer site otherwise it's not allowed.
-        """
-        video = VideoFactory()
-        # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="administrator@aol.com",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
         # token with context_id leading to another consumer site
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths 2"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
-            "email": None,
+            "email": "admin@openfun.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "John",
         }
 
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_admin_instruct_email_none_context_nok_registration_consumer(
-        self,
-    ):
-        """Admin/instructor can't read liveRegistration of another consumer site.
-
-        They can read any liveRegistration detail even if it's not their own, but they
-        have to be in the same consumer site otherwise it's not allowed.
-        """
-        other_consumer_site = ConsumerSiteFactory()
-        video = VideoFactory()
-        # registration with a consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            email="administrator@aol.com",
-            consumer_site=other_consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-
-        # token with email leading to another consumer site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-        }
-
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_wrong_video_token_context_none(self):
-        """Request with wrong video in token."""
+    def test_api_liveregistration_read_token_public_wrong_video_token(self):
+        """Request with wrong video in token and public token."""
         video = VideoFactory()
         # registration with no consumer_site
         liveregistration = LiveRegistrationFactory(video=video)
@@ -1116,26 +624,36 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_wrong_video_token_context_ok(self):
-        """Request with wrong video in token with right context_id."""
+    def test_api_liveregistration_read_token_lti_wrong_video_token(self):
+        """Request with wrong video in token and LTI token."""
         video = VideoFactory()
         # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            consumer_site=video.playlist.consumer_site, video=video
+            consumer_site=video.playlist.consumer_site,
+            lti_user_id="555",
+            lti_id="Maths",
+            video=video,
         )
-        # token with context_id leading to the same consumer_site
+        # token with unexisting consumer_site
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(uuid.uuid4())
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf0723DIFF",
+        }
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_other_video_context_none(self):
-        """Request to read a registration for another video than the one in the token."""
+    def test_api_liveregistration_read_token_public_other_video_context_none_role(self):
+        """Public token can't read another video than the one in the token."""
         other_video = VideoFactory()
         video = VideoFactory()
         # registration with no consumer_site
@@ -1144,67 +662,35 @@ class LiveRegistrationApiTest(TestCase):
         # token with no context_id leading to the same undefined consumer_site
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(other_video.id)
-
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_other_video_context_none_role(self):
-        """Token user can't read another video than the one in the token."""
+    def test_api_liveregistration_read_token_lti_other_video_context_none_role(self):
+        """LTI token can't read another video than the one in the token."""
         other_video = VideoFactory()
         video = VideoFactory()
         # registration with no consumer_site
-        liveregistration = LiveRegistrationFactory(video=video)
-
-        # token with no context_id leading to the same undefined consumer_site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
-        ]
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)
-
-    def test_api_liveregistration_read_other_video_context_ok(self):
-        """Token with context_id can't read another video than the one in the token."""
-        other_video = VideoFactory()
-        video = VideoFactory()
-        # registration with consumer_site
         liveregistration = LiveRegistrationFactory(
-            video=video,
             consumer_site=video.playlist.consumer_site,
+            lti_user_id="555",
+            lti_id="Maths",
+            video=video,
         )
-        # token with context_id leading to the same consumer_site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        response = self.client.get(
-            f"/api/liveregistrations/{liveregistration.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_read_other_video_context_ok_role(self):
-        """Token with context_id can't read another video than the one in the token."""
-        other_video = VideoFactory()
-        video = VideoFactory()
-        # registration with consumer_site
-        liveregistration = LiveRegistrationFactory(
-            video=video,
-            consumer_site=video.playlist.consumer_site,
-        )
-        # token with context_id leading to the same consumer_site
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
+            random.choice(["administrator", "instructor", "student", ""])
         ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "555",
+        }
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1221,10 +707,10 @@ class LiveRegistrationApiTest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    def test_api_liveregistration_create_role_none_token_email_none_user_none_context_none(
+    def test_api_liveregistration_create_public_token(
         self,
     ):
-        """Token with no user's info can create a liveRegistration."""
+        """Public token can create a liveRegistration."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -1246,19 +732,24 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
+                "lti_id": None,
                 "lti_user_id": None,
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_role_none_token_email_none_user_none_context_any(
+    def test_api_liveregistration_create_public_partially_lti1(
         self,
     ):
-        """Token with no user info can create a liveRegistration."""
+        """Public token with some LTI information generates an error.
+
+        LTI token must have consumer_site, context_id and user.id, this token
+        is missing the key user
+        """
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -1270,30 +761,32 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         # context_id from token will be used to set the consumer_site_id
         jwt_token.payload["context_id"] = str(other_playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         response = self.client.post(
             "/api/liveregistrations/",
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
+                "token": [
+                    "Public token shouldn't have any LTI information, "
+                    "cases are not expected."
+                ]
             },
         )
 
-    def test_api_liveregistration_create_role_none_token_email_none_user_ok_context_none(
+    def test_api_liveregistration_create_public_partially_lti2(
         self,
     ):
-        """Token with user info, no email & no context_id can create a liveRegistration."""
+        """Public token with some LTI information generates an error.
+
+        LTI token must have consumer_site, context_id and user.id, this token
+        is missing the key context_id
+        """
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -1302,6 +795,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         # token has no context_id and no email
         jwt_token.payload["user"] = {
             "email": None,
@@ -1315,24 +809,62 @@ class LiveRegistrationApiTest(TestCase):
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
+                "token": [
+                    "Public token shouldn't have any LTI information, "
+                    "cases are not expected."
+                ]
             },
         )
 
-    def test_api_liveregistration_create_role_none_token_email_none_user_ok_context_same(
+    def test_api_liveregistration_create_public_partially_lti3(
         self,
     ):
-        """Token with user info, no email & context_id can create a liveRegistration."""
+        """Public token with some LTI information generates an error.
+
+        LTI token must have consumer_site, context_id and user.id, this token
+        is missing the key lti_id
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = ("Maths",)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        # token has no context_id and no email
+        jwt_token.payload["user"] = {
+            "email": None,
+            "username": "Token",
+        }
+
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "token": [
+                    "Public token shouldn't have any LTI information, "
+                    "cases are not expected."
+                ]
+            },
+        )
+
+    def test_api_liveregistration_create_token_lti_email_with(
+        self,
+    ):
+        """LTI Token can create a liveRegistration."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -1342,9 +874,13 @@ class LiveRegistrationApiTest(TestCase):
         # token has same context_id than the video
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
         jwt_token.payload["user"] = {
-            "email": None,
+            "email": "salome@test-fun-mooc.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
@@ -1359,19 +895,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_role_none_token_email_none_user_ok_context_diff(
+    def test_api_liveregistration_create_token_lti_email_none(
         self,
     ):
-        """Token with no email can create a liveRegistration from other context_id than video."""
+        """LTI token with no email can create a liveRegistration."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -1383,6 +920,10 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(other_playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
         jwt_token.payload["user"] = {
             "email": None,
             "id": "56255f3807599c377bf0e5bf072359fd",
@@ -1401,687 +942,32 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": str(other_playlist.lti_id),
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_role_none_token_email_with_user_ok_context_none(
+    def test_api_liveregistration_create_public_token_record_email_other_registration_lti(
         self,
     ):
-        """Token with email should be able to create a liveRegistration."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token has email and no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_none_token_email_with_user_ok_context_same(
-        self,
-    ):
-        """Token with user info can create a liveRegistration in the same context_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token has email and same context_id than the video
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_none_token_email_with_user_ok_context_diff(
-        self,
-    ):
-        """User with token from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        other_playlist = PlaylistFactory()
-        # token has email and different context_id than the video
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_none_context_none(
-        self,
-    ):
-        """Student users can create a liveRegistration with no context_id or user info in token."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token has no user info and no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_none_context_same(
-        self,
-    ):
-        """Student can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token has same context_id than the video and no user informations
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_none_context_diff(
-        self,
-    ):
-        """Student from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_playlist = PlaylistFactory()
-        self.assertTrue(video.is_scheduled)
-        # token has different context_id than the video and no user informations
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_with_context_none(
-        self,
-    ):
-        """Student users should be able to create a liveRegistration with no context_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_with_context_same(
-        self,
-    ):
-        """Student can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token has same context_id than the video and user informations
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_student_email_with_user_with_context_diff(
-        self,
-    ):
-        """Student can create a liveRegistration in a different context_id than the video."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        other_playlist = PlaylistFactory()
-        # token has same context_id than the video and user informations
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_none_context_diff(
-        self,
-    ):
-        """Admin/instructors from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        other_playlist = PlaylistFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_none_context_none(
-        self,
-    ):
-        """Admin/Intructors can create a liveRegistration with no context_id & user in token."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_none_context_same(
-        self,
-    ):
-        """Admin/Intructors can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_none_context_any(
-        self,
-    ):
-        """Admin/Intructors can create a liveRegistration linked to their token's context_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_playlist = PlaylistFactory()
-        self.assertTrue(video.is_scheduled)
-        # token has no user information
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        # context_id is different than the video one
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_with_context_none(
-        self,
-    ):
-        """Admin/Intructors can create a liveRegistration with no context_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_with_context_same(
-        self,
-    ):
-        """Admin/Intructors can create a liveRegistration in the same context_id than the video."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_role_admin_instructor_email_with_user_with_context_diff(
-        self,
-    ):
-        """Admin/Intructors from other context_id than the video can create a liveRegistration."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_playlist = PlaylistFactory()
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-        jwt_token.payload["roles"] = ["administrator", "instructor"]
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        created_liveregistration = LiveRegistration.objects.last()
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_roles_same_mail_c_diff_user_no_context_no_regist(
-        self,
-    ):
-        """Same email can be used for the same video if context_id is different."""
+        """Same email can be used for the same video with a public token."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        # no consumer_site
+        # created by LTI
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
-        ]
-        # leading to another consumer site
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        created_liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            video=video,
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_roles_same_mail_c_diff_user_no_context_no_token(
-        self,
-    ):
-        """Same email can be used for the same video if context_id is different."""
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        # registration with consumer_site
-        LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            video=video,
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 1)
-        self.assertTrue(video.is_scheduled)
-        # token with no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
-        ]
 
         response = self.client.post(
             "/api/liveregistrations/",
@@ -2099,86 +985,42 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(created_liveregistration.id),
                 "consumer_site": None,
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_roles_same_mail_c_diff_user_no_context_with(
-        self,
-    ):
-        """Same email can be used for the same video if context_id is different."""
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        # registration with consumer_site
-        LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            video=video,
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 1)
-        other_playlist = PlaylistFactory()
-        self.assertTrue(video.is_scheduled)
-        # token with no user informations
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
-        ]
-        # token with context_id leading to another consumer_site
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        created_liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            consumer_site=other_playlist.consumer_site,
-            video=video,
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
                 "lti_user_id": None,
+                "lti_id": None,
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_roles_same_mail_c_diff_user_with_context_none(
+    def test_api_liveregistration_create_lti_token_record_email_other_consumer_site(
         self,
     ):
-        """Same email can be used for the same video if context_id is different."""
+        """New registration for a consumer_site different."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        self.assertTrue(video.is_scheduled)
-        # registration with consumer_site
+        other_consumer_site = ConsumerSiteFactory()
+        # created by LTI
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
-        # token with no context_id and user informations
+        self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(other_consumer_site.id)
         jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
+            random.choice(["administrator", "instructor", "student", ""])
         ]
         jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
+            "email": None,
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
@@ -2192,45 +1034,47 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 2)
         created_liveregistration = LiveRegistration.objects.get(
             email="salome@test-fun-mooc.fr",
-            consumer_site=None,
+            consumer_site=other_consumer_site,
             video=video,
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(other_consumer_site.id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": "Maths",
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_roles_same_mail_c_diff_user_with_context_with(
+    def test_api_liveregistration_create_lti_token_record_email_other_context_id(
         self,
     ):
-        """Same email can be used for the same video if context_id is different."""
+        """New registration for a context_id different."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        self.assertTrue(video.is_scheduled)
-        # registration with consumer_site
+        # created by LTI
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
-        other_playlist = PlaylistFactory()
-        # token with another context_id and user informations
+        self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths2"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
+            random.choice(["administrator", "instructor", "student", ""])
         ]
-        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
         jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
+            "email": None,
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
@@ -2244,23 +1088,79 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 2)
         created_liveregistration = LiveRegistration.objects.get(
             email="salome@test-fun-mooc.fr",
-            consumer_site=other_playlist.consumer_site,
+            lti_id="Maths2",
             video=video,
         )
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(other_playlist.consumer_site_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": "Maths2",
                 "should_send_reminders": True,
                 "video": str(video.id),
             },
         )
 
-    def test_api_liveregistration_create_role_none_restrict_email_context_none(self):
-        """Users with email in their token can only register for their email."""
+    def test_api_liveregistration_create_lti_token_record_email_lti_user_id(
+        self,
+    ):
+        """New registration for a lti_id different."""
+        starting_at = timezone.now() + timedelta(days=5)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
+        # created by LTI
+        LiveRegistrationFactory(
+            email="salome@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_id="Maths",
+            lti_user_id="OLD",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        self.assertTrue(video.is_scheduled)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "NEW",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(LiveRegistration.objects.count(), 2)
+        created_liveregistration = LiveRegistration.objects.get(
+            email="salome@test-fun-mooc.fr",
+            lti_user_id="NEW",
+            video=video,
+        )
+
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "email": "salome@test-fun-mooc.fr",
+                "id": str(created_liveregistration.id),
+                "lti_user_id": "NEW",
+                "lti_id": "Maths",
+                "should_send_reminders": True,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_create_token_lti_email_restricted_token(self):
+        """LTI token can only register for the email in the token."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -2270,120 +1170,10 @@ class LiveRegistrationApiTest(TestCase):
         # token with no context_id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["user"] = {
-            "email": "saved@aol.com",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": [
-                    "You are not authorized to register with a specific email "
-                    "notsaved@test-fun-mooc.fr. You can only use the email from your "
-                    "authentication."
-                ]
-            },
-        )
-
-    def test_api_liveregistration_create_role_none_restrict_email_context_with(self):
-        """Users with role and email in token can only register for their email."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token with context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["user"] = {
-            "email": "saved@aol.com",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": [
-                    "You are not authorized to register with a specific email "
-                    "notsaved@test-fun-mooc.fr. You can only use the email from your "
-                    "authentication."
-                ]
-            },
-        )
-
-    def test_api_liveregistration_create_roles_restrict_email_context_with(self):
-        """Users with role and email in token can only register for their email."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
-        ]
-        # token with context_id
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "email": "saved@aol.com",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": [
-                    "You are not authorized to register with a specific email "
-                    "notsaved@test-fun-mooc.fr. You can only use the email from your "
-                    "authentication."
-                ]
-            },
-        )
-
-    def test_api_liveregistration_create_roles_restrict_email_context_none(self):
-        """Users with role and email in token can only register for their email."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        self.assertTrue(video.is_scheduled)
-        # token with no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student"])
+            random.choice(["administrator", "instructor", "student", ""])
         ]
         jwt_token.payload["user"] = {
             "email": "saved@aol.com",
@@ -2410,7 +1200,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
 
-    def test_api_liveregistration_create_cant_register_when_not_scheduled_context_none(
+    def test_api_liveregistration_create_public_token_cant_register_when_not_scheduled(
         self,
     ):
         """Can't register if video is not scheduled."""
@@ -2431,17 +1221,18 @@ class LiveRegistrationApiTest(TestCase):
             {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
         )
 
-    def test_api_liveregistration_create_cant_register_when_not_scheduled_context_with(
+    def test_api_liveregistration_create_lti_token_cant_register_when_not_scheduled(
         self,
     ):
-        """Can't register if video is not scheduled."""
+        """LTI token can't register if video is not scheduled."""
         video = VideoFactory()
         self.assertFalse(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
-            "email": "saved@aol.com",
+            "email": None,
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
@@ -2455,38 +1246,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
-        )
-
-    def test_api_liveregistration_create_cant_register_when_no_email(self):
-        """Can't register to a scheduled video if there is no email."""
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content),
-            {"email": ["This field is required."]},
         )
 
     def test_api_liveregistration_create_cant_register_same_email_same_consumer(
         self,
     ):
-        """Trio email/consumer_site/video must be unique."""
+        """Key email/consumer_site/lti_id/lti_user_id/video must be unique."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         # registration with consumer_site
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
         self.assertTrue(video.is_scheduled)
@@ -2494,6 +1267,7 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
             "email": "salome@test-fun-mooc.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
@@ -2509,10 +1283,114 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": [
-                    "salome@test-fun-mooc.fr is already registered for "
-                    "this video and consumer site."
+                "lti_user_id": [
+                    "This identified user is already registered "
+                    "for this video and consumer site and course."
                 ]
+            },
+        )
+
+    def test_api_liveregistration_create_cant_register_same_email_same_consumer_with_deleted(
+        self,
+    ):
+        """Key email/consumer_site/lti_id/lti_user_id/video must be unique and can be used after
+        being deleted."""
+        starting_at = timezone.now() + timedelta(days=5)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
+        self.assertTrue(video.is_scheduled)
+        # registration with consumer_site
+        liveregistration = LiveRegistrationFactory(
+            email="salome@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        liveregistration.delete()
+        # token with same context_id and same email
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["user"] = {
+            "email": "salome@test-fun-mooc.fr",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        liveregistration = LiveRegistration.objects.get(
+            email="salome@test-fun-mooc.fr", deleted__isnull=True
+        )
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "email": "salome@test-fun-mooc.fr",
+                "id": str(liveregistration.id),
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": str(video.playlist.lti_id),
+                "should_send_reminders": True,
+                "video": str(video.id),
+            },
+        )
+
+    def test_api_liveregistration_create_cant_register_same_email_same_consumer_deleted(
+        self,
+    ):
+        """Key email/consumer_site/lti_id/lti_user_id/video must be unique but can be
+        reused if deleted is set."""
+        starting_at = timezone.now() + timedelta(days=5)
+        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
+        self.assertTrue(video.is_scheduled)
+        # registration with consumer_site
+        liveregister = LiveRegistrationFactory(
+            email="salome@test-fun-mooc.fr",
+            consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        # delete it
+        liveregister.delete()
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        # token with same context_id and same email
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["user"] = {
+            "email": "salome@test-fun-mooc.fr",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        liveregistration = LiveRegistration.objects.get(
+            email="salome@test-fun-mooc.fr", deleted__isnull=True
+        )
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "email": "salome@test-fun-mooc.fr",
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": str(video.playlist.lti_id),
+                "id": str(liveregistration.id),
+                "should_send_reminders": True,
+                "video": str(video.id),
             },
         )
 
@@ -2541,193 +1419,33 @@ class LiveRegistrationApiTest(TestCase):
             json.loads(response.content),
             {
                 "email": [
-                    "salome@test-fun-mooc.fr is already registered "
-                    "for this video and consumer site."
+                    "salome@test-fun-mooc.fr is already registered for "
+                    "this video, consumer site and course."
                 ]
-            },
-        )
-
-    def test_api_liveregistration_create_diff_lti_info_same_email_consumer_token_email_none(
-        self,
-    ):
-        """lti_user_id are only unique by consumer site.
-
-        Same combination email/video/lti_user_id can be used for different consumer site.
-        """
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        other_consumer_site = ConsumerSiteFactory()
-        # registration with consumer_site
-        LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            consumer_site=other_consumer_site,
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        # token with context_id leading to another consumer_site
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # token with same user id and no email
-        jwt_token.payload["user"] = {
-            "email": None,
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        # registration of same video/email/lti_user_id is possible if
-        # consumer_site is different
-        liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            consumer_site=video.playlist.consumer_site,
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_diff_lti_info_same_email_consumer_token_email_ok(
-        self,
-    ):
-        """lti_user_id are only unique by consumer site.
-
-        Same combination email/video/lti_user_id can be used for different consumer site.
-        """
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        other_consumer_site = ConsumerSiteFactory()
-        # registration with consumer_site
-        LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            consumer_site=other_consumer_site,
-        )
-        self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        # token with context_id leading to another consumer_site
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        # user has email in his token
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        # registration of same video/email/lti_user_id is possible if
-        # consumer_site is different
-        liveregistration = LiveRegistration.objects.get(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            consumer_site=video.playlist.consumer_site,
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "salome@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_liveregistration_create_same_lti_info_diff_email_consumer_none(
-        self,
-    ):
-        """lti_user_id is not an unique key if consumer site is not defined.
-
-        Same lti_user_id with different email can be used for different registrations when
-        consumer_site is not defined.
-        """
-        starting_at = timezone.now() + timedelta(days=5)
-        video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
-        # no consumer_site is defined
-        LiveRegistrationFactory(
-            email="salome@test-fun-mooc.fr",
-            video=video,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-        )
-        self.assertTrue(video.is_scheduled)
-        self.assertEqual(LiveRegistration.objects.count(), 1)
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        # no context_id in token
-        jwt_token.payload["user"] = {
-            "email": "balou@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "balou@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        # lti_user_id has no constraint without consumer_site
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        liveregistration = LiveRegistration.objects.get(
-            email="balou@test-fun-mooc.fr", video=video
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "balou@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
-                "consumer_site": None,
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video.id),
             },
         )
 
     def test_api_liveregistration_create_same_lti_info_diff_email_consumer(
         self,
     ):
-        """Unicity of video/context_id/lti_user_id.
+        """Unicity of video/consumer_site/lti_id/lti_user_id.
 
-        Same combination of  video/context_id/lti_user_id can't be used for different emails
-        registration. Token doesn't necessary have an email, duo context_id/lti_user_id is
-        used to identify a user in this case.
-        """
+        Combination of video/consumer_site/lti_id/lti_user_id can't be used for different
+        emails."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
             video=video,
+            lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
         )
         self.assertTrue(video.is_scheduled)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         # token with no email so user can register to any email
         jwt_token.payload["user"] = {
             "email": None,
@@ -2747,15 +1465,15 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "lti_user_id": [
                     "This identified user is already registered "
-                    "for this video and consumer site."
+                    "for this video and consumer site and course."
                 ]
             },
         )
 
-    def test_api_liveregistration_create_same_email_different_video_user_none_context_none(
+    def test_api_liveregistration_create_public_token_same_email_different_video(
         self,
     ):
-        """Same email can be used for two different videos when token has no context_id."""
+        """Same email can be used for two different videos with public token."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -2787,19 +1505,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "email": "chantal@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
                 "consumer_site": None,
+                "email": "chantal@test-fun-mooc.fr",
                 "lti_user_id": None,
+                "lti_id": None,
+                "id": str(liveregistration.id),
                 "should_send_reminders": True,
                 "video": str(video2.id),
             },
         )
 
-    def test_api_liveregistration_create_same_email_different_video_user_none_context_with(
+    def test_api_liveregistration_create_token_lti_same_email_different_video(
         self,
     ):
-        """Same email can be used for different videos when token has context_id."""
+        """Same email can be used for different videos with LTI token."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,
@@ -2812,64 +1531,21 @@ class LiveRegistrationApiTest(TestCase):
         )
         # registration with consumer_site
         LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
-            video=video,
-        )
-        # token with right context_id and targeting video2
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video2.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-
-        # With the same email but other video, liveregistration is possible
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": True},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "chantal@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": None,
-                "should_send_reminders": True,
-                "video": str(video2.id),
-            },
-        )
-
-    def test_api_liveregistration_create_same_email_different_video_user_with_context_none(
-        self,
-    ):
-        """Same email can be used for different videos when token has no context_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=5),
-        )
-        video2 = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(hours=1),
-        )
-        # registration with no consumer_site
-        LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
+            lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
-        # token with no context_id and user informations
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video2.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
         jwt_token.payload["user"] = {
-            "email": "chantal@test-fun-mooc.fr",
+            "email": None,
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
@@ -2888,68 +1564,54 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(liveregistration.id),
-                "consumer_site": None,
+                "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
                 "video": str(video2.id),
             },
         )
 
-    def test_api_liveregistration_create_same_email_different_video_user_with_context_with(
-        self,
-    ):
-        """Same email can be used for different videos with token context_id/lti_user_id."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=5),
+    def test_api_liveregistration_delete_anonymous(self):
+        """An anonymous should not be able to delete a liveregistration."""
+        liveregistration = LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr", video=VideoFactory()
         )
-        video2 = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(hours=1),
+        response = self.client.delete(
+            f"/api/liveregistration/{liveregistration.id}/",
         )
-        # registration with consumer_site
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_liveregistration_delete_token_lti(self):
+        """A student should not be able to delete a document."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
+            email="chantal@test-fun-mooc.fr",
+            lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
-        # token with right context_id and user informations
         jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video2.id)
+        jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["permissions"] = {"can_update": True}
         jwt_token.payload["user"] = {
             "email": "chantal@test-fun-mooc.fr",
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
-        # With the same email but other video, liveregistration is possible
-        response = self.client.post(
-            "/api/liveregistrations/",
-            {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": True},
+        response = self.client.delete(
+            f"/api/liveregistration/{liveregistration.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
         )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(LiveRegistration.objects.count(), 2)
-        liveregistration = LiveRegistration.objects.get(
-            email="chantal@test-fun-mooc.fr", video=video2
-        )
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "email": "chantal@test-fun-mooc.fr",
-                "id": str(liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
-                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
-                "video": str(video2.id),
-            },
-        )
+        self.assertEqual(response.status_code, 404)
 
     def test_api_liveregistration_update_put_anonymous_not_allowed(self):
         """Anonymous can't update liveregistration."""
@@ -3034,7 +1696,7 @@ class LiveRegistrationApiTest(TestCase):
             json.loads(response.content), {"detail": 'Method "PATCH" not allowed.'}
         )
 
-    def test_api_liveregistration_wrong_video_404_create(
+    def test_api_liveregistration_create_with_unknown_video(
         self,
     ):
         """Token with wrong resource_id should render a 404."""
@@ -3054,7 +1716,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_liveregistration_wrong_video_404_read(
+    def test_api_liveregistration_read_detail_unknown_video(
         self,
     ):
         """Token with wrong resource_id should render a 404."""
@@ -3062,20 +1724,13 @@ class LiveRegistrationApiTest(TestCase):
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         liveregistration = LiveRegistrationFactory(
             email="salome@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
             video=video,
         )
         # token with no user informations
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(uuid.uuid4())
-        jwt_token.payload["user"] = {
-            "email": "salome@test-fun-mooc.fr",
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Token",
-        }
         response = self.client.get(
             f"/api/liveregistrations/{liveregistration.id}/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3086,14 +1741,11 @@ class LiveRegistrationApiTest(TestCase):
         response = self.client.get("/api/liveregistrations/")
         self.assertEqual(response.status_code, 401)
 
-    def test_list_liveregistration_role_none_email_with_consumer_none(
+    def test_list_liveregistration_public_token(
         self,
     ):
         """
-        User with token can only fetch liveregistrations filtered by their token.
-
-        If token has email and no context_id, liveregistrations with the same email can
-        be fetched only for an undefined consumer site and for the same video.
+        Public token can't fetch any liveregistration.
         """
         user = UserFactory()
         video = VideoFactory(
@@ -3107,176 +1759,23 @@ class LiveRegistrationApiTest(TestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         # consumer_site is not defined
-        liveregistration = LiveRegistrationFactory(
-            email=user.email, lti_user_id=user.id, video=video
-        )
+        LiveRegistrationFactory(email=user.email, video=video)
         LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
         LiveRegistrationFactory(email="super@test-fun-mooc.fr", video=video)
         # liveregistration for another consumer_site
         LiveRegistrationFactory(
-            email=user.email,
+            email="chantal@test-fun-mooc.fr",
             lti_user_id=user.id,
+            lti_id="Maths",
             video=video,
             consumer_site=ConsumerSiteFactory(),
         )
-        # liveregistration for another video and an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        # liveregistration for another video
+        LiveRegistrationFactory(email=user.email, video=video2)
 
-        # no context_id in the token leading to an undefined consumer_site
+        # public token
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        # email in the token
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-            "email": user.email,
-        }
-
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": None,
-                    "email": user.email,
-                    "id": str(liveregistration.id),
-                    "lti_user_id": str(user.id),
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                }
-            ],
-        )
-
-    def test_list_liveregistration_role_none_email_with_consumer_with(
-        self,
-    ):
-        """
-        User with token can only fetch liveregistrations filtered by their token.
-
-        If token has email, liveregistrations with the same email can be fetched only
-        for the same video and same consumer site.
-        """
-        user = UserFactory()
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        video2 = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        # consumer_site is defined
-        liveregistration = LiveRegistrationFactory(
-            consumer_site=video.playlist.consumer_site,
-            email=user.email,
-            lti_user_id=user.id,
-            video=video,
-        )
-        # liveregistration for the same consumer_site, same video but other email
-        LiveRegistrationFactory(
-            consumer_site=video.playlist.consumer_site,
-            email="chantal@test-fun-mooc.fr",
-            video=video,
-        )
-        # liveregistration for the same video, same email and for another consumer_site
-        LiveRegistrationFactory(
-            email=user.email,
-            lti_user_id=user.id,
-            video=video,
-            consumer_site=ConsumerSiteFactory(),
-        )
-        # liveregistration with the same email for another video and for an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
-
-        # context_id in the token
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-            "email": user.email,
-        }
-
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": user.email,
-                    "id": str(liveregistration.id),
-                    "lti_user_id": str(user.id),
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                }
-            ],
-        )
-
-    def test_list_liveregistration_role_none_email_none_consumer_none(
-        self,
-    ):
-        """
-        User with token can't fetch liveregistrations if token has no email and no context_id.
-
-        If token has no email and no context_id, the user can't read any liveregistration.
-        Duo email/consumer_site or consumer_site/lti_user_id for a defined consumer_site is
-        needed to read a liveregistration.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video,lti_user_id and undefined consumer_site
-        LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same lti_user_id and undefined consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-
-        # token has no context_id leading to an undefined consumer_site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": None,
-        }
         response = self.client.get(
             "/api/liveregistrations/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -3285,99 +1784,15 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 0)
 
-    def test_list_liveregistration_role_none_email_none_consumer_with(
+    def test_list_liveregistration_lti_token_role_none(
         self,
     ):
         """
-        User with token can fetch list requests but will fetch only their registrations.
+        User with LTI token can only fetch liveregistrations filtered by their token.
 
-        Will not receive liveregistrations other than the one corresponding to their token.
-        If token has no email, the user can read liveregistrations of this video for the
-        same duo consumer_site/lti_user_id.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        # liveregistration for the right video, lti_user_id and consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and consumer_site but different lti_user_id
-        LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same lti_user_id and consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and lti_user_id but no consumer_site
-        LiveRegistrationFactory(
-            email="chantal4@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has context_id and no email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": None,
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                }
-            ],
-        )
-
-    def test_list_liveregistration_role_student_email_with_consumer_none(
-        self,
-    ):
-        """
-        Student can only fetch liveregistrations filtered by their token.
-
-        If token has email and no context_id, liveregistrations with the same email can
-        be fetched only for an undefined consumer site and for the same video.
+        Liveregistrations can be fetched  for the same video, same consumer site and
+        same context_id. Token can have or not an email, result won't be filtered on
+        email.
         """
         user = UserFactory()
         video = VideoFactory(
@@ -3390,107 +1805,61 @@ class LiveRegistrationApiTest(TestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        # consumer_site is not defined
-        liveregistration = LiveRegistrationFactory(
-            email=user.email, lti_user_id=user.id, video=video
-        )
-        LiveRegistrationFactory(email="chantal@test-fun-mooc.fr", video=video)
-        LiveRegistrationFactory(email="super@test-fun-mooc.fr", video=video)
-        # liveregistration for another consumer_site
-        LiveRegistrationFactory(
-            email=user.email,
-            lti_user_id=user.id,
-            video=video,
-            consumer_site=ConsumerSiteFactory(),
-        )
-        # liveregistration for another video and an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
-
-        # no context_id in the token leading to an undefined consumer_site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        # email in the token
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-            "email": user.email,
-        }
-
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": None,
-                    "email": user.email,
-                    "id": str(liveregistration.id),
-                    "lti_user_id": str(user.id),
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                }
-            ],
-        )
-
-    def test_list_liveregistration_role_student_email_with_consumer_with(
-        self,
-    ):
-        """
-        Student can only fetch liveregistrations filtered by their token.
-
-        If token has email, liveregistrations with the same email can be fetched only
-        for the same video and the same consumer site.
-        """
-        user = UserFactory()
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        video2 = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        # consumer_site is defined
         liveregistration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
             email=user.email,
-            lti_user_id=user.id,
+            lti_id="Maths",
+            lti_user_id=str(user.id),
             video=video,
         )
-        # liveregistration for the same consumer_site, same video but other email
+        # liveregistration with different lti_user
         LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
-            email="chantal@test-fun-mooc.fr",
-            video=video,
-        )
-
-        # liveregistration for the same video, same email and for another consumer_site
-        LiveRegistrationFactory(
             email=user.email,
-            lti_user_id=user.id,
+            lti_id="Maths",
+            lti_user_id="5555",
             video=video,
-            consumer_site=ConsumerSiteFactory(),
         )
-        # liveregistration with the same email for another video and for an undefined consumer_site
-        LiveRegistrationFactory(email=user.email, lti_user_id=user.id, video=video2)
+        # liveregistration with another consumer_site
+        LiveRegistrationFactory(
+            consumer_site=ConsumerSiteFactory(),
+            email=user.email,
+            lti_id="Maths",
+            lti_user_id=str(user.id),
+            video=video,
+        )
+        # liveregistration with another context_id
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email=user.email,
+            lti_id="Maths2",
+            lti_user_id=str(user.id),
+            video=video,
+        )
+        # liveregistration for another video
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email=user.email,
+            lti_id="Maths",
+            lti_user_id=str(user.id),
+            video=video2,
+        )
+        # liveregistration with the same email with no consumer_site
+        LiveRegistrationFactory(email=user.email, video=video)
+        # liveregistration with the same email for another video
+        LiveRegistrationFactory(email=user.email, video=video2)
 
         # context_id in the token
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["student", ""])]
+        # results aren't filtered by email
         jwt_token.payload["user"] = {
             "id": str(user.id),
             "username": user.username,
-            "email": user.email,
+            "email": random.choice([user.email, ""]),
         }
 
         response = self.client.get(
@@ -3504,13 +1873,119 @@ class LiveRegistrationApiTest(TestCase):
             response.json()["results"],
             [
                 {
-                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "consumer_site": str(video.playlist.consumer_site.id),
                     "email": user.email,
                     "id": str(liveregistration.id),
                     "lti_user_id": str(user.id),
+                    "lti_id": "Maths",
                     "should_send_reminders": False,
                     "video": str(video.id),
                 }
+            ],
+        )
+
+    def test_list_liveregistration_lti_token_role_admin_instructeurs(
+        self,
+    ):
+        """
+        Admin/Intstructors can only fetch liveregistrations depending of their token.
+
+        They can only fetch liveregistrations for the same video, same consumer site
+        and same context_id.
+        """
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="user1@test.fr",
+            lti_id="Maths",
+            lti_user_id="1111",
+            video=video,
+        )
+        # liveregistration with different lti_user
+        liveregistration2 = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="user2@test.fr",
+            lti_id="Maths",
+            lti_user_id="2222",
+            video=video,
+        )
+        # liveregistration with another consumer_site
+        LiveRegistrationFactory(
+            consumer_site=ConsumerSiteFactory(),
+            email="user3@test.fr",
+            lti_id="Maths",
+            lti_user_id="3333",
+            video=video,
+        )
+        # liveregistration with another context_id
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="user4@test.fr",
+            lti_id="Maths2",
+            lti_user_id="4444",
+            video=video,
+        )
+        # liveregistration for another video
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="user5@test.fr",
+            lti_id="Maths",
+            lti_user_id="5555",
+            video=video2,
+        )
+        LiveRegistrationFactory(email="user1@test.fr", video=video)
+        LiveRegistrationFactory(email="user1@test.fr", video=video2)
+
+        # context_id in the token
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
+        jwt_token.payload["user"] = {
+            "id": "8888",
+            "username": "admin",
+            "email": "admin@test.fr",
+        }
+
+        response = self.client.get(
+            "/api/liveregistrations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": str(liveregistration.consumer_site.id),
+                    "email": liveregistration.email,
+                    "id": str(liveregistration.id),
+                    "lti_user_id": liveregistration.lti_user_id,
+                    "lti_id": "Maths",
+                    "should_send_reminders": False,
+                    "video": str(video.id),
+                },
+                {
+                    "consumer_site": str(liveregistration2.consumer_site.id),
+                    "email": liveregistration2.email,
+                    "id": str(liveregistration2.id),
+                    "lti_user_id": liveregistration2.lti_user_id,
+                    "lti_id": "Maths",
+                    "should_send_reminders": False,
+                    "video": str(video.id),
+                },
             ],
         )
 
@@ -3520,8 +1995,9 @@ class LiveRegistrationApiTest(TestCase):
         """
         Student can fetch his liveregistration even if his token has the wrong email.
 
-        A registration already exists for this user and this consumer site, but the user token
-        shows a different email, the user still should be considered as already registered.
+        A registration already exists for this user, this consumer site and context_id,
+        but the user token shows a different email, the user still should be considered
+        as already registered.
         """
         video = VideoFactory(
             live_state=IDLE,
@@ -3534,6 +2010,7 @@ class LiveRegistrationApiTest(TestCase):
         liveregistration = LiveRegistrationFactory(
             email="chantal@test-fun-mooc.fr",
             consumer_site=video.playlist.consumer_site,
+            lti_id=str(video.playlist.lti_id),
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
         )
@@ -3541,6 +2018,7 @@ class LiveRegistrationApiTest(TestCase):
         # token doesn't have the same email than the registration
         jwt_token = AccessToken()
         jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
         jwt_token.payload["user"] = {
@@ -3559,10 +2037,11 @@ class LiveRegistrationApiTest(TestCase):
             response.json()["results"],
             [
                 {
-                    "consumer_site": str(video.playlist.consumer_site_id),
+                    "consumer_site": str(video.playlist.consumer_site.id),
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(liveregistration.id),
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                    "lti_id": str(video.playlist.lti_id),
                     "should_send_reminders": False,
                     "video": str(video.id),
                 }
@@ -3582,496 +2061,9 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "lti_user_id": [
                     "This identified user is already registered "
-                    "for this video and consumer site."
+                    "for this video and consumer site and course."
                 ]
             },
-        )
-
-    def test_list_liveregistration_role_student_email_none_consumer_none(
-        self,
-    ):
-        """
-        Student can't fetch liveregistrations if token has no email and no context_id.
-
-        If token has no email and no context_id, the user can't read any liveregistration.
-        Duo email/consumer_site or consumer_site/lti_user_id for a defined consumer_site is
-        needed to read a liveregistration.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video, lti_user_id and undefined consumer_site
-        LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same lti_user_id and undefined consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-
-        # token has no context_id leading to an undefined consumer_site
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": None,
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 0)
-
-    def test_list_liveregistration_role_student_email_none_consumer_with(
-        self,
-    ):
-        """
-        Student can fetch list requests but will fetch only their registrations.
-
-        Will not receive liveregistrations other than the one corresponding to their token.
-        If token has no email, the user can read liveregistrations of this video for the
-        same duo consumer_site/lti_user_id.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        # liveregistration for the right video, lti_user_id and consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and consumer_site but different lti_user_id
-        LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same lti_user_id and consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and lti_user_id but no consumer_site
-        LiveRegistrationFactory(
-            email="chantal4@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has context_id and no email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": None,
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                }
-            ],
-        )
-
-    def test_list_liveregistration_role_admin_instruc_email_with_consumer_with(
-        self,
-    ):
-        """
-        Admin/instructor can access all registrations of this video for the same consumer_site.
-
-        Will not receive liveregistrations other than the one corresponding to their consumer_site.
-        If token has email, liveregistrations aren't filtered by this email.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and consumer_site but different lti_user_id
-        liveregistration2 = LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has context_id and email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": "chantal@test-fun-mooc.fr",
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal3@test-fun-mooc.fr",
-                    "id": str(liveregistration2.id),
-                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-            ],
-        )
-
-    def test_list_liveregistration_role_admin_instruc_email_with_consumer_none(
-        self,
-    ):
-        """
-        Admin/instructor can access liveregistrations of this video with no consumer_site.
-
-        Will not receive liveregistrations other than the one corresponding to their consumer_site.
-        Token has no consumer_site, liveregistrations will be filtered by undefined consumer_site.
-        Token has email, liveregistrations aren't filtered by this email.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        # liveregistration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same undefined consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and consumer_site but different email and lti_user_id
-        liveregistration2 = LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has an email and no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": "chantal@test-fun-mooc.fr",
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": None,
-                    "email": "chantal3@test-fun-mooc.fr",
-                    "id": str(liveregistration2.id),
-                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-                {
-                    "consumer_site": None,
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-            ],
-        )
-
-    def test_list_liveregistration_role_admin_instruc_email_none_consumer_with(
-        self,
-    ):
-        """
-        Admin/instructor can access all registrations of this video for the same consumer_site.
-
-        Will not receive liveregistrations other than the one corresponding to their consumer_site.
-        Token has no email, liveregistrations aren't filtered by token's user's id.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and consumer_site but different lti_user_id
-        liveregistration2 = LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has context_id and email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": None,
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal3@test-fun-mooc.fr",
-                    "id": str(liveregistration2.id),
-                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-                {
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-            ],
-        )
-
-    def test_list_liveregistration_role_admin_instruc_email_none_consumer_none(
-        self,
-    ):
-        """
-        Admin/instructor can access liveregistrations of this video with no consumer_site.
-
-        Will not receive liveregistrations other than the one corresponding to their consumer_site.
-        Token has no consumer_site, liveregistrations will be filtered by undefined consumer_site.
-        Token has no email, liveregistrations aren't filtered by token's user's id.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        # liveregistration with no consumer_site
-        liveregistration = LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same video and lti_user_id but different consumer_site
-        LiveRegistrationFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # liveregistration for the same undefined consumer_site but different video
-        LiveRegistrationFactory(
-            email="chantal@test-fun-mooc.fr",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            video=other_video,
-        )
-        # liveregistration for the same video and consumer_site but different email and lti_user_id
-        liveregistration2 = LiveRegistrationFactory(
-            email="chantal3@test-fun-mooc.fr",
-            consumer_site=None,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            video=video,
-        )
-        # token has an email and no context_id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": "chantal@test-fun-mooc.fr",
-        }
-        response = self.client.get(
-            "/api/liveregistrations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_site": None,
-                    "email": "chantal3@test-fun-mooc.fr",
-                    "id": str(liveregistration2.id),
-                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-                {
-                    "consumer_site": None,
-                    "email": "chantal@test-fun-mooc.fr",
-                    "id": str(liveregistration.id),
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
-                    "video": str(video.id),
-                },
-            ],
         )
 
     def test_api_liveregistration_create_role_none_email_empty(self):
@@ -4085,12 +2077,14 @@ class LiveRegistrationApiTest(TestCase):
         # token with context_id
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         jwt_token.payload["user"] = {
             "email": "",
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+
         response = self.client.post(
             "/api/liveregistrations/",
             {"email": "saved@test-fun-mooc.fr", "should_send_reminders": True},
@@ -4103,9 +2097,10 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "consumer_site": str(video.playlist.consumer_site.id),
                 "email": "saved@test-fun-mooc.fr",
                 "id": str(created_liveregistration.id),
-                "consumer_site": str(video.playlist.consumer_site_id),
+                "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
                 "video": str(video.id),
