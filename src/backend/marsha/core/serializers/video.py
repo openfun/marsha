@@ -14,9 +14,9 @@ from rest_framework_simplejwt.models import TokenUser
 
 from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import (
+    ConsumerSite,
     LivePairing,
     LiveRegistration,
-    Playlist,
     SharedLiveMedia,
     Thumbnail,
     TimedTextTrack,
@@ -328,6 +328,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             "id",
             "consumer_site",
             "lti_user_id",
+            "lti_id",
             "should_send_reminders",
             "video",
         )
@@ -335,6 +336,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             "id",
             "consumer_site",
             "lti_user_id",
+            "lti_id",
             "video",
         )
 
@@ -366,6 +368,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
         video = get_object_or_404(Video, pk=user.id)
+
+        if not attrs.get("email"):
+            raise serializers.ValidationError({"email": "Email is mandatory."})
+
         if video.is_scheduled is False:
             raise serializers.ValidationError(
                 {"video": f"video with id {user.id} doesn't accept registration."}
@@ -373,21 +379,25 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
 
         if not attrs.get("video_id") and isinstance(user, TokenUser):
             attrs["video_id"] = user.id
-            # consumer_site is defined if context_id exists in the token
-            attrs["consumer_site"] = (
-                Playlist.objects.get(
-                    lti_id=user.token.payload["context_id"]
-                ).consumer_site
-                if user.token.payload.get("context_id")
-                else None
+
+            is_lti = (
+                user.token.payload.get("context_id")
+                and user.token.payload.get("consumer_site")
+                and user.token.payload.get("user")
+                and user.token.payload["user"].get("id")
             )
 
-            if user.token.payload.get("user"):
+            if is_lti:
+                attrs["consumer_site"] = get_object_or_404(
+                    ConsumerSite, pk=user.token.payload["consumer_site"]
+                )
+                attrs["lti_id"] = user.token.payload["context_id"]
                 attrs["lti_user_id"] = user.token.payload["user"]["id"]
 
                 # If email is present in token, we make sure the one sent is the one expected
+                # lti users can't defined their email, the one from the token is used
                 if user.token.payload["user"].get("email"):
-                    if attrs["email"] != user.token.payload["user"].get("email"):
+                    if attrs["email"] != user.token.payload["user"]["email"]:
                         raise serializers.ValidationError(
                             {
                                 "email": "You are not authorized to register with a specific email"
@@ -395,40 +405,54 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                                 "authentication."
                             }
                         )
-
-                # We can identify the user for this context_id, we make sure this user hasn't
-                # already registered for this video. It's only relevant if context_id is defined.
-                if (
-                    user.token.payload.get("context_id")
-                    and LiveRegistration.objects.filter(
-                        consumer_site=attrs["consumer_site"],
-                        deleted=None,
-                        lti_user_id=attrs["lti_user_id"],
-                        video=video,
-                    ).exists()
-                ):
+                # We can identify the user for this context_id and consumer_site, we make sure
+                # this user hasn't already registered for this video.
+                if LiveRegistration.objects.filter(
+                    consumer_site=attrs["consumer_site"],
+                    lti_id=attrs["lti_id"],
+                    lti_user_id=attrs["lti_user_id"],
+                    video=video,
+                ).exists():
                     raise serializers.ValidationError(
                         {
                             "lti_user_id": "This identified user is already "
-                            "registered for this video and consumer site."
+                            "registered for this video and consumer site and "
+                            "course."
                         }
                     )
 
-            # Controls this email hasn't already been used for this video and this consumer
-            # site. Consumer site can be defined or not, in both case, it will raise the same
-            # error.
-            if LiveRegistration.objects.filter(
-                consumer_site=attrs["consumer_site"],
-                deleted=None,
-                email=attrs["email"],
-                video=video,
-            ).exists():
-                raise serializers.ValidationError(
-                    {
-                        "email": f"{attrs['email']} is already "
-                        "registered for this video and consumer site."
-                    }
-                )
+            else:  # public token should have no LTI info
+                if (
+                    user.token.payload.get("context_id")
+                    or user.token.payload.get("consumer_site")
+                    or (
+                        user.token.payload.get("user")
+                        and user.token.payload["user"].get("id")
+                    )
+                ):
+                    # we prevent any side effects if token's creation changes.
+                    raise serializers.ValidationError(
+                        {
+                            "token": "Public token shouldn't have any LTI information, "
+                            "cases are not expected."
+                        }
+                    )
+                # Control this email hasn't already been used for this video in the public case
+                if LiveRegistration.objects.filter(
+                    consumer_site=None,
+                    email=attrs["email"],
+                    lti_id=None,
+                    video=video,
+                ).exists():
+                    raise serializers.ValidationError(
+                        {
+                            "email": f"{attrs['email']} is already registered "
+                            "for this video, consumer site and course."
+                        }
+                    )
+
+                attrs["consumer_site"] = None
+                attrs["lti_id"] = None
 
         return super().validate(attrs)
 

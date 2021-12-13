@@ -196,15 +196,12 @@ describe('<SubscribeScheduledVideo />', () => {
     });
   });
 
-  it('calls the API if token has email', async () => {
+  it("doesn't calls the API if token has email", async () => {
     mockDecodedJwt = {
       user: {
         email: 'chantal@fun-mooc.fr',
       },
     };
-    fetchMock.get('/api/liveregistrations/?limit=999', {
-      count: 0,
-    });
     render(
       wrapInIntlProvider(
         <Grommet>
@@ -217,14 +214,13 @@ describe('<SubscribeScheduledVideo />', () => {
         </Grommet>,
       ),
     );
-    // API gets called
-    await waitFor(() => {
-      expect(
-        fetchMock.called('/api/liveregistrations/?limit=999', {
-          method: 'GET',
-        }),
-      ).toBe(true);
-    });
+    await screen.findByRole('button', { name: /register/i });
+    // API doesn't get called
+    expect(
+      fetchMock.called('/api/liveregistrations/?limit=999', {
+        method: 'GET',
+      }),
+    ).toBe(false);
   });
 
   it("doesn't call the API if token is empty", async () => {
@@ -331,10 +327,69 @@ describe('<SubscribeScheduledVideo />', () => {
     ).toBe(false);
   });
 
-  it('shows the registration form without an input email if token has email', async () => {
+  it("doesn't call the API if token has context_id and consumer_site", async () => {
+    fetchMock.get('/api/liveregistrations/?limit=999', { count: 0 });
+    mockDecodedJwt = { context_id: '777', consumer_site: 'AAA' };
+
+    render(
+      wrapInIntlProvider(
+        <Grommet>
+          <SubscribeScheduledVideo
+            video={{
+              ...video,
+              starting_at: futureDate.toISOString(),
+            }}
+          />
+        </Grommet>,
+      ),
+    );
+    await screen.findByRole('button', { name: /register/i });
+    // API doesn't get called
+    expect(
+      fetchMock.called('/api/liveregistrations/?limit=999', {
+        method: 'GET',
+      }),
+    ).toBe(false);
+  });
+
+  it('calls the API if token has user.id and context_id and consumer_site', async () => {
+    fetchMock.get('/api/liveregistrations/?limit=999', { count: 0 });
+    // LTI Token
     mockDecodedJwt = {
+      consumer_site: '1',
+      context_id: 'Maths',
+      user: {
+        id: '4444',
+      },
+    };
+
+    render(
+      wrapInIntlProvider(
+        <Grommet>
+          <SubscribeScheduledVideo
+            video={{
+              ...video,
+              starting_at: futureDate.toISOString(),
+            }}
+          />
+        </Grommet>,
+      ),
+    );
+    await screen.findByRole('button', { name: /register/i });
+    // API doesn't get called
+    expect(
+      fetchMock.called('/api/liveregistrations/?limit=999', {
+        method: 'GET',
+      }),
+    ).toBe(true);
+  });
+  it('shows the registration form without an input email if token is from LTI and has email', async () => {
+    mockDecodedJwt = {
+      consumer_site: '1',
+      context_id: 'Maths',
       user: {
         email: 'chantal@fun-mooc.fr',
+        id: '4444',
       },
     };
     fetchMock.get('/api/liveregistrations/?limit=999', {
@@ -368,8 +423,11 @@ describe('<SubscribeScheduledVideo />', () => {
 
   it('shows the user is already registered', async () => {
     mockDecodedJwt = {
+      consumer_site: '1',
+      context_id: 'Maths',
       user: {
         email: 'chantal@fun-mooc.fr',
+        id: '4444',
       },
     };
     fetchMock.get('/api/liveregistrations/?limit=999', {
@@ -415,8 +473,11 @@ describe('<SubscribeScheduledVideo />', () => {
     fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
 
     mockDecodedJwt = {
+      consumer_site: '1',
+      context_id: 'Maths',
       user: {
         email: 'chantal@fun-mooc.fr',
+        id: '4444',
       },
     };
 

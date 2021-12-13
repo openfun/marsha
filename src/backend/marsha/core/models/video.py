@@ -408,11 +408,15 @@ class Thumbnail(AbstractImage):
 
 
 class LiveRegistration(BaseModel):
-    """Model representing a scheduling live registration."""
+    """Model representing a scheduling live registration.
+
+    On LTI connection, email has no constraint. Same email can be registered
+    multiple times as it's a data that can be changed in the LMS.
+    """
 
     RESOURCE_NAME = "liveregistrations"
 
-    email = models.EmailField(_("email address"), db_index=True)
+    email = models.EmailField(_("email address"), blank=True, db_index=True, null=True)
 
     consumer_site = models.ForeignKey(
         blank=True,
@@ -423,7 +427,13 @@ class LiveRegistration(BaseModel):
         to="ConsumerSite",
         verbose_name=_("LTI consumer site"),
     )
-
+    lti_id = models.CharField(
+        blank=True,
+        help_text=_("ID for synchronization with an external LTI tool"),
+        max_length=255,
+        null=True,
+        verbose_name=_("lti id"),
+    )
     lti_user_id = models.CharField(
         blank=True,
         db_index=True,
@@ -453,10 +463,21 @@ class LiveRegistration(BaseModel):
 
         db_table = "live_registration"
         constraints = [
-            models.UniqueConstraint(
-                fields=("email", "consumer_site", "video"),
-                condition=models.Q(deleted=None),
-                name="liveregistration_unique_email_consumer_site_video_idx",
+            models.CheckConstraint(
+                name="liveregistration_lti_or_public",
+                check=(
+                    models.Q(
+                        consumer_site__isnull=False,
+                        lti_id__isnull=False,
+                        lti_user_id__isnull=False,
+                    )
+                    | models.Q(
+                        consumer_site__isnull=True,
+                        email__isnull=False,
+                        lti_id__isnull=True,
+                        lti_user_id__isnull=True,
+                    )
+                ),
             ),
             models.UniqueConstraint(
                 fields=["email", "video"],
@@ -465,7 +486,7 @@ class LiveRegistration(BaseModel):
             ),
             models.UniqueConstraint(
                 condition=models.Q(("deleted", None)),
-                fields=("lti_user_id", "consumer_site", "video"),
+                fields=("lti_user_id", "lti_id", "consumer_site", "video"),
                 name="liveregistration_unique_video_lti_idx",
             ),
         ]

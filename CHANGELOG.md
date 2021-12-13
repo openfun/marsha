@@ -20,6 +20,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - docker image use python 3.10
 - Rename lambda-encode to lambda-convert
+- Registrations of a scheduled video from LTI are now based on 
+  `lti_user_id`, `consumer_site`, and `context_id`
 
 ## [3.27.0] - 2021-12-07
 
