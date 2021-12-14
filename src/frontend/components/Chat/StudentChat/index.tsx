@@ -38,7 +38,7 @@ export const StudentChat = () => {
         size: 'small',
       }}
       direction="column"
-      height="medium"
+      fill
     >
       {overlay && (
         <InputDisplayNameOverlay
