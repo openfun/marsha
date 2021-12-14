@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { Tabs, Box, Grommet, ResponsiveContext } from 'grommet';
+import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
 import {
@@ -11,6 +12,20 @@ import { ShouldNotHappen } from 'utils/errors/exception';
 import { theme } from 'utils/theme/theme';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
+
+const StyledGrommet = styled(Grommet)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ContentContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+`;
 
 interface LiveVideoPanelProps {
   video: Video;
@@ -73,7 +88,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   }
 
   return (
-    <Grommet
+    <StyledGrommet
       theme={{
         ...theme,
         tabs: {
@@ -86,10 +101,11 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
           gap: 'none',
         },
       }}
-      style={{ height: '100%' }}
     >
       {header}
-      <Box fill={true}>{content}</Box>
-    </Grommet>
+      <Box fill style={{ position: 'relative' }}>
+        <ContentContainer>{content}</ContentContainer>
+      </Box>
+    </StyledGrommet>
   );
 };
