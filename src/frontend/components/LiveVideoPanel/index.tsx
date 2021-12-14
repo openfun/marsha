@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Tabs, Box, Grommet } from 'grommet';
+import React, { useEffect, useContext } from 'react';
+import { Tabs, Box, Grommet, ResponsiveContext } from 'grommet';
 
 import { Chat } from 'components/Chat';
 import {
@@ -8,7 +8,7 @@ import {
 } from 'data/stores/useLivePanelState';
 import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
-import { breakpointSize, theme } from 'utils/theme/theme';
+import { theme } from 'utils/theme/theme';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
@@ -17,6 +17,7 @@ interface LiveVideoPanelProps {
 }
 
 export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
+  const size = useContext(ResponsiveContext);
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
     (state) => ({
       currentItem: state.currentItem,
@@ -81,9 +82,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
             display: flex; \
             flex-wrap: nowrap;`,
           },
-          extend: `@media (max-width: ${breakpointSize.tablet}) { \
-            display: none; \
-          }`,
+          extend: `display: ${size === 'small' ? 'none' : 'flex'};`,
           gap: 'none',
         },
       }}
