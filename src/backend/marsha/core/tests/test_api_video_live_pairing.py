@@ -8,8 +8,12 @@ import uuid
 
 from django.conf import settings
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
+from corsheaders.middleware import (
+    ACCESS_CONTROL_ALLOW_METHODS,
+    ACCESS_CONTROL_ALLOW_ORIGIN,
+)
 from faker import Faker
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -294,7 +298,6 @@ class PairingDeviceAPITest(TestCase):
         response = self.client.post("/api/pairing-challenge", data=payload)
 
         self.assertEqual(response.status_code, 200)
-
         self.assertEqual(
             {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}"},
             response.json(),
@@ -493,3 +496,51 @@ class PairingDeviceAPITest(TestCase):
             self.client.post("/api/pairing-challenge")
 
             self.assertEqual(0, LivePairing.objects.count())
+
+    @override_settings(
+        CORS_ALLOWED_ORIGINS=["http://example.com"],
+        CORS_ALLOW_METHODS=["POST", "OPTIONS"],
+        CORS_URLS_REGEX=r"^/api/pairing-challenge$",
+    )
+    def test_api_video_pairing_challenge_cors(self):
+        """When CORS is enabled on this url, CORS headers are added to the response."""
+        with self.modify_settings(
+            MIDDLEWARE={
+                "append": "corsheaders.middleware.CorsMiddleware",
+            }
+        ):
+            response = self.client.options(
+                "/api/pairing-challenge",
+                HTTP_ORIGIN="http://example.com",
+                content_type="application/json",
+            )
+
+            self.assertEqual(response.status_code, 200)
+
+            self.assertEqual(response[ACCESS_CONTROL_ALLOW_METHODS], "POST, OPTIONS")
+            self.assertEqual(
+                response[ACCESS_CONTROL_ALLOW_ORIGIN], "http://example.com"
+            )
+
+    @override_settings(
+        CORS_ALLOWED_ORIGINS=["http://example.com"],
+        CORS_ALLOW_METHODS=["POST", "OPTIONS"],
+        CORS_URLS_REGEX=r"^/api/other$",
+    )
+    def test_api_video_pairing_challenge_cors_not_matching_urls(self):
+        """When CORS is enabled but not matching the current URL, no header should be added."""
+        with self.modify_settings(
+            MIDDLEWARE={
+                "append": "corsheaders.middleware.CorsMiddleware",
+            }
+        ):
+            response = self.client.options(
+                "/api/pairing-challenge",
+                HTTP_ORIGIN="http://example.com",
+                content_type="application/json",
+            )
+
+            self.assertEqual(response.status_code, 200)
+
+            self.assertNotIn(ACCESS_CONTROL_ALLOW_METHODS, response)
+            self.assertNotIn(ACCESS_CONTROL_ALLOW_ORIGIN, response)
