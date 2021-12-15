@@ -636,6 +636,11 @@ class LiveRegistrationViewSet(
 
             filters["lti_id"] = user.token.payload["context_id"]
             filters["consumer_site"] = user.token.payload["consumer_site"]
+            if self.request.query_params.get("is_registered"):
+                filters["is_registered"] = self.request.query_params.get(
+                    "is_registered"
+                )
+
             # admin and instructors can access all registrations of this course
             if user.token.payload.get("roles") and any(
                 role in ["administrator", "instructor"]
