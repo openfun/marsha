@@ -13,6 +13,7 @@ import os
 from django.utils.translation import gettext_lazy as _
 
 from configurations import Configuration, values
+from corsheaders.defaults import default_headers
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -112,11 +113,13 @@ class Base(Configuration):
         "dockerflow.django",
         "waffle",
         "rest_framework",
+        "corsheaders",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
     ]
 
     MIDDLEWARE = [
+        "corsheaders.middleware.CorsMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
@@ -306,6 +309,14 @@ class Base(Configuration):
 
     # SHARED LIVE MEDIA SETTINGS
     ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES = values.ListValue(["application/pdf"])
+
+    # Cors
+    CORS_ALLOW_ALL_ORIGINS = values.BooleanValue(False)
+    CORS_ALLOWED_ORIGINS = values.ListValue([])
+    CORS_ALLOWED_ORIGIN_REGEXES = values.ListValue([])
+    CORS_URLS_REGEX = values.Value(r"^/api/pairing-challenge$")
+    CORS_ALLOW_METHODS = values.ListValue(["POST", "OPTIONS"])
+    CORS_ALLOW_HEADERS = values.ListValue(list(default_headers))
 
     # pylint: disable=invalid-name
     @property

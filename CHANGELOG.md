@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add model and API endpoints to manage a shared live media
 - Add component to display chat, viewers and apps during a live in a panel
 - Add `consumer_site` in JWT token
+- Allow CORS headers configuration
 
 ### Changed
 
