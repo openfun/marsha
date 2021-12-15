@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add `consumer_site` in JWT token
 - Allow CORS headers configuration
 - Extract SVG pages from PDF files for shared live media in lambda-convert
+- Add fields `is_registered`,`live_attendance`,`username` for liveRegistration
 
 ### Changed
 
