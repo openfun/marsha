@@ -324,19 +324,23 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = LiveRegistration
         fields = (
+            "consumer_site",
             "email",
             "id",
-            "consumer_site",
+            "is_registered",
             "lti_user_id",
             "lti_id",
             "should_send_reminders",
+            "username",
             "video",
         )
         read_only_fields = (
             "id",
+            "is_registered",
             "consumer_site",
             "lti_user_id",
             "lti_id",
+            "username",
             "video",
         )
 
@@ -368,7 +372,6 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
         video = get_object_or_404(Video, pk=user.id)
-
         if not attrs.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
 
@@ -379,7 +382,6 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
 
         if not attrs.get("video_id") and isinstance(user, TokenUser):
             attrs["video_id"] = user.id
-
             is_lti = (
                 user.token.payload.get("context_id")
                 and user.token.payload.get("consumer_site")
@@ -421,6 +423,8 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                         }
                     )
 
+                # If username is present in the token we catch it
+                attrs["username"] = user.token.payload["user"].get("username")
             else:  # public token should have no LTI info
                 if (
                     user.token.payload.get("context_id")
@@ -455,6 +459,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                 attrs["lti_id"] = None
 
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        validated_data["is_registered"] = True
+        return super().create(validated_data)
 
 
 class SharedLiveMediaSerializer(

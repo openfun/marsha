@@ -206,6 +206,7 @@ class LiveRegistrationModelsTestCase(TestCase):
         LiveRegistrationFactory(
             email=None,
             consumer_site=video.playlist.consumer_site,
+            is_registered=False,
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             lti_id="5555",
             video=video,
@@ -220,6 +221,7 @@ class LiveRegistrationModelsTestCase(TestCase):
             LiveRegistrationFactory(
                 email=None,
                 consumer_site=None,
+                is_registered=False,
                 lti_user_id="56255f3807599c377bf0e5bf072359fd",
                 lti_id="55555",
                 video=video,
@@ -236,6 +238,7 @@ class LiveRegistrationModelsTestCase(TestCase):
             LiveRegistrationFactory(
                 email=None,
                 consumer_site=video.playlist.consumer_site,
+                is_registered=False,
                 lti_user_id=None,
                 lti_id="5555",
                 video=video,
@@ -260,3 +263,64 @@ class LiveRegistrationModelsTestCase(TestCase):
             'violates check constraint "liveregistration_lti_or_public',
             context.exception.args[0],
         )
+
+    def test_models_liveregistration_public_field_email_cant_be_empty_isregistered_true(
+        self,
+    ):
+        """Field email can't be empty with field is_registered to True"""
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                is_registered=True,
+            )
+        assert (
+            'violates check constraint "liveregistration_email_is_registered"'
+            in str(context.exception)
+        )
+
+    def test_models_liveregistration_public_field_email_cant_be_empty_isregistered_false(
+        self,
+    ):
+        """Field email can't be empty with field is_registered to False"""
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                is_registered=False,
+            )
+        assert 'violates check constraint "liveregistration_lti_or_public"' in str(
+            context.exception
+        )
+
+    def test_models_liveregistration_lti_field_email_cant_be_empty_isregistered_true(
+        self,
+    ):
+        """Field email for LTI can't be empty with field is_registered to True"""
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            LiveRegistrationFactory(
+                email=None,
+                consumer_site=video.playlist.consumer_site,
+                is_registered=True,
+                lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                lti_id="Maths",
+                video=video,
+            )
+        assert (
+            'violates check constraint "liveregistration_email_is_registered"'
+            in str(context.exception)
+        )
+
+    def test_models_liveregistration_lti_field_email_cant_be_empty_isregistered_false(
+        self,
+    ):
+        """Field email for LTI can be empty with field is_registered to False"""
+        video = VideoFactory()
+        LiveRegistrationFactory(
+            email=None,
+            consumer_site=video.playlist.consumer_site,
+            is_registered=False,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)

@@ -66,6 +66,7 @@ class Migration(migrations.Migration):
                 verbose_name="LTI user identifier",
             ),
         ),
+        migrations.RunPython(migrate_lti_id),
         migrations.AddConstraint(
             model_name="liveregistration",
             constraint=models.CheckConstraint(
@@ -94,5 +95,4 @@ class Migration(migrations.Migration):
                 name="liveregistration_unique_video_lti_idx",
             ),
         ),
-        migrations.RunPython(migrate_lti_id),
     ]

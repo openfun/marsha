@@ -427,6 +427,20 @@ class LiveRegistration(BaseModel):
         to="ConsumerSite",
         verbose_name=_("LTI consumer site"),
     )
+
+    is_registered = models.BooleanField(
+        default=False,
+        verbose_name=_("is the user registered"),
+        help_text=_("Is the user registered?"),
+    )
+
+    live_attendance = models.JSONField(
+        null=True,
+        blank=True,
+        verbose_name=_("Live attendance"),
+        help_text=_("Live online presence"),
+    )
+
     lti_id = models.CharField(
         blank=True,
         help_text=_("ID for synchronization with an external LTI tool"),
@@ -434,6 +448,7 @@ class LiveRegistration(BaseModel):
         null=True,
         verbose_name=_("lti id"),
     )
+
     lti_user_id = models.CharField(
         blank=True,
         db_index=True,
@@ -449,6 +464,10 @@ class LiveRegistration(BaseModel):
         default=False,
         help_text=_("whether user reminders are enabled for this live"),
         verbose_name=_("should send reminders"),
+    )
+
+    username = models.CharField(
+        max_length=155, blank=True, null=True, verbose_name=_("Username")
     )
 
     video = models.ForeignKey(
@@ -479,13 +498,20 @@ class LiveRegistration(BaseModel):
                     )
                 ),
             ),
+            models.CheckConstraint(
+                name="liveregistration_email_is_registered",
+                check=(
+                    models.Q(email__isnull=True, is_registered=False)
+                    | (models.Q(email__isnull=False))
+                ),
+            ),
             models.UniqueConstraint(
                 fields=["email", "video"],
                 condition=models.Q(deleted=None, consumer_site=None),
                 name="liveregistration_unique_email_video_with_consumer_site_none",
             ),
             models.UniqueConstraint(
-                condition=models.Q(("deleted", None)),
+                condition=models.Q(deleted=None),
                 fields=("lti_user_id", "lti_id", "consumer_site", "video"),
                 name="liveregistration_unique_video_lti_idx",
             ),
