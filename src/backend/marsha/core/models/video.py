@@ -416,6 +416,16 @@ class LiveRegistration(BaseModel):
 
     RESOURCE_NAME = "liveregistrations"
 
+    anonymous_id = models.UUIDField(blank=True, db_index=True, null=True)
+
+    display_name = models.CharField(
+        blank=True,
+        db_index=True,
+        max_length=155,
+        null=True,
+        verbose_name=_("Display username"),
+    )
+
     email = models.EmailField(_("email address"), blank=True, db_index=True, null=True)
 
     consumer_site = models.ForeignKey(
@@ -492,9 +502,10 @@ class LiveRegistration(BaseModel):
                     )
                     | models.Q(
                         consumer_site__isnull=True,
-                        email__isnull=False,
+                        anonymous_id__isnull=False,
                         lti_id__isnull=True,
                         lti_user_id__isnull=True,
+                        username__isnull=True,
                     )
                 ),
             ),
@@ -514,6 +525,16 @@ class LiveRegistration(BaseModel):
                 condition=models.Q(deleted=None),
                 fields=("lti_user_id", "lti_id", "consumer_site", "video"),
                 name="liveregistration_unique_video_lti_idx",
+            ),
+            models.UniqueConstraint(
+                condition=models.Q(deleted=None),
+                fields=("display_name", "video"),
+                name="liveregistration_unique_video_display_name",
+            ),
+            models.UniqueConstraint(
+                condition=models.Q(deleted=None),
+                fields=("anonymous_id", "video"),
+                name="liveregistration_unique_video_anonymous_id",
             ),
         ]
 

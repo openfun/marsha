@@ -1,6 +1,7 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
 import random
 from typing import Type
+import uuid
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -346,7 +347,9 @@ class DeletionTestCase(TestCase):
         playlist = PlaylistFactory(created_by=user, organization=organization)
         video = VideoFactory(created_by=user, playlist=playlist)
         audio_track = AudioTrackFactory(video=video)
-        live_registration = LiveRegistrationFactory(video=video)
+        live_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), video=video
+        )
         timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
@@ -370,7 +373,9 @@ class DeletionTestCase(TestCase):
         video = VideoFactory(created_by=user, playlist=playlist)
 
         audio_track = AudioTrackFactory(video=video)
-        live_registration = LiveRegistrationFactory(video=video)
+        live_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), video=video
+        )
         timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
