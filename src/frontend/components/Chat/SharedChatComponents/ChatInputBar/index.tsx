@@ -51,7 +51,7 @@ export const ChatInputBar = () => {
         size: 'xsmall',
         color: 'blue-chat',
       }}
-      round="xsmall"
+      round="6px"
       margin="10px"
       height="50px"
     >
