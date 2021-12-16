@@ -12,7 +12,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action, api_view, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, SimpleRateThrottle
 from rest_framework_simplejwt.models import TokenUser
 
 from marsha.core.defaults import JITSI
@@ -604,6 +604,20 @@ def pairing_challenge(request):
     )
 
 
+class LiveRegistrationThrottle(SimpleRateThrottle):
+    """Throttling for liveregistration list requests."""
+
+    scope = "live_registration"
+
+    def get_cache_key(self, request, view):
+        if request.query_params.get("anonymous_id"):
+            return self.cache_format % {
+                "scope": self.scope,
+                "ident": self.get_ident(request),
+            }
+        return None
+
+
 class LiveRegistrationViewSet(
     ObjectPkMixin,
     mixins.CreateModelMixin,
@@ -664,6 +678,14 @@ class LiveRegistrationViewSet(
 
         # public context, we can't read any liveregistration
         return LiveRegistration.objects.none()
+
+    def get_throttles(self):
+        """Depending on action, defines a throttle class"""
+        throttle_class = []
+        if self.action == "list":
+            throttle_class = [LiveRegistrationThrottle]
+
+        return [throttle() for throttle in throttle_class]
 
     @action(detail=False, methods=["post"])
     # pylint: disable=unused-argument
