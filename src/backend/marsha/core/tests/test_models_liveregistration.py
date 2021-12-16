@@ -1,4 +1,6 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+import uuid
+
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -19,21 +21,154 @@ class LiveRegistrationModelsTestCase(TestCase):
 
         # sophie@test-fun-mooc.fr register to video
         liveregister = LiveRegistrationFactory(
-            email="sophie@test-fun-mooc.fr", video=video
+            anonymous_id=uuid.uuid4(), email="sophie@test-fun-mooc.fr", video=video
         )
 
         # sophie@test-fun-mooc.fr can register to video2
-        LiveRegistrationFactory(email="sophie@test-fun-mooc.fr", video=video2)
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), email="sophie@test-fun-mooc.fr", video=video2
+        )
 
         # Trying to create a video with the same duo email/video should raise a
         # database error
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(IntegrityError) as context:
             with transaction.atomic():
-                LiveRegistrationFactory(email="sophie@test-fun-mooc.fr", video=video)
+                LiveRegistrationFactory(
+                    anonymous_id=uuid.uuid4(),
+                    email="sophie@test-fun-mooc.fr",
+                    video=video,
+                )
+
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_email_video_with_consumer_site_none"',
+            context.exception.args[0],
+        )
+        # Soft deleted videos should not count for unicity
+        liveregister.delete(force_policy=SOFT_DELETE_CASCADE)
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), email="sophie@test-fun-mooc.fr", video=video
+        )
+
+    def test_models_liveregistration_fields_display_name_unique(self):
+        """Duo display_name/video must be unique."""
+        video = VideoFactory()
+        video2 = VideoFactory()
+
+        liveregister = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_name="sophie", video=video
+        )
+
+        # sophie can be used for video2
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_name="sophie", video=video2
+        )
+
+        # Trying to create a video with the same duo display_name/video for a public
+        # connection should raise a database error
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    anonymous_id=uuid.uuid4(),
+                    display_name="sophie",
+                    video=video,
+                )
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_video_display_name"',
+            context.exception.args[0],
+        )
+        # Trying to create a video with the same duo display_name/video for a LTI
+        # connection should raise a database error
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    consumer_site=video.playlist.consumer_site,
+                    display_name="sophie",
+                    lti_id="Maths 01",
+                    lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                    video=video,
+                )
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_video_display_name"',
+            context.exception.args[0],
+        )
+
+        # sophie can be used for username
+        LiveRegistrationFactory(
+            lti_id="Maths 01",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            consumer_site=video.playlist.consumer_site,
+            username="sophie",
+            video=video,
+        )
 
         # Soft deleted videos should not count for unicity
         liveregister.delete(force_policy=SOFT_DELETE_CASCADE)
-        LiveRegistrationFactory(email="sophie@test-fun-mooc.fr", video=video)
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_name="sophie", video=video
+        )
+
+    def test_models_liveregistration_fields_anonymous_id_unique(self):
+        """Duo anonymous_id/video is unique."""
+        video = VideoFactory()
+        video2 = VideoFactory()
+        identifier = uuid.uuid4()
+        # uuid register to video
+        liveregister = LiveRegistrationFactory(anonymous_id=identifier, video=video)
+
+        # uuid can register to video2
+        LiveRegistrationFactory(anonymous_id=identifier, video=video2)
+
+        # Trying to create a video with the same duo display_name/video for a public
+        # connection should raise a database error
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    anonymous_id=identifier,
+                    video=video,
+                )
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_video_anonymous_id"',
+            context.exception.args[0],
+        )
+        # Trying to create a video with the same duo display_name/video for a LTI
+        # connection should raise a database error
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    anonymous_id=identifier,
+                    consumer_site=video.playlist.consumer_site,
+                    lti_id="Maths 01",
+                    lti_user_id="56255f3807599c377bf0e5bf072359fd",
+                    video=video,
+                )
+        self.assertIn(
+            "duplicate key value violates unique constraint "
+            '"liveregistration_unique_video_anonymous_id"',
+            context.exception.args[0],
+        )
+
+        # Soft deleted videos should not count for unicity
+        liveregister.delete(force_policy=SOFT_DELETE_CASCADE)
+        LiveRegistrationFactory(anonymous_id=identifier, video=video)
+
+    def test_models_liveregistration_fields_username_not_set_public(self):
+        """Field username can't be set when it's a public connection."""
+        video = VideoFactory()
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveRegistrationFactory(
+                    anonymous_id=uuid.uuid4(),
+                    username="sophie",
+                    video=video,
+                )
+        self.assertIn(
+            'violates check constraint "liveregistration_lti_or_public',
+            context.exception.args[0],
+        )
 
     def test_models_liveregistration_fields_lti_id_unique(self):
         """Combinaison of lti_user_id/lti_id/consumer_site/video should be unique."""
@@ -42,10 +177,10 @@ class LiveRegistrationModelsTestCase(TestCase):
 
         liveregister = LiveRegistrationFactory(
             email="registered@test-fun-mooc.fr",
-            video=video,
             lti_id="Maths 01",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             consumer_site=video.playlist.consumer_site,
+            video=video,
         )
 
         # A registration with a different email for another video with the same lti info
@@ -183,25 +318,10 @@ class LiveRegistrationModelsTestCase(TestCase):
             context.exception.args[0],
         )
 
-    def test_models_liveregistration_fields_video_constraint_email_mandatory(self):
-        """email is mandatory when consumer_site is not defined"""
-        video = VideoFactory()
-
-        with self.assertRaises(IntegrityError) as context:
-            with transaction.atomic():
-                LiveRegistrationFactory(
-                    email=None,
-                    video=video,
-                )
-        self.assertIn(
-            'violates check constraint "liveregistration_lti_or_public',
-            context.exception.args[0],
-        )
-
-    def test_models_liveregistration_field_email_can_be_empty_consumer_lti_user_id(
+    def test_models_liveregistration_field_anonymous_can_be_empty_consumer_lti_user_id(
         self,
     ):
-        """Field email can be empty with lti_id, lti_user_id and consumer_site set."""
+        """Fields anonymous_id email can be empty with lti_id, lti_user_id, consumer_site set."""
         video = VideoFactory()
         LiveRegistrationFactory(
             email=None,
@@ -213,49 +333,16 @@ class LiveRegistrationModelsTestCase(TestCase):
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
 
-    def test_models_liveregistration_field_email_cant_be_empty_consumer_site(self):
-        """Field email can't be empty with consumer_site not defined."""
-        self.assertEqual(LiveRegistration.objects.count(), 0)
+    def test_models_liveregistration_field_anonymous_cant_be_empty_lti_user_id(self):
+        """Field anonymous can't be empty for public connection."""
         video = VideoFactory()
         with self.assertRaises(IntegrityError) as context:
             LiveRegistrationFactory(
-                email=None,
+                anonymous_id=None,
+                email="mail@fun-test.fr",
                 consumer_site=None,
                 is_registered=False,
-                lti_user_id="56255f3807599c377bf0e5bf072359fd",
-                lti_id="55555",
-                video=video,
-            )
-        self.assertIn(
-            'violates check constraint "liveregistration_lti_or_public',
-            context.exception.args[0],
-        )
-
-    def test_models_liveregistration_field_email_cant_be_empty_lti_user_id(self):
-        """Field email can't be empty with lti_user_id not defined."""
-        video = VideoFactory()
-        with self.assertRaises(IntegrityError) as context:
-            LiveRegistrationFactory(
-                email=None,
-                consumer_site=video.playlist.consumer_site,
-                is_registered=False,
                 lti_user_id=None,
-                lti_id="5555",
-                video=video,
-            )
-        self.assertIn(
-            'violates check constraint "liveregistration_lti_or_public',
-            context.exception.args[0],
-        )
-
-    def test_models_liveregistration_field_email_cant_be_empty_lti_id(self):
-        """Field email can't be empty with lti_id not defined."""
-        video = VideoFactory()
-        with self.assertRaises(IntegrityError) as context:
-            LiveRegistrationFactory(
-                email=None,
-                consumer_site=video.playlist.consumer_site,
-                lti_user_id="56255f3807599c377bf0e5bf072359fd",
                 lti_id=None,
                 video=video,
             )
@@ -270,26 +357,26 @@ class LiveRegistrationModelsTestCase(TestCase):
         """Field email can't be empty with field is_registered to True"""
         with self.assertRaises(IntegrityError) as context:
             LiveRegistrationFactory(
+                anonymous_id=None,
                 email=None,
                 is_registered=True,
             )
-        assert (
-            'violates check constraint "liveregistration_email_is_registered"'
-            in str(context.exception)
+        self.assertIn(
+            'violates check constraint "liveregistration_email_is_registered',
+            context.exception.args[0],
         )
 
     def test_models_liveregistration_public_field_email_cant_be_empty_isregistered_false(
         self,
     ):
-        """Field email can't be empty with field is_registered to False"""
-        with self.assertRaises(IntegrityError) as context:
-            LiveRegistrationFactory(
-                email=None,
-                is_registered=False,
-            )
-        assert 'violates check constraint "liveregistration_lti_or_public"' in str(
-            context.exception
+        """Field email can be empty with field is_registered to False"""
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            display_name=None,
+            email=None,
+            is_registered=False,
         )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
 
     def test_models_liveregistration_lti_field_email_cant_be_empty_isregistered_true(
         self,
@@ -305,9 +392,9 @@ class LiveRegistrationModelsTestCase(TestCase):
                 lti_id="Maths",
                 video=video,
             )
-        assert (
-            'violates check constraint "liveregistration_email_is_registered"'
-            in str(context.exception)
+        self.assertIn(
+            'violates check constraint "liveregistration_email_is_registered',
+            context.exception.args[0],
         )
 
     def test_models_liveregistration_lti_field_email_cant_be_empty_isregistered_false(
