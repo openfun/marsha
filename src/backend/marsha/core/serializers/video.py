@@ -324,6 +324,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = LiveRegistration
         fields = (
+            "anonymous_id",
             "consumer_site",
             "email",
             "id",
@@ -374,7 +375,6 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
         video = get_object_or_404(Video, pk=user.id)
         if not attrs.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
-
         if video.is_scheduled is False:
             raise serializers.ValidationError(
                 {"video": f"video with id {user.id} doesn't accept registration."}
