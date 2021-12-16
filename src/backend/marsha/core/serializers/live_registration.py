@@ -13,7 +13,9 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = LiveRegistration
         fields = (
+            "anonymous_id",
             "consumer_site",
+            "display_name",
             "email",
             "id",
             "is_registered",
@@ -24,9 +26,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
             "video",
         )
         read_only_fields = (
+            "consumer_site",
+            "display_name",
             "id",
             "is_registered",
-            "consumer_site",
             "lti_user_id",
             "lti_id",
             "username",
@@ -40,22 +43,18 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         """Control or set data with token informations.
-
         Force the video field to the video of the JWT Token if any.
         Check email, if present in the token, is equal to the one in the request.
         Set lti informations if they are present in the token. Control integrity
         errors and set specific messages.
-
         Parameters
         ----------
         data : dictionary
             Dictionary of the deserialized values of each field after validation.
-
         Returns
         -------
         dictionary
             The "data" dictionary is returned after modification.
-
         """
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
@@ -63,7 +62,6 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
         video = get_object_or_404(Video, pk=user.id)
         if not attrs.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
-
         if video.is_scheduled is False:
             raise serializers.ValidationError(
                 {"video": f"video with id {user.id} doesn't accept registration."}
@@ -130,6 +128,12 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                             "cases are not expected."
                         }
                     )
+                # Make sure we have the anonymous_id
+                if not attrs.get("anonymous_id"):
+                    raise serializers.ValidationError(
+                        {"anonymous_id": "Anonymous id is mandatory."}
+                    )
+
                 # Control this email hasn't already been used for this video in the public case
                 if LiveRegistration.objects.filter(
                     consumer_site=None,

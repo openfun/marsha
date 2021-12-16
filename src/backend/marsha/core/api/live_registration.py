@@ -4,10 +4,25 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.throttling import SimpleRateThrottle
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveRegistration, Video
 from .base import ObjectPkMixin
+
+
+class LiveRegistrationThrottle(SimpleRateThrottle):
+    """Throttling for liveregistration list requests."""
+
+    scope = "live_registration"
+
+    def get_cache_key(self, request, view):
+        if request.query_params.get("anonymous_id"):
+            return self.cache_format % {
+                "scope": self.scope,
+                "ident": self.get_ident(request),
+            }
+        return None
 
 
 class LiveRegistrationViewSet(
@@ -37,7 +52,6 @@ class LiveRegistrationViewSet(
 
     def get_queryset(self):
         """Restrict access to liveRegistration with data contained in the JWT token.
-
         Access is restricted to liveRegistration related to the video, context_id and consumer_site
         present in the JWT token. Email is ignored. Lti user id from the token can be used as well
         depending on the role.
@@ -70,6 +84,14 @@ class LiveRegistrationViewSet(
 
         # public context, we can't read any liveregistration
         return LiveRegistration.objects.none()
+
+    def get_throttles(self):
+        """Depending on action, defines a throttle class"""
+        throttle_class = []
+        if self.action == "list":
+            throttle_class = [LiveRegistrationThrottle]
+
+        return [throttle() for throttle in throttle_class]
 
     @action(detail=False, methods=["post"])
     # pylint: disable=unused-argument
