@@ -86,7 +86,10 @@ def _preview_video(live_server, page, video_uploaded=False):
             "launch_presentation_locale",
         ):
             continue
-        if key in ("resource",):
+        if key in (
+            "resource",
+            "roles",
+        ):
             lti_resource_page_form.query_selector(
                 f'select[name="{key}"]'
             ).select_option(value, timeout=100)
@@ -167,7 +170,10 @@ def _preview_document(live_server, page, document_uploaded=False):
             "launch_presentation_locale",
         ):
             continue
-        if key in ("resource",):
+        if key in (
+            "resource",
+            "roles",
+        ):
             lti_resource_page_form.query_selector(
                 f'select[name="{key}"]'
             ).select_option(value, timeout=100)
@@ -267,7 +273,10 @@ def test_lti_select(page: Page, live_server: LiveServer):
     page.goto(f"{live_server.url}/development/")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
-        lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
+        if key in ("roles",):
+            lti_select_form.query_selector(f'select[name="{key}"]').select_option(value)
+        else:
+            lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
     page.click('#lti_select input[type="submit"]')
 
     lti_select_iframe = page.frame("lti_select")
@@ -495,7 +504,10 @@ def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
     page.goto(f"{live_server.url}/development/")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
-        lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
+        if key in ("roles",):
+            lti_select_form.query_selector(f'select[name="{key}"]').select_option(value)
+        else:
+            lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
     page.click('#lti_select input[type="submit"]')
 
     # ensure video is available in new_playlist
