@@ -149,6 +149,8 @@ class VideoSerializer(VideoBaseSerializer):
     class Meta:  # noqa
         model = Video
         fields = (
+            "active_shared_live_media",
+            "active_shared_live_media_page",
             "active_stamp",
             "description",
             "id",
@@ -172,6 +174,8 @@ class VideoSerializer(VideoBaseSerializer):
             "shared_live_medias",
         )
         read_only_fields = (
+            "active_shared_live_media",
+            "active_shared_live_media_page",
             "id",
             "active_stamp",
             "is_ready_to_show",
@@ -182,6 +186,7 @@ class VideoSerializer(VideoBaseSerializer):
             "live_state",
         )
 
+    active_shared_live_media = SharedLiveMediaSerializer(read_only=True)
     active_stamp = TimestampField(
         source="uploaded_on", required=False, allow_null=True, read_only=True
     )

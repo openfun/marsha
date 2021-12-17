@@ -2065,6 +2065,37 @@ class SharedLiveMediaAPITest(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SharedLiveMedia.objects.exists())
 
+    def test_api_shared_live_media_delete_active(self):
+        """
+        Playlist instructor token user deletes an active shared live medias for a video.
+
+        When the active shared_live_media is deleted,
+        related video active_shared_live_media is set to None.
+        """
+        shared_live_media = SharedLiveMediaFactory(nb_pages=5)
+        video = VideoFactory(
+            active_shared_live_media=shared_live_media, active_shared_live_media_page=3
+        )
+        video.shared_live_medias.set([shared_live_media])
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        self.assertTrue(SharedLiveMedia.objects.exists())
+
+        response = self.client.delete(
+            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(SharedLiveMedia.objects.exists())
+        video.refresh_from_db()
+        self.assertIsNone(video.active_shared_live_media)
+        self.assertIsNone(video.active_shared_live_media_page)
+
     def test_api_shared_live_media_initiate_upload_anonymous(self):
         """An anonymous user can not initiate an upload."""
 

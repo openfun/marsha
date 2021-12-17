@@ -1,9 +1,13 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
+import json
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import status, viewsets
@@ -15,7 +19,7 @@ from rest_framework_simplejwt.models import TokenUser
 from marsha.core.defaults import JITSI
 
 from .. import defaults, forms, permissions, serializers, storage
-from ..models import LivePairing, Video
+from ..models import LivePairing, SharedLiveMedia, Video
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -28,7 +32,7 @@ from ..utils.medialive_utils import (
     wait_medialive_channel_is_created,
 )
 from ..utils.time_utils import to_timestamp
-from ..utils.xmpp_utils import close_room, create_room
+from ..utils.xmpp_utils import broadcast_message, close_room, create_room
 from .base import ObjectPkMixin
 
 
@@ -526,4 +530,161 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 pass
 
         serializer = serializers.LivePairingSerializer(instance=live_pairing)
+        return Response(serializer.data)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="start-sharing",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def start_sharing(
+        self,
+        request,
+        pk=None,
+    ):
+        """Starts a media live sharing in a live stream.
+
+        Broadcasts a xmpp message to all users in the video room.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+        if video.active_shared_live_media_id is not None:
+            return Response({"detail": "Video is already sharing."}, status=400)
+
+        sharedlivemedia = get_object_or_404(
+            SharedLiveMedia,
+            id=request.data.get("sharedlivemedia"),
+            video=video,
+        )
+        if sharedlivemedia.upload_state != defaults.READY:
+            return Response({"detail": "Shared live media is not ready."}, status=400)
+
+        video.active_shared_live_media = sharedlivemedia
+        video.active_shared_live_media_page = 1
+        video.save()
+        serializer = self.get_serializer(video)
+
+        broadcast_message(
+            str(video.id),
+            "start_sharing",
+            json.dumps(serializer.data, cls=DjangoJSONEncoder),
+        )
+        return Response(serializer.data)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="navigate-sharing",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def navigate_sharing(
+        self,
+        request,
+        pk=None,
+    ):
+        """Changes page of the media live shared in a live stream.
+
+        Broadcasts a xmpp message to all users in the video room.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+
+        if not video.active_shared_live_media:
+            return Response({"detail": "No shared live media."}, status=400)
+
+        try:
+            target_page = int(request.data.get("target_page"))
+        except TypeError:
+            return Response({"detail": "Invalid page number."}, status=400)
+
+        if target_page > video.active_shared_live_media.nb_pages:
+            return Response({"detail": "Page does not exist."}, status=400)
+
+        video.active_shared_live_media_page = target_page
+        video.save()
+        serializer = self.get_serializer(video)
+
+        broadcast_message(
+            str(video.id),
+            "navigate_sharing",
+            json.dumps(serializer.data, cls=DjangoJSONEncoder),
+        )
+        return Response(serializer.data)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="end-sharing",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def end_sharing(
+        self,
+        request,
+        pk=None,
+    ):
+        """Ends the media live sharing in a live stream.
+
+        Broadcasts a xmpp message to all users in the video room.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+        if not video.active_shared_live_media:
+            return Response({"detail": "No shared live media."}, status=400)
+
+        video.active_shared_live_media = None
+        video.active_shared_live_media_page = None
+        video.save()
+
+        serializer = self.get_serializer(video)
+        broadcast_message(
+            str(video.id),
+            "end_sharing",
+            json.dumps(serializer.data, cls=DjangoJSONEncoder),
+        )
         return Response(serializer.data)
