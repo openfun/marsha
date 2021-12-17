@@ -5,6 +5,7 @@ from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.db.models.query import EmptyQuerySet
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import mixins, status, viewsets
@@ -18,6 +19,7 @@ from marsha.core.defaults import JITSI
 
 from .. import defaults, forms, permissions, serializers, storage
 from ..models import (
+    ConsumerSite,
     Device,
     LivePairing,
     LiveRegistration,
@@ -41,6 +43,9 @@ from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room
 from .base import ObjectPkMixin
+
+
+# pylint: disable=too-many-lines
 
 
 class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
@@ -612,6 +617,18 @@ class LiveRegistrationViewSet(
     queryset = LiveRegistration.objects.all()
     serializer_class = serializers.LiveRegistrationSerializer
 
+    def is_lti_token(self):
+        """Read the token and confirms if the user is identified by LTI"""
+        user = self.request.user
+
+        return (
+            user.token.payload
+            and user.token.payload.get("context_id")
+            and user.token.payload.get("consumer_site")
+            and user.token.payload.get("user")
+            and user.token.payload["user"].get("id")
+        )
+
     def get_queryset(self):
         """Restrict access to liveRegistration with data contained in the JWT token.
 
@@ -620,16 +637,7 @@ class LiveRegistrationViewSet(
         depending on the role.
         """
         user = self.request.user
-
-        is_lti = (
-            user.token.payload
-            and user.token.payload.get("context_id")
-            and user.token.payload.get("consumer_site")
-            and user.token.payload.get("user")
-            and user.token.payload["user"].get("id")
-        )
-
-        if is_lti:
+        if self.is_lti_token():
             filters = {"video__id": user.id}
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
@@ -656,6 +664,60 @@ class LiveRegistrationViewSet(
 
         # public context, we can't read any liveregistration
         return LiveRegistration.objects.none()
+
+    @action(detail=False, methods=["post"])
+    # pylint: disable=unused-argument
+    def push_attendance(self, request, pk=None):
+        """View handling pushing new attendance"""
+        serializer = serializers.LiveAttendanceSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({"detail": "Invalid request."}, status=400)
+
+        user = self.request.user
+        video = get_object_or_404(Video, pk=user.id)
+
+        if self.is_lti_token():
+            token_user = user.token.payload.get("user")
+            consumer_site = get_object_or_404(
+                ConsumerSite, pk=user.token.payload["consumer_site"]
+            )
+            liveregistration, _ = LiveRegistration.objects.get_or_create(
+                consumer_site=consumer_site,
+                lti_id=user.token.payload.get("context_id"),
+                lti_user_id=token_user.get("id"),
+                video=video,
+            )
+            # Update liveregistration email only if it's defined in the token user
+            if token_user.get("email"):
+                liveregistration.email = token_user.get("email")
+
+            # Update liveregistration username only it's defined in the token user
+            if token_user.get("username"):
+                liveregistration.username = token_user.get("username")
+
+            # update or add live_attendance information
+            if liveregistration.live_attendance:
+                liveregistration.live_attendance = (
+                    serializer.data["live_attendance"]
+                    | liveregistration.live_attendance
+                )
+            else:
+                liveregistration.live_attendance = serializer.data["live_attendance"]
+
+            liveregistration.save()
+
+            return Response(
+                {
+                    "id": liveregistration.id,
+                    "video": video.id,
+                    "live_attendance": liveregistration.live_attendance,
+                }
+            )
+
+        return Response(
+            {"detail": "Attendance from public video is not implemented yet."},
+            status=404,
+        )
 
 
 class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):

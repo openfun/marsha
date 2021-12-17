@@ -2460,3 +2460,442 @@ class LiveRegistrationApiTest(TestCase):
                 },
             ],
         )
+
+    def test_api_liveregistration_post_attendance_no_payload(self):
+        """Request without payload should raise an error."""
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+        )
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.json(), {"detail": "Authentication credentials were not provided."}
+        )
+
+    def test_api_liveregistration_post_attendance_no_attendance(self):
+        """Request without attendance should raise an error."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "id": "5555555",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+    def test_api_liveregistration_post_attendance_token_lti_email_none_previous_none(
+        self,
+    ):
+        """Endpoint push_attendance works with no email and no previous record."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {"data": "test"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(created_liveregistration.id),
+                "live_attendance": {"data": "test"},
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(
+            created_liveregistration.consumer_site, video.playlist.consumer_site
+        )
+        self.assertEqual(
+            created_liveregistration.lti_user_id, "56255f3807599c377bf0e5bf072359fd"
+        )
+        self.assertEqual(created_liveregistration.email, None)
+        self.assertEqual(created_liveregistration.username, "Token")
+        self.assertEqual(created_liveregistration.live_attendance, {"data": "test"})
+        self.assertEqual(created_liveregistration.is_registered, False)
+
+    def test_api_liveregistration_post_attendance_token_lti_existing_record(
+        self,
+    ):
+        """Endpoint push_attendance updates an existing record."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email=None,
+            is_registered=False,
+            live_attendance={"key1": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "chantal@aol.com",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        timestamp = str(timezone.now())
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        liveregistration.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {
+                    "key1": {"sound": "OFF", "tabs": "OFF"},
+                    timestamp: {"sound": "ON", "tabs": "OFF"},
+                },
+                "video": str(video.id),
+            },
+        )
+        # no new object has been created
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        # update username and email with current token
+        self.assertEqual(liveregistration.email, "chantal@aol.com")
+        self.assertEqual(liveregistration.username, "Token")
+        self.assertEqual(
+            liveregistration.live_attendance,
+            {
+                "key1": {"sound": "OFF", "tabs": "OFF"},
+                timestamp: {"sound": "ON", "tabs": "OFF"},
+            },
+        )
+
+    def test_api_liveregistration_post_attendance_token_public(
+        self,
+    ):
+        """Can't create attendance when it's not a LTI token"""
+        video = VideoFactory()
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {"k2": "v2"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        self.assertEqual(
+            json.loads(response.content),
+            {"detail": "Attendance from public video is not implemented yet."},
+        )
+
+    def test_api_liveregistration_post_attendance_token_ok_user_record_empty_attendance(
+        self,
+    ):
+        """Endpoint push_attendance updates an existing record without previous live_attendance."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="chantal@aol.com",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        self.assertEqual(liveregistration.live_attendance, None)
+        jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "chantal@aol.com",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {"key1": "val1"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        liveregistration.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {"key1": "val1"},
+                "video": str(video.id),
+            },
+        )
+        # no new object has been created
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        # liveregistration object updated with data from the token
+        self.assertEqual(liveregistration.email, "chantal@aol.com")
+        self.assertEqual(liveregistration.username, "Token")
+        # live_attendance has been set
+        self.assertEqual(liveregistration.live_attendance, {"key1": "val1"})
+
+    def test_api_liveregistration_post_attendance_token_lti_no_update_username_email_none(
+        self,
+    ):
+        """Endpoint push_attendance matches record and doesn't update email and username
+        if they are not defined in the token"""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="chantal@aol.com",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        self.assertEqual(liveregistration.live_attendance, None)
+        jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "id": "56255f3807599c377bf0e5bf072359fd",
+        }
+
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {"key1": "val1"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        liveregistration.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {"key1": "val1"},
+                "video": str(video.id),
+            },
+        )
+        # no new object has been created
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        # liveregistration object updated with data from the token
+        self.assertEqual(liveregistration.email, "chantal@aol.com")
+        self.assertEqual(liveregistration.username, "Sylvie")
+        # live_attendance has been set
+        self.assertEqual(liveregistration.live_attendance, {"key1": "val1"})
+
+    def test_api_liveregistration_post_attendance_token_lti_no_update_username_email_empty(
+        self,
+    ):
+        """Endpoint push_attendance matches record and doesn't update email and username
+        if they are empty in the token"""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="chantal@aol.com",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        self.assertEqual(liveregistration.live_attendance, None)
+        jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "",
+        }
+
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {"key1": "val1"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        liveregistration.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {"key1": "val1"},
+                "video": str(video.id),
+            },
+        )
+        # no new object has been created
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        # liveregistration object updated with data from the token
+        self.assertEqual(liveregistration.email, "chantal@aol.com")
+        self.assertEqual(liveregistration.username, "Sylvie")
+        # live_attendance has been set
+        self.assertEqual(liveregistration.live_attendance, {"key1": "val1"})
+
+    def test_api_liveregistration_post_attendance_token_with_could_match_other_records(
+        self,
+    ):
+        """Match the record with the combinaison consumer_site/lti_id/lti_user_id/video."""
+        video = VideoFactory()
+        video2 = VideoFactory()
+        # different email and username than the token
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="another@fun-test.fr",
+            live_attendance={"r2": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        # same email and username but no consumer_site
+        LiveRegistrationFactory(
+            consumer_site=None,
+            email="sabrina@fun-test.fr",
+            live_attendance={"r2": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id=None,
+            lti_id=None,
+            username="Token",
+            video=video,
+        )
+        # not the same consumer_site
+        LiveRegistrationFactory(
+            consumer_site=ConsumerSiteFactory(),
+            email="sabrina@fun-test.fr",
+            live_attendance={"r2": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="55555",
+            lti_id="Maths",
+            video=video,
+        )
+        # not the same context_id
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sabrina@fun-test.fr",
+            live_attendance={"r2": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="55555",
+            lti_id="Maths2",
+            video=video,
+        )
+        # not the same lti_user_id
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sabrina@fun-test.fr",
+            live_attendance={"r1": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="444444",
+            lti_id="Maths",
+            video=video,
+        )
+
+        # not the same video
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sabrina@fun-test.fr",
+            live_attendance={"r2": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="55555",
+            lti_id="Maths",
+            video=video2,
+        )
+        nb_created = 6
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        # token with no context_id and same email
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        timestamp = str(timezone.now())
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {"live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {
+                    "r2": {"sound": "OFF", "tabs": "OFF"},
+                    timestamp: {"sound": "ON", "tabs": "OFF"},
+                },
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(liveregistration.email, "sabrina@fun-test.fr")
+        self.assertEqual(liveregistration.lti_user_id, "55555")
+        self.assertEqual(liveregistration.lti_id, "Maths")
+        self.assertEqual(liveregistration.username, "Token")
+
+        self.assertEqual(
+            liveregistration.live_attendance,
+            {
+                "r2": {"sound": "OFF", "tabs": "OFF"},
+                timestamp: {"sound": "ON", "tabs": "OFF"},
+            },
+        )
+        self.assertEqual(liveregistration.consumer_site, video.playlist.consumer_site)
