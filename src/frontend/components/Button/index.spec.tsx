@@ -58,7 +58,7 @@ describe('<Button />', () => {
           background: 'none',
           width: '0px',
         },
-        iconColor: '#0a67de',
+        iconColor: '#055fd2',
       },
       {},
     );
@@ -123,7 +123,7 @@ describe('<Button />', () => {
           background: 'none',
           width: '0px',
         },
-        iconColor: '#0a67de',
+        iconColor: '#055fd2',
       },
       {},
     );
@@ -247,7 +247,7 @@ describe('<Button />', () => {
           background: 'none',
           width: '0px',
         },
-        iconColor: '#0a67de',
+        iconColor: '#055fd2',
       },
       {},
     );
