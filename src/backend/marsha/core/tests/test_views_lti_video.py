@@ -107,6 +107,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": False,
@@ -234,6 +236,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -388,6 +392,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -534,6 +540,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -662,6 +670,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": False,
@@ -744,6 +754,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": "1569309880",
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -877,6 +889,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": "1569309880",
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -998,6 +1012,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": "1569309880",
                 "is_public": False,
                 "is_ready_to_show": False,
@@ -1121,6 +1137,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": "1569309880",
                 "is_public": False,
                 "is_ready_to_show": True,
@@ -1435,6 +1453,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": False,
@@ -1527,6 +1547,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("resource"),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "is_public": False,
                 "is_ready_to_show": False,
