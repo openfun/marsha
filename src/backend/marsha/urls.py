@@ -31,7 +31,6 @@ from marsha.core.views import (
     VideoView,
 )
 from marsha.development.api import local_document_upload, local_video_upload
-from marsha.development.views import DevelopmentLTIView
 
 
 router = DefaultRouter()
@@ -88,9 +87,7 @@ if settings.BBB_ENABLED:
     urlpatterns += [path("", include("marsha.bbb.urls"))]
 
 if settings.DEBUG:
-    urlpatterns += [
-        path("development/", DevelopmentLTIView.as_view(), name="lti-development-view"),
-    ]
+    urlpatterns += [path("", include("marsha.development.urls"))]
 
 if "dummy" in settings.STORAGE_BACKEND:
     urlpatterns += [

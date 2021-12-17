@@ -81,7 +81,7 @@ class DevelopmentLTIView(TemplateView):
             "uuid": uuid.uuid4(),
             "select_context_id": playlist.lti_id,
             "select_content_item_return_url": self.request.build_absolute_uri(
-                reverse("lti-development-view")
+                reverse("development:lti-development-view")
             ),
             "oauth_dict": oauth_dict,
         }
