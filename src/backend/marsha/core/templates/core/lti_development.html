@@ -6,7 +6,6 @@
       * {
         font-family: Helvetica, sans-serif;
       }
-
       body {
         display: flex;
         flex-direction: column;
@@ -14,34 +13,28 @@
         margin: 0;
         padding: 1rem;
       }
-
       section {
         flex-basis: 50%;
         text-align: center;
       }
-
       section:last-of-type {
         display: flex;
         justify-content: center;
         flex-direction: column;
       }
-
       .input-group {
           display: inline-block;
           text-align: left;
           margin-bottom: 0.5rem;
       }
-
       .input-group label,
       .input-group input,
       .input-group select {
           display: block;
       }
-
       section p {
         max-width: 40rem;
       }
-
       section iframe {
         width: 100%;
         height: 100px; /* Explicitly set a bogus height to force iframe-resizer action */
@@ -51,7 +44,6 @@
       }
     </style>
   </head>
-
   <body>
   {% if content_selected %}
     <script src="{% static 'js/iframeResizer.contentWindow.min.js' %}"></script>
@@ -80,7 +72,11 @@
         </div>
         <div class="input-group">
           <label>roles</label>
-          <input type="text" name="roles" value="Instructor"/>
+          <select name="roles">
+            <option value="instructor" selected="">Instructor</option>
+            <option value="administrator" selected="">Administrator</option>
+            <option value="student">Student</option>
+          </select>
         </div>
         <div class="input-group">
           <label>context_id</label>
@@ -90,17 +86,14 @@
           <label>content_item_return_url</label>
           <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}"/>
         </div>
-
         {% for key, value in oauth_dict.items %}
         <div class="input-group">
           <label>{{ key }}</label>
           <input type="text" name="{{ key }}" value="{{ value }}"/>
         </div>
         {% endfor %}
-
         <input type="submit" />
       </form>
-
       <iframe
         class="controlled-iframe"
         name="lti_select"
@@ -113,7 +106,6 @@
       >
       </iframe>
     </section>
-
     <section>
       <h2>Iframe LTI Resource setup</h2>
       <p>
@@ -137,15 +129,19 @@
         </div>
         <div class="input-group">
           <label>context_id</label>
-          <input
-            type="text"
-            name="context_id"
-            value="course-v1:ufr+mathematics+0001"
-          />
+            <input
+              type="text"
+              name="context_id"
+              value="course-v1:ufr+mathematics+0001"
+            />
         </div>
         <div class="input-group">
           <label>roles</label>
-          <input type="text" name="roles" value="Instructor" />
+          <select name="roles">
+            <option value="instructor" selected="">Instructor</option>
+            <option value="administrator" selected="">Administrator</option>
+            <option value="student">Student</option>
+          </select>
         </div>
         <div class="input-group">
           <label>resource</label>
@@ -173,16 +169,17 @@
             <option value="es">Spanish</option>
           </select>
         </div>
+        <div class="input-group">
+          <label>lis_person_sourcedid</label>
+          <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}" />
+        </div>
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
         <input type="hidden" name="lti_version" value="LTI-1p0" />
-        <input type="hidden" name="lis_person_sourcedid" value="John" />
         <input type="hidden" name="lti_message_type" value="basic-lti-launch-request" />
         <input type="hidden" name="launch_presentation_return_url" value="" />
         <input type="hidden" name="lis_result_sourcedid" value="course-v1%3Aufr%2Bmathematics%2B0001:example.com-df7b0f2886f04b279854585735a402c4:56255f3807599c377bf0e5bf072359fd" />
-
         <input type="submit" />
       </form>
-
       <iframe
         class="controlled-iframe"
         name="lti_iframe"
@@ -194,18 +191,15 @@
         mozallowfullscreen
       >
       </iframe>
-
       <script src="{% static 'js/iframeResizer.min.js' %}"></script>
       <script>
         var baseUrl = "http://{{ domain }}/lti";
-
         document.addEventListener('DOMContentLoaded', function () {
           var forms = document.querySelectorAll('form.resource');
           for (var i = 0; i < forms.length; i++) {
             var formForListener = forms[i];
             formForListener.addEventListener('submit', function (event) {
               event.preventDefault();
-
               var form = event.target;
               var uuid = form.querySelector('input[name="uuid"]').value;
               var resource = form.querySelector('select[name="resource"]').value;
@@ -214,13 +208,11 @@
             });
           }
         });
-
         iFrameResize({
           checkOrigin: ["http://{{ domain }}"],
         });
       </script>
     </section>
-
     <section>
       <h2>New page LTI Resource setup</h2>
       <p style="margin-top: 0;">
@@ -250,7 +242,11 @@
         </div>
         <div class="input-group">
           <label>roles</label>
-          <input type="text" name="roles" value="Instructor" />
+          <select name="roles">
+            <option value="instructor" selected="">Instructor</option>
+            <option value="administrator" selected="">Administrator</option>
+            <option value="student">Student</option>
+          </select>
         </div>
         <div class="input-group">
           <label>resource</label>
@@ -269,14 +265,25 @@
           <label>lis_person_contact_email_primary</label>
           <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
         </div>
-
+        <div class="input-group">
+          <label>launch_presentation_locale</label>
+          <select name="launch_presentation_locale">
+            <option>Locale</option>
+            <option value="en" selected>English</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>lis_person_sourcedid</label>
+          <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}" />
+        </div>
         {% for key, value in oauth_dict.items %}
         <div class="input-group">
           <label>{{ key }}</label>
           <input type="text" name="{{ key }}" value="{{ value }}"/>
         </div>
         {% endfor %}
-
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer" />
         <input type="hidden" name="lti_version" value="LTI-1p0" />
         <input type="hidden" name="lis_person_sourcedid" value="John" />
@@ -284,7 +291,6 @@
         <input type="hidden" name="lti_message_type" value="basic-lti-launch-request" />
         <input type="hidden" name="launch_presentation_return_url" value="" />
         <input type="hidden" name="lis_result_sourcedid" value="course-v1%3Aufr%2Bmathematics%2B0001:example.com-df7b0f2886f04b279854585735a402c4:56255f3807599c377bf0e5bf072359fd" />
-        <input type="hidden" name="launch_presentation_locale" value="en" />
         <input type="submit" />
       </form>
     </section>
