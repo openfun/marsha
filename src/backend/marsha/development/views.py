@@ -9,11 +9,14 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 
+from faker import Faker
+
 from ..core.models import Playlist
 from ..core.models.account import ConsumerSite, LTIPassport
 
 
 logger = getLogger(__name__)
+fake = Faker()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -74,6 +77,7 @@ class DevelopmentLTIView(TemplateView):
 
         return {
             "domain": domain,
+            "lis_result_sourcedid": fake.user_name(),
             "uuid": uuid.uuid4(),
             "select_context_id": playlist.lti_id,
             "select_content_item_return_url": self.request.build_absolute_uri(
