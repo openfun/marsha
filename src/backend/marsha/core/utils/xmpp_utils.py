@@ -227,3 +227,29 @@ def add_jwt_token_to_url(url, token):
     generated_url[4] = urlencode(generated_query_string)
 
     return urlunparse(generated_url)
+
+
+def broadcast_message(room_name, event, message):
+    """Broadcast a message to all users in a room.
+
+    Parameters
+    ----------
+    room_name: string
+        The name of the room the message is associated with
+
+    event: string
+        The event to broadcast
+
+    message: string
+        The message to broadcast
+    """
+    client = _connect()
+
+    client.send(
+        xmpp.Message(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
+            body=message,
+            typ="groupchat",
+            attrs={"event": event},
+        )
+    )

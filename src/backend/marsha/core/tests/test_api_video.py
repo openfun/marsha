@@ -236,6 +236,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -413,6 +415,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -660,6 +664,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -871,6 +877,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -925,6 +933,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -1066,6 +1076,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "description": video.description,
                 "has_transcript": False,
@@ -1142,6 +1154,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "description": video.description,
                 "has_transcript": False,
@@ -1268,6 +1282,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video.description,
                         "has_transcript": False,
@@ -1347,6 +1363,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video_1.description,
                         "has_transcript": False,
@@ -1374,6 +1392,8 @@ class VideoAPITest(TestCase):
                         "xmpp": None,
                     },
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video_2.description,
                         "has_transcript": False,
@@ -1467,6 +1487,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video.description,
                         "has_transcript": False,
@@ -1535,6 +1557,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video.description,
                         "has_transcript": False,
@@ -1632,6 +1656,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video.description,
                         "has_transcript": False,
@@ -1699,6 +1725,8 @@ class VideoAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video_1.description,
                         "has_transcript": False,
@@ -1726,6 +1754,8 @@ class VideoAPITest(TestCase):
                         "xmpp": None,
                     },
                     {
+                        "active_shared_live_media": None,
+                        "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "description": video_2.description,
                         "has_transcript": False,
@@ -1905,6 +1935,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "description": "",
                 "has_transcript": False,
@@ -2067,6 +2099,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "description": "",
                 "has_transcript": False,
@@ -2135,6 +2169,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "description": "",
                 "has_transcript": False,
@@ -3748,6 +3784,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -3799,6 +3837,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -3902,6 +3942,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -4023,6 +4065,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -4227,6 +4271,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -4392,6 +4438,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -4475,6 +4523,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,
@@ -4581,6 +4631,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
                 "description": video.description,
                 "id": str(video.id),
                 "title": video.title,

@@ -21,6 +21,19 @@ class Video(BaseFile):
 
     RESOURCE_NAME = "videos"
 
+    active_shared_live_media = models.ForeignKey(
+        "SharedLiveMedia",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="active_video",
+        verbose_name=_("Video"),
+    )
+    active_shared_live_media_page = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text=_("Current displayed page of the active shared live media"),
+    )
     starting_at = models.DateTimeField(
         blank=True,
         verbose_name=_("starting at"),

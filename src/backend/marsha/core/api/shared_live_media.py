@@ -59,6 +59,21 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             ]
         return [permission() for permission in permission_classes]
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete the SharedLiveMedia object.
+        If active on a video,
+        sets the video's `active_shared_live_media` and `active_shared_live_media_page`
+        attributes to None.
+        """
+        shared_live_media = self.get_object()
+        video = shared_live_media.video
+        if video.active_shared_live_media == shared_live_media:
+            video.active_shared_live_media = None
+            video.active_shared_live_media_page = None
+            video.save()
+        return super().destroy(request, *args, **kwargs)
+
     def list(self, request, *args, **kwargs):
         """List shared live media through the API."""
         queryset = self.get_queryset().none()
