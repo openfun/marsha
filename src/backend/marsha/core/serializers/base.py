@@ -18,8 +18,8 @@ EXTENSION_REGEX = '[^.\\/:*?&"<>|\r\n]+'
 # This regex matches keys in AWS for videos, timed text tracks, thumbail and document
 TIMED_TEXT_EXTENSIONS = "|".join(m[0] for m in TimedTextTrack.MODE_CHOICES)
 KEY_PATTERN = (
-    r"^{uuid:s}/(?P<model_name>video|thumbnail|timedtexttrack|document)/(?P<object_id>"
-    r"{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?"
+    r"^{uuid:s}/(?P<model_name>video|thumbnail|timedtexttrack|document|sharedlivemedia)/"
+    r"(?P<object_id>{uuid:s})/(?P<stamp>[0-9]{{10}})(_[a-z-]{{2,10}}_({tt_ex}))?"
     # The extension is captured and is optional. If present and the resource has an extension
     # attribute we will save it in database.
     r"(\.(?P<extension>{extension:s}))?$"
