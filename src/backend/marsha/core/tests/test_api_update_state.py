@@ -10,6 +10,7 @@ import pytz
 from ..defaults import HARVESTED, PENDING, RAW, STOPPED
 from ..factories import (
     DocumentFactory,
+    SharedLiveMediaFactory,
     ThumbnailFactory,
     TimedTextTrackFactory,
     VideoFactory,
@@ -323,3 +324,35 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(thumbnail.upload_state, "ready")
         self.assertEqual(thumbnail.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_shared_live_media(self):
+        """Confirming the successful upload of a shared live media."""
+        shared_live_media = SharedLiveMediaFactory(
+            id="d60d7971-5929-4f10-8e9c-06c5d15818ce",
+            video__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
+        )
+
+        data = {
+            "extraParameters": {"nbPages": 3, "extension": "pdf"},
+            "key": f"{shared_live_media.video.pk}/sharedlivemedia/{shared_live_media.pk}/"
+            "1533686400.pdf",
+            "state": "ready",
+        }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=signature,
+        )
+
+        shared_live_media.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(shared_live_media.upload_state, "ready")
+        self.assertEqual(
+            shared_live_media.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
+        )
+        self.assertEqual(shared_live_media.nb_pages, 3)
+        self.assertEqual(shared_live_media.extension, "pdf")
