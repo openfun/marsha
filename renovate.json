@@ -16,6 +16,16 @@
     },
     {
       "enabled": false,
+      "groupName": "ignored python dependencies",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "django"
+      ]
+    },
+    {
+      "enabled": false,
       "matchPaths": [
         "src/aws/*"
       ],
