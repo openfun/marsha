@@ -377,8 +377,7 @@ describe("lambda", () => {
       expect(mockUpdateState).toHaveBeenCalledWith(
         "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
         "ready",
-        3,
-        "pdf"
+        { extension: "pdf", nbPages: 3 }
       );
     });
   });
