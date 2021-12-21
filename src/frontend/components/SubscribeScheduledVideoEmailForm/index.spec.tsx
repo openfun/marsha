@@ -92,9 +92,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
         fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
       ).toBe(true);
     });
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@fun-mooc.fr"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@fun-mooc.fr');
+    expect(body).toHaveProperty('anonymous_id');
     screen.getByText(
       'Email chantal@fun-mooc.fr successfully registered for this event',
     );
@@ -119,9 +121,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
         fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
       ).toBe(true);
     });
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@fun-mooc.fr"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@fun-mooc.fr');
+    expect(body).toHaveProperty('anonymous_id');
     screen.getByText(
       'Email chantal@fun-mooc.fr successfully registered for this event',
     );
@@ -147,9 +151,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
         fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
       ).toBe(true);
     });
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@fun-mooc.fr"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@fun-mooc.fr');
+    expect(body).toHaveProperty('anonymous_id');
     screen.getByText(
       'Email chantal@fun-mooc.fr successfully registered for this event',
     );
@@ -173,9 +179,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
         fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
       ).toBe(true);
     });
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@fun-mooc.fr"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@fun-mooc.fr');
+    expect(body).toHaveProperty('anonymous_id');
     screen.getByText(
       'Email chantal@fun-mooc.fr successfully registered for this event',
     );
@@ -211,9 +219,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
     expect(
       fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
     ).toBe(true);
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@fun-mooc.fr"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@fun-mooc.fr');
+    expect(body).toHaveProperty('anonymous_id');
 
     getByText(
       'Impossible to register, chantal@fun-mooc.fr is already registered for this event with another account.',
@@ -250,9 +260,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
     expect(
       fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
     ).toBe(true);
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal');
+    expect(body).toHaveProperty('anonymous_id');
 
     getByText('Impossible to register, chantal is not valid.');
   });
@@ -280,9 +292,11 @@ describe('<SubscribeScheduledVideoEmailForm />', () => {
     expect(
       fetchMock.called('/api/liveregistrations/', { method: 'POST' }),
     ).toBe(true);
-    expect(fetchMock.lastOptions('/api/liveregistrations/')!.body).toEqual(
-      '{"email":"chantal@aol.com"}',
+    const body = JSON.parse(
+      fetchMock.lastOptions('/api/liveregistrations/')!.body!.toString(),
     );
+    expect(body).toHaveProperty('email', 'chantal@aol.com');
+    expect(body).toHaveProperty('anonymous_id');
 
     getByText(
       'Impossible to register your email chantal@aol.com for this event. Make sure your email is valid otherwise, please try again later or contact us.',
