@@ -100,7 +100,7 @@ class SharedLiveMediaSerializer(
         stamp = time_utils.to_timestamp(obj.uploaded_on)
         base = (
             f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-            f"{obj.video.pk}/sharedlivemedias/{obj.pk}/{stamp}"
+            f"{obj.video.pk}/sharedlivemedia/{obj.pk}/{stamp}"
         )
 
         cloudfront_signer = None
@@ -114,7 +114,7 @@ class SharedLiveMediaSerializer(
 
         pages = {}
         for page_number in range(1, obj.nb_pages + 1):
-            url = f"{base:s}/{page_number:d}.png"
+            url = f"{base:s}_{page_number:d}.svg"
             if cloudfront_signer:
                 url = cloudfront_signer.generate_presigned_url(
                     url, date_less_than=date_less_than

@@ -363,18 +363,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "pages": {
                         "1": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "1.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "1.svg"
                         ),
                         "2": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "2.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "2.svg"
                         ),
                         "3": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "3.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "3.svg"
                         ),
                     }
                 },
@@ -431,49 +431,49 @@ class SharedLiveMediaAPITest(TestCase):
                 "urls": {
                     "media": (
                         "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                        "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
+                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
                         "1638230400/1638230400.pdf?response-content-disposition=attachment"
                         "%3B+filename%3Dpython-structures.pdf&Expires=1638237600&Signature="
-                        "Df4g20VO9S3wIt4qAcLW4puFVN-UemtBn18cdQAZBqIuNP8XJlJXvf-jsa985FTQB5"
-                        "FBjD0t6XT9EoOLwmFoob9Cb0MqWzIeFJNnFCKKaB4YA~TS97R~5Y6PUQ9-um0aS2UG"
-                        "l--oXk2dta0mMEsXW1oyJwrJLr5ywt1Jo4-I~Bumg1stdZB~ZcZTqpdp0bFggwr5J8"
-                        "KBobLWjjDsbYjn7ncWM-WbHyLVJ0qQY5VOL71ByWWvm-7VgMg8bd-2ifcS6SSk5NPD"
-                        "V-uA9zgU0oAbHf46Y0BzNsw1PqZzfO~UKPSS~eYxj~De4d9wYvih1lUdzgrPs-ihCl"
-                        "~KvXm13eVjsw__&Key-Pair-Id=cloudfront-access-key-id"
+                        "PkRRV0~r3xUyzh9KiemFgRypYCh7fFQDzUlrnFSH0qi57lzvAmGjkteT1it7kjgEK"
+                        "jYFMYy-0aB7bTTu0RMUXQlhiHvFUasieJF66f2jMmhaSYTqXwDpSo4bbrThUp4LkI"
+                        "Jwn0C-KcBwBSxsBAo~72G8fsAQRR52TXL~Ya3~~RVAyMX6D3QbFE-dtdwZHcrH1uC"
+                        "89DGPq~~lXwBZv2MBwvNXwUMs6P4SwEPX96xYV8NUGOlf4tr2024JPtZz0RfKteIv"
+                        "-JutS0o5cyTxABx3pkPgDG~F018w2vrLCHHmsgNoiMEcASTLkBwWVJyivsKoOpQo-"
+                        "tb4VS0c07PimdClUw__&Key-Pair-Id=cloudfront-access-key-id"
                     ),
                     "pages": {
                         "1": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "1.png?Expires=1638237600&Signature=NMUCJsyMGlg1ZQ4ocHjiqqHveeBcWE"
-                            "t9Hpd-QhSDsPco7iwTwfTS~tgQkjg0OfkZ16hPq118d8AZqXLkcYvYR32Z5oDdV08"
-                            "P1LTh8ViUgBtz3XV8yxc~VmyQ3-OmFINSBqPXjZLf29bkXZaPg9LU~EditKJTaWrf"
-                            "hkpD2GljyXdj7X6uePqFWWVaIlkY4Xl1Dhjk04hjS2f3m5hictwCCSgN-i8r~EKEe"
-                            "UkVCcdf3TGOFOCcrBlxd9525rzUtvgKMDqlyIKGEwGAbK10iRI~pnB3EgXWxZ7U~8"
-                            "x-xZT7bmoIrt6NuVKvqf2mNLWWjizGAjOMD1WpO1EGhhZBTdinNg__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_1.svg?Expires=1638237600&Signature=HhuTM-~v5kxNnQ4tPeI0"
+                            "yh8xvmJTwJa3AhedgDYWnpalIQcC~uEeU1yLO1gecVwzq4R0UaGf8rmbWvGwj"
+                            "cfG6T-5An7eRfK3JLz9-K7hRXSTFe-dyu9Xzy6vjP6WRj9qJWm7N7EIl8gj~I"
+                            "3E17IIALCfcXZ1oLYrrmKpikOZZfRUnzFKpiMVJ2yr0pM31T4rzjR-yiyupBp"
+                            "DfHomKsi8tS-b7D3Eymm9nKxjXK6zJ6sVE25kL1PejFUQnTQ55gNqsA5IhNuW"
+                            "rYOItpXHeFXoa9b2uGagyp1D3EPpv8p5fk5lizMq8fUykViloSWWR1DsQ6MND"
+                            "YU0L3TezfR4EUCMvQ__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "2": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "2.png?Expires=1638237600&Signature=Qp3z9GZV5guZxb2jHuBrbIsYMyKNJ7"
-                            "gMAKyycQusresKjhtwgOJD3hp~vW8b6B1oRRtp~Osb~T5j13MbS-XNCjICs3C~7b6"
-                            "p7e77CTg9V6TZF2rQZBz2oOoXiKGAWgkX8adxjFRAImE24NVsudJtaKpef-4MPgFc"
-                            "SZfI3O9KQadCv4LW6Q~IZDCCl6JHHrDf6SSBggcyr8sRcXM8dUTM2NWf56siMLk6U"
-                            "mY8BNra4qM9zlO7DDNPT1iGsuUcX2OIgHOVI0ykH3PIvQ7yWqTCzKMJrP7xfNczWj"
-                            "HBNxrf~rtjbDV5fYO1gdUDlacfPpz4bnu01xPn9lUNr3uooIe~UA__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_2.svg?Expires=1638237600&Signature=PPHBoj50fbVYCokpkFZT"
+                            "cOUNGGabqokah2A9FbiOv3j82hWerD8-X95pClUAfNp3-DuMg1VMA4XOEB~Am"
+                            "7DSDxXshO72BPE0Qh~C-5IFOYfztmQfQg2bdfVTOSMfz8dP1jdkSZ~PVd8hQa"
+                            "4jlAm4yVbUwVtAlIDIJNNGcAB-ORBda1qClW2i1KDJONf8CI9lGo9LKK3AhtA"
+                            "3WKe27YPFJcsR7NIlYx3kfV-XccwjlmQ0fkEw5DG2SRkMm~qyw5HIxzadjMXr"
+                            "9~mbdLZ7GPnnoUmHBfuiYeHCBhv2-7jXAOkx7h8OChGdwqr-hlhkTolTuDrkM"
+                            "7zTfF8Slq85ZSYYBA__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "3": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "3.png?Expires=1638237600&Signature=G31rnBICbaateEwB8~aFakNoZQMRE-"
-                            "Urzo-CRAvp~AYsdYNEFlbFgYfe-H6if34sT0TX1h2UpZe2HL8pbWG0rIuBArYcpLc"
-                            "O9UPncXEBAKnX4WQr8Svl1s-ECBOE3WWC~-Em1o-93ss6qYHgk3ABlxswysK5GmIG"
-                            "iraF1rjBNzktkZ87cbNAXpllRAl5swt~LAZyGH8bKnS8reNawGJZo~ppAZEt1cHbp"
-                            "KkfzuoLTKHpuIgkxevzdZCVJ2pPnimAyKQGsYH55aoLlD-BGcN~oFojDyDD00UUuq"
-                            "9HwRN1xZTYdS0881FSKNkL6Q7AfPkZ6bKPPOmevpdzePDS0Cj-PQ__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_3.svg?Expires=1638237600&Signature=P2XH0MDnottQ~kXpXLBb"
+                            "wp9h2SGU5R~b~-~zZKsajdjhdacMfO66p5pLaA3YW2m7nsMcLEigRJR0aZpp~"
+                            "SwPTAl43anzhgsDPttg4-PH6dloE43FHkfW0su8RvfkTjuSFL~Y8old1OY3W6"
+                            "NU92axsVqFvZPQSOFVJS7elt8--t0bY1zwJoOfqR3pw3Ru2TzBE~qvegLdzTA"
+                            "4-emEkr2rI1VpQnAH2jBPqNLFb3AwghjIwY927m0g0YF9HXJyM~t4nSQ5oap5"
+                            "D6hei1Xg7do6BcFH4RBNMB1II70961MnAz-mG39hWHK7v2o2xmui~zJISSZZT"
+                            "I7k68LYfRzEbuA64A__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                     },
                 },
@@ -534,37 +534,37 @@ class SharedLiveMediaAPITest(TestCase):
                 "urls": {
                     "pages": {
                         "1": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "1.png?Expires=1638237600&Signature=NMUCJsyMGlg1ZQ4ocHjiqqHveeBcWE"
-                            "t9Hpd-QhSDsPco7iwTwfTS~tgQkjg0OfkZ16hPq118d8AZqXLkcYvYR32Z5oDdV08"
-                            "P1LTh8ViUgBtz3XV8yxc~VmyQ3-OmFINSBqPXjZLf29bkXZaPg9LU~EditKJTaWrf"
-                            "hkpD2GljyXdj7X6uePqFWWVaIlkY4Xl1Dhjk04hjS2f3m5hictwCCSgN-i8r~EKEe"
-                            "UkVCcdf3TGOFOCcrBlxd9525rzUtvgKMDqlyIKGEwGAbK10iRI~pnB3EgXWxZ7U~8"
-                            "x-xZT7bmoIrt6NuVKvqf2mNLWWjizGAjOMD1WpO1EGhhZBTdinNg__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_1.svg?Expires=1638237600&Signature=HhuTM-~v5kxNnQ4tPeI0"
+                            "yh8xvmJTwJa3AhedgDYWnpalIQcC~uEeU1yLO1gecVwzq4R0UaGf8rmbWvGwj"
+                            "cfG6T-5An7eRfK3JLz9-K7hRXSTFe-dyu9Xzy6vjP6WRj9qJWm7N7EIl8gj~I"
+                            "3E17IIALCfcXZ1oLYrrmKpikOZZfRUnzFKpiMVJ2yr0pM31T4rzjR-yiyupBp"
+                            "DfHomKsi8tS-b7D3Eymm9nKxjXK6zJ6sVE25kL1PejFUQnTQ55gNqsA5IhNuW"
+                            "rYOItpXHeFXoa9b2uGagyp1D3EPpv8p5fk5lizMq8fUykViloSWWR1DsQ6MND"
+                            "YU0L3TezfR4EUCMvQ__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "2": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "2.png?Expires=1638237600&Signature=Qp3z9GZV5guZxb2jHuBrbIsYMyKNJ7"
-                            "gMAKyycQusresKjhtwgOJD3hp~vW8b6B1oRRtp~Osb~T5j13MbS-XNCjICs3C~7b6"
-                            "p7e77CTg9V6TZF2rQZBz2oOoXiKGAWgkX8adxjFRAImE24NVsudJtaKpef-4MPgFc"
-                            "SZfI3O9KQadCv4LW6Q~IZDCCl6JHHrDf6SSBggcyr8sRcXM8dUTM2NWf56siMLk6U"
-                            "mY8BNra4qM9zlO7DDNPT1iGsuUcX2OIgHOVI0ykH3PIvQ7yWqTCzKMJrP7xfNczWj"
-                            "HBNxrf~rtjbDV5fYO1gdUDlacfPpz4bnu01xPn9lUNr3uooIe~UA__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_2.svg?Expires=1638237600&Signature=PPHBoj50fbVYCokpkFZT"
+                            "cOUNGGabqokah2A9FbiOv3j82hWerD8-X95pClUAfNp3-DuMg1VMA4XOEB~Am"
+                            "7DSDxXshO72BPE0Qh~C-5IFOYfztmQfQg2bdfVTOSMfz8dP1jdkSZ~PVd8hQa"
+                            "4jlAm4yVbUwVtAlIDIJNNGcAB-ORBda1qClW2i1KDJONf8CI9lGo9LKK3AhtA"
+                            "3WKe27YPFJcsR7NIlYx3kfV-XccwjlmQ0fkEw5DG2SRkMm~qyw5HIxzadjMXr"
+                            "9~mbdLZ7GPnnoUmHBfuiYeHCBhv2-7jXAOkx7h8OChGdwqr-hlhkTolTuDrkM"
+                            "7zTfF8Slq85ZSYYBA__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "3": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "3.png?Expires=1638237600&Signature=G31rnBICbaateEwB8~aFakNoZQMRE-"
-                            "Urzo-CRAvp~AYsdYNEFlbFgYfe-H6if34sT0TX1h2UpZe2HL8pbWG0rIuBArYcpLc"
-                            "O9UPncXEBAKnX4WQr8Svl1s-ECBOE3WWC~-Em1o-93ss6qYHgk3ABlxswysK5GmIG"
-                            "iraF1rjBNzktkZ87cbNAXpllRAl5swt~LAZyGH8bKnS8reNawGJZo~ppAZEt1cHbp"
-                            "KkfzuoLTKHpuIgkxevzdZCVJ2pPnimAyKQGsYH55aoLlD-BGcN~oFojDyDD00UUuq"
-                            "9HwRN1xZTYdS0881FSKNkL6Q7AfPkZ6bKPPOmevpdzePDS0Cj-PQ__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_3.svg?Expires=1638237600&Signature=P2XH0MDnottQ~kXpXLBb"
+                            "wp9h2SGU5R~b~-~zZKsajdjhdacMfO66p5pLaA3YW2m7nsMcLEigRJR0aZpp~"
+                            "SwPTAl43anzhgsDPttg4-PH6dloE43FHkfW0su8RvfkTjuSFL~Y8old1OY3W6"
+                            "NU92axsVqFvZPQSOFVJS7elt8--t0bY1zwJoOfqR3pw3Ru2TzBE~qvegLdzTA"
+                            "4-emEkr2rI1VpQnAH2jBPqNLFb3AwghjIwY927m0g0YF9HXJyM~t4nSQ5oap5"
+                            "D6hei1Xg7do6BcFH4RBNMB1II70961MnAz-mG39hWHK7v2o2xmui~zJISSZZT"
+                            "I7k68LYfRzEbuA64A__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                     },
                 },
@@ -647,18 +647,18 @@ class SharedLiveMediaAPITest(TestCase):
                     "pages": {
                         "1": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "1.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "1.svg"
                         ),
                         "2": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "2.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "2.svg"
                         ),
                         "3": (
                             "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "3.png"
+                            "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400_"
+                            "3.svg"
                         ),
                     },
                 },
@@ -715,49 +715,50 @@ class SharedLiveMediaAPITest(TestCase):
                 "urls": {
                     "media": (
                         "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                        "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                        "1638230400/1638230400.pdf?response-content-disposition=attachment"
-                        "%3B+filename%3Dpython-compound-statements.pdf&Expires=1638237600&"
-                        "Signature=ADUEw1s-d6ql3mnDt3vzbt2x9Klgj7YWg-gcxcsShxC9suWOCjm1KJn"
-                        "4emyebhlrOvC7ttpMOOGo5Ofwe0lv3iQgp737ScgafSzK9IKh3sEboBtiqTK5EbWD"
-                        "1ou6WyFlrzXV~uLXra5PFzRF5JzAktNxbN39D6BFrDyX68zEwe7PzQql-MCQGdugx"
-                        "SQ3LR2bT9g69S8zTrIvKscp158gEBETUbdP3KjSwyYohBiDs0jfVWL31kud0YCQj7"
-                        "ruyrK7wDLdMsJNIUvBScWlo2smER-MkJYLbVt3WwC3Ns1EykRLkxaE0fdhP-D6XJk"
-                        "PZBI6L3LZ2FXPgB1LpuT7YApw2A__&Key-Pair-Id=cloudfront-access-key-id"
+                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400"
+                        "/1638230400/1638230400.pdf?response-content-disposition="
+                        "attachment%3B+filename%3Dpython-compound-statements.pdf&Expires="
+                        "1638237600&Signature=EvCA76D7FQYvvY7bjw~40M7Z2h8GfRkc-mczxiVDT52w"
+                        "YTo97PbLNWtR2F0Gipp1uNfcqrGLl-PhH4YUN8AoDM7j8Mz1lXDo0tF6R3FEZAAvA"
+                        "WILQusIlWQ24hgkN9PEAFax8icz5PM~bcTpQkWqbQroX~7krph92yj3E6YurChkYd"
+                        "KmOM8IGdwFU7p3ymFOMMrdLy01~O4ofg~mqDf7GjdTQYrk~6bIWmMWhFBxb9JqsE5"
+                        "gcuo5i8hl2nOhySZEzs7VUhN3R3zgRALMsWojPcoU3DILwkhkxq5u3Sf41jY5M~Ax"
+                        "IX9TJP4mrNAxdx0Ae~8bP2Up3lLRxH7DJO0LHw__"
+                        "&Key-Pair-Id=cloudfront-access-key-id"
                     ),
                     "pages": {
                         "1": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "1.png?Expires=1638237600&Signature=NMUCJsyMGlg1ZQ4ocHjiqqHveeBcWE"
-                            "t9Hpd-QhSDsPco7iwTwfTS~tgQkjg0OfkZ16hPq118d8AZqXLkcYvYR32Z5oDdV08"
-                            "P1LTh8ViUgBtz3XV8yxc~VmyQ3-OmFINSBqPXjZLf29bkXZaPg9LU~EditKJTaWrf"
-                            "hkpD2GljyXdj7X6uePqFWWVaIlkY4Xl1Dhjk04hjS2f3m5hictwCCSgN-i8r~EKEe"
-                            "UkVCcdf3TGOFOCcrBlxd9525rzUtvgKMDqlyIKGEwGAbK10iRI~pnB3EgXWxZ7U~8"
-                            "x-xZT7bmoIrt6NuVKvqf2mNLWWjizGAjOMD1WpO1EGhhZBTdinNg__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_1.svg?Expires=1638237600&Signature=HhuTM-~v5kxNnQ4tPeI0"
+                            "yh8xvmJTwJa3AhedgDYWnpalIQcC~uEeU1yLO1gecVwzq4R0UaGf8rmbWvGwj"
+                            "cfG6T-5An7eRfK3JLz9-K7hRXSTFe-dyu9Xzy6vjP6WRj9qJWm7N7EIl8gj~I"
+                            "3E17IIALCfcXZ1oLYrrmKpikOZZfRUnzFKpiMVJ2yr0pM31T4rzjR-yiyupBp"
+                            "DfHomKsi8tS-b7D3Eymm9nKxjXK6zJ6sVE25kL1PejFUQnTQ55gNqsA5IhNuW"
+                            "rYOItpXHeFXoa9b2uGagyp1D3EPpv8p5fk5lizMq8fUykViloSWWR1DsQ6MND"
+                            "YU0L3TezfR4EUCMvQ__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "2": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "2.png?Expires=1638237600&Signature=Qp3z9GZV5guZxb2jHuBrbIsYMyKNJ7"
-                            "gMAKyycQusresKjhtwgOJD3hp~vW8b6B1oRRtp~Osb~T5j13MbS-XNCjICs3C~7b6"
-                            "p7e77CTg9V6TZF2rQZBz2oOoXiKGAWgkX8adxjFRAImE24NVsudJtaKpef-4MPgFc"
-                            "SZfI3O9KQadCv4LW6Q~IZDCCl6JHHrDf6SSBggcyr8sRcXM8dUTM2NWf56siMLk6U"
-                            "mY8BNra4qM9zlO7DDNPT1iGsuUcX2OIgHOVI0ykH3PIvQ7yWqTCzKMJrP7xfNczWj"
-                            "HBNxrf~rtjbDV5fYO1gdUDlacfPpz4bnu01xPn9lUNr3uooIe~UA__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_2.svg?Expires=1638237600&Signature=PPHBoj50fbVYCokpkFZT"
+                            "cOUNGGabqokah2A9FbiOv3j82hWerD8-X95pClUAfNp3-DuMg1VMA4XOEB~Am"
+                            "7DSDxXshO72BPE0Qh~C-5IFOYfztmQfQg2bdfVTOSMfz8dP1jdkSZ~PVd8hQa"
+                            "4jlAm4yVbUwVtAlIDIJNNGcAB-ORBda1qClW2i1KDJONf8CI9lGo9LKK3AhtA"
+                            "3WKe27YPFJcsR7NIlYx3kfV-XccwjlmQ0fkEw5DG2SRkMm~qyw5HIxzadjMXr"
+                            "9~mbdLZ7GPnnoUmHBfuiYeHCBhv2-7jXAOkx7h8OChGdwqr-hlhkTolTuDrkM"
+                            "7zTfF8Slq85ZSYYBA__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                         "3": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                            "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                            "3.png?Expires=1638237600&Signature=G31rnBICbaateEwB8~aFakNoZQMRE-"
-                            "Urzo-CRAvp~AYsdYNEFlbFgYfe-H6if34sT0TX1h2UpZe2HL8pbWG0rIuBArYcpLc"
-                            "O9UPncXEBAKnX4WQr8Svl1s-ECBOE3WWC~-Em1o-93ss6qYHgk3ABlxswysK5GmIG"
-                            "iraF1rjBNzktkZ87cbNAXpllRAl5swt~LAZyGH8bKnS8reNawGJZo~ppAZEt1cHbp"
-                            "KkfzuoLTKHpuIgkxevzdZCVJ2pPnimAyKQGsYH55aoLlD-BGcN~oFojDyDD00UUuq"
-                            "9HwRN1xZTYdS0881FSKNkL6Q7AfPkZ6bKPPOmevpdzePDS0Cj-PQ__"
-                            "&Key-Pair-Id=cloudfront-access-key-id"
+                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
+                            "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                            "30400_3.svg?Expires=1638237600&Signature=P2XH0MDnottQ~kXpXLBb"
+                            "wp9h2SGU5R~b~-~zZKsajdjhdacMfO66p5pLaA3YW2m7nsMcLEigRJR0aZpp~"
+                            "SwPTAl43anzhgsDPttg4-PH6dloE43FHkfW0su8RvfkTjuSFL~Y8old1OY3W6"
+                            "NU92axsVqFvZPQSOFVJS7elt8--t0bY1zwJoOfqR3pw3Ru2TzBE~qvegLdzTA"
+                            "4-emEkr2rI1VpQnAH2jBPqNLFb3AwghjIwY927m0g0YF9HXJyM~t4nSQ5oap5"
+                            "D6hei1Xg7do6BcFH4RBNMB1II70961MnAz-mG39hWHK7v2o2xmui~zJISSZZT"
+                            "I7k68LYfRzEbuA64A__&Key-Pair-Id=cloudfront-access-key-id"
                         ),
                     },
                 },
@@ -1054,15 +1055,15 @@ class SharedLiveMediaAPITest(TestCase):
                             "pages": {
                                 "1": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/1.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/2.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/3.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
                             }
                         },
@@ -1188,50 +1189,50 @@ class SharedLiveMediaAPITest(TestCase):
                         "urls": {
                             "media": (
                                 "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                                "sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638230400"
+                                "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400"
                                 "/1638230400/1638230400.pdf?response-content-disposition="
                                 "attachment%3B+filename%3Dpython-expressions.pdf&Expires="
-                                "1638237600&Signature=A69S6ycsdBnPUNViT6moHzDz-Z~x-OczY6hU9pWqQ1wb"
-                                "CFeZC06EmwA44aZ62EPeYJr~rBdraLSXJevyk99zPNGPuFinF0XK6ggWannUjrvfk"
-                                "3Cqyt2ZGSI5QHwpKqo5crHj018SG28DNuA7cXsQ-BjlaSizwtmzJUV2Hcx5fvFDvx"
-                                "FlSrp3lAHHSdOA~L7N2pn1sTfjgqXRjge7KnJGot-dZnlKAC3wCvuazbuLZmzdA7i"
-                                "3rVdlNBIMCWhKE5WUUoXlW1tduPTqyqrzfOaoGv2TTsJJqPuEEWVwRRqv0DgRP27S"
-                                "oL7qzIvG~OeNYrabMuRQoyFDbYpFRt~ZVQRSwA__"
+                                "1638237600&Signature=Ss-CtLdmMVkAV-Wjfikpo0jebecQE~mgOcJSBEZFXUX"
+                                "qcz3IGhOu-nK-7pbCVLP7GQB3f-FF4OJfxOeCS0IgjXfhbzffBo8~Z6E9MUzTF8GT"
+                                "82B9cb4C9CwXYpSui~altLJyvnMRGoCQVMYqApj050KRBOc4zHa6fTysdbUmkFP1Q"
+                                "ZZPbb0gqT4R4M-xZZ8YTkKTa2fYrgUPDMdbTEovEi-wTaz8C4qTLhxAI9VI4gdv6A"
+                                "s55c8P~RxbQudk3W~GI4vZhQhj1xfJxI45cagJcQch8U1tAjhSbditodllgGb7LXA"
+                                "yJKAZConUMHJCrXCwaFULgIWsJHPwUP3NiO8Iqg__"
                                 "&Key-Pair-Id=cloudfront-access-key-id"
                             ),
                             "pages": {
                                 "1": (
                                     "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638"
-                                    "230400/1.png?Expires=1638237600&Signature=NMUCJsyMGlg1ZQ4ocHj"
-                                    "iqqHveeBcWEt9Hpd-QhSDsPco7iwTwfTS~tgQkjg0OfkZ16hPq118d8AZqXLk"
-                                    "cYvYR32Z5oDdV08P1LTh8ViUgBtz3XV8yxc~VmyQ3-OmFINSBqPXjZLf29bkX"
-                                    "ZaPg9LU~EditKJTaWrfhkpD2GljyXdj7X6uePqFWWVaIlkY4Xl1Dhjk04hjS2"
-                                    "f3m5hictwCCSgN-i8r~EKEeUkVCcdf3TGOFOCcrBlxd9525rzUtvgKMDqlyIK"
-                                    "GEwGAbK10iRI~pnB3EgXWxZ7U~8x-xZT7bmoIrt6NuVKvqf2mNLWWjizGAjOM"
-                                    "D1WpO1EGhhZBTdinNg__&Key-Pair-Id=cloudfront-access-key-id"
+                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                                    "30400_1.svg?Expires=1638237600&Signature=HhuTM-~v5kxNnQ4tPeI0"
+                                    "yh8xvmJTwJa3AhedgDYWnpalIQcC~uEeU1yLO1gecVwzq4R0UaGf8rmbWvGwj"
+                                    "cfG6T-5An7eRfK3JLz9-K7hRXSTFe-dyu9Xzy6vjP6WRj9qJWm7N7EIl8gj~I"
+                                    "3E17IIALCfcXZ1oLYrrmKpikOZZfRUnzFKpiMVJ2yr0pM31T4rzjR-yiyupBp"
+                                    "DfHomKsi8tS-b7D3Eymm9nKxjXK6zJ6sVE25kL1PejFUQnTQ55gNqsA5IhNuW"
+                                    "rYOItpXHeFXoa9b2uGagyp1D3EPpv8p5fk5lizMq8fUykViloSWWR1DsQ6MND"
+                                    "YU0L3TezfR4EUCMvQ__&Key-Pair-Id=cloudfront-access-key-id"
                                 ),
                                 "2": (
                                     "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638"
-                                    "230400/2.png?Expires=1638237600&Signature=Qp3z9GZV5guZxb2jHuB"
-                                    "rbIsYMyKNJ7gMAKyycQusresKjhtwgOJD3hp~vW8b6B1oRRtp~Osb~T5j13Mb"
-                                    "S-XNCjICs3C~7b6p7e77CTg9V6TZF2rQZBz2oOoXiKGAWgkX8adxjFRAImE24"
-                                    "NVsudJtaKpef-4MPgFcSZfI3O9KQadCv4LW6Q~IZDCCl6JHHrDf6SSBggcyr8"
-                                    "sRcXM8dUTM2NWf56siMLk6UmY8BNra4qM9zlO7DDNPT1iGsuUcX2OIgHOVI0y"
-                                    "kH3PIvQ7yWqTCzKMJrP7xfNczWjHBNxrf~rtjbDV5fYO1gdUDlacfPpz4bnu0"
-                                    "1xPn9lUNr3uooIe~UA__&Key-Pair-Id=cloudfront-access-key-id"
+                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                                    "30400_2.svg?Expires=1638237600&Signature=PPHBoj50fbVYCokpkFZT"
+                                    "cOUNGGabqokah2A9FbiOv3j82hWerD8-X95pClUAfNp3-DuMg1VMA4XOEB~Am"
+                                    "7DSDxXshO72BPE0Qh~C-5IFOYfztmQfQg2bdfVTOSMfz8dP1jdkSZ~PVd8hQa"
+                                    "4jlAm4yVbUwVtAlIDIJNNGcAB-ORBda1qClW2i1KDJONf8CI9lGo9LKK3AhtA"
+                                    "3WKe27YPFJcsR7NIlYx3kfV-XccwjlmQ0fkEw5DG2SRkMm~qyw5HIxzadjMXr"
+                                    "9~mbdLZ7GPnnoUmHBfuiYeHCBhv2-7jXAOkx7h8OChGdwqr-hlhkTolTuDrkM"
+                                    "7zTfF8Slq85ZSYYBA__&Key-Pair-Id=cloudfront-access-key-id"
                                 ),
                                 "3": (
                                     "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedias/7520c16b-5846-41ca-822b-52b446a96809/1638"
-                                    "230400/3.png?Expires=1638237600&Signature=G31rnBICbaateEwB8~a"
-                                    "FakNoZQMRE-Urzo-CRAvp~AYsdYNEFlbFgYfe-H6if34sT0TX1h2UpZe2HL8p"
-                                    "bWG0rIuBArYcpLcO9UPncXEBAKnX4WQr8Svl1s-ECBOE3WWC~-Em1o-93ss6q"
-                                    "YHgk3ABlxswysK5GmIGiraF1rjBNzktkZ87cbNAXpllRAl5swt~LAZyGH8bKn"
-                                    "S8reNawGJZo~ppAZEt1cHbpKkfzuoLTKHpuIgkxevzdZCVJ2pPnimAyKQGsYH"
-                                    "55aoLlD-BGcN~oFojDyDD00UUuq9HwRN1xZTYdS0881FSKNkL6Q7AfPkZ6bKP"
-                                    "POmevpdzePDS0Cj-PQ__&Key-Pair-Id=cloudfront-access-key-id"
+                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
+                                    "30400_3.svg?Expires=1638237600&Signature=P2XH0MDnottQ~kXpXLBb"
+                                    "wp9h2SGU5R~b~-~zZKsajdjhdacMfO66p5pLaA3YW2m7nsMcLEigRJR0aZpp~"
+                                    "SwPTAl43anzhgsDPttg4-PH6dloE43FHkfW0su8RvfkTjuSFL~Y8old1OY3W6"
+                                    "NU92axsVqFvZPQSOFVJS7elt8--t0bY1zwJoOfqR3pw3Ru2TzBE~qvegLdzTA"
+                                    "4-emEkr2rI1VpQnAH2jBPqNLFb3AwghjIwY927m0g0YF9HXJyM~t4nSQ5oap5"
+                                    "D6hei1Xg7do6BcFH4RBNMB1II70961MnAz-mG39hWHK7v2o2xmui~zJISSZZT"
+                                    "I7k68LYfRzEbuA64A__&Key-Pair-Id=cloudfront-access-key-id"
                                 ),
                             },
                         },
@@ -1382,15 +1383,15 @@ class SharedLiveMediaAPITest(TestCase):
                             "pages": {
                                 "1": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/1.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/2.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/3.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
                             },
                         },
@@ -1546,15 +1547,15 @@ class SharedLiveMediaAPITest(TestCase):
                             "pages": {
                                 "1": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/1.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/2.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
                                     f"https://abc.cloudfront.net/{video.id}/"
-                                    f"sharedlivemedias/{shared_live_media2.id}/1638230400/3.png"
+                                    f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
                             }
                         },
