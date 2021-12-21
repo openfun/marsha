@@ -1,4 +1,5 @@
 import fetchMock from 'fetch-mock';
+import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveRegistration } from '.';
 
@@ -17,7 +18,10 @@ describe('sideEffects/createLiveRegistration', () => {
       email: 'test@open-fun.fr',
     });
 
-    const liveRegistration = await createLiveRegistration('test@open-fun.fr');
+    const liveRegistration = await createLiveRegistration(
+      uuidv4(),
+      'test@open-fun.fr',
+    );
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
@@ -41,7 +45,7 @@ describe('sideEffects/createLiveRegistration', () => {
 
     let thrownError;
     try {
-      await createLiveRegistration('email@fun.com');
+      await createLiveRegistration(uuidv4(), 'email@fun.com');
     } catch (error) {
       thrownError = error;
     }

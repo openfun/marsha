@@ -9,6 +9,7 @@ import {
 } from 'grommet';
 import React, { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { v4 as uuidv4 } from 'uuid';
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
 import { Maybe } from 'utils/types';
 import { Nullable } from 'utils/types';
@@ -67,7 +68,8 @@ export const SubscribeScheduledVideoEmailForm = ({
   const intl = useIntl();
   const subscribeEmail = async () => {
     try {
-      await createLiveRegistration(email!);
+      const anonymousId = uuidv4();
+      await createLiveRegistration(anonymousId, email!);
       setError(undefined);
       setUpdated(true);
     } catch (error: any) {
