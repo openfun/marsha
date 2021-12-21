@@ -85,7 +85,7 @@ exports.handler = async (event, context, callback) => {
           objectKey,
           sourceBucket
         );
-        await updateState(objectKey, READY, nbPages, extension);
+        await updateState(objectKey, READY, { nbPages, extension });
       } catch (error) {
         return callback(error);
       }
