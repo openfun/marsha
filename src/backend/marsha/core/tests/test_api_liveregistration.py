@@ -1,6 +1,5 @@
 """Tests for the LiveRegistration API."""
 from datetime import timedelta
-import json
 import random
 import time
 from unittest import mock
@@ -43,9 +42,8 @@ class LiveRegistrationApiTest(TestCase):
         )
         response = self.client.get(f"/api/liveregistrations/{liveregistration.id}/")
         self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Authentication credentials were not provided."}
+            response.json(), {"detail": "Authentication credentials were not provided."}
         )
 
     def test_api_liveregistration_read_token_public(
@@ -143,7 +141,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site_id),
@@ -191,7 +189,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -240,7 +238,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         # email is the one used during registration
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site_id),
@@ -522,7 +520,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site_id),
@@ -574,7 +572,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -785,9 +783,9 @@ class LiveRegistrationApiTest(TestCase):
     def test_api_liveregistration_create_anonymous(self):
         """Anonymous users should not be able to create a liveRegistration."""
         response = self.client.post("/api/liveregistrations/")
-        content = json.loads(response.content)
+        content = response.json()
         self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
+        content = response.json()
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
@@ -819,7 +817,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": str(anonymous_id),
                 "consumer_site": None,
@@ -863,7 +861,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": str(anonymous_id),
                 "consumer_site": None,
@@ -934,7 +932,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "token": [
                     "Public token shouldn't have any LTI information, "
@@ -975,7 +973,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "token": [
                     "Public token shouldn't have any LTI information, "
@@ -1016,7 +1014,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "token": [
                     "Public token shouldn't have any LTI information, "
@@ -1057,7 +1055,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1105,7 +1103,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site_id),
@@ -1154,7 +1152,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1207,7 +1205,7 @@ class LiveRegistrationApiTest(TestCase):
             video=video,
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": str(anonymous_id),
                 "consumer_site": None,
@@ -1266,7 +1264,7 @@ class LiveRegistrationApiTest(TestCase):
             video=video,
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(other_consumer_site.id),
@@ -1324,7 +1322,7 @@ class LiveRegistrationApiTest(TestCase):
             video=video,
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1383,7 +1381,7 @@ class LiveRegistrationApiTest(TestCase):
         )
 
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1430,7 +1428,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "email": [
                     "You are not authorized to register with a specific email "
@@ -1461,7 +1459,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
         )
 
@@ -1488,7 +1486,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
         )
 
@@ -1525,7 +1523,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "lti_user_id": [
                     "This identified user is already registered "
@@ -1573,7 +1571,7 @@ class LiveRegistrationApiTest(TestCase):
             email="salome@test-fun-mooc.fr", deleted__isnull=True
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1630,7 +1628,7 @@ class LiveRegistrationApiTest(TestCase):
             email="salome@test-fun-mooc.fr", deleted__isnull=True
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1674,7 +1672,7 @@ class LiveRegistrationApiTest(TestCase):
         # already exists
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "email": [
                     "salome@test-fun-mooc.fr is already registered for "
@@ -1719,7 +1717,7 @@ class LiveRegistrationApiTest(TestCase):
         # can't register because key video/context_id/lti_user_id already exists
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "lti_user_id": [
                     "This identified user is already registered "
@@ -1769,7 +1767,7 @@ class LiveRegistrationApiTest(TestCase):
             email="chantal@test-fun-mooc.fr", video=video2
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": str(anonymous_id),
                 "consumer_site": None,
@@ -1832,7 +1830,7 @@ class LiveRegistrationApiTest(TestCase):
             email="chantal@test-fun-mooc.fr", video=video2
         )
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1883,7 +1881,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -1956,7 +1954,7 @@ class LiveRegistrationApiTest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
+        content = response.json()
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
@@ -1978,7 +1976,7 @@ class LiveRegistrationApiTest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
+        content = response.json()
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
@@ -2003,9 +2001,7 @@ class LiveRegistrationApiTest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 405)
-        self.assertEqual(
-            json.loads(response.content), {"detail": 'Method "PUT" not allowed.'}
-        )
+        self.assertEqual(response.json(), {"detail": 'Method "PUT" not allowed.'})
 
     def test_api_liveregistration_update_with_token_patch_not_allowed(self):
         """Patch update is not allowed."""
@@ -2027,9 +2023,7 @@ class LiveRegistrationApiTest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 405)
-        self.assertEqual(
-            json.loads(response.content), {"detail": 'Method "PATCH" not allowed.'}
-        )
+        self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})
 
     def test_api_liveregistration_create_with_unknown_video(
         self,
@@ -2570,7 +2564,7 @@ class LiveRegistrationApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "lti_user_id": [
                     "This identified user is already registered "
@@ -2608,7 +2602,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "anonymous_id": None,
                 "consumer_site": str(video.playlist.consumer_site.id),
@@ -2859,7 +2853,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(created_liveregistration.id),
                 "live_attendance": {"data": "test"},
@@ -2915,7 +2909,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(liveregistration.id),
                 "live_attendance": {
@@ -2955,7 +2949,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(LiveRegistration.objects.count(), 0)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {"detail": "Attendance from public video is not implemented yet."},
         )
 
@@ -2997,7 +2991,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(liveregistration.id),
                 "live_attendance": {"key1": "val1"},
@@ -3051,7 +3045,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(liveregistration.id),
                 "live_attendance": {"key1": "val1"},
@@ -3107,7 +3101,7 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(liveregistration.id),
                 "live_attendance": {"key1": "val1"},
@@ -3215,7 +3209,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), nb_created)
 
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "id": str(liveregistration.id),
                 "live_attendance": {
@@ -3238,3 +3232,374 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         self.assertEqual(liveregistration.consumer_site, video.playlist.consumer_site)
+
+    def test_api_liveregistration_put_username_public_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+    def test_api_liveregistration_put_username_public_no_anonymous_no_displayname(
+        self,
+    ):
+        """Field display_name is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+    def test_api_liveregistration_put_username_public_registration_existing(
+        self,
+    ):
+        """Should update the display_name with the new value."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_name="Samuel", video=video
+        )
+
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": anonymous_id, "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": None},
+        )
+        self.assertEqual(liveregistration.display_name, "Antoine")
+
+    def test_api_liveregistration_put_username_public_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't update data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_name="Samuel", video=video2
+        )
+
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": anonymous_id, "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), 2)
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_name, "Antoine")
+        self.assertEqual(created_liveregistration.username, None)
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_put_username_public_registration_no(
+        self,
+    ):
+        """Should create a liveregistration as no previous one exists."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": anonymous_id, "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(created_liveregistration.display_name, "Antoine")
+        self.assertEqual(created_liveregistration.username, None)
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_put_username_public_already_exists(
+        self,
+    ):
+        """display_name already exists should return a 409."""
+        video = VideoFactory()
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_name="Samuel", video=video
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.json(),
+            {"display_name": "User with that username already exists!"},
+        )
+
+    def test_api_liveregistration_put_username_lti_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+    def test_api_liveregistration_put_username_lti_no_anonymous_no_displayname(
+        self,
+    ):
+        """Field display_name is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+    def test_api_liveregistration_put_username_lti_registration_exists(
+        self,
+    ):
+        """Should return the right information with existing record."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        # username has been updated with current information in the token
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": "Token"},
+        )
+        self.assertEqual(liveregistration.display_name, "Antoine")
+        # username has been updated with current information in the token
+        self.assertEqual(liveregistration.username, "Token")
+        # email has been updated with current information in the token
+        self.assertEqual(liveregistration.email, "sabrina@fun-test.fr")
+        self.assertEqual(liveregistration.video.id, video.id)
+
+    def test_api_liveregistration_put_username_lti_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't read data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video2,
+        )
+
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Patou",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), 2)
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": "Patou"},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_name, "Antoine")
+        self.assertEqual(created_liveregistration.username, "Patou")
+
+    def test_api_liveregistration_put_username_lti_registration_no(
+        self,
+    ):
+        """Should create a liveregistration as no previous one exists."""
+        video = VideoFactory()
+
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+
+        self.assertEqual(
+            response.json(),
+            {"display_name": "Antoine", "username": "Token"},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_name, "Antoine")
+        self.assertEqual(created_liveregistration.username, "Token")
+
+    def test_api_liveregistration_put_username_lti_already_exists(
+        self,
+    ):
+        """display_name already exists should return a 409."""
+        video = VideoFactory()
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_name="Samuel", video=video
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.put(
+            "/api/liveregistrations/display_name/",
+            {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.json(),
+            {"display_name": "User with that username already exists!"},
+        )
