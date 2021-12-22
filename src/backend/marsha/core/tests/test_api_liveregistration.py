@@ -2992,3 +2992,728 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         self.assertEqual(liveregistration.consumer_site, video.playlist.consumer_site)
+
+    def test_api_liveregistration_get_username_public_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_get_username_public_registration_exists(
+        self,
+    ):
+        """Should return the right information with existing record."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_username="Samuel", video=video
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": anonymous_id},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Samuel", "username": None},
+        )
+        self.assertEqual(liveregistration.display_username, "Samuel")
+        self.assertEqual(liveregistration.video.id, video.id)
+
+    def test_api_liveregistration_get_username_public_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't read data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_username="Samuel", video=video2
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": anonymous_id},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": None, "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_username, None)
+        self.assertEqual(created_liveregistration.username, None)
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_get_username_public_registration_no(
+        self,
+    ):
+        """Should create a liveregistration and return an empty display_username."""
+        video = VideoFactory()
+        nb_created = 0
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": None, "username": None},
+        )
+
+    def test_api_liveregistration_get_username_lti_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_get_username_lti_registration_exists(
+        self,
+    ):
+        """Should return the right information with existing record."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+
+        # username is updated with current token
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Samantha63", "username": "Token"},
+        )
+        self.assertEqual(liveregistration.display_username, "Samantha63")
+        self.assertEqual(liveregistration.video.id, video.id)
+
+    def test_api_liveregistration_get_username_lti_registration_exists_username_none(
+        self,
+    ):
+        """If username in the token is set to None it doesn't get updated"""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": None,
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        liveregistration.refresh_from_db()
+        # username is not updated with current token
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Samantha63", "username": "Sylvie"},
+        )
+        self.assertEqual(liveregistration.display_username, "Samantha63")
+        self.assertEqual(liveregistration.username, "Sylvie")
+
+    def test_api_liveregistration_get_username_lti_registration_exists_username_none_record(
+        self,
+    ):
+        """If username in the token is set and the one in the previous record is empty or None
+        it gets updated."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username=random.choice(["", None]),
+            video=video,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Tockyo",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        # username is not updated with current token
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Samantha63", "username": "Tockyo"},
+        )
+        liveregistration.refresh_from_db()
+        self.assertEqual(liveregistration.display_username, "Samantha63")
+        self.assertEqual(liveregistration.username, "Tockyo")
+
+    def test_api_liveregistration_get_username_lti_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't read data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video2,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": None,
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": None, "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_username, None)
+        self.assertEqual(created_liveregistration.username, None)
+
+    def test_api_liveregistration_get_username_lti_registration_no(
+        self,
+    ):
+        """Should create a liveregistration and return current username."""
+        video = VideoFactory()
+        nb_created = 0
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/liveregistrations/init_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": None, "username": "Token"},
+        )
+
+    def test_api_liveregistration_patch_username_public_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_patch_username_public_no_anonymous_no_displayname(
+        self,
+    ):
+        """Field display_username is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_patch_username_public_registration_existing(
+        self,
+    ):
+        """Should update the display_username with the new value."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_username="Samuel", video=video
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": anonymous_id, "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": None},
+        )
+        self.assertEqual(liveregistration.display_username, "Antoine")
+
+    def test_api_liveregistration_patch_username_public_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't update data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        LiveRegistrationFactory(
+            anonymous_id=anonymous_id, display_username="Samuel", video=video2
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": anonymous_id, "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_username, "Antoine")
+        self.assertEqual(created_liveregistration.username, None)
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_patch_username_public_registration_no(
+        self,
+    ):
+        """Should create a liveregistration as no previous one exists."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+
+        nb_created = 0
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": anonymous_id, "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": None},
+        )
+        created_liveregistration = LiveRegistration.objects.last()
+        self.assertEqual(created_liveregistration.display_username, "Antoine")
+        self.assertEqual(created_liveregistration.username, None)
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_patch_username_public_already_exists(
+        self,
+    ):
+        """display_username already exists should return a 409."""
+        video = VideoFactory()
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_username="Samuel", video=video
+        )
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4(), "display_username": "Samuel"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "User with that username already exists!"},
+        )
+
+    def test_api_liveregistration_patch_username_lti_no_anonymous(
+        self,
+    ):
+        """Field anonymous_id is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_patch_username_lti_no_anonymous_no_displayname(
+        self,
+    ):
+        """Field display_username is mandatory."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_liveregistration_patch_username_lti_registration_exists(
+        self,
+    ):
+        """Should return the right information with existing record."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4(), "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        liveregistration.refresh_from_db()
+        # no new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+
+        # username has been updated with current information in the token
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": "Token"},
+        )
+        self.assertEqual(liveregistration.display_username, "Antoine")
+        # username has been updated with current information in the token
+        self.assertEqual(liveregistration.username, "Token")
+        # email has been updated with current information in the token
+        self.assertEqual(liveregistration.email, "sabrina@fun-test.fr")
+        self.assertEqual(liveregistration.video.id, video.id)
+
+    def test_api_liveregistration_patch_username_lti_registration_exists_other_video(
+        self,
+    ):
+        """Token is related to a specific video.
+        We make sure that for the same anonymous_id we can't read data from other videos
+        than the one refered in the token.
+        """
+        video = VideoFactory()
+        video2 = VideoFactory()
+        LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_username="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video2,
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Patou",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4(), "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # a new record has been created
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": "Patou"},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_username, "Antoine")
+        self.assertEqual(created_liveregistration.username, "Patou")
+
+    def test_api_liveregistration_patch_username_lti_registration_no(
+        self,
+    ):
+        """Should create a liveregistration as no previous one exists."""
+        video = VideoFactory()
+
+        nb_created = 0
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4(), "display_username": "Antoine"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # new record
+        self.assertEqual(LiveRegistration.objects.count(), nb_created + 1)
+
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "Antoine", "username": "Token"},
+        )
+        created_liveregistration = LiveRegistration.objects.get(video=video)
+        self.assertEqual(created_liveregistration.display_username, "Antoine")
+        self.assertEqual(created_liveregistration.username, "Token")
+
+    def test_api_liveregistration_patch_username_lti_already_exists(
+        self,
+    ):
+        """display_username already exists should return a 409."""
+        video = VideoFactory()
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), display_username="Samuel", video=video
+        )
+
+        nb_created = 1
+        self.assertEqual(LiveRegistration.objects.count(), nb_created)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+        response = self.client.patch(
+            "/api/liveregistrations/set_display_username/",
+            {"anonymous_id": uuid.uuid4(), "display_username": "Samuel"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            json.loads(response.content),
+            {"display_username": "User with that username already exists!"},
+        )

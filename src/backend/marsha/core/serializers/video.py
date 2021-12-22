@@ -318,6 +318,16 @@ class PairingChallengeSerializer(serializers.Serializer):
     secret = serializers.CharField(min_length=6, max_length=6)
 
 
+class LiveRegistrationDisplayUsernameSerializer(serializers.ModelSerializer):
+    """Serializer for liveRegistration models and display_username."""
+
+    class Meta:
+        model = LiveRegistration
+        fields = ("anonymous_id", "display_username", "username")
+        read_only_fields = ("username",)
+        extra_kwargs = {"anonymous_id": {"allow_null": False, "required": True}}
+
+
 class LiveRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for liveRegistration model."""
 
