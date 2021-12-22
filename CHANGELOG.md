@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add DRF endpoint to start attendance monitoring using liveRegistration model 
 - Add a new chat, using react components and design complying with the mockup
 - Add anonymous_id and display_name in LiveRegistration model
+- Add new endpoint to set display_name
 
 ### Changed
 

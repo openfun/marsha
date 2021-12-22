@@ -7,6 +7,19 @@ from rest_framework_simplejwt.models import TokenUser
 from ..models import ConsumerSite, LiveRegistration, Video
 
 
+class LiveRegistrationDisplayUsernameSerializer(serializers.ModelSerializer):
+    """Serializer for liveRegistration models and display_name."""
+
+    class Meta:
+        model = LiveRegistration
+        fields = ("anonymous_id", "display_name", "username")
+        read_only_fields = ("username",)
+        extra_kwargs = {
+            "anonymous_id": {"allow_null": False, "required": True},
+            "display_name": {"allow_null": False, "required": True},
+        }
+
+
 class LiveRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for liveRegistration model."""
 
