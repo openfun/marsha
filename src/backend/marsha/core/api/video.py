@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.db.models.query import EmptyQuerySet
+from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -643,6 +644,26 @@ class LiveRegistrationViewSet(
             and user.token.payload["user"].get("id")
         )
 
+    def get_liveregistration_from_lti(self):
+        """Get or create liveregistration for a LTI connection."""
+        user = self.request.user
+        video = get_object_or_404(Video, pk=user.id)
+        token_user = user.token.payload.get("user")
+        consumer_site = get_object_or_404(
+            ConsumerSite, pk=user.token.payload["consumer_site"]
+        )
+
+        return LiveRegistration.objects.get_or_create(
+            consumer_site=consumer_site,
+            lti_id=user.token.payload.get("context_id"),
+            lti_user_id=token_user.get("id"),
+            video=video,
+            defaults={
+                "email": token_user.get("email"),
+                "username": token_user.get("username"),
+            },
+        )
+
     def get_queryset(self):
         """Restrict access to liveRegistration with data contained in the JWT token.
 
@@ -699,27 +720,18 @@ class LiveRegistrationViewSet(
         if not serializer.is_valid():
             return Response({"detail": "Invalid request."}, status=400)
 
-        user = self.request.user
-        video = get_object_or_404(Video, pk=user.id)
-
         if self.is_lti_token():
-            token_user = user.token.payload.get("user")
-            consumer_site = get_object_or_404(
-                ConsumerSite, pk=user.token.payload["consumer_site"]
-            )
-            liveregistration, _ = LiveRegistration.objects.get_or_create(
-                consumer_site=consumer_site,
-                lti_id=user.token.payload.get("context_id"),
-                lti_user_id=token_user.get("id"),
-                video=video,
-            )
-            # Update liveregistration email only if it's defined in the token user
-            if token_user.get("email"):
-                liveregistration.email = token_user.get("email")
+            token_user = self.request.user.token.payload.get("user")
+            liveregistration, created = self.get_liveregistration_from_lti()
+            # liveregistration already exists, we update email and username if necessary
+            if not created:
+                # Update liveregistration email only if it's defined in the token user
+                if token_user.get("email"):
+                    liveregistration.email = token_user.get("email")
 
-            # Update liveregistration username only it's defined in the token user
-            if token_user.get("username"):
-                liveregistration.username = token_user.get("username")
+                # Update liveregistration username only it's defined in the token user
+                if token_user.get("username"):
+                    liveregistration.username = token_user.get("username")
 
             # update or add live_attendance information
             if liveregistration.live_attendance:
@@ -735,7 +747,7 @@ class LiveRegistrationViewSet(
             return Response(
                 {
                     "id": liveregistration.id,
-                    "video": video.id,
+                    "video": liveregistration.video.id,
                     "live_attendance": liveregistration.live_attendance,
                 }
             )
@@ -744,6 +756,65 @@ class LiveRegistrationViewSet(
             {"detail": "Attendance from public video is not implemented yet."},
             status=404,
         )
+
+    @action(detail=False, methods=["put"], url_path="display_name")
+    def set_display_name(self, request):
+        """View handling setting display_name. Create or get registration."""
+        serializer = serializers.LiveRegistrationDisplayUsernameSerializer(
+            data=request.data
+        )
+        if not serializer.is_valid():
+            return Response(
+                {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = self.request.user
+        video = get_object_or_404(Video, pk=user.id)
+
+        try:
+            update_fields = {
+                "display_name": serializer.validated_data["display_name"],
+            }
+            if self.is_lti_token():
+                token_user = user.token.payload.get("user")
+                consumer_site = get_object_or_404(
+                    ConsumerSite, pk=user.token.payload["consumer_site"]
+                )
+                # Update email only if it's defined in the token user
+                if token_user.get("email"):
+                    update_fields.update({"email": token_user.get("email")})
+
+                # Update username only it's defined in the token user
+                if token_user.get("username"):
+                    update_fields.update({"username": token_user.get("username")})
+
+                liveregistration, _ = LiveRegistration.objects.update_or_create(
+                    consumer_site=consumer_site,
+                    lti_id=user.token.payload.get("context_id"),
+                    lti_user_id=token_user.get("id"),
+                    video=video,
+                    defaults=update_fields,
+                )
+            else:
+                liveregistration, _ = LiveRegistration.objects.update_or_create(
+                    anonymous_id=serializer.validated_data["anonymous_id"],
+                    video=video,
+                    defaults=update_fields,
+                )
+            return Response(
+                {
+                    "display_name": liveregistration.display_name,
+                    "username": liveregistration.username,
+                }
+            )
+        except IntegrityError as error:
+            if "liveregistration_unique_video_display_name" in error.args[0]:
+                return Response(
+                    {"display_name": "User with that username already exists!"},
+                    status=status.HTTP_409_CONFLICT,
+                )
+
+            raise error
 
 
 class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
