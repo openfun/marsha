@@ -651,8 +651,8 @@ class LiveRegistrationViewSet(
         depending on the role.
         """
         user = self.request.user
+        filters = {"video__id": user.id}
         if self.is_lti_token():
-            filters = {"video__id": user.id}
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
@@ -676,7 +676,11 @@ class LiveRegistrationViewSet(
             filters["lti_user_id"] = user.token.payload["user"]["id"]
             return LiveRegistration.objects.filter(**filters)
 
-        # public context, we can't read any liveregistration
+        if self.request.query_params.get("anonymous_id"):
+            return LiveRegistration.objects.filter(
+                anonymous_id=self.request.query_params.get("anonymous_id"), **filters
+            )
+
         return LiveRegistration.objects.none()
 
     def get_throttles(self):
