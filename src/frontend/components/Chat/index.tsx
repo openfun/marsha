@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
-import { converseMounter } from 'utils/conversejs/converse';
+import { initConverse } from 'utils/conversejs/converse';
 
 import { StudentChat } from './StudentChat';
 
@@ -12,13 +12,11 @@ interface ChatProps {
   standalone?: boolean;
 }
 
-const converseManager = converseMounter();
-
 export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
 
   useEffect(() => {
-    converseManager(video.xmpp!);
+    initConverse(video.xmpp!);
   }, []);
 
   const conditionalProps: Partial<BoxExtendedProps> = {};

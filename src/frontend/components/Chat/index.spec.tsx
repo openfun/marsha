@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
 import { liveState } from 'types/tracks';
-import { converseMounter } from 'utils/conversejs/converse';
+import { initConverse } from 'utils/conversejs/converse';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
@@ -26,12 +26,8 @@ jest.mock('data/appData', () => ({
 }));
 
 jest.mock('utils/conversejs/converse', () => ({
-  converseMounter: jest.fn(() => jest.fn()),
+  initConverse: jest.fn(),
 }));
-
-const mockConverseMounter = converseMounter as jest.MockedFunction<
-  typeof converseMounter
->;
 
 describe('<Chat />', () => {
   afterEach(() => {
@@ -39,13 +35,7 @@ describe('<Chat />', () => {
   });
 
   it('renders the Chat component', () => {
-    expect(mockConverseMounter).toHaveBeenCalled();
     render(wrapInIntlProvider(<Chat video={mockVideo} />));
-
-    // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
-    // is was called with the xmpp object
-    expect(mockConverseMounter.mock.results[0].value).toHaveBeenCalledWith(
-      mockVideo.xmpp,
-    );
+    expect(initConverse).toHaveBeenCalledWith(mockVideo.xmpp);
   });
 });

@@ -60,7 +60,7 @@ jest.mock('data/appData', () => ({
 }));
 
 jest.mock('utils/conversejs/converse', () => ({
-  converseMounter: jest.fn(() => jest.fn()),
+  initConverse: jest.fn(),
 }));
 
 describe('PublicVideoDashboard', () => {
@@ -308,7 +308,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
   it('displays the video player and the waiting message when the live is stopping', async () => {
@@ -349,7 +349,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 
@@ -391,7 +391,7 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeInTheDocument();
     screen.getByText('Webinar is paused');
   });
 
