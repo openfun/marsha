@@ -6,7 +6,7 @@ import SVGIcon from '.';
 describe('<SVGIcon />', () => {
   it('renders SVGIcon component correctly', async () => {
     await renderIconSnapshot(
-      <SVGIcon iconColor={'#035ccd'}>
+      <SVGIcon iconColor="#035ccd">
         <g fillRule="evenodd" stroke="none" strokeWidth="1">
           <g transform="translate(2.5 2.5)">
             <path
