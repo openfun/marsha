@@ -1,9 +1,10 @@
 import React from 'react';
+
 import SVGIcon, { SvgProps } from '.';
 
 export const SendButtonSVG = (svgProps: SvgProps) => {
   return (
-    <SVGIcon viewBox={'0 0 200 200'} {...svgProps}>
+    <SVGIcon viewBox="0 0 175 160" {...svgProps}>
       <path
         d="
               M 0 130

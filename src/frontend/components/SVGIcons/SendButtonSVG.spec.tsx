@@ -6,7 +6,7 @@ import { SendButtonSVG } from './SendButtonSVG';
 it('renders SendButtonSVG correctly', async () => {
   await renderIconSnapshot(
     <SendButtonSVG
-      iconColor={'blue-chat'}
+      iconColor="blue-chat"
       containerStyle={{
         width: '25px',
         height: '22px',
