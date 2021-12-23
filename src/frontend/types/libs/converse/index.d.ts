@@ -17,6 +17,7 @@ declare namespace converse {
     insertInto: (container: HTMLElement) => void;
     initialize: (options: Options) => void;
     sendMessage: (message: string) => void;
+    claimNewNicknameInChatRoom: (newNickname: string) => void;
     env: any;
     ROOMSTATUS: {
       CONNECTED: 0;
@@ -49,6 +50,7 @@ declare namespace converse {
     hide_muc_participants?: boolean;
     jid?: string;
     loglevel?: string;
+    muc_history_max_stanzas: number;
     modtools_disable_assign?: boolean;
     muc_instant_rooms?: boolean;
     muc_nickname_from_jid?: boolean;
