@@ -741,7 +741,9 @@ class LiveRegistrationViewSet(
             data=request.data
         )
         if not serializer.is_valid():
-            return Response({"detail": "Invalid request."}, status=400)
+            return Response(
+                {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         if self.is_lti_token():
             liveregistration, created = self.get_liveregistration_from_lti()
@@ -771,7 +773,9 @@ class LiveRegistrationViewSet(
             data=request.data
         )
         if not serializer.is_valid() or not request.data.get("display_username"):
-            return Response({"detail": "Invalid request."}, status=400)
+            return Response(
+                {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         user = self.request.user
         video = get_object_or_404(Video, pk=user.id)
@@ -821,9 +825,7 @@ class LiveRegistrationViewSet(
                     status=status.HTTP_409_CONFLICT,
                 )
 
-            return Response(
-                {"display_username": error}, status=status.HTTP_400_BAD_REQUEST
-            )
+            raise error
 
 
 class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
