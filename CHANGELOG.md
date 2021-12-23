@@ -29,6 +29,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add email settings and configure `mailcatcher` in docker-compose stack
 - Transform `mjml` files (email's template files) to html and plaintext 
 - Add a participants tab, listing all users connected to the chat
+- Add an authentificatin pop-up in the chat
+
+>>>>>>> 💄(frontend) add svg icons needed for the feature
 
 ### Changed
 
