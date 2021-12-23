@@ -57,6 +57,46 @@ class LiveRegistrationApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"detail": "Not found."})
+
+    def test_api_liveregistration_read_token_public_with_anonymous(
+        self,
+    ):
+        """Token from public context can read liveRegistration detail with
+        anonyous_id parameter.
+        """
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id,
+            email="sarah@openfun.fr",
+            video=video,
+        )
+        # token has no consumer_site, no context_id and no user's info
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+
+        response = self.client.get(
+            f"/api/liveregistrations/{liveregistration.id}/?anonymous_id={anonymous_id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "email": liveregistration.email,
+                "id": str(liveregistration.id),
+                "is_registered": False,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": False,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_liveregistration_read_token_lti_email_set(
         self,
@@ -818,6 +858,33 @@ class LiveRegistrationApiTest(TestCase):
                 "username": None,
                 "video": str(video.id),
             },
+        )
+
+    def test_api_liveregistration_create_public_token_anonymous_mandatory(
+        self,
+    ):
+        """Public token has anonymous_id mandatory."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        # token with no context_id and no user informations
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.post(
+            "/api/liveregistrations/",
+            {
+                "email": "salome@test-fun-mooc.fr",
+                "is_registered": False,
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(), {"anonymous_id": ["Anonymous id is mandatory."]}
         )
 
     def test_api_liveregistration_create_public_partially_lti1(
@@ -1979,7 +2046,7 @@ class LiveRegistrationApiTest(TestCase):
         self,
     ):
         """
-        Public token can't fetch any liveregistration.
+        Public token can't fetch any liveregistration if there is no anonymous_id.
         """
         user = UserFactory()
         video = VideoFactory(
@@ -2025,6 +2092,74 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 0)
+
+    def test_list_liveregistration_public_token_anonymous(
+        self,
+    ):
+        """
+        Public token can fetch is liveregistration if there is an anonymous_id.
+        """
+        user = UserFactory()
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        video2 = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        anonymous_id = uuid.uuid4()
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id, email=user.email, video=video
+        )
+        # another anonymous_id for the same video
+        LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(), email="chantal@test-fun-mooc.fr", video=video
+        )
+
+        # liveregistration for a LTI connection
+        LiveRegistrationFactory(
+            email="chantal@test-fun-mooc.fr",
+            lti_user_id=user.id,
+            lti_id="Maths",
+            video=video,
+            consumer_site=ConsumerSiteFactory(),
+        )
+        # liveregistration for another video with the same anonymous_id
+        LiveRegistrationFactory(
+            anonymous_id=anonymous_id, email=user.email, video=video2
+        )
+
+        # public token
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        response = self.client.get(
+            f"/api/liveregistrations/?anonymous_id={anonymous_id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "anonymous_id": str(anonymous_id),
+                    "consumer_site": None,
+                    "email": user.email,
+                    "id": str(liveregistration.id),
+                    "is_registered": False,
+                    "lti_user_id": None,
+                    "lti_id": None,
+                    "should_send_reminders": False,
+                    "username": None,
+                    "video": str(video.id),
+                }
+            ],
+        )
 
     def test_list_liveregistration_lti_token_role_none(
         self,

@@ -451,6 +451,12 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                             "cases are not expected."
                         }
                     )
+                # Make sure we have the anonymous_id
+                if not attrs.get("anonymous_id"):
+                    raise serializers.ValidationError(
+                        {"anonymous_id": "Anonymous id is mandatory."}
+                    )
+
                 # Control this email hasn't already been used for this video in the public case
                 if LiveRegistration.objects.filter(
                     consumer_site=None,
