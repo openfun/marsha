@@ -1,10 +1,11 @@
 import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
 
-import { converseMounter } from './converse';
+import { initConverse } from './converse';
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
+import { nicknameManagementPlugin } from './converse-plugins/nicknameManagementPlugin';
 import { participantsTrackingPlugin } from './converse-plugins/participantsTrackingPlugin';
 
 jest.mock('utils/window', () => ({
@@ -25,7 +26,13 @@ jest.mock('data/appData', () => ({
   },
 }));
 
-describe('converseMounter', () => {
+jest.mock('utils/chat/chat', () => ({
+  generateAnonymousNickname: jest
+    .fn()
+    .mockReturnValue('Anonymous-generated_id'),
+}));
+
+describe('initConverse', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -47,14 +54,12 @@ describe('converseMounter', () => {
       jid: 'xmpp-server.com',
     };
 
-    const converseManager = converseMounter();
-
     // The converse mounter is initialized and converse has not been initialized nor inserted.
     expect(mockWindow.converse.initialize).not.toHaveBeenCalled();
     expect(mockWindow.converse.plugins.add).not.toHaveBeenCalled();
 
     // first call, converse is initialized
-    converseManager(xmpp);
+    initConverse(xmpp);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.initialize).toHaveBeenCalledWith({
@@ -76,9 +81,10 @@ describe('converseMounter', () => {
       hide_muc_participants: true,
       jid: 'xmpp-server.com',
       modtools_disable_assign: true,
+      muc_history_max_stanzas: 0,
       muc_instant_rooms: false,
       muc_show_join_leave: false,
-      nickname: 'jane_doe',
+      nickname: 'Anonymous-generated_id',
       root: null,
       show_client_info: false,
       singleton: true,
@@ -89,10 +95,11 @@ describe('converseMounter', () => {
         chatPlugin.name,
         logoutPlugin.name,
         marshaJoinDiscussionPlugin.name,
+        nicknameManagementPlugin.name,
         participantsTrackingPlugin.name,
       ],
     });
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(4);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(5);
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
       chatPlugin.name,
       {
@@ -109,6 +116,13 @@ describe('converseMounter', () => {
     );
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
       marshaJoinDiscussionPlugin.name,
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      nicknameManagementPlugin.name,
       {
         dependencies: ['converse-muc'],
         initialize: expect.any(Function),
