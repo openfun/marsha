@@ -10,7 +10,7 @@ import {
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useVideos } from '../../data/queries';
@@ -113,7 +113,7 @@ export const VideosList: React.FC<VideosListProps> = ({
   getRowLink,
   params,
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { data: videosList, status: videosListStatus } = useVideos(
     params || {},
   );
@@ -166,7 +166,7 @@ export const VideosList: React.FC<VideosListProps> = ({
                   key={video.id}
                   {...(getRowLink
                     ? {
-                        onClick: () => history.push(getRowLink(video)),
+                        onClick: () => navigate(getRowLink(video)),
                       }
                     : {})}
                 >

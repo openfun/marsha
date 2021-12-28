@@ -50,10 +50,8 @@ describe('<DashboardVideoPane />', () => {
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoPane video={video} />, [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
+            path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+            element: <span>{`Error Component: notFound`}</span>
           },
         ]),
       ),
@@ -201,10 +199,8 @@ describe('<DashboardVideoPane />', () => {
           />,
           [
             {
-              path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              path: FULL_SCREEN_ERROR_ROUTE('upload'),
+              element: <span>{`Error Component: upload`}</span>,
             },
           ],
         ),

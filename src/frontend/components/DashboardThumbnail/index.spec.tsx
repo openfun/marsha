@@ -2,20 +2,18 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { UploadManagerContext, UploadManagerStatus } from 'components/UploadManager';
+import { useThumbnail } from 'data/stores/useThumbnail';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardThumbnail } from '.';
-import { useThumbnail } from '../../data/stores/useThumbnail';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import { wrapInRouter } from 'utils/tests/router';
 
-jest.mock('react-router-dom', () => ({
-  Redirect: ({ to }: { to: string }) => `Redirect push to ${to}.`,
-}));
-
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'some token',
   },
@@ -335,7 +333,17 @@ describe('<DashboardThumbnail />', () => {
       useThumbnail.getState().thumbnails[thumbnailCreated.id],
     ).not.toBeDefined();
     render(
-      wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
+      wrapInIntlProvider(
+        wrapInRouter(
+          <DashboardThumbnail video={videoWithoutThumbnail} />,
+          [
+            {
+              path: UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, '42'),
+              element: <span>Upload Form</span>
+            }
+          ]
+        )
+      ),
     );
 
     expect(
@@ -354,6 +362,6 @@ describe('<DashboardThumbnail />', () => {
     expect(useThumbnail.getState().thumbnails[thumbnailCreated.id]).toEqual(
       thumbnailCreated,
     );
-    screen.getByText('Redirect push to /form/thumbnails/42.');
+    screen.getByText('Upload Form');
   });
 });

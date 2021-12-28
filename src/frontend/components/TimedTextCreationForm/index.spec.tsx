@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import { modelName } from 'types/models';
 
 import { TimedTextCreationForm } from '.';
 import { timedTextMode, uploadState } from '../../types/tracks';
@@ -78,10 +79,8 @@ describe('<TimedTextCreationForm />', () => {
           />,
           [
             {
-              path: UPLOAD_FORM_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Upload form: ${match.params.objectType} ${match.params.objectId}`}</span>
-              ),
+              path: UPLOAD_FORM_ROUTE(modelName.TIMEDTEXTTRACKS, '42'),
+              element: <span>{`Upload form: timedtexttracks 42`}</span>,
             },
           ],
         ),
@@ -127,9 +126,7 @@ describe('<TimedTextCreationForm />', () => {
           [
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              element: <span>{`Error Component`}</span>,
             },
           ],
         ),

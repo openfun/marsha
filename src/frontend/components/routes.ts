@@ -5,11 +5,7 @@ import { modelName } from '../types/models';
  * @param objectType The model name for the object we want to show
  */
 export const PLAYER_ROUTE = (
-  objectType?: modelName.VIDEOS | modelName.DOCUMENTS,
+  objectType: modelName.VIDEOS | modelName.DOCUMENTS,
 ) => {
-  if (objectType) {
-    return `/player/${objectType}`;
-  }
-
-  return `/player/*`;
+  return `/player/${objectType}`;
 };

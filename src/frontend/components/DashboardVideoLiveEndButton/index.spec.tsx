@@ -67,7 +67,7 @@ describe('DashboardVideoLiveEndButton', () => {
           [
             {
               path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
-              render: () => <span>error</span>,
+              element: <span>error</span>,
             },
           ],
         ),

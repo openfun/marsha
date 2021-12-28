@@ -1,12 +1,13 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { LiveModeType, liveState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import * as mockWindow from '../../utils/window';
-import { PLAYER_ROUTE } from '../routes';
+import { PLAYER_ROUTE } from 'components/routes';
+import { modelName } from 'types/models';
+import { LiveModeType, liveState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+import * as mockWindow from 'utils/window';
 import DashboardVideoLiveJitsi from '.';
 
 let events: any = {};
@@ -23,14 +24,14 @@ const mockJitsi = jest.fn().mockImplementation(() => ({
     events[eventName] = callback;
   },
 }));
-jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('../../utils/window', () => ({
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('utils/window', () => ({
   converse: {
     participantLeaves: jest.fn(),
   },
 }));
 let mockDecodedJwtToken = {};
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
 }));
 
@@ -77,12 +78,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
     const toolbarButtons = [
@@ -157,12 +160,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // state switch to running, recording must start
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{ ...video, live_state: liveState.RUNNING }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={{ ...video, live_state: liveState.RUNNING }}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -178,12 +183,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // state switch to stopping, recording must stop
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{ ...video, live_state: liveState.STOPPING }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={{ ...video, live_state: liveState.STOPPING }}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -228,12 +235,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
       render(
         wrapInIntlProvider(
-          <DashboardVideoLiveJitsi
-            video={video}
-            setCanStartLive={jest.fn()}
-            setCanShowStartButton={jest.fn()}
-            isInstructor={true}
-          />,
+          wrapInRouter(
+            <DashboardVideoLiveJitsi
+              video={video}
+              setCanStartLive={jest.fn()}
+              setCanShowStartButton={jest.fn()}
+              isInstructor={true}
+            />,
+          ),
         ),
       );
       const toolbarButtons = [
@@ -321,12 +330,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -392,12 +403,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -445,12 +458,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
     const toolbarButtons = [
@@ -584,12 +599,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -616,7 +633,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    render(<DashboardVideoLiveJitsi video={video} isInstructor={false} />);
+    render(
+      wrapInRouter(
+        <DashboardVideoLiveJitsi video={video} isInstructor={false} />
+      ),
+    );
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
@@ -627,7 +648,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
       expect.any(String),
     );
   });
-  it('redirects to the player when user leaves the conference and is not an instructor', () => {
+  it('redirects to the player when user leaves the conference and is not an instructor', async () => {
     const video = videoMockFactory({
       live_info: {
         jitsi: {
@@ -647,21 +668,21 @@ describe('<DashboardVideoLiveJitsi />', () => {
         <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
         [
           {
-            path: PLAYER_ROUTE(),
-            render: () => {
-              return <span>{'video player'}</span>;
-            },
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            element: <span>{'video player'}</span>,
           },
         ],
       ),
     );
 
-    // simulates user leave the conference
-    dispatch('videoConferenceLeft', {});
-
+    act(() => {
+      // simulates user leave the conference
+      dispatch('videoConferenceLeft', {});
+    })
+    
     expect(mockDispose).toHaveBeenCalled();
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
-    screen.getByText('video player');
+    await screen.findByText('video player');
   });
 
   it('allows to restart a streaming once stopped without error', async () => {
@@ -689,12 +710,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={video}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
 
@@ -715,15 +738,17 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // stop streaming
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{
-            ...video,
-            live_state: liveState.STOPPING,
-          }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={{
+              ...video,
+              live_state: liveState.STOPPING,
+            }}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
     expect(mockExecuteCommand).toHaveBeenCalledWith(
@@ -740,15 +765,17 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // resume streaming
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{
-            ...video,
-            live_state: liveState.RUNNING,
-          }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        wrapInRouter(
+          <DashboardVideoLiveJitsi
+            video={{
+              ...video,
+              live_state: liveState.RUNNING,
+            }}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />,
+        ),
       ),
     );
     await waitFor(() => {

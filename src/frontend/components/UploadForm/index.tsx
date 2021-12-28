@@ -133,9 +133,6 @@ export const UploadForm = () => {
     case UploadManagerStatus.ERR_POLICY:
       return <Navigate to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
 
-    case UploadManagerStatus.ERR_UPLOAD:
-      return <Navigate to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
-
     case UploadManagerStatus.INIT:
     default:
       return (

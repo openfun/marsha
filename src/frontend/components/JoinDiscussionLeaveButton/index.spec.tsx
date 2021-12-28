@@ -1,13 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import * as mockWindow from '../../utils/window';
+import { PLAYER_ROUTE } from 'components/routes';
+import { modelName } from 'types/models';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+import * as mockWindow from 'utils/window';
 import { JoinDiscussionLeaveButton } from '.';
-import { PLAYER_ROUTE } from '../routes';
 
-jest.mock('../../utils/window', () => ({
+jest.mock('utils/window', () => ({
   converse: {
     participantLeaves: jest.fn(),
   },
@@ -28,10 +29,8 @@ describe('<JoinDiscussionLeaveButton />', () => {
       wrapInIntlProvider(
         wrapInRouter(<JoinDiscussionLeaveButton />, [
           {
-            path: PLAYER_ROUTE(),
-            render: () => {
-              return <span>{'video player'}</span>;
-            },
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            element: <span>{'video player'}</span>,
           },
         ]),
       ),

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { Link, MemoryRouter, Route, Switch } from 'react-router-dom';
+import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { BreadCrumbs, BreadCrumbsProvider, Crumb } from '.';
 
@@ -14,7 +14,7 @@ describe('<BreadCrumbs />', () => {
           <Link to="/route-b">Link to route B</Link>
           <Link to="/route-b/route-c">Link to route C</Link>
           <Link to="/route-b/route-d">Link to route D</Link>
-          <Switch>
+          <Routes>
             <Route path="/route-a">
               <Crumb title="Parent route A crumb" />
               <h1>Parent route A title</h1>
@@ -22,7 +22,7 @@ describe('<BreadCrumbs />', () => {
 
             <Route path="/route-b">
               <Crumb title="Parent route B crumb" />
-              <Switch>
+              <Routes>
                 <Route path="/route-b/route-c">
                   <Crumb title="Child route C crumb" />
                   <h1>Child route C title</h1>
@@ -36,9 +36,9 @@ describe('<BreadCrumbs />', () => {
                 <Route path="/route-b">
                   <h1>Parent route B title</h1>
                 </Route>
-              </Switch>
+              </Routes>
             </Route>
-          </Switch>
+          </Routes>
         </BreadCrumbsProvider>
       </MemoryRouter>,
     );

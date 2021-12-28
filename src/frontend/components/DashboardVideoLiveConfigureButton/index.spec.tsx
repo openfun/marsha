@@ -2,12 +2,13 @@ import { fireEvent, render, waitFor, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { LiveModeType, liveState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { modelName } from 'types/models';
+import { LiveModeType, liveState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
 import { DashboardVideoLiveConfigureButton } from '.';
 
 jest.mock('../../data/appData', () => ({
@@ -54,8 +55,8 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
           />,
           [
             {
-              path: DASHBOARD_ROUTE(),
-              render: () => <span>dashboard</span>,
+              path: DASHBOARD_ROUTE(modelName.VIDEOS),
+              element: <span>dashboard</span>,
             },
           ],
         ),
@@ -94,7 +95,7 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
           [
             {
               path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
-              render: () => <span>error</span>,
+              element: <span>error</span>,
             },
           ],
         ),

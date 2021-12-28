@@ -3,16 +3,16 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { useParams }  from 'react-router-dom';
 
-import { uploadFile } from '../../data/sideEffects/uploadFile';
-import { getResource } from '../../data/stores/generics';
-import { modelName } from '../../types/models';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { UploadManager } from '../UploadManager';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { UploadManager } from 'components/UploadManager';
+import { uploadFile } from 'data/sideEffects/uploadFile';
+import { getResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
 import { UploadForm } from './index';
 
 jest.mock('react-router-dom', () => ({
@@ -36,8 +36,7 @@ jest.mock('data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
-const mockUploadFile: jest.MockedFunction<typeof uploadFile> =
-  uploadFile as any;
+const mockUploadFile = uploadFile as jest.MockedFunction<typeof uploadFile>;
 const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 
 describe('UploadForm', () => {
@@ -158,7 +157,7 @@ describe('UploadForm', () => {
             <UploadForm />,
             [
               {
-                path: DASHBOARD_ROUTE(),
+                path: DASHBOARD_ROUTE(modelName.VIDEOS),
                 element: <span>dashboard</span>,
               },
             ],
@@ -220,52 +219,5 @@ describe('UploadForm', () => {
     await waitFor(() => expect(mockInitiateUpload.calls()).toHaveLength(1));
     expect(mockUploadFile).not.toHaveBeenCalled();
     screen.getByText('error policy');
-  });
-
-  it('redirects to /errors/upload when it fails to perform the actual upload', async () => {
-    const mockInitiateUpload = fetchMock.mock(
-      `/api/videos/${object.id}/initiate-upload/`,
-      {
-        fields: {
-          key: 'foo',
-        },
-        url: 'https://s3.aws.example.com/',
-      },
-      {
-        method: 'POST',
-      },
-    );
-    mockGetResource.mockResolvedValue(object);
-    mockUploadFile.mockRejectedValue(new Error('failed to upload file'));
-
-    mockUseParams.mockReturnValue({
-      objectId: object.id,
-      objectType: modelName.VIDEOS,
-    });
-    const { container } = render(
-      <UploadManager>
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm />,
-            [
-              {
-                path: FULL_SCREEN_ERROR_ROUTE('upload'),
-                element: <span>error upload</span>,
-              },
-            ],
-          ),
-        )}
-      </UploadManager>,
-    );
-    await screen.findByText('Create a new video');
-
-    fireEvent.change(container.querySelector('input[type="file"]')!, {
-      target: {
-        files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
-      },
-    });
-    await waitFor(() => expect(mockInitiateUpload.calls()).toHaveLength(1));
-    expect(mockUploadFile).toHaveBeenCalled();
-    screen.getByText('error upload');
   });
 });

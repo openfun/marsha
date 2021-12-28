@@ -106,10 +106,8 @@ describe('DashboardVideoHarvested', () => {
       wrapInIntlProvider(
         wrapInRouter(<DashboardVideoHarvested video={video} />, [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
+            path: FULL_SCREEN_ERROR_ROUTE("liveToVod"),
+            element: <span>{`Error Component: liveToVod`}</span>,
           },
         ]),
       ),

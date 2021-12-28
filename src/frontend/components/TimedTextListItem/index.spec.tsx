@@ -104,10 +104,8 @@ describe('<TimedTextListItem />', () => {
         wrapInIntlProvider(
           wrapInRouter(<TimedTextListItem track={track} />, [
             {
-              path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              path: FULL_SCREEN_ERROR_ROUTE('notFound'),
+              element: <span>{`Error Component: notFound`}</span>,
             },
           ]),
         ),

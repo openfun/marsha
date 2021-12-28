@@ -1,8 +1,8 @@
-import { Anchor, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
+import { Anchor, AnchorProps, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
@@ -14,7 +14,6 @@ import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
 import { Loader } from '../Loader';
 import { SidebarUploadsIndicator } from '../SidebarUploadsIndicator';
-import { withLink } from '../withLink/withLink';
 
 const messages = defineMessages({
   logInBtn: {
@@ -24,7 +23,11 @@ const messages = defineMessages({
   },
 });
 
-const TitleLink = withLink(Anchor);
+const TitleLink: React.FC<AnchorProps & {to: string}> = (props) => {
+  const navigate = useNavigate();
+
+  return <Anchor {...props} onClick={() => navigate(props.to)} />
+}
 const SidebarLink = styled(Link)`
   &,
   &:active {

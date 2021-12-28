@@ -12,6 +12,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 
 import PublicVideoDashboard from '.';
+import { modelName } from 'types/models';
 
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -405,16 +406,12 @@ describe('PublicVideoDashboard', () => {
           <PublicVideoDashboard video={video} playerType="videojs" />,
           [
             {
-              path: DASHBOARD_ROUTE(),
-              render: ({ match }) => (
-                <span>{`dashboard ${match.params.objectType}`}</span>
-              ),
+              path: DASHBOARD_ROUTE(modelName.VIDEOS),
+              element: <span>{`dashboard videos`}</span>,
             },
             {
-              path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              path: FULL_SCREEN_ERROR_ROUTE('liveStopped'),
+              element: <span>{`Error Component: liveStopped`}</span>,
             },
           ],
         ),
@@ -435,16 +432,12 @@ describe('PublicVideoDashboard', () => {
           <PublicVideoDashboard video={video} playerType="videojs" />,
           [
             {
-              path: DASHBOARD_ROUTE(),
-              render: ({ match }) => (
-                <span>{`dashboard ${match.params.objectType}`}</span>
-              ),
+              path: DASHBOARD_ROUTE(modelName.VIDEOS),
+              element: <span>{`dashboard videos`}</span>,
             },
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              element:  <span>{`Error Component`}</span>,
             },
           ],
         ),

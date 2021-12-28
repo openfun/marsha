@@ -1,7 +1,11 @@
-import { Button } from 'grommet';
+import { Button, ButtonProps } from 'grommet';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { withLink } from '../withLink/withLink';
+interface DashboardButtonWithLinkProps {
+  to: string;
+}
 
 export const DashboardButton = styled(Button)`
   flex-grow: 1;
@@ -28,4 +32,8 @@ export const DashboardButtonBeta = styled(DashboardButton)`
   }
 `;
 
-export const DashboardButtonWithLink = withLink(DashboardButton);
+export const DashboardButtonWithLink: React.FC<DashboardButtonWithLinkProps & ButtonProps> = (props) => {
+  const navigate = useNavigate();
+
+  return <DashboardButton {...props} onClick={() => navigate(props.to)} />
+}

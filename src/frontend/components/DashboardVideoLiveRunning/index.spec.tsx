@@ -34,7 +34,7 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
         wrapInRouter(<DashboardVideoLiveRunning video={video} />, [
           {
             path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            element: <span>video player</span>,
           },
         ]),
       ),
@@ -58,7 +58,7 @@ describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat onl
         wrapInRouter(<DashboardVideoLiveRunning video={video} />, [
           {
             path: CHAT_ROUTE(),
-            render: () => <span>chat component</span>,
+            element: <span>chat component</span>,
           },
         ]),
       ),

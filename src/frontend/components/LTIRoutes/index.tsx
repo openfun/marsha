@@ -54,43 +54,42 @@ const LTIRoutes = () => {
     <Wrappers>
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path={PLAYER_ROUTE()}>
-            <Route path={modelName.VIDEOS}>
-              {appData.video && (
-                <InstructorWrapper resource={appData.video}>
-                  <PublicVideoDashboard
-                    video={appData.video}
-                    playerType={appData.player!}
-                  />
-                </InstructorWrapper>
-              )}
+          <Route path={PLAYER_ROUTE(modelName.VIDEOS)}>
+            {appData.video && (
+              <InstructorWrapper resource={appData.video}>
+                <PublicVideoDashboard
+                  video={appData.video}
+                  playerType={appData.player!}
+                />
+              </InstructorWrapper>
+            )}
 
-              {!appData.video && (
-                <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
-              )}
-            </Route>
-            <Route path={modelName.DOCUMENTS}>
-              {appData.document && (
-                  <InstructorWrapper resource={appData.document}>
-                    <DocumentPlayer document={appData.document} />
-                  </InstructorWrapper>
-              )}
-
-              {!appData.document && (
-                <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
-              )}
-            </Route>
+            {!appData.video && (
+              <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
+            )}
           </Route>
-          <Route
-            path={PUBLIC_JITSI_ROUTE()}
-            children={() => {
-              if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
-                return <PublicVideoLiveJitsi video={appData.video} />;
-              }
+          <Route path={PLAYER_ROUTE(modelName.DOCUMENTS)}>
+            {appData.document && (
+                <InstructorWrapper resource={appData.document}>
+                  <DocumentPlayer document={appData.document} />
+                </InstructorWrapper>
+            )}
 
-              return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-            }}
-          />
+            {!appData.document && (
+              <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
+            )}
+          </Route>
+          <Route path={PUBLIC_JITSI_ROUTE()}>
+            {(
+              () => {
+                if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
+                  return <PublicVideoLiveJitsi video={appData.video} />;
+                }
+    
+                return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+              }
+            )}
+          </Route>
           <Route path={SELECT_CONTENT_ROUTE()} element={
             <SelectContent
                 playlist={appData.playlist}
@@ -109,9 +108,9 @@ const LTIRoutes = () => {
               </InstructorWrapper>
             )}
 
-          {(appData.modelName !== modelName.VIDEOS || !appData.video?.xmpp) &&
-            (<Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />)
-          }
+            {(appData.modelName !== modelName.VIDEOS || !appData.video?.xmpp) &&
+              (<Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />)
+            }
           </Route>
           <Route
             path={UPLOAD_FORM_ROUTE()}
@@ -123,40 +122,38 @@ const LTIRoutes = () => {
               <FullScreenError />
             }
           />
-          <Route path={DASHBOARD_ROUTE()} >
-            <Route path={modelName.DOCUMENTS}>
-              <Dashboard object={appData.document!}>
-                <DashboardDocument document={appData.document!} />
-              </Dashboard>
-            </Route>
-            <Route path={modelName.VIDEOS}>
-              <Dashboard object={appData.video!}>
-                <DashboardVideo video={appData.video!} />
-              </Dashboard>
-            </Route>
+          <Route path={DASHBOARD_ROUTE(modelName.DOCUMENTS)}>
+            <Dashboard object={appData.document!}>
+              <DashboardDocument document={appData.document!} />
+            </Dashboard>
           </Route>
-          <Route
-            path={PLAYLIST_ROUTE()}
-            children={() => {
-              if (appData.modelName === modelName.DOCUMENTS) {
-                return (
+          <Route path={DASHBOARD_ROUTE(modelName.VIDEOS)}>
+            <Dashboard object={appData.video!}>
+              <DashboardVideo video={appData.video!} />
+            </Dashboard>
+          </Route>
+          <Route path={PLAYLIST_ROUTE(modelName.VIDEOS)}>
+            {appData.video && (
+              <Dashboard object={appData.video!}>
+                <PlaylistPortability object={appData.video!} />
+              </Dashboard>
+            )}
+
+            {!appData.video && (
+              <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
+            )}
+          </Route>
+          <Route path={PLAYLIST_ROUTE(modelName.DOCUMENTS)}>
+            {appData.document && (
                   <Dashboard object={appData.document!}>
                     <PlaylistPortability object={appData.document!} />
                   </Dashboard>
-                );
-              }
+            )}
 
-              if (appData.modelName === modelName.VIDEOS) {
-                return (
-                  <Dashboard object={appData.video!}>
-                    <PlaylistPortability object={appData.video!} />
-                  </Dashboard>
-                );
-              }
-
-              return <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-            }}
-          />
+            {!appData.document && (
+              <Navigate to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
+            )}
+          </Route>
 
           <Route path={SUBSCRIBE_SCHEDULED_ROUTE()} >
             {appData.modelName === modelName.VIDEOS && appData.video!.starting_at && appData.video!.is_scheduled && (
