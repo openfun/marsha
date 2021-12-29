@@ -5,6 +5,7 @@ import { converseMounter } from './converse';
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
+import { participantsTrackingPlugin } from './converse-plugins/participantsTrackingPlugin';
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -83,20 +84,15 @@ describe('converseMounter', () => {
       singleton: true,
       theme: 'concord',
       view_mode: 'embedded',
-      visible_toolbar_buttons: {
-        call: false,
-        emoji: true,
-        spoiler: false,
-        toggle_occupants: false,
-      },
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       whitelisted_plugins: [
         chatPlugin.name,
         logoutPlugin.name,
         marshaJoinDiscussionPlugin.name,
+        participantsTrackingPlugin.name,
       ],
     });
-    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(3);
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledTimes(4);
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
       chatPlugin.name,
       {
@@ -113,6 +109,13 @@ describe('converseMounter', () => {
     );
     expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
       marshaJoinDiscussionPlugin.name,
+      {
+        dependencies: ['converse-muc'],
+        initialize: expect.any(Function),
+      },
+    );
+    expect(mockWindow.converse.plugins.add).toHaveBeenCalledWith(
+      participantsTrackingPlugin.name,
       {
         dependencies: ['converse-muc'],
         initialize: expect.any(Function),

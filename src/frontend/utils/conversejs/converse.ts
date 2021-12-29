@@ -6,6 +6,7 @@ import { converse } from 'utils/window';
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
+import { participantsTrackingPlugin } from './converse-plugins/participantsTrackingPlugin';
 
 export const converseMounter = () => {
   let hasBeenInitialized = false;
@@ -18,6 +19,7 @@ export const converseMounter = () => {
       chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
       marshaJoinDiscussionPlugin.addPlugin(xmpp);
+      participantsTrackingPlugin.addPlugin();
 
       // Converse Initialization
       converse.initialize({
@@ -46,17 +48,12 @@ export const converseMounter = () => {
         singleton: true,
         theme: 'concord',
         view_mode: 'embedded',
-        visible_toolbar_buttons: {
-          call: false,
-          emoji: true,
-          spoiler: false,
-          toggle_occupants: false,
-        },
         websocket_url: xmpp.websocket_url,
         whitelisted_plugins: [
           chatPlugin.name,
           logoutPlugin.name,
           marshaJoinDiscussionPlugin.name,
+          participantsTrackingPlugin.name,
         ],
       });
     }
