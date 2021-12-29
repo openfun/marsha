@@ -73,10 +73,6 @@ COPY --from=link-collector /app /app
 # Copy statics
 COPY --from=link-collector ${MARSHA_STATIC_ROOT} ${MARSHA_STATIC_ROOT}
 
-# Gunicorn
-RUN mkdir -p /usr/local/etc/gunicorn
-COPY docker/files/usr/local/etc/gunicorn/marsha.py /usr/local/etc/gunicorn/marsha.py
-
 # Give the "root" group the same permissions as the "root" user on /etc/passwd
 # to allow a user belonging to the root group to add new users; typically the
 # docker user (see entrypoint).
@@ -89,8 +85,8 @@ WORKDIR /app/src/backend
 # ID.
 ENTRYPOINT [ "/app/bin/entrypoint" ]
 
-# The default command runs gunicorn WSGI server
-CMD gunicorn -c /usr/local/etc/gunicorn/marsha.py marsha.wsgi:application
+# The default command runs daphne ASGI server
+CMD daphne -b 0.0.0.0 -p 8000 --proxy-headers marsha.asgi:application
 
 # Un-privileged user running the application
 USER 10000
