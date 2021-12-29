@@ -116,6 +116,7 @@ class Base(Configuration):
         "corsheaders",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
+        "channels",
     ]
 
     MIDDLEWARE = [
@@ -152,7 +153,7 @@ class Base(Configuration):
 
     AUTH_USER_MODEL = "core.User"
 
-    WSGI_APPLICATION = "marsha.wsgi.application"
+    ASGI_APPLICATION = "marsha.asgi.application"
 
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
