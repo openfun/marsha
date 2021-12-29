@@ -12,15 +12,31 @@ const messages = defineMessages({
 });
 
 const AvatarBox = styled(Box)`
-  background-color: #edf5fa;
-  border-radius: 6px;
-  height: 24px;
   // minWidth is set otherwise avatar width is crushed by the margin of the component next to the avatar
   min-width: 24px;
-  width: 24px;
 `;
 
-export const ChatAvatar = () => {
+interface ChatAvatarProps {
+  isInstructor?: boolean;
+}
+
+export const ChatAvatar = ({ isInstructor }: ChatAvatarProps) => {
   const intl = useIntl();
-  return <AvatarBox title={intl.formatMessage(messages.avatarTitle)} />;
+  return (
+    <AvatarBox
+      background="#edf5fa"
+      border={
+        isInstructor
+          ? {
+              color: 'blue-chat',
+              size: 'small',
+            }
+          : undefined
+      }
+      height="24px"
+      round="6px"
+      title={intl.formatMessage(messages.avatarTitle)}
+      width="24px"
+    />
+  );
 };
