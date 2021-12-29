@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   to the websocket when a video is updated through the API
 - Add email settings and configure `mailcatcher` in docker-compose stack
 - Transform `mjml` files (email's template files) to html and plaintext 
+- Add a participants tab, listing all users connected to the chat
 
 ### Changed
 
