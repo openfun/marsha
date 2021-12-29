@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 
 import { createPlayer } from '../../Player/createPlayer';
 import { modelName } from '../../types/models';
@@ -47,9 +47,9 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
+            <Routes>
+              <Route path="/:videoId" element={<VideoView />}/>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),
@@ -100,9 +100,9 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
+            <Routes>
+              <Route path="/:videoId" element={<VideoView />}/>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),
@@ -145,24 +145,26 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <UploadManagerContext.Provider
-                value={{
-                  setUploadState: jest.fn(),
-                  uploadManagerState: {
-                    [video.id]: {
-                      file,
-                      objectId: video.id,
-                      objectType: modelName.VIDEOS,
-                      progress: 60,
-                      status: UploadManagerStatus.UPLOADING,
+            <Routes>
+              <Route path="/:videoId" element={
+                <UploadManagerContext.Provider
+                  value={{
+                    setUploadState: jest.fn(),
+                    uploadManagerState: {
+                      [video.id]: {
+                        file,
+                        objectId: video.id,
+                        objectType: modelName.VIDEOS,
+                        progress: 60,
+                        status: UploadManagerStatus.UPLOADING,
+                      },
                     },
-                  },
-                }}
-              >
-                <VideoView />
-              </UploadManagerContext.Provider>
-            </Route>
+                  }}
+                >
+                  <VideoView />
+                </UploadManagerContext.Provider>
+              } />
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),
@@ -190,9 +192,9 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
+            <Routes>
+              <Route path="/:videoId" element={<VideoView />}/>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),
@@ -234,9 +236,9 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
+            <Routes>
+              <Route path="/:videoId" element={<VideoView />}/>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),
@@ -269,9 +271,9 @@ describe('<VideoView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
+            <Routes>
+              <Route path="/:videoId" element={<VideoView />}/>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),

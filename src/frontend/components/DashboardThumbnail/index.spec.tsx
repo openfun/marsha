@@ -3,7 +3,10 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
-import { UploadManagerContext, UploadManagerStatus } from 'components/UploadManager';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
@@ -334,15 +337,12 @@ describe('<DashboardThumbnail />', () => {
     ).not.toBeDefined();
     render(
       wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardThumbnail video={videoWithoutThumbnail} />,
-          [
-            {
-              path: UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, '42'),
-              element: <span>Upload Form</span>
-            }
-          ]
-        )
+        wrapInRouter(<DashboardThumbnail video={videoWithoutThumbnail} />, [
+          {
+            path: UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, '42'),
+            element: <span>Upload Form</span>,
+          },
+        ]),
       ),
     );
 

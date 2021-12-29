@@ -32,8 +32,10 @@ export const DashboardButtonBeta = styled(DashboardButton)`
   }
 `;
 
-export const DashboardButtonWithLink: React.FC<DashboardButtonWithLinkProps & ButtonProps> = (props) => {
+export const DashboardButtonWithLink: React.FC<
+  DashboardButtonWithLinkProps & ButtonProps
+> = (props) => {
   const navigate = useNavigate();
 
-  return <DashboardButton {...props} onClick={() => navigate(props.to)} />
-}
+  return <DashboardButton {...props} onClick={() => navigate(props.to)} />;
+};

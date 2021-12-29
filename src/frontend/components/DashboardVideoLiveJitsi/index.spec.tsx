@@ -635,7 +635,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInRouter(
-        <DashboardVideoLiveJitsi video={video} isInstructor={false} />
+        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
       ),
     );
 
@@ -678,8 +678,8 @@ describe('<DashboardVideoLiveJitsi />', () => {
     act(() => {
       // simulates user leave the conference
       dispatch('videoConferenceLeft', {});
-    })
-    
+    });
+
     expect(mockDispose).toHaveBeenCalled();
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
     await screen.findByText('video player');

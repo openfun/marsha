@@ -1,4 +1,13 @@
-import { Anchor, AnchorProps, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
+import {
+  Anchor,
+  AnchorProps,
+  Box,
+  Button,
+  Main,
+  Nav,
+  Sidebar,
+  Text,
+} from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -23,11 +32,11 @@ const messages = defineMessages({
   },
 });
 
-const TitleLink: React.FC<AnchorProps & {to: string}> = (props) => {
+const TitleLink: React.FC<AnchorProps & { to: string }> = (props) => {
   const navigate = useNavigate();
 
-  return <Anchor {...props} onClick={() => navigate(props.to)} />
-}
+  return <Anchor {...props} onClick={() => navigate(props.to)} />;
+};
 const SidebarLink = styled(Link)`
   &,
   &:active {

@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { Deferred } from '../../utils/tests/Deferred';
 import {
@@ -36,9 +36,9 @@ describe('<PlaylistView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${playlist.id}`]}>
-            <Route path={`/:playlistId`}>
-              <PlaylistView />
-            </Route>
+            <Routes>
+              <Route path={`/:playlistId`} element={<PlaylistView />} />
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),

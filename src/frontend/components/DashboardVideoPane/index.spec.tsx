@@ -51,7 +51,7 @@ describe('<DashboardVideoPane />', () => {
         wrapInRouter(<DashboardVideoPane video={video} />, [
           {
             path: FULL_SCREEN_ERROR_ROUTE('notFound'),
-            element: <span>{`Error Component: notFound`}</span>
+            element: <span>{`Error Component: notFound`}</span>,
           },
         ]),
       ),

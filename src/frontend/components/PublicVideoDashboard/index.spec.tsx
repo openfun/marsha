@@ -437,7 +437,7 @@ describe('PublicVideoDashboard', () => {
             },
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
-              element:  <span>{`Error Component`}</span>,
+              element: <span>{`Error Component`}</span>,
             },
           ],
         ),

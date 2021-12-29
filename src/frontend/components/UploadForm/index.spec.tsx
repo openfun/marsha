@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { useParams }  from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
@@ -17,10 +17,10 @@ import { UploadForm } from './index';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn()
+  useParams: jest.fn(),
 }));
 
-const mockUseParams = useParams as jest.MockedFunction<typeof useParams>
+const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -117,13 +117,7 @@ describe('UploadForm', () => {
       objectId: object.id,
       objectType: modelName.VIDEOS,
     });
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <UploadForm />,
-        ),
-      ),
-    );
+    render(wrapInIntlProvider(wrapInRouter(<UploadForm />)));
 
     await screen.findByText('Create a new video');
   });
@@ -153,15 +147,12 @@ describe('UploadForm', () => {
     const { container } = render(
       <UploadManager>
         {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm />,
-            [
-              {
-                path: DASHBOARD_ROUTE(modelName.VIDEOS),
-                element: <span>dashboard</span>,
-              },
-            ],
-          ),
+          wrapInRouter(<UploadForm />, [
+            {
+              path: DASHBOARD_ROUTE(modelName.VIDEOS),
+              element: <span>dashboard</span>,
+            },
+          ]),
         )}
       </UploadManager>,
     );
@@ -197,15 +188,12 @@ describe('UploadForm', () => {
     const { container } = render(
       <UploadManager>
         {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm />,
-            [
-              {
-                path: FULL_SCREEN_ERROR_ROUTE('policy'),
-                element: <span>error policy</span>,
-              },
-            ],
-          ),
+          wrapInRouter(<UploadForm />, [
+            {
+              path: FULL_SCREEN_ERROR_ROUTE('policy'),
+              element: <span>error policy</span>,
+            },
+          ]),
         )}
       </UploadManager>,
     );

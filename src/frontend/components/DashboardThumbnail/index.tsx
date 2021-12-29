@@ -114,9 +114,7 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
 
   if (shouldRedirect && thumbnail) {
     return (
-      <Navigate
-        to={UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, thumbnail!.id)}
-      />
+      <Navigate to={UPLOAD_FORM_ROUTE(modelName.THUMBNAILS, thumbnail!.id)} />
     );
   }
 

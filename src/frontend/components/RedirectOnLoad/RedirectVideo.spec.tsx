@@ -128,7 +128,7 @@ describe('RedirectVideo', () => {
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE('notFound'),
-          element: <span>Error Component: notFound</span>
+          element: <span>Error Component: notFound</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),

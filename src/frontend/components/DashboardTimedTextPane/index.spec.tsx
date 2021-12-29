@@ -95,7 +95,7 @@ describe('<DashboardTimedTextPane />', () => {
       wrapInIntlProvider(
         wrapInRouter(<DashboardTimedTextPane />, [
           {
-            path: FULL_SCREEN_ERROR_ROUTE("notFound"),
+            path: FULL_SCREEN_ERROR_ROUTE('notFound'),
             element: <span>{`Error Component: notFound`}</span>,
           },
         ]),

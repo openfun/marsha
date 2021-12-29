@@ -15,7 +15,10 @@ import { IframeHeading } from 'components/Headings';
 import { LayoutMainArea } from 'components/LayoutMainArea';
 import { Loader } from 'components/Loader';
 import { UploadField } from 'components/UploadField';
-import { UploadManagerStatus, useUploadManager } from 'components/UploadManager';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -93,7 +96,7 @@ const UploadFormBack = styled.div`
 type UploadFormParams = {
   objectId: UploadableObject['id'];
   objectType: modelName;
-}
+};
 
 export const UploadForm = () => {
   const { objectId, objectType } = useParams() as UploadFormParams;

@@ -51,7 +51,7 @@ describe('<LTINav />', () => {
         wrapInIntlProvider(
           <Router location="/" navigator={history}>
             <LTINav object={video} />
-          </Router>
+          </Router>,
         ),
       );
 
@@ -125,7 +125,7 @@ describe('<LTINav />', () => {
         wrapInIntlProvider(
           <Router location="/" navigator={history}>
             <LTINav object={document} />
-          </Router>
+          </Router>,
         ),
       );
 

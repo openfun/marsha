@@ -58,7 +58,7 @@ describe('<RedirectOnLoad />', () => {
       wrapInRouter(<RedirectOnLoad />, [
         {
           path: FULL_SCREEN_ERROR_ROUTE('lti'),
-          element: <span>{`Error Component: lti`}</span>
+          element: <span>{`Error Component: lti`}</span>,
         },
       ]),
     );
@@ -76,7 +76,7 @@ describe('<RedirectOnLoad />', () => {
       wrapInRouter(<RedirectOnLoad />, [
         {
           path: FULL_SCREEN_ERROR_ROUTE('notFound'),
-          element: <span>{`Error Component: notFound`}</span>
+          element: <span>{`Error Component: notFound`}</span>,
         },
       ]),
     );

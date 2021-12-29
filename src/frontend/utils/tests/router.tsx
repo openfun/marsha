@@ -3,7 +3,11 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 export const wrapInRouter = (
   Component: JSX.Element,
-  routes?: { path: string; children?: React.ReactNode; element?: React.ReactElement | null;}[],
+  routes?: {
+    path: string;
+    children?: React.ReactNode;
+    element?: React.ReactElement | null;
+  }[],
 ) => (
   <MemoryRouter>
     <Routes>

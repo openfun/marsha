@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { Deferred } from '../../utils/tests/Deferred';
 import {
@@ -46,9 +46,11 @@ describe('<OrganizationView />', () => {
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={[`/${org.id}`]}>
-            <Route path={'/:organizationId'}>
-              <OrganizationView />
-            </Route>
+            <Routes>
+              <Route path={'/:organizationId'}>
+                <OrganizationView />
+              </Route>
+            </Routes>
           </MemoryRouter>
         </QueryClientProvider>,
       ),

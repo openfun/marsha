@@ -1,7 +1,7 @@
 import { Box, Heading } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 
 import { useOrganization } from '../../data/queries';
 import { Crumb } from '../BreadCrumbs';
@@ -29,8 +29,10 @@ interface OrganizationViewIndexRouteParams {
 }
 
 const OrganizationViewIndex: React.FC = () => {
-  const { url } = useRouteMatch();
-  const { organizationId } = useParams<OrganizationViewIndexRouteParams>();
+  const { pathname } = useLocation();
+  const { organizationId } = useParams<
+    keyof OrganizationViewIndexRouteParams
+  >() as OrganizationViewIndexRouteParams;
   const { data, status } = useOrganization(organizationId);
 
   return (
@@ -50,7 +52,7 @@ const OrganizationViewIndex: React.FC = () => {
         </Heading>
         <VideosList
           params={{ organization: organizationId }}
-          getRowLink={(video) => `${url}/video/${video.id}`}
+          getRowLink={(video) => `${pathname}/video/${video.id}`}
         />
       </Box>
     </Box>
@@ -62,8 +64,10 @@ interface OrganizationViewRouteParams {
 }
 
 export const OrganizationView: React.FC = () => {
-  const { path } = useRouteMatch();
-  const { organizationId } = useParams<OrganizationViewRouteParams>();
+  const { pathname } = useLocation();
+  const { organizationId } = useParams<
+    keyof OrganizationViewRouteParams
+  >() as OrganizationViewRouteParams;
   const { data, status } = useOrganization(organizationId);
 
   return (
@@ -77,19 +81,19 @@ export const OrganizationView: React.FC = () => {
           )
         }
       />
-      <Switch>
-        <Route path={`${path}/playlist/:playlistId`}>
+      <Routes>
+        <Route path={`${pathname}/playlist/:playlistId`}>
           <PlaylistView />
         </Route>
 
-        <Route path={`${path}/video/:videoId`}>
+        <Route path={`${pathname}/video/:videoId`}>
           <VideoView />
         </Route>
 
-        <Route path={path}>
+        <Route path={pathname}>
           <OrganizationViewIndex />
         </Route>
-      </Switch>
+      </Routes>
     </React.Fragment>
   );
 };

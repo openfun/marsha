@@ -11,7 +11,7 @@ import {
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { usePlaylists } from '../../data/queries';
@@ -79,8 +79,8 @@ interface OrganizationPlaylistsProps {
 export const OrganizationPlaylists: React.FC<OrganizationPlaylistsProps> = ({
   organizationId,
 }) => {
-  const { url } = useRouteMatch();
-  const history = useHistory();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const { data, status } = usePlaylists({ organization: organizationId });
 
@@ -138,11 +138,11 @@ export const OrganizationPlaylists: React.FC<OrganizationPlaylistsProps> = ({
                     <TableRowLinked
                       key={playlist.id}
                       onClick={() => {
-                        history.push(`${url}/playlist/${playlist.id}`);
+                        navigate(`${pathname}/playlist/${playlist.id}`);
                       }}
                     >
                       <TableCell scope="row">
-                        <Link to={`${url}/playlist/${playlist.id}`}>
+                        <Link to={`${pathname}/playlist/${playlist.id}`}>
                           {playlist.title}
                         </Link>
                       </TableCell>

@@ -172,7 +172,9 @@ export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
 );
 
 export const FullScreenError = () => {
-  const { code } = useParams() as ErrorComponentsProps;
+  const { code } = useParams<
+    keyof ErrorComponentsProps
+  >() as ErrorComponentsProps;
 
   return (
     <FullScreenErrorStyled>

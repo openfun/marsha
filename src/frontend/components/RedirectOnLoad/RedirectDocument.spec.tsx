@@ -60,7 +60,7 @@ describe('RedirectDocument', () => {
         },
         {
           path: FULL_SCREEN_ERROR_ROUTE(),
-          element: <span>{`Error Component`}</span>
+          element: <span>{`Error Component`}</span>,
         },
         {
           path: PLAYER_ROUTE(modelName.DOCUMENTS),

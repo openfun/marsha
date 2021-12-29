@@ -3,12 +3,12 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import {
+  Navigate,
   NavLink,
-  Redirect,
   Route,
-  Switch,
+  Routes,
+  useLocation,
   useParams,
-  useRouteMatch,
 } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -183,8 +183,10 @@ interface VideoViewRouteParams {
 }
 
 export const VideoView: React.FC = () => {
-  const { path, url } = useRouteMatch();
-  const { videoId } = useParams<VideoViewRouteParams>();
+  const { pathname } = useLocation();
+  const { videoId } = useParams<
+    keyof VideoViewRouteParams
+  >() as VideoViewRouteParams;
 
   const { data, status } = useVideo(videoId);
 
@@ -214,25 +216,20 @@ export const VideoView: React.FC = () => {
       content = (
         <Box direction="column" gap="medium">
           <Box direction="row">
-            <TabLink to={`${url}/video`}>
+            <TabLink to={`${pathname}/video`}>
               <FormattedMessage {...messages.tabVideoTitle} />
             </TabLink>
-            <TabLink to={`${url}/subtitles`}>
+            <TabLink to={`${pathname}/subtitles`}>
               <FormattedMessage {...messages.tabSubtitlesTitle} />
             </TabLink>
-            <TabLink to={`${url}/thumbnail`}>
+            <TabLink to={`${pathname}/thumbnail`}>
               <FormattedMessage {...messages.tabThumbnailTitle} />
             </TabLink>
           </Box>
-          <Switch>
-            <Route path={`${path}/video`}>
-              <VideoTab video={data!} />
-            </Route>
-
-            <Route path={path}>
-              <Redirect to={`${url}/video`} />
-            </Route>
-          </Switch>
+          <Routes>
+            <Route path={`${pathname}/video`} element={<VideoTab video={data!} />} />
+            <Route path={pathname} element={<Navigate to={`${pathname}/video`} />} />
+          </Routes>
         </Box>
       );
       break;

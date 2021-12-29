@@ -1,7 +1,7 @@
 import { Box, Heading } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useParams, useLocation } from 'react-router-dom';
 
 import { usePlaylist } from '../../data/queries';
 import { Crumb } from '../BreadCrumbs';
@@ -34,8 +34,10 @@ interface PlaylistViewIndexRouteParams {
 }
 
 const PlaylistViewIndex: React.FC = () => {
-  const { url } = useRouteMatch();
-  const { playlistId } = useParams<PlaylistViewIndexRouteParams>();
+  const { pathname } = useLocation();
+  const { playlistId } = useParams<
+    keyof PlaylistViewIndexRouteParams
+  >() as PlaylistViewIndexRouteParams;
   const { data, status } = usePlaylist(playlistId);
 
   return (
@@ -54,7 +56,7 @@ const PlaylistViewIndex: React.FC = () => {
         </Heading>
         <VideosList
           params={{ playlist: playlistId }}
-          getRowLink={(video) => `${url}/video/${video.id}`}
+          getRowLink={(video) => `${pathname}/video/${video.id}`}
         />
         <Heading level={2} margin="none">
           <FormattedMessage {...messages.addVideos} />
@@ -70,8 +72,10 @@ interface PlaylistViewRouteParams {
 }
 
 export const PlaylistView: React.FC = () => {
-  const { path } = useRouteMatch();
-  const { playlistId } = useParams<PlaylistViewRouteParams>();
+  const { pathname } = useLocation();
+  const { playlistId } = useParams<
+    keyof PlaylistViewRouteParams
+  >() as PlaylistViewRouteParams;
   const { data, status } = usePlaylist(playlistId);
 
   return (
@@ -86,15 +90,10 @@ export const PlaylistView: React.FC = () => {
         }
       />
 
-      <Switch>
-        <Route path={`${path}/video/:videoId`}>
-          <VideoView />
-        </Route>
-
-        <Route path={path}>
-          <PlaylistViewIndex />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path={`${pathname}/video/:videoId`} element={<VideoView />}/>
+        <Route path={pathname} element={<PlaylistViewIndex />} />
+      </Routes>
     </React.Fragment>
   );
 };
