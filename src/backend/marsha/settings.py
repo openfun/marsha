@@ -154,6 +154,30 @@ class Base(Configuration):
     AUTH_USER_MODEL = "core.User"
 
     ASGI_APPLICATION = "marsha.asgi.application"
+    
+    
+    # For sentinels:
+    # CHANNEL_LAYERS = {
+    #     "default": {
+    #         "BACKEND": "marsha.websocket.layers.JsonRedisChannelLayer",
+    #         "CONFIG": {
+    #             "hosts": [{
+    #                 "sentinels": [(SENTINEL_HOST, SENTINEL_PORT)],
+    #                 "master_name": SENTINEL_MASTER,
+    #             }],
+    #         },
+    #     },
+    # }
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": values.ListValue(
+                    [("redis", 6379)], environ_name="REDIS_HOST", environ_prefix=None
+                ),
+            },
+        },
+    }
 
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
