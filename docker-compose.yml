@@ -39,8 +39,12 @@ services:
     depends_on:
       - "base"
       - "db"
+      - "redis"
     stdin_open: true
     tty: true
+
+  redis:
+    image: redis:5
 
   e2e:
     build:
