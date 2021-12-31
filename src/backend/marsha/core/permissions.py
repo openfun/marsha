@@ -30,6 +30,12 @@ class BaseTokenRolePermission(permissions.BasePermission):
 
     role = None
 
+    def check_role(self, token):
+        """Check if the required role is in the token and if can_update is granted."""
+        return LTI_ROLES[self.__class__.role] & set(
+            token.payload.get("roles", [])
+        ) and token.payload.get("permissions", {}).get("can_update", False)
+
     def has_permission(self, request, view):
         """
         Add a check to allow users identified via a JWT token with a given token-granted role.
@@ -48,16 +54,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
 
         """
         user = request.user
-        if (
-            isinstance(user, TokenUser)
-            and LTI_ROLES[self.__class__.role]
-            & set(user.token.payload.get("roles", []))
-            and user.token.payload.get("permissions", {}).get("can_update", False)
-            is True
-        ):
-            return True
-
-        return False
+        return isinstance(user, TokenUser) and self.check_role(user.token)
 
 
 class IsTokenInstructor(BaseTokenRolePermission):
