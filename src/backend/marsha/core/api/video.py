@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.models import TokenUser
 
 from marsha.core.defaults import JITSI
+from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
 from ..models import LivePairing, Video
@@ -98,6 +99,10 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             )
 
         return context
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        channel_layers_utils.dispatch_video_to_groups(serializer.instance)
 
     def create(self, request, *args, **kwargs):
         """Create one video based on the request payload."""

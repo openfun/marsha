@@ -20,6 +20,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a new chat, using react components and design complying with the mockup
 - Add anonymous_id and display_name in LiveRegistration model
 - Add new endpoint to set display_name
+- Manage websocket using django channels
+- New video consumer able to send serialized video to all clients connected
+  to the websocket when a video is updated through the API
 
 ### Changed
 
