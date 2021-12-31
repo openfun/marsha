@@ -116,6 +116,7 @@ class Base(Configuration):
         "corsheaders",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
+        "marsha.websocket.apps.WebsocketConfig",
         "channels",
     ]
 
