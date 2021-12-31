@@ -23,6 +23,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add API endpoints to start, navigate and end a live media sharing
 - Add fields `allow_recording`, `estimated_duration`, `has_chat` and
   `has_live_media` for Video model and API
+- Manage websocket using django channels
+- New video consumer able to send serialized video to all clients connected
+  to the websocket when a video is updated through the API
 
 ### Changed
 

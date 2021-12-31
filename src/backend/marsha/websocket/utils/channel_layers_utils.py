@@ -1,0 +1,23 @@
+"""Marsha module working with django channels layers."""
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
+from marsha.core.serializers import VideoSerializer
+from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
+
+
+def dispatch_video_to_groups(video):
+    """Send the video to both simple and admin user."""
+    dispatch_video(video, to_admin=False)
+    dispatch_video(video, to_admin=True)
+
+
+def dispatch_video(video, to_admin=False):
+    """Send the video to users connected to the video consumer."""
+    room_name = VIDEO_ADMIN_ROOM_NAME if to_admin else VIDEO_ROOM_NAME
+    channel_layer = get_channel_layer()
+    serialized_video = VideoSerializer(video, context={"is_admin": to_admin})
+    async_to_sync(channel_layer.group_send)(
+        room_name.format(video_id=str(video.id)),
+        {"type": "video_updated", "video": serialized_video.data},
+    )
