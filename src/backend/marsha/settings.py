@@ -155,8 +155,7 @@ class Base(Configuration):
     AUTH_USER_MODEL = "core.User"
 
     ASGI_APPLICATION = "marsha.asgi.application"
-    
-    
+
     # For sentinels:
     # CHANNEL_LAYERS = {
     #     'default': {
@@ -510,6 +509,9 @@ class Test(Base):
     # Enable it to speed up tests by stopping WhiteNoise from scanning your static files
     WHITENOISE_AUTOREFRESH = True
     LIVE_CHAT_ENABLED = False
+    CHANNEL_LAYERS = {
+        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
+    }
 
 
 class Production(Base):
