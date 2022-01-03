@@ -1,0 +1,12 @@
+$roboto-font-path: "../fonts/roboto" !default;
+
+
+@font-face {
+  font-family: 'Roboto-Regular';
+  src:  url('#{$roboto-font-path}/roboto-regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Roboto-Medium';
+    src:  url('#{$roboto-font-path}/roboto-medium.ttf') format('truetype');
+}
