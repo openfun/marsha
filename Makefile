@@ -25,10 +25,19 @@
 # ==============================================================================
 # VARIABLES
 
-include env.d/development
+ifeq ($(OS),Windows_NT)
+	CMD_CP = copy
+	
+	BOLD = [1m
+	RESET = [0m
+else
+	CMD_CP = cp
+	
+	BOLD = \033[1m
+	RESET = \033[0m
+endif
 
-BOLD := \033[1m
-RESET := \033[0m
+include env.d/development
 
 # -- Docker
 COMPOSE              = docker-compose
@@ -61,9 +70,9 @@ bootstrap: \
 # -- Docker/compose
 
 build: ## build the app container
-	@$(COMPOSE) build base;
-	@$(COMPOSE) build app;
-	@$(COMPOSE) build e2e;
+	@$(COMPOSE) build base
+	@$(COMPOSE) build app
+	@$(COMPOSE) build e2e
 .PHONY: build
 
 build-lambda-dev: ## build all aws lambda
@@ -398,10 +407,10 @@ i18n-download-and-compile: \
 # -- Misc
 
 env.d/development:
-	cp env.d/development.dist env.d/development
+	$(CMD_CP) env.d/development.dist env.d/development
 
 env.d/lambda:
-	cp env.d/lambda.dist env.d/lambda
+	$(CMD_CP) env.d/lambda.dist env.d/lambda
 
 help:  ## Show this help
 	@echo "$(BOLD)Marsha Makefile$(RESET)"

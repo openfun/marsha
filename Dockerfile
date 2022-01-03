@@ -87,7 +87,7 @@ WORKDIR /app/src/backend
 # We wrap commands run in this container by the following entrypoint that
 # creates a user on-the-fly with the container user ID (see USER) and root group
 # ID.
-ENTRYPOINT [ "/app/bin/entrypoint" ]
+ENTRYPOINT [ "/app/bin/entrypoint.sh" ]
 
 # The default command runs gunicorn WSGI server
 CMD gunicorn -c /usr/local/etc/gunicorn/marsha.py marsha.wsgi:application

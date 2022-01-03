@@ -90,6 +90,13 @@ $ docker-compose --version
 
 ⚠️ You may need to run the following commands with `sudo` but this can be avoided by assigning your user to the `docker` group.
 
+Marsha use extensivly GNU make with a makefile gathering most of usefull commands to run when developing on marsha.
+Be sure to have the package installed, for windows OS system, you can install the package using chocolatey (https://chocolatey.org/install) running :
+
+```bash
+$ choco install make
+```
+
 ### The storage & transcoding environment
 
 All tasks related to this environment are run from the `./src/aws` directory. We use `Terraform` to keep this infrastructure configuration as code and easily manage several independent deployments of the whole `AWS` infrastructure.

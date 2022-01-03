@@ -1,0 +1,5 @@
+# Set the default behavior
+* text=auto
+
+# sh scripts should use LF (else CRLF can cause error when running in a container on windows)
+*.sh text eol=lf
