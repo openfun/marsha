@@ -368,8 +368,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v4-front-dependencies-{{ checksum "yarn.lock" }}
-            - v4-front-dependencies-
+            - v5-front-dependencies-{{ checksum "yarn.lock" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -391,7 +390,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: v4-front-dependencies-{{ checksum "yarn.lock" }}
+          key: v5-front-dependencies-{{ checksum "yarn.lock" }}
 
   lint-front:
     docker:
@@ -405,7 +404,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v4-front-dependencies-{{ checksum "yarn.lock" }}
+            - v5-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -425,7 +424,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v4-front-dependencies-{{ checksum "yarn.lock" }}
+            - v5-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Install Puppeteer dependencies for visual regression testing
           command: |
@@ -486,7 +485,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v4-front-dependencies-{{ checksum "yarn.lock" }}
+            - v5-front-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Ensure storybook builds
           command: yarn storybook --smoke-test
