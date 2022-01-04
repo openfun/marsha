@@ -27,6 +27,10 @@ const ContentContainer = styled.div`
   left: 0;
 `;
 
+const RelativeBox = styled(Box)`
+  position: relative;
+`;
+
 interface LiveVideoPanelProps {
   video: Video;
 }
@@ -103,9 +107,9 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       }}
     >
       {header}
-      <Box fill style={{ position: 'relative' }}>
+      <RelativeBox fill>
         <ContentContainer>{content}</ContentContainer>
-      </Box>
+      </RelativeBox>
     </StyledGrommet>
   );
 };

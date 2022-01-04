@@ -31,12 +31,10 @@ export const StudentLiveControlBar = ({
 
   return (
     <Box
+      direction="row-reverse"
+      flex
       height="100%"
-      style={{
-        flex: '1',
-        flexDirection: 'row-reverse',
-        justifyContent: size === 'small' ? 'space-evenly' : 'initial',
-      }}
+      justify={size === 'small' ? 'evenly' : undefined}
     >
       {availableItems.includes(LivePanelItem.APPLICATION) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
