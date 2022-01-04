@@ -171,7 +171,7 @@ class Base(Configuration):
     # }
     CHANNEL_LAYERS = {
         "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "BACKEND": "marsha.websocket.layers.JsonRedisChannelLayer",
             "CONFIG": {
                 "hosts": values.ListValue(
                     [("redis", 6379)], environ_name="REDIS_HOST", environ_prefix=None
