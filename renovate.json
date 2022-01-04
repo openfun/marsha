@@ -11,7 +11,12 @@
       ],
       "matchPackageNames": [
         "converse.js",
-        "node-fetch"
+        "node-fetch",
+        "@storybook/addon-a11y",
+        "@storybook/addon-actions",
+        "@storybook/addon-essentials",
+        "@storybook/react",
+        "react-router-dom"
       ]
     },
     {
