@@ -20,7 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a new chat, using react components and design complying with the mockup
 - Add anonymous_id and display_name in LiveRegistration model
 - Add new endpoint to set display_name
-- Add better support for windows system in makefile
+- Support Makefile on windows system
 
 ### Changed
 
