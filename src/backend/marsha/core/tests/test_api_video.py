@@ -238,7 +238,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
@@ -417,7 +421,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
@@ -666,7 +674,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": "1533686400",
@@ -879,7 +891,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -935,7 +951,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -1079,7 +1099,11 @@ class VideoAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "has_transcript": False,
                 "id": str(video.id),
                 "is_public": False,
@@ -1157,7 +1181,11 @@ class VideoAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "has_transcript": False,
                 "id": str(video.id),
                 "is_public": False,
@@ -1285,7 +1313,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_public": False,
@@ -1366,7 +1398,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video_1.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video_1.id),
                         "is_public": False,
@@ -1395,7 +1431,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video_2.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video_2.id),
                         "is_public": False,
@@ -1490,7 +1530,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_public": False,
@@ -1560,7 +1604,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_public": False,
@@ -1659,7 +1707,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video.id),
                         "is_public": False,
@@ -1728,7 +1780,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video_1.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video_1.id),
                         "is_public": False,
@@ -1757,7 +1813,11 @@ class VideoAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "allow_recording": True,
                         "description": video_2.description,
+                        "estimated_duration": None,
+                        "has_chat": True,
+                        "has_live_media": True,
                         "has_transcript": False,
                         "id": str(video_2.id),
                         "is_public": False,
@@ -1938,7 +1998,11 @@ class VideoAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "allow_recording": True,
                 "description": "",
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
                 "is_public": False,
@@ -2102,7 +2166,11 @@ class VideoAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "allow_recording": True,
                 "description": "",
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
                 "is_public": False,
@@ -2172,7 +2240,11 @@ class VideoAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "allow_recording": True,
                 "description": "",
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "has_transcript": False,
                 "id": str(models.Video.objects.get().id),
                 "is_public": False,
@@ -2689,6 +2761,119 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertTrue(video.is_public)
+
+    def test_api_video_patch_detail_token_user_allow_recording(self):
+        """Instructors and administrators should be able to
+        patch the recording flag of their video through the API."""
+        video = factories.VideoFactory()
+        self.assertTrue(video.allow_recording)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"allow_recording": False}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertFalse(video.allow_recording)
+
+    def test_api_video_patch_detail_token_user_estimated_duration(self):
+        """Instructors and administrators should be able to
+        patch the estimated_duration field of their video through the API."""
+        video = factories.VideoFactory()
+        self.assertIsNone(video.estimated_duration)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"estimated_duration": "5400"}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get("estimated_duration"), 5400)
+        video.refresh_from_db()
+        self.assertEqual(video.estimated_duration, 5400)
+
+    def test_api_video_patch_detail_token_user_estimated_duration_negative(self):
+        """Sending a negative integer for estimated_daration should be rejected."""
+        video = factories.VideoFactory()
+        self.assertIsNone(video.estimated_duration)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"estimated_duration": "-5400"}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "estimated_duration": [
+                    "Ensure this value is greater than or equal to 0."
+                ]
+            },
+        )
+        video.refresh_from_db()
+        self.assertIsNone(video.estimated_duration)
+
+    def test_api_video_patch_detail_token_user_has_chat(self):
+        """Instructors and administrators should be able to
+        patch the chat flag of their video through the API."""
+        video = factories.VideoFactory()
+        self.assertTrue(video.has_chat)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"has_chat": False}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertFalse(video.has_chat)
+
+    def test_api_video_patch_detail_token_user_has_live_media(self):
+        """Instructors and administrators should be able to
+        patch the live media flag of their video through the API."""
+        video = factories.VideoFactory()
+        self.assertTrue(video.has_live_media)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"has_live_media": False}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertFalse(video.has_live_media)
 
     def test_api_video_patch_by_organization_instructor(self):
         """Organization instructors cannot patch videos on the API."""
@@ -3786,7 +3971,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -3839,7 +4028,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -3944,7 +4137,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -4067,7 +4264,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -4273,7 +4474,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -4440,7 +4645,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -4525,7 +4734,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,
@@ -4633,7 +4846,11 @@ class VideoAPITest(TestCase):
             {
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
+                "allow_recording": True,
                 "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
                 "id": str(video.id),
                 "title": video.title,
                 "active_stamp": None,

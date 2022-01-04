@@ -34,6 +34,27 @@ class Video(BaseFile):
         null=True,
         help_text=_("Current displayed page of the active shared live media"),
     )
+    allow_recording = models.BooleanField(
+        default=True,
+        verbose_name=_("allow video recording"),
+        help_text=_("Allow video recording?"),
+    )
+    estimated_duration = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_("estimated duration"),
+        help_text=_("Estimated duration of the video in seconds."),
+    )
+    has_chat = models.BooleanField(
+        default=True,
+        verbose_name=_("enable video chat"),
+        help_text=_("Enable video chat?"),
+    )
+    has_live_media = models.BooleanField(
+        default=True,
+        verbose_name=_("enable video live media"),
+        help_text=_("Enable video live media?"),
+    )
     starting_at = models.DateTimeField(
         blank=True,
         verbose_name=_("starting at"),
