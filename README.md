@@ -90,7 +90,7 @@ $ docker-compose --version
 
 ⚠️ You may need to run the following commands with `sudo` but this can be avoided by assigning your user to the `docker` group.
 
-Marsha use extensivly GNU make with a makefile gathering most of usefull commands to run when developing on marsha.
+Marsha uses extensively GNU make with a makefile gathering most of useful commands to run when developing on marsha.
 Be sure to have the package installed, for windows OS system, you can install the package using chocolatey (https://chocolatey.org/install) running :
 
 ```bash
