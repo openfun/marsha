@@ -21,6 +21,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add anonymous_id and display_name in LiveRegistration model
 - Add new endpoint to set display_name
 - Add API endpoints to start, navigate and end a live media sharing
+- Add fields `allow_recording`, `estimated_duration`, `has_chat` and
+  `has_live_media` for Video model and API
 
 ### Changed
 
