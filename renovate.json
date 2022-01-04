@@ -16,7 +16,8 @@
         "@storybook/addon-actions",
         "@storybook/addon-essentials",
         "@storybook/react",
-        "react-router-dom"
+        "react-router-dom",
+        "node"
       ]
     },
     {
@@ -27,18 +28,6 @@
       ],
       "matchPackageNames": [
         "django"
-      ]
-    },
-    {
-      "enabled": false,
-      "matchPaths": [
-        "src/aws/*"
-      ],
-      "matchDepTypes": [
-        "engines"
-      ],
-      "matchPackageNames": [
-        "node"
       ]
     }
   ]
