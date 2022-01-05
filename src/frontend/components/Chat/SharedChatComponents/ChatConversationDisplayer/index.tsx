@@ -12,8 +12,8 @@ export const ChatConversationDisplayer = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-      scrollableContainerRef.current!.scrollTo({
-        top: scrollableContainerRef.current!.scrollHeight,
+      scrollableContainerRef.current?.scrollTo({
+        top: scrollableContainerRef.current.scrollHeight,
       });
     }, 3000);
   }, []);
