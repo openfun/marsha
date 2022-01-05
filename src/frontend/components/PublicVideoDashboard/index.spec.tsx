@@ -98,6 +98,7 @@ describe('PublicVideoDashboard', () => {
     fetchMock.restore();
     jest.clearAllMocks();
   });
+
   it('displays the video player alone', async () => {
     const video = videoMockFactory({
       urls: {
@@ -270,8 +271,9 @@ describe('PublicVideoDashboard', () => {
 
     expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
   });
-  it('displays the video player and the chat', async () => {
+  it('displays the video player, the tile, the chat and chat action', async () => {
     const video = videoMockFactory({
+      title: 'live title',
       live_state: liveState.RUNNING,
       urls: {
         manifests: {
@@ -308,11 +310,15 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+
+    screen.getByText('live title');
+
+    screen.getByRole('button', { name: 'Show chat' });
   });
 
   it('displays the video player and the waiting message when the live is stopping', async () => {
     const video = videoMockFactory({
+      title: 'live title',
       live_state: liveState.STOPPING,
       urls: {
         manifests: {
@@ -349,12 +355,17 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+
+    screen.getByText('live title');
+
+    screen.getByRole('button', { name: 'Show chat' });
+
     screen.getByText('Webinar is paused');
   });
 
   it('displays the video player and the waiting message when the live is paused', async () => {
     const video = videoMockFactory({
+      title: 'live title',
       live_state: liveState.PAUSED,
       urls: {
         manifests: {
@@ -391,7 +402,11 @@ describe('PublicVideoDashboard', () => {
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+
+    screen.getByText('live title');
+
+    screen.getByRole('button', { name: 'Show chat' });
+
     screen.getByText('Webinar is paused');
   });
 

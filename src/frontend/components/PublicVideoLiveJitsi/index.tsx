@@ -1,14 +1,12 @@
-import { Box } from 'grommet';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
-import { useVideo } from '../../data/stores/useVideo';
-import { Video } from '../../types/tracks';
-import { JoinDiscussionLeaveButton } from '../JoinDiscussionLeaveButton';
-import DashboardVideoLiveJitsi from '../DashboardVideoLiveJitsi';
-import { PLAYER_ROUTE } from '../routes';
-import { modelName } from '../../types/models';
+import { PLAYER_ROUTE } from 'components/routes';
+import { LiveType, LiveVideoWrapper } from 'components/StudentLiveWrapper';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { useVideo } from 'data/stores/useVideo';
+import { modelName } from 'types/models';
+import { Video } from 'types/tracks';
 
 interface PublicVideoLiveJitsiProps {
   video: Video;
@@ -25,17 +23,10 @@ const PublicVideoLiveJitsi = ({
   }
 
   return (
-    <React.Fragment>
-      <DashboardVideoLiveJitsi video={video} />
-      <Box
-        direction="row"
-        margin="small"
-        alignContent="center"
-        justify="center"
-      >
-        <JoinDiscussionLeaveButton />
-      </Box>
-    </React.Fragment>
+    <LiveVideoWrapper
+      video={video}
+      configuration={{ type: LiveType.ON_STAGE }}
+    />
   );
 };
 

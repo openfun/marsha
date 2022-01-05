@@ -2,12 +2,11 @@ import { Box } from 'grommet';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { Chat } from 'components/Chat';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { JoinDiscussionAskButton } from 'components/JoinDiscussionAskButton';
 import { SubscribeScheduledVideo } from 'components/SubscribeScheduledVideo';
+import { LiveType, LiveVideoWrapper } from 'components/StudentLiveWrapper';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
 import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
@@ -16,7 +15,6 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 import {
-  LiveModeType,
   liveState,
   timedTextMode,
   TimedTextTranscript,
@@ -36,10 +34,6 @@ const PublicVideoDashboard = ({
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
-  const displayJoinDiscussionAskButton =
-    video.xmpp &&
-    video.live_type === LiveModeType.JITSI &&
-    ![liveState.STOPPING, liveState.PAUSED].includes(video.live_state!);
 
   if (video.live_state !== null) {
     switch (video.live_state) {
@@ -47,32 +41,10 @@ const PublicVideoDashboard = ({
       case liveState.PAUSED:
       case liveState.STOPPING:
         return (
-          <Box>
-            <Box direction="row">
-              <Box basis={video.xmpp ? 'xlarge' : 'auto'}>
-                <VideoPlayer
-                  video={video}
-                  playerType={playerType}
-                  timedTextTracks={[]}
-                />
-              </Box>
-              {video.xmpp && (
-                <Box>
-                  <Chat video={video} />
-                </Box>
-              )}
-            </Box>
-            {displayJoinDiscussionAskButton && (
-              <Box
-                direction="row"
-                margin="small"
-                alignContent="center"
-                justify="center"
-              >
-                <JoinDiscussionAskButton />
-              </Box>
-            )}
-          </Box>
+          <LiveVideoWrapper
+            video={video}
+            configuration={{ type: LiveType.VIEWER, playerType }}
+          />
         );
       case liveState.STOPPED:
         // user has update permission, we redirect him to the dashboard
