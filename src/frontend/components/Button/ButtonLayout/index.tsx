@@ -30,7 +30,6 @@ const TextBox = styled(Box)`
 `;
 
 const StyledText = styled(Text)`
-  font-family: Roboto-Regular;
   font-weight: normal;
   font-size: ${({ screenSize }: ResponsiveProps) =>
     screenSize === 'small' ? '0.7rem' : '0.9rem'};
