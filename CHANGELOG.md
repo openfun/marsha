@@ -40,6 +40,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   `lti_user_id`, `consumer_site`, and `context_id`
 - Converse.js UI is not used anymore, react components are used instead
 - Add anonymous_id parameter to register a user to a scheduled webinar
+- Update live layout for students
 
 ### Removed
 
