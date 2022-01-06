@@ -7,10 +7,7 @@ describe('<Button />', () => {
   it('renders the Button component with its title only', () => {
     render(<Button label="Button" />);
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    expect(screen.queryByRole('icon_container')).not.toBeInTheDocument();
-    expect(screen.queryByRole('icon_resizer')).not.toBeInTheDocument();
+    screen.getByRole('button', { name: /Button/i });
   });
 
   it('calls onCLick when clicking the button', () => {
@@ -18,7 +15,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" onClick={onClick} />);
 
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /Button/i }));
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -28,10 +25,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" badge={<Badge />} />);
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    expect(screen.queryByRole('icon_container')).not.toBeInTheDocument();
-    expect(screen.queryByRole('icon_resizer')).not.toBeInTheDocument();
+    screen.getByRole('button', { name: /Button/i });
     expect(screen.queryByText('badge')).not.toBeInTheDocument();
   });
 
@@ -45,10 +39,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    screen.getByRole('button', { name: /Button/i });
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(1);
@@ -76,10 +67,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" Icon={Icon} badge={<Badge />} disabled />);
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    screen.getByRole('button', { name: /Button/i });
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(1);
@@ -107,12 +95,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
 
-    fireEvent.mouseEnter(screen.getByRole('button'));
-
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    fireEvent.mouseEnter(screen.getByRole('button', { name: /Button/i }));
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(2);
@@ -153,10 +136,7 @@ describe('<Button />', () => {
 
     render(<Button label="Button" Icon={Icon} badge={<Badge />} reversed />);
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    screen.getByRole('button', { name: /Button/i });
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(1);
@@ -187,10 +167,7 @@ describe('<Button />', () => {
       <Button label="Button" Icon={Icon} badge={<Badge />} disabled reversed />,
     );
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    screen.getByRole('button', { name: /Button/i });
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(1);
@@ -221,10 +198,7 @@ describe('<Button />', () => {
 
     fireEvent.mouseEnter(screen.getByRole('button'));
 
-    screen.getByRole('button');
-    screen.getByRole('button_title');
-    screen.getByRole('icon_container');
-    screen.getByRole('icon_resizer');
+    screen.getByRole('button', { name: /Button/i });
 
     screen.getByText('icon');
     expect(Icon).toHaveBeenCalledTimes(2);
