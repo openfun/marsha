@@ -27,6 +27,7 @@ describe('<LiveVideoTabPanel /> titles', () => {
         wrapInIntlProvider(<LiveVideoTabPanel item={item} selected={false} />),
       );
 
+      screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
 
       cleanup();
@@ -35,6 +36,7 @@ describe('<LiveVideoTabPanel /> titles', () => {
         wrapInIntlProvider(<LiveVideoTabPanel item={item} selected={true} />),
       );
 
+      screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
     }
   });
@@ -48,16 +50,15 @@ describe('<LiveVideoTabPanel /> styles', () => {
       ),
     );
 
-    const button = screen.getByRole('tab');
+    const button = screen.getByRole('tab', { name: 'application' });
 
     expect(button).toHaveStyle('background-color: rgb(255, 255, 255);');
     expect(button).toHaveStyle('flex: 1;');
     expect(button).toHaveStyle('box-shadow: inset 0 -1px #81ade6;');
 
-    const text = screen.getByRole('tab_title');
+    const text = screen.getByText('application');
 
     expect(text).toHaveStyle('color: rgb(129, 173, 230);');
-    expect(text).toHaveStyle('font-family: Roboto-Bold;');
     expect(text).toHaveStyle('font-size: 10px;');
     expect(text).toHaveStyle('font-weight: bold;');
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
@@ -74,16 +75,15 @@ describe('<LiveVideoTabPanel /> styles', () => {
       ),
     );
 
-    const button = screen.getByRole('tab');
+    const button = screen.getByRole('tab', { name: 'application' });
 
     expect(button).toHaveStyle('background-color: rgb(255, 255, 255);');
     expect(button).toHaveStyle('flex: 1;');
     expect(button).toHaveStyle('box-shadow: inset 0 -2px #055fd2;');
 
-    const text = screen.getByRole('tab_title');
+    const text = screen.getByText('application');
 
     expect(text).toHaveStyle('color: rgb(5, 95, 210)');
-    expect(text).toHaveStyle('font-family: Roboto-Bold;');
     expect(text).toHaveStyle('font-size: 10px;');
     expect(text).toHaveStyle('font-weight: bold;');
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
