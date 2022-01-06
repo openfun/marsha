@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tab, Text } from 'grommet';
-import { defineMessages, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { LivePanelItem } from 'data/stores/useLivePanelState';
@@ -56,7 +56,6 @@ const StyledTab = styled(Tab)`
 `;
 
 const StyledText = styled(Text)`
-  font-family: Roboto-Bold;
   font-size: 10px;
   font-weight: bold;
   letter-spacing: -0.23px;
@@ -91,13 +90,11 @@ export const LiveVideoTabPanel = ({
   item,
   selected,
 }: LiveVideoTabPanelProps) => {
-  const intl = useIntl();
-
   return (
     <StyledTab
       title={
-        <StyledText role="tab_title">
-          {intl.formatMessage(messages[item])}
+        <StyledText>
+          <FormattedMessage {...messages[item]} />
         </StyledText>
       }
       plain
