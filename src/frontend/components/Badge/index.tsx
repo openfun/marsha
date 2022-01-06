@@ -23,7 +23,7 @@ interface BadgeProps {
 
 export const Badge = ({ value }: BadgeProps) => {
   return (
-    <StyledBadge role="badge_container">
+    <StyledBadge data-testid="badge_container">
       <Text size="0.6rem">{value}</Text>
     </StyledBadge>
   );
