@@ -11,7 +11,7 @@ describe('<StudentShowChatButton />', () => {
 
     screen.getByText('24');
 
-    const badge = screen.getByRole('badge_container');
+    const badge = screen.getByTestId('badge_container');
     expect(badge).toHaveStyle('background-color: #ffffff;');
     expect(badge).toHaveStyle('border: 1px solid #031963;');
     expect(badge).toHaveStyle('border-radius: 6px;');

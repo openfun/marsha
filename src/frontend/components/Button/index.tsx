@@ -139,8 +139,8 @@ export const Button = ({
         return (
           <Box align="center" fill>
             {Icon && (
-              <IconBox role="icon_container" ref={iconRef} size={size}>
-                <Box role="icon_resizer" margin="auto">
+              <IconBox ref={iconRef} size={size}>
+                <Box margin="auto">
                   <Icon containerStyle={containerStyle} iconColor={iconColor} />
                   {badge}
                 </Box>
@@ -151,7 +151,6 @@ export const Button = ({
               <TextBox size={size}>
                 <StyledText
                   color={normalizeColor('blue-active', theme)}
-                  role="button_title"
                   size={size}
                 >
                   {label}
