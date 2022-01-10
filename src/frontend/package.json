@@ -58,7 +58,7 @@
     "babel-plugin-react-intl": "8.2.25",
     "babel-preset-react": "7.0.0-beta.3",
     "css-loader": "6.5.1",
-    "faker": "6.6.6",
+    "faker": "5.5.3",
     "fetch-mock": "9.11.0",
     "jest": "27.4.7",
     "jest-image-snapshot": "4.5.1",
