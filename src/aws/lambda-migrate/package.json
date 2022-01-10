@@ -15,10 +15,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1038.0"
+    "aws-sdk": "2.1053.0"
   },
   "devDependencies": {
-    "jest": "27.3.1",
-    "prettier": "2.5.0"
+    "jest": "27.4.7",
+    "prettier": "2.5.1"
   }
 }
