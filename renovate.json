@@ -22,14 +22,14 @@
       ]
     },
     {
-      "enabled": false,
-      "groupName": "ignored python dependencies",
+      "groupName": "allowed django versions",
       "matchManagers": [
         "setup-cfg"
       ],
       "matchPackageNames": [
         "django"
-      ]
+      ],
+      "allowedVersions": "<4"
     }
   ]
 }
