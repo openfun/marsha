@@ -4,7 +4,7 @@ import SVGIcon, { SvgProps } from '.';
 
 export const AppsSVG = (svgProps: SvgProps) => {
   return (
-    <SVGIcon viewBox={'0 0 54 54'} {...svgProps}>
+    <SVGIcon viewBox={{ x: 0, y: 0, width: 54, height: 54 }} {...svgProps}>
       <g fillRule="evenodd" stroke="none" strokeWidth="1">
         <g transform="translate(2.5 2.5)">
           <path

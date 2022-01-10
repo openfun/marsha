@@ -125,7 +125,7 @@ export const InputDisplayNameOverlay = ({
               height: '20px',
               width: '20px',
             }}
-            iconColor={'#031963'}
+            iconColor="#031963"
           />
         </Box>
       </Box>

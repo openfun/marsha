@@ -3,7 +3,14 @@ import React from 'react';
 
 import { Button } from '.';
 
+const Icon = jest.fn(() => <span>icon</span>);
+const Badge = () => <span>badge</span>;
+
 describe('<Button />', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the Button component with its title only', () => {
     render(<Button label="Button" />);
 
@@ -21,8 +28,6 @@ describe('<Button />', () => {
   });
 
   it('does not render the badge if there is no Icon set', () => {
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" badge={<Badge />} />);
 
     screen.getByRole('button', { name: /Button/i });
@@ -30,13 +35,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with default style', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
 
     screen.getByRole('button', { name: /Button/i });
@@ -45,11 +43,9 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: 'none',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#055fd2',
+        focusColor: 'none',
       },
       {},
     );
@@ -58,13 +54,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with default style disabled', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" Icon={Icon} badge={<Badge />} disabled />);
 
     screen.getByRole('button', { name: /Button/i });
@@ -73,11 +62,9 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: 'none',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#81ade6',
+        focusColor: 'none',
       },
       {},
     );
@@ -86,13 +73,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with default style hovered', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
 
     fireEvent.mouseEnter(screen.getByRole('button', { name: /Button/i }));
@@ -102,23 +82,18 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenNthCalledWith(
       1,
       {
-        containerStyle: {
-          background: 'none',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#055fd2',
+        focusColor: 'none',
       },
       {},
     );
     expect(Icon).toHaveBeenNthCalledWith(
       2,
       {
-        containerStyle: {
-          background: '#031963',
-          borderRadius: '6px',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#ffffff',
+        focusColor: '#031963',
       },
       {},
     );
@@ -127,13 +102,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with reversed style', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" Icon={Icon} badge={<Badge />} reversed />);
 
     screen.getByRole('button', { name: /Button/i });
@@ -142,12 +110,9 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: '#031963',
-          borderRadius: '6px',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#ffffff',
+        focusColor: '#031963',
       },
       {},
     );
@@ -156,13 +121,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with reversed style disabled', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(
       <Button label="Button" Icon={Icon} badge={<Badge />} disabled reversed />,
     );
@@ -173,12 +131,9 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: '#81ade6',
-          borderRadius: '6px',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#ffffff',
+        focusColor: '#81ade6',
       },
       {},
     );
@@ -187,13 +142,6 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with reversed style hovered', () => {
-    const Icon = jest.fn(
-      ({}: { containerStyle?: React.CSSProperties; iconColor: string }) => (
-        <span>icon</span>
-      ),
-    );
-    const Badge = () => <span>badge</span>;
-
     render(<Button label="Button" Icon={Icon} badge={<Badge />} reversed />);
 
     fireEvent.mouseEnter(screen.getByRole('button'));
@@ -205,23 +153,18 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenNthCalledWith(
       1,
       {
-        containerStyle: {
-          background: '#031963',
-          borderRadius: '6px',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#ffffff',
+        focusColor: '#031963',
       },
       {},
     );
     expect(Icon).toHaveBeenNthCalledWith(
       2,
       {
-        containerStyle: {
-          background: 'none',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#055fd2',
+        focusColor: 'none',
       },
       {},
     );

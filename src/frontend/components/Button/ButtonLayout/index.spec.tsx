@@ -94,11 +94,9 @@ describe('<ButtonLayout />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: 'none',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#0a67de',
+        focusColor: 'none',
       },
       {},
     );
@@ -126,12 +124,9 @@ describe('<ButtonLayout />', () => {
     expect(Icon).toHaveBeenCalledTimes(1);
     expect(Icon).toHaveBeenCalledWith(
       {
-        containerStyle: {
-          background: '#031963',
-          borderRadius: '6px',
-          width: '0px',
-        },
+        height: '100%',
         iconColor: '#ffffff',
+        focusColor: '#031963',
       },
       {},
     );
