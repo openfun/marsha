@@ -243,13 +243,9 @@ class VideoSerializer(VideoBaseSerializer):
         Dictionnary
             A dictionary containing all info needed to manage a connection to a xmpp server.
         """
-        user_id = self.context.get("user", {}).get("id") or self.context.get(
-            "session_id"
-        )
-        if settings.LIVE_CHAT_ENABLED and user_id and obj.live_state is not None:
+        if settings.LIVE_CHAT_ENABLED and obj.live_state is not None:
             token = xmpp_utils.generate_jwt(
                 str(obj.id),
-                user_id,
                 "owner" if self.context.get("is_admin") else "member",
                 timezone.now() + timedelta(days=1),
             )

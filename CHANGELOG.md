@@ -33,6 +33,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Converse.js UI is not used anymore, react components are used instead
 - Add anonymous_id parameter to register a user to a scheduled webinar
 
+### Removed
+
+- Remove user id in prosody JWT token
+
 ## [3.27.0] - 2021-12-07
 
 ### Added
