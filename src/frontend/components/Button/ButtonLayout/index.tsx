@@ -1,32 +1,29 @@
-import React, { useRef, useState, useLayoutEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Box, Text, ResponsiveContext } from 'grommet';
-import ResizeObserver from 'resize-observer-polyfill';
 import styled from 'styled-components';
 
 import { SvgProps } from 'components/SVGIcons';
-import { Nullable } from 'utils/types';
 
 interface ResponsiveProps {
   screenSize: string;
 }
 
 const IconBox = styled(Box)`
-  display: flex;
-  height: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '60%' : '80%'};
+  align-items: center;
+  display: block;
+  height: 100%;
+  justify-content: center;
   margin: ${({ screenSize }: ResponsiveProps) =>
     screenSize === 'small' ? '0 6px' : '0 8px'};
-  margin-bottom: 6px;
   min-height: 0;
   position: relative;
+  text-align: center;
 `;
 
 const TextBox = styled(Box)`
   display: flex;
-  height: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '40%' : '20%'};
+  margin-top: 6px;
   text-align: center;
-  width: 100%;
 `;
 
 const StyledText = styled(Text)`
@@ -63,63 +60,29 @@ export const ButtonLayout = ({
   textColor,
 }: ButtonLayoutProps) => {
   const size = useContext(ResponsiveContext);
-  const iconRef = useRef<Nullable<HTMLDivElement>>(null);
-  const [iconWidth, setIconWidth] = useState(0);
-
-  useLayoutEffect(() => {
-    if (iconRef.current === null) {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      if (entries.length !== 1) {
-        return;
-      }
-      setIconWidth(
-        Math.min(entries[0].contentRect.height, entries[0].contentRect.width),
-      );
-    });
-    resizeObserver.observe(iconRef.current);
-    return () => {
-      if (iconRef.current === null) {
-        return;
-      }
-
-      resizeObserver.unobserve(iconRef.current);
-    };
-  }, []);
 
   let iconColor;
-  let containerStyle: React.CSSProperties;
+  let rectColor;
 
   if (!reversed) {
     iconColor = tintColor;
-    containerStyle = {
-      background: 'none',
-      width: `${iconWidth}px`,
-    };
+    rectColor = 'none';
   } else {
     iconColor = reversedColor;
-    containerStyle = {
-      background: tintColor,
-      borderRadius: '6px',
-      width: `${iconWidth}px`,
-    };
+    rectColor = tintColor;
   }
 
   return (
     <Box align="center" fill>
       {Icon && (
-        <IconBox ref={iconRef} screenSize={size} width="100%">
-          <Box margin="auto">
-            <Icon containerStyle={containerStyle} iconColor={iconColor} />
-            {badge}
-          </Box>
+        <IconBox screenSize={size}>
+          <Icon iconColor={iconColor} focusColor={rectColor} height="100%" />
+          {badge}
         </IconBox>
       )}
 
       {label && (
-        <TextBox screenSize={size}>
+        <TextBox>
           <StyledText color={textColor} screenSize={size} size=".8rem">
             {label}
           </StyledText>

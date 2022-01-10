@@ -5,28 +5,24 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentShowAppsButton } from '.';
-
-jest.mock('components/SVGIcons/AppsSVG', () => ({
-  AppsSVG: () => <span>app icon</span>,
-}));
 
 describe('<StudentShowAppsButton />', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('renders the student show apps button', () => {
+  it('renders the student show apps button', async () => {
     useLivePanelState.setState({
       setPanelVisibility: jest.fn(),
     });
 
-    render(wrapInIntlProvider(<StudentShowAppsButton />));
+    await renderIconSnapshot(<StudentShowAppsButton />);
 
     screen.getByRole('button', { name: 'Show apps' });
-    screen.getByText('app icon');
   });
 
   it('opens the panel and select app item', () => {

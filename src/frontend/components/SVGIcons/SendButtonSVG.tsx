@@ -4,7 +4,7 @@ import SVGIcon, { SvgProps } from '.';
 
 export const SendButtonSVG = (svgProps: SvgProps) => {
   return (
-    <SVGIcon viewBox="0 0 175 160" {...svgProps}>
+    <SVGIcon viewBox={{ x: 0, y: 0, width: 174, height: 160 }} {...svgProps}>
       <path
         d="
               M 0 130

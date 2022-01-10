@@ -15,9 +15,6 @@ jest.mock('utils/window', () => ({
     participantLeaves: jest.fn(),
   },
 }));
-jest.mock('components/SVGIcons/JoinDiscussionSVG', () => ({
-  JoinDiscussionSVG: () => <span>leave discussion icon</span>,
-}));
 
 describe('<StudentLeaveDiscussionButton />', () => {
   afterEach(() => {
@@ -28,7 +25,6 @@ describe('<StudentLeaveDiscussionButton />', () => {
     render(wrapInIntlProvider(wrapInRouter(<StudentLeaveDiscussionButton />)));
 
     screen.getByRole('button', { name: 'Leave discussion' });
-    screen.getByText('leave discussion icon');
   });
 
   it('clicks on the leave button and is redirected to the player', () => {
@@ -53,7 +49,6 @@ describe('<StudentLeaveDiscussionButton />', () => {
     const leaveButton = screen.getByRole('button', {
       name: 'Leave discussion',
     });
-    screen.getByText('leave discussion icon');
 
     fireEvent.click(leaveButton);
 
