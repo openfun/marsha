@@ -90,7 +90,7 @@ WORKDIR /app/src/backend
 ENTRYPOINT [ "/app/bin/entrypoint" ]
 
 # The default command runs gunicorn WSGI server
-CMD gunicorn -c /usr/local/etc/gunicorn/marsha.py marsha.wsgi:application
+CMD ["gunicorn", "-c", "/usr/local/etc/gunicorn/marsha.py", "marsha.asgi:application"]
 
 # Un-privileged user running the application
 USER 10000
