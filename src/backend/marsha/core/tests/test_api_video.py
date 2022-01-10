@@ -4678,6 +4678,10 @@ class VideoAPITest(TestCase):
         )
 
     @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_video_instructor_end_paused_live(self):
         """An instructor can end a live in paused state"""
         video = factories.VideoFactory(
@@ -4717,7 +4721,10 @@ class VideoAPITest(TestCase):
             api.video, "create_mediapackage_harvest_job"
         ) as mock_create_mediapackage_harvest_job, mock.patch.object(
             api.video, "close_room"
-        ) as mock_close_room:
+        ) as mock_close_room, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
                 f"/api/videos/{video.id}/end-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -4783,7 +4790,12 @@ class VideoAPITest(TestCase):
                     },
                 },
                 "live_type": JITSI,
-                "xmpp": None,
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                    "websocket_url": None,
+                },
             },
         )
 

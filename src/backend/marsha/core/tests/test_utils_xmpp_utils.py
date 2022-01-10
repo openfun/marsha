@@ -16,13 +16,12 @@ class XmppUtilsTestCase(TestCase):
     def test_generate_jwt(self):
         """Test generating a JWT token."""
         with mock.patch.object(xmpp_utils.jwt, "encode") as jwt_encode_mock:
-            xmpp_utils.generate_jwt("room_name", "user_id", "affiliation", 1617889150)
+            xmpp_utils.generate_jwt("room_name", "affiliation", 1617889150)
 
             jwt_encode_mock.assert_called_once_with(
-                {
+                payload={
                     "context": {
                         "user": {
-                            "id": "user_id",
                             "affiliation": "affiliation",
                         },
                     },
@@ -32,7 +31,7 @@ class XmppUtilsTestCase(TestCase):
                     "room": "room_name",
                     "exp": 1617889150,
                 },
-                "thisIsASecret",
+                key="thisIsASecret",
             )
 
     def test_add_jwt_token_to_url(self):
