@@ -16,10 +16,6 @@ jest.mock('utils/window', () => ({
   },
 }));
 
-jest.mock('components/SVGIcons/JoinDiscussionSVG', () => ({
-  JoinDiscussionSVG: () => <span>join discussion icon</span>,
-}));
-
 const mockAskParticipantToJoin =
   converse.askParticipantToJoin as jest.MockedFunction<
     typeof converse.askParticipantToJoin
@@ -45,11 +41,10 @@ describe('<StudentJoinDiscussionButton />', () => {
     document.body.appendChild(document.createElement('div'));
   });
 
-  it('renders the ask button', () => {
+  it('renders the ask button', async () => {
     render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
 
     screen.getByRole('button', { name: 'Send request to join the discussion' });
-    screen.getByText('join discussion icon');
     expect(
       screen.queryByRole('textbox', { name: 'username' }),
     ).not.toBeInTheDocument();
@@ -61,7 +56,6 @@ describe('<StudentJoinDiscussionButton />', () => {
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
     });
-    screen.getByText('join discussion icon');
 
     expect(useParticipantWorkflow.getState().asked).toEqual(false);
     fireEvent.click(askButton);
@@ -82,7 +76,6 @@ describe('<StudentJoinDiscussionButton />', () => {
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
     });
-    screen.getByText('join discussion icon');
     expect(
       screen.queryByRole('textbox', { name: 'username' }),
     ).not.toBeInTheDocument();
@@ -113,7 +106,6 @@ describe('<StudentJoinDiscussionButton />', () => {
     screen.getByRole('button', {
       name: 'Send request to join the discussion',
     });
-    screen.getByText('join discussion icon');
   });
 
   it('displays the username input text and clicks on the confirm button', async () => {
@@ -125,7 +117,6 @@ describe('<StudentJoinDiscussionButton />', () => {
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
     });
-    screen.getByText('join discussion icon');
     expect(
       screen.queryByRole('textbox', { name: 'username' }),
     ).not.toBeInTheDocument();

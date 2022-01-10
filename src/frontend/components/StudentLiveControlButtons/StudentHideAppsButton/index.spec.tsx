@@ -2,28 +2,24 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { useLivePanelState } from 'data/stores/useLivePanelState';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentHideAppsButton } from '.';
-
-jest.mock('components/SVGIcons/AppsSVG', () => ({
-  AppsSVG: () => <span>app icon</span>,
-}));
 
 describe('<StudentHideAppsButton />', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('renders the hide apps button', () => {
+  it('renders the hide apps button', async () => {
     useLivePanelState.setState({
       setPanelVisibility: jest.fn(),
     });
 
-    render(wrapInIntlProvider(<StudentHideAppsButton />));
+    await renderIconSnapshot(<StudentHideAppsButton />);
 
     screen.getByRole('button', { name: 'Hide apps' });
-    screen.getByText('app icon');
   });
 
   it('closes the panel and select app item', () => {

@@ -3,14 +3,10 @@ import React from 'react';
 import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { ExitCrossSVG } from './ExitCrossSVG';
 
-it('renders ExitCrossSVG correctly', async () => {
-  await renderIconSnapshot(
-    <ExitCrossSVG
-      containerStyle={{
-        height: '20px',
-        width: '20px',
-      }}
-      iconColor="#031963"
-    />,
-  );
+describe('<ExitCrossSVG />', () => {
+  it('renders ExitCrossSVG correctly', async () => {
+    await renderIconSnapshot(
+      <ExitCrossSVG height={20} width={20} iconColor="#031963" />,
+    );
+  });
 });

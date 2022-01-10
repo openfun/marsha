@@ -5,28 +5,24 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentShowChatButton } from '.';
-
-jest.mock('components/SVGIcons/ChatSVG', () => ({
-  ChatSVG: () => <span>chat icon</span>,
-}));
 
 describe('<StudentShowChatButton />', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('renders the show chat button', () => {
+  it('renders the show chat button', async () => {
     useLivePanelState.setState({
       setPanelVisibility: jest.fn(),
     });
 
-    render(wrapInIntlProvider(<StudentShowChatButton />));
+    await renderIconSnapshot(<StudentShowChatButton />);
 
     screen.getByRole('button', { name: 'Show chat' });
-    screen.getByText('chat icon');
   });
 
   it('opens the panel on click and display the chat', () => {
