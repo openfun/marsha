@@ -181,16 +181,13 @@ def close_room(room_name):
     )
 
 
-def generate_jwt(room_name, user_id, affiliation, expires_at):
+def generate_jwt(room_name, affiliation, expires_at):
     """Generate the JWT token used by xmpp server.
 
     Parameters
     ----------
     room_name: string
         The name of the room the token is associated with
-
-    user_id: string
-        User's id who try to access to the XMPP conference
 
     affiliations: string
         User affiliation (owner or member)
@@ -199,10 +196,9 @@ def generate_jwt(room_name, user_id, affiliation, expires_at):
         Expiration time in timestamp format
     """
     return jwt.encode(
-        {
+        payload={
             "context": {
                 "user": {
-                    "id": user_id,
                     "affiliation": affiliation,
                 },
             },
@@ -212,7 +208,7 @@ def generate_jwt(room_name, user_id, affiliation, expires_at):
             "room": room_name,
             "exp": expires_at,
         },
-        settings.XMPP_JWT_SHARED_SECRET,
+        key=settings.XMPP_JWT_SHARED_SECRET,
     )
 
 
