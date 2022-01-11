@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "html-to-text": "8.1.0",
+    "mjml": "4.11.0"
+  },
+  "scripts": {
+    "build-mjml-to-html": "./bin/mjml-to-html",
+    "build-mails-html-to-plain-text": "./bin/html-to-plain-text",
+    "build-mails": "yarn build-mjml-to-html; yarn build-mails-html-to-plain-text;"
+  },
+  "repository": "git@github.com:openfun/marsha.git",
+  "author": "France Université Numérique",
+  "license": "MIT"
+}

@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - New video consumer able to send serialized video to all clients connected
   to the websocket when a video is updated through the API
 - Add email settings and configure `mailcatcher` in docker-compose stack
+- Transform `mjml` files (email's template files) to html and plaintext 
 
 ### Changed
 

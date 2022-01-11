@@ -392,6 +392,33 @@ jobs:
             - ./node_modules
           key: v5-front-dependencies-{{ checksum "yarn.lock" }}
 
+# ---- mail jobs ----
+  build-mails:
+    docker:
+      - image: circleci/node:14
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    working_directory: ~/marsha/src/mail
+    steps:
+      - checkout:
+          path: ~/marsha
+      - restore_cache:
+          keys:
+            - v5-mail-dependencies-{{ checksum "yarn.lock" }}
+      # If the yarn.lock file is not up-to-date with the package.json file,
+      # using the --frozen-lockfile should fail.
+      - run:
+          name: Install node dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Build mails
+          command: yarn build-mails
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v5-mail-dependencies-{{ checksum "yarn.lock" }}
+      
   lint-front:
     docker:
       - image: circleci/node:14
@@ -1104,6 +1131,12 @@ workflows:
       - test-storybook-build:
           requires:
             - build-front
+          filters:
+            tags:
+              only: /.*/
+      
+      # Build mails
+      - build-mails:
           filters:
             tags:
               only: /.*/
