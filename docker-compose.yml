@@ -85,6 +85,12 @@ services:
       - ".:/app"
     working_dir: /app/src/frontend
 
+  mail-generator:
+    image: node:14
+    volumes:
+      - ".:/app"
+    working_dir: /app/src/mail
+
   dockerize:
     image: jwilder/dockerize
 

@@ -28,6 +28,19 @@ RUN yarn install --frozen-lockfile && \
     yarn sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=node_modules  && \
     yarn build --mode=production --output-path /app/marsha/static/js/build/
 
+# ---- mails ----
+FROM node:14 as mail-builder
+RUN mkdir -p /app/backend/marsha/core/templates/core/mail/html/ && \
+    mkdir -p /app/backend/marsha/core/templates/core/mail/text/ && \
+    mkdir -p /app/mail
+
+COPY ./src/mail /app/mail
+
+WORKDIR /app/mail
+
+RUN yarn install --frozen-lockfile && \
+    yarn build-mails
+
 # ---- static link collector ----
 FROM base as link-collector
 ARG MARSHA_STATIC_ROOT=/data/static
@@ -45,6 +58,7 @@ COPY --from=back-builder /install /usr/local
 COPY . /app/
 # Copy front-end dependencies
 COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
+COPY --from=mail-builder /app/backend/marsha/core/templates/core/mail /app/src/backend/marsha/core/templates/core/mail
 
 WORKDIR /app/src/backend
 

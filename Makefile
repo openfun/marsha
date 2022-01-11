@@ -36,6 +36,7 @@ COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
 COMPOSE_RUN_LAMBDA   = $(COMPOSE_RUN) --entrypoint "" # disable lambda entrypoint to run command in container
+COMPOSE_RUN_MAIL  	 = $(COMPOSE_RUN) mail-generator yarn 
 COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 YARN                 = $(COMPOSE_RUN_NODE) yarn
 
@@ -55,6 +56,8 @@ bootstrap: \
 	run \
 	migrate \
 	i18n-compile-back \
+	install-mails \
+	build-mails \
 	prosody-admin
 .PHONY: bootstrap
 
@@ -394,6 +397,23 @@ i18n-download-and-compile: \
 	crowdin-download \
 	i18n-compile
 .PHONY: i18n-download-and-compile
+
+# -- Mail generator
+install-mails: ## mail-generator yarn install 
+	@$(COMPOSE_RUN_MAIL) install
+.PHONY: install-mails 	
+
+build-mails: ## Convert mjml files to html and text
+	@$(COMPOSE_RUN_MAIL) build-mails
+.PHONY: build-mails 
+
+build-mjml-to-html:	## Convert mjml files to html and text
+	@$(COMPOSE_RUN_MAIL) build-mjml-to-html
+.PHONY: build-mjml-to-html 
+
+build-mails-html-to-plain-text: ## Convert html files to text
+	@$(COMPOSE_RUN_MAIL) build-mails-html-to-plain-text
+.PHONY: build-mails-html-to-plain-text
 
 # -- Misc
 
