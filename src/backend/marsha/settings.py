@@ -344,6 +344,14 @@ class Base(Configuration):
     CORS_ALLOW_METHODS = values.ListValue(["POST", "OPTIONS"])
     CORS_ALLOW_HEADERS = values.ListValue(list(default_headers))
 
+    # Mail
+    EMAIL_BACKEND = values.Value("django.core.mail.backends.smtp.EmailBackend")
+    EMAIL_HOST = values.Value(None)
+    EMAIL_HOST_USER = values.Value(None)
+    EMAIL_HOST_PASSWORD = values.Value(None)
+    EMAIL_PORT = values.PositiveIntegerValue(None)
+    EMAIL_USE_TLS = values.BooleanValue(False)
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
@@ -464,6 +472,10 @@ class Development(Base):
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+
+    # Mail
+    EMAIL_HOST = values.Value("mailcatcher")
+    EMAIL_PORT = values.PositiveIntegerValue(1025)
 
     # Logging
     LOGGING = values.DictValue(

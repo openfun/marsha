@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Manage websocket using django channels
 - New video consumer able to send serialized video to all clients connected
   to the websocket when a video is updated through the API
+- Add email settings and configure `mailcatcher` in docker-compose stack
 
 ### Changed
 
