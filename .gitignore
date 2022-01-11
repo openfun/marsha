@@ -153,3 +153,4 @@ transmuxed_video
 
 # ngrok
 .ngrok_url
+src/backend/marsha/core/templates/core/mail/
