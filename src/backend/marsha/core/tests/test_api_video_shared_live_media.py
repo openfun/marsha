@@ -284,6 +284,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "active_stamp": None,
                     "is_public": False,
                     "is_ready_to_show": True,
+                    "is_recording": False,
                     "is_scheduled": False,
                     "show_download": True,
                     "starting_at": None,
@@ -306,6 +307,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "title": "foo bar",
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
+                    "recording_time": 0,
                     "shared_live_medias": [
                         {
                             "active_stamp": "1638230400",
@@ -648,6 +650,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "active_stamp": None,
                     "is_public": False,
                     "is_ready_to_show": True,
+                    "is_recording": False,
                     "is_scheduled": False,
                     "show_download": True,
                     "starting_at": None,
@@ -670,6 +673,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "title": "foo bar",
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
+                    "recording_time": 0,
                     "shared_live_medias": [
                         {
                             "active_stamp": None,
@@ -1040,6 +1044,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "active_stamp": None,
                     "is_public": False,
                     "is_ready_to_show": True,
+                    "is_recording": False,
                     "is_scheduled": False,
                     "show_download": True,
                     "starting_at": None,
@@ -1062,6 +1067,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "title": "foo bar",
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
+                    "recording_time": 0,
                     "shared_live_medias": [
                         {
                             "active_stamp": None,
