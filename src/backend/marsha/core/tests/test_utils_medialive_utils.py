@@ -4,6 +4,7 @@ from unittest import mock
 from django.test import TestCase, override_settings
 
 from botocore.stub import Stubber
+import responses
 
 from ..factories import VideoFactory
 from ..utils import medialive_utils
@@ -724,9 +725,10 @@ class MediaLiveUtilsTestCase(TestCase):
         )
 
     @override_settings(AWS_MEDIAPACKAGE_HARVEST_JOB_ARN="mediapackage:role:arn")
+    @responses.activate
     def test_create_mediapackage_harvest_job(self):
         """Should create a mediapackage harvest job."""
-        VideoFactory(
+        video = VideoFactory(
             id="e19f1058-0bde-4f29-a5d8-e0b4ddf92b74",
             live_info={
                 "medialive": {
@@ -735,19 +737,29 @@ class MediaLiveUtilsTestCase(TestCase):
                 },
                 "mediapackage": {
                     "endpoints": {
-                        "hls": {"id": "mediapackage_endpoint1"},
+                        "hls": {
+                            "id": "mediapackage_endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
                     },
                     "channel": {
                         "id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880"
                     },
                 },
                 "started_at": "1569309880",
-                "ended_at": "1569310880",
+                "stopped_at": "1569310880",
             },
         )
+        responses.add(
+            responses.GET,
+            "https://channel_endpoint1/live.m3u8",
+            status=200,
+        )
 
-        with Stubber(medialive_utils.mediapackage_client) as mediapackage_stubber:
-            mediapackage_stubber.add_response(
+        with Stubber(
+            medialive_utils.mediapackage_client
+        ) as mediapackage_client_stubber:
+            mediapackage_client_stubber.add_response(
                 "create_harvest_job",
                 expected_params={
                     "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880",
@@ -762,6 +774,8 @@ class MediaLiveUtilsTestCase(TestCase):
                 },
                 service_response={},
             )
+            medialive_utils.create_mediapackage_harvest_job(video)
+            mediapackage_client_stubber.assert_no_pending_responses()
 
     def test_delete_aws_elemental_stack(self):
         """Should delete all resources used during a live."""
