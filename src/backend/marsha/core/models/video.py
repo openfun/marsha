@@ -21,6 +21,10 @@ from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
 
 
+class VideoRecordingError(Exception):
+    """Exception for video recording errors."""
+
+
 class Video(BaseFile):
     """Model representing a video, created by an author."""
 
@@ -71,6 +75,12 @@ class Video(BaseFile):
         default=list,
         verbose_name=_("live participants"),
         help_text=_("Current participants list for the live."),
+    )
+    recording_slices = models.JSONField(
+        blank=True,
+        default=list,
+        verbose_name=_("recording slices"),
+        help_text=_("Recording slices of the video."),
     )
     starting_at = models.DateTimeField(
         blank=True,
@@ -261,6 +271,63 @@ class Video(BaseFile):
         """Return the mediapackage enspoints info."""
         return self.live_info.get("mediapackage").get("endpoints")
 
+    @property
+    def is_recording(self):
+        """Whether the video is currently recording."""
+        if not self.recording_slices:
+            return False
+        last_recording_slice = self.recording_slices[-1]
+        return (
+            last_recording_slice.get("start")
+            and last_recording_slice.get("stop") is None
+        )
+
+    @property
+    def recording_time(self):
+        """Return the total duration of all recording slices in seconds."""
+        if not self.recording_slices:
+            return 0
+        recording_time = sum(
+            (int(recording_slice.get("stop")) - int(recording_slice.get("start")))
+            for recording_slice in self.recording_slices
+            if recording_slice.get("stop") is not None
+        )
+        if self.is_recording:
+            recording_time += int(to_timestamp(timezone.now())) - int(
+                self.recording_slices[-1].get("start")
+            )
+        return recording_time
+
+    def _start_recording_slice(self, start):
+        """Start a new recording slice."""
+        slices = self.recording_slices
+        slices.append({"start": start})
+        self.recording_slices = slices
+        self.save()
+
+    def _stop_recording_slice(self, stop):
+        """Stop a recording slice"""
+        slices = self.recording_slices
+        slices[-1].update({"stop": stop})
+        self.recording_slices = slices
+        self.save()
+
+    def start_recording(self):
+        """Start recording the video."""
+        if not self.allow_recording:
+            raise VideoRecordingError("Recording is not allowed for this video.")
+
+        if self.is_recording:
+            raise VideoRecordingError("Video recording is already started.")
+
+        self._start_recording_slice(start=to_timestamp(timezone.now()))
+
+    def stop_recording(self):
+        """Stop recording the video."""
+        if not self.is_recording:
+            raise VideoRecordingError("Video recording is not started.")
+
+        self._stop_recording_slice(stop=to_timestamp(timezone.now()))
 
 class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""

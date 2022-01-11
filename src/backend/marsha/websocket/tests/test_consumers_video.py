@@ -301,6 +301,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "id": str(video.id),
                     "is_public": False,
                     "is_ready_to_show": True,
+                    "is_recording": False,
                     "is_scheduled": False,
                     "timed_text_tracks": [],
                     "thumbnail": None,
@@ -321,6 +322,7 @@ class VideoConsumerTest(TransactionTestCase):
                         "title": video.playlist.title,
                         "lti_id": video.playlist.lti_id,
                     },
+                    "recording_time": 0,
                     "live_info": {},
                     "live_state": RUNNING,
                     "live_type": JITSI,
@@ -427,6 +429,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "id": str(video.id),
                     "is_public": False,
                     "is_ready_to_show": True,
+                    "is_recording": False,
                     "is_scheduled": False,
                     "timed_text_tracks": [],
                     "thumbnail": None,
@@ -447,6 +450,7 @@ class VideoConsumerTest(TransactionTestCase):
                         "title": video.playlist.title,
                         "lti_id": video.playlist.lti_id,
                     },
+                    "recording_time": 0,
                     "live_info": {
                         "jitsi": {
                             "config_overwrite": {},

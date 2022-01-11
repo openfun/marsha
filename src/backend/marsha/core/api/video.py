@@ -17,7 +17,7 @@ from marsha.core.defaults import JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
-from ..models import LivePairing, SharedLiveMedia, Video
+from ..models import LivePairing, SharedLiveMedia, Video, VideoRecordingError
 from ..services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
@@ -803,4 +803,78 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(video)
         channel_layers_utils.dispatch_video_to_groups(video)
+        return Response(serializer.data)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="start-recording",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def start_recording(
+        self,
+        request,
+        pk=None,
+    ):
+        """Starts video recording.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+        try:
+            video.start_recording()
+        except VideoRecordingError as error:
+            return Response({"detail": str(error)}, status=400)
+        serializer = self.get_serializer(video)
+        return Response(serializer.data)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="stop-recording",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def stop_recording(
+        self,
+        request,
+        pk=None,
+    ):
+        """Stops video recording.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+        try:
+            video.stop_recording()
+        except VideoRecordingError as error:
+            return Response({"detail": str(error)}, status=400)
+        serializer = self.get_serializer(video)
         return Response(serializer.data)

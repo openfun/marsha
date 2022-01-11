@@ -20,6 +20,8 @@ from ..defaults import (
     STATE_CHOICES,
 )
 from ..factories import VideoFactory
+from ..models import VideoRecordingError
+from ..utils.time_utils import to_timestamp
 
 
 class VideoModelsTestCase(TestCase):
@@ -169,3 +171,172 @@ class VideoModelsTestCase(TestCase):
             self.assertFalse(video.is_scheduled)
             video.description = "modify something else than starting_at"
             video.save()
+
+    def test_models_video_start_recording_not_allowed(self):
+        """A video recording cannot be started if not allowed."""
+        video = VideoFactory(allow_recording=False)
+        with self.assertRaises(
+            VideoRecordingError, msg="Video recording is not allowed"
+        ):
+            video.start_recording()
+
+        self.assertEqual(video.recording_slices, [])
+
+    def test_models_video_start_recording_allowed_never_started(self):
+        """A video recording can be started if allowed and has never started."""
+        video = VideoFactory(allow_recording=True)
+        now = timezone.now()
+        with mock.patch.object(timezone, "now", return_value=now):
+            video.start_recording()
+
+        self.assertEqual(video.recording_slices, [{"start": to_timestamp(now)}])
+
+    def test_models_video_start_recording_allowed_not_already_started(self):
+        """A video recording can be started if allowed and not already started."""
+        now = timezone.now()
+        start = now - timedelta(minutes=20)
+        stop = now + timedelta(minutes=10)
+        video = VideoFactory(
+            allow_recording=True,
+            recording_slices=[
+                {"start": to_timestamp(start), "stop": to_timestamp(stop)}
+            ],
+        )
+        with mock.patch.object(timezone, "now", return_value=now):
+            video.start_recording()
+
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {"start": to_timestamp(start), "stop": to_timestamp(stop)},
+                {"start": to_timestamp(now)},
+            ],
+        )
+
+    def test_models_video_start_recording_allowed_already_started(self):
+        """A video recording cannot be started if allowed and already started."""
+        now = timezone.now()
+        video = VideoFactory(
+            allow_recording=True,
+            recording_slices=[{"start": to_timestamp(now)}],
+        )
+        with self.assertRaises(
+            VideoRecordingError, msg="Video recording is already started"
+        ):
+            video.start_recording()
+
+        self.assertEqual(video.recording_slices, [{"start": to_timestamp(now)}])
+
+    def test_models_video_stop_recording_never_started(self):
+        """A video recording cannot be ended if never started."""
+        video = VideoFactory()
+        with self.assertRaises(
+            VideoRecordingError, msg="Video recording is not started."
+        ):
+            video.stop_recording()
+
+    def test_models_video_stop_recording_not_already_started(self):
+        """A video recording cannot be ended if not already started."""
+        start = timezone.now() - timedelta(minutes=20)
+        stop = timezone.now() + timedelta(minutes=10)
+        video = VideoFactory(
+            recording_slices=[
+                {"start": to_timestamp(start), "stop": to_timestamp(stop)}
+            ],
+        )
+
+        with self.assertRaises(
+            VideoRecordingError, msg="Video recording is not started."
+        ):
+            video.stop_recording()
+
+    def test_models_video_stop_recording_already_started(self):
+        """A video recording can be ended if already started."""
+        start = timezone.now()
+        stop = start + timedelta(minutes=10)
+        video = VideoFactory(
+            recording_slices=[{"start": to_timestamp(start)}],
+        )
+
+        with mock.patch.object(timezone, "now", return_value=stop):
+            video.stop_recording()
+
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "start": to_timestamp(start),
+                    "stop": to_timestamp(stop),
+                }
+            ],
+        )
+
+    def test_models_video_stop_recording_already_started_existing_slices(self):
+        """Ending a video recording should conserve existing slices."""
+        existing_start = timezone.now() - timedelta(hours=1)
+        existing_stop = existing_start + timedelta(minutes=10)
+        start = timezone.now()
+        stop = start + timedelta(minutes=10)
+        video = VideoFactory(
+            recording_slices=[
+                {
+                    "start": to_timestamp(existing_start),
+                    "stop": to_timestamp(existing_stop),
+                },
+                {"start": to_timestamp(start)},
+            ],
+        )
+
+        with mock.patch.object(timezone, "now", return_value=stop):
+            video.stop_recording()
+
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "start": to_timestamp(existing_start),
+                    "stop": to_timestamp(existing_stop),
+                },
+                {"start": to_timestamp(start), "stop": to_timestamp(stop)},
+            ],
+        )
+
+    def test_models_video_recording_time_is_not_recording(self):
+        """It should return the total duration of all recording slices in seconds."""
+        start_1 = timezone.now() - timedelta(hours=1)
+        stop_1 = start_1 + timedelta(seconds=10)
+        start_2 = timezone.now()
+        stop_2 = start_2 + timedelta(seconds=10)
+        video = VideoFactory(
+            recording_slices=[
+                {
+                    "start": to_timestamp(start_1),
+                    "stop": to_timestamp(stop_1),
+                },
+                {
+                    "start": to_timestamp(start_2),
+                    "stop": to_timestamp(stop_2),
+                },
+            ],
+        )
+
+        self.assertEqual(video.recording_time, 20)
+
+    def test_models_video_recording_time_is_recording(self):
+        """It should add pending recording time to sliced ones."""
+        start_1 = timezone.now() - timedelta(hours=1)
+        stop_1 = start_1 + timedelta(seconds=10)
+        start_2 = timezone.now()
+        now = start_2 + timedelta(seconds=10)
+        video = VideoFactory(
+            recording_slices=[
+                {
+                    "start": to_timestamp(start_1),
+                    "stop": to_timestamp(stop_1),
+                },
+                {"start": to_timestamp(start_2)},
+            ],
+        )
+
+        with mock.patch.object(timezone, "now", return_value=now):
+            self.assertEqual(video.recording_time, 20)
