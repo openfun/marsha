@@ -40,6 +40,7 @@ services:
       - "base"
       - "db"
       - "redis"
+      - "mailcatcher"
     stdin_open: true
     tty: true
 
@@ -202,6 +203,11 @@ services:
       - "./src/.prettierrc:/var/task/.prettierrc"
     depends_on:
       - lambda_base
+
+  mailcatcher:
+    image: sj26/mailcatcher:latest
+    ports:
+      - "1080:1080"
 
   prosody-app:
     image: fundocker/prosody
