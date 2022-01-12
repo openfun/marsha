@@ -29,6 +29,7 @@ include env.d/development
 
 BOLD := \033[1m
 RESET := \033[0m
+GREEN := \033[1;32m
 
 # -- Docker
 COMPOSE              = docker-compose
@@ -43,7 +44,7 @@ YARN                 = $(COMPOSE_RUN_NODE) yarn
 # ==============================================================================
 # RULES
 
-default: help
+default: h
 
 # -- Project
 
@@ -423,8 +424,14 @@ env.d/development:
 env.d/lambda:
 	cp env.d/lambda.dist env.d/lambda
 
-help:  ## Show this help
+h: # short default help task
 	@echo "$(BOLD)Marsha Makefile$(RESET)"
 	@echo "Please use 'make $(BOLD)target$(RESET)' where $(BOLD)target$(RESET) is one of:"
-	@grep -h ':\s\+##' Makefile | column -tn -s# | awk -F ":" '{ print "  $(BOLD)" $$1 "$(RESET)" $$2 }'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(GREEN)%-50s$(RESET) %s\n", $$1, $$2}'
+.PHONY: h
+
+help:  ## Show a more readable help on multiple lines
+	@echo "$(BOLD)Marsha Makefile$(RESET)"
+	@echo "Please use 'make $(BOLD)target$(RESET)' where $(BOLD)target$(RESET) is one of:"
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(GREEN)%s$(RESET)\n    %s\n\n", $$1, $$2}'
 .PHONY: help
