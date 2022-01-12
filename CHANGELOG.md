@@ -16,7 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow CORS headers configuration
 - Extract SVG pages from PDF files for shared live media in lambda-convert
 - Add fields `is_registered`,`live_attendance`,`username` for liveRegistration
-- Add DRF endpoint to start attendance monitoring using liveRegistration model 
+- Add DRF endpoint to start attendance monitoring using liveRegistration model
 - Add a new chat, using react components and design complying with the mockup
 - Add anonymous_id and display_name in LiveRegistration model
 - Add new endpoint to set display_name
@@ -27,16 +27,17 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - New video consumer able to send serialized video to all clients connected
   to the websocket when a video is updated through the API
 - Add email settings and configure `mailcatcher` in docker-compose stack
-- Transform `mjml` files (email's template files) to html and plaintext 
+- Transform `mjml` files (email's template files) to html and plaintext
 - Add a participants tab, listing all users connected to the chat
 - Add an authentificatin pop-up in the chat
 - Add a default config file for the chat
+- Add 'joined' and 'left' labels in the chat for users arrivals and departures
 
 ### Changed
 
 - docker image use python 3.10
 - Rename lambda-encode to lambda-convert
-- Registrations of a scheduled video from LTI are now based on 
+- Registrations of a scheduled video from LTI are now based on
   `lti_user_id`, `consumer_site`, and `context_id`
 - Converse.js UI is not used anymore, react components are used instead
 - Add anonymous_id parameter to register a user to a scheduled webinar
@@ -73,9 +74,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Users with empty email in their token can register to scheduled webinars
 - Users with wrong email in token is properly detected as registered
-- Users waiting on the registration page are redirected if video is started 
+- Users waiting on the registration page are redirected if video is started
   earlier
-- Update store in the WaitingLiveVideo component 
+- Update store in the WaitingLiveVideo component
 - Set specific timeout to 30 seconds in pollForLive to update the store
 
 ### Removed
@@ -126,7 +127,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Trigger XAPI initialized action before a first play 
+- Trigger XAPI initialized action before a first play
   for a live video
 - Listen video play event instead of playing to send the XAPI played event
 
@@ -634,9 +635,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactor the LTI view to be generic for all the resources we want to manage
 - Video model is a special File model
 - pluralize thumbnail url
-- Simplify template to frontend communication by using JSON instead of 
+- Simplify template to frontend communication by using JSON instead of
   multiple data-attributes
-- Rename all is_ready_to_* model properties to is_ready_to_show
+- Rename all is*ready_to*\* model properties to is_ready_to_show
 - Change filename pattern when a user downloads a resource.
   For video: {playlist title}_{uploaded timestamp}.mp4
   For document: {playlist_title}_{document_title}.{document_extension}
@@ -854,7 +855,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Run `webpack` in production mode for builds that will be deployed; shaves 
+- Run `webpack` in production mode for builds that will be deployed; shaves
   75+% on the bundle size
 
 ## [2.2.0] - 2019-02-05
