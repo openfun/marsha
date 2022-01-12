@@ -2,11 +2,15 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { converse } from 'utils/window';
 import { StudentChat } from '.';
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
+jest.mock('utils/errors/report', () => ({
+  report: jest.fn(),
+}));
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -19,8 +23,8 @@ describe('<StudentChat />', () => {
   it('connects an anonymous user and sends a message.', async () => {
     jest.useFakeTimers();
     render(wrapInIntlProvider(<StudentChat />));
-    await act(async () => {
-      jest.advanceTimersByTime(4000);
+    act(() => {
+      useChatItemState.getState().setHasReceivedMessageHistory(true);
     });
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',

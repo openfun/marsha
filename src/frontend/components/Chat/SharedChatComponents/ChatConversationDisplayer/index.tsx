@@ -1,27 +1,44 @@
 import { Box, Spinner } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { ChatMessageItem } from 'components/Chat/SharedChatComponents/ChatMessageItem';
-import { useMessagesState } from 'data/stores/useMessagesStore';
+import { ChatMessageGroupItem } from 'components/Chat/SharedChatComponents/ChatMessageGroupItem';
+import { ChatPresenceItem } from 'components/Chat/SharedChatComponents/ChatPresenceItem';
+import { chatItemType, useChatItemState } from 'data/stores/useChatItemsStore';
+import { report } from 'utils/errors/report';
 
 export const ChatConversationDisplayer = () => {
-  const { messages } = useMessagesState();
+  const { chatItems, hasReceivedMessageHistory } = useChatItemState();
   const [loading, setLoading] = useState(true);
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
+  // When whole message history is received, it adds presences to the chat
   useEffect(() => {
-    setTimeout(() => {
+    if (hasReceivedMessageHistory) {
       setLoading(false);
-      scrollableContainerRef.current?.scrollTo({
-        top: scrollableContainerRef.current.scrollHeight,
-      });
-    }, 3000);
-  }, []);
+    }
+  }, [hasReceivedMessageHistory]);
+
+  // If the message history is not received, an error message should be displayed
+  useEffect(() => {
+    if (hasReceivedMessageHistory) {
+      return;
+    }
+
+    const handlerId = setTimeout(() => {
+      setLoading(false);
+      report('Unable to retrieve message history.');
+      // TODO : Prompt an error modal
+    }, 5000);
+
+    return () => {
+      clearTimeout(handlerId);
+    };
+  }, [hasReceivedMessageHistory]);
 
   const isScrollInBottom = scrollableContainerRef.current
-    ? scrollableContainerRef.current!.scrollHeight -
-        Math.round(scrollableContainerRef.current!.scrollTop) ===
-      scrollableContainerRef.current!.clientHeight
+    ? scrollableContainerRef.current.scrollHeight -
+        Math.round(scrollableContainerRef.current.scrollTop) <=
+      scrollableContainerRef.current.clientHeight + 10
     : false;
 
   useEffect(() => {
@@ -30,16 +47,16 @@ export const ChatConversationDisplayer = () => {
         top: scrollableContainerRef.current.scrollHeight,
       });
     }
-  }, [messages]);
+  });
 
   return (
     <Box
+      fill="vertical"
       overflow={{
-        vertical: 'auto',
         horizontal: 'hidden',
+        vertical: 'auto',
       }}
       ref={scrollableContainerRef}
-      height="100%"
     >
       {loading ? (
         <Box align="center" height="100%" justify="center" width="100%">
@@ -47,9 +64,23 @@ export const ChatConversationDisplayer = () => {
         </Box>
       ) : (
         <React.Fragment>
-          {messages.map((msg, idx) => (
-            <ChatMessageItem key={idx} msg={msg} />
-          ))}
+          {chatItems.map((chatItem, index) => {
+            if (chatItem.type === chatItemType.PRESENCE) {
+              return (
+                <ChatPresenceItem
+                  key={index}
+                  presenceItem={chatItem.presenceData}
+                />
+              );
+            } else {
+              return (
+                <ChatMessageGroupItem
+                  key={index}
+                  msgGroup={chatItem.messageGroupData}
+                />
+              );
+            }
+          })}
         </React.Fragment>
       )}
     </Box>
