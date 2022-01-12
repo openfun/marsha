@@ -1,12 +1,15 @@
 import { DateTime } from 'luxon';
 
 import {
-  ChatMessageType,
-  useMessagesState,
-} from 'data/stores/useMessagesStore';
+  chatItemType,
+  presenceType,
+  ReceivedMessageType,
+  useChatItemState,
+} from 'data/stores/useChatItemsStore';
 import { MessageType, XMPP } from 'types/XMPP';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
+import { ANONYMOUS_ID_PREFIX } from 'utils/chat/chat';
 
 enum StanzaType {
   IQ = 'iq',
@@ -15,7 +18,7 @@ enum StanzaType {
 }
 
 enum StanzaMessageType {
-  CLASSIC_MESSAGE = 'CLASSIC_MESSAGE',
+  LIVE_MESSAGE = 'LIVE_MESSAGE',
   HISTORY = 'HISTORY',
   SUBJECT = 'SUBJECT',
   UNRECOGNIZED = 'UNRECOGNIZED',
@@ -35,43 +38,107 @@ const addChatPlugin = (xmpp: XMPP) =>
             switch (stanza.nodeName) {
               case StanzaType.MESSAGE:
                 switch (determineMessageType(stanza)) {
-                  case StanzaMessageType.CLASSIC_MESSAGE:
-                    const msg: ChatMessageType = {
-                      sentAt: DateTime.now(),
-                      sender: getNameFromJID(stanza.getAttribute('from')!),
+                  case StanzaMessageType.LIVE_MESSAGE:
+                    const liveMessage: ReceivedMessageType = {
+                      // Non-nullity is already ensured by determineMessageType()
                       content:
                         stanza.getElementsByTagName('body')[0].textContent!,
+                      sender: getNameFromJID(stanza.getAttribute('from')!),
+                      sentAt: DateTime.now(),
                     };
-                    useMessagesState.getState().addMessage(msg);
+                    useChatItemState.getState().addMessage(liveMessage);
                     break;
                   case StanzaMessageType.HISTORY:
-                    const oldMsgStanza =
+                    const historyMsgStanza =
                       stanza.getElementsByTagName('message')[0];
-                    const oldMsg: ChatMessageType = {
-                      sentAt: getMsgDateTimeFromStanza(stanza),
-                      sender: getNameFromJID(
-                        oldMsgStanza.getAttribute('from')!,
-                      ),
+                    const historyMessage: ReceivedMessageType = {
+                      // Non-nullity is already ensured by determineMessageType()
                       content:
-                        oldMsgStanza.getElementsByTagName('body')[0]
+                        historyMsgStanza.getElementsByTagName('body')[0]
                           .textContent!,
+                      sender: getNameFromJID(
+                        historyMsgStanza.getAttribute('from')!,
+                      ),
+                      sentAt: getMsgDateTimeFromStanza(stanza),
                     };
-                    useMessagesState.getState().addMessage(oldMsg);
+                    useChatItemState.getState().addMessage(historyMessage);
                     break;
+                  case StanzaMessageType.SUBJECT:
+                    break;
+                  case StanzaMessageType.UNRECOGNIZED:
+                  default:
+                    report(
+                      new Error(
+                        `Unable to recognize the following received message : \n ${stanza.outerHTML}`,
+                      ),
+                    );
                 }
 
                 break;
 
               case StanzaType.PRESENCE:
+                const stanzaFrom = stanza.getAttribute('from');
+                const stanzaTo = stanza.getAttribute('to');
+                const items = stanza.getElementsByTagName('item');
+                if (!stanzaFrom || !stanzaTo || !items.length) {
+                  break;
+                }
+                const sender = getNameFromJID(stanzaFrom);
+                const item = items[0];
+                // Anonymous are not annouced in the chat
+                if (
+                  sender.startsWith(ANONYMOUS_ID_PREFIX + '-') ||
+                  !item ||
+                  item.getAttribute('affiliation') === 'none'
+                ) {
+                  break;
+                }
+
+                const receivedAt = DateTime.now();
+                let type: presenceType;
+                if (
+                  stanza.getAttribute('type') &&
+                  stanza.getAttribute('type') === 'unavailable'
+                ) {
+                  type = presenceType.DEPARTURE;
+                } else {
+                  type = presenceType.ARRIVAL;
+                }
+                // If the new presence is of the same type as the last one it is not registered
+                const listSenderPresences = useChatItemState
+                  .getState()
+                  .chatItems.map((chatItem) => {
+                    if (chatItem.type === chatItemType.PRESENCE) {
+                      return chatItem.presenceData;
+                    }
+                  })
+                  .filter((presence) => presence?.sender === sender);
+                const lastSenderPresence =
+                  listSenderPresences[listSenderPresences.length - 1];
+                if (
+                  (!lastSenderPresence || lastSenderPresence.type !== type) &&
+                  useChatItemState.getState().hasReceivedMessageHistory
+                ) {
+                  useChatItemState.getState().addPresence({
+                    receivedAt,
+                    sender,
+                    type,
+                  });
+                }
                 break;
 
               case StanzaType.IQ:
+                if (stanza.getElementsByTagName('fin')[0]) {
+                  useChatItemState
+                    .getState()
+                    .setHasReceivedMessageHistory(true);
+                }
                 break;
 
               default:
                 report(
                   new Error(
-                    `Unable to recognize the following received xml stanza : \n ${stanza}`,
+                    `Unable to recognize the following received xml stanza : \n ${stanza.outerHTML}`,
                   ),
                 );
             }
@@ -105,18 +172,25 @@ const addChatPlugin = (xmpp: XMPP) =>
   });
 
 const determineMessageType = (msgStanza: HTMLElement): StanzaMessageType => {
-  if (
-    msgStanza.getAttribute('type') !== null &&
-    msgStanza.getAttribute('type') === MessageType.GROUPCHAT
-  ) {
-    if (msgStanza.getElementsByTagName('subject')[0] !== undefined) {
+  const forwardedMessage = msgStanza.getElementsByTagName('message')[0];
+  const msgType = msgStanza.getAttribute('type');
+
+  if (msgType && msgType === MessageType.GROUPCHAT) {
+    const msgBody = msgStanza.getElementsByTagName('body')[0];
+    const msgSubject = msgStanza.getElementsByTagName('subject')[0];
+    if (msgBody && msgBody.textContent && msgStanza.getAttribute('from')) {
+      return StanzaMessageType.LIVE_MESSAGE;
+    } else if (msgSubject) {
       return StanzaMessageType.SUBJECT;
-    } else if (msgStanza.getElementsByTagName('body')[0] !== undefined) {
-      return StanzaMessageType.CLASSIC_MESSAGE;
     }
-  } else if (msgStanza.getElementsByTagName('message')[0] !== undefined) {
+  } else if (
+    forwardedMessage &&
+    forwardedMessage.textContent &&
+    forwardedMessage.getAttribute('from')
+  ) {
     return StanzaMessageType.HISTORY;
   }
+
   return StanzaMessageType.UNRECOGNIZED;
 };
 
