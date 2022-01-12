@@ -351,6 +351,7 @@ class Base(Configuration):
     EMAIL_HOST_PASSWORD = values.Value(None)
     EMAIL_PORT = values.PositiveIntegerValue(None)
     EMAIL_USE_TLS = values.BooleanValue(False)
+    EMAIL_FROM = values.Value("from@fun-mooc.fr")
 
     # pylint: disable=invalid-name
     @property

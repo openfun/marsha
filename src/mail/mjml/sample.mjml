@@ -12,20 +12,20 @@
   <mj-body background-color="#ffffff">
     <mj-section background-color="#fcc245">
       <mj-column>
-        <mj-text align="center" font-size="20px" padding="0 25px"><span style="color: rgb(89, 89, 89);">{{registration_success}}</span></mj-text>
+        <mj-text>{% load i18n %}</mj-text>
+        <mj-text align="center" font-size="20px" padding="0 25px"><span style="color: rgb(89, 89, 89);">{% trans "mail_registration_success" %}</span></mj-text>
       </mj-column>
     </mj-section>
     <mj-section background-color="#ffffff" padding-bottom="20px" padding-top="20px">
       <mj-column>
-        <mj-button mj-class="button" href="{{registration_link}}" padding="305px 25px 0">{{registration_label}}</mj-button>
-        <mj-text align="center" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="10px"><span style="color: rgb(255, 255, 255);">{{registration_extra_text}}</span></mj-text>
+        <mj-text align="center" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="10px"><span style="color: rgb(255, 255, 255);">{% trans "mail_registration_extra_text" %}</span></mj-text>
       </mj-column>
     </mj-section>
     <mj-section padding-bottom="20px" padding-top="20px">
       <mj-column>
-        <mj-text align="center" font-size="13px" padding="0 25px" font-weight="bold">{{registration_block2_title}}</mj-text>
+        <mj-text align="center" font-size="13px" padding="0 25px" font-weight="bold">{% trans "mail_registration_block2_title" %}</mj-text>
         <mj-text align="center" font-size="13px" padding="0 25px 10px 25px">
-          <p>{{registration_block2_paragraph}}</p>
+          <p>{% trans "mail_registration_block2_paragraph" %}</p>
         </mj-text>
       </mj-column>
     </mj-section>

@@ -1,15 +1,26 @@
 """Declare API endpoints for live registration with Django RestFramework viewsets."""
+from logging import getLogger
+import smtplib
+
+from django.conf import settings
+from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
+from sentry_sdk import capture_exception
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveRegistration, Video
 from .base import ObjectPkMixin
+
+
+logger = getLogger(__name__)
 
 
 class LiveRegistrationThrottle(SimpleRateThrottle):
@@ -117,6 +128,27 @@ class LiveRegistrationViewSet(
             throttle_class = [LiveRegistrationThrottle]
 
         return [throttle() for throttle in throttle_class]
+
+    def perform_create(self, serializer):
+        """Overrides perform_create to send the mail and catch error if needed"""
+        super().perform_create(serializer)
+        try:
+            msg_plain = render_to_string("core/mail/text/sample.txt")
+            msg_html = render_to_string("core/mail/html/sample.html")
+            send_mail(
+                _("mail_registration_object"),
+                msg_plain,
+                settings.EMAIL_FROM,
+                [serializer.validated_data["email"]],
+                html_message=msg_html,
+                fail_silently=False,
+            )
+        except smtplib.SMTPException as exception:
+            # no exception raised as user can't sometimes change his mail,
+            logger.warning(
+                "registration mail %s not send", serializer.validated_data["email"]
+            )
+            capture_exception(exception)
 
     @action(detail=False, methods=["post"])
     # pylint: disable=unused-argument
