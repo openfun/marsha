@@ -4964,13 +4964,16 @@ class VideoAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         video.refresh_from_db()
 
@@ -5054,13 +5057,16 @@ class VideoAPITest(TestCase):
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         video.refresh_from_db()
 
@@ -5140,12 +5146,16 @@ class VideoAPITest(TestCase):
             "state": "running",
         }
         signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
-        response = self.client.patch(
-            f"/api/videos/{video.id}/update-live-state/",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.patch(
+                f"/api/videos/{video.id}/update-live-state/",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 403)
@@ -5193,12 +5203,16 @@ class VideoAPITest(TestCase):
             "state": invalid_state,
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.patch(
-            f"/api/videos/{video.id}/update-live-state/",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.patch(
+                f"/api/videos/{video.id}/update-live-state/",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 400)
@@ -5217,12 +5231,16 @@ class VideoAPITest(TestCase):
             "state": "running",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.patch(
-            "/api/videos/9087c52d-cb87-4fd0-9b57-d9f28a0c69cb/update-live-state/",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.patch(
+                "/api/videos/9087c52d-cb87-4fd0-9b57-d9f28a0c69cb/update-live-state/",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 404)
 
@@ -5266,12 +5284,15 @@ class VideoAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
         now = datetime(2018, 8, 8, tzinfo=pytz.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 200)
