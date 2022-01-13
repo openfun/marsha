@@ -5,7 +5,11 @@ import { defineMessages, useIntl } from 'react-intl';
 import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
-import { ANONYMOUS_ID_PREFIX } from 'utils/chat/chat';
+import {
+  ANONYMOUS_ID_PREFIX,
+  NICKNAME_MIN_LENGTH,
+  NICKNAME_MAX_LENGTH,
+} from 'default/chat';
 import { converse } from 'utils/window';
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert/index';
 
@@ -16,7 +20,7 @@ const messages = defineMessages({
     id: 'components.InputDiplayNameOverlay.closeButtonTitle',
   },
   inputAnonymousKeywordForbiddenAlertMessage: {
-    defaultMessage: 'Keyword "anonymous" is not allowed.',
+    defaultMessage: 'Keyword "{forbiddenPrefix}" is not allowed.',
     description:
       'An alert message explaining why the entered display name is invalid.',
     id: 'components.InputDisplayNameOverlay.inputAnonymousKeywordForbiddenAlertMessage',
@@ -39,13 +43,13 @@ const messages = defineMessages({
     id: 'components.InputBar.inputDisplayNamePlaceholder',
   },
   inputTooShortAlertMessage: {
-    defaultMessage: 'Min length is 3 characters.',
+    defaultMessage: 'Min length is {minLength} characters.',
     description:
       'An alert message explaining why the entered display name is invalid.',
     id: 'components.InputDisplayNameOverlay.inputTooShortAlertMessage',
   },
   inputTooLongAlertMessage: {
-    defaultMessage: 'Max length is 15 characters.',
+    defaultMessage: 'Max length is {maxLength} characters.',
     description:
       'An alert message explaining why the entered display name is invalid.',
     id: 'components.InputDisplayNameOverlay.inputTooLongAlertMessage',
@@ -68,14 +72,25 @@ export const InputDisplayNameOverlay = ({
     const alerts: string[] = [];
     if (displayName.toLowerCase().includes(ANONYMOUS_ID_PREFIX)) {
       alerts.push(
-        intl.formatMessage(messages.inputAnonymousKeywordForbiddenAlertMessage),
+        intl.formatMessage(
+          messages.inputAnonymousKeywordForbiddenAlertMessage,
+          { forbiddenPrefix: ANONYMOUS_ID_PREFIX },
+        ),
       );
     }
-    if (displayName.length < 3) {
-      alerts.push(intl.formatMessage(messages.inputTooShortAlertMessage));
+    if (displayName.length < NICKNAME_MIN_LENGTH) {
+      alerts.push(
+        intl.formatMessage(messages.inputTooShortAlertMessage, {
+          minLength: NICKNAME_MIN_LENGTH,
+        }),
+      );
     }
-    if (displayName.length > 15) {
-      alerts.push(intl.formatMessage(messages.inputTooLongAlertMessage));
+    if (displayName.length > NICKNAME_MAX_LENGTH) {
+      alerts.push(
+        intl.formatMessage(messages.inputTooLongAlertMessage, {
+          maxLength: NICKNAME_MAX_LENGTH,
+        }),
+      );
     }
     if (alerts.length === 0) {
       converse.claimNewNicknameInChatRoom(displayName);
