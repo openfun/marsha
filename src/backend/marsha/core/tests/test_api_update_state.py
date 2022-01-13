@@ -2,10 +2,15 @@
 from datetime import datetime
 import json
 import random
+from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 import pytz
+
+from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 
 from ..defaults import HARVESTED, PENDING, RAW, STOPPED
 from ..factories import (
@@ -21,10 +26,22 @@ from ..utils.api_utils import generate_hash
 class UpdateStateAPITest(TestCase):
     """Test the API that allows to update video & timed text track objects' state."""
 
+    def tearDown(self):
+        super().tearDown()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.flush)()
+
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video(self):
         """Confirming the successful upload of a video using the sole existing secret."""
         video = VideoFactory(id="f87b5f26-da60-49f2-9d71-a816e68a207f")
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ROOM_NAME.format(video_id=str(video.id)), "test_channel"
+        )
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)), "test_channel_admin"
+        )
         data = {
             "extraParameters": {"resolutions": [144, 240, 480]},
             "key": f"{video.pk}/video/{video.pk}/1533686400",
@@ -44,11 +61,22 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
         self.assertEqual(video.upload_state, "ready")
         self.assertEqual(video.resolutions, [144, 240, 480])
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "video_updated")
+        message = async_to_sync(channel_layer.receive)("test_channel_admin")
+        self.assertEqual(message["type"], "video_updated")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video_processing(self):
         """Setting a video's `upload_state` to processing should not affect its `uploaded_on`."""
         video = VideoFactory(id="9eeef843-bc43-4e01-825d-658aa5bca49f")
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ROOM_NAME.format(video_id=str(video.id)), "test_channel"
+        )
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)), "test_channel_admin"
+        )
         data = {
             "extraParameters": {},
             "key": f"{video.pk}/video/{video.pk}/1533686400",
@@ -68,6 +96,10 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "processing")
         self.assertEqual(video.resolutions, None)
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "video_updated")
+        message = async_to_sync(channel_layer.receive)("test_channel_admin")
+        self.assertEqual(message["type"], "video_updated")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_video_harvested(self):
@@ -99,6 +131,13 @@ class UpdateStateAPITest(TestCase):
             },
             live_type=RAW,
         )
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ROOM_NAME.format(video_id=str(video.id)), "test_channel"
+        )
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)), "test_channel_admin"
+        )
         data = {
             "extraParameters": {"resolutions": [240, 480, 720]},
             "key": f"{video.pk}/video/{video.pk}/1533686400",
@@ -120,6 +159,10 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.resolutions, [240, 480, 720])
         self.assertIsNone(video.live_state)
         self.assertIsNone(video.live_info)
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "video_updated")
+        message = async_to_sync(channel_layer.receive)("test_channel_admin")
+        self.assertEqual(message["type"], "video_updated")
 
     @override_settings(
         UPDATE_STATE_SHARED_SECRETS=["previous secret", "current secret"]
@@ -127,6 +170,13 @@ class UpdateStateAPITest(TestCase):
     def test_api_update_state_video_multiple_secrets(self):
         """Confirming the failed upload of a video using the any of the existing secrets."""
         video = VideoFactory(id="c804e019-c622-4b76-aa43-33f2317bdc7e")
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ROOM_NAME.format(video_id=str(video.id)), "test_channel"
+        )
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)), "test_channel_admin"
+        )
         data = {
             "extraParameters": {},
             "key": f"{video.pk}/video/{video.pk}/1533686400",
@@ -148,6 +198,10 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "error")
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "video_updated")
+        message = async_to_sync(channel_layer.receive)("test_channel_admin")
+        self.assertEqual(message["type"], "video_updated")
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_timed_text_track(self):
@@ -165,12 +219,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
         timed_text_track.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
@@ -192,12 +250,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(json.loads(response.content), {"success": False})
@@ -211,7 +273,12 @@ class UpdateStateAPITest(TestCase):
             "signature": "123abc",
         }
 
-        response = self.client.post("/api/update-state", data)
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post("/api/update-state", data)
+            mock_dispatch_video_to_groups.assert_not_called()
+
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 400)
@@ -231,13 +298,19 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("invalid secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            # Expected signature: 51c2f6b3dbfaf7f1e675550e4c5bae3e729201c51544760d41e7d5c05fec6372
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                # Expected signature:
+                # 51c2f6b3dbfaf7f1e675550e4c5bae3e729201c51544760d41e7d5c05fec6372
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
+
         video.refresh_from_db()
 
         self.assertEqual(response.status_code, 403)
@@ -257,12 +330,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         document.refresh_from_db()
 
@@ -284,12 +361,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         document.refresh_from_db()
 
@@ -312,12 +393,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         thumbnail.refresh_from_db()
 
@@ -340,12 +425,16 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         shared_live_media.refresh_from_db()
 
