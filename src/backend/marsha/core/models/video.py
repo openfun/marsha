@@ -6,6 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import lazy
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE_NOCASCADE
@@ -173,6 +174,12 @@ class Video(BaseFile):
             self.live_type = None
 
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
+
+        # This function is imported using import_string to avoid circular import error.
+        dispatch_video_to_groups = import_string(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        )
+        dispatch_video_to_groups(self)
 
     @property
     def is_scheduled(self):
