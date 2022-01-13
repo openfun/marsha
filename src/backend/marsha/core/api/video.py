@@ -480,6 +480,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.live_info = live_info
         video.save()
 
+        channel_layers_utils.dispatch_video_to_groups(video)
+
         return Response({"success": True})
 
     @action(
