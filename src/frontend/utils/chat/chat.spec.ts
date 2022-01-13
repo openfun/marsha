@@ -1,9 +1,6 @@
+import { ANONYMOUS_ID_PREFIX } from 'default/chat';
 import { converse } from 'utils/window';
-import {
-  generateAnonymousNickname,
-  getNameFromJID,
-  ANONYMOUS_ID_PREFIX,
-} from './chat';
+import { generateAnonymousNickname, getNameFromJID } from './chat';
 
 jest.mock('utils/window', () => ({
   converse: {
