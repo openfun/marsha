@@ -1,6 +1,5 @@
+import { ANONYMOUS_ID_PREFIX } from 'default/chat';
 import { converse } from 'utils/window';
-
-export const ANONYMOUS_ID_PREFIX = 'anonymous';
 
 export const generateAnonymousNickname = () => {
   const tokenLength = 8;

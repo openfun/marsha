@@ -2,7 +2,11 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ANONYMOUS_ID_PREFIX } from 'utils/chat/chat';
+import {
+  ANONYMOUS_ID_PREFIX,
+  NICKNAME_MAX_LENGTH,
+  NICKNAME_MIN_LENGTH,
+} from 'default/chat';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { converse } from 'utils/window';
@@ -22,7 +26,7 @@ describe('<InputDisplayNameOverlay />', () => {
     jest.resetAllMocks();
   });
 
-  it("controls input and shows error when input contains 'Anonymous'", () => {
+  it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay
@@ -33,17 +37,21 @@ describe('<InputDisplayNameOverlay />', () => {
     );
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'Anonymous-John');
+    userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
     act(() => userEvent.click(validateButton));
     screen.getByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`);
-    expect(screen.queryByText('Min length is 3 characters.')).toBeNull();
-    expect(screen.queryByText('Max length is 15 characters.')).toBeNull();
-    expect(inputTextbox).toHaveValue('Anonymous-John');
+    expect(
+      screen.queryByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`),
+    ).toBeNull();
+    expect(
+      screen.queryByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`),
+    ).toBeNull();
+    expect(inputTextbox).toHaveValue(`${ANONYMOUS_ID_PREFIX}-John`);
     expect(mockSetInputBarActive).not.toHaveBeenCalled();
     expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
-  it('controls input and shows error when input contains less than 3 characters.', () => {
+  it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay
@@ -56,17 +64,19 @@ describe('<InputDisplayNameOverlay />', () => {
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'JD');
     act(() => userEvent.click(validateButton));
-    screen.getByText('Min length is 3 characters.');
+    screen.getByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`);
     expect(
       screen.queryByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`),
     ).toBeNull();
-    expect(screen.queryByText('Max length is 15 characters.')).toBeNull();
+    expect(
+      screen.queryByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`),
+    ).toBeNull();
     expect(inputTextbox).toHaveValue('JD');
     expect(mockSetInputBarActive).not.toHaveBeenCalled();
     expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
-  it('controls input and shows error when input contains more than 15 characters.', () => {
+  it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay
@@ -79,11 +89,13 @@ describe('<InputDisplayNameOverlay />', () => {
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John Doe the legend');
     act(() => userEvent.click(validateButton));
-    screen.getByText('Max length is 15 characters.');
+    screen.getByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`);
     expect(
       screen.queryByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`),
     ).toBeNull();
-    expect(screen.queryByText('Min length is 3 characters.')).toBeNull();
+    expect(
+      screen.queryByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`),
+    ).toBeNull();
     expect(inputTextbox).toHaveValue('John Doe the legend');
     expect(mockSetInputBarActive).not.toHaveBeenCalled();
     expect(mockSetOverlay).not.toHaveBeenCalled();
