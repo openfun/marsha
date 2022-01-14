@@ -3957,12 +3957,17 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video"
+        ) as mock_dispatch_video:
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-live/",
+                {"type": "raw"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video.assert_called_with(video, to_admin=True)
 
-        response = self.client.post(
-            f"/api/videos/{video.id}/initiate-live/",
-            {"type": "raw"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -4015,11 +4020,17 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.post(
-            f"/api/videos/{video.id}/initiate-live/",
-            {"type": "jitsi"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video"
+        ) as mock_dispatch_video:
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-live/",
+                {"type": "jitsi"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video.assert_called_with(video, to_admin=True)
+
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -4097,7 +4108,9 @@ class VideoAPITest(TestCase):
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
-        ) as mock_create_room:
+        ) as mock_create_room, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.return_value = {
                 "medialive": {
@@ -4128,6 +4141,7 @@ class VideoAPITest(TestCase):
             mock_wait_medialive_channel_is_created.assert_called_with(
                 "medialive_channel_1"
             )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4246,7 +4260,9 @@ class VideoAPITest(TestCase):
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
-        ) as mock_create_room:
+        ) as mock_create_room, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.assert_not_called()
             mock_create_room.assert_not_called()
@@ -4255,6 +4271,7 @@ class VideoAPITest(TestCase):
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4334,11 +4351,14 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # start a live video,
-        with mock.patch.object(api.video, "start_live_channel"):
+        with mock.patch.object(api.video, "start_live_channel"), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.post(
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
+            mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
 
     def test_api_instructor_start_non_idle_or_paused_live(self):
@@ -4356,11 +4376,15 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # start a live video,
-        response = self.client.post(
-            f"/api/videos/{video.id}/start-live/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            # start a live video,
+            response = self.client.post(
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
 
     def test_api_video_stop_live_anonymous_user(self):
@@ -4457,15 +4481,18 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # start a live video,
+        # stop a live video,
         now = datetime(2021, 11, 16, tzinfo=pytz.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
             api.video, "stop_live_channel"
-        ):
+        ), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
@@ -4533,12 +4560,19 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # start a live video,
-        with mock.patch.object(api.video, "stop_live_channel"):
+        # stop a live video,
+        with mock.patch.object(
+            api.video, "stop_live_channel"
+        ) as mock_stop_live, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
+            mock_dispatch_video_to_groups.assert_not_called()
+            mock_stop_live.assert_not_called()
+
         self.assertEqual(response.status_code, 400)
 
     def test_api_instructor_stop_non_running_live(self):
@@ -4554,12 +4588,18 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        # start a live video,
-        with mock.patch.object(api.video, "stop_live_channel"):
+        # stop a live video,
+        with mock.patch.object(
+            api.video, "stop_live_channel"
+        ) as mock_stop_live, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
+            mock_stop_live.assert_not_called()
+            mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
 
     def test_api_video_end_live_anonymous_user(self):
@@ -4632,10 +4672,14 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.post(
-            f"/api/videos/{video.id}/end-live/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                f"/api/videos/{video.id}/end-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4723,7 +4767,9 @@ class VideoAPITest(TestCase):
             api.video, "close_room"
         ) as mock_close_room, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
                 f"/api/videos/{video.id}/end-live/",
@@ -4732,6 +4778,7 @@ class VideoAPITest(TestCase):
             mock_delete_aws_element_stack.assert_called_once()
             mock_create_mediapackage_harvest_job.assert_called_once()
             mock_close_room.assert_called_once_with(video.id)
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4841,7 +4888,9 @@ class VideoAPITest(TestCase):
             side_effect=ManifestMissingException,
         ) as mock_create_mediapackage_harvest_job, mock.patch(
             "marsha.core.api.video.delete_mediapackage_channel"
-        ) as mock_delete_mediapackage_channel:
+        ) as mock_delete_mediapackage_channel, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.post(
                 f"/api/videos/{video.id}/end-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -4849,6 +4898,7 @@ class VideoAPITest(TestCase):
             mock_delete_aws_element_stack.assert_called_once()
             mock_create_mediapackage_harvest_job.assert_called_once()
             mock_delete_mediapackage_channel.assert_called_once()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4903,10 +4953,14 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.post(
-            f"/api/videos/{video.id}/end-live/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.post(
+                f"/api/videos/{video.id}/end-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
