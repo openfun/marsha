@@ -480,6 +480,7 @@ class LiveRegistration(BaseModel):
     )
 
     is_registered = models.BooleanField(
+        db_index=True,
         default=False,
         verbose_name=_("is the user registered"),
         help_text=_("Is the user registered?"),
@@ -510,9 +511,17 @@ class LiveRegistration(BaseModel):
         null=True,
         verbose_name=_("LTI user identifier"),
     )
+    reminders = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        help_text=_("List of reminders already sent"),
+        null=True,
+        verbose_name=_("List of reminders sent"),
+    )
 
     should_send_reminders = models.BooleanField(
-        default=False,
+        db_index=True,
+        default=True,
         help_text=_("whether user reminders are enabled for this live"),
         verbose_name=_("should send reminders"),
     )
@@ -580,6 +589,14 @@ class LiveRegistration(BaseModel):
         ]
 
         verbose_name = _("live registration")
+
+    def update_reminders(self, step):
+        """Update reminders field, append or init field."""
+        if self.reminders:
+            self.reminders.append(step)
+        else:
+            self.reminders = [step]
+        self.save()
 
 
 class LivePairingManager(models.Manager):

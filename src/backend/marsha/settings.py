@@ -353,6 +353,46 @@ class Base(Configuration):
     EMAIL_USE_TLS = values.BooleanValue(False)
     EMAIL_FROM = values.Value("from@fun-mooc.fr")
 
+    # REMINDERS SENT for scheduled webinars
+    REMINDER_1, REMINDER_2, REMINDER_3, REMINDER_IS_STARTED, REMINDER_ERROR = (
+        "REMINDER_1",
+        "REMINDER_2",
+        "REMINDER_3",
+        "REMINDER_IS_STARTED",
+        "REMINDER_ERROR",
+    )
+    # keys for REMINDERS_STEP
+    REMINDER_KEY_STARTS_IN_S, REMINDER_KEY_REGISTER_BEFORE_S, REGISTER_EXCLUDE_STEP = (
+        "STARTS_IN_S",
+        "REGISTER_BEFORE_S",
+        "REGISTER_EXCLUDE_STEP",
+    )
+    REMINDERS_STEP = values.DictValue(
+        {
+            REMINDER_1: {
+                REMINDER_KEY_STARTS_IN_S: 5
+                * 60,  # webinar starts in less than 5 minutes
+                REMINDER_KEY_REGISTER_BEFORE_S: 3 * 60 * 60,  # three hours before
+                REGISTER_EXCLUDE_STEP: [],
+            },
+            REMINDER_2: {
+                REMINDER_KEY_STARTS_IN_S: 3
+                * 60
+                * 60,  # webinar starts in less than 3 hours
+                REMINDER_KEY_REGISTER_BEFORE_S: 1 * 24 * 60 * 60,  # 1 day before
+                REGISTER_EXCLUDE_STEP: [REMINDER_1],
+            },
+            REMINDER_3: {
+                REMINDER_KEY_STARTS_IN_S: 3
+                * 24
+                * 60
+                * 60,  # webinar starts in less than 3 days
+                REMINDER_KEY_REGISTER_BEFORE_S: 30 * 24 * 60 * 60,  # thirty days before
+                REGISTER_EXCLUDE_STEP: [REMINDER_1, REMINDER_2],
+            },
+        }
+    )
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
