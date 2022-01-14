@@ -122,7 +122,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": False,
                 "lti_id": None,
                 "lti_user_id": None,
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": None,
                 "video": str(video.id),
             },
@@ -171,7 +171,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": False,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": "John",
                 "video": str(video.id),
             },
@@ -219,7 +219,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": None,
                 "video": str(video.id),
             },
@@ -268,7 +268,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "5555",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": None,
                 "video": str(video.id),
             },
@@ -550,7 +550,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": liveregistration.lti_user_id,
                 "lti_id": "Maths",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": "Sam",
                 "video": str(video.id),
             },
@@ -602,7 +602,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": None,
                 "video": str(video.id),
             },
@@ -884,7 +884,7 @@ class LiveRegistrationApiTest(TestCase):
             {
                 "anonymous_id": anonymous_id,
                 "email": "salome@test-fun-mooc.fr",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
             },
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -902,7 +902,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": None,
                 "lti_user_id": None,
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": None,
                 "video": str(video.id),
             },
@@ -947,7 +947,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": None,
                 "lti_user_id": None,
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": None,
                 "video": str(video.id),
             },
@@ -1005,7 +1005,7 @@ class LiveRegistrationApiTest(TestCase):
         jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1048,7 +1048,7 @@ class LiveRegistrationApiTest(TestCase):
 
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1091,7 +1091,7 @@ class LiveRegistrationApiTest(TestCase):
 
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1133,7 +1133,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1150,7 +1150,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1183,7 +1183,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "is_registered": False},
+            {"email": "salome@test-fun-mooc.fr", "is_registered": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1200,7 +1200,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": False,
+                "should_send_reminders": True,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1234,7 +1234,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1251,7 +1251,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": str(other_playlist.lti_id),
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1345,7 +1345,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1367,7 +1367,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1405,7 +1405,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1427,7 +1427,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths2",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1465,7 +1465,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1488,7 +1488,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "NEW",
                 "lti_id": "Maths",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1520,7 +1520,7 @@ class LiveRegistrationApiTest(TestCase):
 
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1671,7 +1671,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1691,7 +1691,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": str(video.playlist.lti_id),
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1730,7 +1730,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -1750,7 +1750,7 @@ class LiveRegistrationApiTest(TestCase):
                 "lti_id": str(video.playlist.lti_id),
                 "id": str(liveregistration.id),
                 "is_registered": True,
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video.id),
             },
@@ -1938,7 +1938,7 @@ class LiveRegistrationApiTest(TestCase):
         # With the same email but other video, liveregistration is possible
         response = self.client.post(
             "/api/liveregistrations/",
-            {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": True},
+            {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": False},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -1958,7 +1958,7 @@ class LiveRegistrationApiTest(TestCase):
                 "is_registered": True,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                "should_send_reminders": True,
+                "should_send_reminders": False,
                 "username": "Token",
                 "video": str(video2.id),
             },
@@ -2380,7 +2380,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_user_id": None,
                     "lti_id": None,
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": None,
                     "video": str(video.id),
                 }
@@ -2489,7 +2489,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_user_id": str(user.id),
                     "lti_id": "Maths",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": user.username,
                     "video": str(video.id),
                 }
@@ -2595,7 +2595,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": True,
                     "lti_user_id": liveregistration.lti_user_id,
                     "lti_id": "Maths",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": liveregistration.username,
                     "video": str(video.id),
                 },
@@ -2608,7 +2608,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_user_id": liveregistration2.lti_user_id,
                     "lti_id": "Maths",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": liveregistration2.username,
                     "video": str(video.id),
                 },
@@ -2671,7 +2671,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "lti_id": str(video.playlist.lti_id),
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": None,
                     "video": str(video.id),
                 }
@@ -2883,7 +2883,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_id": "Maths",
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": None,
                     "video": str(video.id),
                 },
@@ -2896,7 +2896,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": True,
                     "lti_id": "Maths",
                     "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": None,
                     "video": str(video.id),
                 },
@@ -2909,7 +2909,7 @@ class LiveRegistrationApiTest(TestCase):
                     "is_registered": False,
                     "lti_id": "Maths",
                     "lti_user_id": "NEWDIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": False,
+                    "should_send_reminders": True,
                     "username": None,
                     "video": str(video.id),
                 },
