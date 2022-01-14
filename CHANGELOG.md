@@ -35,6 +35,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Send updated video to clients connected to the websocket for all
   events related to the live workflow (start, pause, end, shared live medias)
 - Send email when registering for a scheduled webinar 
+- Management command sending reminders for scheduled webinars
 
 ### Changed
 
