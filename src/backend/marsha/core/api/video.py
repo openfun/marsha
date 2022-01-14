@@ -1,9 +1,6 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
-import json
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import OperationalError, transaction
 from django.db.models import Q
 from django.http import Http404
@@ -33,7 +30,7 @@ from ..utils.medialive_utils import (
     wait_medialive_channel_is_created,
 )
 from ..utils.time_utils import to_timestamp
-from ..utils.xmpp_utils import broadcast_message, close_room, create_room
+from ..utils.xmpp_utils import close_room, create_room
 from .base import ObjectPkMixin
 
 
@@ -593,11 +590,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.save()
         serializer = self.get_serializer(video)
 
-        broadcast_message(
-            str(video.id),
-            "start_sharing",
-            json.dumps(serializer.data, cls=DjangoJSONEncoder),
-        )
+        channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)
 
     @action(
@@ -648,11 +641,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.save()
         serializer = self.get_serializer(video)
 
-        broadcast_message(
-            str(video.id),
-            "navigate_sharing",
-            json.dumps(serializer.data, cls=DjangoJSONEncoder),
-        )
+        channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)
 
     @action(
@@ -695,9 +684,5 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.save()
 
         serializer = self.get_serializer(video)
-        broadcast_message(
-            str(video.id),
-            "end_sharing",
-            json.dumps(serializer.data, cls=DjangoJSONEncoder),
-        )
+        channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)

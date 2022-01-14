@@ -9,7 +9,7 @@ from django.test import TestCase, override_settings
 import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .. import api
+from ..api.video import channel_layers_utils
 from ..defaults import DELETED, ERROR, JITSI, PENDING, PROCESSING, READY, RUNNING
 from ..factories import SharedLiveMediaFactory, UserFactory, VideoFactory
 
@@ -224,8 +224,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
             mock_jwt_encode.return_value = "xmpp_jwt"
@@ -236,6 +236,7 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
             self.assertEqual(response.status_code, 200)
 
@@ -364,9 +365,6 @@ class TestVideoSharedLiveMedia(TestCase):
             )
             self.assertEqual(video.active_shared_live_media, shared_live_media)
             self.assertEqual(video.active_shared_live_media_page, 1)
-            mock_broadcast_message.assert_called_with(
-                str(video.id), "start_sharing", json.dumps(content)
-            )
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -430,20 +428,20 @@ class TestVideoSharedLiveMedia(TestCase):
             jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
             with mock.patch.object(
-                api.video, "broadcast_message"
-            ) as mock_broadcast_message:
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups:
                 response = self.client.patch(
                     f"/api/videos/{video.id}/start-sharing/",
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                     data={"sharedlivemedia": str(shared_live_media.id)},
                     content_type="application/json",
                 )
+                mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(
                 response.json(), {"detail": "Shared live media is not ready."}
             )
-            mock_broadcast_message.assert_not_called()
 
     def test_api_video_shared_live_media_start_wrong_video_id(self):
         """An instructor can not start a shared live media
@@ -486,17 +484,17 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message:
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/start-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={"sharedlivemedia": str(other_shared_live_media.id)},
                 content_type="application/json",
             )
+            mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 404)
-        mock_broadcast_message.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -545,8 +543,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message:
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/start-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -556,7 +554,7 @@ class TestVideoSharedLiveMedia(TestCase):
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "Video is already sharing."})
-            mock_broadcast_message.assert_not_called()
+            mock_dispatch_video_to_groups.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -606,8 +604,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
             mock_jwt_encode.return_value = "xmpp_jwt"
@@ -618,6 +616,7 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
             self.assertEqual(response.status_code, 200)
 
@@ -710,9 +709,6 @@ class TestVideoSharedLiveMedia(TestCase):
             )
             self.assertEqual(video.active_shared_live_media, shared_live_media)
             self.assertEqual(video.active_shared_live_media_page, 2)
-            mock_broadcast_message.assert_called_with(
-                str(video.id), "navigate_sharing", json.dumps(content)
-            )
 
     def test_api_video_shared_live_media_navigate_no_active(self):
         """An instructor can not navigate if no active shared live media."""
@@ -755,11 +751,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{video.id}/navigate-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -767,13 +760,12 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "No shared live media."})
             self.assertEqual(video.active_shared_live_media, None)
             self.assertEqual(video.active_shared_live_media_page, None)
-
-            mock_broadcast_message.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -823,11 +815,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/navigate-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -835,12 +824,12 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "Page does not exist."})
             self.assertEqual(video.active_shared_live_media, shared_live_media)
             self.assertEqual(video.active_shared_live_media_page, 1)
-            mock_broadcast_message.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -890,11 +879,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/navigate-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -902,12 +888,12 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "Invalid page number."})
             self.assertEqual(video.active_shared_live_media, shared_live_media)
             self.assertEqual(video.active_shared_live_media_page, 1)
-            mock_broadcast_message.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -957,23 +943,20 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/navigate-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "Invalid page number."})
             self.assertEqual(video.active_shared_live_media, shared_live_media)
             self.assertEqual(video.active_shared_live_media_page, 1)
-            mock_broadcast_message.assert_not_called()
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -1023,8 +1006,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
             mock_jwt_encode.return_value = "xmpp_jwt"
@@ -1033,6 +1016,7 @@ class TestVideoSharedLiveMedia(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
             self.assertEqual(response.status_code, 200)
 
@@ -1114,9 +1098,6 @@ class TestVideoSharedLiveMedia(TestCase):
             )
             self.assertEqual(video.active_shared_live_media, None)
             self.assertEqual(video.active_shared_live_media_page, None)
-            mock_broadcast_message.assert_called_with(
-                str(video.id), "end_sharing", json.dumps(content)
-            )
 
     def test_api_video_shared_live_media_end_no_active(self):
         """An instructor can not end if no active shared live media."""
@@ -1159,11 +1140,8 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
 
         with mock.patch.object(
-            api.video, "broadcast_message"
-        ) as mock_broadcast_message, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
-            mock_jwt_encode.return_value = "xmpp_jwt"
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             response = self.client.patch(
                 f"/api/videos/{video.id}/end-sharing/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1171,10 +1149,9 @@ class TestVideoSharedLiveMedia(TestCase):
                 content_type="application/json",
             )
             video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
 
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"detail": "No shared live media."})
             self.assertEqual(video.active_shared_live_media, None)
             self.assertEqual(video.active_shared_live_media_page, None)
-
-            mock_broadcast_message.assert_not_called()
