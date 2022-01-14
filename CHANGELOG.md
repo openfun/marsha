@@ -32,6 +32,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add an authentificatin pop-up in the chat
 - Add a default config file for the chat
 - Add 'joined' and 'left' labels in the chat for users arrivals and departures
+- Send updated video to clients connected to the websocket for all
+  events related to the live workflow (start, pause, end, shared live medias)
 
 ### Changed
 
