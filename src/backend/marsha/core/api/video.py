@@ -227,6 +227,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.uploaded_on = None
 
         video.save()
+        # Dispatch only for admin users. No student should be connected on the video at this point.
+        channel_layers_utils.dispatch_video(video, to_admin=True)
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
@@ -284,6 +286,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         video.live_state = defaults.STARTING
         video.save()
+        channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
@@ -331,6 +334,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.live_state = defaults.STOPPING
         video.live_info.update({"paused_at": to_timestamp(timezone.now())})
         video.save()
+        channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
@@ -382,6 +386,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             video.live_info = None
             video.live_type = None
             video.save()
+            channel_layers_utils.dispatch_video_to_groups(video)
             serializer = self.get_serializer(video)
 
             return Response(serializer.data)
@@ -401,6 +406,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             video.live_type = None
 
         video.save()
+        channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)
 
         return Response(serializer.data)
