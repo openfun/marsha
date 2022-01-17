@@ -63,6 +63,8 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
 
+window.HTMLElement.prototype.scrollTo = jest.fn();
+
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
     fetchMock.mock(
