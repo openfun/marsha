@@ -1,6 +1,13 @@
 import { DateTime } from 'luxon';
-import { chatItemType, useChatItemState } from '.';
-import { ChatPresenceType, presenceType, ReceivedMessageType } from './index';
+
+import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'default/chat';
+import {
+  chatItemType,
+  ChatPresenceType,
+  presenceType,
+  ReceivedMessageType,
+  useChatItemState,
+} from '.';
 
 describe('useChatItemState', () => {
   it('executes useChatItemState/setHasReceivedMessageHistory', () => {
@@ -113,7 +120,9 @@ describe('useChatItemState', () => {
     const janeMessage2: ReceivedMessageType = {
       content: "This is a Jane Doe's example message 2",
       sender: 'Jane Doe',
-      sentAt: DateTime.fromISO('2020-12-12T12:15:10'),
+      sentAt: DateTime.fromISO('2020-12-12T12:12:10').plus(
+        TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS + 1,
+      ),
     };
 
     // initial state
