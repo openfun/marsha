@@ -67,4 +67,5 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     # pylint: disable=unused-argument
     async def video_updated(self, event):
         """Listener for the video_updated event."""
-        await self.send_json(event["video"])
+        message = {"type": "video", "resource": event["video"]}
+        await self.send_json(message)
