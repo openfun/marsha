@@ -6,10 +6,10 @@ import {
   ReceivedMessageType,
   useChatItemState,
 } from 'data/stores/useChatItemsStore';
+import { ANONYMOUS_ID_PREFIX } from 'default/chat';
 import { MessageType, XMPP } from 'types/XMPP';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
-import { ANONYMOUS_ID_PREFIX } from 'utils/chat/chat';
 
 enum StanzaType {
   IQ = 'iq',

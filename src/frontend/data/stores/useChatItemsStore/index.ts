@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon';
 import create from 'zustand';
 
+import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'default/chat';
+
 export type ReceivedMessageType = {
   content: string;
   sender: string;
@@ -71,7 +73,7 @@ export const useChatItemState = create<State>((set) => ({
         if (
           lastGroupMessage.sender === newReceivedMessage.sender &&
           newReceivedMessage.sentAt.diff(lastMessage.sentAt).milliseconds <=
-            5000
+            TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS
         ) {
           lastGroupMessage.messages.push({
             content: newReceivedMessage.content,

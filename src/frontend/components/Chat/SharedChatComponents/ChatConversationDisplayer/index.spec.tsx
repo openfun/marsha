@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import React from 'react';
 
 import { presenceType, useChatItemState } from 'data/stores/useChatItemsStore';
+import { HISTORY_MESSAGES_TIMEOUT_IN_MS } from 'default/chat';
 import { report } from 'utils/errors/report';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -78,7 +79,7 @@ describe('<ChatConversationDisplayer />', () => {
     render(wrapInIntlProvider(<ChatConversationDisplayer />));
 
     await act(async () => {
-      jest.advanceTimersByTime(5000);
+      jest.advanceTimersByTime(HISTORY_MESSAGES_TIMEOUT_IN_MS);
     });
 
     expect(report).toHaveBeenNthCalledWith(
