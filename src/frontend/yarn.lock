@@ -5261,6 +5261,11 @@ ajv@^6.1.0, ajv@^6.10.2, ajv@^6.12.2, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+altamoon-robust-websocket@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/altamoon-robust-websocket/-/altamoon-robust-websocket-1.0.3.tgz#ee98e05232dae33a5f0ac8dbaa99a8ecb583e782"
+  integrity sha512-59Nt/amt9NmiTA9UOLUyyIPQblTeAkglt1TsVfmWom0lNP2jrmn7yk4fiLFygEGKugT8Pl722KRNXKl9zxUQTQ==
+
 ansi-align@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
