@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChatMessageGroupItem } from 'components/Chat/SharedChatComponents/ChatMessageGroupItem';
 import { ChatPresenceItem } from 'components/Chat/SharedChatComponents/ChatPresenceItem';
 import { chatItemType, useChatItemState } from 'data/stores/useChatItemsStore';
+import { HISTORY_MESSAGES_TIMEOUT_IN_MS } from 'default/chat';
 import { report } from 'utils/errors/report';
 
 export const ChatConversationDisplayer = () => {
@@ -28,7 +29,7 @@ export const ChatConversationDisplayer = () => {
       setLoading(false);
       report('Unable to retrieve message history.');
       // TODO : Prompt an error modal
-    }, 5000);
+    }, HISTORY_MESSAGES_TIMEOUT_IN_MS);
 
     return () => {
       clearTimeout(handlerId);
