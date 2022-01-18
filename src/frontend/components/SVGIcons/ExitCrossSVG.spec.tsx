@@ -6,7 +6,13 @@ import { ExitCrossSVG } from './ExitCrossSVG';
 describe('<ExitCrossSVG />', () => {
   it('renders ExitCrossSVG correctly', async () => {
     await renderIconSnapshot(
-      <ExitCrossSVG height={20} width={20} iconColor="#031963" />,
+      <ExitCrossSVG
+        containerStyle={{
+          height: '20px',
+          width: '20px',
+        }}
+        iconColor="blue-focus"
+      />,
     );
   });
 });
