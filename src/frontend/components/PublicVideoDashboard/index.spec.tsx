@@ -64,7 +64,7 @@ jest.mock('data/appData', () => ({
 }));
 
 jest.mock('utils/conversejs/converse', () => ({
-  initConverse: jest.fn(),
+  converseMounter: jest.fn(() => jest.fn()),
 }));
 
 describe('PublicVideoDashboard', () => {

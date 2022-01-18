@@ -57,7 +57,7 @@ jest.mock('video.js', () => ({
 }));
 
 jest.mock('utils/conversejs/converse', () => ({
-  initConverse: jest.fn(() => jest.fn()),
+  converseMounter: jest.fn(() => jest.fn()),
 }));
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<

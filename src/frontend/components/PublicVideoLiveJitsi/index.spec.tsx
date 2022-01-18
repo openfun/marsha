@@ -46,7 +46,7 @@ jest.mock('data/appData', () => ({
 }));
 
 jest.mock('utils/conversejs/converse', () => ({
-  initConverse: jest.fn(() => jest.fn()),
+  converseMounter: jest.fn(() => jest.fn()),
 }));
 
 const mockExecuteCommand = jest.fn();

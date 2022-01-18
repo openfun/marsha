@@ -1,7 +1,7 @@
 import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
 
-import { initConverse } from './converse';
+import { converseMounter } from './converse';
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
@@ -59,6 +59,7 @@ describe('initConverse', () => {
     expect(mockWindow.converse.plugins.add).not.toHaveBeenCalled();
 
     // first call, converse is initialized
+    const initConverse = converseMounter();
     initConverse(xmpp);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
