@@ -1,13 +1,20 @@
 """Test medialive utils functions."""
+from datetime import timedelta
 from unittest import mock
 
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from botocore.stub import Stubber
 import responses
 
+from ..defaults import PENDING, PROCESSING
 from ..factories import VideoFactory
 from ..utils import medialive_utils
+from ..utils.time_utils import to_timestamp
+
+
+# pylint: disable=too-many-lines
 
 
 # pylint: disable=too-many-lines
@@ -729,8 +736,8 @@ class MediaLiveUtilsTestCase(TestCase):
 
     @override_settings(AWS_MEDIAPACKAGE_HARVEST_JOB_ARN="mediapackage:role:arn")
     @responses.activate
-    def test_create_mediapackage_harvest_job(self):
-        """Should create a mediapackage harvest job."""
+    def test_create_mediapackage_harvest_job_no_slice(self):
+        """Should not create a mediapackage harvest job without recording slice."""
         video = VideoFactory(
             id="e19f1058-0bde-4f29-a5d8-e0b4ddf92b74",
             live_info={
@@ -762,23 +769,288 @@ class MediaLiveUtilsTestCase(TestCase):
         with Stubber(
             medialive_utils.mediapackage_client
         ) as mediapackage_client_stubber:
+            medialive_utils.create_mediapackage_harvest_job(video)
+            mediapackage_client_stubber.assert_no_pending_responses()
+
+        video.refresh_from_db()
+        self.assertEqual(video.recording_slices, [])
+
+    @override_settings(AWS_MEDIAPACKAGE_HARVEST_JOB_ARN="mediapackage:role:arn")
+    @responses.activate
+    def test_create_mediapackage_harvest_job_single_slice(self):
+        """Should create a mediapackage harvest job for a single ."""
+        start = timezone.now()
+        stop = start + timedelta(minutes=10)
+        video = VideoFactory(
+            id="e19f1058-0bde-4f29-a5d8-e0b4ddf92b74",
+            recording_slices=[
+                {
+                    "start": to_timestamp(start),
+                    "stop": to_timestamp(stop),
+                    "status": PENDING,
+                }
+            ],
+            live_info={
+                "medialive": {
+                    "input": {"id": "medialive_input1"},
+                    "channel": {"id": "medialive_channel1"},
+                },
+                "mediapackage": {
+                    "endpoints": {
+                        "hls": {
+                            "id": "mediapackage_endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                    "channel": {
+                        "id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880"
+                    },
+                },
+                "started_at": "1569309880",
+                "stopped_at": "1569310880",
+            },
+        )
+        responses.add(
+            responses.GET,
+            "https://channel_endpoint1/live.m3u8",
+            status=200,
+        )
+
+        with mock.patch.object(timezone, "now", return_value=stop), Stubber(
+            medialive_utils.mediapackage_client
+        ) as mediapackage_client_stubber:
             mediapackage_client_stubber.add_response(
                 "create_harvest_job",
                 expected_params={
-                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880",
-                    "StartTime": "1569309880",
-                    "EndTime": "1569310880",
+                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880_1",
+                    "StartTime": to_timestamp(start),
+                    "EndTime": to_timestamp(stop),
                     "OriginEndpointId": "mediapackage_endpoint1",
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
-                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880.m3u8",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_1.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                 },
-                service_response={},
+                service_response={
+                    "Arn": "string",
+                    "ChannelId": "medialive_channel1",
+                    "CreatedAt": str(stop),
+                    "EndTime": str(stop),
+                    "Id": "harvest_job1",
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_1.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                    "StartTime": str(start),
+                    "Status": "IN_PROGRESS",
+                },
             )
             medialive_utils.create_mediapackage_harvest_job(video)
             mediapackage_client_stubber.assert_no_pending_responses()
+
+        video.refresh_from_db()
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "start": to_timestamp(start),
+                    "stop": to_timestamp(stop),
+                    "status": PROCESSING,
+                    "harvest_job_id": "harvest_job1",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_1.m3u8",
+                }
+            ],
+        )
+
+    @override_settings(AWS_MEDIAPACKAGE_HARVEST_JOB_ARN="mediapackage:role:arn")
+    @responses.activate
+    def test_create_mediapackage_harvest_job_multiple_slices(self):
+        """Should create a mediapackage harvest job for multiple slices."""
+        now = timezone.now()
+        start_1 = now - timedelta(minutes=45)
+        stop_1 = start_1 + timedelta(minutes=10)
+
+        start_2 = stop_1 + timedelta(minutes=5)
+        stop_2 = start_2 + timedelta(minutes=10)
+
+        start_3 = stop_2 + timedelta(minutes=5)
+        stop_3 = start_3 + timedelta(minutes=10)
+        video = VideoFactory(
+            id="e19f1058-0bde-4f29-a5d8-e0b4ddf92b74",
+            recording_slices=[
+                {
+                    "start": to_timestamp(start_1),
+                    "stop": to_timestamp(stop_1),
+                    "status": PENDING,
+                },
+                {
+                    "start": to_timestamp(start_2),
+                    "stop": to_timestamp(stop_2),
+                    "status": PENDING,
+                },
+                {
+                    "start": to_timestamp(start_3),
+                    "stop": to_timestamp(stop_3),
+                    "status": PENDING,
+                },
+            ],
+            live_info={
+                "medialive": {
+                    "input": {"id": "medialive_input1"},
+                    "channel": {"id": "medialive_channel1"},
+                },
+                "mediapackage": {
+                    "endpoints": {
+                        "hls": {
+                            "id": "mediapackage_endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                    "channel": {
+                        "id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880"
+                    },
+                },
+                "started_at": "1569309880",
+                "stopped_at": "1569310880",
+            },
+        )
+        responses.add(
+            responses.GET,
+            "https://channel_endpoint1/live.m3u8",
+            status=200,
+        )
+
+        with mock.patch.object(timezone, "now", return_value=now), Stubber(
+            medialive_utils.mediapackage_client
+        ) as mediapackage_client_stubber:
+            mediapackage_client_stubber.add_response(
+                "create_harvest_job",
+                expected_params={
+                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880_1",
+                    "StartTime": to_timestamp(start_1),
+                    "EndTime": to_timestamp(stop_1),
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_1.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                },
+                service_response={
+                    "Arn": "string",
+                    "ChannelId": "medialive_channel1",
+                    "CreatedAt": str(now),
+                    "EndTime": str(stop_1),
+                    "Id": "harvest_job1",
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_1.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                    "StartTime": str(start_1),
+                    "Status": "IN_PROGRESS",
+                },
+            )
+            mediapackage_client_stubber.add_response(
+                "create_harvest_job",
+                expected_params={
+                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880_2",
+                    "StartTime": to_timestamp(start_2),
+                    "EndTime": to_timestamp(stop_2),
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_2.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                },
+                service_response={
+                    "Arn": "string",
+                    "ChannelId": "medialive_channel1",
+                    "CreatedAt": str(now),
+                    "EndTime": str(stop_2),
+                    "Id": "harvest_job2",
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_2.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                    "StartTime": str(start_2),
+                    "Status": "IN_PROGRESS",
+                },
+            )
+            mediapackage_client_stubber.add_response(
+                "create_harvest_job",
+                expected_params={
+                    "Id": "test_e19f1058-0bde-4f29-a5d8-e0b4ddf92b74_1569309880_3",
+                    "StartTime": to_timestamp(start_3),
+                    "EndTime": to_timestamp(stop_3),
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_3.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                },
+                service_response={
+                    "Arn": "string",
+                    "ChannelId": "medialive_channel1",
+                    "CreatedAt": str(now),
+                    "EndTime": str(stop_3),
+                    "Id": "harvest_job3",
+                    "OriginEndpointId": "mediapackage_endpoint1",
+                    "S3Destination": {
+                        "BucketName": "test-marsha-destination",
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "1569309880_3.m3u8",
+                        "RoleArn": "mediapackage:role:arn",
+                    },
+                    "StartTime": str(start_3),
+                    "Status": "IN_PROGRESS",
+                },
+            )
+            medialive_utils.create_mediapackage_harvest_job(video)
+            mediapackage_client_stubber.assert_no_pending_responses()
+
+        video.refresh_from_db()
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "start": to_timestamp(start_1),
+                    "stop": to_timestamp(stop_1),
+                    "status": PROCESSING,
+                    "harvest_job_id": "harvest_job1",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_1.m3u8",
+                },
+                {
+                    "start": to_timestamp(start_2),
+                    "stop": to_timestamp(stop_2),
+                    "status": PROCESSING,
+                    "harvest_job_id": "harvest_job2",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_2.m3u8",
+                },
+                {
+                    "start": to_timestamp(start_3),
+                    "stop": to_timestamp(stop_3),
+                    "status": PROCESSING,
+                    "harvest_job_id": "harvest_job3",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_3.m3u8",
+                },
+            ],
+        )
 
     def test_delete_aws_elemental_stack(self):
         """Should delete all resources used during a live."""

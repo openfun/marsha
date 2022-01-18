@@ -28,6 +28,7 @@ from ..defaults import (
 )
 from ..utils.api_utils import generate_hash
 from ..utils.medialive_utils import ManifestMissingException
+from ..utils.time_utils import to_timestamp
 
 
 RSA_KEY_MOCK = b"""
@@ -4889,9 +4890,14 @@ class VideoAPITest(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_api_video_instructor_end_paused_live(self):
-        """An instructor can end a live in paused state"""
+    def test_api_video_instructor_end_paused_live_recording_slice(self):
+        """An instructor can end a live in paused state during recording.
+
+        If recording slices exist, the live should be harvested."""
+        start = timezone.now()
+        stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
+            recording_slices=[{"start": to_timestamp(start)}],
             live_state=PAUSED,
             live_type=JITSI,
             live_info={
@@ -4922,7 +4928,7 @@ class VideoAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        with mock.patch.object(
+        with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "delete_aws_element_stack"
         ) as mock_delete_aws_element_stack, mock.patch.object(
             api.video, "create_mediapackage_harvest_job"
@@ -4984,7 +4990,7 @@ class VideoAPITest(TestCase):
                     "title": video.playlist.title,
                     "lti_id": video.playlist.lti_id,
                 },
-                "recording_time": 0,
+                "recording_time": 600,
                 "shared_live_medias": [],
                 "live_state": STOPPED,
                 "live_info": {
@@ -5013,10 +5019,132 @@ class VideoAPITest(TestCase):
                 },
             },
         )
+        video.refresh_from_db()
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "start": to_timestamp(start),
+                    "stop": to_timestamp(stop),
+                    "status": PENDING,
+                }
+            ],
+        )
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    def test_api_video_instructor_end_paused_live_no_recording_slice(self):
+        """An instructor can end a live in paused state during recording.
+
+        If no recording slices exist, the live should not be harvested."""
+        start = timezone.now()
+        stop = start + timedelta(minutes=10)
+        video = factories.VideoFactory(
+            live_state=PAUSED,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
+            api.video, "delete_aws_element_stack"
+        ) as mock_delete_aws_element_stack, mock.patch.object(
+            api.video, "create_mediapackage_harvest_job"
+        ) as mock_create_mediapackage_harvest_job, mock.patch.object(
+            api.video, "close_room"
+        ) as mock_close_room, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            response = self.client.post(
+                f"/api/videos/{video.id}/end-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_delete_aws_element_stack.assert_called_once()
+            mock_create_mediapackage_harvest_job.assert_not_called()
+            mock_close_room.assert_called_once_with(video.id)
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "allow_recording": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_public": False,
+                "is_ready_to_show": False,
+                "is_recording": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": DELETED,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": video.playlist.title,
+                    "lti_id": video.playlist.lti_id,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "xmpp": None,
+            },
+        )
 
     def test_api_video_instructor_end_paused_live_missing_manifest(self):
         """An instructor ending a live with a missing manifest should delete the video"""
+        start = timezone.now()
         video = factories.VideoFactory(
+            recording_slices=[
+                {"start": to_timestamp(start), "stop": to_timestamp(start)}
+            ],
             live_state=PAUSED,
             live_type=JITSI,
             live_info={

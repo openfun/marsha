@@ -14,7 +14,14 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE_NOCASCADE
 
-from ..defaults import DELETED, HARVESTED, IDLE, LIVE_CHOICES, LIVE_TYPE_CHOICES
+from ..defaults import (
+    DELETED,
+    HARVESTED,
+    IDLE,
+    LIVE_CHOICES,
+    LIVE_TYPE_CHOICES,
+    PENDING,
+)
 from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
@@ -308,7 +315,7 @@ class Video(BaseFile):
     def _stop_recording_slice(self, stop):
         """Stop a recording slice"""
         slices = self.recording_slices
-        slices[-1].update({"stop": stop})
+        slices[-1].update({"stop": stop, "status": PENDING})
         self.recording_slices = slices
         self.save()
 
@@ -328,6 +335,7 @@ class Video(BaseFile):
             raise VideoRecordingError("Video recording is not started.")
 
         self._stop_recording_slice(stop=to_timestamp(timezone.now()))
+
 
 class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""

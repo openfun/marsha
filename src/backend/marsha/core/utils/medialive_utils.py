@@ -9,6 +9,8 @@ from botocore.exceptions import WaiterError
 import requests
 from sentry_sdk import capture_exception
 
+from marsha.core.defaults import PROCESSING
+
 
 class ManifestMissingException(Exception):
     """Exception used when a mediapackage manifest is missing."""
@@ -316,17 +318,29 @@ def create_mediapackage_harvest_job(video):
     # split channel id to take the stamp in it {env}_{pk}_{stamp}
     elements = channel_id.split("_")
 
-    mediapackage_client.create_harvest_job(
-        Id=channel_id,
-        StartTime=video.live_info.get("started_at"),
-        EndTime=video.live_info.get("stopped_at"),
-        OriginEndpointId=hls_endpoint,
-        S3Destination={
-            "BucketName": settings.AWS_DESTINATION_BUCKET_NAME,
-            "ManifestKey": f"{video.pk}/cmaf/{elements[2]}.m3u8",
-            "RoleArn": settings.AWS_MEDIAPACKAGE_HARVEST_JOB_ARN,
-        },
-    )
+    processing_slices = []
+    for num, recording_slice in enumerate(video.recording_slices, start=1):
+        harvest_result = mediapackage_client.create_harvest_job(
+            Id=f"{channel_id}_{num}",
+            StartTime=recording_slice.get("start"),
+            EndTime=recording_slice.get("stop"),
+            OriginEndpointId=hls_endpoint,
+            S3Destination={
+                "BucketName": settings.AWS_DESTINATION_BUCKET_NAME,
+                "ManifestKey": f"{video.pk}/cmaf/{elements[2]}_{num}.m3u8",
+                "RoleArn": settings.AWS_MEDIAPACKAGE_HARVEST_JOB_ARN,
+            },
+        )
+        recording_slice.update(
+            {
+                "status": PROCESSING,
+                "harvest_job_id": harvest_result.get("Id"),
+                "manifest_key": harvest_result.get("S3Destination").get("ManifestKey"),
+            }
+        )
+        processing_slices.append(recording_slice)
+    video.recording_slices = processing_slices
+    video.save()
 
 
 def delete_aws_element_stack(video):
