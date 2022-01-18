@@ -54,9 +54,12 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
       availableItems.push(LivePanelItem.CHAT);
       availableItems.push(LivePanelItem.JOIN_DISCUSSION);
       currentItem = LivePanelItem.CHAT;
+      if (isStarted) {
+        useLivePanelState.getState().setPanelVisibility(true);
+      }
     }
     configPanel(availableItems, currentItem);
-  }, [video, configPanel]);
+  }, [video, configPanel, isStarted]);
 
   return (
     <StudentLiveLayout

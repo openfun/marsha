@@ -4,6 +4,11 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import {
+  useLivePanelState,
+  LivePanelItem,
+} from 'data/stores/useLivePanelState';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
@@ -15,7 +20,6 @@ import { wrapInRouter } from 'utils/tests/router';
 import { Maybe } from 'utils/types';
 
 import PublicVideoDashboard from '.';
-import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -66,6 +70,8 @@ jest.mock('data/appData', () => ({
 jest.mock('utils/conversejs/converse', () => ({
   converseMounter: jest.fn(() => jest.fn()),
 }));
+
+window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('PublicVideoDashboard', () => {
   beforeEach(() => {
@@ -281,6 +287,12 @@ describe('PublicVideoDashboard', () => {
     expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
   });
   it('displays the video player, the tile, the chat and chat action', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
     const video = videoMockFactory({
       title: 'live title',
       live_state: liveState.RUNNING,
@@ -322,10 +334,17 @@ describe('PublicVideoDashboard', () => {
 
     screen.getByText('live title');
 
-    screen.getByRole('button', { name: 'Show chat' });
+    screen.getByRole('button', { name: 'Hide chat' });
+    screen.getByText('Join the chat');
   });
 
   it('displays the video player and the waiting message when the live is stopping', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
     const video = videoMockFactory({
       title: 'live title',
       live_state: liveState.STOPPING,
@@ -367,7 +386,8 @@ describe('PublicVideoDashboard', () => {
 
     screen.getByText('live title');
 
-    screen.getByRole('button', { name: 'Show chat' });
+    screen.getByRole('button', { name: 'Hide chat' });
+    screen.getByText('Join the chat');
 
     screen.getByText('Webinar is paused');
   });
@@ -408,6 +428,12 @@ describe('PublicVideoDashboard', () => {
   });
 
   it('displays the video player and the waiting message when the live is paused', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
     const video = videoMockFactory({
       title: 'live title',
       live_state: liveState.PAUSED,
@@ -449,7 +475,8 @@ describe('PublicVideoDashboard', () => {
 
     screen.getByText('live title');
 
-    screen.getByRole('button', { name: 'Show chat' });
+    screen.getByRole('button', { name: 'Hide chat' });
+    screen.getByText('Join the chat');
 
     screen.getByText('Webinar is paused');
   });
