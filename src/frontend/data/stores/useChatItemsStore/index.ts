@@ -52,6 +52,8 @@ type State = {
   chatItems: ChatItem[];
   addMessage: (newMessage: ReceivedMessageType) => void;
   addPresence: (newPresence: ChatPresenceType) => void;
+  displayName: string | null;
+  setDisplayName: (displayName: string) => void;
 };
 
 export const useChatItemState = create<State>((set) => ({
@@ -105,4 +107,6 @@ export const useChatItemState = create<State>((set) => ({
         presenceData: presence,
       }),
     })),
+  displayName: null,
+  setDisplayName: (displayName) => set({ displayName }),
 }));

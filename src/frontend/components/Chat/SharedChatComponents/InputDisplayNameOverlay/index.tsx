@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
+import { useChatItemState } from 'data/stores/useChatItemsStore/index';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MIN_LENGTH,
@@ -57,16 +58,15 @@ const messages = defineMessages({
 });
 
 interface InputDisplayNameOverlayProps {
-  setInputBarActive: React.Dispatch<React.SetStateAction<boolean>>;
   setOverlay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const InputDisplayNameOverlay = ({
-  setInputBarActive,
   setOverlay,
 }: InputDisplayNameOverlayProps) => {
   const intl = useIntl();
   const [alertsState, setAlertsState] = useState<string[]>([]);
+  const setDisplayName = useChatItemState((state) => state.setDisplayName);
 
   const processDisplayName = (displayName: string) => {
     const alerts: string[] = [];
@@ -94,7 +94,7 @@ export const InputDisplayNameOverlay = ({
     }
     if (alerts.length === 0) {
       converse.claimNewNicknameInChatRoom(displayName);
-      setInputBarActive(true);
+      setDisplayName(displayName);
       setOverlay(false);
       return true;
     } else {
@@ -136,7 +136,7 @@ export const InputDisplayNameOverlay = ({
         }}
         pad="3px"
       >
-        <Box background="bg-marsha" gap="8px" pad="8px" round="6px">
+        <Box background="bg-marsha" gap="8px" pad="12px" round="6px">
           <Box direction="row">
             <Text
               margin={{
