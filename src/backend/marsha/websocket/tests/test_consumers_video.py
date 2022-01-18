@@ -146,7 +146,7 @@ class VideoConsumerTest(TransactionTestCase):
         self.assertEqual(
             json.loads(response),
             {
-                "type": "video",
+                "type": "videos",
                 "resource": {
                     "active_shared_live_media": None,
                     "active_shared_live_media_page": None,
@@ -265,7 +265,7 @@ class VideoConsumerTest(TransactionTestCase):
         self.assertEqual(
             json.loads(response),
             {
-                "type": "video",
+                "type": "videos",
                 "resource": {
                     "active_shared_live_media": None,
                     "active_shared_live_media_page": None,
