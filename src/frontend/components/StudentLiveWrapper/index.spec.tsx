@@ -114,6 +114,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       currentItem: undefined,
       availableItems: [],
     });
+    useLiveStateStarted.getState().setIsStarted(true);
     const video = videoMockFactory({
       title: 'live title',
       live_state: liveState.RUNNING,
@@ -154,6 +155,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         video,
       ),
     );
+
+    act(() => useLivePanelState.getState().setPanelVisibility(false));
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
@@ -399,7 +402,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
@@ -407,6 +410,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -418,7 +422,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       useLiveStateStarted.getState().setIsStarted(true);
     });
 
-    await screen.findByRole('button', { name: 'Show chat' });
+    await screen.findByRole('button', { name: 'Hide chat' });
   });
 });
 
@@ -449,6 +453,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       currentItem: undefined,
       availableItems: [],
     });
+    useLiveStateStarted.getState().setIsStarted(true);
     const video = videoMockFactory({
       title: 'live title',
       live_info: {
@@ -481,6 +486,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
         ),
       ),
     );
+    act(() => useLivePanelState.getState().setPanelVisibility(false));
 
     expect(mockJitsi).toHaveBeenCalled();
 
@@ -698,12 +704,13 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Show chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,

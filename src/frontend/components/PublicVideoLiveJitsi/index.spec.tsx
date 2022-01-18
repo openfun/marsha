@@ -1,8 +1,13 @@
 import { render, screen } from '@testing-library/react';
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { Grommet, ResponsiveContext } from 'grommet';
 import React from 'react';
 
+import {
+  useLivePanelState,
+  LivePanelItem,
+} from 'data/stores/useLivePanelState';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { LiveModeType, liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -60,6 +65,16 @@ window.HTMLElement.prototype.scrollTo = jest.fn();
 describe('<PublicVideoLiveJitsi />', () => {
   beforeAll(() => {
     global.JitsiMeetExternalAPI = mockJitsi;
+
+    useParticipantWorkflow.setState({
+      accepted: true,
+    });
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
   });
 
   afterAll(() => {
@@ -67,10 +82,6 @@ describe('<PublicVideoLiveJitsi />', () => {
   });
 
   it('renders jitsi, live info, chat and actions on large screen', async () => {
-    useParticipantWorkflow.setState({
-      accepted: true,
-    });
-
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -86,8 +97,8 @@ describe('<PublicVideoLiveJitsi />', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    //  expect chat input to not be present
-    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
+    //  expect chat input to be present
+    expect(screen.queryByText('Join the chat')).toBeInTheDocument();
 
     //  expect live title to be present
     screen.getByRole('heading', { name: 'live title' });
@@ -97,7 +108,7 @@ describe('<PublicVideoLiveJitsi />', () => {
       name: /Leave discussion/i,
     });
     screen.getByRole('button', {
-      name: /Show chat/i,
+      name: /Hide chat/i,
     });
   });
 
@@ -105,7 +116,6 @@ describe('<PublicVideoLiveJitsi />', () => {
     useParticipantWorkflow.setState({
       accepted: true,
     });
-
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -121,13 +131,11 @@ describe('<PublicVideoLiveJitsi />', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    //  expect chat input to be present (because live panel will contain at least the chat)
-    //  but not visible (because live panel state is configured by default not to show the panel)
-    //  for now, live panel is not unmounted when we don't want to display it because of chat issues
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
-
     //  expect live title to be present
     screen.getByRole('heading', { name: 'live title' });
+
+    //  expect chat input to be present
+    screen.getByText('Join the chat');
 
     //  expect buttons to be present
     screen.getByRole('button', {
