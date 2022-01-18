@@ -1,5 +1,6 @@
 import { Box, Text } from 'grommet';
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 
 import { ChatPresenceType, presenceType } from 'data/stores/useChatItemsStore';
 import { defineMessages, useIntl } from 'react-intl';
@@ -16,6 +17,10 @@ const messages = defineMessages({
     id: 'component.ChatPresenceItem.leftChatLabel',
   },
 });
+
+const TextStyled = styled(Text)`
+  font-family: Roboto-Regular;
+`;
 
 interface ChatPresenceItemProps {
   presenceItem: ChatPresenceType;
@@ -47,7 +52,7 @@ export const ChatPresenceItem = ({ presenceItem }: ChatPresenceItemProps) => {
           }}
           round="12px"
         >
-          <Text color="blue-chat" size="0.625rem">
+          <TextStyled color="blue-chat" size="0.625rem">
             {presenceItem.type === presenceType.ARRIVAL
               ? intl.formatMessage(messages.joinedChatLabel, {
                   participant: presenceItem.sender,
@@ -55,7 +60,7 @@ export const ChatPresenceItem = ({ presenceItem }: ChatPresenceItemProps) => {
               : intl.formatMessage(messages.leftChatLabel, {
                   participant: presenceItem.sender,
                 })}
-          </Text>
+          </TextStyled>
         </Box>
       </Box>
     ),

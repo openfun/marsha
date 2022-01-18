@@ -56,6 +56,7 @@ const StyledTab = styled(Tab)`
 `;
 
 const StyledText = styled(Text)`
+  font-family: 'Roboto-Bold';
   font-size: 10px;
   font-weight: bold;
   letter-spacing: -0.23px;
