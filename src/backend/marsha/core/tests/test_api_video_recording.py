@@ -304,8 +304,70 @@ class TestApiVideoRecording(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_api_video_recording_end_instructor(self):
-        """An instructor can end a video recording."""
+    def test_api_video_recording_start_live_not_running(self):
+        """An instructor cannot start a recording on a not running live."""
+
+        video = VideoFactory(
+            allow_recording=True,
+            upload_state=PENDING,
+            live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+        self.assertEqual(video.recording_slices, [])
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+
+        now = timezone.now()
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            response = self.client.patch(
+                f"/api/videos/{video.id}/start-recording/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+        content = response.json()
+        self.assertEqual(
+            content,
+            {"detail": "Live is not running."},
+        )
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    def test_api_video_recording_stop_instructor_started_slice(self):
+        """An instructor can stop a video recording."""
 
         start = timezone.now()
         stop = start + timedelta(minutes=10)

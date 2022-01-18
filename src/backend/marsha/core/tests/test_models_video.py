@@ -13,15 +13,20 @@ from safedelete.models import SOFT_DELETE_CASCADE
 from ..defaults import (
     DELETED,
     HARVESTED,
+    HARVESTING,
     IDLE,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
+    PENDING,
     RAW,
     STATE_CHOICES,
 )
 from ..factories import VideoFactory
 from ..models import VideoRecordingError
 from ..utils.time_utils import to_timestamp
+
+
+# pylint: disable=too-many-public-methods
 
 
 class VideoModelsTestCase(TestCase):
@@ -267,6 +272,7 @@ class VideoModelsTestCase(TestCase):
                 {
                     "start": to_timestamp(start),
                     "stop": to_timestamp(stop),
+                    "status": PENDING,
                 }
             ],
         )
@@ -282,6 +288,7 @@ class VideoModelsTestCase(TestCase):
                 {
                     "start": to_timestamp(existing_start),
                     "stop": to_timestamp(existing_stop),
+                    "status": HARVESTING,
                 },
                 {"start": to_timestamp(start)},
             ],
@@ -296,8 +303,13 @@ class VideoModelsTestCase(TestCase):
                 {
                     "start": to_timestamp(existing_start),
                     "stop": to_timestamp(existing_stop),
+                    "status": HARVESTING,
                 },
-                {"start": to_timestamp(start), "stop": to_timestamp(stop)},
+                {
+                    "start": to_timestamp(start),
+                    "stop": to_timestamp(stop),
+                    "status": PENDING,
+                },
             ],
         )
 
@@ -333,6 +345,7 @@ class VideoModelsTestCase(TestCase):
                 {
                     "start": to_timestamp(start_1),
                     "stop": to_timestamp(stop_1),
+                    "status": PENDING,
                 },
                 {"start": to_timestamp(start_2)},
             ],
