@@ -384,6 +384,9 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
+        if video.is_recording:
+            video.stop_recording()
+
         if video.live_state == defaults.IDLE:
             video.upload_state = defaults.DELETED
             video.live_state = None
@@ -398,12 +401,20 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         delete_aws_element_stack(video)
         if settings.LIVE_CHAT_ENABLED:
             close_room(video.id)
-        try:
-            create_mediapackage_harvest_job(video)
-            video.live_state = defaults.STOPPED
-            video.upload_state = defaults.HARVESTING
-        except ManifestMissingException:
-            delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
+
+        if video.allow_recording and video.recording_slices:
+            try:
+                create_mediapackage_harvest_job(video)
+                video.live_state = defaults.STOPPED
+                video.upload_state = defaults.HARVESTING
+            except ManifestMissingException:
+                delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
+                video.upload_state = defaults.DELETED
+                video.live_state = None
+                video.live_info = None
+                video.live_type = None
+        else:
+            video.delete()
             video.upload_state = defaults.DELETED
             video.live_state = None
             video.live_info = None
