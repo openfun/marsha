@@ -2,9 +2,8 @@ import { Box, BoxExtendedProps } from 'grommet';
 import React, { useEffect } from 'react';
 
 import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
-import { initConverse } from 'utils/conversejs/converse';
-
+import { liveState, Video } from 'types/tracks';
+import { converseMounter } from 'utils/conversejs/converse';
 import { StudentChat } from './StudentChat';
 
 interface ChatProps {
@@ -12,12 +11,16 @@ interface ChatProps {
   standalone?: boolean;
 }
 
+const initConverse = converseMounter();
+
 export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
 
   useEffect(() => {
-    initConverse(video.xmpp!);
-  }, []);
+    if (video.live_state && video.live_state !== liveState.IDLE) {
+      initConverse(video.xmpp!);
+    }
+  }, [video.live_state]);
 
   const conditionalProps: Partial<BoxExtendedProps> = {};
   if (standalone) {
