@@ -68,12 +68,7 @@ export const StudentLiveLayout = ({
         {/* main view rendering player or conf to stream */}
         <Box basis="full">{mainElement}</Box>
 
-        {sideElement && (
-          // for now panel is kept in the DOM but hiden to mount chat and therfore connect to XMPP
-          <Box basis="1/4" hidden={!isPanelOpen}>
-            {sideElement}
-          </Box>
-        )}
+        {sideElement && isPanelOpen && <Box basis="1/4">{sideElement}</Box>}
       </Box>
 
       <LiveVideoInformationBarWrapper
