@@ -48,7 +48,7 @@ export type ChatItem = ChatMessageGroupWrapper | ChatPresenceItemWrapper;
 
 type State = {
   hasReceivedMessageHistory: boolean;
-  setHasReceivedMessageHistory: (received: boolean) => void;
+  setHasReceivedMessageHistory: (hasReceivedMessageHistory: boolean) => void;
   chatItems: ChatItem[];
   addMessage: (newMessage: ReceivedMessageType) => void;
   addPresence: (newPresence: ChatPresenceType) => void;
@@ -56,10 +56,8 @@ type State = {
 
 export const useChatItemState = create<State>((set) => ({
   hasReceivedMessageHistory: false,
-  setHasReceivedMessageHistory: (received) =>
-    set({
-      hasReceivedMessageHistory: received,
-    }),
+  setHasReceivedMessageHistory: (hasReceivedMessageHistory) =>
+    set({ hasReceivedMessageHistory }),
   chatItems: [],
   addMessage: (newReceivedMessage: ReceivedMessageType) =>
     set((state) => {
