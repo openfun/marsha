@@ -125,7 +125,7 @@ export const InputDisplayNameOverlay = ({
               height: '20px',
               width: '20px',
             }}
-            iconColor="#031963"
+            iconColor="blue-focus"
           />
         </Box>
       </Box>
@@ -136,7 +136,7 @@ export const InputDisplayNameOverlay = ({
         }}
         pad="3px"
       >
-        <Box background="#edf5fa" gap="8px" pad="8px" round="6px">
+        <Box background="bg-marsha" gap="8px" pad="8px" round="6px">
           <Box direction="row">
             <Text
               margin={{
@@ -149,7 +149,7 @@ export const InputDisplayNameOverlay = ({
             <Box>
               <Tip
                 content={
-                  <Box background="#ffffff" pad="2px" round="6px" width="150px">
+                  <Box background="white" pad="2px" round="6px" width="150px">
                     <Text size="0.625rem">
                       {intl.formatMessage(messages.inputDisplayNameInformative)}
                     </Text>
@@ -163,7 +163,7 @@ export const InputDisplayNameOverlay = ({
                       height: '15px',
                       width: '15px',
                     }}
-                    iconColor="#031963"
+                    iconColor="blue-focus"
                   />
                 </Box>
               </Tip>

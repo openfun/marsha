@@ -63,7 +63,7 @@ export const StudentLiveLayout = ({
   }
 
   return (
-    <Box>
+    <Box background="bg-marsha">
       <Box direction="row">
         {/* main view rendering player or conf to stream */}
         <Box basis="full">{mainElement}</Box>
@@ -78,6 +78,7 @@ export const StudentLiveLayout = ({
 
       <LiveVideoInformationBarWrapper
         align="center"
+        background="white"
         direction="row-responsive"
         height="80px"
         justify="between"

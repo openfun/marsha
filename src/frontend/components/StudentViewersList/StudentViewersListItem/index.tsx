@@ -23,7 +23,7 @@ export const StudentViewersListItem = ({
       <ChatAvatar isInstructor={isInstructor} />
       <StyledText
         color="blue-active"
-        size="12px"
+        size="0.75rem"
         weight={isInstructor ? 'bold' : 'normal'}
       >
         {name}

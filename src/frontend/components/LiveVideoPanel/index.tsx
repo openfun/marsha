@@ -93,6 +93,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
 
   return (
     <StyledGrommet
+      background="white"
       theme={{
         ...theme,
         tabs: {
