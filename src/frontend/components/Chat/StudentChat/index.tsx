@@ -6,11 +6,12 @@ import { ChatConversationDisplayer } from 'components/Chat/SharedChatComponents/
 import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
 import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/InputDisplayNameOverlay';
 import { JoinChatButton } from 'components/Chat/SharedChatComponents/JoinChatButton';
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { converse } from 'utils/window';
 
 export const StudentChat = () => {
+  const displayName = useChatItemState((state) => state.displayName);
   const [overlay, setOverlay] = useState(false);
-  const [isInputBarActive, setInputBarActive] = useState(false);
   const intl = useIntl();
 
   const processChatMessage = (chatMsg: string) => {
@@ -32,44 +33,27 @@ export const StudentChat = () => {
   };
 
   return (
-    <Box
-      border={{
-        color: 'blue',
-        size: 'small',
-      }}
-      direction="column"
-      fill
-    >
-      {overlay && (
-        <InputDisplayNameOverlay
-          setInputBarActive={setInputBarActive}
-          setOverlay={setOverlay}
-        />
-      )}
-
-      {
-        // ChatConversationDisplayer display a spinner each time it is mounted,
-        // so it can't be unmounted for now
-      }
-      <Box
-        height="100%"
-        style={{
-          display: overlay ? 'none' : 'flex',
-        }}
-      >
-        <ChatConversationDisplayer />
-        <Box margin="10px">
-          {isInputBarActive ? (
-            <InputBar
-              handleUserInput={processChatMessage}
-              isChatInput={true}
-              placeholderText={intl.formatMessage(messages.inputBarPlaceholder)}
-            />
-          ) : (
-            <JoinChatButton handleClick={handleJoinChatButton} />
-          )}
+    <Box direction="column" fill>
+      {overlay ? (
+        <InputDisplayNameOverlay setOverlay={setOverlay} />
+      ) : (
+        <Box direction="column" fill>
+          <ChatConversationDisplayer />
+          <Box margin="10px">
+            {displayName ? (
+              <InputBar
+                handleUserInput={processChatMessage}
+                isChatInput={true}
+                placeholderText={intl.formatMessage(
+                  messages.inputBarPlaceholder,
+                )}
+              />
+            ) : (
+              <JoinChatButton handleClick={handleJoinChatButton} />
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };
