@@ -14,6 +14,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 import { createPlayer } from 'Player/createPlayer';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import userEvent from '@testing-library/user-event';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -107,7 +108,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     jest.clearAllMocks();
   });
 
-  it('configures live state with chat when XMPP is enabled and panel closed', async () => {
+  it('configures live state with panel closed', async () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: undefined,
@@ -155,12 +156,15 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
+    expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
+
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Show chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -168,7 +172,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 
-  it('configures live state with chat when XMPP is enabled and panel open', async () => {
+  it('configures live state with panel opened on chat', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -216,15 +220,81 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
-    expect(screen.getByText('Join the chat')).toBeVisible();
+    screen.getByText('Join the chat');
+    expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Hide chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
+    );
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
+  });
+
+  it('configures live state with panel opened on viewers list', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    const video = videoMockFactory({
+      title: 'live title',
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(
+          <LiveVideoWrapper
+            video={video}
+            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
+          />,
+        ),
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+      ),
+    );
+
+    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    screen.getByText('live title');
+
+    const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
+    userEvent.click(viewersTabButton);
+    screen.getByText('Other participants');
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.JOIN_DISCUSSION,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
@@ -373,7 +443,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     jest.clearAllMocks();
   });
 
-  it('configures live state with chat when XMPP is enabled and panel is closed', () => {
+  it('configures live state with panel closed', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: undefined,
@@ -414,12 +484,14 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
+    expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Show chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -427,7 +499,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 
-  it('configures live state with chat when XMPP is enabled and panel is open', () => {
+  it('configures live state with panel opened on chat', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -468,15 +540,74 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    expect(screen.getByText('Join the chat')).toBeVisible();
+    screen.getByText('Join the chat');
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Hide chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
+    );
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
+  });
+
+  it('configures live state with panel opened on viewers list', () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT],
+    });
+    const video = videoMockFactory({
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(
+          <LiveVideoWrapper
+            video={video}
+            configuration={{ type: LiveType.ON_STAGE }}
+          />,
+        ),
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+
+    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    screen.getByText('live title');
+
+    const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
+    userEvent.click(viewersTabButton);
+    screen.getByText('Other participants');
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.CHAT,
+      LivePanelItem.JOIN_DISCUSSION,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.JOIN_DISCUSSION,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });

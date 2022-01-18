@@ -3,6 +3,7 @@ import { Tabs, Box, Grommet, ResponsiveContext } from 'grommet';
 import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
+import { StudentViewersList } from 'components/StudentViewersList';
 import {
   LivePanelItem,
   useLivePanelState,
@@ -10,7 +11,6 @@ import {
 import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
 import { theme } from 'utils/theme/theme';
-
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
 const StyledGrommet = styled(Grommet)`
@@ -84,8 +84,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       content = <p>application content</p>;
       break;
     case LivePanelItem.JOIN_DISCUSSION:
-      //  TODO : implement this item
-      content = <p>join discussion content</p>;
+      content = <StudentViewersList />;
       break;
     default:
       throw new ShouldNotHappen(currentItem);

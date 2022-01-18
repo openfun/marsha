@@ -86,10 +86,8 @@ describe('<PublicVideoLiveJitsi />', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    //  expect chat input to be present (because live panel will contain at least the chat)
-    //  but not visible (because live panel state is configured by default not to show the panel)
-    //  for now, live panel is not unmounted when we don't want to display it because of chat issues
-    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    //  expect chat input to not be present
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
 
     //  expect live title to be present
     screen.getByRole('heading', { name: 'live title' });

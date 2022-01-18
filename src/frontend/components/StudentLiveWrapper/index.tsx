@@ -52,8 +52,7 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
     let currentItem;
     if (video.xmpp !== null) {
       availableItems.push(LivePanelItem.CHAT);
-      //  if available, LivePanelItem.CHAT needs to be selected by default
-      //  because it will be rendered hidden and connection to XMPP will be initialized
+      availableItems.push(LivePanelItem.JOIN_DISCUSSION);
       currentItem = LivePanelItem.CHAT;
     }
     configPanel(availableItems, currentItem);
