@@ -53,8 +53,7 @@ describe('<StudentLiveLayout />', () => {
     screen.getByText('live title element');
     screen.getByText('main component');
 
-    const sideElenent = screen.getByText('panel component');
-    expect(sideElenent).not.toBeVisible();
+    expect(screen.queryByText('panel component')).not.toBeInTheDocument();
 
     await imageSnapshot();
   });
@@ -77,8 +76,7 @@ describe('<StudentLiveLayout />', () => {
     screen.getByText('live title element');
     screen.getByText('main component');
 
-    const sideElenent = screen.getByText('panel component');
-    expect(sideElenent).not.toBeVisible();
+    expect(screen.queryByText('panel component')).not.toBeInTheDocument();
 
     await imageSnapshot();
   });
