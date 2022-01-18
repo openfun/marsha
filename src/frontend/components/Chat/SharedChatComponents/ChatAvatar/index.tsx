@@ -24,7 +24,7 @@ export const ChatAvatar = ({ isInstructor }: ChatAvatarProps) => {
   const intl = useIntl();
   return (
     <AvatarBox
-      background="#edf5fa"
+      background="bg-marsha"
       border={
         isInstructor
           ? {
