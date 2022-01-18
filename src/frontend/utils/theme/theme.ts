@@ -85,16 +85,16 @@ interface Font {
 
 const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   primary: {
-    color: '#031963',
+    color: colorsGeneric['blue-focus'],
     fontFamily: 'Roboto-Medium',
-    fontSize: '12px',
-    fontWeight: 'bold',
+    fontSize: '0.75rem',
+    fontWeight: 500,
     letterSpacing: '0.07px',
     lineHeight: '16px',
   },
   secondary: {
     color: colorsGeneric['blue-chat'],
-    fontSize: '12px',
+    fontSize: '0.75rem',
     fontFamily: 'Roboto-Regular',
     fontWeight: 'normal',
     letterSpacing: '0.07px',
@@ -102,7 +102,7 @@ const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   },
   tertiary: {
     color: '#357cd7',
-    fontSize: '9px',
+    fontSize: '0.563rem',
     fontFamily: 'Roboto-Regular',
     fontWeight: 'normal',
     letterSpacing: '-0.2px',

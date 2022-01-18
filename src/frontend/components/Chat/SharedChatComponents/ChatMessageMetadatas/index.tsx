@@ -32,10 +32,12 @@ const { chatFonts } = theme.chat;
 const SenderNameTextStyled = styled(Text)`
   letter-spacing: ${chatFonts.primary.letterSpacing};
   line-height: ${chatFonts.primary.lineHeight};
+  font-family: ${chatFonts.primary.fontFamily};
 `;
 
 const SendTimeTextStyled = styled(Text)`
   letter-spacing: ${chatFonts.tertiary.letterSpacing};
+  font-family: ${chatFonts.tertiary.fontFamily};
 `;
 export const ChatMessageMetadatas = ({
   msgDatetime,

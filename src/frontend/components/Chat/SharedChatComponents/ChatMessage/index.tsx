@@ -18,6 +18,7 @@ const { chatFonts } = theme.chat;
 const MessageContentTextStyled = styled(Text)`
   line-height: ${chatFonts.secondary.lineHeight};
   letter-spacing: ${chatFonts.secondary.letterSpacing};
+  font-family: ${chatFonts.secondary.fontFamily};
 `;
 
 interface ChatMessageProps {
