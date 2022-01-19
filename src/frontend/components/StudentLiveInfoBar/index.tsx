@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Box, Paragraph, Heading, ResponsiveContext } from 'grommet';
+import React from 'react';
+import { Box, Paragraph, Heading } from 'grommet';
 
 import { Nullable } from 'utils/types';
 
@@ -12,18 +12,14 @@ export const StudentLiveInfoBar = ({
   title,
   startDate,
 }: StudentLiveInfoBarProps) => {
-  const size = useContext(ResponsiveContext);
-
   return (
-    <Box
-      direction="column"
-      margin={size === 'small' ? { bottom: 'large' } : { bottom: 'none' }}
-    >
+    <Box direction="column">
       <Heading
+        color="blue-active"
         level="2"
         margin={{ bottom: 'small' }}
         size="small"
-        color="blue-active"
+        truncate
       >
         {title}
       </Heading>
