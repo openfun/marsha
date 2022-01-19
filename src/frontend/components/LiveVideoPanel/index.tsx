@@ -14,7 +14,7 @@ import { theme } from 'utils/theme/theme';
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
 const StyledGrommet = styled(Grommet)`
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
 `;
@@ -107,7 +107,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       }}
     >
       {header}
-      <RelativeBox fill>
+      <RelativeBox flex="grow">
         <ContentContainer>{content}</ContentContainer>
       </RelativeBox>
     </StyledGrommet>
