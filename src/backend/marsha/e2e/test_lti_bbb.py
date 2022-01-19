@@ -64,7 +64,6 @@ def _preview_meeting(page: Page, live_server: LiveServer):
         if key in (
             "custom_component_display_name",
             "lti_version",
-            "lis_person_sourcedid",
             "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
