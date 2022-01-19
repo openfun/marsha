@@ -300,7 +300,6 @@ jobs:
           name: Lint code with bandit
           command: ~/.local/bin/bandit -c .bandit -qr marsha
 
-
   test-back:
     docker:
       - image: cimg/python:3.10
@@ -337,6 +336,8 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - attach_workspace:
+          at: ~/marsha
       - restore_cache:
           keys:
             - v4-back-dependencies-{{ .Revision }}
@@ -392,7 +393,7 @@ jobs:
             - ./node_modules
           key: v5-front-dependencies-{{ checksum "yarn.lock" }}
 
-# ---- mail jobs ----
+  # ---- mail jobs ----
   build-mails:
     docker:
       - image: circleci/node:14
@@ -414,11 +415,15 @@ jobs:
       - run:
           name: Build mails
           command: yarn build-mails
+      - persist_to_workspace:
+          root: ~/marsha
+          paths:
+            - src/backend/marsha/core/templates/core/mail
       - save_cache:
           paths:
             - ./node_modules
           key: v5-mail-dependencies-{{ checksum "yarn.lock" }}
-      
+
   lint-front:
     docker:
       - image: circleci/node:14
@@ -1228,6 +1233,7 @@ workflows:
       - test-back:
           requires:
             - build-back
+            - build-mails
           filters:
             tags:
               only: /.*/
