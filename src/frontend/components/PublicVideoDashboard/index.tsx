@@ -13,6 +13,7 @@ import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 import { getDecodedJwt } from 'data/appData';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
+import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
 import {
   liveState,
@@ -20,6 +21,7 @@ import {
   TimedTextTranscript,
   Video,
 } from 'types/tracks';
+import { ShouldNotHappen } from 'utils/errors/exception';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -36,9 +38,11 @@ const PublicVideoDashboard = ({
   );
 
   if (video.live_state !== null) {
+    initVideoWebsocket(video);
     switch (video.live_state) {
       case liveState.RUNNING:
       case liveState.PAUSED:
+      case liveState.STARTING:
       case liveState.STOPPING:
         return (
           <LiveVideoWrapper
@@ -59,10 +63,9 @@ const PublicVideoDashboard = ({
           return <SubscribeScheduledVideo video={video} />;
         }
         // waiting message
-        return <WaitingLiveVideo video={video} />;
+        return <WaitingLiveVideo />;
       default:
-        // waiting message
-        return <WaitingLiveVideo video={video} />;
+        throw new ShouldNotHappen(video.live_state);
     }
   }
 

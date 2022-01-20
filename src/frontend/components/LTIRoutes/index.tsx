@@ -200,7 +200,7 @@ export const Routes = () => (
               if (appData.video!.is_scheduled) {
                 return <SubscribeScheduledVideo video={appData.video!} />;
               }
-              return <WaitingLiveVideo video={appData.video!} />;
+              return <WaitingLiveVideo />;
             }
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}

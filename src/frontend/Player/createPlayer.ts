@@ -1,7 +1,8 @@
-import { pollForLive } from '../data/sideEffects/pollForLive';
-import { VideoPlayerCreator } from '../types/VideoPlayer';
+import { pollForLive } from 'data/sideEffects/pollForLive';
+import { VideoPlayerCreator } from 'types/VideoPlayer';
+import { report } from 'utils/errors/report';
+
 import { createVideojsPlayer } from './createVideojsPlayer';
-import { report } from '../utils/errors/report';
 
 export const createPlayer: VideoPlayerCreator = async (
   type,
@@ -9,9 +10,9 @@ export const createPlayer: VideoPlayerCreator = async (
   dispatchPlayerTimeUpdate,
   video,
 ) => {
-  if (video.live_state) {
+  if (video.live_state && video.urls) {
     ref.classList.add('offscreen');
-    await pollForLive(video);
+    await pollForLive(video.urls);
     ref.classList.remove('offscreen');
   }
 
@@ -20,6 +21,8 @@ export const createPlayer: VideoPlayerCreator = async (
       const player = createVideojsPlayer(ref, dispatchPlayerTimeUpdate, video);
       return {
         destroy: () => player.dispose(),
+        getSource: () => player.currentSource().src,
+        setSource: (url: string) => player.src(url),
       };
     default:
       report(new Error(`player ${type} not implemented`));

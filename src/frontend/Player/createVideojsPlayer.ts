@@ -9,13 +9,11 @@ import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
 import { appData, getDecodedJwt } from 'data/appData';
-import { getResource } from 'data/sideEffects/getResource';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from 'types/libs/video.js/extend';
-import { modelName } from 'types/models';
 import { Video, videoSize } from 'types/tracks';
 import {
   InitializedContextExtensions,
@@ -168,13 +166,6 @@ export const createVideojsPlayer = (
     xapiStatement.paused({
       time: player.currentTime(),
     });
-  });
-
-  player.on('ended', async () => {
-    // When video is live, fetch the resource to detect live_state modification
-    if (video.live_state !== null) {
-      await getResource(modelName.VIDEOS, video.id);
-    }
   });
 
   /**************** Seeked statement ***********************/
