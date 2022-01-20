@@ -1,5 +1,6 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React from 'react';
+import videojs from 'video.js';
 
 import VideoPlayer from 'components/VideoPlayer';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
@@ -10,6 +11,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
+import { createPlayer } from './createPlayer';
 
 const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
   initialized: jest.fn(),
@@ -40,6 +42,10 @@ jest.mock('../utils/isMSESupported', () => ({
 
 const mockIsMSESupported = isMSESupported as jest.MockedFunction<
   typeof isMSESupported
+>;
+
+const mockCreatePlayer = createPlayer as jest.MockedFunction<
+  typeof createPlayer
 >;
 
 const mockVideo = videoMockFactory({
@@ -96,11 +102,22 @@ jest.mock('../data/stores/useTimedTextTrackLanguageChoices', () => ({
 }));
 
 describe('createVideoJsPlayer', () => {
+  afterEach(() => {
+    // dispose all not disposed players
+    videojs.getAllPlayers().forEach((player) => {
+      if (!player.isDisposed()) {
+        player.dispose();
+      }
+    });
+    // remove all subscribers
+    useTranscriptTimeSelector.destroy();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('creates videojs player and configures it', () => {
+  it('creates videojs player and configures it', async () => {
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
@@ -110,6 +127,11 @@ describe('createVideoJsPlayer', () => {
           timedTextTracks={[]}
         />,
       ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
     );
 
     const videoElement = container.querySelector('video');
@@ -139,10 +161,9 @@ describe('createVideoJsPlayer', () => {
       nativeAudioTracks: false,
       nativeVideoTracks: false,
     });
-    player.dispose();
   });
 
-  it('creates videojs player without HLS compat and configures it', () => {
+  it('creates videojs player without HLS compat and configures it', async () => {
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       wrapInIntlProvider(
@@ -152,6 +173,11 @@ describe('createVideoJsPlayer', () => {
           timedTextTracks={[]}
         />,
       ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
     );
 
     const videoElement = container.querySelector('video');
@@ -209,10 +235,9 @@ describe('createVideoJsPlayer', () => {
         default: '480',
       },
     });
-    player.dispose();
   });
 
-  it('configures for a live video', () => {
+  it('configures for a live video', async () => {
     mockIsMSESupported.mockReturnValue(true);
     const video = videoMockFactory({
       urls: {
@@ -234,6 +259,11 @@ describe('createVideoJsPlayer', () => {
       ),
     );
 
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
     const videoElement = container.querySelector('video');
 
     const player = createVideojsPlayer(videoElement!, jest.fn(), video);
@@ -244,10 +274,9 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.autoplay).toBe(true);
     expect(player.options_.liveui).toBe(true);
     expect(player.options_.playbackRates).toEqual([]);
-    player.dispose();
   });
 
-  it('sends xapi events', () => {
+  it('sends xapi events', async () => {
     const { container } = render(
       wrapInIntlProvider(
         <VideoPlayer
@@ -256,6 +285,11 @@ describe('createVideoJsPlayer', () => {
           timedTextTracks={[]}
         />,
       ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
     );
 
     const videoElement = container.querySelector('video');
@@ -300,20 +334,11 @@ describe('createVideoJsPlayer', () => {
 
     window.dispatchEvent(new Event('unload'));
     expect(mockXAPIStatementInterface.terminated).toHaveBeenCalled();
-    player.dispose();
   });
 
-  it('changes current time when useTranscriptTimeSelector is modified', () => {
-    const video = videoMockFactory({
-      urls: {
-        manifests: {
-          hls: 'https://d2zihajmogu5jn.cloudfront.net/sintel/master.m3u8',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-      live_state: liveState.RUNNING,
-    });
+  it('changes current time when useTranscriptTimeSelector is modified', async () => {
+    const video = videoMockFactory();
+
     const { container } = render(
       wrapInIntlProvider(
         <VideoPlayer
@@ -322,6 +347,11 @@ describe('createVideoJsPlayer', () => {
           timedTextTracks={[]}
         />,
       ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
     );
 
     const videoElement = container.querySelector('video');
@@ -335,9 +365,9 @@ describe('createVideoJsPlayer', () => {
     // If cache_.initTime is modified, we know player.currentTime(seconds)
     // has been called.
     expect(player.cache_.initTime).toEqual(0);
+
     useTranscriptTimeSelector.getState().setTime(10);
 
     expect(player.cache_.initTime).toEqual(10);
-    player.dispose();
   });
 });

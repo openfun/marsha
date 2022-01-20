@@ -86,6 +86,8 @@ describe('VideoPlayer', () => {
   beforeEach(() => {
     mockCreatePlayer.mockResolvedValue({
       destroy: jest.fn(),
+      getSource: jest.fn(),
+      setSource: jest.fn(),
     });
   });
 
@@ -189,6 +191,8 @@ describe('VideoPlayer', () => {
     await act(async () =>
       deferred.resolve({
         destroy: jest.fn(),
+        getSource: jest.fn(),
+        setSource: jest.fn(),
       }),
     );
 

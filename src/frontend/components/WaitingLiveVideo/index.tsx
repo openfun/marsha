@@ -3,13 +3,8 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from '../Headings';
-import { LayoutMainArea } from '../LayoutMainArea';
-import { getResource } from '../../data/sideEffects/getResource';
-import { pollForLive } from '../../data/sideEffects/pollForLive';
-import { Video } from '../../types/tracks';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { modelName } from '../../types/models';
+import { H2 } from 'components/Headings';
+import { LayoutMainArea } from 'components/LayoutMainArea';
 
 const messages = defineMessages({
   title: {
@@ -42,28 +37,15 @@ const WaitingLiveVideoContentStyled = styled.div`
   text-align: center;
 `;
 
-interface WaitingLiveVideoProps {
-  video?: Video;
-}
-
-export const WaitingLiveVideo = ({ video }: WaitingLiveVideoProps) => {
-  useAsyncEffect(async () => {
-    if (video) {
-      await pollForLive(video);
-      await getResource(modelName.VIDEOS, video.id);
-    }
-  }, []);
-
-  return (
-    <WaitingLiveVideoStyled>
-      <WaitingLiveVideoContentStyled>
-        <H2>
-          <FormattedMessage {...messages.title} />
-        </H2>
-        <Paragraph>
-          <FormattedMessage {...messages.text} />
-        </Paragraph>
-      </WaitingLiveVideoContentStyled>
-    </WaitingLiveVideoStyled>
-  );
-};
+export const WaitingLiveVideo = () => (
+  <WaitingLiveVideoStyled>
+    <WaitingLiveVideoContentStyled>
+      <H2>
+        <FormattedMessage {...messages.title} />
+      </H2>
+      <Paragraph>
+        <FormattedMessage {...messages.text} />
+      </Paragraph>
+    </WaitingLiveVideoContentStyled>
+  </WaitingLiveVideoStyled>
+);
