@@ -2,14 +2,9 @@ import { Box, Clock, Layer, Paragraph } from 'grommet';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import videojs from 'video.js';
 
 import { H2 } from 'components/Headings';
-import { getResource } from 'data/sideEffects/getResource';
 import { Video } from 'types/tracks';
-import { modelName } from 'types/models';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
-import { resumeLive } from 'utils/resumeLive';
 
 const messages = defineMessages({
   pausedSince: {
@@ -62,17 +57,6 @@ export const PublicPausedLiveVideo = ({
     return `PT${diffSincePause.hours}H${diffSincePause.minutes}M${diffSincePause.seconds}S`;
   }, [diffSincePause]);
   const [days, setDays] = useState(diffSincePause?.days ?? 0);
-
-  useAsyncEffect(async () => {
-    try {
-      await resumeLive(video);
-    } catch (error) {
-      await getResource(modelName.VIDEOS, video.id);
-    }
-
-    const player = Object.values(videojs.getPlayers())[0];
-    player.src(player.currentSource());
-  }, []);
 
   const onChangeClock = (timer: string) => {
     if (timer === 'P0H0M0S') {

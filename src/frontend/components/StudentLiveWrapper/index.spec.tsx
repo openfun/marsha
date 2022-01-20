@@ -85,6 +85,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
     mockCreatePlayer.mockResolvedValue({
       destroy: jest.fn(),
+      getSource: jest.fn(),
+      setSource: jest.fn(),
     });
 
     /*

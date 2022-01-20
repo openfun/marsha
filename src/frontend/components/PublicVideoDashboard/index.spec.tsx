@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -7,9 +7,12 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
+import { VideoPlayerInterface } from 'types/VideoPlayer';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { Deferred } from 'utils/tests/Deferred';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
+import { Maybe } from 'utils/types';
 
 import PublicVideoDashboard from '.';
 
@@ -20,7 +23,7 @@ jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn().mockResolvedValue(null),
 }));
 jest.mock('data/sideEffects/pollForLive', () => ({
-  pollForLive: jest.fn().mockResolvedValue(null),
+  pollForLive: jest.fn(),
 }));
 jest.mock('index', () => ({
   intl: {
@@ -83,6 +86,8 @@ describe('PublicVideoDashboard', () => {
     );
     mockCreatePlayer.mockResolvedValue({
       destroy: jest.fn(),
+      getSource: jest.fn(),
+      setSource: jest.fn(),
     });
     mockCanUpdate = false;
 
@@ -363,6 +368,41 @@ describe('PublicVideoDashboard', () => {
     screen.getByText('Webinar is paused');
   });
 
+  it('displays the waiting message when the live is starting', async () => {
+    const video = videoMockFactory({
+      title: 'live title',
+      live_state: liveState.STARTING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    const deferred = new Deferred<Maybe<VideoPlayerInterface>>();
+    mockCreatePlayer.mockReturnValue(deferred.promise);
+
+    render(
+      wrapInIntlProvider(
+        <PublicVideoDashboard video={video} playerType="videojs" />,
+      ),
+    );
+
+    screen.getByText('Live will begin soon');
+    screen.getByText(
+      'The live is going to start. You can wait here, the player will start once the live is ready.',
+    );
+  });
+
   it('displays the video player and the waiting message when the live is paused', async () => {
     const video = videoMockFactory({
       title: 'live title',
@@ -469,26 +509,22 @@ describe('PublicVideoDashboard', () => {
     screen.getByText('dashboard videos');
   });
 
-  it('displays the WaitingLiveVideo component when live is not ready', () => {
-    [liveState.IDLE, liveState.STARTING].forEach((state) => {
-      const video = videoMockFactory({
-        live_state: state,
-      });
-      render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <PublicVideoDashboard video={video} playerType="videojs" />,
-          ),
-        ),
-      );
-
-      screen.getByText('Live will begin soon');
-      screen.getByText(
-        'The live is going to start. You can wait here, the player will start once the live is ready.',
-      );
-
-      cleanup();
+  it('displays the WaitingLiveVideo component when live is not ready', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.IDLE,
     });
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PublicVideoDashboard video={video} playerType="videojs" />,
+        ),
+      ),
+    );
+
+    screen.getByText('Live will begin soon');
+    screen.getByText(
+      'The live is going to start. You can wait here, the player will start once the live is ready.',
+    );
   });
 
   it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', () => {

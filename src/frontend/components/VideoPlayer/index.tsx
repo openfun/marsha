@@ -18,8 +18,9 @@ import {
   videoSize,
 } from 'types/tracks';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { resumeLive } from 'utils/resumeLive';
 import { Nullable } from 'utils/types';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -39,10 +40,13 @@ const VideoPlayer = ({
 }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
-  const isLiveStarting = !player && video?.live_state;
-  const isLivePausedOrStopping =
+  const [isLiveStarting, setIsLiveStarting] = useState(
+    !player && video?.live_state,
+  );
+  const [isLivePausedOrStopping, setIsLivePausedOrStopping] = useState(
     video?.live_state &&
-    [liveState.STOPPING, liveState.PAUSED].includes(video.live_state);
+      [liveState.STOPPING, liveState.PAUSED].includes(video.live_state),
+  );
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     (state) => state,
@@ -82,6 +86,9 @@ const VideoPlayer = ({
           video,
         ),
       );
+      if (isLiveStarting && video.live_state) {
+        setIsLiveStarting(false);
+      }
 
       document.dispatchEvent(
         new CustomEvent('marsha_player_created', {
@@ -95,6 +102,27 @@ const VideoPlayer = ({
       return () => player && player.destroy();
     }
   }, []);
+
+  useAsyncEffect(async () => {
+    // live is resuming
+    if (video?.live_state === liveState.STARTING && player) {
+      setIsLivePausedOrStopping(true);
+    }
+
+    if (
+      video?.live_state &&
+      [liveState.STOPPING, liveState.PAUSED].includes(video.live_state)
+    ) {
+      setIsLivePausedOrStopping(true);
+    }
+
+    // live is running and the player is ready, we check if the hls manifest contains frame to display
+    if (video?.live_state === liveState.RUNNING && player) {
+      await resumeLive(video);
+      player.setSource(player.getSource());
+      setIsLivePausedOrStopping(false);
+    }
+  }, [video?.live_state, player, setIsLivePausedOrStopping]);
 
   // The video is somehow missing and jwt must be set
   if (!video) {
@@ -148,7 +176,7 @@ const VideoPlayer = ({
           ))}
       </video>
       {isLiveStarting && <WaitingLiveVideo />}
-      {isLivePausedOrStopping && (
+      {isLivePausedOrStopping && player && (
         <PublicPausedLiveVideo
           video={video}
           videoNodeRef={videoNodeRef.current!}

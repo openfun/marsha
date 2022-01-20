@@ -2,17 +2,13 @@ import { Box, Heading, Text } from 'grommet';
 import React, { lazy, useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { appData } from 'data/appData';
-import { useVideo } from 'data/stores/useVideo';
-import { API_ENDPOINT } from 'settings';
-import { Video, liveState, LiveModeType } from 'types/tracks';
-import { report } from 'utils/errors/report';
 import { DashboardVideoLiveEndButton } from 'components/DashboardVideoLiveEndButton';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { DashboardVideoLiveStartButton } from 'components/DashboardVideoLiveStartButton';
 import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
 import { DashboardVideoLiveConfigureButton } from 'components/DashboardVideoLiveConfigureButton';
 import { ScheduledVideoForm } from 'components/ScheduledVideoForm';
+import { Video, liveState, LiveModeType } from 'types/tracks';
 
 const DashboardVideoLiveRaw = lazy(
   () => import('components/DashboardVideoLiveRaw'),
@@ -63,39 +59,8 @@ interface DashboardVideoLiveProps {
 }
 
 export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
-  const { updateVideo } = useVideo((state) => ({
-    updateVideo: state.addResource,
-  }));
   const [canStartLive, setCanStartLive] = useState(false);
   const [canShowStartButton, setCanShowStartButton] = useState(false);
-  const pollForVideo = async () => {
-    try {
-      const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
-        headers: {
-          Authorization: `Bearer ${appData.jwt}`,
-        },
-      });
-
-      const incomingVideo: Video = await response.json();
-
-      if (
-        incomingVideo.live_state === liveState.RUNNING ||
-        incomingVideo.live_state === liveState.IDLE ||
-        incomingVideo.live_state === liveState.PAUSED
-      ) {
-        updateVideo(incomingVideo);
-      }
-    } catch (error) {
-      report(error);
-    }
-  };
-
-  useEffect(() => {
-    if ([liveState.STARTING, liveState.STOPPING].includes(video.live_state!)) {
-      const interval = setInterval(pollForVideo, 15000);
-      return () => clearInterval(interval);
-    }
-  }, [video.live_state]);
 
   useEffect(() => {
     if (video.live_type === LiveModeType.RAW) {
