@@ -64,6 +64,7 @@
     "jest-image-snapshot": "4.5.1",
     "jest-matchmedia-mock": "1.1.0",
     "jest-styled-components": "7.0.8",
+    "jest-websocket-mock": "2.3.0",
     "jsdom-screenshot": "4.0.0",
     "node-fetch": "2.6.7",
     "prettier": "2.5.1",
