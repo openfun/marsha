@@ -290,7 +290,22 @@ class PairingDeviceAPITest(TestCase):
 
     def test_api_video_pairing_challenge_valid_secret_jitsi(self):
         """Request with valid secret payload should delete live pairing and return a jitsi url."""
-        video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+            },
+        )
         live_pairing = LivePairingFactory(video=video)
 
         box_id = uuid.uuid4()
@@ -299,7 +314,13 @@ class PairingDeviceAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}"},
+            {
+                "jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}",
+                "rtmp_urls": [
+                    "https://live_endpoint1",
+                    "https://live_endpoint2",
+                ],
+            },
             response.json(),
         )
         self.assertEqual(LivePairing.objects.count(), 0)
@@ -310,7 +331,22 @@ class PairingDeviceAPITest(TestCase):
 
     def test_api_video_pairing_challenge_valid_secret_jitsi_multiple_challenges(self):
         """Multiple successfull pairing should not fail."""
-        video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+            },
+        )
         live_pairing = LivePairingFactory(video=video)
 
         box_id = uuid.uuid4()
@@ -321,7 +357,13 @@ class PairingDeviceAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}"},
+            {
+                "jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}",
+                "rtmp_urls": [
+                    "https://live_endpoint1",
+                    "https://live_endpoint2",
+                ],
+            },
             response.json(),
         )
         self.assertEqual(LivePairing.objects.count(), 0)
@@ -329,7 +371,22 @@ class PairingDeviceAPITest(TestCase):
         device = Device.objects.first()
         self.assertEqual(device.id, box_id)
 
-        video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+            },
+        )
         live_pairing = LivePairingFactory(video=video)
 
         payload = {"box_id": box_id, "secret": live_pairing.secret}
@@ -339,7 +396,13 @@ class PairingDeviceAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}"},
+            {
+                "jitsi_url": f"https://{settings.JITSI_DOMAIN}/{video.id}",
+                "rtmp_urls": [
+                    "https://live_endpoint1",
+                    "https://live_endpoint2",
+                ],
+            },
             response.json(),
         )
         self.assertEqual(LivePairing.objects.count(), 0)

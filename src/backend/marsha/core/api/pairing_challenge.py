@@ -67,5 +67,8 @@ def pairing_challenge(request):
     Device.objects.get_or_create(id=request.data.get("box_id"))
 
     return Response(
-        {"jitsi_url": f"https://{settings.JITSI_DOMAIN}/{live_pairing.video.id}"}
+        {
+            "jitsi_url": f"https://{settings.JITSI_DOMAIN}/{live_pairing.video.id}",
+            "rtmp_urls": live_pairing.video.get_medialive_input().get("endpoints"),
+        }
     )
