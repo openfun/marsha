@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a vertical slider on the live view, to resize the panel on the
 right (and close / open it)
 - Add PATCH endpoint to update a LiveSession
+- Add start and stop live recording (backend only)
 
 ### Changed
 

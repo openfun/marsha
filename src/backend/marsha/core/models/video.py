@@ -336,6 +336,33 @@ class Video(BaseFile):
 
         self._stop_recording_slice(stop=to_timestamp(timezone.now()))
 
+    def set_recording_slice_manifest_key(self, harvest_job_id, manifest_key):
+        """Set the manifest key for a recording slice."""
+        if not self.recording_slices:
+            return None
+        for recording_slice in self.recording_slices:
+            if recording_slice.get("harvest_job_id") == harvest_job_id:
+                recording_slice.update(
+                    {"manifest_key": manifest_key, "status": HARVESTED}
+                )
+                self.recording_slices = self.recording_slices
+                self.save()
+                return True
+        return False
+
+    def get_recording_slices_state(self):
+        """Return the state of the recording slices."""
+        if not self.recording_slices:
+            return None
+        main_status = HARVESTED
+        for recording_slice in self.recording_slices:
+            if recording_slice.get("status") != HARVESTED:
+                main_status = PENDING
+        return {
+            "status": main_status,
+            "recording_slices": self.recording_slices,
+        }
+
 
 class BaseTrack(UploadableFileMixin, BaseModel):
     """Base model for different kinds of tracks tied to a video."""

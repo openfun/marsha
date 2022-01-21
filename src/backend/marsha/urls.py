@@ -21,6 +21,8 @@ from marsha.core.api import (
     VideoViewSet,
     XAPIStatementView,
     pairing_challenge,
+    recording_slices_manifest,
+    recording_slices_state,
     update_state,
 )
 from marsha.core.views import (
@@ -71,6 +73,16 @@ urlpatterns = [
     # API
     path("api/pairing-challenge", pairing_challenge, name="pairing_challenge"),
     path("api/update-state", update_state, name="update_state"),
+    path(
+        "api/recording-slices-manifest",
+        recording_slices_manifest,
+        name="recording_slices_manifest",
+    ),
+    path(
+        "api/recording-slices-state",
+        recording_slices_state,
+        name="recording_slices_state",
+    ),
     path(
         "api/schema",
         get_schema_view(title="Marsha API", renderer_classes=[CoreJSONRenderer]),

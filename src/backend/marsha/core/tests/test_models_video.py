@@ -18,6 +18,7 @@ from ..defaults import (
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     PENDING,
+    PROCESSING,
     RAW,
     STATE_CHOICES,
 )
@@ -353,3 +354,133 @@ class VideoModelsTestCase(TestCase):
 
         with mock.patch.object(timezone, "now", return_value=now):
             self.assertEqual(video.recording_time, 20)
+
+    def test_models_video_get_recording_slices_state_all_pending(self):
+        """Main status should be pending if all slices are pending."""
+        video = VideoFactory(
+            recording_slices=[
+                {"status": PENDING},
+                {"status": PENDING},
+                {"status": PENDING},
+            ],
+        )
+        self.assertEqual(
+            video.get_recording_slices_state(),
+            {
+                "status": PENDING,
+                "recording_slices": [
+                    {"status": PENDING},
+                    {"status": PENDING},
+                    {"status": PENDING},
+                ],
+            },
+        )
+
+    def test_models_video_get_recording_slices_state_one_pending(self):
+        """Main status should be pending if one slice is pending."""
+        video = VideoFactory(
+            recording_slices=[
+                {"status": HARVESTED},
+                {"status": PENDING},
+                {"status": HARVESTED},
+            ],
+        )
+        self.assertEqual(
+            video.get_recording_slices_state(),
+            {
+                "status": PENDING,
+                "recording_slices": [
+                    {"status": HARVESTED},
+                    {"status": PENDING},
+                    {"status": HARVESTED},
+                ],
+            },
+        )
+
+    def test_models_video_get_recording_slices_state_one_processing(self):
+        """Main status should be pending if one slice is processing."""
+        video = VideoFactory(
+            recording_slices=[
+                {"status": HARVESTED},
+                {"status": PROCESSING},
+                {"status": HARVESTED},
+            ],
+        )
+        self.assertEqual(
+            video.get_recording_slices_state(),
+            {
+                "status": PENDING,
+                "recording_slices": [
+                    {"status": HARVESTED},
+                    {"status": PROCESSING},
+                    {"status": HARVESTED},
+                ],
+            },
+        )
+
+    def test_models_video_get_recording_slices_state_all_harvested(self):
+        """Main status should be harvested if all slices are harvested."""
+        video = VideoFactory(
+            recording_slices=[
+                {"status": HARVESTED},
+                {"status": HARVESTED},
+                {"status": HARVESTED},
+            ],
+        )
+        self.assertEqual(
+            video.get_recording_slices_state(),
+            {
+                "status": HARVESTED,
+                "recording_slices": [
+                    {"status": HARVESTED},
+                    {"status": HARVESTED},
+                    {"status": HARVESTED},
+                ],
+            },
+        )
+
+    def test_model_video_set_recording_slice_manifest_key(self):
+        """It should set the manifest key of a recording slice.
+
+        Also, status should be set to harvested.
+        """
+        video = VideoFactory(
+            recording_slices=[
+                {
+                    "status": HARVESTED,
+                    "harvest_job_id": "harvest_job_id_1",
+                    "manifest_key": "manifest_key_1.m3u8",
+                },
+                {
+                    "status": PENDING,
+                    "harvest_job_id": "harvest_job_id_2",
+                },
+                {
+                    "status": PENDING,
+                    "harvest_job_id": "harvest_job_id_3",
+                },
+            ],
+        )
+        video.set_recording_slice_manifest_key(
+            "harvest_job_id_3", "manifest_key_3.m3u8"
+        )
+        video.refresh_from_db()
+        self.assertEqual(
+            video.recording_slices,
+            [
+                {
+                    "status": HARVESTED,
+                    "harvest_job_id": "harvest_job_id_1",
+                    "manifest_key": "manifest_key_1.m3u8",
+                },
+                {
+                    "status": PENDING,
+                    "harvest_job_id": "harvest_job_id_2",
+                },
+                {
+                    "status": HARVESTED,
+                    "harvest_job_id": "harvest_job_id_3",
+                    "manifest_key": "manifest_key_3.m3u8",
+                },
+            ],
+        )

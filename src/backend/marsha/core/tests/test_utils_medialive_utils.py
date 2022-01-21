@@ -828,7 +828,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "OriginEndpointId": "mediapackage_endpoint1",
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
-                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/slice_1/"
                         "1569309880_1.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
@@ -842,7 +842,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "OriginEndpointId": "mediapackage_endpoint1",
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
-                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                        "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/slice_1/"
                         "1569309880_1.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
@@ -862,7 +862,9 @@ class MediaLiveUtilsTestCase(TestCase):
                     "stop": to_timestamp(stop),
                     "status": PROCESSING,
                     "harvest_job_id": "harvest_job1",
-                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_1.m3u8",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                    "slice_1/1569309880_1.m3u8",
+                    "harvested_directory": "slice_1",
                 }
             ],
         )
@@ -938,7 +940,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_1.m3u8",
+                        "slice_1/1569309880_1.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                 },
@@ -952,7 +954,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_1.m3u8",
+                        "slice_1/1569309880_1.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                     "StartTime": str(start_1),
@@ -969,7 +971,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_2.m3u8",
+                        "slice_2/1569309880_2.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                 },
@@ -983,7 +985,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_2.m3u8",
+                        "slice_2/1569309880_2.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                     "StartTime": str(start_2),
@@ -1000,7 +1002,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_3.m3u8",
+                        "slice_3/1569309880_3.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                 },
@@ -1014,7 +1016,7 @@ class MediaLiveUtilsTestCase(TestCase):
                     "S3Destination": {
                         "BucketName": "test-marsha-destination",
                         "ManifestKey": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
-                        "1569309880_3.m3u8",
+                        "slice_3/1569309880_3.m3u8",
                         "RoleArn": "mediapackage:role:arn",
                     },
                     "StartTime": str(start_3),
@@ -1033,21 +1035,27 @@ class MediaLiveUtilsTestCase(TestCase):
                     "stop": to_timestamp(stop_1),
                     "status": PROCESSING,
                     "harvest_job_id": "harvest_job1",
-                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_1.m3u8",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                    "slice_1/1569309880_1.m3u8",
+                    "harvested_directory": "slice_1",
                 },
                 {
                     "start": to_timestamp(start_2),
                     "stop": to_timestamp(stop_2),
                     "status": PROCESSING,
                     "harvest_job_id": "harvest_job2",
-                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_2.m3u8",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                    "slice_2/1569309880_2.m3u8",
+                    "harvested_directory": "slice_2",
                 },
                 {
                     "start": to_timestamp(start_3),
                     "stop": to_timestamp(stop_3),
                     "status": PROCESSING,
                     "harvest_job_id": "harvest_job3",
-                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/1569309880_3.m3u8",
+                    "manifest_key": "e19f1058-0bde-4f29-a5d8-e0b4ddf92b74/cmaf/"
+                    "slice_3/1569309880_3.m3u8",
+                    "harvested_directory": "slice_3",
                 },
             ],
         )
