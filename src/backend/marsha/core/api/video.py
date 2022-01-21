@@ -337,6 +337,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         video.live_state = defaults.STOPPING
         video.live_info.update({"paused_at": to_timestamp(timezone.now())})
+        if video.is_recording:
+            stop_recording(video)
         video.save()
         channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)

@@ -327,7 +327,7 @@ def create_mediapackage_harvest_job(video):
             OriginEndpointId=hls_endpoint,
             S3Destination={
                 "BucketName": settings.AWS_DESTINATION_BUCKET_NAME,
-                "ManifestKey": f"{video.pk}/cmaf/{elements[2]}_{num}.m3u8",
+                "ManifestKey": f"{video.pk}/cmaf/slice_{num}/{elements[2]}_{num}.m3u8",
                 "RoleArn": settings.AWS_MEDIAPACKAGE_HARVEST_JOB_ARN,
             },
         )
@@ -336,6 +336,7 @@ def create_mediapackage_harvest_job(video):
                 "status": PROCESSING,
                 "harvest_job_id": harvest_result.get("Id"),
                 "manifest_key": harvest_result.get("S3Destination").get("ManifestKey"),
+                "harvested_directory": f"slice_{num}",
             }
         )
         processing_slices.append(recording_slice)
