@@ -1,11 +1,13 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 
 from django.apps import apps
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .. import defaults, serializers
+from ..models import Video
 from ..utils.api_utils import validate_signature
 
 
@@ -81,3 +83,56 @@ def update_state(request):
     )
 
     return Response({"success": True})
+
+
+@api_view(["POST"])
+def recording_slices_manifest(request):
+    """View handling AWS POST request to set a manifest on a record slice.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint, it should contain a payload with the following fields:
+            - video_id: the pk of a video.
+            - harvest_job_id: the id of the harvest job.
+            - manifest_key: the manifest key of the record slice.
+
+    Returns
+    -------
+    Type[rest_framework.response.Response]
+        HttpResponse containing the current harvest status of all recording slices.
+
+    """
+    # Check if the provided signature is valid against any secret in our list
+    if not validate_signature(request.headers.get("X-Marsha-Signature"), request.body):
+        return Response("Forbidden", status=403)
+
+    video = get_object_or_404(Video, pk=request.data["video_id"])
+    video.set_recording_slice_manifest_key(
+        request.data["harvest_job_id"], request.data["manifest_key"]
+    )
+    return Response({"success": True})
+
+
+@api_view(["POST"])
+def recording_slices_state(request):
+    """View handling AWS POST request to check each record slice harvest status by video pk.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint, it should contain a payload with the following fields:
+            - video_id: the pk of a video.
+
+    Returns
+    -------
+    Type[rest_framework.response.Response]
+        HttpResponse containing the current harvest status of all recording slices.
+
+    """
+    # Check if the provided signature is valid against any secret in our list
+    if not validate_signature(request.headers.get("X-Marsha-Signature"), request.body):
+        return Response("Forbidden", status=403)
+
+    video = get_object_or_404(Video, pk=request.data["video_id"])
+    return Response(video.get_recording_slices_state())
