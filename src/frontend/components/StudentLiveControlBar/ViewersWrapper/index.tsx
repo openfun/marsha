@@ -13,7 +13,7 @@ export const ViewersWrapper = () => {
     isPanelVisible: state.isPanelVisible,
   }));
 
-  if (currentItem === LivePanelItem.JOIN_DISCUSSION && isPanelVisible) {
+  if (currentItem === LivePanelItem.VIEWERS_LIST && isPanelVisible) {
     return <StudentHideViewersButton />;
   } else {
     return <StudentShowViewersButton />;

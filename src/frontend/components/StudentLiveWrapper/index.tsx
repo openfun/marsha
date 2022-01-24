@@ -52,7 +52,7 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
     let currentItem;
     if (video.xmpp !== null) {
       availableItems.push(LivePanelItem.CHAT);
-      availableItems.push(LivePanelItem.JOIN_DISCUSSION);
+      availableItems.push(LivePanelItem.VIEWERS_LIST);
       currentItem = LivePanelItem.CHAT;
       if (isStarted) {
         useLivePanelState.getState().setPanelVisibility(true);

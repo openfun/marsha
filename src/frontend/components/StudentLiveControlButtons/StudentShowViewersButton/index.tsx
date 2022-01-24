@@ -32,7 +32,7 @@ export const StudentShowViewersButton = () => {
       label={intl.formatMessage(messages.viewers)}
       Icon={ViewersSVG}
       onClick={() => {
-        setPanelVisibility(true, LivePanelItem.JOIN_DISCUSSION);
+        setPanelVisibility(true, LivePanelItem.VIEWERS_LIST);
       }}
       title={intl.formatMessage(messages.showViewers)}
     />

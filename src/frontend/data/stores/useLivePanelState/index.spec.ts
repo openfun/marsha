@@ -79,12 +79,12 @@ describe('state.setAvailableItems()', () => {
     useLivePanelState
       .getState()
       .setAvailableItems(
-        [LivePanelItem.JOIN_DISCUSSION, LivePanelItem.APPLICATION],
+        [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
         LivePanelItem.APPLICATION,
       );
 
     expect(useLivePanelState.getState().availableItems).toEqual([
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
       LivePanelItem.APPLICATION,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
@@ -104,15 +104,15 @@ describe('state.setAvailableItems()', () => {
     useLivePanelState
       .getState()
       .setAvailableItems(
-        [LivePanelItem.JOIN_DISCUSSION],
+        [LivePanelItem.VIEWERS_LIST],
         LivePanelItem.APPLICATION,
       );
 
     expect(useLivePanelState.getState().availableItems).toEqual([
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     );
     expect(useLivePanelState.getState().isPanelVisible).toBe(true);
   });
@@ -129,12 +129,12 @@ describe('state.setAvailableItems()', () => {
       .getState()
       .setAvailableItems([
         LivePanelItem.APPLICATION,
-        LivePanelItem.JOIN_DISCUSSION,
+        LivePanelItem.VIEWERS_LIST,
       ]);
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.APPLICATION,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.APPLICATION,
@@ -219,7 +219,7 @@ describe('state.setPanelVisibility()', () => {
     //  update current item with invalid item
     useLivePanelState
       .getState()
-      .setPanelVisibility(true, LivePanelItem.JOIN_DISCUSSION);
+      .setPanelVisibility(true, LivePanelItem.VIEWERS_LIST);
 
     expect(useLivePanelState.getState().isPanelVisible).toBe(true);
     expect(useLivePanelState.getState().currentItem).toEqual(
@@ -283,7 +283,7 @@ describe('state.setPanelVisibility()', () => {
     //  update panel visibility with invalid item to select
     useLivePanelState
       .getState()
-      .setPanelVisibility(false, LivePanelItem.JOIN_DISCUSSION);
+      .setPanelVisibility(false, LivePanelItem.VIEWERS_LIST);
 
     expect(useLivePanelState.getState().isPanelVisible).toBe(false);
     expect(useLivePanelState.getState().currentItem).toEqual(
