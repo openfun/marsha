@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 export enum LivePanelItem {
-  JOIN_DISCUSSION = 'JOIN_DISCUSSION',
+  VIEWERS_LIST = 'VIEWERS_LIST',
   CHAT = 'CHAT',
   APPLICATION = 'APPLICATION',
 }

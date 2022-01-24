@@ -75,7 +75,7 @@ const messages = defineMessages({
     description: 'Chat tab title in live panel',
     id: 'component.LiveVideoPanel.LiveVideoTabPanel.chat',
   },
-  [LivePanelItem.JOIN_DISCUSSION]: {
+  [LivePanelItem.VIEWERS_LIST]: {
     defaultMessage: 'viewers',
     description: 'Viewers and join discussion tab title in live panel',
     id: 'component.LiveVideoPanel.LiveVideoTabPanel.joinDiscussion',

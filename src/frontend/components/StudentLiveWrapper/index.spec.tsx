@@ -167,7 +167,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -230,7 +230,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -294,10 +294,10 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
@@ -410,7 +410,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -497,7 +497,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -552,7 +552,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
@@ -610,10 +610,10 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
@@ -710,7 +710,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     ]);
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,

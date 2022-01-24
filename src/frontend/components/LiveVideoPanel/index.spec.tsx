@@ -35,7 +35,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [
         LivePanelItem.APPLICATION,
         LivePanelItem.CHAT,
-        LivePanelItem.JOIN_DISCUSSION,
+        LivePanelItem.VIEWERS_LIST,
       ],
       setPanelVisibility: mockSetPanelVisibility,
     });
@@ -57,7 +57,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [
         LivePanelItem.APPLICATION,
         LivePanelItem.CHAT,
-        LivePanelItem.JOIN_DISCUSSION,
+        LivePanelItem.VIEWERS_LIST,
       ],
     });
 
@@ -97,7 +97,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [
         LivePanelItem.APPLICATION,
         LivePanelItem.CHAT,
-        LivePanelItem.JOIN_DISCUSSION,
+        LivePanelItem.VIEWERS_LIST,
       ],
     });
 
@@ -110,7 +110,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [
         LivePanelItem.APPLICATION,
         LivePanelItem.CHAT,
-        LivePanelItem.JOIN_DISCUSSION,
+        LivePanelItem.VIEWERS_LIST,
       ],
     });
 

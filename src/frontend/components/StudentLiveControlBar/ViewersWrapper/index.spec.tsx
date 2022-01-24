@@ -13,10 +13,7 @@ describe('<ViewersWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.JOIN_DISCUSSION,
-        LivePanelItem.APPLICATION,
-      ],
+      availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
     render(wrapInIntlProvider(<ViewersWrapper />));
@@ -29,7 +26,7 @@ describe('<ViewersWrapper />', () => {
   it('renders <StudentShowViewersButton /> when panel is closed and viewers is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
+      currentItem: LivePanelItem.VIEWERS_LIST,
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.CHAT],
     });
 
@@ -44,10 +41,7 @@ describe('<ViewersWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.JOIN_DISCUSSION,
-        LivePanelItem.APPLICATION,
-      ],
+      availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
     render(wrapInIntlProvider(<ViewersWrapper />));
@@ -60,11 +54,8 @@ describe('<ViewersWrapper />', () => {
   it('renders <StudentShowViewersButton /> when panel is opened and viewers is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
-      availableItems: [
-        LivePanelItem.JOIN_DISCUSSION,
-        LivePanelItem.APPLICATION,
-      ],
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
     render(wrapInIntlProvider(<ViewersWrapper />));

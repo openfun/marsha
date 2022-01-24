@@ -13,8 +13,8 @@ describe('<ChatWrapper />', () => {
   it('renders <StudentShowChatButton /> when panel is closed and the chat is not selected', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
-      availableItems: [LivePanelItem.CHAT, LivePanelItem.JOIN_DISCUSSION],
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<ChatWrapper />));
@@ -28,7 +28,7 @@ describe('<ChatWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: LivePanelItem.CHAT,
-      availableItems: [LivePanelItem.CHAT, LivePanelItem.JOIN_DISCUSSION],
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<ChatWrapper />));
@@ -41,8 +41,8 @@ describe('<ChatWrapper />', () => {
   it('renders <StudentShowChatButton /> when panel is open and the chat is not selected', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
-      availableItems: [LivePanelItem.CHAT, LivePanelItem.JOIN_DISCUSSION],
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<ChatWrapper />));
@@ -56,7 +56,7 @@ describe('<ChatWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
-      availableItems: [LivePanelItem.CHAT, LivePanelItem.JOIN_DISCUSSION],
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<ChatWrapper />));
