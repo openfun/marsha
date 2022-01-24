@@ -13,7 +13,7 @@ describe('<LiveVideoTabPanel /> titles', () => {
     const tabTitles = {
       [LivePanelItem.APPLICATION]: 'application',
       [LivePanelItem.CHAT]: 'chat',
-      [LivePanelItem.JOIN_DISCUSSION]: 'viewers',
+      [LivePanelItem.VIEWERS_LIST]: 'viewers',
     };
 
     for (const itemStr in LivePanelItem) {

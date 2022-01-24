@@ -83,7 +83,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       //  TODO : implement this item
       content = <p>application content</p>;
       break;
-    case LivePanelItem.JOIN_DISCUSSION:
+    case LivePanelItem.VIEWERS_LIST:
       content = <StudentViewersList />;
       break;
     default:

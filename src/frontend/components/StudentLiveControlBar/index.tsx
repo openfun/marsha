@@ -43,7 +43,7 @@ export const StudentLiveControlBar = ({
         </Box>
       )}
 
-      {availableItems.includes(LivePanelItem.JOIN_DISCUSSION) && (
+      {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <ViewersWrapper />
         </Box>

@@ -13,11 +13,8 @@ describe('<AppsWrapper />', () => {
   it('renders <StudentShowAppsButton /> when panel is closed and apps is not selected', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.JOIN_DISCUSSION,
-      ],
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<AppsWrapper />));
@@ -31,10 +28,7 @@ describe('<AppsWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.JOIN_DISCUSSION,
-      ],
+      availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<AppsWrapper />));
@@ -47,11 +41,8 @@ describe('<AppsWrapper />', () => {
   it('renders <StudentShowAppsButton /> when panel is opened but not selecting apps', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
-      currentItem: LivePanelItem.JOIN_DISCUSSION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.JOIN_DISCUSSION,
-      ],
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<AppsWrapper />));
@@ -65,10 +56,7 @@ describe('<AppsWrapper />', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.JOIN_DISCUSSION,
-      ],
+      availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
     render(wrapInIntlProvider(<AppsWrapper />));

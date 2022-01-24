@@ -65,7 +65,7 @@ describe('<StudentLiveControlBar />', () => {
 
   it('renders viewers wrapper button', () => {
     useLivePanelState.setState({
-      availableItems: [LivePanelItem.JOIN_DISCUSSION],
+      availableItems: [LivePanelItem.VIEWERS_LIST],
     });
 
     render(

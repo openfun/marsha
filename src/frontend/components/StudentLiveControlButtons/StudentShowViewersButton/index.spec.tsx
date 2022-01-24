@@ -37,7 +37,7 @@ describe('<StudentShowViewersButton />', () => {
     expect(mockSetPanelVisibility).toHaveBeenCalledTimes(1);
     expect(mockSetPanelVisibility).toHaveBeenCalledWith(
       true,
-      LivePanelItem.JOIN_DISCUSSION,
+      LivePanelItem.VIEWERS_LIST,
     );
   });
 });
