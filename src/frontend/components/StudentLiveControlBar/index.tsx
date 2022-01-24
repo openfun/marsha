@@ -10,6 +10,7 @@ import { LiveModeType, liveState, Video } from 'types/tracks';
 import { AppsWrapper } from './AppsWrapper';
 import { ChatWrapper } from './ChatWrapper';
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
+import { ViewersWrapper } from './ViewersWrapper';
 
 interface StudentLiveControlBarProps {
   video: Video;
@@ -39,6 +40,12 @@ export const StudentLiveControlBar = ({
       {availableItems.includes(LivePanelItem.APPLICATION) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <AppsWrapper />
+        </Box>
+      )}
+
+      {availableItems.includes(LivePanelItem.JOIN_DISCUSSION) && (
+        <Box height="100%" style={{ minWidth: '60px' }}>
+          <ViewersWrapper />
         </Box>
       )}
 

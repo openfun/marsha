@@ -65,16 +65,6 @@ window.HTMLElement.prototype.scrollTo = jest.fn();
 describe('<PublicVideoLiveJitsi />', () => {
   beforeAll(() => {
     global.JitsiMeetExternalAPI = mockJitsi;
-
-    useParticipantWorkflow.setState({
-      accepted: true,
-    });
-    useLivePanelState.setState({
-      isPanelVisible: true,
-      currentItem: LivePanelItem.CHAT,
-      availableItems: [LivePanelItem.CHAT],
-    });
-    useLiveStateStarted.getState().setIsStarted(true);
   });
 
   afterAll(() => {
@@ -82,6 +72,15 @@ describe('<PublicVideoLiveJitsi />', () => {
   });
 
   it('renders jitsi, live info, chat and actions on large screen', async () => {
+    useParticipantWorkflow.setState({
+      accepted: true,
+    });
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -110,12 +109,21 @@ describe('<PublicVideoLiveJitsi />', () => {
     screen.getByRole('button', {
       name: /Hide chat/i,
     });
+    screen.getByRole('button', {
+      name: /Show viewers/i,
+    });
   });
 
   it('renders jitsi, live info, chat and actions on small screen', () => {
     useParticipantWorkflow.setState({
       accepted: true,
     });
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -131,8 +139,8 @@ describe('<PublicVideoLiveJitsi />', () => {
 
     expect(mockJitsi).toHaveBeenCalled();
 
-    //  expect live title to be present
-    screen.getByRole('heading', { name: 'live title' });
+    //  expect live title to be present, but hidden
+    screen.getByRole('heading', { hidden: true, name: 'live title' });
 
     //  expect chat input to be present
     screen.getByText('Join the chat');
@@ -142,7 +150,10 @@ describe('<PublicVideoLiveJitsi />', () => {
       name: /Leave discussion/i,
     });
     screen.getByRole('button', {
-      name: /Show chat/i,
+      name: /Hide chat/i,
+    });
+    screen.getByRole('button', {
+      name: /Show viewers/i,
     });
   });
 });
