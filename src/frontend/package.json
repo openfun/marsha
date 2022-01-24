@@ -39,7 +39,7 @@
     "@testing-library/react-hooks": "7.0.2",
     "@testing-library/user-event": "13.5.0",
     "@types/clipboard": "2.0.1",
-    "@types/faker": "6.6.8",
+    "@types/faker": "5.5.9",
     "@types/fetch-mock": "7.3.5",
     "@types/iframe-resizer": "3.5.9",
     "@types/jest": "27.4.0",

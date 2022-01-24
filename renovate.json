@@ -10,15 +10,16 @@
         "npm"
       ],
       "matchPackageNames": [
-        "converse.js",
-        "faker",
-        "node-fetch",
         "@storybook/addon-a11y",
         "@storybook/addon-actions",
         "@storybook/addon-essentials",
         "@storybook/react",
-        "react-router-dom",
-        "node"
+        "@types/faker",
+        "converse.js",
+        "faker",
+        "node",
+        "node-fetch",
+        "react-router-dom"
       ]
     },
     {
