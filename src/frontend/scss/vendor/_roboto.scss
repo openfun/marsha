@@ -1,12 +1,16 @@
-$roboto-font-path: "../fonts/roboto" !default;
-
+$roboto-font-path: '../fonts/roboto' !default;
 
 @font-face {
   font-family: 'Roboto-Regular';
-  src:  url('#{$roboto-font-path}/roboto-regular.ttf') format('truetype');
+  src: url('#{$roboto-font-path}/roboto-regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Roboto-Medium';
-    src:  url('#{$roboto-font-path}/roboto-medium.ttf') format('truetype');
+  font-family: 'Roboto-Medium';
+  src: url('#{$roboto-font-path}/roboto-medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url('#{$roboto-font-path}/roboto-bold.ttf') format('truetype');
 }
