@@ -63,6 +63,28 @@ describe('<StudentLiveControlBar />', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders viewers wrapper button', () => {
+    useLivePanelState.setState({
+      availableItems: [LivePanelItem.JOIN_DISCUSSION],
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(<StudentLiveControlBar video={mockEmptyVideo} />),
+      ),
+    );
+
+    screen.getByRole('button', { name: 'Show viewers' });
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Send request to join the discussion',
+      }),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders chat wrapper button', () => {
     useLivePanelState.setState({
       availableItems: [LivePanelItem.CHAT],
