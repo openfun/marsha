@@ -348,8 +348,14 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
     ) as response_info:
         assert 200 == response_info.value.response().status
 
+    # Wait player initialization before playing it
+    with page.expect_request("**/xapi/video/") as request_info:
+        assert "initialized" == request_info.value.post_data_json.get("verb").get(
+            "display"
+        ).get("en-US")
+
     page.click('button:has-text("Play Video")')
-    for verb in ("initialized", "paused", "completed"):
+    for verb in ("played", "paused", "completed"):
         with page.expect_request("**/xapi/video/") as request_info:
             assert verb == request_info.value.post_data_json.get("verb").get(
                 "display"
