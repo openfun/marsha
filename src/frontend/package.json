@@ -81,13 +81,13 @@
     "xhr-mock": "2.5.1"
   },
   "dependencies": {
+    "@converse/headless": "8.0.1",
     "@formatjs/intl-relativetimeformat": "9.5.0",
     "@sentry/browser": "6.17.0",
     "@types/intl": "1.2.0",
     "@types/react-datepicker": "4.3.4",
     "buffer": "6.0.3",
     "clipboard": "2.0.8",
-    "converse.js": "8.0.1",
     "core-js": "3.20.3",
     "grommet": "2.20.0",
     "iframe-resizer": "4.3.2",
