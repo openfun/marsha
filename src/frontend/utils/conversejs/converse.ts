@@ -1,4 +1,4 @@
-import 'converse.js/dist/converse.min.js';
+import './entry.js';
 
 import { XMPP } from 'types/XMPP';
 import { generateAnonymousNickname } from 'utils/chat/chat';
