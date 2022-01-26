@@ -133,10 +133,17 @@ class LiveRegistrationViewSet(
         """Overrides perform_create to send the mail and catch error if needed"""
         super().perform_create(serializer)
         try:
-            msg_plain = render_to_string("core/mail/text/sample.txt")
-            msg_html = render_to_string("core/mail/html/sample.html")
+            video = Video.objects.get(id=serializer.validated_data["video_id"])
+            template_vars = {
+                "email": serializer.validated_data["email"],
+                "username": serializer.validated_data.get("username", ""),
+                "time_zone": settings.TIME_ZONE,
+                "video": video,
+            }
+            msg_plain = render_to_string("core/mail/text/register.txt", template_vars)
+            msg_html = render_to_string("core/mail/html/register.html", template_vars)
             send_mail(
-                _("mail_registration_object"),
+                f'{_("Registration for ")}{video.title}',
                 msg_plain,
                 settings.EMAIL_FROM,
                 [serializer.validated_data["email"]],

@@ -11,7 +11,6 @@ from django.core import mail
 from django.core.cache import cache
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -38,7 +37,7 @@ class LiveRegistrationApiTest(TestCase):
         """
         cache.clear()
 
-    def checkRegistrationEmailSent(self, email):
+    def checkRegistrationEmailSent(self, email, video, username):
         """Shortcut to check registration email has been sent to email"""
         # check email has been sent
         self.assertEqual(len(mail.outbox), 1)
@@ -47,12 +46,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(mail.outbox[0].to[0], email)
 
         # check it's the right email content
-        self.assertEqual(mail.outbox[0].subject, _("mail_registration_object"))
-        self.assertEqual(
-            " ".join(mail.outbox[0].body.split()),
-            f"{_('mail_registration_success')} {_('mail_registration_extra_text')} "
-            f"{_('mail_registration_block2_title')} {_('mail_registration_block2_paragraph')}",
+        self.assertEqual(mail.outbox[0].subject, f"Registration for {video.title}")
+        email_content = " ".join(mail.outbox[0].body.split())
+        self.assertIn(f"Registration validated! {video.title}", email_content)
+        if username:
+            self.assertIn(f"Hello {username},", email_content)
+        else:
+            self.assertIn("Hello,", email_content)
+            self.assertNotIn("None", email_content)
+
+        self.assertIn(
+            f'We have taken note of your interest in the event "{video.title}".',
+            email_content,
         )
+        self.assertIn(f"This mail has been sent to {email} by Marsha", email_content)
 
     def test_api_liveregistration_read_anonymous(self):
         """Anonymous users should not be allowed to fetch a liveregistration."""
@@ -907,7 +914,7 @@ class LiveRegistrationApiTest(TestCase):
                 "video": str(video.id),
             },
         )
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, None)
 
     def test_api_liveregistration_create_public_token_is_registered_false(
         self,
@@ -952,7 +959,7 @@ class LiveRegistrationApiTest(TestCase):
                 "video": str(video.id),
             },
         )
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, None)
 
     def test_api_liveregistration_create_public_token_anonymous_mandatory(
         self,
@@ -1156,7 +1163,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_token_lti_is_registered_false(
         self,
@@ -1206,7 +1213,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_token_lti_email_none(
         self,
@@ -1257,7 +1264,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_public_token_record_email_other_registration_lti(
         self,
@@ -1312,7 +1319,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, None)
 
     def test_api_liveregistration_create_lti_token_record_email_other_consumer_site(
         self,
@@ -1373,7 +1380,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_lti_token_record_email_other_context_id(
         self,
@@ -1433,7 +1440,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_lti_token_record_email_lti_user_id(
         self,
@@ -1494,7 +1501,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_token_lti_email_restricted_token(self):
         """LTI token can only register for the email in the token."""
@@ -1697,7 +1704,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_can_register_same_email_same_consumer_deleted(
         self,
@@ -1756,7 +1763,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_create_cant_register_same_email_same_consumer_none(
         self,
@@ -1899,7 +1906,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("chantal@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("chantal@test-fun-mooc.fr", video2, None)
 
     def test_api_liveregistration_create_token_lti_same_email_different_video(
         self,
@@ -1965,7 +1972,7 @@ class LiveRegistrationApiTest(TestCase):
         )
 
         # check email has been sent
-        self.checkRegistrationEmailSent("chantal@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("chantal@test-fun-mooc.fr", video2, "Token")
 
     def test_api_liveregistration_create_username_doesnt_change(
         self,
@@ -2018,7 +2025,7 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
         # check email has been sent
-        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr")
+        self.checkRegistrationEmailSent("salome@test-fun-mooc.fr", video, "Token")
 
     def test_api_liveregistration_delete_anonymous(self):
         """An anonymous should not be able to delete a liveregistration."""

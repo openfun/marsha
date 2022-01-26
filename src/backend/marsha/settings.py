@@ -362,33 +362,44 @@ class Base(Configuration):
         "REMINDER_ERROR",
     )
     # keys for REMINDERS_STEP
-    REMINDER_KEY_STARTS_IN_S, REMINDER_KEY_REGISTER_BEFORE_S, REGISTER_EXCLUDE_STEP = (
+    (
+        REMINDER_ELAPSED_LABEL,
+        REGISTER_EXCLUDE_STEP,
+        REMINDER_KEY_REGISTER_BEFORE_S,
+        REMINDER_KEY_STARTS_IN_S,
+        REMINDER_OBJECT_MAIL,
+    ) = (
+        "REMINDER_ELAPSED_LABEL",
+        "REGISTER_EXCLUDE_STEP",
         "STARTS_IN_S",
         "REGISTER_BEFORE_S",
-        "REGISTER_EXCLUDE_STEP",
+        "REMINDER_OBJECT_MAIL",
     )
     REMINDERS_STEP = values.DictValue(
         {
             REMINDER_1: {
-                REMINDER_KEY_STARTS_IN_S: 5
-                * 60,  # webinar starts in less than 5 minutes
-                REMINDER_KEY_REGISTER_BEFORE_S: 3 * 60 * 60,  # three hours before
+                REMINDER_ELAPSED_LABEL: _("5 minutes"),
                 REGISTER_EXCLUDE_STEP: [],
+                REMINDER_KEY_STARTS_IN_S: 300,  # webinar starts in less than 5 minutes
+                REMINDER_KEY_REGISTER_BEFORE_S: 10800,  # three hours before
+                REMINDER_OBJECT_MAIL: _("Live starts in less than 5 minutes"),
             },
             REMINDER_2: {
-                REMINDER_KEY_STARTS_IN_S: 3
-                * 60
-                * 60,  # webinar starts in less than 3 hours
-                REMINDER_KEY_REGISTER_BEFORE_S: 1 * 24 * 60 * 60,  # 1 day before
-                REGISTER_EXCLUDE_STEP: [REMINDER_1],
+                REMINDER_ELAPSED_LABEL: _("3 hours"),
+                REGISTER_EXCLUDE_STEP: [
+                    REMINDER_1
+                ],  # if step REMINDER_1 is done it will cancel this one
+                REMINDER_KEY_REGISTER_BEFORE_S: 86400,  # 1 day before in seconds
+                REMINDER_KEY_STARTS_IN_S: 10800,  # webinar starts in less than 3 hours
+                REMINDER_OBJECT_MAIL: _("Live starts in less than 3 hours"),
             },
             REMINDER_3: {
-                REMINDER_KEY_STARTS_IN_S: 3
-                * 24
-                * 60
-                * 60,  # webinar starts in less than 3 days
-                REMINDER_KEY_REGISTER_BEFORE_S: 30 * 24 * 60 * 60,  # thirty days before
+                REMINDER_ELAPSED_LABEL: _("3 days"),
                 REGISTER_EXCLUDE_STEP: [REMINDER_1, REMINDER_2],
+                REMINDER_KEY_REGISTER_BEFORE_S: 30 * 86400,  # thirty days before
+                REMINDER_KEY_STARTS_IN_S: 3
+                * 86400,  # webinar starts in less than 3 days
+                REMINDER_OBJECT_MAIL: _("Live starts in less than 3 days"),
             },
         }
     )

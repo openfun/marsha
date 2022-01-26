@@ -47,6 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add anonymous_id parameter to register a user to a scheduled webinar
 - Update live layout for students
 - Use websocket to update video resource instead of polling the API
+- Improvement of emails templates for scheduled webinars
 
 ### Removed
 

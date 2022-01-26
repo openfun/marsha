@@ -1,0 +1,5 @@
+<mj-section background-color="#2a5cab" >
+  <mj-column width="66%">
+    <mj-text align="center" color="#ffffff" font-size="24px" padding="18px 0px">{{video.title}}</mj-text>
+  </mj-column>
+</mj-section>
