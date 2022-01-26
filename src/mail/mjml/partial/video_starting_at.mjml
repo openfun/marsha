@@ -1,0 +1,7 @@
+<mj-section background-color="#F5f5f5">
+      <mj-column width="100%" padding="20px">
+        <mj-text align="center" color="#000000" font-size="16px" padding="4px 25px">
+        {{video.starting_at}} {{time_zone}}
+        </mj-text>
+      </mj-column>
+    </mj-section>

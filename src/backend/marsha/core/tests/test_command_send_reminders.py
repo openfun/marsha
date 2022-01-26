@@ -10,7 +10,6 @@ from django.core import mail
 from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 import pytz
 
@@ -152,11 +151,11 @@ class SendRemindersTest(TestCase):
         # check it's the right content
         self.assertEqual(
             mail.outbox[0].subject,
-            _(f"object_reminder_already_started_{settings.REMINDER_IS_STARTED}"),
+            "Webinar started earlier, come quickly to join us.",
         )
         self.assertEqual(
             mail.outbox[1].subject,
-            _(f"object_reminder_already_started_{settings.REMINDER_IS_STARTED}"),
+            "Webinar started earlier, come quickly to join us.",
         )
 
         self.assertIn(
@@ -320,11 +319,11 @@ class SendRemindersTest(TestCase):
         # check it's the right content
         self.assertEqual(
             mail.outbox[0].subject,
-            _(f"object_reminder_{settings.REMINDER_1}"),
+            "Live starts in less than 5 minutes",
         )
         self.assertEqual(
             mail.outbox[1].subject,
-            _(f"object_reminder_{settings.REMINDER_1}"),
+            "Live starts in less than 5 minutes",
         )
 
         self.assertIn(
@@ -500,11 +499,11 @@ class SendRemindersTest(TestCase):
         # check it's the right content
         self.assertEqual(
             mail.outbox[0].subject,
-            _(f"object_reminder_{settings.REMINDER_2}"),
+            "Live starts in less than 3 hours",
         )
         self.assertEqual(
             mail.outbox[1].subject,
-            _(f"object_reminder_{settings.REMINDER_2}"),
+            "Live starts in less than 3 hours",
         )
         self.assertIn(
             f"Sending email for liveregistration {public_registration.id} for video "
@@ -703,11 +702,11 @@ class SendRemindersTest(TestCase):
         # check it's the right content
         self.assertEqual(
             mail.outbox[0].subject,
-            _(f"object_reminder_{settings.REMINDER_3}"),
+            "Live starts in less than 3 days",
         )
         self.assertEqual(
             mail.outbox[1].subject,
-            _(f"object_reminder_{settings.REMINDER_3}"),
+            "Live starts in less than 3 days",
         )
 
         self.assertIn(
