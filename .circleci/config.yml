@@ -501,7 +501,7 @@ jobs:
               xdg-utils
       - run:
           name: Run tests
-          command: yarn test -w 1
+          command: yarn test -w 2
       - store_artifacts:
           path: ~/marsha/src/frontend/__diff_output__
 
