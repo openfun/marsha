@@ -1,4 +1,4 @@
-"""Check live state management command."""
+"""Send reminders management command."""
 from datetime import timedelta
 from logging import getLogger
 import smtplib
@@ -49,9 +49,10 @@ class Command(BaseCommand):
         )
 
     def send_reminders_and_update_liveregistrations_step(
-        self, liveregistrations, step, template="reminder"
+        self, liveregistrations, step, mail_object, extra_vars={}, template="reminder"
     ):
         """Send email with template and update reminders field."""
+
         for liveregistration in liveregistrations:
             """For each liveregistration we send the email"""
 
@@ -64,21 +65,21 @@ class Command(BaseCommand):
                 )
 
                 # send email with the appropriate template and object
-                vars = (
-                    {
-                        "reminder_timer_text": _(f"reminder_timer_text_{step}"),
-                        "reminder_timer_title": _(f"reminder_timer_title_{step}"),
-                    }
-                    if template == "reminder"
-                    else {}
-                )
+                vars = {
+                    "email": liveregistration.email,
+                    "time_zone": settings.TIME_ZONE,
+                    "username": liveregistration.username,
+                    "video": liveregistration.video,
+                }
+                if extra_vars:
+                    vars = vars | extra_vars
 
                 msg_plain = render_to_string(f"core/mail/text/{template}.txt", vars)
                 msg_html = render_to_string(f"core/mail/html/{template}.html", vars)
 
                 try:
                     send_mail(
-                        _(f"object_{template}_{step}"),
+                        mail_object,
                         msg_plain,
                         settings.EMAIL_FROM,
                         [liveregistration.email],
@@ -112,7 +113,11 @@ class Command(BaseCommand):
             reminders__overlap=[settings.REMINDER_IS_STARTED, settings.REMINDER_ERROR]
         )
         self.send_reminders_and_update_liveregistrations_step(
-            liveregistrations, settings.REMINDER_IS_STARTED, "reminder_already_started"
+            liveregistrations,
+            settings.REMINDER_IS_STARTED,
+            _("Webinar started earlier, come quickly to join us."),
+            {},
+            "reminder_already_started",
         )
 
     def send_reminders_depending_on_time(self):
@@ -150,7 +155,12 @@ class Command(BaseCommand):
                 liveregistrations = liveregistrations.exclude(
                     reminders__overlap=reminder[settings.REGISTER_EXCLUDE_STEP]
                 )
-
+            reminder_timer_title = (
+                f'{_("in less than ")}{reminder[settings.REMINDER_ELAPSED_LABEL]}'
+            )
             self.send_reminders_and_update_liveregistrations_step(
-                liveregistrations, step
+                liveregistrations,
+                step,
+                reminder[settings.REMINDER_OBJECT_MAIL],
+                {"reminder_timer_title": reminder_timer_title},
             )
