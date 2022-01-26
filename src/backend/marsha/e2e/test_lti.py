@@ -2,6 +2,7 @@
 
 import json
 import random
+import re
 import uuid
 
 from django.conf import settings
@@ -349,17 +350,33 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
         assert 200 == response_info.value.response().status
 
     # Wait player initialization before playing it
-    with page.expect_request("**/xapi/video/") as request_info:
-        assert "initialized" == request_info.value.post_data_json.get("verb").get(
-            "display"
-        ).get("en-US")
+    page.expect_request(
+        lambda request: request.method == "POST"
+        and re.match(r"^.*/xapi/video/$", request.url)
+        and request.post_data_json.get("verb").get("display").get("en-US")
+        == "initialized"
+    )
 
     page.click('button:has-text("Play Video")')
-    for verb in ("played", "paused", "completed"):
-        with page.expect_request("**/xapi/video/") as request_info:
-            assert verb == request_info.value.post_data_json.get("verb").get(
-                "display"
-            ).get("en-US")
+
+    page.expect_request(
+        lambda request: request.method == "POST"
+        and re.match(r"^.*/xapi/video/$", request.url)
+        and request.post_data_json.get("verb").get("display").get("en-US") == "played"
+    )
+
+    page.expect_request(
+        lambda request: request.method == "POST"
+        and re.match(r"^.*/xapi/video/$", request.url)
+        and request.post_data_json.get("verb").get("display").get("en-US") == "paused"
+    )
+
+    page.expect_request(
+        lambda request: request.method == "POST"
+        and re.match(r"^.*/xapi/video/$", request.url)
+        and request.post_data_json.get("verb").get("display").get("en-US")
+        == "completed"
+    )
 
 
 @pytest.mark.django_db()
