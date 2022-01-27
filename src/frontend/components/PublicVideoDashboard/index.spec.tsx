@@ -15,6 +15,7 @@ import { wrapInRouter } from 'utils/tests/router';
 import { Maybe } from 'utils/types';
 
 import PublicVideoDashboard from '.';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -90,6 +91,9 @@ describe('PublicVideoDashboard', () => {
       setSource: jest.fn(),
     });
     mockCanUpdate = false;
+    useLiveStateStarted.setState({
+      isStarted: true,
+    });
 
     /*
       make sure to remove all body children, grommet layer gets rendered twice, known issue

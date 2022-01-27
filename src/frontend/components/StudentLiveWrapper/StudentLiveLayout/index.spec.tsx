@@ -16,6 +16,7 @@ describe('<StudentLiveLayout />', () => {
       <ResponsiveContext.Provider value="large">
         <StudentLiveLayout
           actionsElement={ActionsElement}
+          displayActionsElement={true}
           isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -39,6 +40,7 @@ describe('<StudentLiveLayout />', () => {
       <ResponsiveContext.Provider value="large">
         <StudentLiveLayout
           actionsElement={ActionsElement}
+          displayActionsElement={true}
           isPanelOpen={false}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -62,6 +64,7 @@ describe('<StudentLiveLayout />', () => {
       <ResponsiveContext.Provider value="large">
         <StudentLiveLayout
           actionsElement={ActionsElement}
+          displayActionsElement={true}
           isPanelOpen={undefined}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -85,6 +88,7 @@ describe('<StudentLiveLayout />', () => {
       <ResponsiveContext.Provider value="large">
         <StudentLiveLayout
           actionsElement={ActionsElement}
+          displayActionsElement={true}
           isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -99,5 +103,27 @@ describe('<StudentLiveLayout />', () => {
     expect(screen.queryByText('panel component')).not.toBeInTheDocument();
 
     await imageSnapshot();
+  });
+
+  it('does not render the actionElement when displayActionsElement is set to false', () => {
+    render(
+      <ResponsiveContext.Provider value="large">
+        <StudentLiveLayout
+          actionsElement={ActionsElement}
+          displayActionsElement={false}
+          isPanelOpen={true}
+          liveTitleElement={LiveTitleElement}
+          mainElement={MainCompo}
+          sideElement={PanelCompo}
+        />
+      </ResponsiveContext.Provider>,
+    );
+
+    expect(screen.queryByText('actions element')).not.toBeInTheDocument();
+    screen.getByText('live title element');
+    screen.getByText('main component');
+
+    const sideElenent = screen.getByText('panel component');
+    expect(sideElenent).toBeVisible();
   });
 });
