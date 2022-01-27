@@ -13,6 +13,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 
 import { StudentLiveLayout } from './StudentLiveLayout';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 
 export enum LiveType {
   ON_STAGE = 'on_stage',
@@ -42,6 +43,9 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
     isPanelVisible: state.isPanelVisible,
     configPanel: state.setAvailableItems,
   }));
+  const { isStarted } = useLiveStateStarted((state) => ({
+    isStarted: state.isStarted,
+  }));
 
   useEffect(() => {
     const availableItems: LivePanelItem[] = [];
@@ -58,6 +62,9 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
   return (
     <StudentLiveLayout
       actionsElement={<StudentLiveControlBar video={video} />}
+      displayActionsElement={
+        configuration.type === LiveType.ON_STAGE || isStarted
+      }
       isPanelOpen={isPanelVisible}
       liveTitleElement={
         <StudentLiveInfoBar title={video.title} startDate={null} />

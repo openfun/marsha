@@ -1,6 +1,6 @@
 import React from 'react';
 import fetchMock from 'fetch-mock';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 
 import {
   LivePanelItem,
@@ -13,6 +13,7 @@ import { LiveType, LiveVideoWrapper } from '.';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 import { createPlayer } from 'Player/createPlayer';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -87,6 +88,10 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
+    });
+
+    useLiveStateStarted.setState({
+      isStarted: true,
     });
 
     /*
@@ -274,6 +279,77 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(useLivePanelState.getState().currentItem).toEqual(undefined);
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
+
+  it('configures live state without action elements while the live is not really started', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: false,
+      currentItem: undefined,
+      availableItems: [],
+    });
+    useLiveStateStarted.getState().setIsStarted(false);
+    const video = videoMockFactory({
+      title: 'live title',
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(
+          <LiveVideoWrapper
+            video={video}
+            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
+          />,
+        ),
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+      ),
+    );
+
+    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    screen.getByText('live title');
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.CHAT,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.CHAT,
+    );
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
+
+    act(() => {
+      // live is really started
+      useLiveStateStarted.getState().setIsStarted(true);
+    });
+
+    await screen.findByRole('button', { name: 'Show chat' });
+  });
 });
 
 describe('<StudentLiveWrapper /> as a streamer', () => {
@@ -282,6 +358,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     executeCommand: mockExecuteCommand,
     addListener: jest.fn(),
   }));
+
+  beforeEach(() => {
+    useLiveStateStarted.setState({
+      isStarted: true,
+    });
+  });
 
   beforeAll(() => {
     global.JitsiMeetExternalAPI = mockJitsi;
@@ -440,6 +522,61 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
     expect(useLivePanelState.getState().currentItem).toEqual(undefined);
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
+  });
+
+  it('configures live state with action elements even if the live is not really started', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: false,
+      currentItem: undefined,
+      availableItems: [],
+    });
+    useLiveStateStarted.getState().setIsStarted(false);
+    const video = videoMockFactory({
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(
+          <LiveVideoWrapper
+            video={video}
+            configuration={{ type: LiveType.ON_STAGE }}
+          />,
+        ),
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+
+    expect(screen.getByText('Join the chat')).not.toBeVisible();
+    screen.getByText('live title');
+    screen.getByRole('button', { name: 'Show chat' });
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.CHAT,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.CHAT,
+    );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 });

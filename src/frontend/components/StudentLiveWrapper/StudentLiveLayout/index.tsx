@@ -12,6 +12,7 @@ const LiveVideoInformationBarWrapper = styled(Box)`
 
 interface LiveStudentLayoutProps {
   actionsElement: React.ReactElement;
+  displayActionsElement: boolean;
   isPanelOpen?: boolean;
   liveTitleElement: React.ReactElement;
   mainElement: React.ReactElement;
@@ -20,6 +21,7 @@ interface LiveStudentLayoutProps {
 
 export const StudentLiveLayout = ({
   actionsElement,
+  displayActionsElement,
   isPanelOpen,
   liveTitleElement,
   mainElement,
@@ -51,9 +53,11 @@ export const StudentLiveLayout = ({
           )}
         </Box>
 
-        <Box height={'67px'} margin={{ top: 'small' }}>
-          {actionsElement}
-        </Box>
+        {displayActionsElement && (
+          <Box height={'67px'} margin={{ top: 'small' }}>
+            {actionsElement}
+          </Box>
+        )}
       </Box>
     );
   }
@@ -82,7 +86,7 @@ export const StudentLiveLayout = ({
         round="6px"
       >
         {liveTitleElement}
-        {actionsElement}
+        {displayActionsElement && actionsElement}
       </LiveVideoInformationBarWrapper>
     </Box>
   );
