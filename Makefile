@@ -78,6 +78,14 @@ down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
 .PHONY: down
 
+reset: ## Reset the project by destroying all containers, migrate the database and then recreate missing containers and finally create the prosody admin
+reset: \
+	down \
+	migrate \
+	run \
+	prosody-admin
+.PHONY: reset
+
 logs: ## display app logs (follow mode)
 	@$(COMPOSE) logs -f app
 .PHONY: logs
