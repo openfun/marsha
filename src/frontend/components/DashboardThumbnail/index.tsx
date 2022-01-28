@@ -1,18 +1,19 @@
 import { Box, Button, Text } from 'grommet';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
-import { appData } from '../../data/appData';
-import { createThumbnail } from '../../data/sideEffects/createThumbnail';
-import { useThumbnail } from '../../data/stores/useThumbnail';
-import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
-import { Thumbnail, uploadState, Video } from '../../types/tracks';
-import { DashboardThumbnailDisplay } from '../DashboardThumbnailDisplay';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { UploadableObjectProgress } from '../UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { DashboardThumbnailDisplay } from 'components/DashboardThumbnailDisplay';
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
+import { createThumbnail } from 'data/sideEffects/createThumbnail';
+import { useThumbnail } from 'data/stores/useThumbnail';
+import { modelName } from 'types/models';
+import { uploadState, Video } from 'types/tracks';
 
 const messages = defineMessages({
   error: {
@@ -42,7 +43,6 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [error, setError] = useState<unknown>();
-  const pollInterval = useRef(-1);
 
   const { uploadManagerState } = useUploadManager();
   const { addThumbnail, thumbnail } = useThumbnail((state) => ({
@@ -51,53 +51,6 @@ export const DashboardThumbnail = ({ video }: DashboardThumbnailProps) => {
   }));
 
   const thumbnailState = thumbnail ? thumbnail.upload_state : uploadState.READY;
-
-  const cleanup = () => {
-    if (pollInterval.current > -1) {
-      window.clearInterval(pollInterval.current);
-    }
-  };
-
-  useEffect(() => {
-    if (
-      thumbnail &&
-      [uploadState.PROCESSING, uploadState.PENDING].includes(
-        thumbnail.upload_state,
-      ) &&
-      pollInterval.current === -1
-    ) {
-      pollInterval.current = window.setInterval(
-        () => pollThumbnail(),
-        1000 * 5,
-      );
-    }
-
-    return cleanup;
-  }, [thumbnailState]);
-
-  const pollThumbnail = async () => {
-    try {
-      const response = await fetch(
-        `${API_ENDPOINT}/${modelName.THUMBNAILS}/${thumbnail!.id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${appData.jwt}`,
-          },
-        },
-      );
-
-      const incomingThumbnail: Thumbnail = await response.json();
-      if (
-        incomingThumbnail.is_ready_to_show &&
-        incomingThumbnail.upload_state === uploadState.READY
-      ) {
-        cleanup();
-        addThumbnail(incomingThumbnail);
-      }
-    } catch (err) {
-      setError(err);
-    }
-  };
 
   const prepareUpdate = async () => {
     try {
