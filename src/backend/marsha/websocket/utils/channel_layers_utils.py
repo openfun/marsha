@@ -2,7 +2,11 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from marsha.core.serializers import ThumbnailSerializer, VideoSerializer
+from marsha.core.serializers import (
+    ThumbnailSerializer,
+    TimedTextTrackSerializer,
+    VideoSerializer,
+)
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 
 
@@ -30,4 +34,17 @@ def dispatch_thumbnail(thumbnail):
     async_to_sync(channel_layer.group_send)(
         VIDEO_ADMIN_ROOM_NAME.format(video_id=str(thumbnail.video_id)),
         {"type": "thumbnail_updated", "thumbnail": serialized_thumbnail.data},
+    )
+
+
+def dispatch_timed_text_track(timed_text_track):
+    """Send the timed_text_track to admin users connected to the video consumer."""
+    channel_layer = get_channel_layer()
+    serialized_thumbnail = TimedTextTrackSerializer(timed_text_track)
+    async_to_sync(channel_layer.group_send)(
+        VIDEO_ADMIN_ROOM_NAME.format(video_id=str(timed_text_track.video_id)),
+        {
+            "type": "timed_text_track_updated",
+            "timed_text_track": serialized_thumbnail.data,
+        },
     )

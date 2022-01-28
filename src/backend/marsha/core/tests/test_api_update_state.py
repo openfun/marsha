@@ -11,6 +11,7 @@ from channels.layers import get_channel_layer
 import pytz
 
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
+from marsha.websocket.utils import channel_layers_utils
 
 from ..defaults import HARVESTED, PENDING, RAW, STOPPED
 from ..factories import (
@@ -219,16 +220,21 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video"
+        ) as mock_dispatch_video, mock.patch.object(
+            channel_layers_utils, "dispatch_timed_text_track"
+        ) as mock_dispatch_timed_text_track:
             response = self.client.post(
                 "/api/update-state",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
-            mock_dispatch_video_to_groups.assert_not_called()
+            mock_dispatch_video.assert_called_once_with(
+                timed_text_track.video, to_admin=True
+            )
+            mock_dispatch_timed_text_track.assert_called_once_with(timed_text_track)
         timed_text_track.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
