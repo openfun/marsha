@@ -46,6 +46,9 @@ export interface AppData {
     svg: {
       icons: string;
     };
+    img: {
+      liveBackground: string;
+    };
   };
   player?: string;
   playlist?: Playlist;

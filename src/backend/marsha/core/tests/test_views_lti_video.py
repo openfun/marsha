@@ -102,7 +102,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg"}},
+            {
+                "img": {"liveBackground": "/static/img/liveBackground.png"},
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
         )
         self.assertEqual(
             context.get("resource"),
@@ -235,7 +238,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg"}},
+            {
+                "img": {"liveBackground": "/static/img/liveBackground.png"},
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
         )
         self.assertEqual(
             context.get("resource"),
@@ -395,7 +401,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg"}},
+            {
+                "img": {"liveBackground": "/static/img/liveBackground.png"},
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
         )
         self.assertEqual(
             context.get("resource"),
@@ -547,7 +556,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg"}},
+            {
+                "img": {"liveBackground": "/static/img/liveBackground.png"},
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
         )
         self.assertEqual(
             context.get("resource"),
@@ -1367,9 +1379,8 @@ class VideoLTIViewTestCase(TestCase):
                 "sentry_dsn": "https://sentry.dsn",
                 "state": "error",
                 "static": {
-                    "svg": {
-                        "icons": "/static/svg/icons.svg",
-                    }
+                    "img": {"liveBackground": "/static/img/liveBackground.png"},
+                    "svg": {"icons": "/static/svg/icons.svg"},
                 },
             },
         )
