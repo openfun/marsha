@@ -1,31 +1,54 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import WS from 'jest-websocket-mock';
 import React from 'react';
 
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { useThumbnail } from 'data/stores/useThumbnail';
+import { initVideoWebsocket } from 'data/websocket';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardThumbnail } from '.';
-import { useThumbnail } from '../../data/stores/useThumbnail';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
 
 jest.mock('react-router-dom', () => ({
   Redirect: ({ to }: { to: string }) => `Redirect push to ${to}.`,
 }));
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'some token',
   },
 }));
 
+const video = videoMockFactory();
+let server: WS;
+
 describe('<DashboardThumbnail />', () => {
+  beforeAll(async () => {
+    server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
+
+    global.window = Object.create(window);
+    Object.defineProperty(window, 'location', {
+      value: {
+        href: 'http://localhost:1234/',
+        host: 'localhost:1234',
+        protocol: 'http',
+      },
+    });
+
+    initVideoWebsocket(video);
+    await server.connected;
+  });
   afterEach(jest.resetAllMocks);
 
   it('displays a thumbnail image when the related Thumbnail object is ready', () => {
-    const video = videoMockFactory({
+    const videoReady = videoMockFactory({
       id: '43',
       is_ready_to_show: true,
       show_download: true,
@@ -46,8 +69,8 @@ describe('<DashboardThumbnail />', () => {
       upload_state: uploadState.READY,
     });
 
-    useThumbnail.getState().addResource(video.thumbnail!);
-    render(wrapInIntlProvider(<DashboardThumbnail video={video} />));
+    useThumbnail.getState().addResource(videoReady.thumbnail!);
+    render(wrapInIntlProvider(<DashboardThumbnail video={videoReady} />));
 
     // The progress indicator, processing message & error message are not shown
     expect(screen.queryByText('0%')).toEqual(null);
@@ -155,27 +178,25 @@ describe('<DashboardThumbnail />', () => {
     screen.getByText('0%');
   });
 
-  it('displays an explanatory message when a thumbnail is processing', () => {
-    const videoWithProcessingThumbnail = videoMockFactory({
-      id: '43',
+  it('displays an explanatory message when a thumbnail is processing and shows the image when ready', async () => {
+    const thumbnail = thumbnailMockFactory({
+      active_stamp: 128748302847,
+      id: '42',
       is_ready_to_show: true,
-      show_download: true,
-      thumbnail: {
-        active_stamp: 128748302847,
-        id: '42',
-        is_ready_to_show: true,
-        upload_state: uploadState.PROCESSING,
-        urls: {
-          144: 'https://example.com/thumbnail/144',
-          240: 'https://example.com/thumbnail/240',
-          480: 'https://example.com/thumbnail/480',
-          720: 'https://example.com/thumbnail/720',
-          1080: 'https://example.com/thumbnail/1080',
-        },
-        video: '43',
+      upload_state: uploadState.PROCESSING,
+      urls: {
+        144: 'https://example.com/thumbnail/144',
+        240: 'https://example.com/thumbnail/240',
+        480: 'https://example.com/thumbnail/480',
+        720: 'https://example.com/thumbnail/720',
+        1080: 'https://example.com/thumbnail/1080',
       },
-      upload_state: uploadState.READY,
+      video: video.id,
     });
+    const videoWithProcessingThumbnail = {
+      ...video,
+      thumbnail,
+    };
 
     useThumbnail
       .getState()
@@ -197,6 +218,22 @@ describe('<DashboardThumbnail />', () => {
     // The processing message is shown
     screen.getByText(
       'Your thumbnail is currently processing. This may take several minutes. It will appear here once done.',
+    );
+
+    server.send(
+      JSON.stringify({
+        type: modelName.THUMBNAILS,
+        resource: {
+          ...thumbnail,
+          upload_state: uploadState.READY,
+        },
+      }),
+    );
+
+    // The thumbnail image is shown
+    const img = await screen.findByAltText('Video thumbnail preview image.');
+    expect(img.getAttribute('src')).toEqual(
+      'https://example.com/thumbnail/144',
     );
   });
 

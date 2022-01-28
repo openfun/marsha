@@ -48,6 +48,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Update live layout for students
 - Use websocket to update video resource instead of polling the API
 - Improvement of emails templates for scheduled webinars
+- Use websocket in the VOD dashboard and stop polling resources
 
 ### Removed
 
