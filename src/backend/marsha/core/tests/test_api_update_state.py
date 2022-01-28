@@ -393,16 +393,19 @@ class UpdateStateAPITest(TestCase):
             "state": "ready",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video"
+        ) as mock_dispatch_video, mock.patch.object(
+            channel_layers_utils, "dispatch_thumbnail"
+        ) as mock_dispatch_thumbnail:
             response = self.client.post(
                 "/api/update-state",
                 data,
                 content_type="application/json",
                 HTTP_X_MARSHA_SIGNATURE=signature,
             )
-            mock_dispatch_video_to_groups.assert_not_called()
+            mock_dispatch_video.assert_called_once_with(thumbnail.video, to_admin=True)
+            mock_dispatch_thumbnail.assert_called_once_with(thumbnail)
 
         thumbnail.refresh_from_db()
 

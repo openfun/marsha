@@ -447,6 +447,29 @@ class Thumbnail(AbstractImage):
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.video.pk}/thumbnail/{self.pk}/{stamp}"
 
+    def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
+        """Manage upload state.
+
+        Parameters
+        ----------
+        upload_state: Type[string]
+            state of the upload in AWS.
+
+        uploaded_on: Type[DateTime]
+            datetime at which the active version of the file was uploaded.
+
+        extra_paramters: Type[Dict]
+            Dictionnary containing arbitrary data sent from AWS lambda.
+        """
+        super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
+
+        # This function is imported using import_string to avoid circular import error.
+        channel_layers_utils = import_string(
+            "marsha.websocket.utils.channel_layers_utils"
+        )
+        channel_layers_utils.dispatch_thumbnail(self)
+        channel_layers_utils.dispatch_video(self.video, to_admin=True)
+
 
 class LiveRegistration(BaseModel):
     """Model representing a scheduling live registration.
