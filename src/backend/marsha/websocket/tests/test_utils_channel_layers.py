@@ -4,8 +4,12 @@ from django.test import TestCase
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from marsha.core.factories import ThumbnailFactory, VideoFactory
-from marsha.core.serializers import ThumbnailSerializer, VideoSerializer
+from marsha.core.factories import ThumbnailFactory, TimedTextTrackFactory, VideoFactory
+from marsha.core.serializers import (
+    ThumbnailSerializer,
+    TimedTextTrackSerializer,
+    VideoSerializer,
+)
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
 
@@ -68,3 +72,20 @@ class ChannelLayersUtilsTest(TestCase):
         message = async_to_sync(channel_layer.receive)("test_channel")
         self.assertEqual(message["type"], "thumbnail_updated")
         self.assertEqual(message["thumbnail"], ThumbnailSerializer(thumbnail).data)
+
+    def test_dispatch_timed_text_track(self):
+        """A message containing serialized timed_text_track is dispatched to the admin group."""
+        timed_text_track = TimedTextTrackFactory()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(timed_text_track.video.id)),
+            "test_channel",
+        )
+
+        channel_layers_utils.dispatch_timed_text_track(timed_text_track)
+
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "timed_text_track_updated")
+        self.assertEqual(
+            message["timed_text_track"], TimedTextTrackSerializer(timed_text_track).data
+        )

@@ -11,8 +11,12 @@ from channels.testing import WebsocketCommunicator
 from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.defaults import JITSI, RUNNING
-from marsha.core.factories import ThumbnailFactory, VideoFactory
-from marsha.core.serializers import ThumbnailSerializer, VideoSerializer
+from marsha.core.factories import ThumbnailFactory, TimedTextTrackFactory, VideoFactory
+from marsha.core.serializers import (
+    ThumbnailSerializer,
+    TimedTextTrackSerializer,
+    VideoSerializer,
+)
 from marsha.websocket.application import base_application
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 
@@ -41,6 +45,17 @@ class VideoConsumerTest(TransactionTestCase):
     def _get_thumbnail_serializer_data(self, thumbnail, context={}):
         """Serialize thumbnail model and return the serialized data."""
         serializer = ThumbnailSerializer(thumbnail, context=context)
+        return serializer.data
+
+    @sync_to_async
+    def _get_timed_text_track(self, **kwargs):
+        """Create a timed_text_track using TimedTextTrackFactory"""
+        return TimedTextTrackFactory(**kwargs)
+
+    @sync_to_async
+    def _get_timed_text_track_serializer_data(self, thumbnail, context={}):
+        """Serialize timed text track model and return the serialized data."""
+        serializer = TimedTextTrackSerializer(thumbnail, context=context)
         return serializer.data
 
     async def test_connect_matching_video(self):
@@ -372,6 +387,53 @@ class VideoConsumerTest(TransactionTestCase):
                     "upload_state": "pending",
                     "urls": None,
                     "video": str(thumbnail.video_id),
+                },
+            },
+        )
+
+    async def test_timed_text_track_update_channel_layer(self):
+        """Message received on timed_text_track_updated event."""
+        timed_text_track = await self._get_timed_text_track()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(timed_text_track.video_id)
+
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{timed_text_track.video_id}/?jwt={jwt_token}",
+        )
+
+        connected, _ = await communicator.connect()
+
+        self.assertTrue(connected)
+
+        channel_layer = get_channel_layer()
+
+        await channel_layer.group_send(
+            VIDEO_ROOM_NAME.format(video_id=str(timed_text_track.video_id)),
+            {
+                "type": "timed_text_track_updated",
+                "timed_text_track": await self._get_timed_text_track_serializer_data(
+                    timed_text_track
+                ),
+            },
+        )
+
+        response = await communicator.receive_from()
+        self.assertEqual(
+            json.loads(response),
+            {
+                "type": "timedtexttracks",
+                "resource": {
+                    "active_stamp": None,
+                    "id": str(timed_text_track.id),
+                    "is_ready_to_show": False,
+                    "language": timed_text_track.language,
+                    "mode": timed_text_track.mode,
+                    "source_url": None,
+                    "upload_state": "pending",
+                    "url": None,
+                    "video": str(timed_text_track.video_id),
                 },
             },
         )
