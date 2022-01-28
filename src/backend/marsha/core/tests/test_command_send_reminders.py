@@ -1,4 +1,4 @@
-"""Tests for check_live_state command."""
+"""Tests for send_reminders command."""
 from datetime import datetime, timedelta
 from io import StringIO
 import smtplib
