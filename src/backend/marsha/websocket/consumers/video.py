@@ -2,7 +2,7 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from marsha.core.models import Video
+from marsha.core.models import Thumbnail, Video
 from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
 from marsha.websocket import defaults
 
@@ -64,8 +64,12 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-    # pylint: disable=unused-argument
     async def video_updated(self, event):
         """Listener for the video_updated event."""
         message = {"type": Video.RESOURCE_NAME, "resource": event["video"]}
+        await self.send_json(message)
+
+    async def thumbnail_updated(self, event):
+        """Listener for the thumbnail updated event."""
+        message = {"type": Thumbnail.RESOURCE_NAME, "resource": event["thumbnail"]}
         await self.send_json(message)

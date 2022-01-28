@@ -4,8 +4,8 @@ from django.test import TestCase
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from marsha.core.factories import VideoFactory
-from marsha.core.serializers import VideoSerializer
+from marsha.core.factories import ThumbnailFactory, VideoFactory
+from marsha.core.serializers import ThumbnailSerializer, VideoSerializer
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
 
@@ -53,3 +53,18 @@ class ChannelLayersUtilsTest(TestCase):
         self.assertEqual(
             message["video"], VideoSerializer(video, context={"is_admin": True}).data
         )
+
+    def test_dispatch_thumbnail(self):
+        """A message containing serialized thumbnail is dispatched to the admin group."""
+        thumbnail = ThumbnailFactory()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(thumbnail.video.id)),
+            "test_channel",
+        )
+
+        channel_layers_utils.dispatch_thumbnail(thumbnail)
+
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "thumbnail_updated")
+        self.assertEqual(message["thumbnail"], ThumbnailSerializer(thumbnail).data)
