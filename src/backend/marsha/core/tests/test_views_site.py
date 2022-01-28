@@ -51,7 +51,10 @@ class SiteViewTestCase(TestCase):
         self.assertEqual(context.get("flags"), {"BBB": False, "sentry": True})
         self.assertEqual(
             context.get("static"),
-            {"svg": {"icons": "/static/svg/icons.svg"}},
+            {
+                "img": {"liveBackground": "/static/img/liveBackground.png"},
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
         )
         self.assertIsNone(context.get("context_id"))
         self.assertIsNone(context.get("consumer_site"))
