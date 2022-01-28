@@ -383,6 +383,13 @@ class TimedTextTrack(BaseTrack):
 
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
+        # This function is imported using import_string to avoid circular import error.
+        channel_layers_utils = import_string(
+            "marsha.websocket.utils.channel_layers_utils"
+        )
+        channel_layers_utils.dispatch_timed_text_track(self)
+        channel_layers_utils.dispatch_video(self.video, to_admin=True)
+
 
 class SignTrack(BaseTrack):
     """Model representing a signs language track for a video."""

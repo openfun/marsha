@@ -2,7 +2,7 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from marsha.core.models import Thumbnail, Video
+from marsha.core.models import Thumbnail, TimedTextTrack, Video
 from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
 from marsha.websocket import defaults
 
@@ -72,4 +72,12 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     async def thumbnail_updated(self, event):
         """Listener for the thumbnail updated event."""
         message = {"type": Thumbnail.RESOURCE_NAME, "resource": event["thumbnail"]}
+        await self.send_json(message)
+
+    async def timed_text_track_updated(self, event):
+        """Listener for the timed text track updated event."""
+        message = {
+            "type": TimedTextTrack.RESOURCE_NAME,
+            "resource": event["timed_text_track"],
+        }
         await self.send_json(message)
