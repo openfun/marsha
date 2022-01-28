@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteTimedTextTrack } from '../../data/sideEffects/deleteTimedTextTrack';
-import { pollForTrack } from '../../data/sideEffects/pollForTrack';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { requestStatus } from '../../types/api';
 import { LanguageChoice } from '../../types/LanguageChoice';
 import { modelName } from '../../types/models';
 import { TimedText, uploadState } from '../../types/tracks';
 import { Maybe } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
-
-const { PENDING, PROCESSING } = uploadState;
 
 const messages = defineMessages({
   delete: {
@@ -70,8 +65,6 @@ interface TimedTextListItemProps {
 }
 
 export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
-  const [error, setError] = useState('');
-
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     (state) => state,
   );
@@ -83,20 +76,7 @@ export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
   // On load, get TTT language choices and start polling if necessary
   useEffect(() => {
     getChoices();
-
-    if ([PENDING, PROCESSING].includes(track.upload_state)) {
-      window.setTimeout(async () => {
-        const result = await pollForTrack(modelName.TIMEDTEXTTRACKS, track.id);
-        if (result === requestStatus.FAILURE) {
-          setError('notFound');
-        }
-      }, 1000 * 10);
-    }
-  }, [track.upload_state]);
-
-  if (error) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-  }
+  }, []);
 
   const language: Maybe<LanguageChoice> =
     choices &&
