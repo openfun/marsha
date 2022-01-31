@@ -20,6 +20,11 @@ const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
   appData: {
     video: mockVideo,
+    static: {
+      img: {
+        liveBackground: 'some_url',
+      },
+    },
   },
   getDecodedJwt: () => ({
     permissions: {
@@ -33,14 +38,6 @@ jest.mock('Player/createPlayer', () => ({
 }));
 jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn().mockResolvedValue(null),
-}));
-jest.mock('data/sideEffects/pollForLive', () => ({
-  pollForLive: jest.fn().mockResolvedValue(null),
-}));
-jest.mock('index', () => ({
-  intl: {
-    locale: 'en',
-  },
 }));
 jest.mock('utils/resumeLive', () => ({
   resumeLive: jest.fn().mockResolvedValue(null),
@@ -69,6 +66,8 @@ window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {
@@ -85,7 +84,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       },
       { method: 'OPTIONS' },
     );
-    mockCreatePlayer.mockResolvedValue({
+    mockCreatePlayer.mockReturnValue({
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
@@ -105,6 +104,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
   afterEach(() => {
     fetchMock.restore();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
@@ -158,10 +159,9 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     act(() => useLivePanelState.getState().setPanelVisibility(false));
 
-    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
-
     screen.getByText('live title');
     screen.getByRole('button', { name: 'Show chat' });
 
@@ -222,7 +222,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
 
-    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     screen.getByText('Join the chat');
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
@@ -341,7 +341,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
 
-    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
     expect(
@@ -354,18 +354,21 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
   });
 
   it('configures live state without action elements while the live is not really started', async () => {
+    fetchMock.mock('https://marsha.education/live.m3u8', 404);
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: undefined,
       availableItems: [],
     });
-    useLiveStateStarted.getState().setIsStarted(false);
+    useLiveStateStarted.setState({
+      isStarted: false,
+    });
     const video = videoMockFactory({
       title: 'live title',
       live_state: liveState.RUNNING,
       urls: {
         manifests: {
-          hls: 'https://example.com/hls.m3u8',
+          hls: 'https://marsha.education/live.m3u8',
         },
         mp4: {},
         thumbnails: {},
@@ -391,19 +394,21 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
 
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'player_type',
-        expect.any(Element),
-        expect.anything(),
-        video,
-      ),
-    );
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('https://marsha.education/live.m3u8', {
+          method: 'GET',
+        }),
+      ).toHaveLength(1);
+    });
 
-    expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
+    expect(mockCreatePlayer).not.toHaveBeenCalled();
+
+    screen.getByText('Live is starting');
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    expect(screen.getAllByRole('heading', { name: 'live title' })).toHaveLength(
+      2,
+    );
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();
@@ -417,12 +422,30 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
 
-    act(() => {
-      // live is really started
-      useLiveStateStarted.getState().setIsStarted(true);
+    fetchMock.mock('https://marsha.education/live.m3u8', 200, {
+      overwriteRoutes: true,
+    });
+    jest.advanceTimersToNextTimer();
+
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('https://marsha.education/live.m3u8', {
+          method: 'GET',
+        }),
+      ).toHaveLength(2);
     });
 
     await screen.findByRole('button', { name: 'Hide chat' });
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+      ),
+    );
   });
 });
 
