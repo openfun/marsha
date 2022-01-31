@@ -1127,19 +1127,19 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-aws-sdk-mock@5.6.0:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk-mock/-/aws-sdk-mock-5.6.0.tgz#8cd44e2e8d65f7f38dea8d1ad073fa38f9c719d8"
-  integrity sha512-gUoEs/FaszVTLG5zBveg2NC2w/j/c9j6Ymgq4whrsdysClW6FWKT9w8eOUERZChliKZe/LwHHJFKjBHGrV9MJg==
+aws-sdk-mock@5.6.2:
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/aws-sdk-mock/-/aws-sdk-mock-5.6.2.tgz#664771462953ca8d3806d5a50a63b4a6dbd5290f"
+  integrity sha512-GRJg8kjRJFLm2aLiPkYSqe/RreHqlqncAeFtWdAbtSxzBdct9EaV6rqSqjyWXKNJG45Rzn2Ojo3F6qVIgkQnSg==
   dependencies:
     aws-sdk "^2.928.0"
     sinon "^11.1.1"
     traverse "^0.6.6"
 
-aws-sdk@2.1062.0:
-  version "2.1062.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1062.0.tgz#89b55c9dcfa15135910a217489eb8577b11d9899"
-  integrity sha512-QIU8jwi7Uqyvw2HjsXXXUZv3V/6TinUzLewrdl2EdvonqZCXhwMgnZx2F9I2x62IKH1RqnINwFWdoK+OTgcAjA==
+aws-sdk@2.1066.0:
+  version "2.1066.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1066.0.tgz#2a9b00d983f3c740a7adda18d4e9a5c34d4d3887"
+  integrity sha512-9BZPdJgIvau8Jf2l3PxInNqQd733uKLqGGDywMV71duxNTLgdBZe2zvCkbgl22+ldC8R2LVMdS64DzchfQIxHg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
