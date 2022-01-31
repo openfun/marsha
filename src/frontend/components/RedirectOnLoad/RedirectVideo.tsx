@@ -6,7 +6,6 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { getDecodedJwt } from 'data/appData';
 import { modelName } from 'types/models';
-import { SUBSCRIBE_SCHEDULED_ROUTE } from 'components/SubscribeScheduledVideo/route';
 import { Video } from 'types/tracks';
 
 interface RedirectVideoProps {
@@ -25,9 +24,10 @@ export const RedirectVideo = ({ video }: RedirectVideoProps) => {
   if (getDecodedJwt().permissions.can_update) {
     return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
   }
+
   if (video.starting_at) {
     // user can register to the scheduled event
-    return <Redirect push to={SUBSCRIBE_SCHEDULED_ROUTE()} />;
+    return <Redirect push to={PLAYER_ROUTE(modelName.VIDEOS)} />;
   }
 
   // For safety default to the 404 view: this is for users without update permission

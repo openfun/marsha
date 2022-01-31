@@ -8,11 +8,10 @@ import { LiveModeType } from 'types/tracks';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { SUBSCRIBE_SCHEDULED_ROUTE } from 'components/SubscribeScheduledVideo/route';
 import { RedirectVideo } from './RedirectVideo';
 
 let mockCanUpdate: boolean;
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   getDecodedJwt: () => ({
     permissions: {
       can_update: mockCanUpdate,
@@ -44,10 +43,6 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
-        },
       ]),
     );
 
@@ -78,10 +73,6 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
-        },
       ]),
     );
 
@@ -109,10 +100,6 @@ describe('RedirectVideo', () => {
         {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
-        },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
         },
       ]),
     );
@@ -142,17 +129,13 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
-        },
       ]),
     );
 
     screen.getByText('Error Component: notFound');
   });
 
-  it('redirects to the scheduled view when the starting date is set to past', () => {
+  it('redirects to the player view when the starting date is set to past', () => {
     const startingAtPast = new Date();
     startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
     mockCanUpdate = false;
@@ -177,17 +160,13 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
-        },
       ]),
     );
 
-    screen.getByText('subscribe');
+    screen.getByText('video player');
   });
 
-  it('redirects to the scheduled view when the starting date is set to future', () => {
+  it('redirects to the player view when the starting date is set to future', () => {
     const startingAt = new Date();
     startingAt.setDate(startingAt.getDate() + 10);
     mockCanUpdate = false;
@@ -212,13 +191,9 @@ describe('RedirectVideo', () => {
           path: PLAYER_ROUTE(modelName.VIDEOS),
           render: () => <span>video player</span>,
         },
-        {
-          path: SUBSCRIBE_SCHEDULED_ROUTE(),
-          render: () => <span>subscribe</span>,
-        },
       ]),
     );
 
-    screen.getByText('subscribe');
+    screen.getByText('video player');
   });
 });
