@@ -2512,10 +2512,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@converse/headless@9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@converse/headless/-/headless-9.0.0.tgz#c72908c7d43340fd2eb2285796aaee0b013a6f8d"
-  integrity sha512-4XkekCMSd0tCdPdkCZ17VaElJuAzFUMvPz3THrw/OXewQltGG5muop8vq0mDNrKkFdAgl4MT1qMcoDMI/UpQNQ==
+"@converse/headless@8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@converse/headless/-/headless-8.0.1.tgz#a405864eeb444f08c9a40972605fd7b64cf12775"
+  integrity sha512-JqJIyPifANaZJOrsTPh1CuK4mm+udk3yeSHOMUllPta8+HWefjFKpl7UT5oxnAjRoPAUE0wbVb1SUvSDqjQAmQ==
   dependencies:
     "@converse/skeletor" "0.0.5"
     dayjs "1.10.6"

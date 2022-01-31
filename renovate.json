@@ -10,12 +10,12 @@
         "npm"
       ],
       "matchPackageNames": [
+        "@converse/headless",
         "@storybook/addon-a11y",
         "@storybook/addon-actions",
         "@storybook/addon-essentials",
         "@storybook/react",
         "@types/faker",
-        "converse.js",
         "faker",
         "node",
         "node-fetch",

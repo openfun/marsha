@@ -82,7 +82,7 @@
     "xhr-mock": "2.5.1"
   },
   "dependencies": {
-    "@converse/headless": "9.0.0",
+    "@converse/headless": "8.0.1",
     "@formatjs/intl-relativetimeformat": "9.5.1",
     "@sentry/browser": "6.17.3",
     "@types/intl": "1.2.0",
