@@ -289,11 +289,11 @@ class Base(Configuration):
     SENTRY_DSN = values.Value(None)
 
     # Resource max file size
-    DOCUMENT_SOURCE_MAX_SIZE = values.Value(2 ** 30)  # 1GB
-    VIDEO_SOURCE_MAX_SIZE = values.Value(2 ** 30)  # 1GB
-    SUBTITLE_SOURCE_MAX_SIZE = values.Value(2 ** 20)  # 1MB
-    THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2 ** 20))  # 10MB
-    SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE = values.Value(300 * (2 ** 20))  # 300MB
+    DOCUMENT_SOURCE_MAX_SIZE = values.Value(2**30)  # 1GB
+    VIDEO_SOURCE_MAX_SIZE = values.Value(2**30)  # 1GB
+    SUBTITLE_SOURCE_MAX_SIZE = values.Value(2**20)  # 1MB
+    THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
+    SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE = values.Value(300 * (2**20))  # 300MB
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
