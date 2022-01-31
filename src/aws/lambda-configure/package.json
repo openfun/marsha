@@ -15,11 +15,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1062.0"
+    "aws-sdk": "2.1066.0"
   },
   "devDependencies": {
     "@types/jest": "27.4.0",
-    "aws-sdk-mock": "5.6.0",
+    "aws-sdk-mock": "5.6.2",
     "jest": "27.4.7",
     "prettier": "2.5.1"
   },
