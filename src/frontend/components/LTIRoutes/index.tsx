@@ -23,8 +23,6 @@ import { UploadForm } from 'components/UploadForm';
 import { UploadManager } from 'components/UploadManager';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { SelectContent } from 'components/SelectContent/';
-import { SUBSCRIBE_SCHEDULED_ROUTE } from 'components/SubscribeScheduledVideo/route';
-import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const DashboardDocument = lazy(() => import('components/DashboardDocument'));
@@ -35,9 +33,6 @@ const PublicVideoDashboard = lazy(
 );
 const PublicVideoLiveJitsi = lazy(
   () => import('components/PublicVideoLiveJitsi'),
-);
-const SubscribeScheduledVideo = lazy(
-  () => import('components/SubscribeScheduledVideo'),
 );
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
@@ -185,23 +180,6 @@ export const Routes = () => (
               );
             }
 
-            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-          }}
-        />
-
-        <Route
-          exact
-          path={SUBSCRIBE_SCHEDULED_ROUTE()}
-          render={() => {
-            if (
-              appData.modelName === modelName.VIDEOS &&
-              appData.video!.starting_at
-            ) {
-              if (appData.video!.is_scheduled) {
-                return <SubscribeScheduledVideo video={appData.video!} />;
-              }
-              return <WaitingLiveVideo />;
-            }
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
           }}
         />
