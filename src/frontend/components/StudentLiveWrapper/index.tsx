@@ -4,16 +4,16 @@ import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
-import VideoPlayer from 'components/VideoPlayer';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 
 import { StudentLiveLayout } from './StudentLiveLayout';
-import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { StudentLiveViewerWrapper } from './StudentLiveViewerWrapper';
 
 export enum LiveType {
   ON_STAGE = 'on_stage',
@@ -77,10 +77,9 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
             <DashboardVideoLiveJitsi video={video} />
           )}
           {configuration.type === LiveType.VIEWER && (
-            <VideoPlayer
+            <StudentLiveViewerWrapper
               video={video}
               playerType={configuration.playerType}
-              timedTextTracks={[]}
             />
           )}
         </React.Fragment>

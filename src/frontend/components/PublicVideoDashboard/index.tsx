@@ -5,11 +5,9 @@ import { Redirect } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { SubscribeScheduledVideo } from 'components/SubscribeScheduledVideo';
 import { LiveType, LiveVideoWrapper } from 'components/StudentLiveWrapper';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
-import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 import { getDecodedJwt } from 'data/appData';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
@@ -21,7 +19,6 @@ import {
   TimedTextTranscript,
   Video,
 } from 'types/tracks';
-import { ShouldNotHappen } from 'utils/errors/exception';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -38,35 +35,23 @@ const PublicVideoDashboard = ({
   );
 
   if (video.live_state !== null) {
-    initVideoWebsocket(video);
-    switch (video.live_state) {
-      case liveState.RUNNING:
-      case liveState.PAUSED:
-      case liveState.STARTING:
-      case liveState.STOPPING:
-        return (
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType }}
-          />
-        );
-      case liveState.STOPPED:
-        // user has update permission, we redirect him to the dashboard
-        if (getDecodedJwt().permissions.can_update) {
-          return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
-        }
+    if (video.live_state === liveState.STOPPED) {
+      // user has update permission, we redirect him to the dashboard
+      if (getDecodedJwt().permissions.can_update) {
+        return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
+      }
 
-        // otherwise the user can only see a message
-        return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
-      case liveState.IDLE:
-        if (video.is_scheduled) {
-          return <SubscribeScheduledVideo video={video} />;
-        }
-        // waiting message
-        return <WaitingLiveVideo />;
-      default:
-        throw new ShouldNotHappen(video.live_state);
+      // otherwise the user can only see a message
+      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
     }
+
+    initVideoWebsocket(video);
+    return (
+      <LiveVideoWrapper
+        video={video}
+        configuration={{ type: LiveType.VIEWER, playerType }}
+      />
+    );
   }
 
   const transcripts = timedTextTracks

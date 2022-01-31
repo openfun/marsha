@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { DateTime } from 'luxon';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -12,14 +13,13 @@ import {
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
-import { VideoPlayerInterface } from 'types/VideoPlayer';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { Deferred } from 'utils/tests/Deferred';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
-import { Maybe } from 'utils/types';
 
 import PublicVideoDashboard from '.';
+
+window.HTMLElement.prototype.scrollTo = jest.fn();
 
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -29,11 +29,6 @@ jest.mock('data/sideEffects/getResource', () => ({
 }));
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
-}));
-jest.mock('index', () => ({
-  intl: {
-    locale: 'en',
-  },
 }));
 jest.mock('utils/resumeLive', () => ({
   resumeLive: jest.fn().mockResolvedValue(null),
@@ -59,6 +54,11 @@ const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
   appData: {
     video: mockVideo,
+    static: {
+      img: {
+        liveBackground: 'some_url',
+      },
+    },
   },
   getDecodedJwt: () => ({
     permissions: {
@@ -91,7 +91,7 @@ describe('PublicVideoDashboard', () => {
       },
       { method: 'OPTIONS' },
     );
-    mockCreatePlayer.mockResolvedValue({
+    mockCreatePlayer.mockReturnValue({
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
@@ -107,11 +107,19 @@ describe('PublicVideoDashboard', () => {
     */
     document.body.innerHTML = '';
     document.body.appendChild(document.createElement('div'));
+
+    jest.useFakeTimers();
+    //    set system date to 2022-01-27T14:00:00
+    jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
   });
 
   afterEach(() => {
     fetchMock.restore();
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   it('displays the video player alone', async () => {
@@ -162,6 +170,7 @@ describe('PublicVideoDashboard', () => {
       'https://example.com/thumbnail/1080p.jpg',
     );
   });
+
   it('displays the video player, the download link and transcripts', async () => {
     const timedTextTracks = [
       timedTextMockFactory({
@@ -222,6 +231,7 @@ describe('PublicVideoDashboard', () => {
       'https://example.com/thumbnail/1080p.jpg',
     );
   });
+
   it('uses subtitles as transcripts', async () => {
     const timedTextTracks = [
       timedTextMockFactory({
@@ -286,6 +296,7 @@ describe('PublicVideoDashboard', () => {
 
     expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
   });
+
   it('displays the video player, the tile, the chat and chat action', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
@@ -414,8 +425,6 @@ describe('PublicVideoDashboard', () => {
         jid: 'xmpp-server.com',
       },
     });
-    const deferred = new Deferred<Maybe<VideoPlayerInterface>>();
-    mockCreatePlayer.mockReturnValue(deferred.promise);
 
     render(
       wrapInIntlProvider(
@@ -423,10 +432,9 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText('Live will begin soon');
-    screen.getByText(
-      'The live is going to start. You can wait here, the player will start once the live is ready.',
-    );
+    screen.getByRole('heading', {
+      name: 'Live is starting',
+    });
   });
 
   it('displays the video player and the waiting message when the live is paused', async () => {
@@ -555,10 +563,9 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText('Live will begin soon');
-    screen.getByText(
-      'The live is going to start. You can wait here, the player will start once the live is ready.',
-    );
+    screen.getByRole('heading', {
+      name: 'Live is starting',
+    });
   });
 
   it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', () => {
@@ -574,10 +581,9 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText('Live will begin soon');
-    screen.getByText(
-      'The live is going to start. You can wait here, the player will start once the live is ready.',
-    );
+    screen.getByRole('heading', {
+      name: 'Live is starting',
+    });
   });
 
   it('displays the SubscribeScheduledVideo component when live_state is IDLE and video is scheduled', async () => {
@@ -586,7 +592,7 @@ describe('PublicVideoDashboard', () => {
 
     const video = videoMockFactory({
       live_state: liveState.IDLE,
-      starting_at: startingAt.toISOString(),
+      starting_at: DateTime.fromJSDate(new Date(2022, 1, 29, 11, 0, 0)).toISO(),
       is_scheduled: true,
     });
     render(
@@ -599,7 +605,7 @@ describe('PublicVideoDashboard', () => {
 
     await screen.findByRole('button', { name: /register/i });
     screen.getByRole('heading', {
-      name: /register to this event starting on /i,
+      name: /Live will starts tomorrow at 11:00 AM/i,
     });
   });
 });

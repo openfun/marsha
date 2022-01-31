@@ -1,10 +1,11 @@
-import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { liveState } from 'types/tracks';
+
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
+
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
+
 jest.mock('jwt-decode', () => {
   return jest.fn().mockImplementation(() => ({
     locale: 'en',
@@ -57,59 +58,6 @@ describe('createPlayer', () => {
 
     expect(report).toHaveBeenCalledWith(
       Error('player unknown not implemented'),
-    );
-  });
-
-  it('polls the hls link while it does not exists when in live mode', async () => {
-    fetchMock.mock('https://marsha.education/live.m3u8', 404);
-    const video = videoMockFactory({
-      live_state: liveState.RUNNING,
-      urls: {
-        manifests: {
-          hls: 'https://marsha.education/live.m3u8',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-    });
-    const ref = document.createElement('video');
-    const dispatchPlayerTimeUpdate = jest.fn();
-
-    const promise = createPlayer(
-      'videojs',
-      ref,
-      dispatchPlayerTimeUpdate,
-      video,
-    );
-
-    await waitFor(() => {
-      expect(
-        fetchMock.calls('https://marsha.education/live.m3u8', {
-          method: 'GET',
-        }),
-      ).toHaveLength(1);
-    });
-
-    fetchMock.mock('https://marsha.education/live.m3u8', 200, {
-      overwriteRoutes: true,
-    });
-
-    jest.advanceTimersToNextTimer();
-
-    await waitFor(() => {
-      expect(
-        fetchMock.calls('https://marsha.education/live.m3u8', {
-          method: 'GET',
-        }),
-      ).toHaveLength(2);
-    });
-
-    await promise;
-
-    expect(createVideojsPlayer).toHaveBeenCalledWith(
-      ref,
-      dispatchPlayerTimeUpdate,
-      video,
     );
   });
 });
