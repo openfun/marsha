@@ -1,10 +1,9 @@
 import { Box } from 'grommet';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PublicPausedLiveVideo } from 'components/PublicPausedLiveVideo';
-import { WaitingLiveVideo } from 'components/WaitingLiveVideo';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
@@ -40,9 +39,6 @@ const VideoPlayer = ({
 }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
-  const [isLiveStarting, setIsLiveStarting] = useState(
-    !player && video?.live_state,
-  );
   const [isLivePausedOrStopping, setIsLivePausedOrStopping] = useState(
     video?.live_state &&
       [liveState.STOPPING, liveState.PAUSED].includes(video.live_state),
@@ -73,22 +69,19 @@ const VideoPlayer = ({
    * Initialize the video player.
    * Noop out if the video is missing, render will redirect to an error page.
    */
-  useAsyncEffect(async () => {
+  useEffect(() => {
     getChoices();
 
     if (video) {
       // Instantiate the player and keep the instance in state
       setPlayer(
-        await createPlayer(
+        createPlayer(
           playerType,
           videoNodeRef.current!,
           setPlayerCurrentTime,
           video,
         ),
       );
-      if (isLiveStarting && video.live_state) {
-        setIsLiveStarting(false);
-      }
 
       document.dispatchEvent(
         new CustomEvent('marsha_player_created', {
@@ -175,7 +168,6 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {isLiveStarting && <WaitingLiveVideo />}
       {isLivePausedOrStopping && player && (
         <PublicPausedLiveVideo
           video={video}

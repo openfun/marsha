@@ -51,6 +51,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Use websocket in the VOD dashboard and stop polling resources
 - Display chat and viewers list in the tabs panel
 - Upgrade to Django 4
+- Integrate live advertisement in live layout
 
 ### Removed
 

@@ -1,12 +1,10 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode, uploadState } from 'types/tracks';
-import { VideoPlayerInterface } from 'types/VideoPlayer';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { Deferred } from 'utils/tests/Deferred';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import VideoPlayer from './index';
 
@@ -84,7 +82,7 @@ describe('VideoPlayer', () => {
   );
 
   beforeEach(() => {
-    mockCreatePlayer.mockResolvedValue({
+    mockCreatePlayer.mockReturnValue({
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
@@ -162,57 +160,6 @@ describe('VideoPlayer', () => {
     expect(videoElement.poster).toEqual(
       'https://example.com/thumbnail/1080p.jpg',
     );
-    expect(screen.queryByText('Webinar is paused')).not.toBeInTheDocument();
-  });
-
-  it('displays a waiting message while live is not ready', async () => {
-    const deferred = new Deferred<VideoPlayerInterface>();
-    mockCreatePlayer.mockReturnValue(deferred.promise);
-
-    const video = videoMockFactory({
-      live_state: liveState.RUNNING,
-    });
-
-    const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={video}
-          playerType={'videojs'}
-          timedTextTracks={[]}
-        />,
-      ),
-    );
-
-    screen.getByText('Live will begin soon');
-    screen.getByText(
-      'The live is going to start. You can wait here, the player will start once the live is ready.',
-    );
-
-    await act(async () =>
-      deferred.resolve({
-        destroy: jest.fn(),
-        getSource: jest.fn(),
-        setSource: jest.fn(),
-      }),
-    );
-
-    expect(mockCreatePlayer).toHaveBeenCalledWith(
-      'videojs',
-      expect.any(Element),
-      expect.anything(),
-      video,
-    ),
-      expect(
-        screen.queryByText('Live will begin soon'),
-      ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        'The live is going to start. You can wait here, the player will start once the live is ready.',
-      ),
-    ).not.toBeInTheDocument();
-
-    const videoElement = container.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
     expect(screen.queryByText('Webinar is paused')).not.toBeInTheDocument();
   });
 
