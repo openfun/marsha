@@ -8,7 +8,6 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-import pytz
 from safedelete.models import SOFT_DELETE_CASCADE
 
 from ..defaults import (
@@ -74,7 +73,7 @@ class VideoModelsTestCase(TestCase):
         for state_choice in STATE_CHOICES:
             video = VideoFactory(
                 upload_state=state_choice[0],
-                uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+                uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             )
 
             self.assertEqual(

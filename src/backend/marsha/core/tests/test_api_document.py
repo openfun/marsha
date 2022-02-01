@@ -6,7 +6,6 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
@@ -57,7 +56,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to fetch a document."""
         document = DocumentFactory(
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
             extension="pdf",
             playlist__title="foo",
@@ -353,7 +352,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -408,7 +407,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -463,7 +462,7 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

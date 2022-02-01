@@ -2,8 +2,7 @@
 from datetime import datetime
 
 from django.test import TestCase
-
-import pytz
+from django.utils import timezone
 
 from ..utils import time_utils
 
@@ -13,7 +12,7 @@ class TimeUtilsTestCase(TestCase):
 
     def test_utils_time_utils_to_timestamp(self):
         """Test computing a Unix timestamp from a datetime value."""
-        value = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        value = datetime(2018, 8, 8, tzinfo=timezone.utc)
         self.assertEqual(time_utils.to_timestamp(value), "1533686400")
 
     def test_utils_time_utils_to_timestamp_none(self):
@@ -23,7 +22,8 @@ class TimeUtilsTestCase(TestCase):
     def test_utils_time_utils_to_datetime(self):
         """Test computing a timeaware datetime from a Unix timestamp."""
         self.assertEqual(
-            time_utils.to_datetime(1533686400), datetime(2018, 8, 8, tzinfo=pytz.utc)
+            time_utils.to_datetime(1533686400),
+            datetime(2018, 8, 8, tzinfo=timezone.utc),
         )
 
     def test_utils_time_utils_to_datetime_none(self):

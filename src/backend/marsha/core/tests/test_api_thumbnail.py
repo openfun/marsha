@@ -6,7 +6,6 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
@@ -70,7 +69,7 @@ class ThumbnailApiTest(TestCase):
     def test_api_thumbnail_read_detail_token_user(self):
         """Instructors should be able to read details of thumbnail assotiated to their video."""
         video = VideoFactory(
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), upload_state="ready"
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc), upload_state="ready"
         )
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
@@ -119,7 +118,7 @@ class ThumbnailApiTest(TestCase):
     def test_api_thumbnail_read_detail_admin_user(self):
         """Admin should be able to read details of thumbnail assotiated to their video."""
         video = VideoFactory(
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc), upload_state="ready"
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc), upload_state="ready"
         )
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
@@ -152,12 +151,12 @@ class ThumbnailApiTest(TestCase):
         """A ready thumbnail should have computed urls."""
         video = VideoFactory(
             pk="78338c1c-356e-4156-bd95-5bed71ffb655",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
         )
         thumbnail = ThumbnailFactory(
             video=video,
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
         )
 
@@ -390,7 +389,7 @@ class ThumbnailApiTest(TestCase):
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

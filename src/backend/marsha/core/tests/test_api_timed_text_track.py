@@ -6,7 +6,6 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .. import factories, models
@@ -149,7 +148,7 @@ class TimedTextTrackAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -209,7 +208,7 @@ class TimedTextTrackAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
         )
 
@@ -264,7 +263,7 @@ class TimedTextTrackAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -386,7 +385,7 @@ class TimedTextTrackAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=pytz.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -397,7 +396,7 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the timed_text_track via the API using the JWT token
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
                 f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1922,7 +1921,7 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2038,7 +2037,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2077,7 +2076,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2118,7 +2117,7 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2189,7 +2188,7 @@ class TimedTextTrackAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2231,7 +2230,7 @@ class TimedTextTrackAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=pytz.utc)
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

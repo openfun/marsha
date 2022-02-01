@@ -3,8 +3,7 @@ import calendar
 from datetime import datetime
 
 from django.core.exceptions import ValidationError
-
-import pytz
+from django.utils import timezone
 
 
 def to_timestamp(value):
@@ -49,6 +48,6 @@ def to_datetime(value):
     if value is None:
         return None
     try:
-        return datetime.utcfromtimestamp(int(value)).replace(tzinfo=pytz.utc)
+        return datetime.utcfromtimestamp(int(value)).replace(tzinfo=timezone.utc)
     except (ValueError, TypeError):
         raise ValidationError("{:s} is not a valid Unix timestamp.".format(value))
