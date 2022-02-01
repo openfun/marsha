@@ -17,7 +17,7 @@ let videoWebsocket: RobustWebSocket;
 export const initVideoWebsocket = (video: Video) => {
   if (videoWebsocket) return;
   const location = window.location;
-  const wsProto = location.protocol === 'https' ? 'wss' : 'ws';
+  const wsProto = location.protocol.startsWith('https') ? 'wss' : 'ws';
   videoWebsocket = new RobustWebSocket(
     `${wsProto}://${location.host}${WS_ENPOINT}/video/${video.id}/?jwt=${appData.jwt}`,
   );
