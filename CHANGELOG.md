@@ -50,6 +50,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Improvement of emails templates for scheduled webinars
 - Use websocket in the VOD dashboard and stop polling resources
 - Display chat and viewers list in the tabs panel
+- Upgrade to Django 4
 
 ### Removed
 

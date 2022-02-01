@@ -494,7 +494,7 @@ class Build(Base):
     settings.
     """
 
-    ALLOWED_HOSTS = None
+    ALLOWED_HOSTS = []
     AWS_ACCESS_KEY_ID = values.Value("")
     AWS_SECRET_ACCESS_KEY = values.Value("")
     AWS_BASE_NAME = values.Value("")
