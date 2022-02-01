@@ -11,8 +11,6 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
-import pytz
-
 from marsha.core.management.commands import send_reminders
 
 from ..defaults import IDLE, RAW, RUNNING
@@ -738,7 +736,7 @@ class SendRemindersTest(TestCase):
         """Subscribe to a webinar and mock the time to show all three steps
         reminders are sent."""
 
-        now_past = datetime(2020, 8, 8, tzinfo=pytz.utc)
+        now_past = datetime(2020, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_past):
             video = VideoFactory(
                 live_state=IDLE,

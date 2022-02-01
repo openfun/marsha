@@ -4,8 +4,7 @@ import random
 from uuid import uuid4
 
 from django.test import TestCase
-
-import pytz
+from django.utils import timezone
 
 from ..models.video import TimedTextTrack
 from ..serializers import UpdateStateSerializer
@@ -119,7 +118,7 @@ class UpdateStateSerializerTest(TestCase):
                 "model_name": "video",
                 "object_id": str(object_id),
                 "stamp": "1533686400",
-                "uploaded_on": datetime(2018, 8, 8, tzinfo=pytz.utc),
+                "uploaded_on": datetime(2018, 8, 8, tzinfo=timezone.utc),
             },
         )
 
@@ -141,6 +140,6 @@ class UpdateStateSerializerTest(TestCase):
                 "model_name": "document",
                 "object_id": str(object_id),
                 "stamp": "1533686400",
-                "uploaded_on": datetime(2018, 8, 8, tzinfo=pytz.utc),
+                "uploaded_on": datetime(2018, 8, 8, tzinfo=timezone.utc),
             },
         )
