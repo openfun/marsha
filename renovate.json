@@ -21,16 +21,6 @@
         "node-fetch",
         "react-router-dom"
       ]
-    },
-    {
-      "groupName": "allowed django versions",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "django"
-      ],
-      "allowedVersions": "<4"
     }
   ]
 }
