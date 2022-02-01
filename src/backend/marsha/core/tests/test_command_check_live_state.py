@@ -1,5 +1,5 @@
 """Tests for check_live_state command."""
-from datetime import datetime
+from datetime import datetime, timezone
 from io import StringIO
 from unittest import mock
 
@@ -7,7 +7,6 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from botocore.stub import Stubber
-import pytz
 
 from ..defaults import RAW, RUNNING
 from ..factories import VideoFactory
@@ -34,7 +33,7 @@ class CheckLiveStateTest(TestCase):
         """A live is running and stream is on-going, the command should not stop it."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=pytz.utc),
+            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
@@ -129,7 +128,7 @@ class CheckLiveStateTest(TestCase):
         """Live is ended and the delay is not expired."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=pytz.utc),
+            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
@@ -196,7 +195,7 @@ class CheckLiveStateTest(TestCase):
                 },
             )
             generate_expired_date_mock.return_value = datetime(
-                2020, 8, 25, 12, 0, 0, tzinfo=pytz.utc
+                2020, 8, 25, 12, 0, 0, tzinfo=timezone.utc
             )
             call_command("check_live_state", stdout=out)
             logs_client_stubber.assert_no_pending_responses()
@@ -213,7 +212,7 @@ class CheckLiveStateTest(TestCase):
         """Live is ended and the delay is expired. The channel must be stopped."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=pytz.utc),
+            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
@@ -281,7 +280,7 @@ class CheckLiveStateTest(TestCase):
             )
 
             generate_expired_date_mock.return_value = datetime(
-                2020, 8, 25, 12, 30, 0, tzinfo=pytz.utc
+                2020, 8, 25, 12, 30, 0, tzinfo=timezone.utc
             )
             call_command("check_live_state", stdout=out)
             logs_client_stubber.assert_no_pending_responses()

@@ -6,7 +6,6 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .. import defaults
@@ -331,7 +330,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python structures",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -395,7 +394,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python structures",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -405,7 +404,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -498,7 +497,7 @@ class SharedLiveMediaAPITest(TestCase):
             show_download=False,
             title="python structures",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -508,7 +507,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -615,7 +614,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python compound statements",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -679,7 +678,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python compound statements",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -689,7 +688,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -965,14 +964,14 @@ class SharedLiveMediaAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=5,
             video=video,
         )
         # This shared_live_media belongs to an other video
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
         )
 
@@ -997,7 +996,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python expressions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1006,7 +1005,7 @@ class SharedLiveMediaAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
         )
 
@@ -1084,7 +1083,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1094,7 +1093,7 @@ class SharedLiveMediaAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=other_video,
         )
@@ -1136,7 +1135,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python expressions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1148,7 +1147,7 @@ class SharedLiveMediaAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
         )
 
@@ -1158,7 +1157,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=pytz.utc)
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -1326,7 +1325,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python extensions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1335,7 +1334,7 @@ class SharedLiveMediaAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=5,
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
@@ -1417,7 +1416,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1427,7 +1426,7 @@ class SharedLiveMediaAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=5,
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
@@ -1488,7 +1487,7 @@ class SharedLiveMediaAPITest(TestCase):
             extension="pdf",
             title="python extensions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1500,7 +1499,7 @@ class SharedLiveMediaAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=5,
         )
 
@@ -1582,7 +1581,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -1595,7 +1594,7 @@ class SharedLiveMediaAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=5,
             video=other_video,
         )
@@ -2140,7 +2139,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2201,7 +2200,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2262,7 +2261,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2294,7 +2293,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2406,7 +2405,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -2516,7 +2515,7 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        now = datetime(2021, 12, 2, tzinfo=pytz.utc)
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

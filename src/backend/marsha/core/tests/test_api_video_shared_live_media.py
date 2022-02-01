@@ -1,12 +1,11 @@
 """Tests for the Video API for SharedLiveMedia navigation of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
 
-import pytz
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api.video import channel_layers_utils
@@ -212,7 +211,7 @@ class TestVideoSharedLiveMedia(TestCase):
             extension="pdf",
             title="slides",
             upload_state=READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -414,7 +413,7 @@ class TestVideoSharedLiveMedia(TestCase):
                 title="slides",
                 # upload_state=random.choice([s[0] for s in STATE_CHOICES if s[0] != READY]),
                 upload_state=state,
-                uploaded_on=datetime(2021, 11, 30, tzinfo=pytz.utc),
+                uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
                 nb_pages=3,
                 video=video,
             )

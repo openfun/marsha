@@ -1,5 +1,5 @@
 """Tests for the upload & processing state update API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import random
 from unittest import mock
@@ -8,7 +8,6 @@ from django.test import TestCase, override_settings
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-import pytz
 
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
@@ -59,7 +58,7 @@ class UpdateStateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc))
         self.assertEqual(video.upload_state, "ready")
         self.assertEqual(video.resolutions, [144, 240, 480])
         message = async_to_sync(channel_layer.receive)("test_channel")
@@ -155,7 +154,7 @@ class UpdateStateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc))
         self.assertEqual(video.upload_state, HARVESTED)
         self.assertEqual(video.resolutions, [240, 480, 720])
         self.assertIsNone(video.live_state)
@@ -240,7 +239,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
         self.assertEqual(
-            timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
+            timed_text_track.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
         )
         self.assertEqual(timed_text_track.upload_state, "ready")
 
@@ -352,7 +351,9 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(document.upload_state, "ready")
         self.assertEqual(document.extension, "pdf")
-        self.assertEqual(document.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(
+            document.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
+        )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_document_without_extension(self):
@@ -383,7 +384,9 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(document.upload_state, "ready")
         self.assertEqual(document.extension, None)
-        self.assertEqual(document.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(
+            document.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
+        )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_thumbnail(self):
@@ -417,7 +420,9 @@ class UpdateStateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(thumbnail.upload_state, "ready")
-        self.assertEqual(thumbnail.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc))
+        self.assertEqual(
+            thumbnail.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
+        )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_update_state_shared_live_media(self):
@@ -450,7 +455,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(shared_live_media.upload_state, "ready")
         self.assertEqual(
-            shared_live_media.uploaded_on, datetime(2018, 8, 8, tzinfo=pytz.utc)
+            shared_live_media.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
         )
         self.assertEqual(shared_live_media.nb_pages, 3)
         self.assertEqual(shared_live_media.extension, "pdf")
