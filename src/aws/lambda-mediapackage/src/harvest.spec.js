@@ -297,6 +297,11 @@ describe('harvest', () => {
                   'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_1.m3u8',
               },
               {
+                name: 'HARVESTED_FILES_DIRECTORY',
+                value:
+                  'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/',
+              },
+              {
                 name: 'OUPUT_MP4_FILENAME',
                 value: '1610546271_540.mp4',
               },
@@ -358,6 +363,11 @@ describe('harvest', () => {
                 name: 'HLS_MANIFEST_ENDPOINT',
                 value:
                   'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8',
+              },
+              {
+                name: 'HARVESTED_FILES_DIRECTORY',
+                value:
+                  'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/',
               },
               {
                 name: 'OUPUT_MP4_FILENAME',
