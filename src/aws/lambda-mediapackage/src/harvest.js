@@ -102,6 +102,7 @@ module.exports = async (event, lambdaFunctionName) => {
     parsedManifest.playlists.map(async (playlist) => {
       const resolution = playlist.attributes.RESOLUTION.height;
       const playlistUri = `https://${CLOUDFRONT_ENDPOINT}/${pk}/cmaf/${playlist.uri}`;
+      const harvestedFilesDirectory = `https://${CLOUDFRONT_ENDPOINT}/${pk}/cmaf/`;
       const videoName = `${stamp}_${resolution}.mp4`;
       const videoKey = `${pk}/mp4/${videoName}`;
       const thumbnailName = `${stamp}_${resolution}.0000000.jpg`;
@@ -127,6 +128,10 @@ module.exports = async (event, lambdaFunctionName) => {
                   {
                     name: 'HLS_MANIFEST_ENDPOINT',
                     value: playlistUri,
+                  },
+                  {
+                    name: 'HARVESTED_FILES_DIRECTORY',
+                    value: harvestedFilesDirectory,
                   },
                   {
                     name: 'OUPUT_MP4_FILENAME',
