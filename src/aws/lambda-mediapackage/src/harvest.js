@@ -4,6 +4,7 @@ const AWS = require('aws-sdk');
 const { Parser } = require('m3u8-parser');
 const fetch = require('node-fetch');
 
+const recordSlicesState = require('./utils/recordSlicesState');
 const setRecordingSliceManifestKey = require('./utils/setRecordingSliceManifestKey');
 
 const {
@@ -43,6 +44,11 @@ module.exports = async (event, lambdaFunctionName) => {
     harvestJob.id,
     harvestJob.s3_destination.manifest_key,
   );
+
+  const state = await recordSlicesState(pk);
+  if (state.status !== HARVESTED) {
+    return Promise.resolve();
+  }
 
   // delete mediapackage endpoint and channel
   // first fetch origin endpoint to retrieve channel id

@@ -198,6 +198,7 @@ resource "aws_lambda_function" "marsha_mediapackage_lambda" {
       ECS_TASK_DEFINITION = aws_ecs_task_definition.marsha_ffmpeg_transmux_definition.arn
       ENDPOINT = "${var.marsha_base_url}${var.update_state_endpoint}"
       RECORDING_SLICES_MANIFEST_ENDPOINT = "${var.marsha_base_url}${var.recording_slices_manifest_endpoint}"
+      RECORDING_SLICES_STATE_ENDPOINT = "${var.marsha_base_url}${var.recording_slices_state_endpoint}"
       SECURITY_GROUP = aws_security_group.fargate_ffmpeg_transmux_security_group.id
       SHARED_SECRET = var.update_state_secret
       VPC_SUBNET1 = aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1.id
