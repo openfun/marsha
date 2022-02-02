@@ -3,8 +3,10 @@ set -e
 
 declare -r DESTINATION_BUCKET_REGION="${DESTINATION_BUCKET_REGION:-"eu-west-1"}"
 
+echo "Extracting .ts files from the manifest"
+curl -s "${HLS_MANIFEST_ENDPOINT}" | grep "^slice_.*.ts$" | awk -v harvested_files_directory="${HARVESTED_FILES_DIRECTORY}"  '{print "file ", harvested_files_directory$1}' > ts_files.txt
 echo "Transmuxing video ${OUPUT_MP4_FILENAME}"
-ffmpeg -v error -i "${HLS_MANIFEST_ENDPOINT}" -codec copy -f mp4 "${OUPUT_MP4_FILENAME}"
+ffmpeg -v error -protocol_whitelist 'https,file,tls,tcp' -f concat -safe 0 -i ts_files.txt -codec copy -f mp4 "${OUPUT_MP4_FILENAME}"
 echo "Generating thumbnail ${OUTPUT_THUMBNAIL_FILENAME}"
 ffmpeg -v error -ss 00:00:01.000 -i "${HLS_MANIFEST_ENDPOINT}" -vframes 1 "${OUTPUT_THUMBNAIL_FILENAME}"
 echo "Copying ${OUPUT_MP4_FILENAME} to s3"
