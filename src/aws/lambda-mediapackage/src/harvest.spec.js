@@ -46,6 +46,11 @@ jest.doMock(
 );
 const mockRecordSlicesState = jest.fn();
 jest.doMock('./utils/recordSlicesState', () => mockRecordSlicesState);
+const mockMergeRecordSlicesManifest = jest.fn();
+jest.doMock(
+  './utils/mergeRecordSlicesManifest',
+  () => mockMergeRecordSlicesManifest,
+);
 
 const harvest = require('./harvest');
 
