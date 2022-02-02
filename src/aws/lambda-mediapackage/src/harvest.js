@@ -4,6 +4,8 @@ const AWS = require('aws-sdk');
 const { Parser } = require('m3u8-parser');
 const fetch = require('node-fetch');
 
+const setRecordingSliceManifestKey = require('./utils/setRecordingSliceManifestKey');
+
 const {
   CLOUDFRONT_ENDPOINT,
   CONTAINER_NAME,
@@ -20,6 +22,8 @@ const mediapackage = new AWS.MediaPackage({ apiVersion: '2017-10-12' });
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
 
+const HARVESTED = 'harvested';
+
 module.exports = async (event, lambdaFunctionName) => {
   const harvestJob = event.detail.harvest_job;
   if (harvestJob.status !== 'SUCCEEDED') {
@@ -29,6 +33,16 @@ module.exports = async (event, lambdaFunctionName) => {
       ),
     );
   }
+
+  // The harvest id has this pattern : {environment}_{pk}_{stamp}
+  // splitting it give us the information we need
+  const [environment, pk, stamp] = harvestJob.id.split('_');
+
+  await setRecordingSliceManifestKey(
+    pk,
+    harvestJob.id,
+    harvestJob.s3_destination.manifest_key,
+  );
 
   // delete mediapackage endpoint and channel
   // first fetch origin endpoint to retrieve channel id

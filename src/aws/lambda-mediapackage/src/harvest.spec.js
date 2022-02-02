@@ -35,6 +35,12 @@ jest.mock('aws-sdk', () => ({
   },
 }));
 
+const mockSetRecordingSliceManifestKey = jest.fn();
+jest.doMock(
+  './utils/setRecordingSliceManifestKey',
+  () => mockSetRecordingSliceManifestKey,
+);
+
 const harvest = require('./harvest');
 
 describe('harvest', () => {
@@ -79,7 +85,7 @@ describe('harvest', () => {
     );
   });
 
-  it('receives an event, run FARGATE tasks and upload expected files on destination bucket', async () => {
+  it('resolves silently if harvesting is not done', async () => {
     const event = {
       id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce',
       'detail-type': 'MediaPackage HarvestJob Notification',
@@ -111,6 +117,27 @@ describe('harvest', () => {
         },
       },
     };
+
+    mockSetRecordingSliceManifestKey.mockReturnValue({ success: true });
+    mockRecordSlicesState.mockReturnValue({ status: 'pending' });
+
+    await harvest(event, 'test-lambda-mediapackage');
+
+    expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/1610546271.m3u8',
+    );
+
+    expect(mockRecordSlicesState).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+    );
+
+    expect(mockDescribeOriginEndpoint).not.toHaveBeenCalled();
+    expect(mockDeleteOriginEndpoint).not.toHaveBeenCalled();
+    expect(mockDeleteChannel).not.toHaveBeenCalled();
+    expect(mockRunTask).not.toHaveBeenCalled();
+  });
 
     fetchMock.get(
       'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/1610546271.m3u8',
