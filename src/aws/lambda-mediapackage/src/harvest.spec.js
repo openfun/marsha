@@ -1,4 +1,5 @@
 'use strict';
+const endpoint = 'https://example.com/recording-slices-state/';
 
 // Don't pollute tests with logs intended for CloudWatch
 jest.spyOn(console, 'log');
@@ -8,6 +9,9 @@ const fetchMock = require('node-fetch');
 
 process.env.CLOUDFRONT_ENDPOINT = 'distribution_id.cloudfront.net';
 process.env.CONTAINER_NAME = 'test-marsha-ffmpeg-transmux';
+process.env.DISABLE_SSL_VALIDATION = 'false';
+process.env.RECORDING_SLICES_STATE_ENDPOINT = endpoint;
+process.env.SHARED_SECRET = 'some secret';
 process.env.ECS_CLUSTER = 'test-marsha';
 process.env.ECS_TASK_DEFINITION = 'test-marsha-ffmpeg-transmux-definition';
 process.env.VPC_SUBNET1 = 'vpc_subnet_1_id';
@@ -40,6 +44,8 @@ jest.doMock(
   './utils/setRecordingSliceManifestKey',
   () => mockSetRecordingSliceManifestKey,
 );
+const mockRecordSlicesState = jest.fn();
+jest.doMock('./utils/recordSlicesState', () => mockRecordSlicesState);
 
 const harvest = require('./harvest');
 
@@ -139,6 +145,79 @@ describe('harvest', () => {
     expect(mockRunTask).not.toHaveBeenCalled();
   });
 
+  it('receives an event, checks harvesting status, run FARGATE tasks and upload expected files on destination bucket', async () => {
+    const event = {
+      id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce_2',
+      'detail-type': 'MediaPackage HarvestJob Notification',
+      source: 'aws.mediapackage',
+      account: 'aws_account_id',
+      time: '2019-07-16T17:29:36Z',
+      region: 'eu-west-1',
+      resources: [
+        'arn:aws:mediapackage:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+      ],
+      detail: {
+        harvest_job: {
+          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+          status: 'SUCCEEDED',
+          origin_endpoint_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
+          start_time: '2019-06-26T20:30:00-08:00',
+          end_time: '2019-06-26T21:00:00-08:00',
+          s3_destination: {
+            bucket_name: 'test-marsha-destination',
+            manifest_key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+            role_arn: 'arn:aws:iam::aws_account_id:role/S3Access_role',
+          },
+          created_at:
+            'arn:aws:iam::aws_account_id:role/test-marsha-mediapackage-harvest-job-s3-role',
+        },
+      },
+    };
+
+    mockSetRecordingSliceManifestKey.mockReturnValue({ success: true });
+    mockRecordSlicesState.mockReturnValue({
+      status: 'harvested',
+      recording_slices: [
+        {
+          start: '1642523822',
+          stop: '1642523823',
+          harvest_job_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_1',
+          manifest_key:
+            'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_1/1610546271_1.m3u8',
+          harvested_directory: 'slice_1',
+          status: 'harvested',
+        },
+        {
+          start: '1642523824',
+          stop: '1642523825',
+          harvest_job_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
+          manifest_key:
+            'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+          harvested_directory: 'slice_3',
+          status: 'harvested',
+        },
+        {
+          start: '1642523826',
+          stop: '1642523827',
+          harvest_job_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_3',
+          manifest_key:
+            'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_3/1610546271_3.m3u8',
+          harvested_directory: 'slice_3',
+          status: 'harvested',
+        },
+      ],
+    });
+
+    mockMergeRecordSlicesManifest.mockReturnValue(
+      'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/1610546271.m3u8',
+    );
+
     fetchMock.get(
       'https://distribution_id.cloudfront.net/a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/1610546271.m3u8',
       `#EXTM3U
@@ -173,6 +252,14 @@ describe('harvest', () => {
 
     await harvest(event, 'test-lambda-mediapackage');
 
+    expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+    );
+    expect(mockRecordSlicesState).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+    );
     expect(mockDescribeOriginEndpoint).toHaveBeenCalledWith({
       Id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
     });

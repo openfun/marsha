@@ -30,6 +30,11 @@ variable "recording_slices_manifest_endpoint" {
   default = "/api/recording-slices-manifest"
 }
 
+variable "recording_slices_state_endpoint" {
+  type    = string
+  default = "/api/recording-slices-state"
+}
+
 variable "update_state_secret" {
   type    = string
 }
