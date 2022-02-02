@@ -25,6 +25,11 @@ variable "update_state_endpoint" {
   default = "/api/update-state"
 }
 
+variable "recording_slices_manifest_endpoint" {
+  type    = string
+  default = "/api/recording-slices-manifest"
+}
+
 variable "update_state_secret" {
   type    = string
 }
