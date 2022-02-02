@@ -5,6 +5,7 @@ const { Parser } = require('m3u8-parser');
 const fetch = require('node-fetch');
 
 const recordSlicesState = require('./utils/recordSlicesState');
+const mergeRecordSlicesManifest = require('./utils/mergeRecordSlicesManifest');
 const setRecordingSliceManifestKey = require('./utils/setRecordingSliceManifestKey');
 
 const {
@@ -72,15 +73,20 @@ module.exports = async (event, lambdaFunctionName) => {
     })
     .promise();
 
-  // The harvest id has this pattern : {environment}_{pk}_{stamp}
-  // splitting it give us the information we need
-  const [environment, pk, stamp] = harvestJob.id.split('_');
-  // build the hls manifest url
-  const manifestUrl = `https://${CLOUDFRONT_ENDPOINT}/${harvestJob.s3_destination.manifest_key}`;
+  // merge manifests from all slices
+  const manifestUrl = await mergeRecordSlicesManifest(
+    environment,
+    pk,
+    stamp,
+    state.recording_slices,
+  );
 
   // fetch the manifest content
   const response = await fetch(manifestUrl);
   const manifest = await response.text();
+
+  console.log('Generated manifest url:', manifestUrl);
+  console.log('Generated manifest content:', manifest);
 
   // parse the manifest
   const hlsParser = new Parser();
