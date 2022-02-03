@@ -55,40 +55,16 @@ class Command(BaseCommand):
         video = Video.objects.order_by("created_on").last()
         self.stdout.write(f"\nTesting recording slices for {video.id} {video.title}")
 
-        if force:
-            self.stdout.write("\nForcing slices re-creation")
-            video.recording_slices = []
-            video.save()
+        if reset:
+            self.reset_slices(video)
 
-        self.wait_video_state(video, "live_state", "running")
+        self.wait_video_state(video, "live_state", "running", delay=5)
 
-        self.wait_seconds(5)
-
-        self.stdout.write("\nCreating recording slices...")
-        # breakpoint()
-
-        # ask user if he wants to start recording with default to no
-        start_recording = input("\nStart recording? (y/N)")
-        if start_recording.lower() == "y":
-            video.start_recording()
-
-            stop_recording = input("\nStop recording? (y/N)")
-            if stop_recording.lower() == "y":
-                video.stop_recording()
-
-        if not video.recording_slices:
-            for i in range(1, slices + 1):
-                self.stdout.write(
-                    f"Start recording slice {i} {datetime.datetime.now()}"
-                )
-                video.start_recording()
-                self.wait_seconds(length)
-                self.stdout.write(f"Stop recording slice {i} {datetime.datetime.now()}")
-                video.stop_recording()
-                self.stdout.write(str(video.recording_slices[-1]))
-                if i == 3:
-                    break
-                self.wait_seconds(wait)
+        if manual:
+            self.manual_slices(video)
+        else:
+            if not video.recording_slices:
+                self.automatic_slices(video, slices, length, wait)
 
         self.wait_video_state(video, "live_state", "stopped")
 
