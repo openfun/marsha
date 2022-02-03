@@ -134,13 +134,6 @@ const addChatPlugin = (xmpp: XMPP) =>
                     .setHasReceivedMessageHistory(true);
                 }
                 break;
-
-              default:
-                report(
-                  new Error(
-                    `Unable to recognize the following received xml stanza : \n ${stanza.outerHTML}`,
-                  ),
-                );
             }
 
             return true;
