@@ -17,13 +17,18 @@ from marsha.core.defaults import JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
-from ..models import LivePairing, SharedLiveMedia, Video, VideoRecordingError
+from ..models import LivePairing, SharedLiveMedia, Video
 from ..services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
     move_participant_to_discussion,
     remove_participant_asking_to_join,
     remove_participant_from_discussion,
+)
+from ..services.video_recording import (
+    VideoRecordingError,
+    start_recording,
+    stop_recording,
 )
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
@@ -387,7 +392,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             )
 
         if video.is_recording:
-            video.stop_recording()
+            stop_recording(video)
 
         if video.live_state == defaults.IDLE:
             video.upload_state = defaults.DELETED
@@ -849,7 +854,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         """
         video = self.get_object()
         try:
-            video.start_recording()
+            start_recording(video)
         except VideoRecordingError as error:
             return Response({"detail": str(error)}, status=400)
         serializer = self.get_serializer(video)
@@ -886,7 +891,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         """
         video = self.get_object()
         try:
-            video.stop_recording()
+            stop_recording(video)
         except VideoRecordingError as error:
             return Response({"detail": str(error)}, status=400)
         serializer = self.get_serializer(video)

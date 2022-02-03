@@ -28,10 +28,6 @@ from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
 
 
-class VideoRecordingError(Exception):
-    """Exception for video recording errors."""
-
-
 class Video(BaseFile):
     """Model representing a video, created by an author."""
 
@@ -304,37 +300,6 @@ class Video(BaseFile):
                 self.recording_slices[-1].get("start")
             )
         return recording_time
-
-    def _start_recording_slice(self, start):
-        """Start a new recording slice."""
-        slices = self.recording_slices
-        slices.append({"start": start})
-        self.recording_slices = slices
-        self.save()
-
-    def _stop_recording_slice(self, stop):
-        """Stop a recording slice"""
-        slices = self.recording_slices
-        slices[-1].update({"stop": stop, "status": PENDING})
-        self.recording_slices = slices
-        self.save()
-
-    def start_recording(self):
-        """Start recording the video."""
-        if not self.allow_recording:
-            raise VideoRecordingError("Recording is not allowed for this video.")
-
-        if self.is_recording:
-            raise VideoRecordingError("Video recording is already started.")
-
-        self._start_recording_slice(start=to_timestamp(timezone.now()))
-
-    def stop_recording(self):
-        """Stop recording the video."""
-        if not self.is_recording:
-            raise VideoRecordingError("Video recording is not started.")
-
-        self._stop_recording_slice(stop=to_timestamp(timezone.now()))
 
     def set_recording_slice_manifest_key(self, harvest_job_id, manifest_key):
         """Set the manifest key for a recording slice."""
