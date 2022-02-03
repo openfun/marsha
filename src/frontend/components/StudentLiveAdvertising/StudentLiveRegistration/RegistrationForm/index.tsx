@@ -1,6 +1,6 @@
-import { Button, Form, FormField, Grommet } from 'grommet';
+import { Button, Form, FormField, Grommet, ResponsiveContext } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
-import React, { useRef } from 'react';
+import React, { CSSProperties, useContext, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
@@ -104,6 +104,7 @@ export const RegistrationForm = ({
   setRegistrationCompleted,
 }: RegistrationFormProps) => {
   const intl = useIntl();
+  const size = useContext(ResponsiveContext);
   const isSubmitOngoing = useRef(false);
 
   const onSubmit = async (email: string) => {
@@ -133,12 +134,21 @@ export const RegistrationForm = ({
     }
   };
 
+  let inputWidth: string;
+  let submitButtonStyle: CSSProperties;
+  if (size === 'small') {
+    inputWidth = '100%';
+    submitButtonStyle = { width: '100%', marginTop: '16px' };
+  } else {
+    inputWidth = '50%';
+    submitButtonStyle = { minWidth: '40%' };
+  }
   const SubmitButton = () => (
     <Button
       type="submit"
       primary
       label={intl.formatMessage(messages.formSubmitTitle)}
-      style={{ minWidth: '40%' }}
+      style={submitButtonStyle}
     />
   );
 
@@ -177,12 +187,14 @@ export const RegistrationForm = ({
           <RegistrationEmailField
             inputLabel={intl.formatMessage(messages.emailInputLabel)}
             id="text-input-id"
-            inputWidth="50%"
+            inputWidth={inputWidth}
             name="email"
           >
-            <SubmitButton />
+            {size !== 'small' && <SubmitButton />}
           </RegistrationEmailField>
         </FormField>
+
+        {size === 'small' && <SubmitButton />}
       </Form>
     </Grommet>
   );
