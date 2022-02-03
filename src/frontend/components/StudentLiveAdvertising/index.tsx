@@ -1,6 +1,12 @@
-import { Box } from 'grommet';
+import { Box, ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  CSSProperties,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useIntl } from 'react-intl';
 
 import { appData } from 'data/appData';
@@ -18,6 +24,7 @@ interface StudentLiveAdvertisingProps {
 export const StudentLiveAdvertising = ({
   video,
 }: StudentLiveAdvertisingProps) => {
+  const size = useContext(ResponsiveContext);
   const intl = useIntl();
   const liveScheduleStartDate = useMemo(() => {
     if (!video.starting_at) {
@@ -37,6 +44,13 @@ export const StudentLiveAdvertising = ({
     }
   }, [video]);
 
+  let containerStyle: CSSProperties;
+  if (size === 'small') {
+    containerStyle = { width: '90%', maxWidth: '400px' };
+  } else {
+    containerStyle = { maxWidth: '40%', minWidth: '600px' };
+  }
+
   return (
     <Box
       background={{
@@ -45,12 +59,12 @@ export const StudentLiveAdvertising = ({
         repeat: 'no-repeat',
         size: 'cover',
       }}
-      fill
+      flex="grow"
     >
       <Box
         margin="auto"
         pad={{ horizontal: 'none', vertical: 'large' }}
-        style={{ maxWidth: '40%', minWidth: '600px' }}
+        style={containerStyle}
       >
         <AdvertisingBox
           margin={{ bottom: 'small', horizontal: 'auto', top: 'none' }}

@@ -3,6 +3,7 @@ import { Box, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import styled from 'styled-components';
 
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { theme } from 'utils/theme/theme';
 
 const LiveVideoInformationBarWrapper = styled(Box)`
@@ -28,6 +29,7 @@ export const StudentLiveLayout = ({
   sideElement,
 }: LiveStudentLayoutProps) => {
   const size = React.useContext(ResponsiveContext);
+  const isStarted = useLiveStateStarted((state) => state.isStarted);
 
   if (size === 'small') {
     return (
@@ -35,15 +37,19 @@ export const StudentLiveLayout = ({
         <Box flex="grow">
           <Box flex="grow" hidden={isPanelOpen}>
             <Box flex="grow">
-              <Box margin={{ top: 'auto', bottom: 'auto' }}>{mainElement}</Box>
-            </Box>
-
-            <Box margin={{ top: '12px' }}>
-              <LiveVideoInformationBarWrapper />
-              <Box background="white" pad={{ left: 'small' }}>
-                {liveTitleElement}
+              <Box margin={{ top: 'auto', bottom: 'auto' }} flex="grow">
+                {mainElement}
               </Box>
             </Box>
+
+            {isStarted && (
+              <Box margin={{ top: '12px' }}>
+                <LiveVideoInformationBarWrapper />
+                <Box background="white" pad={{ left: 'small' }}>
+                  {liveTitleElement}
+                </Box>
+              </Box>
+            )}
           </Box>
 
           {sideElement && (
