@@ -1,9 +1,10 @@
-import { Box, Clock, Heading, Paragraph } from 'grommet';
+import { Box, Clock, Heading, Paragraph, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
   ReactNode,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -98,6 +99,7 @@ export const StudentLiveScheduleInfo = ({
   setTimeIsOver,
 }: StudentLiveScheduleInfoProps) => {
   const intl = useIntl();
+  const size = useContext(ResponsiveContext);
   const split = useMemo(() => {
     if (!startDate) {
       return undefined;
@@ -166,21 +168,39 @@ export const StudentLiveScheduleInfo = ({
   let waitDurationInfo;
   if (dayCount === 0) {
     waitDurationInfo = (
-      <Header
-        title={
-          <Fragment>
-            {intl.formatMessage(messages.timeLeft)}
-            <StyledClock
-              color={normalizeColor('blue-active', theme)}
-              margin={{ left: 'xsmall' }}
-              onChange={onClockChange}
-              run="backward"
-              time={targetTime}
-              type="digital"
-            />
-          </Fragment>
-        }
-      />
+      <Fragment>
+        <Header
+          title={
+            <Fragment>
+              {intl.formatMessage(messages.timeLeft)}
+              {size !== 'small' && (
+                <StyledClock
+                  color={normalizeColor('blue-active', theme)}
+                  margin={{ left: 'xsmall' }}
+                  onChange={onClockChange}
+                  run="backward"
+                  time={targetTime}
+                  type="digital"
+                />
+              )}
+            </Fragment>
+          }
+        />
+        {size === 'small' && (
+          <Header
+            title={
+              <StyledClock
+                color={normalizeColor('blue-active', theme)}
+                margin={{ left: 'xsmall' }}
+                onChange={onClockChange}
+                run="backward"
+                time={targetTime}
+                type="digital"
+              />
+            }
+          />
+        )}
+      </Fragment>
     );
   } else if (dayCount === 1) {
     waitDurationInfo = (
@@ -210,7 +230,7 @@ export const StudentLiveScheduleInfo = ({
       />
 
       <Box margin="auto" pad={{ horizontal: '36px' }}>
-        <Box direction="row" margin="auto">
+        <Box direction="column" margin="auto">
           {waitDurationInfo}
         </Box>
         {localizedStartDate && (
