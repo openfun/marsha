@@ -29,18 +29,21 @@ const StyledClock = styled(Clock)`
   color: ${normalizeColor('blue-hover', theme)};
 `;
 
-function splitDay(dateTime: DateTime) {
-  // Using diff.toISO() would be better but Clock grommet component is not able to manage
-  // iso8601 period without hours.
-  const diff = dateTime
-    .diffNow(['days', 'hours', 'minutes', 'seconds'])
+function splitDay(scheduleDate: DateTime) {
+  const now = DateTime.now();
+  const startOfNow = now.startOf('day');
+  const startOfScheduleDate = scheduleDate.startOf('day');
+  const { days } = startOfScheduleDate.diff(startOfNow, ['days']).toObject();
+
+  const compareDate = days === 0 ? now : startOfNow;
+  const diff = scheduleDate
+    .diff(compareDate, ['hours', 'minutes', 'seconds'])
     .toObject();
 
   // We need to truncate values to simplify tests of checkDays
   const seconds = Math.trunc(Number(diff.seconds || 0));
-  const days = Math.trunc(Number(diff.days || 0));
   return {
-    days,
+    days: Math.trunc(Number(days || 0)),
     hours: diff.hours || 0,
     minutes: diff.minutes || 0,
     seconds,

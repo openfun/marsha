@@ -605,7 +605,7 @@ describe('PublicVideoDashboard', () => {
 
     await screen.findByRole('button', { name: /register/i });
     screen.getByRole('heading', {
-      name: /Live will starts tomorrow at 11:00 AM/i,
+      name: /Live will start in 2 days at 11:00 AM/i,
     });
   });
 });

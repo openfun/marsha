@@ -42,7 +42,7 @@ describe('<StudentLiveScheduleInfo />', () => {
     expect(mockSetTimeIsOver).toHaveBeenCalledTimes(1);
   });
 
-  it('renders waiting message and starting date when live should start', () => {
+  it('renders waiting message when live should start', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 2, 27, 13, 59, 59));
 
     render(
@@ -94,7 +94,32 @@ describe('<StudentLiveScheduleInfo />', () => {
     expect(mockSetTimeIsOver).toHaveBeenCalledTimes(1);
   });
 
-  it('renders info about event tomorrow and the date of the event', () => {
+  it('renders info about event tomorrow and the date of the event when scheduled date is in the next calendar day', () => {
+    const startDate = DateTime.fromJSDate(new Date(2022, 1, 28, 13, 0, 0));
+
+    render(
+      wrapInIntlProvider(
+        <StudentLiveScheduleInfo
+          isTimeOver={false}
+          setTimeIsOver={mockSetTimeIsOver}
+          startDate={startDate}
+        />,
+      ),
+    );
+
+    screen.getByRole('heading', {
+      name: `Live will starts tomorrow at ${startDate
+        .setLocale('en')
+        .toLocaleString(DateTime.TIME_SIMPLE)}`,
+    });
+    screen.getByText(
+      startDate.setLocale('en').toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY),
+    );
+
+    expect(mockSetTimeIsOver).not.toHaveBeenCalled();
+  });
+
+  it('renders info about event tomorrow and the date of the event when scheduled date is in more than 24 hours', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 28, 15, 0, 0));
 
     render(
