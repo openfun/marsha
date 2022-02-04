@@ -108,7 +108,7 @@ describe('<StudentLiveScheduleInfo />', () => {
     );
 
     screen.getByRole('heading', {
-      name: `Live will starts tomorrow at ${startDate
+      name: `Live will start tomorrow at ${startDate
         .setLocale('en')
         .toLocaleString(DateTime.TIME_SIMPLE)}`,
     });
@@ -133,7 +133,7 @@ describe('<StudentLiveScheduleInfo />', () => {
     );
 
     screen.getByRole('heading', {
-      name: `Live will starts tomorrow at ${startDate
+      name: `Live will start tomorrow at ${startDate
         .setLocale('en')
         .toLocaleString(DateTime.TIME_SIMPLE)}`,
     });
