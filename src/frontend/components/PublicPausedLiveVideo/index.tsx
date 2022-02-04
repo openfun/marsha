@@ -1,4 +1,4 @@
-import { Box, Clock, Layer, Paragraph } from 'grommet';
+import { Box, Clock, Paragraph } from 'grommet';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -36,7 +36,6 @@ interface PublicPausedLiveVideoProps {
 
 export const PublicPausedLiveVideo = ({
   video,
-  videoNodeRef,
 }: PublicPausedLiveVideoProps) => {
   const diffSincePause = useMemo<DurationObjectUnits | null>(() => {
     if (video.live_info.paused_at === undefined) {
@@ -65,8 +64,14 @@ export const PublicPausedLiveVideo = ({
   };
 
   return (
-    <Layer background={{ opacity: true }} modal={true} target={videoNodeRef}>
-      <Box gap="medium" align="center" justify="center" pad="large">
+    <Box fill style={{ backdropFilter: 'blur(6px)' }}>
+      <Box
+        align="center"
+        gap="medium"
+        justify="center"
+        margin="auto"
+        pad="large"
+      >
         {time && (
           <Box
             background="light-2"
@@ -105,6 +110,6 @@ export const PublicPausedLiveVideo = ({
           </Paragraph>
         </Box>
       </Box>
-    </Layer>
+    </Box>
   );
 };
