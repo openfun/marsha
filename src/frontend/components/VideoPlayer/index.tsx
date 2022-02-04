@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Stack } from 'grommet';
 import React, { useRef, useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 
@@ -133,7 +133,7 @@ const VideoPlayer = ({
   resolutions.sort((a, b) => b - a);
 
   return (
-    <Box>
+    <Stack interactiveChild="last">
       {/* tabIndex is set to -1 to not take focus on this element when a user is navigating using
        their keyboard. */}
       <video
@@ -174,7 +174,7 @@ const VideoPlayer = ({
           videoNodeRef={videoNodeRef.current!}
         />
       )}
-    </Box>
+    </Stack>
   );
 };
 

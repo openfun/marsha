@@ -101,13 +101,6 @@ describe('PublicVideoDashboard', () => {
       isStarted: true,
     });
 
-    /*
-      make sure to remove all body children, grommet layer gets rendered twice, known issue
-      https://github.com/grommet/grommet/issues/5200
-    */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
-
     jest.useFakeTimers();
     //    set system date to 2022-01-27T14:00:00
     jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
