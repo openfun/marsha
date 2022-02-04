@@ -93,13 +93,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     useLiveStateStarted.setState({
       isStarted: true,
     });
-
-    /*
-      make sure to remove all body children, grommet layer gets rendered twice, known issue
-      https://github.com/grommet/grommet/issues/5200
-    */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
   });
 
   afterEach(() => {
