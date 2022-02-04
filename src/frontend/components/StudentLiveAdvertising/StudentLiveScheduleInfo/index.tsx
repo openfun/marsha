@@ -73,7 +73,7 @@ const messages = defineMessages({
     id: 'components.StudentLiveScheduleInfo.timeLeft',
   },
   dayLeft: {
-    defaultMessage: 'Live will starts tomorrow at {hour}',
+    defaultMessage: 'Live will start tomorrow at {hour}',
     description:
       'Text message to inform at what time the event will start tomorrow',
     id: 'components.StudentLiveScheduleInfo.dayLeft',
