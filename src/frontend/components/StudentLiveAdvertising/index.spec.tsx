@@ -100,7 +100,7 @@ describe('<StudentLiveAdvertising />', () => {
     screen.getByText('live description');
 
     screen.getByRole('heading', {
-      name: 'Live will starts tomorrow at 11:00 AM',
+      name: 'Live will start in 2 days at 11:00 AM',
     });
   });
 
