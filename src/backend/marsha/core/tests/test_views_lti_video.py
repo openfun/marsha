@@ -131,6 +131,8 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -275,6 +277,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -438,6 +442,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -594,6 +600,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -723,6 +731,8 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -846,6 +856,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-003",
@@ -975,6 +987,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-002",
@@ -1102,6 +1116,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-002",
@@ -1241,6 +1257,8 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-002",
@@ -1545,6 +1563,8 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": True,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -1635,6 +1655,8 @@ class VideoLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",

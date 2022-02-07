@@ -299,6 +299,8 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "should_use_subtitle_as_transcript": False,
                     "has_transcript": False,
+                    "participants_asking_to_join": [],
+                    "participants_in_discussion": [],
                     "playlist": {
                         "id": str(shared_live_media.video.playlist.id),
                         "title": "foo bar",
@@ -661,6 +663,8 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "should_use_subtitle_as_transcript": False,
                     "has_transcript": False,
+                    "participants_asking_to_join": [],
+                    "participants_in_discussion": [],
                     "playlist": {
                         "id": str(shared_live_media.video.playlist.id),
                         "title": "foo bar",
@@ -1051,6 +1055,8 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "should_use_subtitle_as_transcript": False,
                     "has_transcript": False,
+                    "participants_asking_to_join": [],
+                    "participants_in_discussion": [],
                     "playlist": {
                         "id": str(shared_live_media.video.playlist.id),
                         "title": "foo bar",

@@ -170,6 +170,8 @@ class VideoSerializer(VideoBaseSerializer):
             "should_use_subtitle_as_transcript",
             "starting_at",
             "has_transcript",
+            "participants_asking_to_join",
+            "participants_in_discussion",
             "playlist",
             "live_info",
             "live_state",
@@ -188,6 +190,8 @@ class VideoSerializer(VideoBaseSerializer):
             "has_transcript",
             "live_info",
             "live_state",
+            "participants_asking_to_join",
+            "participants_in_discussion",
         )
 
     active_shared_live_media = SharedLiveMediaSerializer(read_only=True)
@@ -379,3 +383,10 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
             self.context["request"],
             reverse("video_lti_view", args=[obj.id]),
         )
+
+
+class ParticipantSerializer(serializers.Serializer):
+    """A serializer to validate a participant submitted on the live participants API endpoint."""
+
+    name = serializers.CharField(required=True, max_length=128)
+    id = serializers.CharField(required=True, max_length=128)

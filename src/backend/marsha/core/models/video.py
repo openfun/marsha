@@ -60,6 +60,18 @@ class Video(BaseFile):
         verbose_name=_("enable video live media"),
         help_text=_("Enable video live media?"),
     )
+    participants_asking_to_join = models.JSONField(
+        blank=True,
+        default=list,
+        verbose_name=_("asking Live participants"),
+        help_text=_("Current list of users asking to join the live."),
+    )
+    participants_in_discussion = models.JSONField(
+        blank=True,
+        default=list,
+        verbose_name=_("live participants"),
+        help_text=_("Current participants list for the live."),
+    )
     starting_at = models.DateTimeField(
         blank=True,
         verbose_name=_("starting at"),

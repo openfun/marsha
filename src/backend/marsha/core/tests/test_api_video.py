@@ -288,6 +288,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -508,6 +510,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -761,6 +765,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -909,6 +915,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -969,6 +977,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -1111,6 +1121,8 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "lti_id": playlist.lti_id,
@@ -1193,6 +1205,8 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "lti_id": playlist.lti_id,
@@ -1325,6 +1339,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(organization_playlist_1.id),
                             "lti_id": organization_playlist_1.lti_id,
@@ -1410,6 +1426,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(organization_1_playlist_1.id),
                             "lti_id": organization_1_playlist_1.lti_id,
@@ -1443,6 +1461,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(organization_1_playlist_2.id),
                             "lti_id": organization_1_playlist_2.lti_id,
@@ -1542,6 +1562,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
@@ -1616,6 +1638,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
@@ -1719,6 +1743,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(first_playlist.id),
                             "lti_id": first_playlist.lti_id,
@@ -1792,6 +1818,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(playlist_1.id),
                             "lti_id": playlist_1.lti_id,
@@ -1825,6 +1853,8 @@ class VideoAPITest(TestCase):
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
+                        "participants_asking_to_join": [],
+                        "participants_in_discussion": [],
                         "playlist": {
                             "id": str(playlist_2.id),
                             "lti_id": playlist_2.lti_id,
@@ -2010,6 +2040,8 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(playlist.id),
                     "lti_id": playlist.lti_id,
@@ -2178,6 +2210,8 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(playlist.id),
                     "lti_id": playlist.lti_id,
@@ -2252,6 +2286,8 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(playlist.id),
                     "lti_id": playlist.lti_id,
@@ -3994,6 +4030,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -4057,6 +4095,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -4175,6 +4215,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -4307,6 +4349,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -4528,6 +4572,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "foo bar",
@@ -4710,6 +4756,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": video.playlist.title,
@@ -4815,6 +4863,8 @@ class VideoAPITest(TestCase):
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": video.playlist.title,
@@ -4930,6 +4980,8 @@ class VideoAPITest(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": video.playlist.title,

@@ -116,6 +116,8 @@ class VideoPublicViewTestCase(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "starting_at": None,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-003",
@@ -270,6 +272,8 @@ class VideoPublicViewTestCase(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "starting_at": None,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "playlist-003",
