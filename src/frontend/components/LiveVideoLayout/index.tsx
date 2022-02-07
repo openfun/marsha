@@ -20,7 +20,7 @@ interface LiveStudentLayoutProps {
   sideElement?: React.ReactElement;
 }
 
-export const StudentLiveLayout = ({
+export const LiveVideoLayout = ({
   actionsElement,
   displayActionsElement,
   isPanelOpen,
