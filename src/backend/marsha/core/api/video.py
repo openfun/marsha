@@ -18,6 +18,13 @@ from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
 from ..models import LivePairing, SharedLiveMedia, Video
+from ..services.video_participants import (
+    VideoParticipantsException,
+    add_participant_asking_to_join,
+    move_participant_to_discussion,
+    remove_participant_asking_to_join,
+    remove_participant_from_discussion,
+)
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -682,6 +689,117 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video.active_shared_live_media = None
         video.active_shared_live_media_page = None
         video.save()
+
+        serializer = self.get_serializer(video)
+        channel_layers_utils.dispatch_video_to_groups(video)
+        return Response(serializer.data)
+
+    @action(
+        methods=["post", "delete"],
+        detail=True,
+        url_path="participants-asking-to-join",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def participants_asking_to_join(
+        self,
+        request,
+        pk=None,
+    ):
+        """Adds and deletes a participant asking to join a live stream.
+
+        Broadcasts a xmpp message to all users in the video room.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint, it should contain a payload with a participant.
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+
+        participant_serializer = serializers.ParticipantSerializer(data=request.data)
+        if not participant_serializer.is_valid():
+            return Response(
+                participant_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        video = self.get_object()
+        try:
+            if request.method == "POST":
+                add_participant_asking_to_join(
+                    video, participant_serializer.validated_data
+                )
+            elif request.method == "DELETE":
+                remove_participant_asking_to_join(
+                    video, participant_serializer.validated_data
+                )
+        except VideoParticipantsException as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(video)
+        channel_layers_utils.dispatch_video_to_groups(video)
+        return Response(serializer.data)
+
+    @action(
+        methods=["post", "delete"],
+        detail=True,
+        url_path="participants-in-discussion",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def participants_in_discussion(
+        self,
+        request,
+        pk=None,
+    ):
+        """Adds and deletes a participant who have joined a live stream.
+
+        Broadcasts a xmpp message to all users in the video room.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint, it should contain a payload with a participant.
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+
+        participant_serializer = serializers.ParticipantSerializer(data=request.data)
+
+        if not participant_serializer.is_valid():
+            return Response(
+                participant_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        video = self.get_object()
+        try:
+            if request.method == "POST":
+                move_participant_to_discussion(
+                    video, participant_serializer.validated_data
+                )
+            elif request.method == "DELETE":
+                remove_participant_from_discussion(
+                    video, participant_serializer.validated_data
+                )
+        except VideoParticipantsException as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(video)
         channel_layers_utils.dispatch_video_to_groups(video)
