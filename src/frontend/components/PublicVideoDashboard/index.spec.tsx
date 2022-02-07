@@ -418,6 +418,9 @@ describe('PublicVideoDashboard', () => {
         jid: 'xmpp-server.com',
       },
     });
+    useLiveStateStarted.setState({
+      isStarted: false,
+    });
 
     render(
       wrapInIntlProvider(
@@ -548,6 +551,10 @@ describe('PublicVideoDashboard', () => {
     const video = videoMockFactory({
       live_state: liveState.IDLE,
     });
+    useLiveStateStarted.setState({
+      isStarted: false,
+    });
+
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -566,6 +573,10 @@ describe('PublicVideoDashboard', () => {
       live_state: liveState.IDLE,
       is_scheduled: false,
     });
+    useLiveStateStarted.setState({
+      isStarted: false,
+    });
+
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -588,6 +599,10 @@ describe('PublicVideoDashboard', () => {
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 29, 11, 0, 0)).toISO(),
       is_scheduled: true,
     });
+    useLiveStateStarted.setState({
+      isStarted: false,
+    });
+
     render(
       wrapInIntlProvider(
         wrapInRouter(

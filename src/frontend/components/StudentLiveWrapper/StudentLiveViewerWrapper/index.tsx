@@ -46,11 +46,7 @@ export const StudentLiveViewerWrapper = ({
     };
   }, [video, isLiveStarted]);
 
-  if (
-    video.live_state === liveState.IDLE ||
-    video.live_state === liveState.STARTING ||
-    !isLiveStarted
-  ) {
+  if (!isLiveStarted) {
     return <StudentLiveAdvertising video={video} />;
   } else {
     return (
