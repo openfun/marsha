@@ -199,6 +199,8 @@ class VideoConsumerTest(TransactionTestCase):
                     "show_download": True,
                     "should_use_subtitle_as_transcript": False,
                     "starting_at": None,
+                    "participants_asking_to_join": [],
+                    "participants_in_discussion": [],
                     "playlist": {
                         "id": str(video.playlist.id),
                         "title": video.playlist.title,
@@ -318,6 +320,8 @@ class VideoConsumerTest(TransactionTestCase):
                     "show_download": True,
                     "should_use_subtitle_as_transcript": False,
                     "starting_at": None,
+                    "participants_asking_to_join": [],
+                    "participants_in_discussion": [],
                     "playlist": {
                         "id": str(video.playlist.id),
                         "title": video.playlist.title,

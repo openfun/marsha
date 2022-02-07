@@ -164,6 +164,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "urls": None,
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": video.playlist.title,
@@ -244,6 +246,8 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "should_use_subtitle_as_transcript": False,
                 "starting_at": None,
                 "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
                 "playlist": {
                     "id": str(video.playlist.id),
                     "title": "course-v1:ufr+mathematics+00001",
