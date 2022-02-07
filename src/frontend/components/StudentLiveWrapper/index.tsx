@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
+import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
@@ -12,7 +13,6 @@ import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 
-import { StudentLiveLayout } from './StudentLiveLayout';
 import { StudentLiveViewerWrapper } from './StudentLiveViewerWrapper';
 
 export enum LiveType {
@@ -62,7 +62,7 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
   }, [video, configPanel, isStarted]);
 
   return (
-    <StudentLiveLayout
+    <LiveVideoLayout
       actionsElement={<StudentLiveControlBar video={video} />}
       displayActionsElement={
         configuration.type === LiveType.ON_STAGE || isStarted

@@ -3,18 +3,18 @@ import { render, screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
-import { StudentLiveLayout } from '.';
+import { LiveVideoLayout } from '.';
 
 const ActionsElement = <p>actions element</p>;
 const LiveTitleElement = <p>live title element</p>;
 const MainCompo = <p>main component</p>;
 const PanelCompo = <p>panel component</p>;
 
-describe('<StudentLiveLayout />', () => {
+describe('<LiveVideoLayout />', () => {
   it('renders components with panel', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <StudentLiveLayout
+        <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isPanelOpen={true}
@@ -38,7 +38,7 @@ describe('<StudentLiveLayout />', () => {
   it('hides the panel when isPanelOpen is false', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <StudentLiveLayout
+        <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isPanelOpen={false}
@@ -61,7 +61,7 @@ describe('<StudentLiveLayout />', () => {
   it('does not render panel when is isPanelOpen is not defined', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <StudentLiveLayout
+        <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isPanelOpen={undefined}
@@ -84,7 +84,7 @@ describe('<StudentLiveLayout />', () => {
   it('does not render panel when sideElement is not defined even if isPanelOpen is true', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <StudentLiveLayout
+        <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isPanelOpen={true}
@@ -106,7 +106,7 @@ describe('<StudentLiveLayout />', () => {
   it('does not render the actionElement when displayActionsElement is set to false', () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <StudentLiveLayout
+        <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={false}
           isPanelOpen={true}
