@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { DashboardTimedTextPane } from 'components/DashboardTimedTextPane';
 import { DashboardVideoPane } from 'components/DashboardVideoPane';
@@ -16,24 +16,17 @@ interface DashboardVideoProps {
 const DashboardVideo = (props: DashboardVideoProps) => {
   const video = useVideo((state) => state.getVideo(props.video));
   const { uploadManagerState } = useUploadManager();
-  const [displayTimedTextPane, setDisplayTimedTextPane] = useState(false);
 
-  useEffect(() => {
-    setDisplayTimedTextPane(
-      video.live_state === null &&
-        (![
-          uploadState.DELETED,
-          uploadState.HARVESTED,
-          uploadState.HARVESTING,
-          uploadState.PENDING,
-        ].includes(video.upload_state) ||
-          (video.upload_state === uploadState.PENDING &&
-            (uploadManagerState[video.id]?.status ===
-              UploadManagerStatus.UPLOADING ||
-              uploadManagerState[video.id]?.status ===
-                UploadManagerStatus.SUCCESS))),
-    );
-  }, [video.live_state, video.upload_state, uploadManagerState]);
+  const displayTimedTextPane =
+    ![
+      uploadState.DELETED,
+      uploadState.HARVESTED,
+      uploadState.HARVESTING,
+      uploadState.PENDING,
+    ].includes(video.upload_state) ||
+    (video.upload_state === uploadState.PENDING &&
+      (uploadManagerState[video.id]?.status === UploadManagerStatus.UPLOADING ||
+        uploadManagerState[video.id]?.status === UploadManagerStatus.SUCCESS));
 
   return (
     <React.Fragment>
