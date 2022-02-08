@@ -4,23 +4,25 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 import styled from 'styled-components';
 
-import { appData } from '../../data/appData';
-import { useVideo } from '../../data/stores/useVideo';
-import { API_ENDPOINT } from '../../settings';
-import { modelName } from '../../types/models';
-import { uploadState, LiveModeType, Video } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
-import { DashboardPaneButtons } from '../DashboardPaneButtons';
-import { DashboardThumbnail } from '../DashboardThumbnail';
-import { DashboardVideoHarvested } from '../DashboardVideoHarvested';
-import { DashboardVideoLive } from '../DashboardVideoLive';
-import { DashboardVideoPaneDownloadOption } from '../DashboardVideoPaneDownloadOption';
-import { DashboardVideoPaneTranscriptOption } from '../DashboardVideoPaneTranscriptOption';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { ObjectStatusPicker } from '../ObjectStatusPicker';
-import { UploadableObjectProgress } from '../UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
+import { DashboardPaneButtons } from 'components/DashboardPaneButtons';
+import { DashboardThumbnail } from 'components/DashboardThumbnail';
+import { DashboardVideoHarvested } from 'components/DashboardVideoHarvested';
+import { DashboardVideoPaneDownloadOption } from 'components/DashboardVideoPaneDownloadOption';
+import { DashboardVideoPaneTranscriptOption } from 'components/DashboardVideoPaneTranscriptOption';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
+import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
+import { appData } from 'data/appData';
+import { useVideo } from 'data/stores/useVideo';
+import { API_ENDPOINT } from 'settings';
+import { modelName } from 'types/models';
+import { uploadState, Video } from 'types/tracks';
+import { report } from 'utils/errors/report';
 
 const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
   uploadState;
@@ -177,24 +179,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
 
   switch (video.upload_state) {
     case PENDING:
-      if (video.live_state !== null) {
-        return (
-          <DashboardVideoPaneInnerContainer>
-            <Box
-              direction={
-                video.live_type === LiveModeType.RAW ? 'row' : 'column'
-              }
-            >
-              <Box basis={'1/2'} margin={'small'}>
-                <CommonStatusLine video={video} />
-              </Box>
-              <Box basis={'1/2'} margin={'small'}>
-                <DashboardVideoLive video={video} />
-              </Box>
-            </Box>
-          </DashboardVideoPaneInnerContainer>
-        );
-      } else if (
+      if (
         uploadManagerState[video.id]?.status === UploadManagerStatus.UPLOADING
       ) {
         return (

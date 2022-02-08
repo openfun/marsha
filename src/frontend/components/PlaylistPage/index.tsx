@@ -1,30 +1,29 @@
 import React, { Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import DashboardDocument from 'components/DashboardDocument';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LTINav } from 'components/LTINav';
+import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
 import { appData } from 'data/appData';
 import { modelName } from 'types/models';
 
-import { DashboardVideoWrapper } from './DashboardVideoWrapper';
-
-/** Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
- * the player and to the form to replace the video with another one.
- * Will also be used to manage related tracks such as timed text when they are available.
- */
-const Dashboard = () => {
+const PlaylistPage = () => {
   let content;
   if (appData.modelName === modelName.DOCUMENTS && appData.document) {
     content = (
       <Fragment>
         <LTINav object={appData.document} />
-        <DashboardDocument document={appData.document} />
+        <PlaylistPortability object={appData.document} />
       </Fragment>
     );
   } else if (appData.modelName === modelName.VIDEOS && appData.video) {
-    content = <DashboardVideoWrapper video={appData.video} />;
+    content = (
+      <Fragment>
+        <LTINav object={appData.video} />
+        <PlaylistPortability object={appData.video} />
+      </Fragment>
+    );
   } else {
     content = <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
@@ -32,4 +31,4 @@ const Dashboard = () => {
   return <DashboardContainer>{content}</DashboardContainer>;
 };
 
-export default Dashboard;
+export default PlaylistPage;
