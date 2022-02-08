@@ -56,8 +56,8 @@ export const DashboardVideoLiveConfigureButton = ({
               modelName.VIDEOS,
             )
           : await initiateLive(video, type);
-      updateVideo(updatedVideo);
       setStatus('success');
+      updateVideo(updatedVideo);
     } catch (error) {
       setStatus('error');
     }
