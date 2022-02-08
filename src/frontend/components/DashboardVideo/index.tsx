@@ -7,7 +7,6 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { useVideo } from 'data/stores/useVideo';
-import { initVideoWebsocket } from 'data/websocket';
 import { uploadState, Video } from 'types/tracks';
 
 interface DashboardVideoProps {
@@ -18,7 +17,6 @@ const DashboardVideo = (props: DashboardVideoProps) => {
   const video = useVideo((state) => state.getVideo(props.video));
   const { uploadManagerState } = useUploadManager();
   const [displayTimedTextPane, setDisplayTimedTextPane] = useState(false);
-  initVideoWebsocket(video);
 
   useEffect(() => {
     setDisplayTimedTextPane(

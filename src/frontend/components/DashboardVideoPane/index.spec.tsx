@@ -1,9 +1,9 @@
 import { cleanup, render, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React, { Suspense } from 'react';
+import React from 'react';
 
 import { modelName } from 'types/models';
-import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
+import { uploadState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -336,44 +336,6 @@ describe('<DashboardVideoPane />', () => {
         </UploadManagerContext.Provider>,
       );
       expect(screen.queryByText('0%')).toEqual(null);
-      cleanup();
-    }
-  });
-
-  it('shows the video live dashboard when the video is live', () => {
-    for (const state of Object.values(uploadState)) {
-      const { getByText, queryByText } = render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <Suspense fallback="loading...">
-              <DashboardVideoPane
-                video={videoMockFactory({
-                  is_ready_to_show: false,
-                  upload_state: state,
-                  live_state: liveState.IDLE,
-                  live_info: {
-                    medialive: {
-                      input: {
-                        endpoints: [
-                          'https://live_endpoint1',
-                          'https://live_endpoint2',
-                        ],
-                      },
-                    },
-                  },
-                  live_type: LiveModeType.RAW,
-                })}
-              />
-            </Suspense>,
-          ),
-        ),
-      );
-
-      if (state === PENDING) {
-        getByText('Streaming link');
-      } else {
-        expect(queryByText('Streaming link')).not.toBeInTheDocument();
-      }
       cleanup();
     }
   });
