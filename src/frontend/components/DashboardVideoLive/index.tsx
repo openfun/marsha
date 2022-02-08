@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from 'grommet';
-import React, { lazy, useEffect, useState } from 'react';
+import React, { lazy, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { DashboardVideoLiveEndButton } from 'components/DashboardVideoLiveEndButton';
@@ -59,15 +59,12 @@ interface DashboardVideoLiveProps {
 }
 
 export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
-  const [canStartLive, setCanStartLive] = useState(false);
-  const [canShowStartButton, setCanShowStartButton] = useState(false);
-
-  useEffect(() => {
-    if (video.live_type === LiveModeType.RAW) {
-      setCanStartLive(true);
-      setCanShowStartButton(true);
-    }
-  }, []);
+  const [canStartLive, setCanStartLive] = useState(
+    video.live_type === LiveModeType.RAW,
+  );
+  const [canShowStartButton, setCanShowStartButton] = useState(
+    video.live_type === LiveModeType.RAW,
+  );
 
   return (
     <Box>
