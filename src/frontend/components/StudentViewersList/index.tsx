@@ -34,6 +34,7 @@ export const StudentViewersList = () => {
 
   return (
     <Box
+      fill
       gap="30px"
       overflow={{
         horizontal: 'hidden',
