@@ -14,7 +14,6 @@ import { Loader } from 'components/Loader';
 import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
 import { PLAYER_ROUTE } from 'components/routes';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
-import { PlaylistPortability } from 'components/PlaylistPortability';
 import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
@@ -25,9 +24,8 @@ import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { SelectContent } from 'components/SelectContent/';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
-const DashboardDocument = lazy(() => import('components/DashboardDocument'));
-const DashboardVideo = lazy(() => import('components/DashboardVideo'));
 const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));
+const PlaylistPage = lazy(() => import('components/PlaylistPage'));
 const PublicVideoDashboard = lazy(
   () => import('components/PublicVideoDashboard'),
 );
@@ -137,52 +135,8 @@ export const Routes = () => (
             />
           )}
         />
-        <Route
-          exact
-          path={DASHBOARD_ROUTE()}
-          render={() => {
-            if (appData.modelName === modelName.DOCUMENTS) {
-              return (
-                <Dashboard object={appData.document!}>
-                  <DashboardDocument document={appData.document!} />
-                </Dashboard>
-              );
-            }
-
-            if (appData.modelName === modelName.VIDEOS) {
-              return (
-                <Dashboard object={appData.video!}>
-                  <DashboardVideo video={appData.video!} />
-                </Dashboard>
-              );
-            }
-
-            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-          }}
-        />
-        <Route
-          exact
-          path={PLAYLIST_ROUTE()}
-          render={() => {
-            if (appData.modelName === modelName.DOCUMENTS) {
-              return (
-                <Dashboard object={appData.document!}>
-                  <PlaylistPortability object={appData.document!} />
-                </Dashboard>
-              );
-            }
-
-            if (appData.modelName === modelName.VIDEOS) {
-              return (
-                <Dashboard object={appData.video!}>
-                  <PlaylistPortability object={appData.video!} />
-                </Dashboard>
-              );
-            }
-
-            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-          }}
-        />
+        <Route exact path={DASHBOARD_ROUTE()} component={Dashboard} />
+        <Route exact path={PLAYLIST_ROUTE()} component={PlaylistPage} />
 
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </Switch>

@@ -1,22 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Loader } from 'components/Loader';
-import { Document } from 'types/file';
 import { modelName } from 'types/models';
-import { Video } from 'types/tracks';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 
-import Dashboard from './index';
-
-jest.mock('components/DashboardVideo', () => (props: { video: Video }) => (
-  <span title={props.video.id} />
-));
-jest.mock(
-  'components/DashboardDocument',
-  () => (props: { document: Document }) => <span title={props.document.id} />,
-);
+import PlaylistPage from './index';
 
 const mockedAppName = modelName.VIDEOS;
 jest.mock('data/appData', () => ({
@@ -38,7 +29,7 @@ jest.mock('data/appData', () => ({
 }));
 const appDataMock = jest.requireMock('data/appData');
 
-describe('<Dashboard /> videos', () => {
+describe('<PlaylistPage />', () => {
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
@@ -52,21 +43,28 @@ describe('<Dashboard /> videos', () => {
         thumbnail: null,
         timed_text_tracks: [],
         upload_state: 'processing',
+        playlist: {
+          id: 'playlist_id',
+        },
       },
     };
+
+    const queryClient = new QueryClient();
 
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback={<Loader />}>
-            <Dashboard />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback={<Loader />}>
+              <PlaylistPage />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
 
     await screen.findByText('Dashboard');
-    screen.getByTitle('dd44');
+    screen.getByText('Loading playlist...');
   });
 
   it('renders with document', async () => {
@@ -74,21 +72,28 @@ describe('<Dashboard /> videos', () => {
       document: {
         id: 'doc1',
         upload_state: 'processing',
+        playlist: {
+          id: 'playlist_id',
+        },
       },
       modelName: modelName.DOCUMENTS,
     };
 
+    const queryClient = new QueryClient();
+
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback={<Loader />}>
-            <Dashboard />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback={<Loader />}>
+              <PlaylistPage />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
 
     await screen.findByText('Dashboard');
-    screen.getByTitle('doc1');
+    screen.getByText('Loading playlist...');
   });
 });
