@@ -52,6 +52,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display chat and viewers list in the tabs panel
 - Upgrade to Django 4
 - Integrate live advertisement in live layout
+- Disable jitsi deeplinking
 
 ### Removed
 
