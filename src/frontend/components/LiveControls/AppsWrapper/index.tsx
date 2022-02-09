@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { StudentHideAppsButton } from 'components/StudentLiveControlButtons/StudentHideAppsButton';
-import { StudentShowAppsButton } from 'components/StudentLiveControlButtons/StudentShowAppsButton';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+
+import { StudentHideAppsButton } from './StudentHideAppsButton';
+import { StudentShowAppsButton } from './StudentShowAppsButton';
 
 export const AppsWrapper = () => {
   const { currentItem, isPanelVisible } = useLivePanelState((state) => ({
