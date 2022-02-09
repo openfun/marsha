@@ -8,11 +8,12 @@ import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { ButtonLayout } from 'components/Button/ButtonLayout';
 import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { StudentJoinDiscussionButton } from 'components/StudentLiveControlButtons/StudentJoinDiscussionButton';
-import { StudentLeaveDiscussionButton } from 'components/StudentLiveControlButtons/StudentLeaveDiscussionButton';
 import { WaitingJoinDiscussionSVG } from 'components/SVGIcons/WaitingJoinDiscussionSVG';
 import { modelName } from 'types/models';
 import { theme } from 'utils/theme/theme';
+
+import { StudentJoinDiscussionButton } from './StudentJoinDiscussionButton';
+import { StudentLeaveDiscussionButton } from './StudentLeaveDiscussionButton';
 
 const messages = defineMessages({
   waitingInstructor: {

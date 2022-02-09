@@ -9,9 +9,9 @@ import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
 
 import { StudentLiveControlBar } from '.';
-import { wrapInRouter } from 'utils/tests/router';
 
 const mockEmptyVideo = videoMockFactory();
 

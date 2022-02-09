@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { StudentHideViewersButton } from 'components/StudentLiveControlButtons/StudentHideViewersButton';
-import { StudentShowViewersButton } from 'components/StudentLiveControlButtons/StudentShowViewersButton';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+
+import { StudentHideViewersButton } from './StudentHideViewersButton';
+import { StudentShowViewersButton } from './StudentShowViewersButton';
 
 export const ViewersWrapper = () => {
   const { currentItem, isPanelVisible } = useLivePanelState((state) => ({
