@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import { Box, ResponsiveContext } from 'grommet';
 
+import { AppsWrapper } from 'components/LiveControls/AppsWrapper';
+import { ChatWrapper } from 'components/LiveControls/ChatWrapper';
+import { ViewersWrapper } from 'components/LiveControls/ViewersWrapper';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { LiveModeType, liveState, Video } from 'types/tracks';
 
-import { AppsWrapper } from './AppsWrapper';
-import { ChatWrapper } from './ChatWrapper';
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
-import { ViewersWrapper } from './ViewersWrapper';
 
 interface StudentLiveControlBarProps {
   video: Video;

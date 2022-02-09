@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { StudentHideChatButton } from 'components/StudentLiveControlButtons/StudentHideChatButton';
-import { StudentShowChatButton } from 'components/StudentLiveControlButtons/StudentShowChatButton';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+
+import { StudentHideChatButton } from './StudentHideChatButton';
+import { StudentShowChatButton } from './StudentShowChatButton';
 
 export const ChatWrapper = () => {
   const { currentItem, isPanelVisible } = useLivePanelState((state) => ({
