@@ -123,6 +123,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
           autoHide: [],
         },
+        disableDeepLinking: true,
         disablePolls: true,
         doNotStoreRoom: true,
         hideConferenceSubject: true,
@@ -274,6 +275,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
             autoHide: [],
           },
+          disableDeepLinking: true,
           disablePolls: true,
           doNotStoreRoom: true,
           hideConferenceSubject: true,
@@ -491,6 +493,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
           autoHide: [],
         },
+        disableDeepLinking: true,
         disablePolls: true,
         doNotStoreRoom: true,
         hideConferenceSubject: true,
@@ -536,6 +539,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
           autoHide: [],
         },
+        disableDeepLinking: true,
         disablePolls: true,
         doNotStoreRoom: true,
         hideConferenceSubject: true,

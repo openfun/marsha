@@ -123,6 +123,9 @@ const DashboardVideoLiveJitsi = ({
           // 'insecure-room'
         ],
       },
+      // If true, any checks to handoff to another application will be prevented
+      // and instead the app will continue to display in the current browser.
+      disableDeepLinking: true,
       disablePolls: true,
       // Disables storing the room name to the recents list
       doNotStoreRoom: true,
