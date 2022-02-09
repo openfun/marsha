@@ -52,6 +52,7 @@ declare namespace JitsiMeetExternalAPI {
       alwaysVisible: string[];
       autoHide: string[];
     };
+    disableDeepLinking?: boolean;
     disablePolls?: boolean;
     hideConferenceSubject?: boolean;
     hideConferenceTimer?: boolean;
