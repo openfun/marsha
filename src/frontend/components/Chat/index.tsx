@@ -33,7 +33,6 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
     <Box {...conditionalProps}>
       {!!standalone ? (
         <div>
-          Instructor Chat
           <StudentChat />
         </div>
       ) : (
