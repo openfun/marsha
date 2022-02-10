@@ -30,12 +30,14 @@ interface BaseVideoPlayerProps {
   video: Nullable<Video>;
   playerType: string;
   timedTextTracks: TimedText[];
+  defaultVolume?: number;
 }
 
 const VideoPlayer = ({
   video,
   playerType,
   timedTextTracks,
+  defaultVolume,
 }: BaseVideoPlayerProps) => {
   const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
@@ -80,6 +82,11 @@ const VideoPlayer = ({
           videoNodeRef.current!,
           setPlayerCurrentTime,
           video,
+          (videoPlayer) => {
+            if (defaultVolume !== undefined) {
+              videoPlayer.volume(Math.min(1, Math.max(0, defaultVolume)));
+            }
+          },
         ),
       );
 

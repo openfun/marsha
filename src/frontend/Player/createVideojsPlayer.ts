@@ -21,7 +21,7 @@ import {
 } from 'types/XAPI';
 import { report } from 'utils/errors/report';
 import { isMSESupported } from 'utils/isMSESupported';
-import { Nullable } from 'utils/types';
+import { Maybe, Nullable } from 'utils/types';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
 import { intl } from 'index';
@@ -31,6 +31,7 @@ export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
+  onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
@@ -88,7 +89,11 @@ export const createVideojsPlayer = (
     sources,
   };
 
-  const player = videojs(videoNode, options);
+  const player = videojs(videoNode, options, () => {
+    if (onReady) {
+      onReady(player);
+    }
+  });
 
   if (isMSESupported()) {
     player.httpSourceSelector();
