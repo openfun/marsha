@@ -30,6 +30,7 @@ describe('<InputBar /> functionnal', () => {
         />,
       ),
     );
+
     const chatInputText = screen.getByRole('textbox');
     const chatSendButton = screen.getByRole('button');
     await act(async () => {
@@ -113,6 +114,54 @@ describe('<InputBar /> functionnal', () => {
     });
     expect(mockHandleUserInputFailure).toHaveBeenCalledWith('A simple message');
     expect(chatInputText).toHaveValue('A simple message');
+  });
+
+  it('displays input bar when it is waiting and checks that input bar and spinner button are disabled.', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <InputBar
+          handleUserInput={mockHandleUserInputFailure}
+          isChatInput={true}
+          isWaiting
+          placeholderText={exampleTextPlaceholder}
+        />,
+      ),
+    );
+    expect(container.querySelector('svg')).toBeNull();
+    const chatInputText = screen.getByRole('textbox');
+    expect(chatInputText).toBeDisabled();
+    userEvent.type(chatInputText, 'A simple message');
+    expect(chatInputText).toHaveValue('');
+    const chatInputButton = screen.getByRole('button');
+    expect(chatInputButton).toBeDisabled();
+    await act(async () => {
+      userEvent.keyboard('{enter}');
+    });
+    expect(mockHandleUserInputFailure).not.toHaveBeenCalledWith();
+  });
+
+  it('displays input bar when it is disabled and checks that input bar and validation button are disabled.', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <InputBar
+          handleUserInput={mockHandleUserInputFailure}
+          isChatInput={true}
+          isDisabled
+          placeholderText={exampleTextPlaceholder}
+        />,
+      ),
+    );
+    expect(container.querySelector('svg')).toBeTruthy();
+    const chatInputText = screen.getByRole('textbox');
+    expect(chatInputText).toBeDisabled();
+    userEvent.type(chatInputText, 'A simple message');
+    expect(chatInputText).toHaveValue('');
+    const chatInputButton = screen.getByRole('button');
+    expect(chatInputButton).toBeDisabled();
+    await act(async () => {
+      userEvent.keyboard('{enter}');
+    });
+    expect(mockHandleUserInputFailure).not.toHaveBeenCalledWith();
   });
 });
 

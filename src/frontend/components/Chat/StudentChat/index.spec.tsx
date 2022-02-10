@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { StudentChat } from '.';
 
@@ -18,6 +19,20 @@ jest.mock('utils/window', () => ({
     sendMessage: jest.fn(),
   },
 }));
+
+const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
+  typeof converse.claimNewNicknameInChatRoom
+>;
+
+mockConverse.mockImplementation(
+  (
+    _displayName: string,
+    callbackSuccess: () => void,
+    _callbackError: (stanza: Nullable<HTMLElement>) => void,
+  ) => {
+    callbackSuccess();
+  },
+);
 
 describe('<StudentChat />', () => {
   it('connects an anonymous user and sends a message.', async () => {
@@ -38,9 +53,12 @@ describe('<StudentChat />', () => {
     await act(async () => {
       userEvent.click(buttonSendDisplayName);
     });
+    jest.advanceTimersByTime(1000);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
       1,
       'John Doe',
+      expect.any(Function),
+      expect.any(Function),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     const sendChatButton = screen.getByRole('button');

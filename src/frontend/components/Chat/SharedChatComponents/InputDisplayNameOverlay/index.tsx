@@ -11,6 +11,7 @@ import {
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
 } from 'default/chat';
+import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert/index';
 
@@ -55,6 +56,24 @@ const messages = defineMessages({
       'An alert message explaining why the entered display name is invalid.',
     id: 'components.InputDisplayNameOverlay.inputTooLongAlertMessage',
   },
+  inputXmppError: {
+    defaultMessage: 'Impossible to connect you to the chat. Please retry.',
+    description: 'An alert message saying that the user cannot be connected.',
+    id: 'components.InputDisplayNameOverlay.inputXmppError',
+  },
+  inputXmppTimeout: {
+    defaultMessage: 'The server took too long to respond. Please retry.',
+    description:
+      'An alert message saying that the servers answer to the nickname change request took too much time.',
+    id: 'components.InputDisplayNameOverlay.inputXmppTimeout',
+  },
+  inputNicknameAlreadyExists: {
+    defaultMessage:
+      'Your nickname is already used in the chat. Please choose another one.',
+    description:
+      "An alert message saying that the user can't select the entered nickname because someone is already using it in the chat.",
+    id: 'components.InputDisplayNameOverlay.inputNicknameAlreadyExists',
+  },
 });
 
 interface InputDisplayNameOverlayProps {
@@ -66,9 +85,38 @@ export const InputDisplayNameOverlay = ({
 }: InputDisplayNameOverlayProps) => {
   const intl = useIntl();
   const [alertsState, setAlertsState] = useState<string[]>([]);
+  const [isWaiting, setIsWaiting] = useState(false);
   const setDisplayName = useChatItemState((state) => state.setDisplayName);
 
   const processDisplayName = (displayName: string) => {
+    setAlertsState([]);
+    setIsWaiting(true);
+
+    const callbackSuccess = () => {
+      setDisplayName(displayName);
+      setIsWaiting(false);
+      setOverlay(false);
+    };
+
+    const callbackError = (stanza: Nullable<HTMLElement>) => {
+      const xmppAlerts = [];
+      if (stanza) {
+        const errorItem = stanza.getElementsByTagName('error')[0];
+        if (errorItem && errorItem.getAttribute('code') === '409') {
+          xmppAlerts.push(
+            intl.formatMessage(messages.inputNicknameAlreadyExists),
+          );
+        } else {
+          xmppAlerts.push(intl.formatMessage(messages.inputXmppError));
+        }
+      } else {
+        xmppAlerts.push(intl.formatMessage(messages.inputXmppTimeout));
+      }
+
+      setAlertsState(xmppAlerts);
+      setIsWaiting(false);
+    };
+
     const alerts: string[] = [];
     if (displayName.toLowerCase().includes(ANONYMOUS_ID_PREFIX)) {
       alerts.push(
@@ -93,12 +141,15 @@ export const InputDisplayNameOverlay = ({
       );
     }
     if (alerts.length === 0) {
-      converse.claimNewNicknameInChatRoom(displayName);
-      setDisplayName(displayName);
-      setOverlay(false);
+      converse.claimNewNicknameInChatRoom(
+        displayName,
+        callbackSuccess,
+        callbackError,
+      );
       return true;
     } else {
       setAlertsState(alerts);
+      setIsWaiting(false);
       return false;
     }
   };
@@ -172,6 +223,7 @@ export const InputDisplayNameOverlay = ({
           <InputBar
             handleUserInput={processDisplayName}
             isChatInput={false}
+            isWaiting={isWaiting}
             placeholderText={intl.formatMessage(
               messages.inputDisplayNamePlaceholder,
             )}
