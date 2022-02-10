@@ -20,14 +20,9 @@ export const converseMounter = () => {
       nicknameManagementPlugin.addPlugin(xmpp);
       participantsTrackingPlugin.addPlugin();
 
+      const anonymousNickname = generateAnonymousNickname();
       // Converse Initialization
       converse.initialize({
-        allow_contact_requests: false,
-        allow_logout: false,
-        allow_message_corrections: 'last',
-        allow_message_retraction: 'all',
-        allow_muc_invitations: false,
-        allow_registration: false,
         authentication: 'anonymous',
         auto_login: true,
         auto_join_rooms: [xmpp.conference_url],
@@ -35,19 +30,14 @@ export const converseMounter = () => {
         clear_cache_on_logout: true,
         discover_connection_methods: false,
         enable_smacks: !!xmpp.websocket_url,
-        hide_muc_participants: true,
+        idle_presence_timeout: 0,
+        i18n: 'en',
         jid: xmpp.jid,
-        // loglevel: 'debug',
-        modtools_disable_assign: true,
+        loglevel: 'error',
         muc_history_max_stanzas: 0,
         muc_instant_rooms: false,
-        muc_show_join_leave: false,
-        nickname: generateAnonymousNickname(),
-        root: null,
-        show_client_info: false,
-        singleton: true,
-        theme: 'concord',
-        view_mode: 'embedded',
+        nickname: anonymousNickname,
+        ping_interval: 20,
         websocket_url: xmpp.websocket_url,
         whitelisted_plugins: [
           chatPlugin.name,
@@ -57,6 +47,7 @@ export const converseMounter = () => {
           participantsTrackingPlugin.name,
         ],
       });
+
       isChatInitialized = true;
     }
   };
