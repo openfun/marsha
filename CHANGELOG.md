@@ -36,6 +36,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   events related to the live workflow (start, pause, end, shared live medias)
 - Send email when registering for a scheduled webinar 
 - Management command sending reminders for scheduled webinars
+- Implement a way to address prosody controls on the nickname entered in the 
+  chat
 
 ### Changed
 

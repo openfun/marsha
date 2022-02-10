@@ -10,6 +10,7 @@ import {
 } from 'default/chat';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { InputDisplayNameOverlay } from './index';
 
@@ -21,8 +22,17 @@ jest.mock('utils/window', () => ({
   },
 }));
 
+const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
+  typeof converse.claimNewNicknameInChatRoom
+>;
+
 describe('<InputDisplayNameOverlay />', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
   afterEach(() => {
+    jest.useRealTimers();
     jest.resetAllMocks();
   });
 
@@ -92,7 +102,133 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
+  it('enters a valid nickname but the server takes too long to answer.', async () => {
+    mockConverse.mockImplementation(
+      async (
+        _displayName: string,
+        _callbackSuccess: () => void,
+        callbackError: (stanza: Nullable<HTMLElement>) => void,
+      ) => {
+        await new Promise((r) => setTimeout(r, 2000));
+        callbackError(null);
+      },
+    );
+
+    render(
+      wrapInIntlProvider(
+        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
+      ),
+    );
+    const inputTextbox = screen.getByRole('textbox');
+    const validateButton = screen.getByRole('button');
+    userEvent.type(inputTextbox, 'John_Doe');
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    act(() => userEvent.click(validateButton));
+    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
+    expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
+    // When waiting prosody answer, svg button is replaced by a waiting spinner
+    expect(validateButton.querySelector('svg')).toBeNull();
+    await act(async () => {
+      jest.advanceTimersByTime(3000);
+    });
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    screen.getByText('The server took too long to respond. Please retry.');
+    expect(useChatItemState.getState().displayName).toEqual(null);
+  });
+
+  it('enters a valid nickname but it is already used in the chat', async () => {
+    mockConverse.mockImplementation(
+      async (
+        _displayName: string,
+        _callbackSuccess: () => void,
+        callbackError: (stanza: Nullable<HTMLElement>) => void,
+      ) => {
+        await new Promise((r) => setTimeout(r, 2000));
+        const parser = new DOMParser();
+        callbackError(
+          parser.parseFromString(
+            '<error code="409" />',
+            'text/xml',
+          ) as any as HTMLElement,
+        );
+      },
+    );
+
+    render(
+      wrapInIntlProvider(
+        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
+      ),
+    );
+    const inputTextbox = screen.getByRole('textbox');
+    const validateButton = screen.getByRole('button');
+    userEvent.type(inputTextbox, 'John_Doe');
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    act(() => userEvent.click(validateButton));
+    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
+    expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
+    // When waiting prosody answer, svg button is replaced by a waiting spinner
+    expect(validateButton.querySelector('svg')).toBeNull();
+    await act(async () => {
+      jest.advanceTimersByTime(3000);
+    });
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    screen.getByText(
+      'Your nickname is already used in the chat. Please choose another one.',
+    );
+    expect(useChatItemState.getState().displayName).toEqual(null);
+  });
+
+  it('enters a valid nickname but the server returns an unknown response', async () => {
+    mockConverse.mockImplementation(
+      async (
+        _displayName: string,
+        _callbackSuccess: () => void,
+        callbackError: (stanza: Nullable<HTMLElement>) => void,
+      ) => {
+        await new Promise((r) => setTimeout(r, 2000));
+        const parser = new DOMParser();
+        callbackError(
+          parser.parseFromString(
+            '<unknownStanza unknownAttribute="unrecognizedValue" />',
+            'text/xml',
+          ) as any as HTMLElement,
+        );
+      },
+    );
+
+    render(
+      wrapInIntlProvider(
+        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
+      ),
+    );
+    const inputTextbox = screen.getByRole('textbox');
+    const validateButton = screen.getByRole('button');
+    userEvent.type(inputTextbox, 'John_Doe');
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    act(() => userEvent.click(validateButton));
+    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
+    expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
+    // When waiting prosody answer, svg button is replaced by a waiting spinner
+    expect(validateButton.querySelector('svg')).toBeNull();
+    await act(async () => {
+      jest.advanceTimersByTime(3000);
+    });
+    expect(validateButton.querySelector('svg')).toBeTruthy();
+    screen.getByText('Impossible to connect you to the chat. Please retry.');
+    expect(useChatItemState.getState().displayName).toEqual(null);
+  });
+
   it('enters a valid nickname and validates it.', () => {
+    mockConverse.mockImplementation(
+      async (
+        _displayName: string,
+        callbackSuccess: () => void,
+        _callbackError: (stanza: Nullable<HTMLElement>) => void,
+      ) => {
+        callbackSuccess();
+      },
+    );
+
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
@@ -106,6 +242,8 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
       1,
       'John_Doe',
+      expect.any(Function),
+      expect.any(Function),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     expect(useChatItemState.getState().displayName).toEqual('John_Doe');
