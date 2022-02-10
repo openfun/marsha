@@ -64,12 +64,6 @@ describe('initConverse', () => {
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.initialize).toHaveBeenCalledWith({
-      allow_contact_requests: false,
-      allow_logout: false,
-      allow_message_corrections: 'last',
-      allow_message_retraction: 'all',
-      allow_muc_invitations: false,
-      allow_registration: false,
       authentication: 'anonymous',
       auto_login: true,
       auto_join_rooms: [
@@ -79,18 +73,14 @@ describe('initConverse', () => {
       clear_cache_on_logout: true,
       discover_connection_methods: false,
       enable_smacks: true,
-      hide_muc_participants: true,
+      idle_presence_timeout: 0,
+      i18n: 'en',
       jid: 'xmpp-server.com',
-      modtools_disable_assign: true,
+      loglevel: 'error',
       muc_history_max_stanzas: 0,
       muc_instant_rooms: false,
-      muc_show_join_leave: false,
       nickname: 'Anonymous-generated_id',
-      root: null,
-      show_client_info: false,
-      singleton: true,
-      theme: 'concord',
-      view_mode: 'embedded',
+      ping_interval: 20,
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       whitelisted_plugins: [
         chatPlugin.name,
