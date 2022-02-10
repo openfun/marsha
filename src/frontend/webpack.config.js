@@ -67,7 +67,6 @@ const config = {
       {
         enforce: 'pre',
         test: /\.js$/,
-        exclude: [path.join(__dirname, './node_modules/file-selector')],
         loader: 'source-map-loader',
       },
     ],
