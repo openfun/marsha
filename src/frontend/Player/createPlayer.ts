@@ -8,10 +8,16 @@ export const createPlayer: VideoPlayerCreator = (
   ref,
   dispatchPlayerTimeUpdate,
   video,
+  onReady = undefined,
 ) => {
   switch (type) {
     case 'videojs':
-      const player = createVideojsPlayer(ref, dispatchPlayerTimeUpdate, video);
+      const player = createVideojsPlayer(
+        ref,
+        dispatchPlayerTimeUpdate,
+        video,
+        onReady,
+      );
       return {
         destroy: () => player.dispose(),
         getSource: () => player.currentSource().src,

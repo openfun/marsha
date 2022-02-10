@@ -143,6 +143,7 @@ describe('VideoPlayer', () => {
         expect.any(Element),
         expect.anything(),
         mockVideo,
+        expect.any(Function),
       ),
     );
 
@@ -202,6 +203,7 @@ describe('VideoPlayer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
