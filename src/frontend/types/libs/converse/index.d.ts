@@ -34,40 +34,28 @@ declare namespace converse {
   }
 
   interface Options {
-    allow_contact_requests?: boolean;
-    allow_logout?: boolean;
-    allow_message_corrections?: 'all' | 'last';
-    allow_message_retraction?: 'all' | 'moderator' | 'own';
-    allow_muc_invitations?: boolean;
-    allow_registration?: boolean;
-    authentication?: 'anonymous' | 'external' | 'login' | 'prebind';
-    auto_login?: boolean;
-    auto_join_rooms?: sintrg[];
-    bosh_service_url?: Nullable<string>;
-    clear_cache_on_logout?: boolean;
-    discover_connection_methods?: boolean;
-    enable_smacks?: boolean;
-    hide_muc_participants?: boolean;
-    jid?: string;
-    loglevel?: string;
+    authentication: 'anonymous' | 'external' | 'login' | 'prebind';
+    auto_login: boolean;
+    auto_join_rooms: string[];
+    bosh_service_url: Nullable<string>;
+    clear_cache_on_logout: boolean;
+    discover_connection_methods: boolean;
+    enable_smacks: boolean;
+    idle_presence_timeout: number;
+    i18n: string;
+    jid: string;
+    loglevel: 'debug' | 'info' | 'warn' | 'error' | 'fatal';
     muc_history_max_stanzas: number;
-    modtools_disable_assign?: boolean;
-    muc_instant_rooms?: boolean;
-    muc_nickname_from_jid?: boolean;
-    muc_show_join_leave?: boolean;
-    nickname?: Nullable<string>;
-    root?: Nullable<Element>;
-    show_client_info?: boolean;
-    singleton?: boolean;
-    theme?: 'concord' | 'default';
-    view_mode?: 'embedded' | 'fullscreen' | 'mobile' | 'overlayed';
-    visible_toolbar_buttons?: {
-      call?: boolean;
-      emoji?: boolean;
-      spoiler?: boolean;
-      toggle_occupants?: boolean;
-    };
-    websocket_url?: Nullable<string>;
-    whitelisted_plugins?: string[];
+    muc_instant_rooms: boolean;
+    nickname: string;
+    persistent_store?:
+      | 'localStorage'
+      | 'IndexedDB'
+      | 'sessionStorage'
+      | 'BrowserExtLocal'
+      | 'BrowserExtSync';
+    ping_interval: number;
+    websocket_url: Nullable<string>;
+    whitelisted_plugins: string[];
   }
 }
