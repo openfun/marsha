@@ -17,7 +17,11 @@ declare namespace converse {
     insertInto: (container: HTMLElement) => void;
     initialize: (options: Options) => void;
     sendMessage: (message: string) => void;
-    claimNewNicknameInChatRoom: (newNickname: string) => void;
+    claimNewNicknameInChatRoom: (
+      newNickname: string,
+      callbackSuccess: () => void,
+      callbackError: (stanza: Nullable<HTMLElement>) => void,
+    ) => void;
     env: any;
     ROOMSTATUS: {
       CONNECTED: 0;

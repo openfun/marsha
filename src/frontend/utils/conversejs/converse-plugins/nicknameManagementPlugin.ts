@@ -1,3 +1,4 @@
+import { PROSODY_TIMEOUT_ON_NICKNAME_CHANGE_REQUEST_IN_MS } from 'default/chat';
 import { XMPP } from 'types/XMPP';
 import { converse } from 'utils/window';
 
@@ -9,12 +10,25 @@ const addNicknameManagementPlugin = (xmpp: XMPP) =>
     initialize() {
       const _converse = this._converse;
 
-      const claimNewNicknameInChatRoom = (newNickname: string): void => {
+      const claimNewNicknameInChatRoom = (
+        newNickname: string,
+        callbackSuccess: () => void,
+        callbackError: (stanza: HTMLElement) => void,
+      ): void => {
+        const completeCallbackSuccess = () => {
+          callbackSuccess();
+          _converse.api.settings.set('nickname', newNickname);
+        };
         const presence = converse.env.$pres({
           from: _converse.connection.jid,
           to: xmpp.conference_url + '/' + newNickname,
         });
-        _converse.connection.send(presence);
+        _converse.connection.sendPresence(
+          presence,
+          completeCallbackSuccess,
+          callbackError,
+          PROSODY_TIMEOUT_ON_NICKNAME_CHANGE_REQUEST_IN_MS,
+        );
       };
 
       Object.assign(converse, {
