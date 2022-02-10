@@ -4,20 +4,23 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MemoryRouter, Route } from 'react-router';
 
-import { createPlayer } from '../../Player/createPlayer';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { createPlayer } from 'Player/createPlayer';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 import { VideoView } from '.';
 
-jest.mock('../../Player/createPlayer', () => ({
+jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -130,6 +133,7 @@ describe('<VideoView />', () => {
       expect.any(Element),
       expect.anything(),
       video,
+      expect.any(Function),
     );
   });
 

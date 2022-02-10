@@ -146,6 +146,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -205,6 +206,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -268,6 +270,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -332,6 +335,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -386,6 +390,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -478,6 +483,7 @@ describe('PublicVideoDashboard', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 

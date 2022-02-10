@@ -149,6 +149,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -215,6 +216,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -279,6 +281,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -335,6 +338,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
 
@@ -442,6 +446,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        expect.any(Function),
       ),
     );
   });

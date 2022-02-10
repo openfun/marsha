@@ -1,4 +1,5 @@
 import { Maybe } from 'utils/types';
+import { VideoJsPlayer } from 'video.js';
 import { Video } from './tracks';
 
 export interface VideoPlayerInterface {
@@ -13,4 +14,5 @@ export type VideoPlayerCreator = (
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
+  onReady?: (player: VideoJsPlayer) => void,
 ) => Maybe<VideoPlayerInterface>;
