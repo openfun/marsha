@@ -74,7 +74,7 @@ export const StudentLiveLayout = ({
         {/* main view rendering player or conf to stream */}
         <Box basis="full">{mainElement}</Box>
 
-        {sideElement && isPanelOpen && <Box basis="1/4">{sideElement}</Box>}
+        {sideElement && isPanelOpen && <Box basis="1/3">{sideElement}</Box>}
       </Box>
 
       <LiveVideoInformationBarWrapper
