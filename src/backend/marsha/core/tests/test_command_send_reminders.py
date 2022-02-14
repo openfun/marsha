@@ -17,6 +17,9 @@ from ..defaults import IDLE, RAW, RUNNING
 from ..factories import LiveRegistrationFactory, VideoFactory
 
 
+# pylint: disable=too-many-lines
+
+
 class SendRemindersTest(TestCase):
     """Test send_reminders command."""
 
@@ -125,6 +128,7 @@ class SendRemindersTest(TestCase):
         # LTI registration with other reminders sent
         lti_registration = LiveRegistrationFactory(
             consumer_site=video.playlist.consumer_site,
+            created_on=self.date_past,
             email="chantal@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
@@ -161,10 +165,26 @@ class SendRemindersTest(TestCase):
             f"video {public_registration.video.id} step {settings.REMINDER_IS_STARTED}",
             out.getvalue(),
         )
+
         self.assertIn(
             f"Sending email for liveregistration {lti_registration.id} for "
             f"video {lti_registration.video.id} step {settings.REMINDER_IS_STARTED}",
             out.getvalue(),
+        )
+        # join content of both mails to avoid order problem
+        mails_content = " ".join(mail.outbox[0].body.split()) + " ".join(
+            mail.outbox[1].body.split()
+        )
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
+            f"{lti_registration.get_generate_salted_hmac()}]",
+            mails_content,
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
+            f"{public_registration.get_generate_salted_hmac()}]",
+            mails_content,
         )
 
         public_registration.refresh_from_db()
@@ -322,6 +342,18 @@ class SendRemindersTest(TestCase):
         self.assertEqual(
             mail.outbox[1].subject,
             "Live starts in less than 5 minutes",
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
+            f"{lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
+            f"{public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
         )
 
         self.assertIn(
@@ -502,6 +534,17 @@ class SendRemindersTest(TestCase):
         self.assertEqual(
             mail.outbox[1].subject,
             "Live starts in less than 3 hours",
+        )
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
+            f"{public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
+            f"{lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
             f"Sending email for liveregistration {public_registration.id} for video "
@@ -705,6 +748,18 @@ class SendRemindersTest(TestCase):
         self.assertEqual(
             mail.outbox[1].subject,
             "Live starts in less than 3 days",
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
+            f"{lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
+            f"{public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(

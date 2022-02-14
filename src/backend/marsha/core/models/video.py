@@ -3,8 +3,11 @@ import secrets
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.sites.models import Site
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.functional import lazy
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from safedelete import HARD_DELETE_NOCASCADE
 
 from ..defaults import DELETED, HARVESTED, IDLE, LIVE_CHOICES, LIVE_TYPE_CHOICES
+from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
@@ -485,6 +489,11 @@ class LiveRegistration(BaseModel):
     multiple times as it's a data that can be changed in the LMS.
     """
 
+    # pylint: disable=no-method-argument
+    def set_random_key_access():
+        """Generates a random string"""
+        return get_random_string(length=50)
+
     RESOURCE_NAME = "liveregistrations"
 
     anonymous_id = models.UUIDField(blank=True, db_index=True, null=True)
@@ -514,6 +523,14 @@ class LiveRegistration(BaseModel):
         default=False,
         verbose_name=_("is the user registered"),
         help_text=_("Is the user registered?"),
+    )
+
+    key_access = models.CharField(
+        blank=False,
+        default=set_random_key_access,
+        help_text=_("Field to build url with encryption to target the record"),
+        max_length=50,
+        null=False,
     )
 
     live_attendance = models.JSONField(
@@ -627,6 +644,17 @@ class LiveRegistration(BaseModel):
         else:
             self.reminders = [step]
         self.save()
+
+    def get_generate_salted_hmac(self):
+        """Generates key used to send emails."""
+        return generate_salted_hmac(settings.REMINDERS_SECRET, self.key_access)
+
+    def generate_cancel_reminder_url(self):
+        """Returns url to not receive reminders anymore."""
+        return f"//{Site.objects.get_current()}" + reverse(
+            "reminders_cancel",
+            kwargs={"pk": self.pk, "key": self.get_generate_salted_hmac()},
+        )
 
 
 class LivePairingManager(models.Manager):

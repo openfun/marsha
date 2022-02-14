@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add a view to cancel reminder mails, link added in the footer of mails
+
 ## [4.0.0-beta.1] - 2022-02-15
 
 ### Added

@@ -13,6 +13,8 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError as DjangoValidationError,
 )
+from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -36,7 +38,7 @@ from .lti.utils import (
     get_or_create_resource,
     get_selectable_resources,
 )
-from .models import Document, Playlist, Video
+from .models import Document, LiveRegistration, Playlist, Video
 from .models.account import NONE, LTIPassport
 from .serializers import (
     DocumentSelectLTISerializer,
@@ -732,3 +734,22 @@ class LTIRespondView(TemplateResponseMixin, View):
         return self.render_to_response(
             {"form_action": content_item_return_url, "form_data": lti_parameters}
         )
+
+
+class RemindersCancelView(TemplateResponseMixin, View):
+    """
+    View to cancel reminders by supplying the key and the pk of a liveregistration
+    """
+
+    template_name = "core/reminder_unregister.html"
+
+    def get(self, request, *args, **kwargs):
+        """Set should_send_reminders to False if link to unsubscribe is recognized."""
+        if "pk" in kwargs and "key" in kwargs:
+            liveregistration = get_object_or_404(LiveRegistration, pk=kwargs["pk"])
+            if liveregistration.get_generate_salted_hmac() == kwargs["key"]:
+                liveregistration.should_send_reminders = False
+                liveregistration.save()
+                return self.render_to_response({"video": liveregistration.video})
+
+        raise Http404
