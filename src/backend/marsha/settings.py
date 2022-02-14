@@ -405,6 +405,7 @@ class Base(Configuration):
             },
         }
     )
+    REMINDERS_SECRET = values.Value()
 
     # pylint: disable=invalid-name
     @property

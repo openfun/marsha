@@ -131,11 +131,12 @@ class LiveRegistrationViewSet(
 
     def perform_create(self, serializer):
         """Overrides perform_create to send the mail and catch error if needed"""
-        super().perform_create(serializer)
+        liveregistration = serializer.save()
         try:
-            video = Video.objects.get(id=serializer.validated_data["video_id"])
+            video = Video.objects.get(id=liveregistration.video_id)
             template_vars = {
-                "email": serializer.validated_data["email"],
+                "cancel_reminder_url": liveregistration.generate_cancel_reminder_url(),
+                "email": liveregistration.email,
                 "username": serializer.validated_data.get("username", ""),
                 "time_zone": settings.TIME_ZONE,
                 "video": video,
@@ -146,15 +147,13 @@ class LiveRegistrationViewSet(
                 f'{_("Registration for ")}{video.title}',
                 msg_plain,
                 settings.EMAIL_FROM,
-                [serializer.validated_data["email"]],
+                [liveregistration.email],
                 html_message=msg_html,
                 fail_silently=False,
             )
         except smtplib.SMTPException as exception:
             # no exception raised as user can't sometimes change his mail,
-            logger.warning(
-                "registration mail %s not send", serializer.validated_data["email"]
-            )
+            logger.warning("registration mail %s not send", liveregistration.email)
             capture_exception(exception)
 
     @action(detail=False, methods=["post"])

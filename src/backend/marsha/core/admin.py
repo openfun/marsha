@@ -3,6 +3,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.contrib.auth.models import Group
+from django.contrib.sites.admin import SiteAdmin
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -166,6 +168,7 @@ admin_site.register(waffle_admin.Flag, waffle_admin.FlagAdmin)
 admin_site.register(waffle_admin.Sample, waffle_admin.SampleAdmin)
 admin_site.register(waffle_admin.Switch, waffle_admin.SwitchAdmin)
 admin_site.register(Group)
+admin_site.register(Site, SiteAdmin)
 admin.autodiscover()
 
 

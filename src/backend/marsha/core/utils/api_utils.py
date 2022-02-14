@@ -3,6 +3,7 @@ import hashlib
 import hmac
 
 from django.conf import settings
+from django.utils.crypto import salted_hmac
 
 
 def validate_signature(signature, message):
@@ -49,3 +50,8 @@ def generate_hash(secret, message):
     return hmac.new(
         secret.encode("utf-8"), msg=message, digestmod=hashlib.sha256
     ).hexdigest()
+
+
+def generate_salted_hmac(secret, key):
+    """Generate a salted_hmac with secret and key"""
+    return salted_hmac(secret, key, algorithm="sha256").hexdigest()

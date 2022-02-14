@@ -27,6 +27,7 @@ from marsha.core.views import (
     DocumentView,
     LTIRespondView,
     LTISelectView,
+    RemindersCancelView,
     SiteView,
     VideoView,
 )
@@ -76,6 +77,11 @@ urlpatterns = [
         name="schema",
     ),
     path("api/", include(router.urls)),
+    path(
+        "reminders/cancel/<str:pk>/<str:key>",
+        RemindersCancelView.as_view(),
+        name="reminders_cancel",
+    ),
     re_path(
         r"^xapi/(?P<resource>video|document)/$",
         XAPIStatementView.as_view(),
