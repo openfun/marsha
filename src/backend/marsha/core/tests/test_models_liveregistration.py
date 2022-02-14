@@ -411,3 +411,35 @@ class LiveRegistrationModelsTestCase(TestCase):
             video=video,
         )
         self.assertEqual(LiveRegistration.objects.count(), 1)
+
+    def test_models_liveregistration_key_access(
+        self,
+    ):
+        """Field key_access has a value added on save that doesn't change on update"""
+        live_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            video=VideoFactory(),
+        )
+        key_access = live_registration.key_access
+        # random string has 50 chars
+        self.assertEqual(len(live_registration.key_access), 50)
+        # change value of a field and save
+        live_registration.should_send_reminders = False
+        live_registration.save()
+        live_registration.refresh_from_db()
+        # key_access hasn't change
+        self.assertEqual(key_access, live_registration.key_access)
+
+    def test_models_liveregistration_two_key_access(
+        self,
+    ):
+        """Field key_access is not always the same default string."""
+        live_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            video=VideoFactory(),
+        )
+        live_registration2 = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            video=VideoFactory(),
+        )
+        self.assertNotEqual(live_registration.key_access, live_registration2.key_access)
