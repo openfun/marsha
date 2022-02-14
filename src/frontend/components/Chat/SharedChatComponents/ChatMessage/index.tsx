@@ -31,9 +31,6 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
     () => (
       <Box
         background="bg-marsha"
-        margin={{
-          left: '32px',
-        }}
         pad="5px"
         round="6px"
         title={intl.formatMessage(messages.sentAt, {
