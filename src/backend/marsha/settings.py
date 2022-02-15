@@ -98,6 +98,7 @@ class Base(Configuration):
     X_FRAME_OPTIONS = "DENY"
     SECURE_REFERRER_POLICY = "same-origin"
     SILENCED_SYSTEM_CHECKS = values.ListValue([])
+    CSRF_TRUSTED_ORIGINS = values.ListValue([])
 
     # Application definition
 

@@ -40,6 +40,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   chat
 - settings DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE as fallback value when
   launch_presentation_locale missing in the LTI request
+- allow to configure CSRF_TRUSTED_ORIGINS django setting
 
 ### Changed
 
