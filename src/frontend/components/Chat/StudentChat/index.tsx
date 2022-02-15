@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box, Spinner } from 'grommet';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -11,6 +11,9 @@ import { converse } from 'utils/window';
 
 export const StudentChat = () => {
   const displayName = useChatItemState((state) => state.displayName);
+  const hasReceivedMessageHistory = useChatItemState(
+    (state) => state.hasReceivedMessageHistory,
+  );
   const [overlay, setOverlay] = useState(false);
   const intl = useIntl();
 
@@ -38,7 +41,13 @@ export const StudentChat = () => {
         <InputDisplayNameOverlay setOverlay={setOverlay} />
       ) : (
         <Box direction="column" fill>
-          <ChatConversationDisplayer />
+          {!hasReceivedMessageHistory ? (
+            <Box align="center" fill justify="center">
+              <Spinner size="large" />
+            </Box>
+          ) : (
+            <ChatConversationDisplayer />
+          )}
           <Box margin="10px">
             {displayName ? (
               <InputBar
@@ -49,7 +58,10 @@ export const StudentChat = () => {
                 )}
               />
             ) : (
-              <JoinChatButton handleClick={handleJoinChatButton} />
+              <JoinChatButton
+                disabled={!hasReceivedMessageHistory}
+                handleClick={handleJoinChatButton}
+              />
             )}
           </Box>
         </Box>
