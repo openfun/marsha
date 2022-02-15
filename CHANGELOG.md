@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.1] - 2022-02-15
+
 ### Added
 
 - Add model and API endpoints to manage a shared live media
@@ -1009,7 +1011,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v3.27.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.1...master
+[4.0.0-beta.1]: https://github.com/openfun/marsha/compare/v3.27.0...v4.0.0-beta.1
 [3.27.0]: https://github.com/openfun/marsha/compare/v3.26.0...v3.27.0
 [3.26.0]: https://github.com/openfun/marsha/compare/v3.25.0...v3.26.0
 [3.25.0]: https://github.com/openfun/marsha/compare/v3.24.1...v3.25.0
