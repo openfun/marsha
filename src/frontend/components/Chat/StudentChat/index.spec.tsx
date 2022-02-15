@@ -35,25 +35,38 @@ mockConverse.mockImplementation(
 );
 
 describe('<StudentChat />', () => {
-  it('connects an anonymous user and sends a message.', async () => {
-    jest.useFakeTimers();
+  it("doesn't receive history messages and clicks on the join button.", async () => {
     render(wrapInIntlProvider(<StudentChat />));
-    act(() => {
-      useChatItemState.getState().setHasReceivedMessageHistory(true);
-    });
+    // If no set, hasReceivedMessageHistory default value is false
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
     });
-    await act(async () => {
+    expect(joinChatButton).toBeDisabled();
+    act(() => {
+      userEvent.click(joinChatButton);
+    });
+    expect(screen.queryByRole('textbox')).toBeNull();
+  });
+
+  it('successfully connects an anonymous user and sends a message.', async () => {
+    render(wrapInIntlProvider(<StudentChat />));
+    const joinChatButton = screen.getByRole('button', {
+      name: 'Join the chat',
+    });
+    expect(joinChatButton).toBeDisabled();
+    act(() => {
+      useChatItemState.getState().setHasReceivedMessageHistory(true);
+    });
+
+    act(() => {
       userEvent.click(joinChatButton);
     });
     const textBoxDisplayName = screen.getByRole('textbox');
     const buttonSendDisplayName = screen.getByRole('button');
     userEvent.type(textBoxDisplayName, 'John Doe');
-    await act(async () => {
+    act(() => {
       userEvent.click(buttonSendDisplayName);
     });
-    jest.advanceTimersByTime(1000);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
       1,
       'John Doe',
@@ -64,7 +77,7 @@ describe('<StudentChat />', () => {
     const sendChatButton = screen.getByRole('button');
     const textboxChatInput = screen.getByRole('textbox');
     userEvent.type(textboxChatInput, 'This is an example message.');
-    await act(async () => {
+    act(() => {
       userEvent.click(sendChatButton);
     });
     expect(converse.sendMessage).toHaveBeenNthCalledWith(
