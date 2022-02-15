@@ -476,6 +476,31 @@ class LTITestCase(TestCase):
         lti = LTI(request, resource_id)
         self.assertEqual(lti.launch_presentation_locale, "en")
 
+    @override_settings(DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE="fr")
+    def test_lti_launch_presentation_locale_fallback_settings(self):
+        """Fallback on defined DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE setting
+        if property is missing."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "13245",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+            "tool_consumer_instance_name": "ufr",
+            "context_title": "mathematics",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            f"/lti/videos/{resource_id}",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver/lti-video/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.launch_presentation_locale, "fr")
+
     def test_lti_launch_presentation_locale(self):
         """Return value from launch_presentation_locale property when present."""
         ConsumerSiteLTIPassportFactory(

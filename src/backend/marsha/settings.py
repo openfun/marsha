@@ -234,6 +234,7 @@ class Base(Configuration):
     USE_TZ = True
 
     REACT_LOCALES = values.ListValue(["en_US", "es_ES", "fr_FR", "fr_CA"])
+    DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE = values.Value("en")
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
     STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
