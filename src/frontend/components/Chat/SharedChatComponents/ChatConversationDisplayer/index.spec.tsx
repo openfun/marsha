@@ -4,8 +4,6 @@ import { DateTime } from 'luxon';
 import React from 'react';
 
 import { presenceType, useChatItemState } from 'data/stores/useChatItemsStore';
-import { HISTORY_MESSAGES_TIMEOUT_IN_MS } from 'default/chat';
-import { report } from 'utils/errors/report';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { theme } from 'utils/theme/theme';
@@ -20,15 +18,10 @@ jest.mock('utils/errors/report', () => ({
 
 describe('<ChatConversationDisplayer />', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
     jest.resetAllMocks();
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  it('retrieves correctly message history and new presences.', () => {
+  it('displays correctly message history and new presences.', () => {
     render(wrapInIntlProvider(<ChatConversationDisplayer />));
 
     for (let i = 0; i < 5; i++) {
@@ -51,22 +44,6 @@ describe('<ChatConversationDisplayer />', () => {
     }
 
     for (let i = 0; i < 5; i++) {
-      expect(screen.queryByText(`(12:1${i})`)).not.toBeInTheDocument();
-      expect(screen.queryByText(`John Doe n°${i}`)).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(`This is example message n°${i}`),
-      ).not.toBeInTheDocument();
-    }
-    expect(
-      screen.queryByText('John Doe n°1 has joined'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText('John Doe n°2 has joined'),
-    ).not.toBeInTheDocument();
-
-    act(() => useChatItemState.getState().setHasReceivedMessageHistory(true));
-
-    for (let i = 0; i < 5; i++) {
       screen.getByText(`(12:1${i})`);
       screen.getByText(`John Doe n°${i}`);
       screen.getByText(`This is example message n°${i}`);
@@ -75,28 +52,10 @@ describe('<ChatConversationDisplayer />', () => {
     screen.queryByText('John Doe n°2 has joined');
   });
 
-  it('is unable to retrieve message history.', async () => {
-    render(wrapInIntlProvider(<ChatConversationDisplayer />));
-
-    await act(async () => {
-      jest.advanceTimersByTime(HISTORY_MESSAGES_TIMEOUT_IN_MS);
-    });
-
-    expect(report).toHaveBeenNthCalledWith(
-      1,
-      'Unable to retrieve message history.',
-    );
-    expect(report).toHaveBeenCalledTimes(1);
-  });
-
   it('scrolls down to bottom, when scroll bar is previously set to bottom.', async () => {
     render(wrapInIntlProvider(<ChatConversationDisplayer />));
 
-    expect(mockScrollTo).toHaveBeenCalledTimes(0);
-
-    act(() => useChatItemState.getState().setHasReceivedMessageHistory(true));
-
-    expect(mockScrollTo).toHaveBeenCalledTimes(2);
+    expect(mockScrollTo).toHaveBeenCalledTimes(1);
 
     for (let i = 0; i < 5; i++) {
       act(() =>
@@ -107,7 +66,7 @@ describe('<ChatConversationDisplayer />', () => {
         }),
       );
     }
-    expect(mockScrollTo).toHaveBeenCalledTimes(7);
+    expect(mockScrollTo).toHaveBeenCalledTimes(6);
   });
 
   it('renders components with messages and presences and compares it with previous render.', async () => {
@@ -128,8 +87,6 @@ describe('<ChatConversationDisplayer />', () => {
         }),
       );
     }
-
-    act(() => useChatItemState.getState().setHasReceivedMessageHistory(true));
 
     act(() =>
       useChatItemState.getState().addPresence({
