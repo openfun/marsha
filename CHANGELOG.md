@@ -38,6 +38,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Management command sending reminders for scheduled webinars
 - Implement a way to address prosody controls on the nickname entered in the 
   chat
+- settings DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE as fallback value when
+  launch_presentation_locale missing in the LTI request
 
 ### Changed
 
