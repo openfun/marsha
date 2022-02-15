@@ -307,10 +307,14 @@ class LTI:
         Returns
         -------
         string
-            The locale present in launch_presentation_locale or fallback to en
+            The locale present in launch_presentation_locale or fallback to the setting
+            DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE
 
         """
-        return self.request.POST.get("launch_presentation_locale", "en")
+        return self.request.POST.get(
+            "launch_presentation_locale",
+            settings.DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE,
+        )
 
     @property
     def username(self):
