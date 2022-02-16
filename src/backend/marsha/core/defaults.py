@@ -58,3 +58,4 @@ LIVE_TYPE_CHOICES = ((RAW, _("raw")), (JITSI, _("jitsi")))
 # FLAGS
 SENTRY = "sentry"
 BBB = "BBB"
+LIVE_RAW = "live_raw"

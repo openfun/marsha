@@ -97,7 +97,7 @@ class MeetingLTIViewTestCase(TestCase):
         )
         self.assertEqual(
             context.get("flags"),
-            {"BBB": True, "sentry": False},
+            {"BBB": True, "live_raw": False, "sentry": False},
         )
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +

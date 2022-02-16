@@ -31,7 +31,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import BBB, SENTRY
+from .defaults import BBB, LIVE_RAW, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -81,6 +81,7 @@ def _get_base_app_data():
         "flags": {
             SENTRY: switch_is_active(SENTRY),
             BBB: settings.BBB_ENABLED,
+            LIVE_RAW: settings.LIVE_RAW_ENABLED,
         },
         "release": settings.RELEASE,
         "sentry_dsn": settings.SENTRY_DSN,
@@ -337,6 +338,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "flags": {
                         SENTRY: switch_is_active(SENTRY),
                         BBB: settings.BBB_ENABLED,
+                        LIVE_RAW: settings.LIVE_RAW_ENABLED,
                     },
                     "resource": self.serializer_class(
                         resource,

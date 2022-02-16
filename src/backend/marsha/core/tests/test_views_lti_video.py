@@ -148,7 +148,9 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
-        self.assertEqual(context.get("flags"), {"BBB": False, "sentry": True})
+        self.assertEqual(
+            context.get("flags"), {"BBB": False, "live_raw": False, "sentry": True}
+        )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -1371,6 +1373,7 @@ class VideoLTIViewTestCase(TestCase):
                 "environment": "test",
                 "flags": {
                     "BBB": False,
+                    "live_raw": False,
                     "sentry": True,
                 },
                 "frontend": "LTI",
