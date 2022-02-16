@@ -273,6 +273,9 @@ class Base(Configuration):
     BBB_API_ENDPOINT = values.Value()
     BBB_API_SECRET = values.Value(None)
 
+    # LIVE_RAW
+    LIVE_RAW_ENABLED = values.BooleanValue(False)
+
     # Cloud Front key pair for signed urls
     CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
     CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
