@@ -74,6 +74,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Upgrade to Django 4
 - Integrate live advertisement in live layout
 - Disable jitsi deeplinking
+- Update live layout for teacher
 
 ### Removed
 

@@ -1,11 +1,12 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 
 import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
+
 import { DashboardVideoLive } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -14,23 +15,26 @@ jest.mock('data/appData', () => ({
 }));
 jest.mock(
   'components/DashboardVideoLiveRaw',
-  () => (props: { video: Video }) => <span title={props.video.id} />,
+  () => (props: { video: Video }) =>
+    <span title={props.video.id}>live raw</span>,
 );
 
 let mockCanShowStartButton = false;
+const mockDashboardVideoLiveJitsi = (props: {
+  video: Video;
+  setCanShowStartButton: (canShowStartButton: boolean) => void;
+}) => {
+  useEffect(() => {
+    if (mockCanShowStartButton) {
+      props.setCanShowStartButton(true);
+    }
+  }, [mockCanShowStartButton]);
+
+  return <span title={props.video.id}>jitsi</span>;
+};
 jest.mock(
   'components/DashboardVideoLiveJitsi',
-  () =>
-    (props: {
-      video: Video;
-      setCanShowStartButton: (canShowStartButton: boolean) => void;
-    }) => {
-      if (mockCanShowStartButton) {
-        props.setCanShowStartButton(true);
-      }
-
-      return <span title={props.video.id}>jitsi</span>;
-    },
+  () => mockDashboardVideoLiveJitsi,
 );
 
 jest.mock('components/DashboardVideoLivePairing', () => ({
@@ -76,7 +80,7 @@ describe('components/DashboardVideoLive', () => {
     live_type: LiveModeType.RAW,
   });
 
-  it('shows the start and jitsi button when the status is IDLE', async () => {
+  it('shows the start and raw button when the status is IDLE', async () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -90,38 +94,9 @@ describe('components/DashboardVideoLive', () => {
     );
 
     await screen.findByRole('button', { name: /start streaming/i });
-    screen.getByRole('button', { name: /end live/i });
-    screen.getByRole('button', { name: /Create a webinar/i });
   });
 
-  it('hides the start button when status is IDLE and live type is JITSI but user not in conference', async () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{
-                ...video,
-                live_state: liveState.IDLE,
-                live_type: LiveModeType.JITSI,
-              }}
-            />
-          </Suspense>,
-        ),
-      ),
-    );
-
-    expect(
-      screen.queryByRole('button', {
-        name: /Only moderators can start a live/i,
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Launch Jitsi LiveStream/i }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('shows the start button when status is IDLE, live_type is JITSI and user in the conference', async () => {
+  it('shows alert to join the room', async () => {
     const { rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -138,14 +113,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    expect(
-      screen.queryByRole('button', {
-        name: /Only moderators can start a live/i,
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Launch Jitsi LiveStream/i }),
-    ).not.toBeInTheDocument();
+    await screen.findByText('Join the room before start streaming');
 
     mockCanShowStartButton = true;
     rerender(
@@ -164,12 +132,10 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    await screen.findByRole('button', {
-      name: /Only moderators can start a live/i,
-    });
+    await screen.findByText('Only the admin can administrate the live');
   });
 
-  it('shows the live and stop button when the status is RUNNING', () => {
+  it('shows the pause button when the status is RUNNING', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -182,9 +148,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    screen.getByRole('button', { name: /show chat only/i });
-    screen.getByRole('button', { name: /show live/i });
-    screen.getByRole('button', { name: /pause ⏸/i });
+    screen.getByRole('button', { name: 'Pause live' });
   });
 
   it('shows the scheduling form when the status is IDLE', () => {
@@ -239,36 +203,6 @@ describe('components/DashboardVideoLive', () => {
         cleanup();
       }
     }
-  });
-
-  it("doesn't show the scheduling form when the status is null", () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive video={{ ...video, live_state: null }} />
-          </Suspense>,
-        ),
-      ),
-    );
-    expect(screen.queryByRole('textbox')).toEqual(null);
-    expect(
-      screen.queryByRole('heading', { name: /schedule a webinar/i }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', { name: /title/i }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', {
-        name: /description/i,
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole(/starting date and time/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /submit/i }),
-    ).not.toBeInTheDocument();
   });
 
   it("doesn't show the scheduling form when the status is IDLE and starting_at date is past", () => {

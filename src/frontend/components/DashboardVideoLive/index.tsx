@@ -1,64 +1,39 @@
-import { Box, Heading, Text } from 'grommet';
-import React, { lazy, useState } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { Box } from 'grommet';
+import React, { Fragment, lazy, useEffect, useState } from 'react';
 
-import { DashboardVideoLiveEndButton } from 'components/DashboardVideoLiveEndButton';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
-import { DashboardVideoLiveStartButton } from 'components/DashboardVideoLiveStartButton';
 import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
-import { DashboardVideoLiveConfigureButton } from 'components/DashboardVideoLiveConfigureButton';
+import { LiveVideoLayout } from 'components/LiveVideoLayout';
+import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { ScheduledVideoForm } from 'components/ScheduledVideoForm';
+import { TeacherLiveLifecycleControls } from 'components/TeacherLiveLifecycleControls';
+import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
+import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from 'data/stores/useLivePanelState';
 import { Video, liveState, LiveModeType } from 'types/tracks';
+import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
+import { appData } from 'data/appData';
+import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
 
-const DashboardVideoLiveRaw = lazy(
-  () => import('components/DashboardVideoLiveRaw'),
+const TeacherLiveRawWrapper = lazy(
+  () => import('components/TeacherLiveRawWrapper'),
 );
 const DashboardVideoLiveJitsi = lazy(
   () => import('components/DashboardVideoLiveJitsi'),
 );
-
-const messages = defineMessages({
-  raw: {
-    defaultMessage: 'Streaming link',
-    description: 'DashboardVideoLive main title.',
-    id: 'components.DashboardVideoLive.raw',
-  },
-  jitsi: {
-    defaultMessage: 'Webinar',
-    description: 'DashboardVideoLive jitsi title.',
-    id: 'components.DashboardVideoLive.jitsi',
-  },
-  url: {
-    defaultMessage: 'url',
-    description: 'Video url streaming.',
-    id: 'components.DashboardVideoLive.url',
-  },
-  liveStarting: {
-    defaultMessage: 'Live streaming is starting. This can take a few minutes.',
-    description: 'Helptext explainig to wait until the live is ready.',
-    id: 'components.DashboardVideoLive.liveStarting',
-  },
-  liveStopped: {
-    defaultMessage:
-      'Live streaming is ended. The process to transform the live to VOD has started. You can close the window and come back later.',
-    description:
-      'Helptext explaining that the live is ended and the live to VOD process has started.',
-    id: 'components.DashboardVideoLive.liveStopped',
-  },
-  liveStopping: {
-    defaultMessage:
-      'Pause live streaming, please wait a few moments to be able to resume it.',
-    description:
-      'Helptext explaining that the live is stopping and will be paused in few moments.',
-    id: 'components.DashboardVideoLive.liveStopping',
-  },
-});
 
 interface DashboardVideoLiveProps {
   video: Video;
 }
 
 export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
+  const { isPanelVisible, configPanel } = useLivePanelState((state) => ({
+    isPanelVisible: state.isPanelVisible,
+    configPanel: state.setAvailableItems,
+  }));
   const [canStartLive, setCanStartLive] = useState(
     video.live_type === LiveModeType.RAW,
   );
@@ -66,69 +41,79 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     video.live_type === LiveModeType.RAW,
   );
 
+  useEffect(() => {
+    const availableItems: LivePanelItem[] = [];
+    let currentItem;
+    if (video.xmpp !== null) {
+      availableItems.push(LivePanelItem.CHAT);
+      availableItems.push(LivePanelItem.VIEWERS_LIST);
+      currentItem = LivePanelItem.CHAT;
+    }
+    configPanel(availableItems, currentItem);
+  }, [video, configPanel]);
+
+  //  When the live is started,
+  //  XMPP is ready to be used and therefore we can show chat and viewers buttons
+  const isLiveStarted =
+    video.live_state !== undefined && video.live_state !== liveState.IDLE;
+
   return (
-    <Box>
-      <Heading level={2}>
-        <FormattedMessage {...messages[video.live_type!]} />
-      </Heading>
-      {video.live_type === LiveModeType.RAW && (
-        <DashboardVideoLiveRaw video={video} />
-      )}
-      {video.live_type === LiveModeType.JITSI && (
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanShowStartButton={setCanShowStartButton}
-          setCanStartLive={setCanStartLive}
-          isInstructor={true}
-        />
-      )}
-      <Box direction={'row'} justify={'center'} margin={'small'}>
-        {[liveState.IDLE, liveState.PAUSED].includes(video.live_state!) && (
-          <React.Fragment>
-            {video.live_type === LiveModeType.RAW && (
-              <DashboardVideoLiveConfigureButton
+    <LiveFeedbackProvider value={false}>
+      <Box>
+        <LiveVideoLayout
+          actionsElement={
+            <Fragment>
+              {isLiveStarted && <TeacherLiveControlBar video={video} />}
+              <TeacherLiveLifecycleControls
+                canStartStreaming={canShowStartButton}
+                hasRightToStart={canStartLive}
                 video={video}
-                type={LiveModeType.JITSI}
               />
-            )}
-            {canShowStartButton && (
-              <React.Fragment>
-                <DashboardVideoLiveEndButton video={video} />
-                <DashboardVideoLiveStartButton
+            </Fragment>
+          }
+          displayActionsElement
+          isPanelOpen={isPanelVisible}
+          liveTitleElement={
+            <TeacherLiveInfoBar title={video.title} startDate={null} />
+          }
+          mainElement={
+            <Fragment>
+              {video.live_type === LiveModeType.RAW && (
+                <TeacherLiveRawWrapper video={video} />
+              )}
+              {video.live_type === LiveModeType.JITSI && (
+                <DashboardVideoLiveJitsi
                   video={video}
-                  canStartLive={canStartLive}
+                  setCanShowStartButton={setCanShowStartButton}
+                  setCanStartLive={setCanStartLive}
+                  isInstructor={true}
                 />
-              </React.Fragment>
+              )}
+            </Fragment>
+          }
+          sideElement={<LiveVideoPanel video={video} />}
+        />
+
+        <Box direction={'row'} justify={'center'} margin={'small'}>
+          {appData.flags?.live_raw &&
+            video.live_state &&
+            [liveState.IDLE, liveState.PAUSED].includes(video.live_state) && (
+              <TeacherLiveTypeSwitch video={video} />
             )}
-          </React.Fragment>
+          {video.live_state === liveState.RUNNING && (
+            <DashboardVideoLiveRunning video={video} />
+          )}
+        </Box>
+
+        {video.live_state !== liveState.STOPPED && (
+          <Box direction={'row'} justify={'center'} margin={'small'}>
+            <DashboardVideoLivePairing video={video} />
+          </Box>
         )}
-        {video.live_state === liveState.STARTING && (
-          <Text>
-            <FormattedMessage {...messages.liveStarting} />
-          </Text>
-        )}
-        {video.live_state === liveState.RUNNING && (
-          <DashboardVideoLiveRunning video={video} />
-        )}
-        {video.live_state === liveState.STOPPED && (
-          <Text>
-            <FormattedMessage {...messages.liveStopped} />
-          </Text>
-        )}
-        {video.live_state === liveState.STOPPING && (
-          <Text>
-            <FormattedMessage {...messages.liveStopping} />
-          </Text>
+        {video.live_state === liveState.IDLE && (
+          <ScheduledVideoForm video={video} />
         )}
       </Box>
-      {video.live_state !== liveState.STOPPED && (
-        <Box direction={'row'} justify={'center'} margin={'small'}>
-          <DashboardVideoLivePairing video={video} />
-        </Box>
-      )}
-      {video.live_state === liveState.IDLE && (
-        <ScheduledVideoForm video={video} />
-      )}
-    </Box>
+    </LiveFeedbackProvider>
   );
 };
