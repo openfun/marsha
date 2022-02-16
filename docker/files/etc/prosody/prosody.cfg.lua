@@ -191,7 +191,7 @@ VirtualHost "prosody-app"
 
 ---Set up a MUC (multi-user chat) room server on conference.example.com:
 Component "conference.prosody" "muc"
-    modules_enabled = { "muc_mam", "token_verification", "token_affiliation" }
+    modules_enabled = { "muc_mam", "token_verification", "token_affiliation", "muc_moderation"}
     admins = { "admin@prosody-app" }
     restrict_room_creation = true
     muc_room_default_persistent = true

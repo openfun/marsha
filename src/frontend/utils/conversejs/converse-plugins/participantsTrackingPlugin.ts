@@ -38,9 +38,7 @@ const addParticipantsTrackingPlugin = () =>
                 const participantIsInstructor =
                   stanza
                     .getElementsByTagName('item')[0]
-                    .getAttribute('affiliation') === 'owner'
-                    ? true
-                    : false;
+                    .getAttribute('affiliation') === 'owner';
                 useParticipantsStore.getState().addParticipant({
                   isInstructor: participantIsInstructor,
                   isOnStage: false,

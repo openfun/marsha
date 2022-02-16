@@ -35,6 +35,7 @@ const addChatPlugin = (xmpp: XMPP) =>
       _converse.on('initialized', () => {
         _converse.connection.addHandler(
           (stanza: HTMLElement) => {
+            console.log(useChatItemState.getState().chatItems);
             switch (stanza.nodeName) {
               case StanzaType.MESSAGE:
                 switch (determineMessageType(stanza)) {
@@ -43,6 +44,9 @@ const addChatPlugin = (xmpp: XMPP) =>
                       // Non-nullity is already ensured by determineMessageType()
                       content:
                         stanza.getElementsByTagName('body')[0].textContent!,
+                      id: stanza
+                        .getElementsByTagName('stanza-id')[0]
+                        .getAttribute('id')!,
                       sender: getNameFromJID(stanza.getAttribute('from')!),
                       sentAt: DateTime.now(),
                     };
@@ -51,11 +55,18 @@ const addChatPlugin = (xmpp: XMPP) =>
                   case StanzaMessageType.HISTORY:
                     const historyMsgStanza =
                       stanza.getElementsByTagName('message')[0];
+                    const messageContent =
+                      historyMsgStanza.getElementsByTagName('body')[0]
+                        ? historyMsgStanza.getElementsByTagName('body')[0]
+                            .textContent!
+                        : historyMsgStanza.getElementsByTagName('reason')[0]
+                            .textContent!;
                     const historyMessage: ReceivedMessageType = {
                       // Non-nullity is already ensured by determineMessageType()
-                      content:
-                        historyMsgStanza.getElementsByTagName('body')[0]
-                          .textContent!,
+                      content: messageContent,
+                      id: stanza
+                        .getElementsByTagName('result')[0]
+                        .getAttribute('id')!,
                       sender: getNameFromJID(
                         historyMsgStanza.getAttribute('from')!,
                       ),
@@ -171,17 +182,28 @@ const determineMessageType = (msgStanza: HTMLElement): StanzaMessageType => {
   if (msgType && msgType === MessageType.GROUPCHAT) {
     const msgBody = msgStanza.getElementsByTagName('body')[0];
     const msgSubject = msgStanza.getElementsByTagName('subject')[0];
-    if (msgBody && msgBody.textContent && msgStanza.getAttribute('from')) {
+    const stanzaID = msgStanza.getElementsByTagName('stanza-id')[0];
+    if (
+      msgBody &&
+      msgBody.textContent &&
+      msgStanza.getAttribute('from') &&
+      stanzaID
+    ) {
       return StanzaMessageType.LIVE_MESSAGE;
     } else if (msgSubject) {
       return StanzaMessageType.SUBJECT;
     }
-  } else if (
-    forwardedMessage &&
-    forwardedMessage.textContent &&
-    forwardedMessage.getAttribute('from')
-  ) {
-    return StanzaMessageType.HISTORY;
+  } else if (forwardedMessage && forwardedMessage.getAttribute('from')) {
+    const result = msgStanza.getElementsByTagName('result')[0];
+
+    if (
+      result &&
+      result.getAttribute('id') &&
+      (forwardedMessage.textContent ||
+        forwardedMessage.getElementsByTagName('moderated')[0])
+    ) {
+      return StanzaMessageType.HISTORY;
+    }
   }
 
   return StanzaMessageType.UNRECOGNIZED;

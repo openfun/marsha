@@ -216,7 +216,7 @@ services:
       - "1080:1080"
 
   prosody-app:
-    image: fundocker/prosody
+    image: prosody:latest-test
     ports: 
       - 5222:5222
     volumes:

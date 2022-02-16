@@ -18,13 +18,18 @@ export const ChatMessageGroupItem = ({
       <Box
         margin={{
           vertical: '5px',
-          horizontal: '20px',
         }}
       >
-        <ChatMessageMetadatas
-          msgDatetime={firstMessage.sentAt}
-          msgSender={msgGroup.sender}
-        />
+        <Box
+          margin={{
+            horizontal: '20px',
+          }}
+        >
+          <ChatMessageMetadatas
+            msgDatetime={firstMessage.sentAt}
+            msgSender={msgGroup.sender}
+          />
+        </Box>
         <Box gap="5px">
           {msgGroup.messages.map((msg, index) => (
             <ChatMessage key={index} message={msg} />

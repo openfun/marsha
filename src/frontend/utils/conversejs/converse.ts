@@ -33,7 +33,7 @@ export const converseMounter = () => {
         idle_presence_timeout: 0,
         i18n: 'en',
         jid: xmpp.jid,
-        loglevel: 'error',
+        loglevel: 'debug',
         muc_history_max_stanzas: 0,
         muc_instant_rooms: false,
         nickname: anonymousNickname,

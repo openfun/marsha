@@ -5,12 +5,14 @@ import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'default/chat';
 
 export type ReceivedMessageType = {
   content: string;
+  id: string;
   sender: string;
   sentAt: DateTime;
 };
 
 export type ChatMessageType = {
   content: string;
+  id: string;
   sentAt: DateTime;
 };
 
@@ -52,6 +54,7 @@ type State = {
   chatItems: ChatItem[];
   addMessage: (newMessage: ReceivedMessageType) => void;
   addPresence: (newPresence: ChatPresenceType) => void;
+  moderateMessage: (msgId: string, reason: string) => void;
   displayName: string | null;
   setDisplayName: (displayName: string) => void;
 };
@@ -77,6 +80,7 @@ export const useChatItemState = create<State>((set) => ({
         ) {
           lastGroupMessage.messages.push({
             content: newReceivedMessage.content,
+            id: newReceivedMessage.id,
             sentAt: newReceivedMessage.sentAt,
           });
           return {
@@ -92,6 +96,7 @@ export const useChatItemState = create<State>((set) => ({
             messages: [
               {
                 content: newReceivedMessage.content,
+                id: newReceivedMessage.id,
                 sentAt: newReceivedMessage.sentAt,
               },
             ],
@@ -107,6 +112,12 @@ export const useChatItemState = create<State>((set) => ({
         presenceData: presence,
       }),
     })),
+  moderateMessage: (msgId, reason) =>
+    set((state: State) => {
+      const groupMessages = state.chatItems.filter(
+        (item) => item.type === chatItemType.GROUP_MESSAGE,
+      );
+    }),
   displayName: null,
   setDisplayName: (displayName) => set({ displayName }),
 }));
