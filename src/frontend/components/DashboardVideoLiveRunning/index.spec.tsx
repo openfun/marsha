@@ -1,90 +1,42 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { CHAT_ROUTE } from '../Chat/route';
-import { PLAYER_ROUTE } from '../routes';
-import { modelName } from '../../types/models';
-import { LiveModeType, Video } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
+import { useJoinParticipant } from 'data/stores/useJoinParticipant';
+import { LiveModeType } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+
 import { DashboardVideoLiveRunning } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
 
-jest.mock('../Chat', () => ({
-  Chat: (props: { video: Video; standalone?: boolean }) => (
-    <div>
-      <span title={props.video.id}>chat component</span>
-      <span>standalone: {props.standalone ? 'true' : 'false'}</span>
-    </div>
-  ),
-}));
+const video = videoMockFactory({ live_type: LiveModeType.JITSI });
 
-describe('<DashboardVideoLiveRunning />  displays "show live" and "show chat only" buttons', () => {
-  it('shows live', () => {
-    const video = videoMockFactory({
-      live_type: LiveModeType.RAW,
+describe('<DashboardVideoLiveRunning />', () => {
+  it('renders participants in the discussion', () => {
+    useJoinParticipant.setState({
+      participantsInDiscussion: [{ id: 'an_other_id', name: 'his name' }],
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveRunning video={video} />, [
-          {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
-          },
-        ]),
-      ),
-    );
+    render(wrapInIntlProvider(<DashboardVideoLiveRunning video={video} />));
 
-    const showLiveButton = screen.getByRole('button', { name: /show live/ });
-    screen.getByRole('button', { name: /show chat only/ });
-
-    fireEvent.click(showLiveButton);
-
-    screen.getByText('video player');
+    screen.getByText('his name');
+    screen.getByText('has joined the discussion.');
+    screen.getByRole('button', { name: 'kick out participant' });
   });
 
-  it('shows chat only', () => {
-    const video = videoMockFactory({
-      live_type: LiveModeType.RAW,
+  it('renders participants asking to join', () => {
+    useJoinParticipant.setState({
+      participantsAskingToJoin: [{ id: 'some_id', name: 'my name' }],
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveRunning video={video} />, [
-          {
-            path: CHAT_ROUTE(),
-            render: () => <span>chat component</span>,
-          },
-        ]),
-      ),
-    );
+    render(wrapInIntlProvider(<DashboardVideoLiveRunning video={video} />));
 
-    screen.getByRole('button', { name: /show live/ });
-    const showChatOnlyButton = screen.getByRole('button', {
-      name: /show chat only/i,
-    });
-
-    fireEvent.click(showChatOnlyButton);
-
-    screen.getByText('chat component');
-  });
-
-  it('shows chat directly during a jitsi live.', () => {
-    const video = videoMockFactory({
-      live_type: LiveModeType.JITSI,
-    });
-
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoLiveRunning video={video} />),
-      ),
-    );
-
-    screen.getByText('chat component');
+    screen.getByText('my name');
+    screen.getByText('is asking to join the discussion.');
+    screen.getByRole('button', { name: 'accept' });
+    screen.getByRole('button', { name: 'reject' });
   });
 });

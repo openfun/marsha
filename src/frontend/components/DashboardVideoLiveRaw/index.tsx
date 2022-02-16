@@ -1,11 +1,11 @@
 import ClipboardJS from 'clipboard';
-import { Box, Heading } from 'grommet';
+import { Box, Heading, Paragraph } from 'grommet';
 import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-import { Video } from '../../types/tracks';
+import { liveState, Video } from 'types/tracks';
 
 const messages = defineMessages({
   copied: {
@@ -28,6 +28,20 @@ const messages = defineMessages({
     description: 'Video key streaming.',
     id: 'components.DashboardVideoLiveRaw.streamKey',
   },
+  idlingTitle: {
+    defaultMessage:
+      'You are about to start a live using an external source provider.',
+    description:
+      'Title to inform user he is using raw mode and have to starts the live using an external tool.',
+    id: 'components.DashboardVideoLiveRaw.idlingTitle',
+  },
+  idlingDescription: {
+    defaultMessage:
+      'Start the live to access stream enpoint and configure your external tool with it.',
+    description:
+      'Description to inform user he is using raw mode and have to starts the live using an external tool.',
+    id: 'components.DashboardVideoLiveRaw.idlingDescription',
+  },
 });
 
 const IconBox = styled.span`
@@ -44,6 +58,8 @@ export interface DashboardVideoLiveRawProps {
 }
 
 const DashboardVideoLiveRaw = ({ video }: DashboardVideoLiveRawProps) => {
+  const intl = useIntl();
+
   useEffect(() => {
     const clipboard = new ClipboardJS('.copy');
     clipboard.on('success', (event) => {
@@ -59,8 +75,17 @@ const DashboardVideoLiveRaw = ({ video }: DashboardVideoLiveRawProps) => {
     return () => clipboard.destroy();
   }, []);
 
+  if (!video.live_state || video.live_state === liveState.IDLE) {
+    return (
+      <Box>
+        <Paragraph>{intl.formatMessage(messages.idlingTitle)}</Paragraph>
+        <Paragraph>{intl.formatMessage(messages.idlingDescription)}</Paragraph>
+      </Box>
+    );
+  }
+
   const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-  const endpoints = video.live_info.medialive!.input.endpoints.map(
+  const endpoints = video.live_info.medialive?.input.endpoints.map(
     (endpoint) => {
       const matches = endpoint.match(endpointIdentifier);
       if (matches) {
