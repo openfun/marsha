@@ -111,6 +111,7 @@ class MeetingServiceTestCase(TestCase):
             api_response,
         )
         self.assertEqual(meeting.started, True)
+        self.assertEqual(meeting.ended, False)
 
     @responses.activate
     def test_bbb_create_new_meeting_no_passwords(self):
@@ -291,6 +292,8 @@ class MeetingServiceTestCase(TestCase):
             },
             api_response,
         )
+        self.assertEqual(meeting.started, False)
+        self.assertEqual(meeting.ended, True)
 
     @responses.activate
     def test_bbb_end_attendee(self):

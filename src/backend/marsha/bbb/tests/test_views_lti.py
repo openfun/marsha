@@ -240,6 +240,7 @@ class MeetingLTIViewTestCase(TestCase):
                     "title": meeting.playlist.title,
                 },
                 "started": False,
+                "ended": False,
                 "title": meeting.title,
                 "welcome_text": meeting.welcome_text,
             },
