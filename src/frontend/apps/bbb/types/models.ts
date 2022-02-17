@@ -5,6 +5,7 @@ export interface Meeting extends Resource {
   title: string;
   lti_url: string;
   started: boolean;
+  ended: boolean;
   url: string;
   welcome_text: string;
   infos?: MeetingInfos;
