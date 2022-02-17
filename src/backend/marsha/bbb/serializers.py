@@ -24,6 +24,7 @@ class MeetingSerializer(serializers.ModelSerializer):
             "meeting_id",
             "welcome_text",
             "started",
+            "ended",
             "infos",
         )
         read_only_fields = (
@@ -32,6 +33,7 @@ class MeetingSerializer(serializers.ModelSerializer):
             "playlist",
             "meeting_id",
             "started",
+            "ended",
             "infos",
         )
 

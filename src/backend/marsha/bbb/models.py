@@ -99,13 +99,7 @@ class Meeting(BaseModel):
         null=True,
     )
     started = models.BooleanField(default=False)
-
-    started_on = models.DateTimeField(
-        verbose_name=_("started on"),
-        help_text=_("datetime at which the meeting was started."),
-        null=True,
-        blank=True,
-    )
+    ended = models.BooleanField(default=False)
 
     class Meta:
         """Options for the ``Meeting`` model."""

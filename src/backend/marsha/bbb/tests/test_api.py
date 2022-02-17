@@ -56,6 +56,7 @@ class MeetingAPITest(TestCase):
                 "lti_id": str(meeting.lti_id),
                 "title": meeting.title,
                 "started": False,
+                "ended": False,
                 "meeting_id": str(meeting.meeting_id),
                 "welcome_text": meeting.welcome_text,
                 "playlist": {
@@ -94,6 +95,7 @@ class MeetingAPITest(TestCase):
                 "lti_id": str(meeting.lti_id),
                 "title": meeting.title,
                 "started": False,
+                "ended": False,
                 "meeting_id": str(meeting.meeting_id),
                 "welcome_text": meeting.welcome_text,
                 "playlist": {
