@@ -11,7 +11,7 @@ import { Meeting } from 'apps/bbb/types/models';
 import DashboardMeeting from '.';
 
 let mockCanUpdate: boolean;
-let mockUserFullname: string;
+let mockUserFullname: string | undefined;
 jest.mock('data/appData', () => ({
   appData: {
     modelName: 'meetings',
@@ -38,9 +38,22 @@ jest.mock('apps/bbb/data/bbbAppData', () => ({
   },
 }));
 
-jest.mock('apps/bbb/DashboardMeetingStudent', () => () => (
-  <p>student dashboard</p>
-));
+jest.mock(
+  'apps/bbb/DashboardMeetingStudent',
+  () =>
+    (props: {
+      meeting: Meeting;
+      joinMeetingAction: () => void;
+      meetingEnded: () => void;
+    }) => {
+      return (
+        <div>
+          <p>student dashboard</p>
+          <button onClick={props.joinMeetingAction}>join</button>
+        </div>
+      );
+    },
+);
 
 jest.mock(
   'apps/bbb/DashboardMeetingInstructor',
@@ -59,9 +72,15 @@ jest.mock(
     },
 );
 
-jest.mock('apps/bbb/DashboardMeetingAskUsername', () => () => (
-  <p>form ask fullname</p>
-));
+jest.mock(
+  'apps/bbb/DashboardMeetingAskUsername',
+  () => (props: { onCancel: undefined }) => {
+    if (props.onCancel) {
+      return <p>form ask fullname with cancel</p>;
+    }
+    return <p>form ask fullname without cancel</p>;
+  },
+);
 
 jest.mock('apps/bbb/DashboardMeetingJoin', () => () => (
   <p>please click bbb url to join meeting</p>
@@ -111,7 +130,7 @@ describe('<DashboardMeeting />', () => {
     getByText('instructor dashboard');
   });
 
-  it('asks for fullname when joining a meeting', async () => {
+  it('asks for fullname when joining a meeting, cancellable for instructor', async () => {
     mockCanUpdate = true;
     const meeting = meetingMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
@@ -127,7 +146,27 @@ describe('<DashboardMeeting />', () => {
     );
     await act(async () => meetingDeferred.resolve(meeting));
     fireEvent.click(screen.getByText('join'));
-    await findByText('form ask fullname');
+    await findByText('form ask fullname with cancel');
+  });
+
+  it('asks for fullname when joining a meeting, not cancellable for student', async () => {
+    mockCanUpdate = false;
+    mockUserFullname = undefined;
+    const meeting = meetingMockFactory({ id: '1', started: false });
+    const queryClient = new QueryClient();
+    const meetingDeferred = new Deferred();
+    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+
+    const { findByText } = render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <DashboardMeeting />
+        </QueryClientProvider>,
+      ),
+    );
+    await act(async () => meetingDeferred.resolve(meeting));
+    fireEvent.click(screen.getByText('join'));
+    await findByText('form ask fullname without cancel');
   });
 
   it('uses appdata fullname when joining a meeting', async () => {
