@@ -13,7 +13,7 @@ describe('<DashboardMeetingJoin />', () => {
         <DashboardMeetingJoin href="https://example.com" onClick={onClick} />,
       ),
     );
-    getByText('Your browser is blocking popups.');
+    getByText('It seems like your browser is blocking popups.');
 
     const link = screen.getByRole('link', {
       name: /please click here to access meeting./i,
