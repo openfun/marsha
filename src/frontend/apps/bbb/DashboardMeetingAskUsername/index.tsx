@@ -49,7 +49,7 @@ const DashboardMeetingAskUsername = ({
           }}
         />
       </FormField>
-      <Box direction="row" justify="between" margin={{ top: 'medium' }}>
+      <Box direction="row" justify="center" margin={{ top: 'medium' }}>
         {onCancel && (
           <DashboardButton
             label={intl.formatMessage(messages.cancel)}
