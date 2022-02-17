@@ -66,11 +66,12 @@ class Command(BaseCommand):
 
                 # send email with the appropriate template and object
                 vars = {
-                    "cancel_reminder_url": liveregistration.generate_cancel_reminder_url(),
+                    "cancel_reminder_url": liveregistration.cancel_reminder_url,
                     "email": liveregistration.email,
                     "time_zone": settings.TIME_ZONE,
                     "username": liveregistration.username,
                     "video": liveregistration.video,
+                    "video_access_url": liveregistration.video_access_reminder_url,
                 }
                 if extra_vars:
                     vars = vars | extra_vars

@@ -11,7 +11,7 @@ from django.test import TestCase, override_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
-from ..factories import VideoFactory
+from ..factories import LiveRegistrationFactory, VideoFactory
 
 
 # We don't enforce arguments documentation in tests
@@ -290,3 +290,181 @@ class VideoPublicViewTestCase(TestCase):
         )
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(context.get("modelName"), "videos")
+
+    def test_video_accessible_from_mail(self):
+        """Validate the access to a lti ressource with email access."""
+        video = VideoFactory(is_public=False)
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            is_registered=True,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="5555",
+            video=video,
+        )
+
+        # Direct video access doesn't work without any params
+        response = self.client.get(f"/videos/{video.pk}")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+        self.assertIsNone(context.get("resource"))
+        self.assertEqual(context.get("state"), "error")
+        self.assertEqual(context.get("modelName"), "videos")
+
+        # now liveregistration params are added, direct access is possible
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key="
+            f"{liveregistration.get_generate_salted_hmac()}"
+        )
+        self.assertEqual(response.status_code, 200)
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "email": "sarah@openfun.fr",
+                "id": liveregistration.lti_user_id,
+                "username": liveregistration.username,
+            },
+        )
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(jwt_token.payload["context_id"], video.playlist.lti_id)
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(liveregistration.consumer_site.id)
+        )
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(context.get("frontend"), "LTI")
+        self.assertEqual(context.get("modelName"), "videos")
+
+    def test_video_ressource_public_accessible_from_mail(self):
+        """Validate the access to a public ressource with email access."""
+        # video can be no longer public, access is still accepted
+        video = VideoFactory(is_public=random.choice([True, False]))
+        public_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={public_registration.pk}&key="
+            f"{public_registration.get_generate_salted_hmac()}"
+        )
+        self.assertEqual(response.status_code, 200)
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "email": "sarah@test-fun-mooc.fr",
+                "anonymous_id": str(public_registration.anonymous_id),
+            },
+        )
+        self.assertEqual(jwt_token.payload["roles"], ["none"])
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertIsNone(jwt_token.payload.get("context_id"))
+        self.assertIsNone(jwt_token.payload.get("consumer_site"))
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(context.get("frontend"), "LTI")
+        self.assertEqual(context.get("modelName"), "videos")
+
+    def test_video_accessible_from_mail_wrong_key(self):
+        """Validate can't access to a lti ressource if the key is not correct."""
+        video = VideoFactory(is_public=False)
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            is_registered=True,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="5555",
+            video=video,
+        )
+
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key=wrongkey"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_video_accessible_public_from_mail_wrong_key(self):
+        """Validate can't access to a public ressource if the key is not correct."""
+        video = VideoFactory(is_public=True)
+        public_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={public_registration.pk}&key=wrongkey"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_video_accessible_lti_from_mail_wrong_video(self):
+        """Validate can't access to a lti ressource if the video is not
+        the one of the liveregistration."""
+        video = VideoFactory(is_public=True)
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            is_registered=True,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="5555",
+            video=VideoFactory(),
+        )
+
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key="
+            f"{liveregistration.get_generate_salted_hmac()}"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_video_accessible_public_from_mail_wrong_video(self):
+        """Validate can't access to a public ressource if the video is not
+        the one of the liveregistration."""
+        video = VideoFactory(is_public=True)
+        public_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=VideoFactory(is_public=True),
+        )
+
+        response = self.client.get(
+            f"/videos/{video.pk}?lrpk={public_registration.pk}&key="
+            f"{public_registration.get_generate_salted_hmac()}"
+        )
+        self.assertEqual(response.status_code, 404)

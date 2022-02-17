@@ -1,0 +1,16 @@
+<mj-section>
+    <mj-column width="100%">
+            <mj-button background-color="#e51a2d" color="#FFFFFF" href="{{video_access_url}}" padding="20px 0 0 0" font-weight="bold" font-size="16px">
+                    {% trans "Access the event" %}
+            </mj-button>
+    </mj-column>
+</mj-section>
+<mj-section background-color="#FFFFFF" padding="20px"></mj-section>
+
+<mj-section background-color="#F5f5f5">
+      <mj-column width="100%" padding="20px">
+        <mj-text align="center" color="#000000" font-size="13px" padding="4px 25px">
+        {% trans "Do not forward this email or share this link. It contains your personal code to access the event." %}
+        </mj-text>
+      </mj-column>
+</mj-section>

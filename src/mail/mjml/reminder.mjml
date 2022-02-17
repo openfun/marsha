@@ -8,13 +8,13 @@
       </mj-column>
     </mj-section>
     <mj-include path="./partial/video_description.mjml" />
-     <mj-section background-color="#FFFFFF" padding="30px 50px">
+     <mj-section background-color="#FFFFFF" padding="0px 50px">
       <mj-column width="100%">
         <mj-include path="./partial/hello.mjml" />
         <mj-text align="center" font-size="18px" padding="20px 50px">
             {% trans "Our event" %} "{{video.title}}" {% trans "will start" %} {{reminder_timer_title}}. 
         </mj-text> 
-        <mj-text align="center" font-size="18px" padding="20px 50px">{% trans "Get ready to join us."%}</mj-text>
+        <mj-text align="center" font-size="18px" padding="10px 50px">{% trans "Get ready to join us."%}</mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./partial/footer.mjml" />

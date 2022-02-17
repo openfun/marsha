@@ -69,7 +69,6 @@ class LiveRegistrationViewSet(
         return (
             user.token.payload
             and user.token.payload.get("roles") == [NONE]
-            and user.token.payload.get("user") is None
             and user.token.payload.get("context_id") is None
             and user.token.payload.get("consumer_site") is None
         )
@@ -156,11 +155,12 @@ class LiveRegistrationViewSet(
         try:
             video = Video.objects.get(id=liveregistration.video_id)
             template_vars = {
-                "cancel_reminder_url": liveregistration.generate_cancel_reminder_url(),
+                "cancel_reminder_url": liveregistration.cancel_reminder_url,
                 "email": liveregistration.email,
                 "username": serializer.validated_data.get("username", ""),
                 "time_zone": settings.TIME_ZONE,
                 "video": video,
+                "video_access_url": liveregistration.video_access_reminder_url,
             }
             msg_plain = render_to_string("core/mail/text/register.txt", template_vars)
             msg_html = render_to_string("core/mail/html/register.html", template_vars)
