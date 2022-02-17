@@ -10,6 +10,7 @@ export const meetingMockFactory = (meeting: Partial<Meeting> = {}): Meeting => {
     title: faker.name.title(),
     lti_url: faker.internet.url(),
     started: faker.datatype.boolean(),
+    ended: faker.datatype.boolean(),
     url: faker.internet.url(),
     welcome_text: faker.lorem.text(),
     infos: meetingInfosMockFactory(),

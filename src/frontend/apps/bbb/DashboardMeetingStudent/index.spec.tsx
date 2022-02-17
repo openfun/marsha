@@ -8,7 +8,11 @@ import DashboardMeetingStudent from '.';
 
 describe('<DashboardMeetingStudent />', () => {
   it('Displays message and triggers callbacks depending on meeting state', () => {
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const meeting = meetingMockFactory({
+      id: '1',
+      started: false,
+      ended: false,
+    });
     const joinMeetingAction = jest.fn();
     const meetingEnded = jest.fn();
 
@@ -30,7 +34,7 @@ describe('<DashboardMeetingStudent />', () => {
     rerender(
       wrapInIntlProvider(
         <DashboardMeetingStudent
-          meeting={{ ...meeting, started: true }}
+          meeting={{ ...meeting, started: true, ended: false }}
           joinMeetingAction={joinMeetingAction}
           meetingEnded={meetingEnded}
         />,
@@ -44,13 +48,13 @@ describe('<DashboardMeetingStudent />', () => {
     rerender(
       wrapInIntlProvider(
         <DashboardMeetingStudent
-          meeting={{ ...meeting, started: false }}
+          meeting={{ ...meeting, started: false, ended: true }}
           joinMeetingAction={joinMeetingAction}
           meetingEnded={meetingEnded}
         />,
       ),
     );
-    getByText('Meeting not started yet.');
+    getByText('Meeting ended.');
     expect(joinMeetingAction).toHaveBeenCalledTimes(1);
     expect(meetingEnded).toHaveBeenCalledTimes(2);
   });

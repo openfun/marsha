@@ -5,6 +5,11 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Meeting } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
+  meetingEnded: {
+    defaultMessage: 'Meeting ended.',
+    description: 'Message when meeting is ended.',
+    id: 'component.DashboardMeetingStudent.meetingEnded',
+  },
   meetingNotStarted: {
     defaultMessage: 'Meeting not started yet.',
     description: 'Message when meeting is not started.',
@@ -37,17 +42,20 @@ const DashboardMeetingStudent = ({
     }
   }, [meeting]);
 
+  let message;
+  if (meeting.started) {
+    message = messages.meetingRedirection;
+  } else if (meeting.ended) {
+    message = messages.meetingEnded;
+  } else {
+    message = messages.meetingNotStarted;
+  }
+
   return (
     <Box pad="large" align="center">
-      {meeting.started ? (
-        <Text>
-          <FormattedMessage {...messages.meetingRedirection} />
-        </Text>
-      ) : (
-        <Text>
-          <FormattedMessage {...messages.meetingNotStarted} />
-        </Text>
-      )}
+      <Text>
+        <FormattedMessage {...message} />
+      </Text>
     </Box>
   );
 };
