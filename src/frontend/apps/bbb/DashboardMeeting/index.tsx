@@ -150,7 +150,7 @@ const DashboardMeeting = () => {
         // metting url is apended to current dashboard
         content = (
           <React.Fragment>
-            content
+            {content}
             <DashboardMeetingJoin
               href={meetingUrl}
               onClick={() => {

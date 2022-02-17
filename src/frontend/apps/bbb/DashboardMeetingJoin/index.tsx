@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   blockedPopups: {
-    defaultMessage: 'Your browser is blocking popups.',
+    defaultMessage: 'It seems like your browser is blocking popups.',
     description: 'Message when browser is blocking popups.',
     id: 'component.DashboardMeetingJoin.blockedPopups',
   },
