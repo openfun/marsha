@@ -1,20 +1,21 @@
 import React from 'react';
 import fetchMock from 'fetch-mock';
 import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { LiveModeType, liveState } from 'types/tracks';
+import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
-
-import { LiveType, LiveVideoWrapper } from '.';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 import { createPlayer } from 'Player/createPlayer';
-import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
-import userEvent from '@testing-library/user-event';
+
+import { LiveType, LiveVideoWrapper } from '.';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -121,6 +122,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -186,6 +188,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -249,6 +252,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -368,6 +372,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -484,6 +489,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       live_type: LiveModeType.JITSI,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -541,6 +547,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       live_type: LiveModeType.JITSI,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -596,6 +603,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       live_type: LiveModeType.JITSI,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -699,6 +707,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       live_type: LiveModeType.JITSI,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',

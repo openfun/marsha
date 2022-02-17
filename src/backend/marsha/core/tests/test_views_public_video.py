@@ -281,6 +281,7 @@ class VideoPublicViewTestCase(TestCase):
                 "live_type": RAW,
                 "xmpp": {
                     "bosh_url": None,
+                    "converse_persistent_store": "localStorage",
                     "websocket_url": "ws://xmpp-server.com/xmpp-websocket?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",

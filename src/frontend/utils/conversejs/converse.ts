@@ -37,6 +37,7 @@ export const converseMounter = () => {
         muc_history_max_stanzas: 0,
         muc_instant_rooms: false,
         nickname: anonymousNickname,
+        persistent_store: xmpp.converse_persistent_store,
         ping_interval: 20,
         websocket_url: xmpp.websocket_url,
         whitelisted_plugins: [

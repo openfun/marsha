@@ -4201,6 +4201,7 @@ class VideoAPITest(TestCase):
                 "live_type": JITSI,
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "converse_persistent_store": "localStorage",
                     "websocket_url": None,
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
@@ -4211,6 +4212,7 @@ class VideoAPITest(TestCase):
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_CONVERSE_PERSISTENT_STORE="IndexedDB")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_instructor_start_already_created_live(self):
@@ -4331,6 +4333,7 @@ class VideoAPITest(TestCase):
                 "live_type": JITSI,
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "converse_persistent_store": "IndexedDB",
                     "websocket_url": None,
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
@@ -4839,6 +4842,7 @@ class VideoAPITest(TestCase):
                 "xmpp": {
                     "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "converse_persistent_store": "localStorage",
                     "jid": "conference.xmpp-server.com",
                     "websocket_url": None,
                 },
