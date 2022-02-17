@@ -1,3 +1,4 @@
+import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
 
@@ -47,6 +48,7 @@ describe('initConverse', () => {
 
     const xmpp = {
       bosh_url: 'https://xmpp-server.com/http-bind',
+      converse_persistent_store: PersistentStore.LOCALSTORAGE,
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       conference_url:
         '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -80,6 +82,7 @@ describe('initConverse', () => {
       muc_history_max_stanzas: 0,
       muc_instant_rooms: false,
       nickname: 'Anonymous-generated_id',
+      persistent_store: 'localStorage',
       ping_interval: 20,
       websocket_url: 'wss://xmpp-server.com/xmpp-websocket',
       whitelisted_plugins: [

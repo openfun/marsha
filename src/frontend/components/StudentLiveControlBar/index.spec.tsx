@@ -6,6 +6,7 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { LiveModeType, liveState } from 'types/tracks';
+import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
@@ -144,6 +145,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: liveState.RUNNING,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -179,6 +181,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: null,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -214,6 +217,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: liveState.STOPPING,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -249,6 +253,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: liveState.PAUSED,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -284,6 +289,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: liveState.RUNNING,
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',

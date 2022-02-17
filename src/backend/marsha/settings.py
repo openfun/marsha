@@ -307,6 +307,7 @@ class Base(Configuration):
     # XMPP Settings
     LIVE_CHAT_ENABLED = values.BooleanValue(False)
     XMPP_BOSH_URL = values.Value(None)
+    XMPP_CONVERSE_PERSISTENT_STORE = values.Value("localStorage")
     XMPP_WEBSOCKET_URL = values.Value(None)
     XMPP_CONFERENCE_DOMAIN = values.Value(None)
     XMPP_PRIVATE_ADMIN_JID = values.Value(None)

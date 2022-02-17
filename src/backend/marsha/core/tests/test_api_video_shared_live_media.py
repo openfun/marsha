@@ -356,6 +356,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "live_type": JITSI,
                     "xmpp": {
                         "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                        "converse_persistent_store": "localStorage",
                         "websocket_url": None,
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
@@ -699,6 +700,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "live_type": JITSI,
                     "xmpp": {
                         "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                        "converse_persistent_store": "localStorage",
                         "websocket_url": None,
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
@@ -1088,6 +1090,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     "live_type": JITSI,
                     "xmpp": {
                         "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                        "converse_persistent_store": "localStorage",
                         "websocket_url": None,
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
