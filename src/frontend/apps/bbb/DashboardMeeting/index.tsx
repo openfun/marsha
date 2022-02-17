@@ -117,14 +117,26 @@ const DashboardMeeting = () => {
     case 'success':
       if (askUsername) {
         // When joining a meeting and user fullname is missing
-        content = (
-          <DashboardMeetingAskUsername
-            userFullname={userFullname}
-            setUserFullname={setUserFullname}
-            onJoin={joinMeetingAction}
-            onCancel={closeAskUserNameAction}
-          />
-        );
+        if (canUpdate) {
+          // Instructors can cancel joining a meeting
+          content = (
+            <DashboardMeetingAskUsername
+              userFullname={userFullname}
+              setUserFullname={setUserFullname}
+              onJoin={joinMeetingAction}
+              onCancel={closeAskUserNameAction}
+            />
+          );
+        } else {
+          // Students can not cancel joining a meeting
+          content = (
+            <DashboardMeetingAskUsername
+              userFullname={userFullname}
+              setUserFullname={setUserFullname}
+              onJoin={joinMeetingAction}
+            />
+          );
+        }
       } else if (!canUpdate) {
         // Student dashboard
         content = (
