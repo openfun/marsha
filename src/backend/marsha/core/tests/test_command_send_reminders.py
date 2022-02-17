@@ -176,6 +176,17 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].body.split()
         )
         self.assertIn(
+            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
+            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            mails_content,
+        )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
+            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            mails_content,
+        )
+
+        self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
             f"{lti_registration.get_generate_salted_hmac()}]",
             mails_content,
@@ -345,11 +356,32 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
+            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
+            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
             f"{lti_registration.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
+        self.assertIn(
+            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
+            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[1].body.split()),
+        )
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
             f"{public_registration.get_generate_salted_hmac()}]",
@@ -536,6 +568,17 @@ class SendRemindersTest(TestCase):
             "Live starts in less than 3 hours",
         )
         self.assertIn(
+            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
+            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
             f"{public_registration.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
@@ -544,6 +587,16 @@ class SendRemindersTest(TestCase):
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
             f"{lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
+            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -749,6 +802,16 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 3 days",
         )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
+            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[1].body.split()),
+        )
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
@@ -761,12 +824,23 @@ class SendRemindersTest(TestCase):
             f"{public_registration.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
+            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[0].body.split()),
+        )
 
         self.assertIn(
             f"Sending email for liveregistration {public_registration.id} for video "
             f"{public_registration.video.id} step {settings.REMINDER_3}",
             out.getvalue(),
         )
+
         self.assertIn(
             f"Sending email for liveregistration {lti_registration.id} for video "
             f"{lti_registration.video.id} step {settings.REMINDER_3}",
