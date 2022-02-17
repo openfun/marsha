@@ -109,7 +109,11 @@ def end(meeting: Meeting, moderator=False):
         "meetingID": str(meeting.meeting_id),
         "password": _password(meeting, moderator),
     }
-    return request_api("end", parameters)
+    api_response = request_api("end", parameters)
+    meeting.started = False
+    meeting.ended = True
+    meeting.save()
+    return api_response
 
 
 def get_meeting_infos(meeting: Meeting):
