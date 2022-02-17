@@ -5,6 +5,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -14,6 +15,7 @@ import { LiveVideoPanel } from '.';
 const mockVideo = videoMockFactory({
   xmpp: {
     bosh_url: 'https://xmpp-server.com/http-bind',
+    converse_persistent_store: PersistentStore.LOCALSTORAGE,
     websocket_url: null,
     conference_url:
       '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',

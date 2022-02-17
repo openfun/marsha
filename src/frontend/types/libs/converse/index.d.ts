@@ -1,6 +1,6 @@
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
-import { XMPP } from 'types/XMPP';
+import { PersistentStore, XMPP } from 'types/XMPP';
 import { Nullable } from 'utils/types';
 
 export as namespace converse;
@@ -52,12 +52,7 @@ declare namespace converse {
     muc_history_max_stanzas: number;
     muc_instant_rooms: boolean;
     nickname: string;
-    persistent_store?:
-      | 'localStorage'
-      | 'IndexedDB'
-      | 'sessionStorage'
-      | 'BrowserExtLocal'
-      | 'BrowserExtSync';
+    persistent_store?: PersistentStore;
     ping_interval: number;
     websocket_url: Nullable<string>;
     whitelisted_plugins: string[];

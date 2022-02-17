@@ -254,6 +254,7 @@ class VideoSerializer(VideoBaseSerializer):
                 "bosh_url": xmpp_utils.add_jwt_token_to_url(
                     settings.XMPP_BOSH_URL, token
                 ),
+                "converse_persistent_store": settings.XMPP_CONVERSE_PERSISTENT_STORE,
                 "websocket_url": xmpp_utils.add_jwt_token_to_url(
                     settings.XMPP_WEBSOCKET_URL, token
                 ),

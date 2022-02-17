@@ -3,6 +3,7 @@ import { Nullable } from '../utils/types';
 /* XMPP representation */
 export interface XMPP {
   bosh_url: Nullable<string>;
+  converse_persistent_store: converse.Options['persistent_store'];
   conference_url: string;
   jid: string;
   prebind_url: string;
@@ -23,4 +24,12 @@ export enum EventType {
   PARTICIPANT_ASK_TO_JOIN = 'participantAskToJoin',
   REJECT = 'reject',
   REJECTED = 'rejected',
+}
+
+export enum PersistentStore {
+  BROWSEREXTLOCAL = 'BrowserExtLocal',
+  BROWSEREXTSYNC = 'BrowserExtSync',
+  LOCALSTORAGE = 'localStorage',
+  INDEXEDDB = 'IndexedDB',
+  SESSIONSTORAGE = 'sessionStorage',
 }

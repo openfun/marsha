@@ -13,6 +13,7 @@ import {
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
+import { PersistentStore } from 'types/XMPP';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
@@ -309,6 +310,7 @@ describe('PublicVideoDashboard', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -362,6 +364,7 @@ describe('PublicVideoDashboard', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -411,6 +414,7 @@ describe('PublicVideoDashboard', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
@@ -452,6 +456,7 @@ describe('PublicVideoDashboard', () => {
       },
       xmpp: {
         bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
         websocket_url: null,
         conference_url:
           '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
