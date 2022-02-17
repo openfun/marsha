@@ -220,6 +220,7 @@ describe('<DashboardMeeting />', () => {
     };
     await act(async () => updatedMeetingDeferred.resolve(updatedMeeting));
 
+    getByText('instructor dashboard');
     getByText('please click bbb url to join meeting');
   });
 });
