@@ -4,4 +4,4 @@
         {{video.starting_at}} {{time_zone}}
         </mj-text>
       </mj-column>
-    </mj-section>
+</mj-section>

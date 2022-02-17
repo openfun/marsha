@@ -5,13 +5,14 @@ import random
 import re
 import time
 from unittest import mock
+import uuid
 
 from django.test import TestCase
 
 from waffle.testutils import override_switch
 
 from ..defaults import SENTRY, STATE_CHOICES
-from ..factories import ConsumerSiteFactory, VideoFactory
+from ..factories import ConsumerSiteFactory, LiveRegistrationFactory, VideoFactory
 from ..lti import LTI
 
 
@@ -168,6 +169,62 @@ class CacheLTIViewTestCase(TestCase):
         self.assertLess(elapsed, 0.2)
 
         with self.assertNumQueries(0):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+        self.assertEqual(resource_origin["id"], str(video.id))
+        self.assertLess(elapsed, 0.1)
+
+    @override_switch(SENTRY, active=True)
+    def test_views_direct_access_lti_resource(self):
+        """Validate that response for public resources on direct access are cached."""
+        video = VideoFactory()
+        liveregistration = LiveRegistrationFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="sarah@openfun.fr",
+            is_registered=True,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="5555",
+            video=video,
+        )
+        url = (
+            f"/videos/{video.id}?lrpk={liveregistration.pk}&key="
+            f"{liveregistration.get_generate_salted_hmac()}"
+        )
+
+        with self.assertNumQueries(9):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+
+        self.assertEqual(resource_origin["id"], str(video.id))
+        self.assertLess(elapsed, 0.7)
+
+        with self.assertNumQueries(4):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+        self.assertEqual(resource_origin["id"], str(video.id))
+        self.assertLess(elapsed, 0.1)
+
+    @override_switch(SENTRY, active=True)
+    def test_views_direct_access_public_resource(self):
+        """Validate that response for lti resources on direct access are cached."""
+        video = VideoFactory()
+        public_registration = LiveRegistrationFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+
+        url = (
+            f"/videos/{video.id}?lrpk={public_registration.pk}&key="
+            f"{public_registration.get_generate_salted_hmac()}"
+        )
+
+        with self.assertNumQueries(8):
+            elapsed, resource_origin = self._fetch_lti_request(url)
+
+        self.assertEqual(resource_origin["id"], str(video.id))
+        self.assertLess(elapsed, 0.2)
+
+        with self.assertNumQueries(2):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertLess(elapsed, 0.1)

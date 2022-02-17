@@ -96,6 +96,18 @@ def _get_base_app_data():
     }
 
 
+def define_locales(lti):
+    """Define locales"""
+    try:
+        return (
+            react_locale(lti.launch_presentation_locale)
+            if lti
+            else settings.REACT_LOCALES[0]
+        )
+    except ImproperlyConfigured:
+        return settings.REACT_LOCALES[0]
+
+
 def build_jwt_token(
     permissions, session_id, lti=None, playlist_id=None, resource_id=None
 ):
@@ -136,14 +148,7 @@ def build_jwt_token(
     """
     user_id = getattr(lti, "user_id", None) if lti else None
 
-    try:
-        locale = (
-            react_locale(lti.launch_presentation_locale)
-            if lti
-            else settings.REACT_LOCALES[0]
-        )
-    except ImproperlyConfigured:
-        locale = settings.REACT_LOCALES[0]
+    locale = define_locales(lti)
 
     # Create a short-lived JWT token for the resource selection
     jwt_token = AccessToken()
@@ -246,6 +251,14 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         return app_data
 
+    def _get_prepare_to_render(self, app_data):
+        """Utility to build expected params to render_to_response"""
+        return {
+            "app_data": json.dumps(app_data),
+            "static_base_url": f"{settings.STATIC_URL}js/build/",
+            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
+        }
+
     def get_context_data(self):
         """Build context for template rendering of configuration data for the frontend.
 
@@ -282,11 +295,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             except PortabilityError as error:
                 app_data = _manage_exception(error)
 
-        return {
-            "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.STATIC_URL}js/build/",
-            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
-        }
+        return self._get_prepare_to_render(app_data)
 
     def _get_app_data(self, cache_key, lti=None, resource_id=None):
         """Build app data for the frontend with information retrieved from the LTI launch request.
@@ -316,16 +325,15 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             app_data = cache.get(cache_key)
 
         permissions = {"can_access_dashboard": False, "can_update": False}
-
         user_id = getattr(lti, "user_id", None) if lti else None
         session_id = str(uuid.uuid4())
-
         if app_data is None:
             resource = (
                 get_or_create_resource(self.model, lti)
                 if lti
                 else self._get_public_resource(resource_id)
             )
+
             if lti:
                 permissions = {
                     "can_access_dashboard": lti.is_instructor or lti.is_admin,
@@ -415,11 +423,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 "resource": None,
             }
 
-        return {
-            "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.STATIC_URL}js/build/",
-            "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
-        }
+        return self._get_prepare_to_render(app_data)
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
@@ -448,7 +452,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
     def get(self, request, *args, **kwargs):
         """Respond to GET request.
 
-        Only publicly accessible resources can be fetched
+        Publicly accessible resources or direct access videos can be fetched
 
         Parameters
         ----------
@@ -473,6 +477,113 @@ class VideoView(BaseLTIView):
 
     model = Video
     serializer_class = VideoSerializer
+
+    # pylint: disable=unused-argument
+    def get(self, request, *args, **kwargs):
+        """Respond to GET request.
+
+        Publicly accessible resources or direct access videos can be fetched
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        if "uuid" in kwargs and request.GET.get("lrpk") and request.GET.get("key"):
+            return self.get_direct_access_from_liveregistration(
+                kwargs["uuid"], request.GET.get("lrpk"), request.GET.get("key")
+            )
+
+        return self.render_to_response(self.get_public_data())
+
+    def get_direct_access_from_liveregistration(
+        self, video_pk, liveregistration_pk, key
+    ):
+        """Reminders mails for a scheduled webinar send direct access to the video.
+        Video can be public or not. It will be accessed out of a LTI connection.
+        The liveregistration information is used to build a JWT token.
+        """
+        liveregistration = get_object_or_404(
+            LiveRegistration, pk=liveregistration_pk, video__pk=video_pk
+        )
+
+        if liveregistration.get_generate_salted_hmac() == key:
+
+            session_id = str(uuid.uuid4())
+            cache_key = f"app_data|direct_access|{self.model.__name__}|{video_pk}"
+            app_data = cache.get(cache_key)
+
+            if app_data is None:
+                app_data = self._get_base_app_data()
+                app_data.update(
+                    {
+                        "resource": self.serializer_class(
+                            liveregistration.video,
+                            context={
+                                "is_admin": False,
+                                "user_id": liveregistration.lti_id,
+                                "session_id": session_id,
+                            },
+                        ).data,
+                        "state": "success",
+                        "player": settings.VIDEO_PLAYER,
+                        "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
+                    }
+                )
+                cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
+
+            jwt_token = AccessToken()
+            jwt_token.payload["resource_id"] = str(liveregistration.video.id)
+            jwt_token.payload["user"] = {
+                "email": liveregistration.email,
+            }
+
+            if liveregistration.is_from_lti_connection:
+
+                jwt_token.payload["consumer_site"] = str(
+                    liveregistration.consumer_site.id
+                )
+                jwt_token.payload["context_id"] = str(
+                    liveregistration.video.playlist.lti_id
+                )
+                jwt_token.payload["roles"] = ["student"]
+                jwt_token.payload["user"].update(
+                    {
+                        "id": liveregistration.lti_user_id,
+                        "username": liveregistration.username,
+                    }
+                )
+
+            else:
+
+                jwt_token.payload["user"].update(
+                    {"anonymous_id": str(liveregistration.anonymous_id)}
+                )
+                jwt_token.payload["roles"] = [NONE]
+
+            jwt_token.payload.update(
+                {
+                    "session_id": session_id,
+                    "locale": define_locales(None),
+                    "permissions": {"can_access_dashboard": False, "can_update": False},
+                    "maintenance": settings.MAINTENANCE_MODE,
+                }
+            )
+            app_data["jwt"] = str(jwt_token)
+
+            return self.render_to_response(self._get_prepare_to_render(app_data))
+
+        raise Http404
 
 
 class DocumentView(BaseLTIView):

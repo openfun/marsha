@@ -66,7 +66,7 @@ urlpatterns = [
     path("lti/videos/<uuid:uuid>", VideoView.as_view(), name="video_lti_view"),
     path("lti/documents/<uuid:uuid>", DocumentView.as_view(), name="document_lti_view"),
     # Public resources
-    path("videos/<uuid:uuid>", VideoView.as_view(), name="video_public"),
+    path("videos/<uuid:uuid>", VideoView.as_view(), name="video_direct_access"),
     path("documents/<uuid:uuid>", DocumentView.as_view(), name="document_public"),
     # API
     path("api/pairing-challenge", pairing_challenge, name="pairing_challenge"),

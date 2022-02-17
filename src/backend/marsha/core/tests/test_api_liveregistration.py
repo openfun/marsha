@@ -62,6 +62,17 @@ class LiveRegistrationApiTest(TestCase):
             f'We have taken note of your interest in the event "{video.title}".',
             email_content,
         )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{video.id}?lrpk="
+            f"{liveregistration.pk}&amp;key={liveregistration.get_generate_salted_hmac()}]",
+            email_content,
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            email_content,
+        )
+
         self.assertIn(f"This mail has been sent to {email} by Marsha", email_content)
         self.assertIn(
             "Your email address is used because you have shown interest in this webinar. "
