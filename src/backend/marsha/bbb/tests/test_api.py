@@ -430,6 +430,8 @@ class MeetingAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["consumer_site"] = "consumer_site"
+        jwt_token.payload["user"] = {"id": "user_id"}
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.patch(
@@ -442,7 +444,8 @@ class MeetingAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={meeting.meeting_id}&"
-            f"password={quote_plus(meeting.attendee_password)}&redirect=true",
+            f"password={quote_plus(meeting.attendee_password)}&"
+            "userID=consumer_site_user_id&redirect=true",
             response.data.get("url"),
         )
 
@@ -457,6 +460,8 @@ class MeetingAPITest(TestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["consumer_site"] = "consumer_site"
+        jwt_token.payload["user"] = {"id": "user_id"}
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
@@ -470,7 +475,8 @@ class MeetingAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={meeting.meeting_id}&"
-            f"password={quote_plus(meeting.moderator_password)}&redirect=true",
+            f"password={quote_plus(meeting.moderator_password)}&"
+            "userID=consumer_site_user_id&redirect=true",
             response.data.get("url"),
         )
 
