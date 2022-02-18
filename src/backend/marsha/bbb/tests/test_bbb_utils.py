@@ -336,11 +336,11 @@ class MeetingServiceTestCase(TestCase):
     def test_join(self):
         """Return a meeting join url."""
         meeting = MeetingFactory()
-        api_response = join(meeting, fullname="John Doe")
+        api_response = join(meeting, consumer_site_user_id="a_1", fullname="John Doe")
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={meeting.meeting_id}&"
-            f"password={meeting.attendee_password}&redirect=true",
+            f"password={meeting.attendee_password}&userID=a_1&redirect=true",
             api_response.get("url"),
         )
 

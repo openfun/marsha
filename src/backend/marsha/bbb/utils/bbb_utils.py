@@ -92,12 +92,13 @@ def create(meeting: Meeting):
     return api_response
 
 
-def join(meeting: Meeting, fullname, moderator=False):
+def join(meeting: Meeting, consumer_site_user_id, fullname, moderator=False):
     """Call BBB API to join a meeting."""
     parameters = {
         "fullName": fullname,
         "meetingID": str(meeting.meeting_id),
         "password": _password(meeting, moderator),
+        "userID": consumer_site_user_id,
         "redirect": "true",
     }
     return request_api("join", parameters, prepare=True)

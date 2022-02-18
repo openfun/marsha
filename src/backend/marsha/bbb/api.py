@@ -149,8 +149,13 @@ class MeetingViewSet(
         try:
             roles = request.user.token.payload.get("roles")
             moderator = "administrator" in roles or "instructor" in roles
+            consumer_site_user_id = (
+                f"{request.user.token.payload.get('consumer_site')}_"
+                f"{request.user.token.payload.get('user', {}).get('id')}"
+            )
             response = join(
                 meeting=self.get_object(),
+                consumer_site_user_id=consumer_site_user_id,
                 fullname=request.data.get("fullname"),
                 moderator=moderator,
             )
