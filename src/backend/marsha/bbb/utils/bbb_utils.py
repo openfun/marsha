@@ -125,6 +125,17 @@ def get_meeting_infos(meeting: Meeting):
     try:
         api_response = request_api("getMeetingInfo", parameters)
         meeting.started = api_response["returncode"] == "SUCCESS"
+
+        # simplify attendees list:
+        # - removes attendee level
+        # - always wrap attendee into a list
+        if api_response.get("attendees"):
+            attendees = api_response.get("attendees").get("attendee")
+            if isinstance(attendees, list):
+                api_response["attendees"] = attendees
+            else:
+                api_response["attendees"] = [attendees]
+
         meeting.save()
         return api_response
     except ApiMeetingException as exception:
