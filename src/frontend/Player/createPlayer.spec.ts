@@ -47,6 +47,7 @@ describe('createPlayer', () => {
       dispatchPlayerTimeUpdate,
       video,
       undefined,
+      undefined,
     );
   });
 

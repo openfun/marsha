@@ -133,6 +133,7 @@ describe('<VideoView />', () => {
       expect.any(Element),
       expect.anything(),
       video,
+      'en',
       expect.any(Function),
     );
   });
