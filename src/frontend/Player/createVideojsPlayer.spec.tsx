@@ -88,11 +88,6 @@ jest.mock('../data/appData', () => ({
     session_id: 'abcd',
   })),
 }));
-jest.mock('../index', () => ({
-  intl: {
-    locale: 'fr',
-  },
-}));
 
 jest.mock('../data/stores/useTimedTextTrackLanguageChoices', () => ({
   useTimedTextTrackLanguageChoices: () => ({
@@ -136,7 +131,12 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      mockVideo,
+      'en',
+    );
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -149,7 +149,7 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.controls).toBe(true);
     expect(player.options_.debug).toBe(false);
     expect(player.options_.fluid).toBe(true);
-    expect(player.options_.language).toEqual('fr');
+    expect(player.options_.language).toEqual('en');
     expect(player.options_.liveui).toBe(false);
     expect(player.options_.responsive).toBe(true);
     expect(player.options_.html5).toEqual({
@@ -182,7 +182,12 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), mockVideo);
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      mockVideo,
+      'en',
+    );
 
     expect(player.currentSources()).toEqual([
       {
@@ -218,7 +223,7 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.controls).toBe(true);
     expect(player.options_.debug).toBe(false);
     expect(player.options_.fluid).toBe(true);
-    expect(player.options_.language).toEqual('fr');
+    expect(player.options_.language).toEqual('en');
     expect(player.options_.liveui).toBe(false);
     expect(player.options_.responsive).toBe(true);
     expect(player.options_.html5).toEqual({
@@ -266,7 +271,7 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
 
     expect(player.currentSources()).toEqual([
       { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
@@ -299,6 +304,7 @@ describe('createVideoJsPlayer', () => {
       videoElement!,
       dispatchPlayerTimeUpdate,
       mockVideo,
+      'en',
     );
 
     expect(mockXAPIStatement).toHaveBeenCalled();
@@ -356,7 +362,7 @@ describe('createVideoJsPlayer', () => {
 
     const videoElement = container.querySelector('video');
 
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video);
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
 
     // when the video is not played yet, the currentTime
     // is not modified. It is the initTime that is modified.

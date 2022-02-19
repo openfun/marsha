@@ -4,12 +4,7 @@ import * as Sentry from '@sentry/browser';
 import { Grommet } from 'grommet';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  createIntl,
-  createIntlCache,
-  IntlShape,
-  RawIntlProvider,
-} from 'react-intl';
+import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
 
 import { appData, getDecodedJwt } from './data/appData';
 import { flags } from './types/AppData';
@@ -43,8 +38,6 @@ try {
   locale = 'en_US';
 }
 
-export let intl: IntlShape;
-
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -74,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {}
 
   const cache = createIntlCache();
-  intl = createIntl(
+  const intl = createIntl(
     {
       locale: localeCode,
       messages: translatedMessages,

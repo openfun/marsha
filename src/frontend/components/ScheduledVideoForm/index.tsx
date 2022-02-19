@@ -15,12 +15,13 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { defineMessages, useIntl } from 'react-intl';
+
 import { appData } from 'data/appData';
 import { report } from 'utils/errors/report';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 import { API_ENDPOINT } from 'settings';
-import { intl as mainIntl } from 'index';
+
 const messages = defineMessages({
   intro: {
     defaultMessage: 'Schedule a webinar',
@@ -222,7 +223,7 @@ export const ScheduledVideoForm = ({ video }: ScheduledVideoFormProps) => {
           video.starting_at
             ? {
                 date: DateTime.fromISO(video.starting_at)
-                  .setLocale(mainIntl.locale)
+                  .setLocale(intl.locale)
                   .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
               }
             : {},
@@ -317,7 +318,7 @@ export const ScheduledVideoForm = ({ video }: ScheduledVideoFormProps) => {
           status={'warning' as StatusType}
           title={intl.formatMessage(messages.infoWasScheduledEvent, {
             date: DateTime.fromISO(video.starting_at!)
-              .setLocale(mainIntl.locale)
+              .setLocale(intl.locale)
               .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
           })}
           message={intl.formatMessage(

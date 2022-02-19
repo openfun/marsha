@@ -130,11 +130,13 @@ describe('VideoPlayer', () => {
     ];
 
     const { container } = render(
-      <VideoPlayer
-        video={mockVideo}
-        playerType={'videojs'}
-        timedTextTracks={timedTextTracks}
-      />,
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={mockVideo}
+          playerType={'videojs'}
+          timedTextTracks={timedTextTracks}
+        />,
+      ),
     );
     await waitFor(() =>
       // The player is created and initialized with DashJS for adaptive bitrate
@@ -143,6 +145,7 @@ describe('VideoPlayer', () => {
         expect.any(Element),
         expect.anything(),
         mockVideo,
+        'en',
         expect.any(Function),
       ),
     );
@@ -203,6 +206,7 @@ describe('VideoPlayer', () => {
         expect.any(Element),
         expect.anything(),
         video,
+        'en',
         expect.any(Function),
       ),
     );

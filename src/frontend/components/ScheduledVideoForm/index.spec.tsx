@@ -20,11 +20,6 @@ jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
-jest.mock('index', () => ({
-  intl: {
-    locale: 'en',
-  },
-}));
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));

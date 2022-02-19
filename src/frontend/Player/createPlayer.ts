@@ -8,6 +8,7 @@ export const createPlayer: VideoPlayerCreator = (
   ref,
   dispatchPlayerTimeUpdate,
   video,
+  locale,
   onReady = undefined,
 ) => {
   switch (type) {
@@ -16,6 +17,7 @@ export const createPlayer: VideoPlayerCreator = (
         ref,
         dispatchPlayerTimeUpdate,
         video,
+        locale,
         onReady,
       );
       return {

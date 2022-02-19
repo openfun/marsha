@@ -24,13 +24,13 @@ import { isMSESupported } from 'utils/isMSESupported';
 import { Maybe, Nullable } from 'utils/types';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
-import { intl } from 'index';
 import { Events } from './videojs/qualitySelectorPlugin/types';
 
 export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
+  locale: Maybe<string>,
   onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
   // add the video-js class name to the video attribute.
@@ -80,7 +80,7 @@ export const createVideojsPlayer = (
       nativeAudioTracks: videojs.browser.IS_SAFARI,
       nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
-    language: intl.locale,
+    language: locale,
     liveui: video.live_state !== null,
     playbackRates:
       video.live_state !== null ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],

@@ -20,6 +20,7 @@ import { VideoPlayerInterface } from 'types/VideoPlayer';
 import { resumeLive } from 'utils/resumeLive';
 import { Nullable } from 'utils/types';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { useIntl } from 'react-intl';
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -39,6 +40,7 @@ const VideoPlayer = ({
   timedTextTracks,
   defaultVolume,
 }: BaseVideoPlayerProps) => {
+  const intl = useIntl();
   const [player, setPlayer] = useState<VideoPlayerInterface>();
   const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
   const [isLivePausedOrStopping, setIsLivePausedOrStopping] = useState(
@@ -82,6 +84,7 @@ const VideoPlayer = ({
           videoNodeRef.current!,
           setPlayerCurrentTime,
           video,
+          intl.locale,
           (videoPlayer) => {
             if (defaultVolume !== undefined) {
               videoPlayer.volume(Math.min(1, Math.max(0, defaultVolume)));
