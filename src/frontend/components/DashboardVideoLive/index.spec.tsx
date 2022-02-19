@@ -12,11 +12,6 @@ jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
-jest.mock('index', () => ({
-  intl: {
-    locale: 'en',
-  },
-}));
 jest.mock(
   'components/DashboardVideoLiveRaw',
   () => (props: { video: Video }) => <span title={props.video.id} />,

@@ -14,5 +14,6 @@ export type VideoPlayerCreator = (
   ref: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
+  locale?: string,
   onReady?: (player: VideoJsPlayer) => void,
 ) => Maybe<VideoPlayerInterface>;
