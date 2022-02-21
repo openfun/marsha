@@ -35,9 +35,20 @@ export interface MeetingInfos {
   videoCount: string;
   maxUsers: string;
   moderatorCount: string;
-  attendees: string;
+  attendees: Attendee[];
   metadata: string;
   isBreakout: string;
+}
+
+export interface Attendee {
+  clientType: string;
+  fullName: string;
+  hasJoinedVoice: string;
+  hasVideo: string;
+  isListeningOnly: string;
+  isPresenter: string;
+  role: string;
+  userID: string;
 }
 
 export enum modelName {

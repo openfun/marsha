@@ -52,11 +52,12 @@ describe('<DashboardMeetingInstructor />', () => {
 
     const queryClient = new QueryClient();
 
-    const { findByText, rerender } = render(
+    const { findByText, getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeetingInstructor
             meeting={meeting}
+            joinedAs={false}
             joinMeetingAction={joinMeetingAction}
             meetingEnded={meetingEnded}
           />
@@ -75,6 +76,7 @@ describe('<DashboardMeetingInstructor />', () => {
           <Toaster />
           <DashboardMeetingInstructor
             meeting={{ ...meeting, started: true }}
+            joinedAs={false}
             joinMeetingAction={joinMeetingAction}
             meetingEnded={meetingEnded}
           />
@@ -87,6 +89,24 @@ describe('<DashboardMeetingInstructor />', () => {
 
     fireEvent.click(screen.getByText('Join meeting'));
     expect(joinMeetingAction).toHaveBeenCalledTimes(1);
+
+    // user joined
+    rerender(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <Toaster />
+          <DashboardMeetingInstructor
+            meeting={{ ...meeting, started: true }}
+            joinedAs="John Doe"
+            joinMeetingAction={joinMeetingAction}
+            meetingEnded={meetingEnded}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+    getByText('You have joined the meeting as John Doe.');
+    const cancelButton = screen.queryByText('Join meeting');
+    expect(cancelButton).toBeNull();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/meetings/1/end/', deferredPatch.promise);
