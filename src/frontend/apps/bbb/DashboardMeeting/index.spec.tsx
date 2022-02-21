@@ -7,7 +7,6 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Deferred } from 'utils/tests/Deferred';
 
 import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import { Meeting } from 'apps/bbb/types/models';
 import DashboardMeeting from '.';
 
 let mockCanUpdate: boolean;
@@ -23,7 +22,9 @@ jest.mock('data/appData', () => ({
     permissions: {
       can_update: mockCanUpdate,
     },
+    consumer_site: 'consumer_site',
     user: {
+      id: 'user_id',
       user_fullname: mockUserFullname,
     },
   }),
@@ -38,54 +39,6 @@ jest.mock('apps/bbb/data/bbbAppData', () => ({
   },
 }));
 
-jest.mock(
-  'apps/bbb/DashboardMeetingStudent',
-  () =>
-    (props: {
-      meeting: Meeting;
-      joinMeetingAction: () => void;
-      meetingEnded: () => void;
-    }) => {
-      return (
-        <div>
-          <p>student dashboard</p>
-          <button onClick={props.joinMeetingAction}>join</button>
-        </div>
-      );
-    },
-);
-
-jest.mock(
-  'apps/bbb/DashboardMeetingInstructor',
-  () =>
-    (props: {
-      meeting: Meeting;
-      joinMeetingAction: () => void;
-      meetingEnded: () => void;
-    }) => {
-      return (
-        <div>
-          <p>instructor dashboard</p>
-          <button onClick={props.joinMeetingAction}>join</button>
-        </div>
-      );
-    },
-);
-
-jest.mock(
-  'apps/bbb/DashboardMeetingAskUsername',
-  () => (props: { onCancel: undefined }) => {
-    if (props.onCancel) {
-      return <p>form ask fullname with cancel</p>;
-    }
-    return <p>form ask fullname without cancel</p>;
-  },
-);
-
-jest.mock('apps/bbb/DashboardMeetingJoin', () => () => (
-  <p>please click bbb url to join meeting</p>
-));
-
 describe('<DashboardMeeting />', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -94,7 +47,11 @@ describe('<DashboardMeeting />', () => {
 
   it('shows student dashboard', async () => {
     mockCanUpdate = false;
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const meeting = meetingMockFactory({
+      id: '1',
+      started: false,
+      ended: false,
+    });
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
@@ -108,17 +65,21 @@ describe('<DashboardMeeting />', () => {
     );
     getByText('Loading meeting...');
     await act(async () => meetingDeferred.resolve(meeting));
-    getByText('student dashboard');
+    getByText('Meeting not started yet.');
   });
 
   it('shows instructor dashboard', async () => {
     mockCanUpdate = true;
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const meeting = meetingMockFactory({
+      id: '1',
+      started: false,
+      ended: false,
+    });
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
 
-    const { getByText } = render(
+    const { findByText, getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeeting />
@@ -127,7 +88,7 @@ describe('<DashboardMeeting />', () => {
     );
     getByText('Loading meeting...');
     await act(async () => meetingDeferred.resolve(meeting));
-    getByText('instructor dashboard');
+    await findByText('Create meeting in BBB');
   });
 
   it('asks for fullname when joining a meeting, cancellable for instructor', async () => {
@@ -145,14 +106,32 @@ describe('<DashboardMeeting />', () => {
       ),
     );
     await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('join'));
-    await findByText('form ask fullname with cancel');
+
+    const createdMeeting = {
+      ...meeting,
+      started: true,
+    };
+    fetchMock.patch('/api/meetings/1/create/', createdMeeting);
+
+    fetchMock.get('/api/meetings/1/', createdMeeting, {
+      overwriteRoutes: true,
+    });
+
+    fireEvent.click(screen.getByText('Create meeting in BBB'));
+    fireEvent.click(await findByText('Join meeting'));
+
+    await findByText('Please enter your name to join the meeting');
+    await findByText('Cancel');
   });
 
   it('asks for fullname when joining a meeting, not cancellable for student', async () => {
     mockCanUpdate = false;
     mockUserFullname = undefined;
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const meeting = meetingMockFactory({
+      id: '1',
+      started: true,
+      ended: false,
+    });
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
@@ -165,8 +144,8 @@ describe('<DashboardMeeting />', () => {
       ),
     );
     await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('join'));
-    await findByText('form ask fullname without cancel');
+    await findByText('Please enter your name to join the meeting');
+    expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
   });
 
   it('uses appdata fullname when joining a meeting', async () => {
@@ -174,7 +153,7 @@ describe('<DashboardMeeting />', () => {
     mockUserFullname = 'Full user name';
     window.open = jest.fn(() => window);
 
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const meeting = meetingMockFactory({ id: '1', started: true });
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
@@ -190,7 +169,7 @@ describe('<DashboardMeeting />', () => {
       ),
     );
     await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('join'));
+    fireEvent.click(screen.getByText('Join meeting'));
     await act(async () =>
       deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
     );
@@ -216,11 +195,11 @@ describe('<DashboardMeeting />', () => {
     expect(urlMessage).not.toBeInTheDocument();
 
     // multiple joining must be avoided
-    fireEvent.click(screen.getByText('join'));
+    fireEvent.click(screen.getByText('Join meeting'));
     expect(window.open).toHaveBeenCalledTimes(1);
   });
 
-  it('shows a link when joining a meeting if new tab is blocked', async () => {
+  it('displays user fullname when joining a meeting', async () => {
     mockCanUpdate = true;
     mockUserFullname = 'Full user name';
     window.open = jest.fn(() => null);
@@ -229,6 +208,11 @@ describe('<DashboardMeeting />', () => {
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
     fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+
+    fetchMock.patch('/api/meetings/1/create/', {
+      ...meeting,
+      started: true,
+    });
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
@@ -250,16 +234,27 @@ describe('<DashboardMeeting />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('join'));
+    fireEvent.click(screen.getByText('Create meeting in BBB'));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
     const updatedMeeting = {
       ...meeting,
       started: true,
+      infos: {
+        attendees: [
+          {
+            userID: 'consumer_site_user_id',
+            fullName: 'Full user name',
+            hasVideo: 'true',
+            hasJoinedVoice: 'true',
+            isListeningOnly: 'false',
+          },
+        ],
+      },
     };
     await act(async () => updatedMeetingDeferred.resolve(updatedMeeting));
 
-    getByText('instructor dashboard');
-    getByText('please click bbb url to join meeting');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
+    getByText('You have joined the meeting as Full user name.');
   });
 });

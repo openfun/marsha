@@ -20,6 +20,7 @@ describe('<DashboardMeetingStudent />', () => {
       wrapInIntlProvider(
         <DashboardMeetingStudent
           meeting={meeting}
+          joinedAs={false}
           joinMeetingAction={joinMeetingAction}
           meetingEnded={meetingEnded}
         />,
@@ -35,12 +36,13 @@ describe('<DashboardMeetingStudent />', () => {
       wrapInIntlProvider(
         <DashboardMeetingStudent
           meeting={{ ...meeting, started: true, ended: false }}
+          joinedAs="John Doe"
           joinMeetingAction={joinMeetingAction}
           meetingEnded={meetingEnded}
         />,
       ),
     );
-    getByText('You should be redirected to the meeting.');
+    getByText('You have joined the meeting as John Doe.');
     expect(joinMeetingAction).toHaveBeenCalledTimes(1);
     expect(meetingEnded).toHaveBeenCalledTimes(1);
 
@@ -49,6 +51,7 @@ describe('<DashboardMeetingStudent />', () => {
       wrapInIntlProvider(
         <DashboardMeetingStudent
           meeting={{ ...meeting, started: false, ended: true }}
+          joinedAs={false}
           joinMeetingAction={joinMeetingAction}
           meetingEnded={meetingEnded}
         />,

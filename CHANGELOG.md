@@ -11,10 +11,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add a view to cancel reminder mails, link added in the footer of mails
+- Prevent multiple join to BBB meetings
 
 ### Fixed
 
 - Allow to configure converse persistent store
+- Show a specific message to students when BBB meeting ended
+- Remove cancel button in student meeting join form
 
 ## [4.0.0-beta.1] - 2022-02-15
 

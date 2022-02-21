@@ -1,7 +1,7 @@
-import { Box } from 'grommet';
+import { Box, Text } from 'grommet';
 import React, { lazy, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
-import { defineMessages, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
 
@@ -18,6 +18,11 @@ const DashboardMeetingInfos = lazy(
 );
 
 const messages = defineMessages({
+  joinedAs: {
+    defaultMessage: 'You have joined the meeting as {joinedAs}.',
+    description: 'Message when user has joined the meeting.',
+    id: 'component.DashboardMeetingInstructor.joinedAs',
+  },
   joinMeetingLabel: {
     defaultMessage: 'Join meeting',
     description: 'Label for joining meeting in instructor dashboard.',
@@ -42,12 +47,14 @@ const messages = defineMessages({
 
 interface DashboardMeetingInstructorProps {
   meeting: Meeting;
+  joinedAs: string | false;
   joinMeetingAction: () => void;
   meetingEnded: () => void;
 }
 
 const DashboardMeetingInstructor = ({
   meeting,
+  joinedAs,
   joinMeetingAction,
   meetingEnded,
 }: DashboardMeetingInstructorProps) => {
@@ -70,21 +77,28 @@ const DashboardMeetingInstructor = ({
   return (
     <Box pad="large">
       <Suspense fallback={<Loader />}>
+        {joinedAs && (
+          <Text textAlign="center" margin={{ bottom: 'medium' }}>
+            <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
+          </Text>
+        )}
         {!meeting.started ? (
           <DashboardMeetingForm meeting={meeting} />
         ) : (
           <React.Fragment>
             <DashboardMeetingInfos infos={meeting.infos} />
-            <Box direction="row" justify="between" margin={{ top: 'medium' }}>
+            <Box direction="row" justify="center" margin={{ top: 'medium' }}>
               <DashboardButton
                 label={intl.formatMessage(messages.endMeetingLabel)}
                 onClick={endMeetingAction}
               />
-              <DashboardButton
-                primary={true}
-                label={intl.formatMessage(messages.joinMeetingLabel)}
-                onClick={joinMeetingAction}
-              />
+              {!joinedAs && (
+                <DashboardButton
+                  primary={true}
+                  label={intl.formatMessage(messages.joinMeetingLabel)}
+                  onClick={joinMeetingAction}
+                />
+              )}
             </Box>
           </React.Fragment>
         )}

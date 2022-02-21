@@ -1,10 +1,19 @@
 import { Box, Text } from 'grommet';
 import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+} from 'react-intl';
 
 import { Meeting } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
+  joinedAs: {
+    defaultMessage: 'You have joined the meeting as {joinedAs}.',
+    description: 'Message when user has joined the meeting.',
+    id: 'component.DashboardMeetingStudent.joinedAs',
+  },
   meetingEnded: {
     defaultMessage: 'Meeting ended.',
     description: 'Message when meeting is ended.',
@@ -16,21 +25,22 @@ const messages = defineMessages({
     id: 'component.DashboardMeetingStudent.meetingNotStarted',
   },
   meetingRedirection: {
-    defaultMessage: 'You should be redirected to the meeting.',
-    description:
-      'Message when meeting is started and redirection should be triggered.',
+    defaultMessage: 'Meeting is started.',
+    description: 'Message when meeting is started.',
     id: 'component.DashboardMeetingStudent.meetingRedirection',
   },
 });
 
 interface DashboardMeetingStudentProps {
   meeting: Meeting;
+  joinedAs: string | false;
   joinMeetingAction: () => void;
   meetingEnded: () => void;
 }
 
 const DashboardMeetingStudent = ({
   meeting,
+  joinedAs,
   joinMeetingAction,
   meetingEnded,
 }: DashboardMeetingStudentProps) => {
@@ -42,7 +52,7 @@ const DashboardMeetingStudent = ({
     }
   }, [meeting]);
 
-  let message;
+  let message: MessageDescriptor;
   if (meeting.started) {
     message = messages.meetingRedirection;
   } else if (meeting.ended) {
@@ -54,7 +64,11 @@ const DashboardMeetingStudent = ({
   return (
     <Box pad="large" align="center">
       <Text>
-        <FormattedMessage {...message} />
+        {joinedAs ? (
+          <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
+        ) : (
+          <FormattedMessage {...message} />
+        )}
       </Text>
     </Box>
   );
