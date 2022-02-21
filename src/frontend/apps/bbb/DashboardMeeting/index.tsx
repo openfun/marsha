@@ -1,5 +1,5 @@
 import { Box, Spinner } from 'grommet';
-import React, { lazy, useState, Suspense, useRef } from 'react';
+import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
@@ -9,6 +9,7 @@ import { Loader } from 'components/Loader';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useJoinMeeting, useMeeting } from 'apps/bbb/data/queries';
+
 const DashboardMeetingStudent = lazy(
   () => import('apps/bbb/DashboardMeetingStudent'),
 );
@@ -58,12 +59,33 @@ const DashboardMeeting = () => {
     { refetchInterval: meetingRefetchInterval.current },
   );
 
+  const consumerSiteUserId = `${getDecodedJwt().consumer_site}_${
+    getDecodedJwt().user?.id
+  }`;
+
+  useEffect(() => {
+    const attendeeFound = meeting?.infos?.attendees.find((attendee) => {
+      return (
+        consumerSiteUserId === attendee.userID &&
+        (attendee.hasVideo === 'true' ||
+          attendee.hasJoinedVoice === 'true' ||
+          attendee.isListeningOnly === 'true')
+      );
+    });
+
+    if (attendeeFound) {
+      setUserFullname(attendeeFound.fullName);
+      setMeetingJoined(true);
+    } else {
+      setMeetingJoined(false);
+      setMeetingUrl('');
+    }
+  }, [meeting]);
+
   const joinMeetingMutation = useJoinMeeting(bbbAppData.meeting!.id, {
     onSuccess: (data) => {
       const openedWindow = window.open(data.url, '_blank');
-      if (openedWindow) {
-        setMeetingJoined(true);
-      } else {
+      if (!openedWindow) {
         setMeetingUrl(data.url);
       }
 
@@ -84,13 +106,11 @@ const DashboardMeeting = () => {
     setAskUsername(false);
   };
   const joinMeetingAction = () => {
-    if (!meetingJoined) {
-      if (userFullname) {
-        closeAskUserNameAction();
-        joinMeetingMutation.mutate({ fullname: userFullname });
-      } else {
-        openAskUserNameAction();
-      }
+    if (userFullname) {
+      closeAskUserNameAction();
+      joinMeetingMutation.mutate({ fullname: userFullname });
+    } else {
+      openAskUserNameAction();
     }
   };
 
@@ -142,6 +162,7 @@ const DashboardMeeting = () => {
         content = (
           <DashboardMeetingStudent
             meeting={meeting!}
+            joinedAs={meetingJoined && userFullname}
             joinMeetingAction={joinMeetingAction}
             meetingEnded={meetingEnded}
           />
@@ -151,24 +172,20 @@ const DashboardMeeting = () => {
         content = (
           <DashboardMeetingInstructor
             meeting={meeting!}
+            joinedAs={meetingJoined && userFullname}
             joinMeetingAction={joinMeetingAction}
             meetingEnded={meetingEnded}
           />
         );
       }
 
-      if (meetingUrl && meeting?.started) {
-        // When joining a meeting and browser blocks tab opening
-        // metting url is apended to current dashboard
+      if (!meetingJoined && meetingUrl && meeting?.started) {
+        // When user is not in the meeting,
+        // meeting url is appended to current dashboard
         content = (
           <React.Fragment>
             {content}
-            <DashboardMeetingJoin
-              href={meetingUrl}
-              onClick={() => {
-                setMeetingJoined(true);
-              }}
-            />
+            <DashboardMeetingJoin href={meetingUrl} />
           </React.Fragment>
         );
       }

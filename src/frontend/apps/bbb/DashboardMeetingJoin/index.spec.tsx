@@ -8,12 +8,11 @@ const onClick = jest.fn();
 
 describe('<DashboardMeetingJoin />', () => {
   it('displays a clickable link', () => {
-    const { getByText } = render(
+    render(
       wrapInIntlProvider(
         <DashboardMeetingJoin href="https://example.com" onClick={onClick} />,
       ),
     );
-    getByText('It seems like your browser is blocking popups.');
 
     const link = screen.getByRole('link', {
       name: /please click here to access meeting./i,
