@@ -47,7 +47,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -101,7 +100,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -155,7 +153,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -206,7 +203,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -257,7 +253,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -306,7 +301,6 @@ describe('<StudentLiveRegistration />', () => {
     mockJwt = {
       context_id: 'context_id',
       consumer_site: 'a.site.fr',
-      email: 'an.email@openfun.fr',
       locale: 'en',
       maintenance: false,
       permissions: {

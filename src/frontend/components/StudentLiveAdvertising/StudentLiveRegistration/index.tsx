@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { getDecodedJwt } from 'data/appData';
 import { fetchList } from 'data/queries/fetchList';
-import { DecodedJwt } from 'types/jwt';
+import { checkLtiToken } from 'utils/checkLtiToken';
 import { theme } from 'utils/theme/theme';
 
 import { RegistrationForm } from './RegistrationForm';
@@ -30,12 +30,6 @@ const messages = defineMessages({
     id: 'components.SubscribScheduledVideoEmail.form.success',
   },
 });
-
-const checkLtiToken = (jwt: DecodedJwt) => {
-  return (
-    jwt.context_id && jwt.consumer_site && jwt.user !== undefined && jwt.user.id
-  );
-};
 
 export const StudentLiveRegistration = () => {
   const intl = useIntl();

@@ -3,7 +3,6 @@ import { Nullable } from '../utils/types';
 export interface DecodedJwt {
   context_id?: string;
   consumer_site?: string;
-  email: string;
   locale: string;
   maintenance: boolean;
   permissions: {
