@@ -13,15 +13,21 @@ describe('sideEffects/createLiveRegistration', () => {
   afterEach(() => fetchMock.restore());
 
   it('creates a new liveregistration and returns it', async () => {
-    fetchMock.mock('/api/liveregistrations/', {
-      id: '42',
-      email: 'test@open-fun.fr',
-    });
-
-    const liveRegistration = await createLiveRegistration(
-      uuidv4(),
-      'test@open-fun.fr',
+    fetchMock.mock(
+      {
+        url: '/api/liveregistrations/',
+        body: {
+          email: 'test@open-fun.fr',
+        },
+        method: 'POST',
+      },
+      {
+        id: '42',
+        email: 'test@open-fun.fr',
+      },
     );
+
+    const liveRegistration = await createLiveRegistration('test@open-fun.fr');
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
@@ -33,7 +39,42 @@ describe('sideEffects/createLiveRegistration', () => {
       Authorization: 'Bearer token',
       'Content-Type': 'application/json',
     });
-    expect(fetchArgs.method).toEqual('POST');
+  });
+
+  it('creates a new liveregistration with an anonymous id and returns it', async () => {
+    const anonymousId = uuidv4();
+    fetchMock.mock(
+      {
+        url: '/api/liveregistrations/',
+        body: {
+          anonymous_id: anonymousId,
+          email: 'test@open-fun.fr',
+        },
+        method: 'POST',
+      },
+      {
+        anonymous_id: anonymousId,
+        id: '42',
+        email: 'test@open-fun.fr',
+      },
+    );
+
+    const liveRegistration = await createLiveRegistration(
+      'test@open-fun.fr',
+      anonymousId,
+    );
+
+    const fetchArgs = fetchMock.lastCall()![1]!;
+
+    expect(liveRegistration).toEqual({
+      anonymous_id: anonymousId,
+      id: '42',
+      email: 'test@open-fun.fr',
+    });
+    expect(fetchArgs.headers).toEqual({
+      Authorization: 'Bearer token',
+      'Content-Type': 'application/json',
+    });
   });
 
   it('throws when it fails to create the liveRegistration and returns a json Error', async () => {

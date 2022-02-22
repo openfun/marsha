@@ -9,6 +9,7 @@ import { DecodedJwt } from 'types/jwt';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentLiveRegistration } from '.';
+import { liveRegistrationFactory } from 'utils/tests/factories';
 
 let mockJwt: DecodedJwt;
 jest.mock('data/appData', () => ({
@@ -64,14 +65,13 @@ describe('<StudentLiveRegistration />', () => {
       },
     };
     mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveRegistration.mockImplementation(() =>
-      Promise.resolve({
-        id: 'id',
-        email: 'email',
-        should_send_reminders: true,
-        video: 'video_id',
-      }),
-    );
+    const liveRegistration = liveRegistrationFactory({
+      id: 'id',
+      email: 'email',
+      should_send_reminders: true,
+      video: 'video_id',
+    });
+    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
 
     const { container } = render(
       wrapInIntlProvider(
@@ -117,15 +117,13 @@ describe('<StudentLiveRegistration />', () => {
       },
     };
     mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveRegistration.mockImplementation(() =>
-      Promise.resolve({
-        id: 'id',
-        email: 'email',
-        should_send_reminders: true,
-        video: 'video_id',
-      }),
-    );
-
+    const liveRegistration = liveRegistrationFactory({
+      id: 'id',
+      email: 'email',
+      should_send_reminders: true,
+      video: 'video_id',
+    });
+    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
     const { container } = render(
       wrapInIntlProvider(
         <Fragment>
