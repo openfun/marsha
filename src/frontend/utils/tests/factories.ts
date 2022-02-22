@@ -1,6 +1,7 @@
 import * as faker from 'faker';
 import { Document } from '../../types/file';
 import {
+  LiveRegistration,
   Playlist,
   PlaylistLite,
   Thumbnail,
@@ -157,5 +158,27 @@ export const documentMockFactory = (
     url: `https://example.com/document/${id}`,
     playlist: playlistMockFactory(),
     ...document,
+  };
+};
+
+export const liveRegistrationFactory = (
+  liveRegistration: Partial<LiveRegistration> = {},
+): LiveRegistration => {
+  const id = liveRegistration.id || faker.datatype.uuid();
+
+  return {
+    anonymous_id: null,
+    consumer_site: null,
+    display_name: null,
+    email: null,
+    id,
+    is_registered: faker.datatype.boolean(),
+    live_attendance: null,
+    lti_id: null,
+    lti_user_id: null,
+    should_send_reminders: faker.datatype.boolean(),
+    username: null,
+    video: videoMockFactory().id,
+    ...liveRegistration,
   };
 };
