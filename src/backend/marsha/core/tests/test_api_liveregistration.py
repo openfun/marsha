@@ -23,6 +23,7 @@ from ..factories import (
     VideoFactory,
 )
 from ..models import LiveRegistration
+from ..models.account import NONE
 
 
 # pylint: disable=too-many-lines
@@ -3101,25 +3102,115 @@ class LiveRegistrationApiTest(TestCase):
             },
         )
 
-    def test_api_liveregistration_post_attendance_token_public(
+    def test_api_liveregistration_post_new_attendance_token_public(
         self,
     ):
-        """Can't create attendance when it's not a LTI token"""
+        """Create a new live registration if no one was existing for this anonymous id"""
         video = VideoFactory()
+        anonymous_id = uuid.uuid4()
         self.assertEqual(LiveRegistration.objects.count(), 0)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.post(
-            "/api/liveregistrations/push_attendance/",
-            {"live_attendance": {"k2": "v2"}},
+            f"/api/liveregistrations/push_attendance/?anonymous_id={anonymous_id}",
+            {"live_attendance": {}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(LiveRegistration.objects.count(), 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
             response.json(),
-            {"detail": "Attendance from public video is not implemented yet."},
+            {
+                "id": str(created_liveregistration.id),
+                "live_attendance": {},
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
+
+    def test_api_liveregistration_post_attendance_existing_token_public(self):
+        """An existing live registration for an anonymous id should be updated if existing."""
+        video = VideoFactory()
+        anonymous_id = uuid.uuid4()
+
+        liveregistration = LiveRegistrationFactory(
+            anonymous_id=anonymous_id,
+            email=None,
+            is_registered=False,
+            video=video,
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 1)
+        timestamp = str(timezone.now())
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+        response = self.client.post(
+            f"/api/liveregistrations/push_attendance/?anonymous_id={anonymous_id}",
+            {
+                "live_attendance": {
+                    timestamp: {"sound": "ON", "tabs": "OFF"},
+                }
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        liveregistration.refresh_from_db()
+
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(liveregistration.id),
+                "live_attendance": {
+                    timestamp: {"sound": "ON", "tabs": "OFF"},
+                },
+                "video": str(video.id),
+            },
+        )
+
+        self.assertIsNone(liveregistration.email)
+        self.assertIsNone(liveregistration.username)
+        self.assertEqual(
+            liveregistration.live_attendance,
+            {
+                timestamp: {"sound": "ON", "tabs": "OFF"},
+            },
+        )
+
+    def test_api_liveregistration_post_attendance_token_public_missing_anonymous_id(
+        self,
+    ):
+        """Posting an attendance with a public token and missing anonymous_id query string
+        should fails."""
+        video = VideoFactory()
+
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        timestamp = str(timezone.now())
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+        response = self.client.post(
+            "/api/liveregistrations/push_attendance/",
+            {
+                "live_attendance": {
+                    timestamp: {"sound": "ON", "tabs": "OFF"},
+                }
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(LiveRegistration.objects.count(), 0)
+        self.assertEqual(response.status_code, 400)
+
+        self.assertEqual(
+            response.json(),
+            {"detail": "anonymous_id is missing"},
         )
 
     def test_api_liveregistration_post_attendance_token_ok_user_record_empty_attendance(
