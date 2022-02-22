@@ -19,6 +19,8 @@ import {
   TimedTextTranscript,
   Video,
 } from 'types/tracks';
+import { initWebinarContext } from 'utils/initWebinarContext';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -33,6 +35,12 @@ const PublicVideoDashboard = ({
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
+
+  useAsyncEffect(async () => {
+    if (video.live_state && video.live_state !== liveState.IDLE) {
+      await initWebinarContext(video);
+    }
+  }, [video.live_state]);
 
   if (video.live_state !== null) {
     if (video.live_state === liveState.STOPPED) {
