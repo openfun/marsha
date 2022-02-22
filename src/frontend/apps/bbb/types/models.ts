@@ -1,4 +1,5 @@
 import { Playlist, Resource } from 'types/tracks';
+import { Nullable } from 'utils/types';
 
 export interface Meeting extends Resource {
   playlist: Playlist;
@@ -35,7 +36,7 @@ export interface MeetingInfos {
   videoCount: string;
   maxUsers: string;
   moderatorCount: string;
-  attendees: Attendee[];
+  attendees: Nullable<Attendee[]>;
   metadata: string;
   isBreakout: string;
 }
