@@ -228,13 +228,7 @@ class LiveRegistrationViewSet(
 
         liveregistration.save()
 
-        return Response(
-            {
-                "id": liveregistration.id,
-                "video": liveregistration.video.id,
-                "live_attendance": liveregistration.live_attendance,
-            }
-        )
+        return Response(self.get_serializer(liveregistration).data, status.HTTP_200_OK)
 
     @action(detail=False, methods=["put"], url_path="display_name")
     def set_display_name(self, request):
