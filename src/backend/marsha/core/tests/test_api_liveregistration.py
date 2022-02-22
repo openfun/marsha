@@ -3057,8 +3057,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site_id),
+                "display_name": None,
+                "email": None,
                 "id": str(created_liveregistration.id),
+                "is_registered": False,
                 "live_attendance": {"data": "test"},
+                "lti_id": str(video.playlist.lti_id),
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -3113,11 +3122,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site_id),
+                "display_name": None,
+                "email": "chantal@aol.com",
                 "id": str(liveregistration.id),
+                "is_registered": False,
                 "live_attendance": {
                     "key1": {"sound": "OFF", "tabs": "OFF"},
                     timestamp: {"sound": "ON", "tabs": "OFF"},
                 },
+                "lti_id": "Maths",
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -3156,8 +3174,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": None,
+                "email": None,
                 "id": str(created_liveregistration.id),
+                "is_registered": False,
                 "live_attendance": {},
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -3197,10 +3224,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": None,
+                "email": None,
                 "id": str(liveregistration.id),
-                "live_attendance": {
-                    timestamp: {"sound": "ON", "tabs": "OFF"},
-                },
+                "is_registered": False,
+                "live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}},
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
                 "video": str(video.id),
             },
         )
@@ -3285,8 +3319,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": None,
+                "email": "chantal@aol.com",
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "live_attendance": {"key1": "val1"},
+                "lti_id": "Maths",
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
@@ -3339,8 +3382,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": None,
+                "email": "chantal@aol.com",
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "live_attendance": {"key1": "val1"},
+                "lti_id": "Maths",
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Sylvie",
                 "video": str(video.id),
             },
         )
@@ -3395,8 +3447,17 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": None,
+                "email": "chantal@aol.com",
                 "id": str(liveregistration.id),
+                "is_registered": True,
                 "live_attendance": {"key1": "val1"},
+                "lti_id": "Maths",
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "should_send_reminders": True,
+                "username": "Sylvie",
                 "video": str(video.id),
             },
         )
@@ -3503,11 +3564,20 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": None,
+                "email": "sabrina@fun-test.fr",
                 "id": str(liveregistration.id),
+                "is_registered": False,
                 "live_attendance": {
                     "r2": {"sound": "OFF", "tabs": "OFF"},
                     timestamp: {"sound": "ON", "tabs": "OFF"},
                 },
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Token",
                 "video": str(video.id),
             },
         )
