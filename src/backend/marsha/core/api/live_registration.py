@@ -17,6 +17,7 @@ from sentry_sdk import capture_exception
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveRegistration, Video
+from ..models.account import NONE
 from .base import ObjectPkMixin
 
 
@@ -62,6 +63,17 @@ class LiveRegistrationViewSet(
             and user.token.payload["user"].get("id")
         )
 
+    def is_public_token(self):
+        """Read the token and check it was made to fetch a public resource."""
+        user = self.request.user
+        return (
+            user.token.payload
+            and user.token.payload.get("roles") == [NONE]
+            and user.token.payload.get("user") is None
+            and user.token.payload.get("context_id") is None
+            and user.token.payload.get("consumer_site") is None
+        )
+
     def get_liveregistration_from_lti(self):
         """Get or create liveregistration for a LTI connection."""
         user = self.request.user
@@ -80,6 +92,15 @@ class LiveRegistrationViewSet(
                 "email": token_user.get("email"),
                 "username": token_user.get("username"),
             },
+        )
+
+    def get_liveregistration_from_anonymous_id(self, anonymous_id):
+        """Get or create a liveregistration for an anonymous id"""
+        user = self.request.user
+        video = get_object_or_404(Video, pk=user.id)
+
+        return LiveRegistration.objects.get_or_create(
+            video=video, anonymous_id=anonymous_id
         )
 
     def get_queryset(self):
@@ -165,40 +186,54 @@ class LiveRegistrationViewSet(
             return Response({"detail": "Invalid request."}, status=400)
 
         if self.is_lti_token():
-            token_user = self.request.user.token.payload.get("user")
             liveregistration, created = self.get_liveregistration_from_lti()
-            # liveregistration already exists, we update email and username if necessary
-            if not created:
-                # Update liveregistration email only if it's defined in the token user
-                if token_user.get("email"):
-                    liveregistration.email = token_user.get("email")
-
-                # Update liveregistration username only it's defined in the token user
-                if token_user.get("username"):
-                    liveregistration.username = token_user.get("username")
-
-            # update or add live_attendance information
-            if liveregistration.live_attendance:
-                liveregistration.live_attendance = (
-                    serializer.data["live_attendance"]
-                    | liveregistration.live_attendance
+        elif self.is_public_token():
+            anonymous_id = self.request.query_params.get("anonymous_id")
+            if anonymous_id is None:
+                return Response(
+                    {"detail": "anonymous_id is missing"},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
-            else:
-                liveregistration.live_attendance = serializer.data["live_attendance"]
-
-            liveregistration.save()
-
+            liveregistration, created = self.get_liveregistration_from_anonymous_id(
+                anonymous_id=anonymous_id
+            )
+        else:
             return Response(
                 {
-                    "id": liveregistration.id,
-                    "video": liveregistration.video.id,
-                    "live_attendance": liveregistration.live_attendance,
-                }
+                    "detail": (
+                        "Impossible to authenticate you. You should provide a valid JWT token."
+                    )
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
+        token_user = self.request.user.token.payload.get("user", {})
+        # liveregistration already exists, we update email and username if necessary
+        if not created:
+            # Update liveregistration email only if it's defined in the token user
+            if token_user.get("email"):
+                liveregistration.email = token_user.get("email")
+
+            # Update liveregistration username only it's defined in the token user
+            if token_user.get("username"):
+                liveregistration.username = token_user.get("username")
+
+        # update or add live_attendance information
+        if liveregistration.live_attendance:
+            liveregistration.live_attendance = (
+                serializer.data["live_attendance"] | liveregistration.live_attendance
+            )
+        else:
+            liveregistration.live_attendance = serializer.data["live_attendance"]
+
+        liveregistration.save()
+
         return Response(
-            {"detail": "Attendance from public video is not implemented yet."},
-            status=404,
+            {
+                "id": liveregistration.id,
+                "video": liveregistration.video.id,
+                "live_attendance": liveregistration.live_attendance,
+            }
         )
 
     @action(detail=False, methods=["put"], url_path="display_name")
