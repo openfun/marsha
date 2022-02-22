@@ -118,8 +118,17 @@ export enum LiveModeType {
 }
 
 export interface LiveRegistration extends Resource {
-  email: string;
+  anonymous_id: Nullable<string>;
+  consumer_site: Nullable<string>;
+  display_name: Nullable<string>;
+  email: Nullable<string>;
+  id: string;
+  is_registered: boolean;
+  live_attendance: Nullable<object>;
+  lti_id: Nullable<string>;
+  lti_user_id: Nullable<string>;
   should_send_reminders: boolean;
+  username: Nullable<string>;
   video: Video['id'];
 }
 
