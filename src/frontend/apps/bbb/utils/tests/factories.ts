@@ -45,7 +45,7 @@ export const meetingInfosMockFactory = (
     videoCount: faker.datatype.number().toString(),
     maxUsers: faker.datatype.number().toString(),
     moderatorCount: faker.datatype.number().toString(),
-    attendees: [],
+    attendees: null,
     metadata: faker.datatype.string(),
     isBreakout: 'false',
     ...meetingInfos,

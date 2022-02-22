@@ -9,6 +9,8 @@ import { Loader } from 'components/Loader';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useJoinMeeting, useMeeting } from 'apps/bbb/data/queries';
+import { Attendee } from 'apps/bbb/types/models';
+import { Maybe } from 'utils/types';
 
 const DashboardMeetingStudent = lazy(
   () => import('apps/bbb/DashboardMeetingStudent'),
@@ -64,14 +66,17 @@ const DashboardMeeting = () => {
   }`;
 
   useEffect(() => {
-    const attendeeFound = meeting?.infos?.attendees.find((attendee) => {
-      return (
-        consumerSiteUserId === attendee.userID &&
-        (attendee.hasVideo === 'true' ||
-          attendee.hasJoinedVoice === 'true' ||
-          attendee.isListeningOnly === 'true')
-      );
-    });
+    let attendeeFound: Maybe<Attendee>;
+    if (meeting?.infos?.attendees) {
+      attendeeFound = meeting.infos.attendees?.find((attendee) => {
+        return (
+          consumerSiteUserId === attendee.userID &&
+          (attendee.hasVideo === 'true' ||
+            attendee.hasJoinedVoice === 'true' ||
+            attendee.isListeningOnly === 'true')
+        );
+      });
+    }
 
     if (attendeeFound) {
       setUserFullname(attendeeFound.fullName);
