@@ -6,11 +6,15 @@ import { appData } from 'data/appData';
  * Create a new liveRegistration record for an email and the video of the jwt token.
  */
 export const createLiveRegistration = async (
-  anonymousId: string,
   email: string,
-) => {
+  anonymousId?: string,
+): Promise<LiveRegistration> => {
+  const body = {
+    email,
+    anonymous_id: anonymousId,
+  };
   const response = await fetch(`${API_ENDPOINT}/liveregistrations/`, {
-    body: JSON.stringify({ anonymous_id: anonymousId, email }),
+    body: JSON.stringify(body),
     headers: {
       Authorization: `Bearer ${appData.jwt}`,
       'Content-Type': 'application/json',
@@ -21,5 +25,5 @@ export const createLiveRegistration = async (
   if (!response.ok) {
     throw { code: 'invalid', ...(await response.json()) };
   }
-  return (await response.json()) as LiveRegistration;
+  return response.json();
 };

@@ -1,13 +1,15 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React, { Fragment, useLayoutEffect, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { getDecodedJwt } from 'data/appData';
 import { fetchList } from 'data/queries/fetchList';
 import { checkLtiToken } from 'utils/checkLtiToken';
+import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
+import { Maybe } from 'utils/types';
 
 import { RegistrationForm } from './RegistrationForm';
 
@@ -41,18 +43,18 @@ export const StudentLiveRegistration = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [registered, setRegistered] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let canceled = false;
     const checkRegistered = async () => {
+      let queryString: Maybe<{ anonymous_id: string }>;
       if (!checkLtiToken(decodedJWT)) {
-        setIsLoading(false);
-        return;
+        queryString = { anonymous_id: getAnonymousId() };
       }
 
       let registrations;
       try {
         registrations = await fetchList({
-          queryKey: ['liveregistrations'],
+          queryKey: ['liveregistrations', queryString],
           meta: {},
         });
       } catch (err) {
