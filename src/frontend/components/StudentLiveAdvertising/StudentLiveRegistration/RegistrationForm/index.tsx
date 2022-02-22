@@ -3,10 +3,13 @@ import { deepMerge, normalizeColor } from 'grommet/utils';
 import React, { CSSProperties, useContext, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { v4 as uuidv4 } from 'uuid';
 
+import { getDecodedJwt } from 'data/appData';
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
+import { checkLtiToken } from 'utils/checkLtiToken';
+import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
+import { Maybe } from 'utils/types';
 
 import { RegistrationEmailField } from './RegistrationEmailField';
 
@@ -108,9 +111,12 @@ export const RegistrationForm = ({
   const isSubmitOngoing = useRef(false);
 
   const onSubmit = async (email: string) => {
+    let anonymousId: Maybe<string>;
+    if (!checkLtiToken(getDecodedJwt())) {
+      anonymousId = getAnonymousId();
+    }
     try {
-      const anonymousId = uuidv4();
-      await createLiveRegistration(anonymousId, email);
+      await createLiveRegistration(email, anonymousId);
       setRegistrationCompleted();
     } catch (error: any) {
       let errorMessage;

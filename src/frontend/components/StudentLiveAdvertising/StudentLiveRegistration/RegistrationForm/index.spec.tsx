@@ -4,15 +4,28 @@ import React, { Fragment } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
+import { checkLtiToken } from 'utils/checkLtiToken';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { RegistrationForm } from '.';
 import userEvent from '@testing-library/user-event';
+import { liveRegistrationFactory } from 'utils/tests/factories';
 
 const setValues = jest.fn();
 const setRegistrationCompleted = jest.fn();
 
 let matchMedia: MatchMediaMock;
+
+jest.mock('data/appData', () => ({
+  getDecodedJwt: jest.fn(),
+}));
+jest.mock('utils/checkLtiToken', () => ({
+  checkLtiToken: jest.fn(),
+}));
+
+const mockCheckLtiToken = checkLtiToken as jest.MockedFunction<
+  typeof checkLtiToken
+>;
 
 jest.mock('data/sideEffects/createLiveRegistration', () => ({
   createLiveRegistration: jest.fn(),
@@ -112,12 +125,14 @@ describe('<RegistrationForm />', () => {
   });
 
   it('calls parent on submit success', async () => {
-    mockCreateLiveRegistration.mockResolvedValue({
+    mockCheckLtiToken.mockReturnValue(true);
+    const liveRegistration = liveRegistrationFactory({
       id: 'id',
       email: 'email',
       should_send_reminders: true,
       video: 'id',
     });
+    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
     const values = {
       email: 'some.email@openfun.com',
     };
@@ -171,6 +186,7 @@ describe('<RegistrationForm />', () => {
   });
 
   it('toasts an error when validation fail server side', async () => {
+    mockCheckLtiToken.mockReturnValue(true);
     mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
     const values = {
       email: 'some.email@openfun.fr',
