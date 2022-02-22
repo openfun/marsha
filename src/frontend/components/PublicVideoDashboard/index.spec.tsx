@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { DateTime } from 'luxon';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
@@ -14,6 +15,8 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { liveState, timedTextMode } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
+import { initWebinarContext } from 'utils/initWebinarContext';
+import { getAnonymousId } from 'utils/localstorage';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
@@ -30,6 +33,12 @@ jest.mock('data/sideEffects/getResource', () => ({
 }));
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
+}));
+jest.mock('utils/initWebinarContext', () => ({
+  initWebinarContext: jest.fn(),
+}));
+jest.mock('utils/localstorage', () => ({
+  getAnonymousId: jest.fn(),
 }));
 jest.mock('utils/resumeLive', () => ({
   resumeLive: jest.fn().mockResolvedValue(null),
@@ -48,6 +57,13 @@ jest.mock('video.js', () => ({
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
+>;
+
+const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
+  typeof getAnonymousId
+>;
+const mockInitWebinarContext = initWebinarContext as jest.MockedFunction<
+  typeof initWebinarContext
 >;
 
 let mockCanUpdate: boolean;
@@ -212,6 +228,8 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
+    expect(mockInitWebinarContext).not.toHaveBeenCalled();
+
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
     expect(
@@ -276,6 +294,8 @@ describe('PublicVideoDashboard', () => {
         expect.any(Function),
       ),
     );
+
+    expect(mockInitWebinarContext).not.toHaveBeenCalled();
 
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
@@ -343,6 +363,10 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
+    await waitFor(() => {
+      expect(mockInitWebinarContext).toHaveBeenCalled();
+    });
+
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
 
@@ -399,6 +423,10 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
+    await waitFor(() => {
+      expect(mockInitWebinarContext).toHaveBeenCalled();
+    });
+
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
 
@@ -441,6 +469,10 @@ describe('PublicVideoDashboard', () => {
         <PublicVideoDashboard video={video} playerType="videojs" />,
       ),
     );
+
+    await waitFor(() => {
+      expect(mockInitWebinarContext).toHaveBeenCalled();
+    });
 
     screen.getByRole('heading', {
       name: 'Live is starting',
@@ -492,6 +524,10 @@ describe('PublicVideoDashboard', () => {
         expect.any(Function),
       ),
     );
+
+    await waitFor(() => {
+      expect(mockInitWebinarContext).toHaveBeenCalled();
+    });
 
     const videoElement = container.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
@@ -583,6 +619,7 @@ describe('PublicVideoDashboard', () => {
     screen.getByRole('heading', {
       name: 'Live is starting',
     });
+    expect(mockInitWebinarContext).not.toHaveBeenCalled();
   });
 
   it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', () => {
@@ -605,11 +642,21 @@ describe('PublicVideoDashboard', () => {
     screen.getByRole('heading', {
       name: 'Live is starting',
     });
+    expect(mockInitWebinarContext).not.toHaveBeenCalled();
   });
 
   it('displays the SubscribeScheduledVideo component when live_state is IDLE and video is scheduled', async () => {
     const startingAt = new Date();
     startingAt.setFullYear(startingAt.getFullYear() + 10);
+    const anonymousId = uuidv4();
+    mockGetAnonymousId.mockReturnValue(anonymousId);
+    fetchMock.mock(
+      `/api/liveregistrations/?anonymous_id=${anonymousId}&limit=999`,
+      {
+        count: 0,
+        results: [],
+      },
+    );
 
     const video = videoMockFactory({
       live_state: liveState.IDLE,
@@ -632,5 +679,6 @@ describe('PublicVideoDashboard', () => {
     screen.getByRole('heading', {
       name: /Live will start in 2 days at 11:00 AM/i,
     });
+    expect(mockInitWebinarContext).not.toHaveBeenCalled();
   });
 });
