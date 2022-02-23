@@ -280,10 +280,7 @@ class LiveRegistrationViewSet(
                     defaults=update_fields,
                 )
             return Response(
-                {
-                    "display_name": liveregistration.display_name,
-                    "username": liveregistration.username,
-                }
+                self.get_serializer(liveregistration).data, status.HTTP_200_OK
             )
         except IntegrityError as error:
             if "liveregistration_unique_video_display_name" in error.args[0]:
