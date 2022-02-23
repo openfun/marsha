@@ -11,7 +11,6 @@ export enum appState {
 export enum flags {
   BBB = 'BBB',
   SENTRY = 'sentry',
-  JITSI = 'jitsi',
   LIVE_RAW = 'live_raw',
 }
 
