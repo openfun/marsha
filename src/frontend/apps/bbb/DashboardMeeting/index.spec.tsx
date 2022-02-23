@@ -127,6 +127,8 @@ describe('<DashboardMeeting />', () => {
   it('asks for fullname when joining a meeting, not cancellable for student', async () => {
     mockCanUpdate = false;
     mockUserFullname = undefined;
+    window.open = jest.fn(() => window);
+
     const meeting = meetingMockFactory({
       id: '1',
       started: true,
@@ -144,8 +146,20 @@ describe('<DashboardMeeting />', () => {
       ),
     );
     await act(async () => meetingDeferred.resolve(meeting));
+    fireEvent.click(screen.getByText('Join meeting'));
     await findByText('Please enter your name to join the meeting');
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+
+    const inputUsername = screen.getByRole('textbox');
+    fireEvent.change(inputUsername, { target: { value: 'Joe' } });
+
+    const deferredPatch = new Deferred();
+    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
+    fireEvent.click(screen.getByText('Join'));
+    await act(async () =>
+      deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
+    );
+    expect(window.open).toHaveBeenCalledTimes(1);
   });
 
   it('uses appdata fullname when joining a meeting', async () => {
