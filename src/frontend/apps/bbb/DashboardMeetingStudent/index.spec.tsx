@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -32,6 +32,21 @@ describe('<DashboardMeetingStudent />', () => {
     expect(meetingEnded).toHaveBeenCalledTimes(1);
 
     // meeting starts
+    rerender(
+      wrapInIntlProvider(
+        <DashboardMeetingStudent
+          meeting={{ ...meeting, started: true, ended: false }}
+          joinedAs={false}
+          joinMeetingAction={joinMeetingAction}
+          meetingEnded={meetingEnded}
+        />,
+      ),
+    );
+    fireEvent.click(screen.getByText('Join meeting'));
+    expect(joinMeetingAction).toHaveBeenCalledTimes(1);
+    expect(meetingEnded).toHaveBeenCalledTimes(1);
+
+    // meeting joined
     rerender(
       wrapInIntlProvider(
         <DashboardMeetingStudent
