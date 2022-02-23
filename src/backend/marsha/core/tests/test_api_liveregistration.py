@@ -3609,10 +3609,11 @@ class LiveRegistrationApiTest(TestCase):
     def test_api_liveregistration_put_username_public_no_anonymous(
         self,
     ):
-        """Field anonymous_id is mandatory."""
+        """Field anonymous_id is mandatory when the JWT token is a public one."""
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"display_name": "Antoine"},
@@ -3622,13 +3623,14 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "Invalid request."})
 
-    def test_api_liveregistration_put_username_public_no_anonymous_no_displayname(
+    def test_api_liveregistration_put_username_public_no_displayname(
         self,
     ):
         """Field display_name is mandatory."""
         video = VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"anonymous_id": uuid.uuid4()},
@@ -3651,6 +3653,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 1)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
@@ -3685,6 +3688,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 1)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
@@ -3714,6 +3718,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 0)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
@@ -3744,6 +3749,7 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(LiveRegistration.objects.count(), 1)
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
         response = self.client.put(
             "/api/liveregistrations/display_name/",
             {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
@@ -3753,36 +3759,10 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 409)
         self.assertEqual(
             response.json(),
-            {"display_name": "User with that username already exists!"},
+            {"display_name": "User with that display_name already exists!"},
         )
 
-    def test_api_liveregistration_put_username_lti_no_anonymous(
-        self,
-    ):
-        """Field anonymous_id is mandatory."""
-        video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = [
-            random.choice(["administrator", "instructor", "student", ""])
-        ]
-        jwt_token.payload["user"] = {
-            "email": "sabrina@fun-test.fr",
-            "id": "55555",
-            "username": "Token",
-        }
-        response = self.client.put(
-            "/api/liveregistrations/display_name/",
-            {"display_name": "Antoine"},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"detail": "Invalid request."})
-
-    def test_api_liveregistration_put_username_lti_no_anonymous_no_displayname(
+    def test_api_liveregistration_put_username_lti_no_displayname(
         self,
     ):
         """Field display_name is mandatory."""
@@ -3974,5 +3954,5 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 409)
         self.assertEqual(
             response.json(),
-            {"display_name": "User with that username already exists!"},
+            {"display_name": "User with that display_name already exists!"},
         )
