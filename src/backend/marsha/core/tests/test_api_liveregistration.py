@@ -3667,7 +3667,20 @@ class LiveRegistrationApiTest(TestCase):
 
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": None},
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": "Antoine",
+                "email": liveregistration.email,
+                "id": str(liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
         )
         self.assertEqual(liveregistration.display_name, "Antoine")
 
@@ -3699,11 +3712,25 @@ class LiveRegistrationApiTest(TestCase):
 
         # a new record has been created
         self.assertEqual(LiveRegistration.objects.count(), 2)
+        created_liveregistration = LiveRegistration.objects.get(video=video)
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": None},
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": "Antoine",
+                "email": None,
+                "id": str(created_liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
         )
-        created_liveregistration = LiveRegistration.objects.get(video=video)
+
         self.assertEqual(created_liveregistration.display_name, "Antoine")
         self.assertEqual(created_liveregistration.username, None)
         self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
@@ -3728,12 +3755,25 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         # new record
         self.assertEqual(LiveRegistration.objects.count(), 1)
-
+        created_liveregistration = LiveRegistration.objects.last()
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": None},
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": "Antoine",
+                "email": None,
+                "id": str(created_liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
         )
-        created_liveregistration = LiveRegistration.objects.last()
+
         self.assertEqual(created_liveregistration.display_name, "Antoine")
         self.assertEqual(created_liveregistration.username, None)
         self.assertEqual(created_liveregistration.anonymous_id, anonymous_id)
@@ -3817,7 +3857,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.put(
             "/api/liveregistrations/display_name/",
-            {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
+            {"display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3829,7 +3869,20 @@ class LiveRegistrationApiTest(TestCase):
         # username has been updated with current information in the token
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": "Token"},
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Antoine",
+                "email": "sabrina@fun-test.fr",
+                "id": str(liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Token",
+                "video": str(video.id),
+            },
         )
         self.assertEqual(liveregistration.display_name, "Antoine")
         # username has been updated with current information in the token
@@ -3871,7 +3924,7 @@ class LiveRegistrationApiTest(TestCase):
         }
         response = self.client.put(
             "/api/liveregistrations/display_name/",
-            {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
+            {"display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3879,11 +3932,25 @@ class LiveRegistrationApiTest(TestCase):
 
         # a new record has been created
         self.assertEqual(LiveRegistration.objects.count(), 2)
+        created_liveregistration = LiveRegistration.objects.get(video=video)
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": "Patou"},
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Antoine",
+                "email": "sabrina@fun-test.fr",
+                "id": str(created_liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Patou",
+                "video": str(video.id),
+            },
         )
-        created_liveregistration = LiveRegistration.objects.get(video=video)
+
         self.assertEqual(created_liveregistration.display_name, "Antoine")
         self.assertEqual(created_liveregistration.username, "Patou")
 
@@ -3915,12 +3982,25 @@ class LiveRegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         # new record
         self.assertEqual(LiveRegistration.objects.count(), 1)
-
+        created_liveregistration = LiveRegistration.objects.get(video=video)
         self.assertEqual(
             response.json(),
-            {"display_name": "Antoine", "username": "Token"},
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Antoine",
+                "email": "sabrina@fun-test.fr",
+                "id": str(created_liveregistration.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Token",
+                "video": str(video.id),
+            },
         )
-        created_liveregistration = LiveRegistration.objects.get(video=video)
+
         self.assertEqual(created_liveregistration.display_name, "Antoine")
         self.assertEqual(created_liveregistration.username, "Token")
 
