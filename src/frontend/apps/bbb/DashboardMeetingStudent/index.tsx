@@ -1,10 +1,8 @@
 import { Box, Text } from 'grommet';
 import React, { useEffect } from 'react';
-import {
-  defineMessages,
-  FormattedMessage,
-  MessageDescriptor,
-} from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+
+import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
 
 import { Meeting } from 'apps/bbb/types/models';
 
@@ -13,6 +11,11 @@ const messages = defineMessages({
     defaultMessage: 'You have joined the meeting as {joinedAs}.',
     description: 'Message when user has joined the meeting.',
     id: 'component.DashboardMeetingStudent.joinedAs',
+  },
+  joinMeetingLabel: {
+    defaultMessage: 'Join meeting',
+    description: 'Label for joining meeting in instructor dashboard.',
+    id: 'component.DashboardMeetingStudent.joinMeetingLabel',
   },
   meetingEnded: {
     defaultMessage: 'Meeting ended.',
@@ -24,10 +27,10 @@ const messages = defineMessages({
     description: 'Message when meeting is not started.',
     id: 'component.DashboardMeetingStudent.meetingNotStarted',
   },
-  meetingRedirection: {
+  meetingStarted: {
     defaultMessage: 'Meeting is started.',
     description: 'Message when meeting is started.',
-    id: 'component.DashboardMeetingStudent.meetingRedirection',
+    id: 'component.DashboardMeetingStudent.meetingStarted',
   },
 });
 
@@ -44,32 +47,53 @@ const DashboardMeetingStudent = ({
   joinMeetingAction,
   meetingEnded,
 }: DashboardMeetingStudentProps) => {
+  const intl = useIntl();
+
   useEffect(() => {
-    if (meeting.started) {
-      joinMeetingAction();
-    } else {
+    if (!meeting.started) {
       meetingEnded();
     }
   }, [meeting]);
 
-  let message: MessageDescriptor;
-  if (meeting.started) {
-    message = messages.meetingRedirection;
+  let content: JSX.Element;
+  if (joinedAs) {
+    content = (
+      <Text textAlign="center">
+        <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
+      </Text>
+    );
+  } else if (meeting.started) {
+    content = (
+      <React.Fragment>
+        <Text textAlign="center">
+          <FormattedMessage {...messages.meetingStarted} />
+        </Text>
+        <Box direction="row" justify="center" margin={{ top: 'medium' }}>
+          <DashboardButton
+            primary={true}
+            label={intl.formatMessage(messages.joinMeetingLabel)}
+            onClick={joinMeetingAction}
+          />
+        </Box>
+      </React.Fragment>
+    );
   } else if (meeting.ended) {
-    message = messages.meetingEnded;
+    content = (
+      <Text textAlign="center">
+        <FormattedMessage {...messages.meetingEnded} />
+      </Text>
+    );
   } else {
-    message = messages.meetingNotStarted;
+    content = (
+      <Text textAlign="center">
+        <FormattedMessage {...messages.meetingNotStarted} />
+      </Text>
+    );
   }
 
   return (
-    <Box pad="large" align="center">
-      <Text>
-        {joinedAs ? (
-          <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
-        ) : (
-          <FormattedMessage {...message} />
-        )}
-      </Text>
+    <Box pad="large" fill>
+      {content}
     </Box>
   );
 };
