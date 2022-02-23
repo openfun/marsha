@@ -269,6 +269,11 @@ class LiveRegistrationViewSet(
                     defaults=update_fields,
                 )
             else:
+                if not serializer.validated_data.get("anonymous_id"):
+                    return Response(
+                        {"detail": "Invalid request."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 liveregistration, _ = LiveRegistration.objects.update_or_create(
                     anonymous_id=serializer.validated_data["anonymous_id"],
                     video=video,
@@ -283,7 +288,7 @@ class LiveRegistrationViewSet(
         except IntegrityError as error:
             if "liveregistration_unique_video_display_name" in error.args[0]:
                 return Response(
-                    {"display_name": "User with that username already exists!"},
+                    {"display_name": "User with that display_name already exists!"},
                     status=status.HTTP_409_CONFLICT,
                 )
 

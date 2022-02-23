@@ -15,7 +15,6 @@ class LiveRegistrationDisplayUsernameSerializer(serializers.ModelSerializer):
         fields = ("anonymous_id", "display_name", "username")
         read_only_fields = ("username",)
         extra_kwargs = {
-            "anonymous_id": {"allow_null": False, "required": True},
             "display_name": {"allow_null": False, "required": True},
         }
 
