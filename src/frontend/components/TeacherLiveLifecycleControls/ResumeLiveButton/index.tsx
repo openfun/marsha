@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { PlaySVG } from 'components/SVGIcons/PlaySVG';
 import { startLive } from 'data/sideEffects/startLive';
+import { useStopLiveConfirmation } from 'data/stores/useStopLiveConfirmation';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 
@@ -36,10 +37,12 @@ export const ResumeLiveButton = ({
   ...props
 }: ResumeLiveButtonProps) => {
   const intl = useIntl();
+  const setShowStopConfirmation = useStopLiveConfirmation()[1];
   const [status, setStatus] = useState<ResumeLiveStatus>({ type: 'idle' });
   const { updateVideo } = useVideo((state) => ({
     updateVideo: state.addResource,
   }));
+  const [shouldShowStopAler] = useStopLiveConfirmation();
 
   useEffect(() => {
     if (status.type === 'error') {
@@ -60,6 +63,7 @@ export const ResumeLiveButton = ({
         if (cancel) {
           return;
         }
+        setShowStopConfirmation(false);
         setStatus({ type: 'idle' });
         updateVideo(updatedVideo);
       } catch (error) {
@@ -76,7 +80,7 @@ export const ResumeLiveButton = ({
   return (
     <Button
       primary
-      disabled={status.type === 'loading'}
+      disabled={shouldShowStopAler || status.type === 'loading'}
       label={
         <Box flex direction="row">
           {intl.formatMessage(messages.title)}
