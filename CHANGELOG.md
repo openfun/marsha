@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Show a specific message to students when BBB meeting ended
 - Remove cancel button in student meeting join form
 - Replace automatic meeting joining by a button
+- Allow generated links in Django admin for objects in other applications
 
 ## [4.0.0-beta.1] - 2022-02-15
 

@@ -43,7 +43,7 @@ def link_field(field_name):
     Returns
     -------
     function
-        The function that Django admin must call with the object as arguement to render the field
+        The function that Django admin must call with the object as argument to render the field
         as a link.
 
     """
@@ -65,10 +65,10 @@ def link_field(field_name):
             The html representing the link to the object admin change view.
 
         """
-        app_label = obj._meta.app_label
         linked_obj = getattr(obj, field_name)
         if linked_obj is None:
             return "-"
+        app_label = linked_obj._meta.app_label
         model_name = linked_obj._meta.model_name
         view_name = f"admin:{app_label}_{model_name}_change"
         link_url = reverse(view_name, args=[linked_obj.id])
