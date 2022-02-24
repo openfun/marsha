@@ -27,15 +27,27 @@ jest.mock('data/sideEffects/startLive', () => ({
 }));
 const mockedStartLive = startLive as jest.MockedFunction<typeof startLive>;
 
+let mockStopLiveConfirmation = false;
+const mockSetStopLiveConfirmation = jest.fn();
+jest.mock('data/stores/useStopLiveConfirmation', () => ({
+  useStopLiveConfirmation: () => [
+    mockStopLiveConfirmation,
+    mockSetStopLiveConfirmation,
+  ],
+}));
+
 let matchMedia: MatchMediaMock;
 
 describe('<ResumeLiveButton />', () => {
   beforeEach(() => {
     matchMedia = new MatchMediaMock();
+    mockStopLiveConfirmation = false;
   });
 
   afterEach(() => {
     matchMedia.clear();
+
+    jest.clearAllMocks();
 
     /*
       make sure to remove all body children, grommet layer gets rendered twice, known issue
@@ -65,6 +77,9 @@ describe('<ResumeLiveButton />', () => {
       ...video,
       live_state: liveState.RUNNING,
     });
+
+    expect(mockSetStopLiveConfirmation).toHaveBeenCalled();
+    expect(mockSetStopLiveConfirmation).toHaveBeenCalledWith(false);
   });
 
   it('renders a toast on fail', async () => {
@@ -83,5 +98,20 @@ describe('<ResumeLiveButton />', () => {
     userEvent.click(screen.getByRole('button', { name: 'Resume streaming' }));
 
     await screen.findByText('An error occured, please try again.');
+
+    expect(mockSetStopLiveConfirmation).not.toHaveBeenCalled();
+  });
+
+  it('rendes the button disable when stop confirmation modal is open', () => {
+    const video = videoMockFactory({ live_state: liveState.PAUSED });
+    mockedStartLive.mockRejectedValue(null);
+    mockStopLiveConfirmation = true;
+
+    render(wrapInIntlProvider(<ResumeLiveButton video={video} />));
+
+    expect(
+      screen.getByRole('button', { name: 'Resume streaming' }),
+    ).toBeDisabled();
+    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
   });
 });

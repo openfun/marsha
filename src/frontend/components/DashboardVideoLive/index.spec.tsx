@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 
@@ -132,7 +133,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    await screen.findByText('Only the admin can administrate the live');
+    await screen.findByText('Only a jitsi moderator can administrate the live');
   });
 
   it('shows the pause button when the status is RUNNING', () => {
@@ -168,6 +169,36 @@ describe('components/DashboardVideoLive', () => {
     screen.getByRole('textbox', { name: /description/i });
     screen.getByText(/starting date and time/i);
     screen.getByRole('button', { name: /submit/i });
+  });
+
+  it('shows confirmation modal when clicking the stop button', async () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <Suspense fallback="loading...">
+            <DashboardVideoLive
+              video={{ ...video, live_state: liveState.PAUSED }}
+            />
+          </Suspense>,
+        ),
+      ),
+    );
+
+    //  initial state
+    const stopButton = await screen.findByRole('button', {
+      name: 'End live',
+    });
+    expect(stopButton).not.toBeDisabled();
+
+    userEvent.click(stopButton);
+
+    //  modal is open
+    await screen.findByRole('button', { name: 'Cancel' });
+    screen.getByRole('button', { name: 'Stop the live' });
+    expect(stopButton).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'Resume streaming' }),
+    ).toBeDisabled();
   });
 
   it("doesn't show the scheduling form when the status is not IDLE", () => {

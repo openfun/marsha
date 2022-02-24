@@ -6,6 +6,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { liveState } from 'types/tracks';
 
 import { TeacherLiveLifecycleControls } from '.';
+import { StopLiveConfirmationProvider } from 'data/stores/useStopLiveConfirmation';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
@@ -195,11 +196,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
 
     render(
       wrapInIntlProvider(
-        <TeacherLiveLifecycleControls
-          canStartStreaming={true}
-          hasRightToStart={true}
-          video={video}
-        />,
+        <StopLiveConfirmationProvider value={false}>
+          <TeacherLiveLifecycleControls
+            canStartStreaming={true}
+            hasRightToStart={true}
+            video={video}
+          />
+        </StopLiveConfirmationProvider>,
       ),
     );
 
