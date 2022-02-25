@@ -112,8 +112,15 @@ describe('<TeacherLiveStopConfirmation />', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByTestId('loader-id'));
 
-    expect(mockSetStopLiveConfirmation).toHaveBeenCalled();
-    expect(mockSetStopLiveConfirmation).toHaveBeenCalledWith(false);
+    expect(mockSetStopLiveConfirmation).not.toHaveBeenCalled();
+  });
+
+  it('says harvesting message when live is stopped', () => {
+    const video = videoMockFactory({ live_state: liveState.STOPPED });
+
+    render(wrapInIntlProvider(<TeacherLiveStopConfirmation video={video} />));
+
+    screen.getByText('Live is stopped, harvesting will begin soon.');
   });
 
   it('toasts an error', async () => {
