@@ -1,12 +1,12 @@
 import { Box, Button, Heading, Paragraph, Spinner } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { endLive } from 'data/sideEffects/endLive';
 import { useStopLiveConfirmation } from 'data/stores/useStopLiveConfirmation';
 import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
+import { liveState, Video } from 'types/tracks';
 
 const messages = defineMessages({
   alertInfo: {
@@ -31,6 +31,12 @@ const messages = defineMessages({
     description:
       'Error message displayed when and error occured when trying to pause',
     id: 'components.TeacherLiveStopConfirmation.error',
+  },
+  stopped: {
+    defaultMessage: 'Live is stopped, harvesting will begin soon.',
+    description:
+      'Message displayed at the end of a live until harvesting began.',
+    id: 'components.TeacherLiveStopConfirmation.stopped',
   },
 });
 
@@ -96,36 +102,46 @@ export const TeacherLiveStopConfirmation = ({
         <Heading color="white" level="3" textAlign="center">
           {video.title}
         </Heading>
-        <Paragraph color="white" textAlign="center">
-          {intl.formatMessage(messages.alertInfo, { br: <br /> })}
-        </Paragraph>
-        <Button
-          disabled={status.type === 'loading'}
-          justify="center"
-          margin={{ vertical: 'small' }}
-          onClick={() => setStatus({ type: 'loading' })}
-          primary
-        >
-          <Box>
-            <Box direction="row" flex margin="auto">
-              {intl.formatMessage(messages.stopButtonTitle)}
-              {status.type === 'loading' && (
-                <Spinner
-                  data-testid="loader-id"
-                  color="white"
-                  margin={{ left: 'small' }}
-                />
-              )}
-            </Box>
-          </Box>
-        </Button>
-        <Button
-          disabled={status.type === 'loading'}
-          label={intl.formatMessage(messages.cancelButtonTitle)}
-          margin={{ vertical: 'small' }}
-          onClick={() => setShouldShowStopConfirmation(false)}
-          primary
-        />
+
+        {video.live_state !== liveState.STOPPED && (
+          <Fragment>
+            <Paragraph color="white" textAlign="center">
+              {intl.formatMessage(messages.alertInfo, { br: <br /> })}
+            </Paragraph>
+            <Button
+              disabled={status.type === 'loading'}
+              justify="center"
+              margin={{ vertical: 'small' }}
+              onClick={() => setStatus({ type: 'loading' })}
+              primary
+            >
+              <Box>
+                <Box direction="row" flex margin="auto">
+                  {intl.formatMessage(messages.stopButtonTitle)}
+                  {status.type === 'loading' && (
+                    <Spinner
+                      data-testid="loader-id"
+                      color="white"
+                      margin={{ left: 'small' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            </Button>
+            <Button
+              disabled={status.type === 'loading'}
+              label={intl.formatMessage(messages.cancelButtonTitle)}
+              margin={{ vertical: 'small' }}
+              onClick={() => setShouldShowStopConfirmation(false)}
+              primary
+            />
+          </Fragment>
+        )}
+        {video.live_state === liveState.STOPPED && (
+          <Paragraph color="white" textAlign="center">
+            {intl.formatMessage(messages.stopped)}
+          </Paragraph>
+        )}
       </Box>
     </Box>
   );
