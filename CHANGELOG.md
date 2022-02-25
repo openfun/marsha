@@ -79,6 +79,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Integrate live advertisement in live layout
 - Disable jitsi deeplinking
 - Update live layout for teacher
+- Update live registration form for students
 
 ### Removed
 
