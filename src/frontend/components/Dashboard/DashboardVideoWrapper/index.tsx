@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Video } from 'types/tracks';
+import { uploadState, Video } from 'types/tracks';
 
 import DashboardVideo from 'components/DashboardVideo';
 import { DashboardVideoLive } from 'components/DashboardVideoLive';
@@ -17,7 +17,10 @@ export const DashboardVideoWrapper = ({
   const currentVideo = useVideo((state) => state.getVideo(video));
   initVideoWebsocket(currentVideo);
 
-  if (currentVideo.live_state) {
+  if (
+    currentVideo.live_state &&
+    currentVideo.upload_state === uploadState.PENDING
+  ) {
     return <DashboardVideoLive video={currentVideo} />;
   }
 

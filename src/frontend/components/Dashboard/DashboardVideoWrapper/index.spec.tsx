@@ -96,7 +96,7 @@ describe('<DashboardVideoWrapper />', () => {
     fetchMock.restore();
   });
 
-  it('render the live layout', async () => {
+  it('renders the live layout when upload state is pending', async () => {
     const video = videoMockFactory({
       live_type: LiveModeType.JITSI,
       live_state: liveState.IDLE,
@@ -107,6 +107,7 @@ describe('<DashboardVideoWrapper />', () => {
           interface_config_overwrite: {},
         },
       },
+      upload_state: uploadState.PENDING,
     });
 
     const queryClient = new QueryClient();
@@ -131,7 +132,7 @@ describe('<DashboardVideoWrapper />', () => {
     screen.getByRole('heading', { name: 'Schedule a webinar' });
   });
 
-  it('render le video layout', async () => {
+  it('renders the video layout when live_state is null', async () => {
     const video = videoMockFactory({
       live_state: null,
     });
@@ -162,5 +163,31 @@ describe('<DashboardVideoWrapper />', () => {
     expect(
       screen.getAllByRole('button', { name: 'Upload the file' }).length,
     ).toBe(3);
+  });
+
+  it('renders the video layout when upload state is not pending', async () => {
+    const video = videoMockFactory({
+      live_type: LiveModeType.JITSI,
+      live_state: liveState.STOPPED,
+      live_info: {
+        jitsi: {
+          external_api_url: 'some_url',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      upload_state: uploadState.HARVESTING,
+    });
+
+    render(
+      wrapInIntlProvider(wrapInRouter(<DashboardVideoWrapper video={video} />)),
+    );
+
+    screen.getByRole('link', { name: 'Dashboard' });
+    screen.getByRole('link', { name: 'Playlist' });
+
+    screen.getByText(
+      'Your video is currently converting from a live video to a VOD. This may take up to an hour. You can close the window and come back later.',
+    );
   });
 });
