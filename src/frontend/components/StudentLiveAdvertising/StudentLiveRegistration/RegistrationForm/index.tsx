@@ -1,17 +1,15 @@
-import { Button, Form, FormField, Grommet, ResponsiveContext } from 'grommet';
+import { Button, Grommet, TextInput } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
-import React, { CSSProperties, useContext, useRef } from 'react';
-import toast from 'react-hot-toast';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { Form, FormField } from 'components/Form';
 import { getDecodedJwt } from 'data/appData';
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
-
-import { RegistrationEmailField } from './RegistrationEmailField';
 
 const formTheme = deepMerge(theme, {
   global: {
@@ -20,23 +18,57 @@ const formTheme = deepMerge(theme, {
     },
   },
   formField: {
+    border: {
+      color: 'blue-chat',
+      position: 'outer',
+      side: 'all',
+      style: 'solid',
+      size: 'small',
+    },
+    content: {
+      margin: {
+        left: '20px',
+        right: 'none',
+        vertical: 'xsmall',
+      },
+    },
+    disabled: {
+      border: {
+        color: 'bg-lightgrey',
+      },
+    },
     error: {
       border: {
-        color: normalizeColor('red-active', theme),
+        color: 'red-active',
       },
       color: 'white',
       container: {
         background: normalizeColor('red-active', theme),
         margin: {
-          top: 'small',
+          top: 'none',
+          bottom: 'xsmall',
+          horizontal: 'xsmall',
         },
-        pad: 'small',
+        pad: {
+          horizontal: 'small',
+          vertical: 'xsmall',
+        },
+        round: 'xsmall',
       },
+      size: 'medium',
     },
-    border: {
-      color: normalizeColor('blue-focus', theme),
+    label: {
+      color: normalizeColor('bg-grey', theme),
+      margin: {
+        bottom: 'none',
+        left: '20px',
+        right: 'none',
+        top: '2px',
+      },
+      size: 'xsmall',
     },
     margin: '0',
+    round: 'xsmall',
   },
   button: {
     primary: {
@@ -91,116 +123,93 @@ const messages = defineMessages({
   },
 });
 
-interface FormValues {
-  email: string | undefined;
-}
-
 interface RegistrationFormProps {
-  values: FormValues;
-  setValues: (newValues: FormValues) => void;
+  defaultEmail?: string;
   setRegistrationCompleted: () => void;
 }
 
 export const RegistrationForm = ({
-  values,
-  setValues,
+  defaultEmail,
   setRegistrationCompleted,
 }: RegistrationFormProps) => {
+  const trimedEmail = defaultEmail && defaultEmail.trim();
+
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
-  const isSubmitOngoing = useRef(false);
-
-  const onSubmit = async (email: string) => {
-    let anonymousId: Maybe<string>;
-    if (!checkLtiToken(getDecodedJwt())) {
-      anonymousId = getAnonymousId();
-    }
-    try {
-      await createLiveRegistration(email, anonymousId);
-      setRegistrationCompleted();
-    } catch (error: any) {
-      let errorMessage;
-      if (error.email && error.email[0].indexOf('already registered') > 0) {
-        errorMessage = intl.formatMessage(
-          messages.updateMailAlreadyExistingError,
-          {
-            email,
-          },
-        );
-      } else if (error.email) {
-        errorMessage = intl.formatMessage(messages.updateMailNotValidError, {
-          email,
-        });
-      } else {
-        errorMessage = intl.formatMessage(messages.updateMailDefaultError, {
-          email,
-        });
-      }
-      toast.error(errorMessage);
-    }
-  };
-
-  let inputWidth: string;
-  let submitButtonStyle: CSSProperties;
-  if (size === 'small') {
-    inputWidth = '100%';
-    submitButtonStyle = { width: '100%', marginTop: '16px' };
-  } else {
-    inputWidth = '50%';
-    submitButtonStyle = { minWidth: '40%' };
-  }
-  const SubmitButton = () => (
-    <Button
-      type="submit"
-      primary
-      label={intl.formatMessage(messages.formSubmitTitle)}
-      style={submitButtonStyle}
-    />
-  );
+  const [values, setValues] = useState({ email: trimedEmail });
 
   return (
     <Grommet theme={formTheme}>
       <Form
         value={values}
-        onChange={(formValues) => setValues(formValues)}
+        onChange={setValues}
         onSubmit={async ({ value }) => {
-          if (isSubmitOngoing.current) {
-            //  a submit is already in progress
-            return;
-          }
           if (!value.email) {
             //  submit without email should not be possible since validation should fail
             return;
           }
 
-          isSubmitOngoing.current = true;
-          await onSubmit(value.email);
-          isSubmitOngoing.current = false;
+          let anonymousId: Maybe<string>;
+          if (!checkLtiToken(getDecodedJwt())) {
+            anonymousId = getAnonymousId();
+          }
+          await createLiveRegistration(value.email, anonymousId);
+          setRegistrationCompleted();
+        }}
+        onSubmitError={(value, error) => {
+          if (!value.email) {
+            //  submit without email should not be possible since validation should fail
+            return {};
+          }
+
+          let errorMessage;
+          if (error.email && error.email[0].indexOf('already registered') > 0) {
+            errorMessage = intl.formatMessage(
+              messages.updateMailAlreadyExistingError,
+              value,
+            );
+          } else if (error.email) {
+            errorMessage = intl.formatMessage(
+              messages.updateMailNotValidError,
+              value,
+            );
+          } else {
+            errorMessage = intl.formatMessage(
+              messages.updateMailDefaultError,
+              value,
+            );
+          }
+
+          return { email: errorMessage };
         }}
       >
         <FormField
-          name="email"
           htmlFor="text-input-id"
-          contentProps={{ pad: 'none', style: { border: 'none' } }}
-          pad={false}
-          validate={{
-            regexp:
-              /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-            message: intl.formatMessage(messages.emailFormatValidationError),
-            status: 'error',
-          }}
+          label={intl.formatMessage(messages.emailInputLabel)}
+          name="email"
+          validate={[
+            {
+              regexp:
+                /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+              message: intl.formatMessage(messages.emailFormatValidationError),
+              status: 'error',
+            },
+          ]}
         >
-          <RegistrationEmailField
-            inputLabel={intl.formatMessage(messages.emailInputLabel)}
+          <TextInput
             id="text-input-id"
-            inputWidth={inputWidth}
             name="email"
-          >
-            {size !== 'small' && <SubmitButton />}
-          </RegistrationEmailField>
+            placeholder="email"
+            type="TextInput"
+          />
         </FormField>
 
-        {size === 'small' && <SubmitButton />}
+        <Button
+          fill="horizontal"
+          label={intl.formatMessage(messages.formSubmitTitle)}
+          margin={{ top: 'medium' }}
+          primary
+          type="submit"
+        />
       </Form>
     </Grommet>
   );
