@@ -1,17 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
 import { checkLtiToken } from 'utils/checkLtiToken';
+import { liveRegistrationFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { RegistrationForm } from '.';
-import userEvent from '@testing-library/user-event';
-import { liveRegistrationFactory } from 'utils/tests/factories';
 
-const setValues = jest.fn();
 const setRegistrationCompleted = jest.fn();
 
 let matchMedia: MatchMediaMock;
@@ -44,22 +42,15 @@ describe('<RegistrationForm />', () => {
   });
 
   it('renders the form without values', () => {
-    const values = {
-      email: undefined,
-    };
-
     render(
       wrapInIntlProvider(
         <RegistrationForm
-          values={values}
-          setValues={setValues}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
     );
 
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox', { name: '' });
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByRole('button', { name: 'Register' });
     expect(
       screen.queryByText('You have to submit a valid email to register.'),
@@ -67,61 +58,21 @@ describe('<RegistrationForm />', () => {
   });
 
   it('renders the form with initial value', () => {
-    const values = {
-      email: 'some.email@openfun.fr',
-    };
-
     render(
       wrapInIntlProvider(
         <RegistrationForm
-          values={values}
-          setValues={setValues}
+          defaultEmail="some.email@openfun.fr"
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
     );
 
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox', { name: '' });
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByDisplayValue('some.email@openfun.fr');
     screen.getByRole('button', { name: 'Register' });
     expect(
       screen.queryByText('You have to submit a valid email to register.'),
     ).not.toBeInTheDocument();
-  });
-
-  it('calls parent on input change', () => {
-    const values = {
-      email: 'some.email@openfun.co',
-    };
-
-    render(
-      wrapInIntlProvider(
-        <RegistrationForm
-          values={values}
-          setValues={setValues}
-          setRegistrationCompleted={setRegistrationCompleted}
-        />,
-      ),
-    );
-
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox', { name: '' });
-    screen.getByDisplayValue('some.email@openfun.co');
-    screen.getByRole('button', { name: 'Register' });
-    expect(
-      screen.queryByText('You have to submit a valid email to register.'),
-    ).not.toBeInTheDocument();
-
-    fireEvent.change(screen.getByRole('textbox', { name: '' }), {
-      target: { value: 'an.other.email@openfun.fr' },
-    });
-
-    expect(setValues).toHaveBeenCalledTimes(1);
-    expect(setValues).toHaveBeenCalledWith({
-      email: 'an.other.email@openfun.fr',
-    });
-    expect(setRegistrationCompleted).toHaveBeenCalledTimes(0);
   });
 
   it('calls parent on submit success', async () => {
@@ -133,15 +84,11 @@ describe('<RegistrationForm />', () => {
       video: 'id',
     });
     mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
-    const values = {
-      email: 'some.email@openfun.com',
-    };
 
     render(
       wrapInIntlProvider(
         <RegistrationForm
-          values={values}
-          setValues={setValues}
+          defaultEmail="some.email@openfun.com"
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -159,22 +106,16 @@ describe('<RegistrationForm />', () => {
   });
 
   it('renders the error when email is invalid', async () => {
-    const values = {
-      email: 'some.invalid.email@openfun.',
-    };
-
     render(
       wrapInIntlProvider(
         <RegistrationForm
-          values={values}
-          setValues={setValues}
+          defaultEmail="some.invalid.email@openfun."
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
     );
 
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox', { name: '' });
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByDisplayValue('some.invalid.email@openfun.');
     expect(
       screen.queryByText('You have to submit a valid email to register.'),
@@ -188,25 +129,17 @@ describe('<RegistrationForm />', () => {
   it('toasts an error when validation fail server side', async () => {
     mockCheckLtiToken.mockReturnValue(true);
     mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
-    const values = {
-      email: 'some.email@openfun.fr',
-    };
 
     render(
       wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <RegistrationForm
-            values={values}
-            setValues={setValues}
-            setRegistrationCompleted={setRegistrationCompleted}
-          />
-        </Fragment>,
+        <RegistrationForm
+          defaultEmail="some.email@openfun.fr"
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
       ),
     );
 
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox', { name: '' });
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByDisplayValue('some.email@openfun.fr');
     expect(
       screen.queryByText('You have to submit a valid email to register.'),

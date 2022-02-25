@@ -1,4 +1,4 @@
-import { Box, Heading, Paragraph } from 'grommet';
+import { Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -39,7 +39,7 @@ export const StudentLiveRegistration = () => {
   const userEmail = useMemo(() => {
     return decodedJWT.user?.email ?? undefined;
   }, [decodedJWT]);
-  const [values, setValues] = useState({ email: userEmail });
+
   const [isLoading, setIsLoading] = useState(true);
   const [registered, setRegistered] = useState(false);
 
@@ -84,26 +84,25 @@ export const StudentLiveRegistration = () => {
         {intl.formatMessage(messages.formTitle)}
       </Heading>
 
-      <Box margin={{ top: 'medium', bottom: 'medium' }}>
-        {registered && (
-          <Paragraph color={normalizeColor('blue-active', theme)}>
-            {intl.formatMessage(messages.updateSuccessfulEmail)}
-          </Paragraph>
-        )}
-        {!registered && (
-          <RegistrationForm
-            values={values}
-            setValues={setValues}
-            setRegistrationCompleted={() => setRegistered(true)}
-          />
-        )}
-      </Box>
-
-      <Box>
+      {registered && (
         <Paragraph color={normalizeColor('blue-active', theme)}>
-          {intl.formatMessage(messages.registrationConsentMessage)}
+          {intl.formatMessage(messages.updateSuccessfulEmail)}
         </Paragraph>
-      </Box>
+      )}
+      {!registered && (
+        <RegistrationForm
+          defaultEmail={userEmail}
+          setRegistrationCompleted={() => setRegistered(true)}
+        />
+      )}
+
+      <Paragraph
+        color={normalizeColor('blue-active', theme)}
+        margin={{ top: 'medium', bottom: 'none' }}
+        textAlign="center"
+      >
+        {intl.formatMessage(messages.registrationConsentMessage)}
+      </Paragraph>
     </AdvertisingBox>
   );
 };
