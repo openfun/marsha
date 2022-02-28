@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/request-promise-native": "1.0.18",
     "jest": "27.5.1",
     "prettier": "2.5.1"
