@@ -5,13 +5,18 @@ import { defineMessages, useIntl } from 'react-intl';
 import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
-import { useChatItemState } from 'data/stores/useChatItemsStore/index';
+import { getDecodedJwt } from 'data/appData';
+import { setLiveRegistrationDisplayName } from 'data/sideEffects/setLiveRegistrationDisplayName';
+import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
 } from 'default/chat';
-import { Nullable } from 'utils/types';
+import { LiveRegistration } from 'types/tracks';
+import { checkLtiToken } from 'utils/checkLtiToken';
+import { getAnonymousId } from 'utils/localstorage';
+import { Maybe, Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert/index';
 
@@ -86,19 +91,23 @@ export const InputDisplayNameOverlay = ({
   const intl = useIntl();
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
-  const setDisplayName = useChatItemState((state) => state.setDisplayName);
-
-  const processDisplayName = (displayName: string) => {
+  const setLiveRegistration = useLiveRegistration(
+    (state) => state.setLiveRegistration,
+  );
+  const processDisplayName = async (displayName: string) => {
+    displayName = displayName.trim();
     setAlertsState([]);
     setIsWaiting(true);
 
-    const callbackSuccess = () => {
-      setDisplayName(displayName);
-      setIsWaiting(false);
-      setOverlay(false);
+    const callbackSuccess = (updatedLiveRegistration: LiveRegistration) => {
+      return () => {
+        setLiveRegistration(updatedLiveRegistration);
+        setIsWaiting(false);
+        setOverlay(false);
+      };
     };
 
-    const callbackError = (stanza: Nullable<HTMLElement>) => {
+    const callbackXmppError = (stanza: Nullable<HTMLElement>) => {
       const xmppAlerts = [];
       if (stanza) {
         const errorItem = stanza.getElementsByTagName('error')[0];
@@ -114,6 +123,17 @@ export const InputDisplayNameOverlay = ({
       }
 
       setAlertsState(xmppAlerts);
+      setIsWaiting(false);
+    };
+
+    const manageSetDisplayNameError = (error: string | number) => {
+      const errors = [];
+      if (error === 409) {
+        errors.push(intl.formatMessage(messages.inputNicknameAlreadyExists));
+      } else {
+        errors.push(intl.formatMessage(messages.inputXmppError));
+      }
+      setAlertsState(errors);
       setIsWaiting(false);
     };
 
@@ -141,10 +161,22 @@ export const InputDisplayNameOverlay = ({
       );
     }
     if (alerts.length === 0) {
+      let anonymousId: Maybe<string>;
+      if (!checkLtiToken(getDecodedJwt())) {
+        anonymousId = getAnonymousId();
+      }
+      const response = await setLiveRegistrationDisplayName(
+        displayName,
+        anonymousId,
+      );
+      if (response.error) {
+        manageSetDisplayNameError(response.error);
+        return false;
+      }
       converse.claimNewNicknameInChatRoom(
         displayName,
-        callbackSuccess,
-        callbackError,
+        callbackSuccess(response.success!),
+        callbackXmppError,
       );
       return true;
     } else {
