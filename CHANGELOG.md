@@ -25,6 +25,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace automatic meeting joining by a button
 - Allow generated links in Django admin for objects in other applications
 - Do not install the `marsha` Python package in `site-packages`
+- Do not allow a lti user to change his email when he registers to a scheduled 
+  live
 
 ## [4.0.0-beta.1] - 2022-02-15
 

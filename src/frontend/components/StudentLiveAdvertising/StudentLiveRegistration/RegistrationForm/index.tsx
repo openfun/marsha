@@ -1,6 +1,6 @@
-import { Button, Grommet, TextInput } from 'grommet';
+import { Button, Grommet, Paragraph, TextInput } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Form, FormField } from 'components/Form';
@@ -136,6 +136,16 @@ export const RegistrationForm = ({
 
   const intl = useIntl();
   const [values, setValues] = useState({ email: trimedEmail });
+  const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
+  const isLtiToken = useMemo(() => {
+    return checkLtiToken(getDecodedJwt());
+  }, [getDecodedJwt]);
+
+  const displayEmailInput = !(
+    isLtiToken &&
+    values.email &&
+    values.email !== ''
+  );
 
   return (
     <Grommet theme={formTheme}>
@@ -149,15 +159,23 @@ export const RegistrationForm = ({
           }
 
           let anonymousId: Maybe<string>;
-          if (!checkLtiToken(getDecodedJwt())) {
+          if (!isLtiToken) {
             anonymousId = getAnonymousId();
           }
           await createLiveRegistration(value.email, anonymousId);
+          setLtiUserError(undefined);
           setRegistrationCompleted();
         }}
         onSubmitError={(value, error) => {
           if (!value.email) {
             //  submit without email should not be possible since validation should fail
+            return {};
+          }
+
+          if (!displayEmailInput) {
+            setLtiUserError(
+              intl.formatMessage(messages.updateMailDefaultError, value),
+            );
             return {};
           }
 
@@ -182,26 +200,30 @@ export const RegistrationForm = ({
           return { email: errorMessage };
         }}
       >
-        <FormField
-          htmlFor="text-input-id"
-          label={intl.formatMessage(messages.emailInputLabel)}
-          name="email"
-          validate={[
-            {
-              regexp:
-                /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-              message: intl.formatMessage(messages.emailFormatValidationError),
-              status: 'error',
-            },
-          ]}
-        >
-          <TextInput
-            id="text-input-id"
+        {displayEmailInput && (
+          <FormField
+            htmlFor="text-input-id"
+            label={intl.formatMessage(messages.emailInputLabel)}
             name="email"
-            placeholder="email"
-            type="TextInput"
-          />
-        </FormField>
+            validate={[
+              {
+                regexp:
+                  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+                message: intl.formatMessage(
+                  messages.emailFormatValidationError,
+                ),
+                status: 'error',
+              },
+            ]}
+          >
+            <TextInput
+              id="text-input-id"
+              name="email"
+              placeholder="email"
+              type="TextInput"
+            />
+          </FormField>
+        )}
 
         <Button
           fill="horizontal"
@@ -210,6 +232,12 @@ export const RegistrationForm = ({
           primary
           type="submit"
         />
+
+        {ltiUserError && (
+          <Paragraph color="red-active" fill margin="small" textAlign="center">
+            {ltiUserError}
+          </Paragraph>
+        )}
       </Form>
     </Grommet>
   );
