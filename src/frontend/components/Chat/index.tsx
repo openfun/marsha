@@ -6,7 +6,7 @@ import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
-import { StudentChat } from './StudentChat';
+import { ChatLayout } from './ChatLayout';
 interface ChatProps {
   video: Video;
   standalone?: boolean;
@@ -47,10 +47,10 @@ export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
     <Box {...conditionalProps}>
       {!!standalone ? (
         <div>
-          <StudentChat />
+          <ChatLayout />
         </div>
       ) : (
-        <StudentChat />
+        <ChatLayout />
       )}
     </Box>
   );
