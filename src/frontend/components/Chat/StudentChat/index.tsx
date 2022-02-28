@@ -8,9 +8,12 @@ import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/In
 import { JoinChatButton } from 'components/Chat/SharedChatComponents/JoinChatButton';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { converse } from 'utils/window';
+import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 
 export const StudentChat = () => {
-  const displayName = useChatItemState((state) => state.displayName);
+  const liveRegistration = useLiveRegistration(
+    (state) => state.liveRegistration,
+  );
   const hasReceivedMessageHistory = useChatItemState(
     (state) => state.hasReceivedMessageHistory,
   );
@@ -19,7 +22,7 @@ export const StudentChat = () => {
 
   const processChatMessage = (chatMsg: string) => {
     converse.sendMessage(chatMsg);
-    return true;
+    return Promise.resolve(true);
   };
 
   const messages = defineMessages({
@@ -49,7 +52,7 @@ export const StudentChat = () => {
             <ChatConversationDisplayer />
           )}
           <Box margin="10px">
-            {displayName ? (
+            {liveRegistration?.display_name ? (
               <InputBar
                 handleUserInput={processChatMessage}
                 isChatInput={true}

@@ -16,7 +16,7 @@ const StyledMiniSpinner = styled(Spinner)`
 `;
 
 interface InputBarProps {
-  handleUserInput: (inputText: string) => boolean;
+  handleUserInput: (inputText: string) => Promise<boolean>;
   isChatInput: boolean;
   isDisabled?: boolean;
   isWaiting?: boolean;
@@ -32,9 +32,9 @@ export const InputBar = ({
 }: InputBarProps) => {
   const [inputText, setInputText] = useState('');
 
-  const handleOnClick = () => {
+  const handleOnClick = async () => {
     if (inputText.length !== 0) {
-      if (handleUserInput(inputText)) {
+      if (await handleUserInput(inputText)) {
         setInputText('');
       }
     }

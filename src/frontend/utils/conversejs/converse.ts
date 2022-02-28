@@ -2,6 +2,7 @@ import './entry.js';
 
 import { XMPP } from 'types/XMPP';
 import { generateAnonymousNickname } from 'utils/chat/chat';
+import { Nullable } from 'utils/types.js';
 import { converse } from 'utils/window';
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
@@ -12,7 +13,7 @@ import { participantsTrackingPlugin } from './converse-plugins/participantsTrack
 export const converseMounter = () => {
   let isChatInitialized = false;
 
-  return (xmpp: XMPP) => {
+  return (xmpp: XMPP, displayName?: Nullable<string>) => {
     if (!isChatInitialized) {
       chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
@@ -20,7 +21,7 @@ export const converseMounter = () => {
       nicknameManagementPlugin.addPlugin(xmpp);
       participantsTrackingPlugin.addPlugin();
 
-      const anonymousNickname = generateAnonymousNickname();
+      const nickname = displayName || generateAnonymousNickname();
       // Converse Initialization
       converse.initialize({
         authentication: 'anonymous',
@@ -36,7 +37,7 @@ export const converseMounter = () => {
         loglevel: 'error',
         muc_history_max_stanzas: 0,
         muc_instant_rooms: false,
-        nickname: anonymousNickname,
+        nickname,
         persistent_store: xmpp.converse_persistent_store,
         ping_interval: 20,
         websocket_url: xmpp.websocket_url,
