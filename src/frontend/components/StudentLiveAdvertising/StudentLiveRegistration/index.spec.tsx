@@ -1,15 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import MatchMediaMock from 'jest-matchmedia-mock';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { fetchList } from 'data/queries/fetchList';
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
 import { DecodedJwt } from 'types/jwt';
+import { liveRegistrationFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentLiveRegistration } from '.';
-import { liveRegistrationFactory } from 'utils/tests/factories';
 
 let mockJwt: DecodedJwt;
 jest.mock('data/appData', () => ({
@@ -33,20 +31,9 @@ jest.mock('data/sideEffects/createLiveRegistration', () => ({
 const mockCreateLiveRegistration =
   createLiveRegistration as jest.MockedFunction<typeof createLiveRegistration>;
 
-let matchMedia: MatchMediaMock;
-
 describe('<StudentLiveRegistration />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-  afterEach(() => {
-    matchMedia.clear();
-    jest.clearAllMocks();
-  });
-
-  it('renders the form and the message on submit', async () => {
+  beforeEach(() => {
     mockJwt = {
-      context_id: 'context_id',
       consumer_site: 'a.site.fr',
       locale: 'en',
       maintenance: false,
@@ -64,6 +51,13 @@ describe('<StudentLiveRegistration />', () => {
         email: 'test@openfun.fr',
       },
     };
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders the form and the message on submit', async () => {
     mockFecthList.mockResolvedValue(() => []);
     const liveRegistration = liveRegistrationFactory({
       id: 'id',
@@ -74,22 +68,16 @@ describe('<StudentLiveRegistration />', () => {
     mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
 
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
-
-    expect(container.childNodes.length).toEqual(1);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox');
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -98,7 +86,6 @@ describe('<StudentLiveRegistration />', () => {
 
   it('renders the form and an error when validation fail', async () => {
     mockJwt = {
-      context_id: 'context_id',
       consumer_site: 'a.site.fr',
       locale: 'en',
       maintenance: false,
@@ -125,22 +112,16 @@ describe('<StudentLiveRegistration />', () => {
     });
     mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
-
-    expect(container.childNodes.length).toEqual(1);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox');
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -148,47 +129,22 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when mail is already registered', async () => {
-    mockJwt = {
-      context_id: 'context_id',
-      consumer_site: 'a.site.fr',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: 'test@openfun.fr',
-      },
-    };
     mockFecthList.mockResolvedValue(() => []);
     mockCreateLiveRegistration.mockImplementation(() =>
       Promise.reject({ email: ['blabla already registered'] }),
     );
 
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
-
-    expect(container.childNodes.length).toEqual(1);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox');
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -198,47 +154,21 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an error occured with the email on backend', async () => {
-    mockJwt = {
-      context_id: 'context_id',
-      consumer_site: 'a.site.fr',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: 'test@openfun.fr',
-      },
-    };
     mockFecthList.mockResolvedValue(() => []);
     mockCreateLiveRegistration.mockImplementation(() =>
       Promise.reject({ email: 'something bad' }),
     );
 
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
-
-    expect(container.childNodes.length).toEqual(1);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox');
     screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -248,45 +178,20 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an unknown error occured with the email on backend', async () => {
-    mockJwt = {
-      context_id: 'context_id',
-      consumer_site: 'a.site.fr',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: 'test@openfun.fr',
-      },
-    };
     mockFecthList.mockResolvedValue(() => []);
     mockCreateLiveRegistration.mockImplementation(() => Promise.reject({}));
 
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
-
-    expect(container.childNodes.length).toEqual(1);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('heading', { name: 'Email address' });
-    screen.getByRole('textbox');
+    screen.getByRole('textbox', { name: 'Email address' });
     screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -296,36 +201,12 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('does not render if we fail to initialize current subscription for lti user', async () => {
-    mockJwt = {
-      context_id: 'context_id',
-      consumer_site: 'a.site.fr',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: 'test@openfun.fr',
-      },
-    };
     mockFecthList.mockRejectedValue(undefined);
 
     const { container } = render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveRegistration />
-        </Fragment>,
-      ),
+      wrapInIntlProvider(<StudentLiveRegistration />),
     );
 
-    expect(container.childNodes.length).toEqual(1);
+    expect(container.childNodes.length).toEqual(0);
   });
 });

@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
+import { getDecodedJwt } from 'data/appData';
 import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
-import { checkLtiToken } from 'utils/checkLtiToken';
 import { liveRegistrationFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
@@ -17,12 +17,8 @@ let matchMedia: MatchMediaMock;
 jest.mock('data/appData', () => ({
   getDecodedJwt: jest.fn(),
 }));
-jest.mock('utils/checkLtiToken', () => ({
-  checkLtiToken: jest.fn(),
-}));
-
-const mockCheckLtiToken = checkLtiToken as jest.MockedFunction<
-  typeof checkLtiToken
+const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
+  typeof getDecodedJwt
 >;
 
 jest.mock('data/sideEffects/createLiveRegistration', () => ({
@@ -35,6 +31,25 @@ describe('<RegistrationForm />', () => {
   beforeEach(() => {
     matchMedia = new MatchMediaMock();
     jest.clearAllMocks();
+
+    mockGetDecodedJwt.mockReturnValue({
+      consumer_site: 'consumer_site',
+      locale: 'en',
+      maintenance: false,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'resource id',
+      roles: ['student'],
+      session_id: 'session id',
+      user: {
+        id: 'user_id',
+        email: 'some email',
+        username: 'user name',
+        user_fullname: 'user full name',
+      },
+    });
   });
 
   afterEach(() => {
@@ -75,8 +90,74 @@ describe('<RegistrationForm />', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('hides the field for lti user with email', async () => {
+    mockGetDecodedJwt.mockReturnValue({
+      consumer_site: 'consumer site',
+      context_id: 'context id',
+      locale: 'en',
+      maintenance: false,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'resource id',
+      roles: ['student'],
+      session_id: 'session id',
+      user: {
+        id: 'user_id',
+        email: 'some email',
+        username: 'user name',
+        user_fullname: 'user full name',
+      },
+    });
+    mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
+
+    render(
+      wrapInIntlProvider(
+        <RegistrationForm
+          defaultEmail="some.email@openfun.fr"
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+      ),
+    );
+
+    expect(
+      screen.queryByRole('textbox', { name: 'Email address' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
+      ),
+    ).not.toBeInTheDocument();
+
+    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    await screen.findByText(
+      'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
+    );
+
+    const liveRegistration = liveRegistrationFactory({
+      id: 'id',
+      email: 'email',
+      should_send_reminders: true,
+      video: 'id',
+    });
+    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
+
+    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    await waitFor(() =>
+      expect(setRegistrationCompleted).toHaveBeenCalledTimes(1),
+    );
+
+    expect(
+      screen.queryByText(
+        'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('calls parent on submit success', async () => {
-    mockCheckLtiToken.mockReturnValue(true);
     const liveRegistration = liveRegistrationFactory({
       id: 'id',
       email: 'email',
@@ -126,8 +207,7 @@ describe('<RegistrationForm />', () => {
     await screen.findByText('You have to submit a valid email to register.');
   });
 
-  it('toasts an error when validation fail server side', async () => {
-    mockCheckLtiToken.mockReturnValue(true);
+  it('renders an error when validation fail server side', async () => {
     mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
 
     render(
