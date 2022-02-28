@@ -10,7 +10,7 @@ import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { converse } from 'utils/window';
 import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 
-export const StudentChat = () => {
+export const ChatLayout = () => {
   const liveRegistration = useLiveRegistration(
     (state) => state.liveRegistration,
   );

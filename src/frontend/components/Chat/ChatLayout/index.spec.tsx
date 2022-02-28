@@ -6,7 +6,7 @@ import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
-import { StudentChat } from '.';
+import { ChatLayout } from '.';
 import { liveRegistrationFactory } from 'utils/tests/factories';
 import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 
@@ -41,7 +41,7 @@ mockConverse.mockImplementation(
 
 describe('<StudentChat />', () => {
   it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
-    render(wrapInIntlProvider(<StudentChat />));
+    render(wrapInIntlProvider(<ChatLayout />));
     // If no set, hasReceivedMessageHistory default value is false
     expect(useChatItemState.getState().hasReceivedMessageHistory).toEqual(
       false,
@@ -57,7 +57,7 @@ describe('<StudentChat />', () => {
   });
 
   it('has received history message and has no display_name, the join button is not disabled anymore.', () => {
-    render(wrapInIntlProvider(<StudentChat />));
+    render(wrapInIntlProvider(<ChatLayout />));
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
     });
@@ -70,7 +70,7 @@ describe('<StudentChat />', () => {
 
   it('clicks on the join button and the input display_name is mounted', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
-    render(wrapInIntlProvider(<StudentChat />));
+    render(wrapInIntlProvider(<ChatLayout />));
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
     });
@@ -85,7 +85,7 @@ describe('<StudentChat />', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
     const liveRegistration = liveRegistrationFactory({ display_name: 'l33t' });
     useLiveRegistration.getState().setLiveRegistration(liveRegistration);
-    render(wrapInIntlProvider(<StudentChat />));
+    render(wrapInIntlProvider(<ChatLayout />));
     expect(
       screen.queryByRole('button', {
         name: 'Join the chat',
