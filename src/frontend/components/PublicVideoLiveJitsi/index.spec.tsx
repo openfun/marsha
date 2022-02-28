@@ -43,6 +43,10 @@ const mockVideo = videoMockFactory({
 
 jest.mock('data/appData', () => ({
   getDecodedJwt: () => ({
+    permissions: {
+      can_access_dashboard: false,
+      can_update: false,
+    },
     user: {
       username: 'jane_doe',
     },

@@ -28,7 +28,8 @@ export const initWebinarContext = async (video: Video) => {
   } else {
     // push an empty attendance to create the live registration
     // and then register it in the store
-    const liveRegistration = await pushAttendance({}, anonymousId);
-    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    useLiveRegistration
+      .getState()
+      .setLiveRegistration(await pushAttendance({}, anonymousId));
   }
 };

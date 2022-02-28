@@ -7,8 +7,13 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { StudentChat } from '.';
+import { liveRegistrationFactory } from 'utils/tests/factories';
+import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
+jest.mock('data/appData', () => ({
+  getDecodedJwt: jest.fn(),
+}));
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -35,9 +40,12 @@ mockConverse.mockImplementation(
 );
 
 describe('<StudentChat />', () => {
-  it("doesn't receive history messages and clicks on the join button.", async () => {
+  it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
     render(wrapInIntlProvider(<StudentChat />));
     // If no set, hasReceivedMessageHistory default value is false
+    expect(useChatItemState.getState().hasReceivedMessageHistory).toEqual(
+      false,
+    );
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
     });
@@ -45,10 +53,49 @@ describe('<StudentChat />', () => {
     act(() => {
       userEvent.click(joinChatButton);
     });
-    expect(screen.queryByRole('textbox')).toBeNull();
+    expect(screen.queryByText('Display name')).not.toBeInTheDocument();
   });
 
-  it('successfully connects an anonymous user and sends a message.', async () => {
+  it('has received history message and has no display_name, the join button is not disabled anymore.', () => {
+    render(wrapInIntlProvider(<StudentChat />));
+    const joinChatButton = screen.getByRole('button', {
+      name: 'Join the chat',
+    });
+    expect(joinChatButton).toBeDisabled();
+    act(() => {
+      useChatItemState.getState().setHasReceivedMessageHistory(true);
+    });
+    expect(joinChatButton).not.toBeDisabled();
+  });
+
+  it('clicks on the join button and the input display_name is mounted', () => {
+    useChatItemState.getState().setHasReceivedMessageHistory(true);
+    render(wrapInIntlProvider(<StudentChat />));
+    const joinChatButton = screen.getByRole('button', {
+      name: 'Join the chat',
+    });
+    expect(joinChatButton).not.toBeDisabled();
+    act(() => {
+      userEvent.click(joinChatButton);
+    });
+    screen.getByText('Display name');
+  });
+
+  it('shows the message input box when liveRegistration exists with a display_name', () => {
+    useChatItemState.getState().setHasReceivedMessageHistory(true);
+    const liveRegistration = liveRegistrationFactory({ display_name: 'l33t' });
+    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    render(wrapInIntlProvider(<StudentChat />));
+    expect(
+      screen.queryByRole('button', {
+        name: 'Join the chat',
+      }),
+    ).not.toBeInTheDocument();
+    screen.getByText('Message...');
+    expect(screen.queryByText('Display name')).not.toBeInTheDocument();
+  });
+
+  /*it('successfully connects an anonymous user and sends a message.', async () => {
     render(wrapInIntlProvider(<StudentChat />));
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
@@ -85,5 +132,5 @@ describe('<StudentChat />', () => {
       'This is an example message.',
     );
     expect(converse.sendMessage).toHaveBeenCalledTimes(1);
-  });
+  });*/
 });
