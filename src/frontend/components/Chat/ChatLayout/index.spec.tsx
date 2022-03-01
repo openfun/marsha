@@ -3,12 +3,12 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
+import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { liveRegistrationFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { ChatLayout } from '.';
-import { liveRegistrationFactory } from 'utils/tests/factories';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
 jest.mock('data/appData', () => ({
@@ -94,43 +94,4 @@ describe('<StudentChat />', () => {
     screen.getByText('Message...');
     expect(screen.queryByText('Display name')).not.toBeInTheDocument();
   });
-
-  /*it('successfully connects an anonymous user and sends a message.', async () => {
-    render(wrapInIntlProvider(<StudentChat />));
-    const joinChatButton = screen.getByRole('button', {
-      name: 'Join the chat',
-    });
-    expect(joinChatButton).toBeDisabled();
-    act(() => {
-      useChatItemState.getState().setHasReceivedMessageHistory(true);
-    });
-
-    act(() => {
-      userEvent.click(joinChatButton);
-    });
-    const textBoxDisplayName = screen.getByRole('textbox');
-    const buttonSendDisplayName = screen.getByRole('button');
-    userEvent.type(textBoxDisplayName, 'John Doe');
-    act(() => {
-      userEvent.click(buttonSendDisplayName);
-    });
-    expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
-      1,
-      'John Doe',
-      expect.any(Function),
-      expect.any(Function),
-    );
-    expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
-    const sendChatButton = screen.getByRole('button');
-    const textboxChatInput = screen.getByRole('textbox');
-    userEvent.type(textboxChatInput, 'This is an example message.');
-    act(() => {
-      userEvent.click(sendChatButton);
-    });
-    expect(converse.sendMessage).toHaveBeenNthCalledWith(
-      1,
-      'This is an example message.',
-    );
-    expect(converse.sendMessage).toHaveBeenCalledTimes(1);
-  });*/
 });

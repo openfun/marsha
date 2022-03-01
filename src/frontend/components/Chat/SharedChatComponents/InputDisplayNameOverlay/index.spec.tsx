@@ -356,6 +356,17 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(mockSetLiveRegistrationDisplayName).not.toHaveBeenCalled();
   });
 
+  it('displays the component and use liveragistration username as default value', () => {
+    const liveRegistration = liveRegistrationFactory({ username: 'Foo' });
+    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    render(
+      wrapInIntlProvider(
+        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
+      ),
+    );
+    expect(screen.getByRole('textbox')).toHaveValue('Foo');
+  });
+
   it('displays the component and compares it with previous render.', async () => {
     await renderImageSnapshot(
       <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
