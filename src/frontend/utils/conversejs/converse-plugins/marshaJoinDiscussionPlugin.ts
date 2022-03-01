@@ -1,11 +1,16 @@
 import { appData, getDecodedJwt } from 'data/appData';
-import { useJoinParticipant } from 'data/stores/useJoinParticipant';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useVideo } from 'data/stores/useVideo';
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
 import { EventType, MessageType, XMPP } from 'types/XMPP';
 import { converse } from 'utils/window';
+import {
+  addParticipantAskingToJoin,
+  moveParticipantToDiscussion,
+  removeParticipantAskingToJoin,
+  removeParticipantFromDiscussion,
+} from 'utils/updateLiveParticipants';
 
 const PLUGIN_NAME = 'marsha-join-discussion-plugin';
 
@@ -49,7 +54,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
 
       _converse.on('initialized', () => {
         _converse.connection.addHandler(
-          (messageStanza: any) => {
+          async (messageStanza: any) => {
             if (
               getDecodedJwt().permissions.can_update &&
               messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
@@ -58,9 +63,11 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
             ) {
               const jid = messageStanza.getAttribute('from');
               const username = converse.env.Strophe.getResourceFromJid(jid);
-              useJoinParticipant
-                .getState()
-                .addParticipantAskingToJoin({ id: jid, name: username });
+              const video = useVideo.getState().getVideo(appData.video!);
+              await addParticipantAskingToJoin(video, {
+                id: jid,
+                name: username,
+              });
             } else if (
               getDecodedJwt().permissions.can_update &&
               messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
@@ -69,9 +76,8 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
               const participant = JSON.parse(
                 messageStanza.getAttribute('participant'),
               );
-              useJoinParticipant
-                .getState()
-                .moveParticipantToDiscussion(participant);
+              const video = useVideo.getState().getVideo(appData.video!);
+              await moveParticipantToDiscussion(video, participant);
             } else if (
               messageStanza.getAttribute('type') === MessageType.EVENT &&
               messageStanza.getAttribute('event') === EventType.ACCEPT
@@ -101,9 +107,8 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
               const participant = JSON.parse(
                 messageStanza.getAttribute('participant'),
               );
-              useJoinParticipant
-                .getState()
-                .removeParticipantAskingToJoin(participant);
+              const video = useVideo.getState().getVideo(appData.video!);
+              await removeParticipantAskingToJoin(video, participant);
             } else if (
               messageStanza.getAttribute('type') === MessageType.EVENT &&
               messageStanza.getAttribute('event') === EventType.KICK
@@ -117,9 +122,8 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
               const participant = JSON.parse(
                 messageStanza.getAttribute('participant'),
               );
-              useJoinParticipant
-                .getState()
-                .removeParticipantFromDiscussion(participant);
+              const video = useVideo.getState().getVideo(appData.video!);
+              await removeParticipantFromDiscussion(video, participant);
             } else if (
               getDecodedJwt().permissions.can_update &&
               messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
@@ -127,7 +131,8 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
             ) {
               const jid = messageStanza.getAttribute('from');
               const username = converse.env.Strophe.getResourceFromJid(jid);
-              useJoinParticipant.getState().removeParticipantFromDiscussion({
+              const video = useVideo.getState().getVideo(appData.video!);
+              await removeParticipantFromDiscussion(video, {
                 id: jid,
                 name: username,
               });
