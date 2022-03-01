@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a direct access to a video out of an LMS context for a public 
   or LTI ressource, based on a liveregistration
 - Auto-set in the localstorage anonymousId if it's set in the JWT token
+- Persist live video participants
 
 ### Changed
 

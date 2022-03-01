@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { useJoinParticipant } from 'data/stores/useJoinParticipant';
 import { LiveModeType } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -12,12 +11,11 @@ jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
 
-const video = videoMockFactory({ live_type: LiveModeType.JITSI });
-
 describe('<DashboardVideoLiveRunning />', () => {
   it('renders participants in the discussion', () => {
-    useJoinParticipant.setState({
-      participantsInDiscussion: [{ id: 'an_other_id', name: 'his name' }],
+    const video = videoMockFactory({
+      live_type: LiveModeType.JITSI,
+      participants_in_discussion: [{ id: 'an_other_id', name: 'his name' }],
     });
 
     render(wrapInIntlProvider(<DashboardVideoLiveRunning video={video} />));
@@ -28,8 +26,9 @@ describe('<DashboardVideoLiveRunning />', () => {
   });
 
   it('renders participants asking to join', () => {
-    useJoinParticipant.setState({
-      participantsAskingToJoin: [{ id: 'some_id', name: 'my name' }],
+    const video = videoMockFactory({
+      live_type: LiveModeType.JITSI,
+      participants_asking_to_join: [{ id: 'some_id', name: 'my name' }],
     });
 
     render(wrapInIntlProvider(<DashboardVideoLiveRunning video={video} />));
