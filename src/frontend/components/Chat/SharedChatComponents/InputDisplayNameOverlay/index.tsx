@@ -91,8 +91,11 @@ export const InputDisplayNameOverlay = ({
   const intl = useIntl();
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
-  const setLiveRegistration = useLiveRegistration(
-    (state) => state.setLiveRegistration,
+  const { liveRegistration, setLiveRegistration } = useLiveRegistration(
+    (state) => ({
+      liveRegistration: state.liveRegistration,
+      setLiveRegistration: state.setLiveRegistration,
+    }),
   );
   const processDisplayName = async (displayName: string) => {
     displayName = displayName.trim();
@@ -253,6 +256,7 @@ export const InputDisplayNameOverlay = ({
             </Box>
           </Box>
           <InputBar
+            defaultValue={liveRegistration?.username || ''}
             handleUserInput={processDisplayName}
             isChatInput={false}
             isWaiting={isWaiting}
