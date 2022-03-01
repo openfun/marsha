@@ -1,5 +1,8 @@
 import * as faker from 'faker';
-import { Document } from '../../types/file';
+
+import { Document } from 'types/file';
+import { Organization } from 'types/Organization';
+import { Participant } from 'types/Participant';
 import {
   LiveSession,
   Playlist,
@@ -9,8 +12,7 @@ import {
   timedTextMode,
   uploadState,
   Video,
-} from '../../types/tracks';
-import { Organization } from '../../types/Organization';
+} from 'types/tracks';
 
 export const organizationMockFactory = (
   organization: Partial<Organization> = {},
@@ -131,6 +133,8 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
       },
     },
     should_use_subtitle_as_transcript: false,
+    participants_asking_to_join: [],
+    participants_in_discussion: [],
     playlist: playlistMockFactory(),
     live_state: null,
     live_info: {},
@@ -180,5 +184,15 @@ export const liveSessionFactory = (
     username: null,
     video: videoMockFactory().id,
     ...liveSession,
+  };
+};
+
+export const participantMockFactory = (
+  participant: Partial<Participant> = {},
+): Participant => {
+  return {
+    id: faker.datatype.uuid(),
+    name: faker.name.findName(),
+    ...participant,
   };
 };
