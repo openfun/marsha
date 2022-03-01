@@ -237,4 +237,16 @@ describe('<InputBar /> UI', () => {
     );
     screen.getByText(exampleTextPlaceholder);
   });
+  it('displays default value passed in props in the TextInput', () => {
+    render(
+      <InputBar
+        defaultValue="Foo"
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={false}
+        placeholderText={exampleTextPlaceholder}
+      />,
+    );
+
+    expect(screen.getByRole('textbox')).toHaveValue('Foo');
+  });
 });
