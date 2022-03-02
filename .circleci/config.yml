@@ -122,13 +122,14 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.7
+          version: 20.10.11
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
           name: Build production image
           command: |
+            export DOCKER_BUILDKIT=1
             docker build \
               -t marsha:${CIRCLE_SHA1} \
               .
@@ -157,7 +158,9 @@ jobs:
           command: make env.d/lambda
       - run: 
           name: Build production image
-          command: ./bin/lambda build ${CIRCLE_SHA1}
+          command: |
+            export DOCKER_BUILDKIT=1
+            ./bin/lambda build ${CIRCLE_SHA1}
 
       - run:
           name: Check built image availability
@@ -165,7 +168,9 @@ jobs:
 
       - run:
           name: Build lambda development image
-          command: ./bin/lambda build "development-${CIRCLE_SHA1}" development
+          command: |
+            export DOCKER_BUILDKIT=1
+            ./bin/lambda build "development-${CIRCLE_SHA1}" development
 
       - run:
           name: Run convert lambda tests
@@ -183,13 +188,14 @@ jobs:
       - checkout
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.7
+          version: 20.10.11
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
           name: Build production image
           command: |
+            export DOCKER_BUILDKIT=1
             docker build \
               -t marsha-ffmpeg-transmux:${CIRCLE_SHA1} \
               src/aws/ffmpeg-transmux-live-image/
@@ -916,11 +922,12 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.7
+          version: 20.10.11
       - *docker_login
       - run:
           name: Build production image (using cached layers)
           command: |
+            export DOCKER_BUILDKIT=1
             docker build \
               -t marsha:${CIRCLE_SHA1} \
               .      
@@ -980,13 +987,14 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.7
+          version: 20.10.11
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
       - run:
           name: Build production image
           command: |
+            export DOCKER_BUILDKIT=1
             docker build \
               -t marsha-ffmpeg-transmux:${CIRCLE_SHA1} \
               src/aws/ffmpeg-transmux-live-image/
@@ -1042,7 +1050,9 @@ jobs:
       - *docker_login
       - run:
           name: Build production image
-          command: ./bin/lambda build ${CIRCLE_SHA1}
+          command: |
+            export DOCKER_BUILDKIT=1
+            ./bin/lambda build ${CIRCLE_SHA1}
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
       # Git tag: v1.0.1
