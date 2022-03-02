@@ -84,7 +84,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       content = <p>application content</p>;
       break;
     case LivePanelItem.VIEWERS_LIST:
-      content = <StudentViewersList />;
+      content = <StudentViewersList video={video} />;
       break;
     default:
       throw new ShouldNotHappen(currentItem);
