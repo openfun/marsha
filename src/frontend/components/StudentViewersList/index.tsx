@@ -6,6 +6,7 @@ import {
   useParticipantsStore,
   ParticipantType,
 } from 'data/stores/useParticipantsStore/index';
+import { Video } from 'types/tracks';
 import { StudentViewersListHeader } from './StudentViewersListHeader';
 import { StudentViewersListItem } from './StudentViewersListItem';
 
@@ -22,13 +23,21 @@ const messages = defineMessages({
   },
 });
 
-export const StudentViewersList = () => {
+interface StudentViewersListProps {
+  video: Video;
+}
+
+export const StudentViewersList = ({ video }: StudentViewersListProps) => {
   const participants = useParticipantsStore((state) => state.participants);
   const participantsOnStage = participants.filter(
-    (participant) => participant.isOnStage || participant.isInstructor,
+    (participant) =>
+      video.participants_in_discussion.some(
+        (p) => p.name === participant.name,
+      ) || participant.isInstructor,
   );
+
   const participantsNotOnStage = participants.filter(
-    (participant) => !participant.isOnStage && !participant.isInstructor,
+    (participant) => !participantsOnStage.includes(participant),
   );
   const intl = useIntl();
 
