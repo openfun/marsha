@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove cancel button in student meeting join form
 - Replace automatic meeting joining by a button
 - Allow generated links in Django admin for objects in other applications
+- Do not install the `marsha` Python package in `site-packages`
 
 ## [4.0.0-beta.1] - 2022-02-15
 
