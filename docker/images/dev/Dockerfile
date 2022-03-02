@@ -17,4 +17,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install development dependencies
-RUN pip install .[dev]
+# and forcibly remove the marsha package
+RUN pip install .[dev] && \
+    pip uninstall marsha
