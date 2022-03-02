@@ -8,9 +8,7 @@ export type ParticipantType = {
 
 type State = {
   addParticipant: (newParticipant: ParticipantType) => void;
-  bringDownOnStageParticipant: (participantName: string) => void;
   participants: ParticipantType[];
-  pushParticipantOnStage: (participantName: string) => void;
   removeParticipant: (participantName: string) => void;
 };
 
@@ -43,23 +41,5 @@ export const useParticipantsStore = create<State>((set) => ({
       participants: state.participants.filter(
         (participant) => participant.name !== participantName,
       ),
-    })),
-  pushParticipantOnStage: (participantName) =>
-    set((state) => ({
-      participants: state.participants.map((participant) => {
-        if (participant.name === participantName) {
-          participant.isOnStage = true;
-        }
-        return participant;
-      }),
-    })),
-  bringDownOnStageParticipant: (participantName) =>
-    set((state) => ({
-      participants: state.participants.map((participant) => {
-        if (participant.name === participantName) {
-          participant.isOnStage = false;
-        }
-        return participant;
-      }),
     })),
 }));

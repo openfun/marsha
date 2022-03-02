@@ -33,40 +33,6 @@ describe('useParticipantsStore', () => {
     ]);
   });
 
-  it('executes useParticipantsStore/pushParticipantOnStage', () => {
-    useParticipantsStore.getState().addParticipant(participant2);
-    useParticipantsStore.getState().addParticipant(participant3);
-
-    const updatedParticipant3 = {
-      ...participant3,
-      isOnStage: true,
-    };
-    useParticipantsStore.getState().pushParticipantOnStage(participant3.name);
-
-    expect(useParticipantsStore.getState().participants).toEqual([
-      participant2,
-      updatedParticipant3,
-    ]);
-  });
-
-  it('executes useParticipantsStore/bringDownOnStageParticipant', () => {
-    useParticipantsStore.getState().addParticipant(participant2);
-    useParticipantsStore.getState().addParticipant(participant3);
-
-    const updatedParticipant2 = {
-      ...participant2,
-      isOnStage: false,
-    };
-    useParticipantsStore
-      .getState()
-      .bringDownOnStageParticipant(participant2.name);
-
-    expect(useParticipantsStore.getState().participants).toEqual([
-      updatedParticipant2,
-      participant3,
-    ]);
-  });
-
   it('executes useParticipantsStore/removeParticipant', () => {
     useParticipantsStore.getState().addParticipant(participant1);
     useParticipantsStore.getState().addParticipant(participant2);
