@@ -2,19 +2,19 @@
   <mj-include path="./partial/header.mjml" />>
   <mj-body background-color="#FFFFFF">
     <mj-section background-color="#2a5cab" padding="10px 0">
-      <mj-column  background-color="#e51a2d">
+      <mj-column background-color="#e51a2d">
         <mj-text>{% load i18n %}</mj-text>
         <mj-text align="center" color="#ffffff" font-size="15px" padding="8px 8px"><strong>{% trans "Already started!" %}</strong></mj-text>
       </mj-column>
     </mj-section>
-   <mj-include path="./partial/video_description.mjml" />
+    <mj-include path="./partial/video_description.mjml" />
     <mj-section background-color="#FFFFFF" padding="0px 50px">
       <mj-column width="100%">
-          <mj-include path="./partial/hello.mjml" />
-          <mj-text align="center" font-size="18px" padding="20px 50px">
+        <mj-include path="./partial/hello.mjml" />
+        <mj-text align="center" font-size="18px" padding="20px 50px">
           {% trans "Our event" %} "{{video.title}}" {% trans "finally started earlier and is live now." %}
-          </mj-text> 
-          <mj-text align="center" font-size="18px" padding="10px 50px">{% trans "Come quickly to join us." %}</mj-text>
+        </mj-text>
+        <mj-text align="center" font-size="18px" padding="10px 50px">{% trans "Come quickly to join us." %}</mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./partial/footer.mjml" />

@@ -2,10 +2,10 @@
   <mj-include path="./partial/header.mjml" />
   <mj-body background-color="#FFFFFF">
     <mj-section background-color="#2a5cab" padding="10px 0">
-      <mj-column  background-color="#008000">
+      <mj-column background-color="#008000">
         <mj-text>{% load i18n %}</mj-text>
         <mj-text align="center" color="#FFFFFF" font-size="15px" padding="8px 8px">
-            {% trans "Registration validated!"%}
+          {% trans "Registration validated!"%}
         </mj-text>
       </mj-column>
     </mj-section>
@@ -14,9 +14,9 @@
       <mj-column width="100%">
         <mj-include path="./partial/hello.mjml" />
         <mj-text align="center" font-size="18px" padding="10px 50px">
-            {% trans "We have taken note of your interest in the event " %} "{{video.title}}".
-            {% trans "We'll meet you at " %}{{video.starting_at}} {{time_zone}} {% trans "for the start of the webinar." %}
-        </mj-text> 
+          {% trans "We have taken note of your interest in the event " %} "{{video.title}}".
+          {% trans "We'll meet you at " %}{{video.starting_at}} {{time_zone}} {% trans "for the start of the webinar." %}
+        </mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./partial/footer.mjml" />

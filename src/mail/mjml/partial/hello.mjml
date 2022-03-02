@@ -1,7 +1,4 @@
- <mj-text align="center" font-size="18px" padding="20px 25px">
-        {% if username %}
-          {% trans "Hello" %} {{username}},
-        {% else %}
-          {% trans "Hello," %}
-        {% endif %}
+<mj-text align="center" font-size="18px" padding="20px 25px">
+  {% if username %} {% trans "Hello" %} {{username}}, {% else %} {% trans
+  "Hello," %} {% endif %}
 </mj-text>
