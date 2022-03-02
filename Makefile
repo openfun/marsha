@@ -33,6 +33,7 @@ GREEN := \033[1;32m
 
 # -- Docker
 COMPOSE              = docker-compose
+COMPOSE_BUILD        = COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 $(COMPOSE) build
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
@@ -65,9 +66,9 @@ bootstrap: \
 # -- Docker/compose
 
 build: ## build the app container
-	@$(COMPOSE) build base;
-	@$(COMPOSE) build app;
-	@$(COMPOSE) build e2e;
+	@$(COMPOSE_BUILD) base;
+	@$(COMPOSE_BUILD) app;
+	@$(COMPOSE_BUILD) e2e;
 .PHONY: build
 
 build-lambda-dev: ## build all aws lambda
@@ -207,7 +208,7 @@ test:  ## Run django tests for the marsha project.
 .PHONY: test
 
 build-e2e: ## build the e2e container
-	@$(COMPOSE) build e2e;
+	@$(COMPOSE_BUILD) e2e;
 .PHONY: build-e2e
 
 e2e:  ## Run e2e tests for the marsha project.
