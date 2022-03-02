@@ -159,7 +159,6 @@ jobs:
       - run: 
           name: Build production image
           command: |
-            export DOCKER_BUILDKIT=1
             ./bin/lambda build ${CIRCLE_SHA1}
 
       - run:
@@ -169,7 +168,6 @@ jobs:
       - run:
           name: Build lambda development image
           command: |
-            export DOCKER_BUILDKIT=1
             ./bin/lambda build "development-${CIRCLE_SHA1}" development
 
       - run:
@@ -1051,7 +1049,6 @@ jobs:
       - run:
           name: Build production image
           command: |
-            export DOCKER_BUILDKIT=1
             ./bin/lambda build ${CIRCLE_SHA1}
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
