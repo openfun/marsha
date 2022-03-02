@@ -11,7 +11,8 @@ RUN pip install --upgrade pip
 
 WORKDIR /builder
 
-COPY src/backend/marsha src/backend/setup.* /builder/
+# Only copy the setup files for dependencies install
+COPY src/backend/setup.* /builder/
 
 RUN mkdir /install && \
     pip install --prefix=/install .
