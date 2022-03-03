@@ -14,9 +14,10 @@ export interface DecodedJwt {
   roles: string[];
   session_id: string;
   user?: {
+    anonymous_id?: string;
     email: Nullable<string>;
-    id: string;
-    username: Nullable<string>;
-    user_fullname: Nullable<string>;
+    id?: string;
+    username?: Nullable<string>;
+    user_fullname?: Nullable<string>;
   };
 }

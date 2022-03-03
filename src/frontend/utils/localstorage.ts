@@ -26,7 +26,7 @@ export const getAnonymousId = (): string => {
   if (!anonymousId) {
     anonymousId = uuidv4();
     try {
-      localStorage.setItem(ANONYMOUS_ID_KEY, anonymousId);
+      setAnonymousId(anonymousId);
     } catch (e) {
       report(e);
       return anonymousId;
@@ -34,4 +34,10 @@ export const getAnonymousId = (): string => {
   }
 
   return anonymousId;
+};
+
+export const setAnonymousId = (anonymousId: string): void => {
+  if (isLocaleStorageEnabled) {
+    localStorage.setItem(ANONYMOUS_ID_KEY, anonymousId);
+  }
 };
