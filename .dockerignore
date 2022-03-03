@@ -13,6 +13,8 @@ build
 
 # Docker
 docker-compose.*
+docker/
+!docker/files/usr
 env.d
 
 # Docs
@@ -23,12 +25,20 @@ docs
 # Development/test cache & configurations
 .cache
 .circleci
+.idea
 .git
+.gitignore
+.gitlint
 .github
-.vscode
 .ssh
+.vscode
+bin/
+!bin/entrypoint
 crowdin
 lib/gitlint
+Makefile
+readthedocs.yml
+renovate.json
 
 # Assets
 data
