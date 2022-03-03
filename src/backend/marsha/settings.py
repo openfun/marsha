@@ -115,10 +115,12 @@ class Base(Configuration):
         "waffle",
         "rest_framework",
         "corsheaders",
+        "channels",
+        "parler",  # django-parler, for translated models
+        # Marsha
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
         "marsha.websocket.apps.WebsocketConfig",
-        "channels",
     ]
     MIDDLEWARE = [
         "corsheaders.middleware.CorsMiddleware",
@@ -236,6 +238,19 @@ class Base(Configuration):
 
     REACT_LOCALES = values.ListValue(["en_US", "es_ES", "fr_FR", "fr_CA"])
     DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE = values.Value("en")
+
+    PARLER_DEFAULT_LANGUAGE_CODE = LANGUAGES[0][0]
+    PARLER_LANGUAGES = {
+        None: tuple({"code": code} for code in LANGUAGES_DICT.keys()),
+        "default": {
+            "fallbacks": [
+                PARLER_DEFAULT_LANGUAGE_CODE
+            ],  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+            "hide_untranslated": False,
+        },
+    }
+    # Admin tabs don't show up when only Site `None` is defined
+    PARLER_LANGUAGES[SITE_ID] = PARLER_LANGUAGES[None]
 
     VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
     STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
