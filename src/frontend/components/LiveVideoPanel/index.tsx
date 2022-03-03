@@ -11,6 +11,7 @@ import {
 import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
 import { theme } from 'utils/theme/theme';
+
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
 const StyledGrommet = styled(Grommet)`
@@ -77,7 +78,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   let content;
   switch (currentItem) {
     case LivePanelItem.CHAT:
-      content = <Chat video={video} />;
+      content = <Chat />;
       break;
     case LivePanelItem.APPLICATION:
       //  TODO : implement this item
