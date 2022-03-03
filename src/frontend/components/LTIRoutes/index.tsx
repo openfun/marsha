@@ -3,8 +3,6 @@ import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { appData } from 'data/appData';
 import { modelName } from 'types/models';
-import { Chat } from 'components/Chat';
-import { CHAT_ROUTE } from 'components/Chat/route';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FullScreenError } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
@@ -100,21 +98,6 @@ export const Routes = () => (
               lti_select_form_data={appData.lti_select_form_data!}
             />
           )}
-        />
-        <Route
-          exact
-          path={CHAT_ROUTE()}
-          render={() => {
-            if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
-              return (
-                <InstructorWrapper resource={appData.video}>
-                  <Chat video={appData.video} standalone={true} />
-                </InstructorWrapper>
-              );
-            }
-
-            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-          }}
         />
         <Route
           exact
