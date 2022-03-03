@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { report } from './errors/report';
-import { ANONYMOUS_ID_KEY, getAnonymousId } from './localstorage';
+import {
+  ANONYMOUS_ID_KEY,
+  getAnonymousId,
+  setAnonymousId,
+} from './localstorage';
 
 jest.mock('./errors/report', () => ({
   report: jest.fn(),
@@ -25,7 +29,7 @@ const defineLocaleStorage = () => {
   });
 };
 
-describe('getAnonymousId', () => {
+describe('getAnonymousId and setAnonymousId', () => {
   beforeAll(() => {
     defineLocaleStorage();
   });
@@ -39,6 +43,24 @@ describe('getAnonymousId', () => {
     const anonymousId = uuidv4();
     storage[ANONYMOUS_ID_KEY] = anonymousId;
     expect(getAnonymousId()).toEqual(anonymousId);
+    expect(mockReport).not.toHaveBeenCalled();
+  });
+
+  it('sets an anonymousId with no previous anonymousId', () => {
+    const anonymousId = uuidv4();
+    setAnonymousId(anonymousId);
+    expect(getAnonymousId()).toEqual(anonymousId);
+    expect(mockReport).not.toHaveBeenCalled();
+  });
+
+  it('sets an anonymousId with a previous anonymousId', () => {
+    const anonymousId = uuidv4();
+    storage[ANONYMOUS_ID_KEY] = anonymousId;
+    expect(getAnonymousId()).toEqual(anonymousId);
+
+    const newAnonymousId = uuidv4();
+    setAnonymousId(newAnonymousId);
+    expect(getAnonymousId()).toEqual(newAnonymousId);
     expect(mockReport).not.toHaveBeenCalled();
   });
 

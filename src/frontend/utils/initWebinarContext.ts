@@ -4,8 +4,7 @@ import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useLiveRegistration } from 'data/stores/useLiveRegistration';
 import { Video } from 'types/tracks';
 import { checkLtiToken } from './checkLtiToken';
-import { getAnonymousId } from './localstorage';
-import { Maybe } from './types';
+import { getAnonymousId, setAnonymousId } from './localstorage';
 
 export const initWebinarContext = async (video: Video) => {
   // if not a live, stop it.
@@ -13,9 +12,11 @@ export const initWebinarContext = async (video: Video) => {
 
   // If live registration already present, stop it.
   if (useLiveRegistration.getState().liveRegistration) return;
-
-  let anonymousId: Maybe<string>;
-  if (!checkLtiToken(getDecodedJwt())) {
+  const decodedJwt = getDecodedJwt();
+  let anonymousId = decodedJwt.user?.anonymous_id;
+  if (anonymousId) {
+    setAnonymousId(anonymousId);
+  } else if (!checkLtiToken(decodedJwt)) {
     anonymousId = getAnonymousId();
   }
 
