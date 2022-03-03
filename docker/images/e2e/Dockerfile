@@ -10,7 +10,7 @@ WORKDIR /app/src/backend
 # Install development dependencies
 # and forcibly remove the marsha package
 RUN pip install .[dev,e2e] && \
-    pip uninstall marsha
+    pip uninstall -y marsha
 
 RUN playwright install-deps
 RUN playwright install

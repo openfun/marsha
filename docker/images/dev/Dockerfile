@@ -19,4 +19,4 @@ RUN apt-get update && \
 # Install development dependencies
 # and forcibly remove the marsha package
 RUN pip install .[dev] && \
-    pip uninstall marsha
+    pip uninstall -y marsha
