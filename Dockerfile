@@ -55,8 +55,8 @@ RUN apt-get update && \
 # Copy installed python dependencies
 COPY --from=back-builder /install /usr/local
 
-# Copy marsha application (see .dockerignore)
-COPY . /app/
+# Copy marsha backend application (see .dockerignore)
+COPY ./src/backend /app/src/backend
 # Copy front-end dependencies
 COPY --from=front-builder /app/marsha/static /app/src/backend/marsha/static
 COPY --from=mail-builder /app/backend/marsha/core/templates/core/mail /app/src/backend/marsha/core/templates/core/mail
@@ -91,6 +91,7 @@ COPY --from=link-collector ${MARSHA_STATIC_ROOT} ${MARSHA_STATIC_ROOT}
 # Gunicorn
 RUN mkdir -p /usr/local/etc/gunicorn
 COPY docker/files/usr/local/etc/gunicorn/marsha.py /usr/local/etc/gunicorn/marsha.py
+COPY docker/files/usr/local/bin/entrypoint /usr/local/bin/entrypoint
 
 # Give the "root" group the same permissions as the "root" user on /etc/passwd
 # to allow a user belonging to the root group to add new users; typically the
@@ -102,7 +103,7 @@ WORKDIR /app/src/backend
 # We wrap commands run in this container by the following entrypoint that
 # creates a user on-the-fly with the container user ID (see USER) and root group
 # ID.
-ENTRYPOINT [ "/app/bin/entrypoint" ]
+ENTRYPOINT [ "entrypoint" ]
 
 # The default command runs gunicorn WSGI server
 CMD ["gunicorn", "-c", "/usr/local/etc/gunicorn/marsha.py", "marsha.asgi:application"]
