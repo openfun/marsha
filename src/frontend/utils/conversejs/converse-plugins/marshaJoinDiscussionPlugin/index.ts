@@ -5,12 +5,8 @@ import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
 import { EventType, MessageType, XMPP } from 'types/XMPP';
 import { converse } from 'utils/window';
-import {
-  addParticipantAskingToJoin,
-  moveParticipantToDiscussion,
-  removeParticipantAskingToJoin,
-  removeParticipantFromDiscussion,
-} from 'utils/updateLiveParticipants';
+
+import marshaJoinDiscussionPluginHandler from './handler';
 
 const PLUGIN_NAME = 'marsha-join-discussion-plugin';
 
@@ -55,89 +51,14 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
       _converse.on('initialized', () => {
         _converse.connection.addHandler(
           async (messageStanza: any) => {
-            if (
-              getDecodedJwt().permissions.can_update &&
-              messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
-              messageStanza.getAttribute('event') ===
-                EventType.PARTICIPANT_ASK_TO_JOIN
-            ) {
-              const jid = messageStanza.getAttribute('from');
-              const username = converse.env.Strophe.getResourceFromJid(jid);
-              const video = useVideo.getState().getVideo(appData.video!);
-              await addParticipantAskingToJoin(video, {
-                id: jid,
-                name: username,
-              });
-            } else if (
-              getDecodedJwt().permissions.can_update &&
-              messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
-              messageStanza.getAttribute('event') === EventType.ACCEPTED
-            ) {
-              const participant = JSON.parse(
-                messageStanza.getAttribute('participant'),
-              );
-              const video = useVideo.getState().getVideo(appData.video!);
-              await moveParticipantToDiscussion(video, participant);
-            } else if (
-              messageStanza.getAttribute('type') === MessageType.EVENT &&
-              messageStanza.getAttribute('event') === EventType.ACCEPT
-            ) {
-              // retrieve current video in store
-              const video = useVideo.getState().getVideo(appData.video!);
-              // update video with jitsi info
-              useVideo.getState().addResource({
-                ...video,
-                live_info: {
-                  ...video.live_info,
-                  jitsi: JSON.parse(messageStanza.getAttribute('jitsi')),
-                },
-              });
-
-              useParticipantWorkflow.getState().setAccepted();
-            } else if (
-              messageStanza.getAttribute('type') === MessageType.EVENT &&
-              messageStanza.getAttribute('event') === EventType.REJECT
-            ) {
-              useParticipantWorkflow.getState().setRejected();
-            } else if (
-              getDecodedJwt().permissions.can_update &&
-              messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
-              messageStanza.getAttribute('event') === EventType.REJECTED
-            ) {
-              const participant = JSON.parse(
-                messageStanza.getAttribute('participant'),
-              );
-              const video = useVideo.getState().getVideo(appData.video!);
-              await removeParticipantAskingToJoin(video, participant);
-            } else if (
-              messageStanza.getAttribute('type') === MessageType.EVENT &&
-              messageStanza.getAttribute('event') === EventType.KICK
-            ) {
-              useParticipantWorkflow.getState().setKicked();
-            } else if (
-              getDecodedJwt().permissions.can_update &&
-              messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
-              messageStanza.getAttribute('event') === EventType.KICKED
-            ) {
-              const participant = JSON.parse(
-                messageStanza.getAttribute('participant'),
-              );
-              const video = useVideo.getState().getVideo(appData.video!);
-              await removeParticipantFromDiscussion(video, participant);
-            } else if (
-              getDecodedJwt().permissions.can_update &&
-              messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
-              messageStanza.getAttribute('event') === EventType.LEAVE
-            ) {
-              const jid = messageStanza.getAttribute('from');
-              const username = converse.env.Strophe.getResourceFromJid(jid);
-              const video = useVideo.getState().getVideo(appData.video!);
-              await removeParticipantFromDiscussion(video, {
-                id: jid,
-                name: username,
-              });
-            }
-            return true;
+            const jid = messageStanza.getAttribute('from');
+            const username = converse.env.Strophe.getResourceFromJid(jid);
+            const video = useVideo.getState().getVideo(appData.video!);
+            return await marshaJoinDiscussionPluginHandler(
+              messageStanza,
+              username,
+              video,
+            );
           },
           null,
           'message',
