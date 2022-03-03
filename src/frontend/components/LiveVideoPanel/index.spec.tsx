@@ -5,29 +5,22 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { LiveVideoPanel } from '.';
 
-const mockVideo = videoMockFactory({
-  xmpp: {
-    bosh_url: 'https://xmpp-server.com/http-bind',
-    converse_persistent_store: PersistentStore.LOCALSTORAGE,
-    websocket_url: null,
-    conference_url:
-      '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-    prebind_url: 'https://xmpp-server.com/http-pre-bind',
-    jid: 'xmpp-server.com',
-  },
-});
 jest.mock('data/appData', () => ({
-  appData: {
-    video: mockVideo,
-  },
+  getDecodedJwt: () => ({
+    permissions: {
+      can_access_dashboard: false,
+      can_update: false,
+    },
+  }),
 }));
+
+const video = videoMockFactory();
 
 describe('<LiveVideoPanel />', () => {
   it('closes the panel if no item is selected', () => {
@@ -43,7 +36,7 @@ describe('<LiveVideoPanel />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />),
+      wrapInIntlProvider(<LiveVideoPanel video={video} />),
     );
 
     expect(mockSetPanelVisibility).toBeCalled();
@@ -63,7 +56,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(wrapInIntlProvider(<LiveVideoPanel video={video} />));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -79,7 +72,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(wrapInIntlProvider(<LiveVideoPanel video={video} />));
 
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
     expect(
@@ -103,7 +96,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    await renderImageSnapshot(<LiveVideoPanel video={mockVideo} />);
+    await renderImageSnapshot(<LiveVideoPanel video={video} />);
   });
 
   it('renders with appropriate style on small screen', async () => {
@@ -116,6 +109,6 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    await renderImageSnapshot(<LiveVideoPanel video={mockVideo} />, 300, 300);
+    await renderImageSnapshot(<LiveVideoPanel video={video} />, 300, 300);
   });
 });

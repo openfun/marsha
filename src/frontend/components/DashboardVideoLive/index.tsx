@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import React, { Fragment, useEffect, useState } from 'react';
 
+import { ConverseInitializer } from 'components/ConverseInitializer';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
@@ -53,56 +54,58 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     video.live_state !== undefined && video.live_state !== liveState.IDLE;
 
   return (
-    <LiveFeedbackProvider value={false}>
-      <StopLiveConfirmationProvider value={false}>
-        <Box>
-          <LiveVideoLayout
-            actionsElement={
-              <Fragment>
-                {isLiveStarted && <TeacherLiveControlBar video={video} />}
-                <TeacherLiveLifecycleControls
-                  canStartStreaming={canShowStartButton}
-                  hasRightToStart={canStartLive}
+    <ConverseInitializer video={video}>
+      <LiveFeedbackProvider value={false}>
+        <StopLiveConfirmationProvider value={false}>
+          <Box>
+            <LiveVideoLayout
+              actionsElement={
+                <Fragment>
+                  {isLiveStarted && <TeacherLiveControlBar video={video} />}
+                  <TeacherLiveLifecycleControls
+                    canStartStreaming={canShowStartButton}
+                    hasRightToStart={canStartLive}
+                    video={video}
+                  />
+                </Fragment>
+              }
+              displayActionsElement
+              isPanelOpen={isPanelVisible}
+              liveTitleElement={
+                <TeacherLiveInfoBar title={video.title} startDate={null} />
+              }
+              mainElement={
+                <TeacherLiveContent
+                  setCanShowStartButton={setCanShowStartButton}
+                  setCanStartLive={setCanStartLive}
                   video={video}
                 />
-              </Fragment>
-            }
-            displayActionsElement
-            isPanelOpen={isPanelVisible}
-            liveTitleElement={
-              <TeacherLiveInfoBar title={video.title} startDate={null} />
-            }
-            mainElement={
-              <TeacherLiveContent
-                setCanShowStartButton={setCanShowStartButton}
-                setCanStartLive={setCanStartLive}
-                video={video}
-              />
-            }
-            sideElement={<LiveVideoPanel video={video} />}
-          />
+              }
+              sideElement={<LiveVideoPanel video={video} />}
+            />
 
-          <Box direction={'row'} justify={'center'} margin={'small'}>
-            {appData.flags?.live_raw &&
-              video.live_state &&
-              [liveState.IDLE, liveState.PAUSED].includes(video.live_state) && (
-                <TeacherLiveTypeSwitch video={video} />
+            <Box direction={'row'} justify={'center'} margin={'small'}>
+              {appData.flags?.live_raw &&
+                video.live_state &&
+                [liveState.IDLE, liveState.PAUSED].includes(
+                  video.live_state,
+                ) && <TeacherLiveTypeSwitch video={video} />}
+              {video.live_state === liveState.RUNNING && (
+                <DashboardVideoLiveRunning video={video} />
               )}
-            {video.live_state === liveState.RUNNING && (
-              <DashboardVideoLiveRunning video={video} />
+            </Box>
+
+            {video.live_state !== liveState.STOPPED && (
+              <Box direction={'row'} justify={'center'} margin={'small'}>
+                <DashboardVideoLivePairing video={video} />
+              </Box>
+            )}
+            {video.live_state === liveState.IDLE && (
+              <ScheduledVideoForm video={video} />
             )}
           </Box>
-
-          {video.live_state !== liveState.STOPPED && (
-            <Box direction={'row'} justify={'center'} margin={'small'}>
-              <DashboardVideoLivePairing video={video} />
-            </Box>
-          )}
-          {video.live_state === liveState.IDLE && (
-            <ScheduledVideoForm video={video} />
-          )}
-        </Box>
-      </StopLiveConfirmationProvider>
-    </LiveFeedbackProvider>
+        </StopLiveConfirmationProvider>
+      </LiveFeedbackProvider>
+    </ConverseInitializer>
   );
 };

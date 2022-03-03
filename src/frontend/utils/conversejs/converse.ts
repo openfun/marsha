@@ -10,9 +10,8 @@ import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscuss
 import { nicknameManagementPlugin } from './converse-plugins/nicknameManagementPlugin';
 import { participantsTrackingPlugin } from './converse-plugins/participantsTrackingPlugin';
 
+let isChatInitialized = false;
 export const converseMounter = () => {
-  let isChatInitialized = false;
-
   return (xmpp: XMPP, displayName?: Nullable<string>) => {
     if (!isChatInitialized) {
       chatPlugin.addPlugin(xmpp);

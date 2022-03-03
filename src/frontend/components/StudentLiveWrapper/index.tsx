@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import { ConverseInitializer } from 'components/ConverseInitializer';
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
@@ -62,29 +63,31 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
   }, [video, configPanel, isStarted]);
 
   return (
-    <LiveVideoLayout
-      actionsElement={<StudentLiveControlBar video={video} />}
-      displayActionsElement={
-        configuration.type === LiveType.ON_STAGE || isStarted
-      }
-      isPanelOpen={isPanelVisible}
-      liveTitleElement={
-        <StudentLiveInfoBar title={video.title} startDate={null} />
-      }
-      mainElement={
-        <React.Fragment>
-          {configuration.type === LiveType.ON_STAGE && (
-            <DashboardVideoLiveJitsi video={video} />
-          )}
-          {configuration.type === LiveType.VIEWER && (
-            <StudentLiveViewerWrapper
-              video={video}
-              playerType={configuration.playerType}
-            />
-          )}
-        </React.Fragment>
-      }
-      sideElement={<LiveVideoPanel video={video} />}
-    />
+    <ConverseInitializer video={video}>
+      <LiveVideoLayout
+        actionsElement={<StudentLiveControlBar video={video} />}
+        displayActionsElement={
+          configuration.type === LiveType.ON_STAGE || isStarted
+        }
+        isPanelOpen={isPanelVisible}
+        liveTitleElement={
+          <StudentLiveInfoBar title={video.title} startDate={null} />
+        }
+        mainElement={
+          <React.Fragment>
+            {configuration.type === LiveType.ON_STAGE && (
+              <DashboardVideoLiveJitsi video={video} />
+            )}
+            {configuration.type === LiveType.VIEWER && (
+              <StudentLiveViewerWrapper
+                video={video}
+                playerType={configuration.playerType}
+              />
+            )}
+          </React.Fragment>
+        }
+        sideElement={<LiveVideoPanel video={video} />}
+      />
+    </ConverseInitializer>
   );
 };

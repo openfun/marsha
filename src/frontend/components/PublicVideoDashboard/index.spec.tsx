@@ -23,8 +23,6 @@ import { wrapInRouter } from 'utils/tests/router';
 
 import PublicVideoDashboard from '.';
 
-window.HTMLElement.prototype.scrollTo = jest.fn();
-
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
@@ -55,6 +53,12 @@ jest.mock('video.js', () => ({
   },
 }));
 
+jest.mock('components/ConverseInitializer', () => ({
+  ConverseInitializer: ({ children }: { children: React.ReactNode }) => {
+    return children;
+  },
+}));
+
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
@@ -82,10 +86,6 @@ jest.mock('data/appData', () => ({
       can_update: mockCanUpdate,
     },
   }),
-}));
-
-jest.mock('utils/conversejs/converse', () => ({
-  converseMounter: jest.fn(() => jest.fn()),
 }));
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
