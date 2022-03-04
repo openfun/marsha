@@ -38,7 +38,7 @@ from .lti.utils import (
     get_or_create_resource,
     get_selectable_resources,
 )
-from .models import Document, LiveRegistration, Playlist, Video
+from .models import Document, LiveSession, Playlist, Video
 from .models.account import NONE, LTIPassport
 from .serializers import (
     DocumentSelectLTISerializer,
@@ -500,24 +500,22 @@ class VideoView(BaseLTIView):
 
         """
         if "uuid" in kwargs and request.GET.get("lrpk") and request.GET.get("key"):
-            return self.get_direct_access_from_liveregistration(
+            return self.get_direct_access_from_livesession(
                 kwargs["uuid"], request.GET.get("lrpk"), request.GET.get("key")
             )
 
         return self.render_to_response(self.get_public_data())
 
-    def get_direct_access_from_liveregistration(
-        self, video_pk, liveregistration_pk, key
-    ):
+    def get_direct_access_from_livesession(self, video_pk, livesession_pk, key):
         """Reminders mails for a scheduled webinar send direct access to the video.
         Video can be public or not. It will be accessed out of a LTI connection.
-        The liveregistration information is used to build a JWT token.
+        The livesession information is used to build a JWT token.
         """
-        liveregistration = get_object_or_404(
-            LiveRegistration, pk=liveregistration_pk, video__pk=video_pk
+        livesession = get_object_or_404(
+            LiveSession, pk=livesession_pk, video__pk=video_pk
         )
 
-        if liveregistration.get_generate_salted_hmac() == key:
+        if livesession.get_generate_salted_hmac() == key:
 
             session_id = str(uuid.uuid4())
             cache_key = f"app_data|direct_access|{self.model.__name__}|{video_pk}"
@@ -528,10 +526,10 @@ class VideoView(BaseLTIView):
                 app_data.update(
                     {
                         "resource": self.serializer_class(
-                            liveregistration.video,
+                            livesession.video,
                             context={
                                 "is_admin": False,
-                                "user_id": liveregistration.lti_id,
+                                "user_id": livesession.lti_id,
                                 "session_id": session_id,
                             },
                         ).data,
@@ -543,31 +541,27 @@ class VideoView(BaseLTIView):
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
             jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(liveregistration.video.id)
+            jwt_token.payload["resource_id"] = str(livesession.video.id)
             jwt_token.payload["user"] = {
-                "email": liveregistration.email,
+                "email": livesession.email,
             }
 
-            if liveregistration.is_from_lti_connection:
+            if livesession.is_from_lti_connection:
 
-                jwt_token.payload["consumer_site"] = str(
-                    liveregistration.consumer_site.id
-                )
-                jwt_token.payload["context_id"] = str(
-                    liveregistration.video.playlist.lti_id
-                )
+                jwt_token.payload["consumer_site"] = str(livesession.consumer_site.id)
+                jwt_token.payload["context_id"] = str(livesession.video.playlist.lti_id)
                 jwt_token.payload["roles"] = ["student"]
                 jwt_token.payload["user"].update(
                     {
-                        "id": liveregistration.lti_user_id,
-                        "username": liveregistration.username,
+                        "id": livesession.lti_user_id,
+                        "username": livesession.username,
                     }
                 )
 
             else:
 
                 jwt_token.payload["user"].update(
-                    {"anonymous_id": str(liveregistration.anonymous_id)}
+                    {"anonymous_id": str(livesession.anonymous_id)}
                 )
                 jwt_token.payload["roles"] = [NONE]
 
@@ -851,7 +845,7 @@ class LTIRespondView(TemplateResponseMixin, View):
 
 class RemindersCancelView(TemplateResponseMixin, View):
     """
-    View to cancel reminders by supplying the key and the pk of a liveregistration
+    View to cancel reminders by supplying the key and the pk of a livesession
     """
 
     template_name = "core/reminder_unregister.html"
@@ -859,10 +853,10 @@ class RemindersCancelView(TemplateResponseMixin, View):
     def get(self, request, *args, **kwargs):
         """Set should_send_reminders to False if link to unsubscribe is recognized."""
         if "pk" in kwargs and "key" in kwargs:
-            liveregistration = get_object_or_404(LiveRegistration, pk=kwargs["pk"])
-            if liveregistration.get_generate_salted_hmac() == kwargs["key"]:
-                liveregistration.should_send_reminders = False
-                liveregistration.save()
-                return self.render_to_response({"video": liveregistration.video})
+            livesession = get_object_or_404(LiveSession, pk=kwargs["pk"])
+            if livesession.get_generate_salted_hmac() == kwargs["key"]:
+                livesession.should_send_reminders = False
+                livesession.save()
+                return self.render_to_response({"video": livesession.video})
 
         raise Http404

@@ -14,7 +14,7 @@ from django.utils import timezone
 from marsha.core.management.commands import send_reminders
 
 from ..defaults import IDLE, RAW, RUNNING
-from ..factories import LiveRegistrationFactory, VideoFactory
+from ..factories import LiveSessionFactory, VideoFactory
 
 
 # pylint: disable=too-many-lines
@@ -27,7 +27,7 @@ class SendRemindersTest(TestCase):
     date_future = timezone.now() + timedelta(days=10)
 
     def test_send_reminders_none(self):
-        """Command should do nothing when there is no liveRegistration."""
+        """Command should do nothing when there is no livesession."""
         out = StringIO()
         call_command("send_reminders", stdout=out)
         self.assertEqual("", out.getvalue())
@@ -35,7 +35,7 @@ class SendRemindersTest(TestCase):
 
     def test_send_reminders_none_to_come(self):
         """Command should do nothing when there are no scheduled videos in the future."""
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="sarah@test-fun-mooc.fr",
@@ -61,7 +61,7 @@ class SendRemindersTest(TestCase):
             live_type=RAW,
             starting_at=self.date_future,
         )
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="sarah@test-fun-mooc.fr",
@@ -86,7 +86,7 @@ class SendRemindersTest(TestCase):
             live_type=RAW,
             starting_at=self.date_future,
         )
-        public_registration = LiveRegistrationFactory(
+        public_livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="sarah@test-fun-mooc.fr",
@@ -94,8 +94,8 @@ class SendRemindersTest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        # registration with is_registered False
-        LiveRegistrationFactory(
+        # livesession with is_registered False
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="not_registered@test-fun-mooc.fr",
@@ -104,8 +104,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with reminder settings.REMINDER_IS_STARTED already sent
-        LiveRegistrationFactory(
+        # livesession with reminder settings.REMINDER_IS_STARTED already sent
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="settings.REMINDER_sent@test-fun-mooc.fr",
@@ -115,8 +115,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with should_send_reminders False
-        LiveRegistrationFactory(
+        # livesession with should_send_reminders False
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=self.date_past,
             email="unsubscribed@test-fun-mooc.fr",
@@ -125,8 +125,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # LTI registration with other reminders sent
-        lti_registration = LiveRegistrationFactory(
+        # LTI livesession with other reminders sent
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=self.date_past,
             email="chantal@test-fun-mooc.fr",
@@ -161,14 +161,14 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"Sending email for liveregistration {public_registration.id} for "
-            f"video {public_registration.video.id} step {settings.REMINDER_IS_STARTED}",
+            f"Sending email for livesession {public_livesession.id} for "
+            f"video {public_livesession.video.id} step {settings.REMINDER_IS_STARTED}",
             out.getvalue(),
         )
 
         self.assertIn(
-            f"Sending email for liveregistration {lti_registration.id} for "
-            f"video {lti_registration.video.id} step {settings.REMINDER_IS_STARTED}",
+            f"Sending email for livesession {lti_livesession.id} for "
+            f"video {lti_livesession.video.id} step {settings.REMINDER_IS_STARTED}",
             out.getvalue(),
         )
         # join content of both mails to avoid order problem
@@ -176,34 +176,34 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].body.split()
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
-            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
             mails_content,
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
-            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
-            mails_content,
-        )
-
-        self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
-            f"{lti_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
+            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
             mails_content,
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
-            f"{public_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_livesession.get_generate_salted_hmac()}]",
             mails_content,
         )
 
-        public_registration.refresh_from_db()
-        lti_registration.refresh_from_db()
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
+            f"{public_livesession.get_generate_salted_hmac()}]",
+            mails_content,
+        )
 
-        # key has been added in both registrations
-        self.assertIn(settings.REMINDER_IS_STARTED, public_registration.reminders)
-        self.assertIn(settings.REMINDER_IS_STARTED, lti_registration.reminders)
+        public_livesession.refresh_from_db()
+        lti_livesession.refresh_from_db()
+
+        # key has been added in both livesessions
+        self.assertIn(settings.REMINDER_IS_STARTED, public_livesession.reminders)
+        self.assertIn(settings.REMINDER_IS_STARTED, lti_livesession.reminders)
         out.close()
 
         # call the command a new time, no new email should be sent
@@ -242,8 +242,8 @@ class SendRemindersTest(TestCase):
             live_state=RUNNING, live_type=RAW, starting_at=self.date_future
         )
 
-        # registration has been created only two hours before
-        LiveRegistrationFactory(
+        # livesession has been created only two hours before
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=2),
             email="two_hours@test-fun-mooc.fr",
@@ -251,8 +251,8 @@ class SendRemindersTest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        # registration has been created 4 hours ago
-        public_registration = LiveRegistrationFactory(
+        # livesession has been created 4 hours ago
+        public_livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="sarah@test-fun-mooc.fr",
@@ -262,7 +262,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video over 5 minutes
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="video_over_5_min@test-fun-mooc.fr",
@@ -271,8 +271,8 @@ class SendRemindersTest(TestCase):
             video=video_over_5_min,
         )
 
-        # LTI registration with other reminders sent
-        lti_registration = LiveRegistrationFactory(
+        # LTI livesession with other reminders sent
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="chantal@test-fun-mooc.fr",
@@ -284,8 +284,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_1 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_1 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=4),
             email="step1@test-fun-mooc.fr",
@@ -298,7 +298,7 @@ class SendRemindersTest(TestCase):
         )
 
         # not registered
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="not_registered@test-fun-mooc.fr",
@@ -307,7 +307,7 @@ class SendRemindersTest(TestCase):
             video=video,
         )
         # unsubscribed
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="unsubscribed@test-fun-mooc.fr",
@@ -317,7 +317,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video already started
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="video_started@test-fun-mooc.fr",
@@ -328,7 +328,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video in the past
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="video_in_the_past@test-fun-mooc.fr",
@@ -356,8 +356,8 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
-            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -367,14 +367,14 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
-            f"{lti_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(
-            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
-            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
+            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -383,26 +383,26 @@ class SendRemindersTest(TestCase):
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
-            f"{public_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
+            f"{public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
 
         self.assertIn(
-            f"Sending email for liveregistration {public_registration.id} for video "
-            f"{public_registration.video.id} step {settings.REMINDER_1}",
+            f"Sending email for livesession {public_livesession.id} for video "
+            f"{public_livesession.video.id} step {settings.REMINDER_1}",
             out.getvalue(),
         )
         self.assertIn(
-            f"Sending email for liveregistration {lti_registration.id} for video "
-            f"{lti_registration.video.id} step {settings.REMINDER_1}",
+            f"Sending email for livesession {lti_livesession.id} for video "
+            f"{lti_livesession.video.id} step {settings.REMINDER_1}",
             out.getvalue(),
         )
-        public_registration.refresh_from_db()
-        lti_registration.refresh_from_db()
+        public_livesession.refresh_from_db()
+        lti_livesession.refresh_from_db()
         # key has been added
-        self.assertIn(settings.REMINDER_1, public_registration.reminders)
-        self.assertIn(settings.REMINDER_1, lti_registration.reminders)
+        self.assertIn(settings.REMINDER_1, public_livesession.reminders)
+        self.assertIn(settings.REMINDER_1, lti_livesession.reminders)
         out.close()
 
         # call the command a new time, no new email should be sent
@@ -440,8 +440,8 @@ class SendRemindersTest(TestCase):
         video_started = VideoFactory(
             live_state=RUNNING, live_type=RAW, starting_at=self.date_future
         )
-        # registration has been created only 23 hours before (<1 day)
-        LiveRegistrationFactory(
+        # livesession has been created only 23 hours before (<1 day)
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=23),
             email="less_than_a_day@test-fun-mooc.fr",
@@ -449,8 +449,8 @@ class SendRemindersTest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        # registration has been created 26 hours ago (>1day)
-        public_registration = LiveRegistrationFactory(
+        # livesession has been created 26 hours ago (>1day)
+        public_livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="sarah@test-fun-mooc.fr",
@@ -460,7 +460,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video over
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="video_over_1_day@test-fun-mooc.fr",
@@ -469,8 +469,8 @@ class SendRemindersTest(TestCase):
             video=video_over,
         )
 
-        # LTI registration with reminder 3 sent
-        lti_registration = LiveRegistrationFactory(
+        # LTI livesession with reminder 3 sent
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=26),
             email="chantal@test-fun-mooc.fr",
@@ -482,8 +482,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_2 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_2 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=26),
             email="step1@test-fun-mooc.fr",
@@ -495,8 +495,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_1 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_1 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=26),
             email="rem1@test-fun-mooc.fr",
@@ -509,7 +509,7 @@ class SendRemindersTest(TestCase):
         )
 
         # not registered
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="not_registered@test-fun-mooc.fr",
@@ -518,7 +518,7 @@ class SendRemindersTest(TestCase):
             video=video,
         )
         # unsubscribed
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="unsubscribed@test-fun-mooc.fr",
@@ -528,7 +528,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video already started
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="video_started@test-fun-mooc.fr",
@@ -539,7 +539,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video in the past
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="video_in_the_past@test-fun-mooc.fr",
@@ -568,8 +568,8 @@ class SendRemindersTest(TestCase):
             "Live starts in less than 3 hours",
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
-            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
+            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -579,19 +579,19 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
-            f"{public_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
+            f"{public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
-            f"{lti_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
-            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -600,20 +600,20 @@ class SendRemindersTest(TestCase):
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
-            f"Sending email for liveregistration {public_registration.id} for video "
-            f"{public_registration.video.id} step {settings.REMINDER_2}",
+            f"Sending email for livesession {public_livesession.id} for video "
+            f"{public_livesession.video.id} step {settings.REMINDER_2}",
             out.getvalue(),
         )
         self.assertIn(
-            f"Sending email for liveregistration {lti_registration.id} for video "
-            f"{lti_registration.video.id} step {settings.REMINDER_2}",
+            f"Sending email for livesession {lti_livesession.id} for video "
+            f"{lti_livesession.video.id} step {settings.REMINDER_2}",
             out.getvalue(),
         )
-        public_registration.refresh_from_db()
-        lti_registration.refresh_from_db()
+        public_livesession.refresh_from_db()
+        lti_livesession.refresh_from_db()
         # key has been added
-        self.assertIn(settings.REMINDER_2, public_registration.reminders)
-        self.assertIn(settings.REMINDER_2, lti_registration.reminders)
+        self.assertIn(settings.REMINDER_2, public_livesession.reminders)
+        self.assertIn(settings.REMINDER_2, lti_livesession.reminders)
         out.close()
 
         # call the command a new time, no new email should be sent
@@ -652,8 +652,8 @@ class SendRemindersTest(TestCase):
             live_state=RUNNING, live_type=RAW, starting_at=self.date_future
         )
 
-        # registration has been created only 29 days before (<30 days)
-        LiveRegistrationFactory(
+        # livesession has been created only 29 days before (<30 days)
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=29),
             email="29days@test-fun-mooc.fr",
@@ -661,8 +661,8 @@ class SendRemindersTest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        # registration has been created 32 days agp (>30 days)
-        public_registration = LiveRegistrationFactory(
+        # livesession has been created 32 days agp (>30 days)
+        public_livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="sarah@test-fun-mooc.fr",
@@ -672,7 +672,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video over
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="video_over@test-fun-mooc.fr",
@@ -681,8 +681,8 @@ class SendRemindersTest(TestCase):
             video=video_over,
         )
 
-        # LTI registration
-        lti_registration = LiveRegistrationFactory(
+        # LTI livesession
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="chantal@test-fun-mooc.fr",
@@ -693,8 +693,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_3 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_3 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="step1@test-fun-mooc.fr",
@@ -706,8 +706,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration off because reminder settings.REMINDER_IS_STARTED already sent
-        LiveRegistrationFactory(
+        # livesession off because reminder settings.REMINDER_IS_STARTED already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="notif_off@test-fun-mooc.fr",
@@ -719,8 +719,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_1 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_1 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="rem1@test-fun-mooc.fr",
@@ -732,8 +732,8 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # registration with settings.REMINDER_2 reminder already sent
-        LiveRegistrationFactory(
+        # livesession with settings.REMINDER_2 reminder already sent
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="rem2@test-fun-mooc.fr",
@@ -746,7 +746,7 @@ class SendRemindersTest(TestCase):
         )
 
         # not registered
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="not_registered@test-fun-mooc.fr",
@@ -755,7 +755,7 @@ class SendRemindersTest(TestCase):
             video=video,
         )
         # unsubscribed
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="unsubscribed@test-fun-mooc.fr",
@@ -765,7 +765,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video already started
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="video_started@test-fun-mooc.fr",
@@ -776,7 +776,7 @@ class SendRemindersTest(TestCase):
         )
 
         # video in the past
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="video_in_the_past@test-fun-mooc.fr",
@@ -803,8 +803,8 @@ class SendRemindersTest(TestCase):
             "Live starts in less than 3 days",
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{lti_registration.video.pk}?lrpk="
-            f"{lti_registration.pk}&amp;key={lti_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -814,19 +814,19 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{lti_registration.pk}/"
-            f"{lti_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[1].body.split()),
         )
 
         self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{public_registration.pk}/"
-            f"{public_registration.get_generate_salted_hmac()}]",
+            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
+            f"{public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
-            f"Access the event [//example.com/videos/{public_registration.video.pk}?lrpk="
-            f"{public_registration.pk}&amp;key={public_registration.get_generate_salted_hmac()}]",
+            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
+            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -836,21 +836,21 @@ class SendRemindersTest(TestCase):
         )
 
         self.assertIn(
-            f"Sending email for liveregistration {public_registration.id} for video "
-            f"{public_registration.video.id} step {settings.REMINDER_3}",
+            f"Sending email for livesession {public_livesession.id} for video "
+            f"{public_livesession.video.id} step {settings.REMINDER_3}",
             out.getvalue(),
         )
 
         self.assertIn(
-            f"Sending email for liveregistration {lti_registration.id} for video "
-            f"{lti_registration.video.id} step {settings.REMINDER_3}",
+            f"Sending email for livesession {lti_livesession.id} for video "
+            f"{lti_livesession.video.id} step {settings.REMINDER_3}",
             out.getvalue(),
         )
-        public_registration.refresh_from_db()
-        lti_registration.refresh_from_db()
+        public_livesession.refresh_from_db()
+        lti_livesession.refresh_from_db()
         # key has been added
-        self.assertIn(settings.REMINDER_3, public_registration.reminders)
-        self.assertIn(settings.REMINDER_3, lti_registration.reminders)
+        self.assertIn(settings.REMINDER_3, public_livesession.reminders)
+        self.assertIn(settings.REMINDER_3, lti_livesession.reminders)
         out.close()
 
         # call the command a new time, no new email should be sent
@@ -873,7 +873,7 @@ class SendRemindersTest(TestCase):
                 starting_at=timezone.now() + timedelta(days=40),
             )
 
-            registration = LiveRegistrationFactory(
+            livesession = LiveSessionFactory(
                 anonymous_id=uuid.uuid4(),
                 created_on=timezone.now(),
                 email="sarah@test-fun-mooc.fr",
@@ -883,19 +883,19 @@ class SendRemindersTest(TestCase):
             )
 
         # back in present, when days are over starting_at time
-        self.assertGreater(timezone.now(), registration.video.starting_at)
+        self.assertGreater(timezone.now(), livesession.video.starting_at)
         call_command("send_reminders")
         # even if no reminders have been sent, none are sent now
         self.assertEqual(len(mail.outbox), 0)
 
         # move time 4 days before, nothing happens as 1st mail sent is 3 days before
-        two_days = registration.video.starting_at - timedelta(days=4)
+        two_days = livesession.video.starting_at - timedelta(days=4)
         with mock.patch.object(timezone, "now", return_value=two_days):
             call_command("send_reminders")
             self.assertEqual(len(mail.outbox), 0)
 
         # move time 2 days before, mail of step 3 is sent
-        two_days = registration.video.starting_at - timedelta(days=2)
+        two_days = livesession.video.starting_at - timedelta(days=2)
         with mock.patch.object(timezone, "now", return_value=two_days):
             out = StringIO()
             call_command("send_reminders", stdout=out)
@@ -904,65 +904,65 @@ class SendRemindersTest(TestCase):
             # check we send it to the the right email
             self.assertEqual(mail.outbox[0].to[0], "sarah@test-fun-mooc.fr")
             self.assertIn(
-                f"Sending email for liveregistration {registration.id} for video "
-                f"{registration.video.id} step {settings.REMINDER_3}",
+                f"Sending email for livesession {livesession.id} for video "
+                f"{livesession.video.id} step {settings.REMINDER_3}",
                 out.getvalue(),
             )
-            registration.refresh_from_db()
+            livesession.refresh_from_db()
             # key has been added
-            self.assertEqual([settings.REMINDER_3], registration.reminders)
+            self.assertEqual([settings.REMINDER_3], livesession.reminders)
             out.close()
 
             # move time 18 hours before, nothing new happens
-            eigteen_hours = registration.video.starting_at - timedelta(hours=18)
+            eigteen_hours = livesession.video.starting_at - timedelta(hours=18)
             with mock.patch.object(timezone, "now", return_value=eigteen_hours):
                 call_command("send_reminders")
                 # no new mail
                 self.assertEqual(len(mail.outbox), 1)
 
             # move time 2 hours before, mail of step 2 is sent
-            two_hours = registration.video.starting_at - timedelta(hours=2)
+            two_hours = livesession.video.starting_at - timedelta(hours=2)
             with mock.patch.object(timezone, "now", return_value=two_hours):
                 out = StringIO()
                 call_command("send_reminders", stdout=out)
                 # new mail of step2
                 self.assertEqual(len(mail.outbox), 2)
                 self.assertIn(
-                    f"Sending email for liveregistration {registration.id} for video "
-                    f"{registration.video.id} step {settings.REMINDER_2}",
+                    f"Sending email for livesession {livesession.id} for video "
+                    f"{livesession.video.id} step {settings.REMINDER_2}",
                     out.getvalue(),
                 )
-                registration.refresh_from_db()
+                livesession.refresh_from_db()
                 # key has been added
                 self.assertEqual(
-                    [settings.REMINDER_3, settings.REMINDER_2], registration.reminders
+                    [settings.REMINDER_3, settings.REMINDER_2], livesession.reminders
                 )
                 out.close()
 
             # move time 10 minutes before, nothing new happens
-            ten_minutes = registration.video.starting_at - timedelta(minutes=10)
+            ten_minutes = livesession.video.starting_at - timedelta(minutes=10)
             with mock.patch.object(timezone, "now", return_value=ten_minutes):
                 call_command("send_reminders")
                 # no new mail
                 self.assertEqual(len(mail.outbox), 2)
 
             # move time 4 minutes before, mail of step1 is sent
-            four_minutes = registration.video.starting_at - timedelta(minutes=4)
+            four_minutes = livesession.video.starting_at - timedelta(minutes=4)
             with mock.patch.object(timezone, "now", return_value=four_minutes):
                 out = StringIO()
                 call_command("send_reminders", stdout=out)
                 # mail of step1 is sent
                 self.assertEqual(len(mail.outbox), 3)
                 self.assertIn(
-                    f"Sending email for liveregistration {registration.id} for video "
-                    f"{registration.video.id} step {settings.REMINDER_1}",
+                    f"Sending email for livesession {livesession.id} for video "
+                    f"{livesession.video.id} step {settings.REMINDER_1}",
                     out.getvalue(),
                 )
-                registration.refresh_from_db()
+                livesession.refresh_from_db()
                 # key has been added
                 self.assertEqual(
                     [settings.REMINDER_3, settings.REMINDER_2, settings.REMINDER_1],
-                    registration.reminders,
+                    livesession.reminders,
                 )
                 out.close()
 
@@ -975,7 +975,7 @@ class SendRemindersTest(TestCase):
             starting_at=timezone.now() + timedelta(minutes=4),
         )
 
-        registration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             is_registered=True,
@@ -987,13 +987,13 @@ class SendRemindersTest(TestCase):
         call_command("send_reminders", stdout=out)
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(
-            f"Sending email for liveregistration {registration.id} for video "
-            f"{registration.video.id} step {settings.REMINDER_1}",
+            f"Sending email for livesession {livesession.id} for video "
+            f"{livesession.video.id} step {settings.REMINDER_1}",
             out.getvalue(),
         )
-        registration.refresh_from_db()
+        livesession.refresh_from_db()
         # only key 1 has been added
-        self.assertEqual([settings.REMINDER_1], registration.reminders)
+        self.assertEqual([settings.REMINDER_1], livesession.reminders)
 
         # we call the command, no new email should be sent
         call_command("send_reminders")
@@ -1008,7 +1008,7 @@ class SendRemindersTest(TestCase):
             starting_at=timezone.now() + timedelta(hours=2),
         )
 
-        registration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             is_registered=True,
@@ -1020,13 +1020,13 @@ class SendRemindersTest(TestCase):
         call_command("send_reminders", stdout=out)
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(
-            f"Sending email for liveregistration {registration.id} for video "
-            f"{registration.video.id} step {settings.REMINDER_2}",
+            f"Sending email for livesession {livesession.id} for video "
+            f"{livesession.video.id} step {settings.REMINDER_2}",
             out.getvalue(),
         )
-        registration.refresh_from_db()
+        livesession.refresh_from_db()
         # only key 1 has been added
-        self.assertEqual([settings.REMINDER_2], registration.reminders)
+        self.assertEqual([settings.REMINDER_2], livesession.reminders)
 
         # we call the command, no new email should be sent
         call_command("send_reminders")
@@ -1041,7 +1041,7 @@ class SendRemindersTest(TestCase):
             starting_at=timezone.now() + timedelta(days=2),
         )
 
-        registration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="sarah@test-fun-mooc.fr",
@@ -1060,15 +1060,15 @@ class SendRemindersTest(TestCase):
             call_command("send_reminders", stdout=out, stderr=err_out)
             self.assertEqual(len(mail.outbox), 0)
             self.assertIn(
-                f"Sending email for liveregistration {registration.id} for video "
-                f"{registration.video.id} step {settings.REMINDER_3}",
+                f"Sending email for livesession {livesession.id} for video "
+                f"{livesession.video.id} step {settings.REMINDER_3}",
                 out.getvalue(),
             )
             self.assertIn("Mail failed sarah@test-fun-mooc.fr", err_out.getvalue())
-            registration.refresh_from_db()
+            livesession.refresh_from_db()
             # key has been added
             self.assertEqual(
-                [settings.REMINDER_3, settings.REMINDER_ERROR], registration.reminders
+                [settings.REMINDER_3, settings.REMINDER_ERROR], livesession.reminders
             )
             out.close()
 
@@ -1085,7 +1085,7 @@ class SendRemindersTest(TestCase):
             starting_at=timezone.now() + timedelta(days=2),
         )
 
-        registration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="sarah@test-fun-mooc.fr",
@@ -1100,8 +1100,8 @@ class SendRemindersTest(TestCase):
             out = StringIO()
             call_command("send_reminders", stdout=out)
             self.assertNotIn(
-                f"Sending email for liveregistration {registration.id} for video "
-                f"{registration.video.id} step {settings.REMINDER_3}",
+                f"Sending email for livesession {livesession.id} for video "
+                f"{livesession.video.id} step {settings.REMINDER_3}",
                 out.getvalue(),
             )
             self.assertEqual(len(mail.outbox), 0)
@@ -1111,8 +1111,8 @@ class SendRemindersTest(TestCase):
         # we call the command, email should be sent
         call_command("send_reminders", stdout=out)
         self.assertIn(
-            f"Sending email for liveregistration {registration.id} for video "
-            f"{registration.video.id} step {settings.REMINDER_3}",
+            f"Sending email for livesession {livesession.id} for video "
+            f"{livesession.video.id} step {settings.REMINDER_3}",
             out.getvalue(),
         )
         # this time email is sent

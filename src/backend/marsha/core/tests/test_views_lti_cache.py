@@ -12,7 +12,7 @@ from django.test import TestCase
 from waffle.testutils import override_switch
 
 from ..defaults import SENTRY, STATE_CHOICES
-from ..factories import ConsumerSiteFactory, LiveRegistrationFactory, VideoFactory
+from ..factories import ConsumerSiteFactory, LiveSessionFactory, VideoFactory
 from ..lti import LTI
 
 
@@ -177,7 +177,7 @@ class CacheLTIViewTestCase(TestCase):
     def test_views_direct_access_lti_resource(self):
         """Validate that response for public resources on direct access are cached."""
         video = VideoFactory()
-        liveregistration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="sarah@openfun.fr",
             is_registered=True,
@@ -186,8 +186,8 @@ class CacheLTIViewTestCase(TestCase):
             video=video,
         )
         url = (
-            f"/videos/{video.id}?lrpk={liveregistration.pk}&key="
-            f"{liveregistration.get_generate_salted_hmac()}"
+            f"/videos/{video.id}?lrpk={livesession.pk}&key="
+            f"{livesession.get_generate_salted_hmac()}"
         )
 
         with self.assertNumQueries(9):
@@ -205,7 +205,7 @@ class CacheLTIViewTestCase(TestCase):
     def test_views_direct_access_public_resource(self):
         """Validate that response for lti resources on direct access are cached."""
         video = VideoFactory()
-        public_registration = LiveRegistrationFactory(
+        public_registration = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             email="sarah@test-fun-mooc.fr",
             is_registered=True,

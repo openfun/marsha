@@ -1,17 +1,17 @@
-"""Structure of LiveRegistration related models API responses with DRF serializers."""
+"""Structure of liveSession related models API responses with DRF serializers."""
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
-from ..models import ConsumerSite, LiveRegistration, Video
+from ..models import ConsumerSite, LiveSession, Video
 
 
-class LiveRegistrationDisplayUsernameSerializer(serializers.ModelSerializer):
-    """Serializer for liveRegistration models and display_name."""
+class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
+    """Serializer for liveSession models and display_name."""
 
     class Meta:
-        model = LiveRegistration
+        model = LiveSession
         fields = ("anonymous_id", "display_name", "username")
         read_only_fields = ("username",)
         extra_kwargs = {
@@ -19,11 +19,11 @@ class LiveRegistrationDisplayUsernameSerializer(serializers.ModelSerializer):
         }
 
 
-class LiveRegistrationSerializer(serializers.ModelSerializer):
-    """Serializer for liveRegistration model."""
+class LiveSessionSerializer(serializers.ModelSerializer):
+    """Serializer for liveSession model."""
 
     class Meta:  # noqa
-        model = LiveRegistration
+        model = LiveSession
         fields = (
             "anonymous_id",
             "consumer_site",
@@ -110,7 +110,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                         )
                 # We can identify the user for this context_id and consumer_site, we make sure
                 # this user hasn't already registered for this video.
-                if LiveRegistration.objects.filter(
+                if LiveSession.objects.filter(
                     consumer_site=attrs["consumer_site"],
                     lti_id=attrs["lti_id"],
                     lti_user_id=attrs["lti_user_id"],
@@ -149,7 +149,7 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
                     )
 
                 # Control this email hasn't already been used for this video in the public case
-                if LiveRegistration.objects.filter(
+                if LiveSession.objects.filter(
                     consumer_site=None,
                     email=attrs["email"],
                     lti_id=None,
@@ -173,10 +173,10 @@ class LiveRegistrationSerializer(serializers.ModelSerializer):
 
 
 class LiveAttendanceSerializer(serializers.ModelSerializer):
-    """Serializer for liveRegistration model to monitor attendance."""
+    """Serializer for liveSession model to monitor attendance."""
 
     class Meta:  # noqa
-        model = LiveRegistration
+        model = LiveSession
         fields = (
             "id",
             "live_attendance",

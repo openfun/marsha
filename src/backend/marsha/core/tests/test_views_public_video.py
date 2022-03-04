@@ -11,7 +11,7 @@ from django.test import TestCase, override_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
-from ..factories import LiveRegistrationFactory, VideoFactory
+from ..factories import LiveSessionFactory, VideoFactory
 
 
 # We don't enforce arguments documentation in tests
@@ -294,7 +294,7 @@ class VideoPublicViewTestCase(TestCase):
     def test_video_accessible_from_mail(self):
         """Validate the access to a lti ressource with email access."""
         video = VideoFactory(is_public=False)
-        liveregistration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="sarah@openfun.fr",
             is_registered=True,
@@ -314,10 +314,10 @@ class VideoPublicViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "error")
         self.assertEqual(context.get("modelName"), "videos")
 
-        # now liveregistration params are added, direct access is possible
+        # now livesession params are added, direct access is possible
         response = self.client.get(
-            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key="
-            f"{liveregistration.get_generate_salted_hmac()}"
+            f"/videos/{video.pk}?lrpk={livesession.pk}&key="
+            f"{livesession.get_generate_salted_hmac()}"
         )
         self.assertEqual(response.status_code, 200)
         match = re.search(
@@ -338,15 +338,15 @@ class VideoPublicViewTestCase(TestCase):
             jwt_token.payload["user"],
             {
                 "email": "sarah@openfun.fr",
-                "id": liveregistration.lti_user_id,
-                "username": liveregistration.username,
+                "id": livesession.lti_user_id,
+                "username": livesession.username,
             },
         )
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertEqual(jwt_token.payload["context_id"], video.playlist.lti_id)
         self.assertEqual(
-            jwt_token.payload["consumer_site"], str(liveregistration.consumer_site.id)
+            jwt_token.payload["consumer_site"], str(livesession.consumer_site.id)
         )
         self.assertEqual(context.get("state"), "success")
         self.assertEqual(context.get("frontend"), "LTI")
@@ -356,7 +356,7 @@ class VideoPublicViewTestCase(TestCase):
         """Validate the access to a public ressource with email access."""
         # video can be no longer public, access is still accepted
         video = VideoFactory(is_public=random.choice([True, False]))
-        public_registration = LiveRegistrationFactory(
+        public_registration = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             email="sarah@test-fun-mooc.fr",
             is_registered=True,
@@ -402,7 +402,7 @@ class VideoPublicViewTestCase(TestCase):
     def test_video_accessible_from_mail_wrong_key(self):
         """Validate can't access to a lti ressource if the key is not correct."""
         video = VideoFactory(is_public=False)
-        liveregistration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="sarah@openfun.fr",
             is_registered=True,
@@ -412,14 +412,14 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         response = self.client.get(
-            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key=wrongkey"
+            f"/videos/{video.pk}?lrpk={livesession.pk}&key=wrongkey"
         )
         self.assertEqual(response.status_code, 404)
 
     def test_video_accessible_public_from_mail_wrong_key(self):
         """Validate can't access to a public ressource if the key is not correct."""
         video = VideoFactory(is_public=True)
-        public_registration = LiveRegistrationFactory(
+        public_registration = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             email="sarah@test-fun-mooc.fr",
             is_registered=True,
@@ -434,9 +434,9 @@ class VideoPublicViewTestCase(TestCase):
 
     def test_video_accessible_lti_from_mail_wrong_video(self):
         """Validate can't access to a lti ressource if the video is not
-        the one of the liveregistration."""
+        the one of the livesession."""
         video = VideoFactory(is_public=True)
-        liveregistration = LiveRegistrationFactory(
+        livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="sarah@openfun.fr",
             is_registered=True,
@@ -446,16 +446,16 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         response = self.client.get(
-            f"/videos/{video.pk}?lrpk={liveregistration.pk}&key="
-            f"{liveregistration.get_generate_salted_hmac()}"
+            f"/videos/{video.pk}?lrpk={livesession.pk}&key="
+            f"{livesession.get_generate_salted_hmac()}"
         )
         self.assertEqual(response.status_code, 404)
 
     def test_video_accessible_public_from_mail_wrong_video(self):
         """Validate can't access to a public ressource if the video is not
-        the one of the liveregistration."""
+        the one of the livesession."""
         video = VideoFactory(is_public=True)
-        public_registration = LiveRegistrationFactory(
+        public_registration = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             email="sarah@test-fun-mooc.fr",
             is_registered=True,
