@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             model_name="liveregistration",
             name="key_access",
             field=models.CharField(
-                default=marsha.core.models.video.LiveRegistration.set_random_key_access,
+                default=marsha.core.models.video.LiveSession.set_random_key_access,
                 help_text="Field to build url with encryption to target the record",
                 max_length=50,
             ),

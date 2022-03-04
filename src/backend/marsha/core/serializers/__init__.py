@@ -3,7 +3,7 @@
 from .account import *  # noqa isort:skip
 from .base import *  # noqa isort:skip
 from .file import *  # noqa isort:skip
-from .live_registration import *  # noqa isort:skip
+from .live_session import *  # noqa isort:skip
 from .pairing_challenge import *  # noqa isort:skip
 from .playlist import *  # noqa isort:skip
 from .shared_live_media import *  # noqa isort:skip

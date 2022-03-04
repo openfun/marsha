@@ -17,7 +17,7 @@ from ..factories import (
     ConsumerSiteAccessFactory,
     ConsumerSiteFactory,
     ConsumerSiteOrganizationFactory,
-    LiveRegistrationFactory,
+    LiveSessionFactory,
     OrganizationAccessFactory,
     OrganizationFactory,
     PlaylistAccessFactory,
@@ -348,9 +348,7 @@ class DeletionTestCase(TestCase):
         playlist = PlaylistFactory(created_by=user, organization=organization)
         video = VideoFactory(created_by=user, playlist=playlist)
         audio_track = AudioTrackFactory(video=video)
-        live_registration = LiveRegistrationFactory(
-            anonymous_id=uuid.uuid4(), video=video
-        )
+        livesession = LiveSessionFactory(anonymous_id=uuid.uuid4(), video=video)
         timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
@@ -359,7 +357,7 @@ class DeletionTestCase(TestCase):
 
         self.assertIsSoftDeleted(video)
         self.assertIsSoftDeleted(audio_track)
-        self.assertIsSoftDeleted(live_registration)
+        self.assertIsSoftDeleted(livesession)
         self.assertIsSoftDeleted(timed_text_track)
         self.assertIsSoftDeleted(sign_track)
         self.assertIsVisible(copied_video)
@@ -374,9 +372,7 @@ class DeletionTestCase(TestCase):
         video = VideoFactory(created_by=user, playlist=playlist)
 
         audio_track = AudioTrackFactory(video=video)
-        live_registration = LiveRegistrationFactory(
-            anonymous_id=uuid.uuid4(), video=video
-        )
+        livesession = LiveSessionFactory(anonymous_id=uuid.uuid4(), video=video)
         timed_text_track = TimedTextTrackFactory(video=video)
         sign_track = SignTrackFactory(video=video)
         copied_video = VideoFactory(created_by=user, duplicated_from=video)
@@ -385,7 +381,7 @@ class DeletionTestCase(TestCase):
 
         self.assertIsHardDeleted(video)
         self.assertIsHardDeleted(audio_track)
-        self.assertIsHardDeleted(live_registration)
+        self.assertIsHardDeleted(livesession)
         self.assertIsHardDeleted(timed_text_track)
         self.assertIsHardDeleted(sign_track)
         self.assertIsVisible(copied_video)

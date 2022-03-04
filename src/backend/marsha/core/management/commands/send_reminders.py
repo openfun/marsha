@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from sentry_sdk import capture_exception
 
 from marsha.core.defaults import IDLE, RUNNING
-from marsha.core.models import LiveRegistration
+from marsha.core.models import LiveSession
 
 
 logger = getLogger(__name__)
@@ -24,20 +24,18 @@ class Command(BaseCommand):
 
     help = "Send reminders for scheduled webinar."
 
-    def query_to_update_step(self, liveregistration, step):
+    def query_to_update_step(self, livesession, step):
         """scripts could be called simultaneously, we update reminders field
         using strict where clauses, the same ones used in the select query."""
 
-        if liveregistration.reminders:
-            liveregistration.reminders.append(step)
+        if livesession.reminders:
+            livesession.reminders.append(step)
         else:
-            liveregistration.reminders = [step]
+            livesession.reminders = [step]
 
         # to send mails if still appropriate
         return (
-            LiveRegistration.objects.filter(
-                id=liveregistration.id, should_send_reminders=True
-            )
+            LiveSession.objects.filter(id=livesession.id, should_send_reminders=True)
             .exclude(
                 reminders__overlap=[
                     step,
@@ -45,33 +43,33 @@ class Command(BaseCommand):
                     settings.REMINDER_ERROR,
                 ]
             )
-            .update(reminders=liveregistration.reminders)
+            .update(reminders=livesession.reminders)
         )
 
-    def send_reminders_and_update_liveregistrations_step(
-        self, liveregistrations, step, mail_object, extra_vars={}, template="reminder"
+    def send_reminders_and_update_livesessions_step(
+        self, livesessions, step, mail_object, extra_vars={}, template="reminder"
     ):
         """Send email with template and update reminders field."""
 
-        for liveregistration in liveregistrations:
-            """For each liveregistration we send the email"""
+        for livesession in livesessions:
+            """For each livesession we send the email"""
 
             # if record was updated
-            if self.query_to_update_step(liveregistration, step) == 1:
+            if self.query_to_update_step(livesession, step) == 1:
 
                 self.stdout.write(
-                    f"Sending email for liveregistration {liveregistration.id} "
-                    f"for video {liveregistration.video.id} step {step}"
+                    f"Sending email for livesession {livesession.id} "
+                    f"for video {livesession.video.id} step {step}"
                 )
 
                 # send email with the appropriate template and object
                 vars = {
-                    "cancel_reminder_url": liveregistration.cancel_reminder_url,
-                    "email": liveregistration.email,
+                    "cancel_reminder_url": livesession.cancel_reminder_url,
+                    "email": livesession.email,
                     "time_zone": settings.TIME_ZONE,
-                    "username": liveregistration.username,
-                    "video": liveregistration.video,
-                    "video_access_url": liveregistration.video_access_reminder_url,
+                    "username": livesession.username,
+                    "video": livesession.video,
+                    "video_access_url": livesession.video_access_reminder_url,
                 }
                 if extra_vars:
                     vars = vars | extra_vars
@@ -84,14 +82,14 @@ class Command(BaseCommand):
                         mail_object,
                         msg_plain,
                         settings.EMAIL_FROM,
-                        [liveregistration.email],
+                        [livesession.email],
                         html_message=msg_html,
                         fail_silently=False,
                     )
                 except smtplib.SMTPException as exception:
                     # send error to sentry and print it
-                    liveregistration.update_reminders(settings.REMINDER_ERROR)
-                    self.stderr.write(f"Mail failed {liveregistration.email} ")
+                    livesession.update_reminders(settings.REMINDER_ERROR)
+                    self.stderr.write(f"Mail failed {livesession.email} ")
                     capture_exception(exception)
 
     def handle(self, *args, **options):
@@ -102,11 +100,11 @@ class Command(BaseCommand):
     def send_reminders_is_already_started(self):
         """Videos that have been started before send a reminder.
 
-        Search for all liveregistrations that have a scheduled webinar planned ahead
-        but are already running. Only concerns liveregistrations that have is_registered
+        Search for all livesessions that have a scheduled webinar planned ahead
+        but are already running. Only concerns livesessions that have is_registered
         True and should_send_reminders True.
         """
-        liveregistrations = LiveRegistration.objects.filter(
+        livesessions = LiveSession.objects.filter(
             should_send_reminders=True,
             is_registered=True,
             video__starting_at__gt=timezone.now(),
@@ -114,8 +112,8 @@ class Command(BaseCommand):
         ).exclude(
             reminders__overlap=[settings.REMINDER_IS_STARTED, settings.REMINDER_ERROR]
         )
-        self.send_reminders_and_update_liveregistrations_step(
-            liveregistrations,
+        self.send_reminders_and_update_livesessions_step(
+            livesessions,
             settings.REMINDER_IS_STARTED,
             _("Webinar started earlier, come quickly to join us."),
             {},
@@ -124,7 +122,7 @@ class Command(BaseCommand):
 
     def send_reminders_depending_on_time(self):
         """Send reminders depending on time. Videos mustn't be started yet,
-        liveregistrations concerned are the ones where is_registered is True and
+        livesessions concerned are the ones where is_registered is True and
         should_send_reminders is True."""
 
         for step in settings.REMINDERS_STEP:
@@ -135,8 +133,8 @@ class Command(BaseCommand):
             created_on = timezone.now() - timedelta(
                 seconds=reminder[settings.REMINDER_KEY_REGISTER_BEFORE_S]
             )
-            liveregistrations = (
-                LiveRegistration.objects.filter(
+            livesessions = (
+                LiveSession.objects.filter(
                     created_on__lt=created_on,
                     should_send_reminders=True,
                     is_registered=True,
@@ -154,14 +152,14 @@ class Command(BaseCommand):
 
             # on some cases reminders can only be sent if others haven't
             if reminder.get(settings.REGISTER_EXCLUDE_STEP):
-                liveregistrations = liveregistrations.exclude(
+                livesessions = livesessions.exclude(
                     reminders__overlap=reminder[settings.REGISTER_EXCLUDE_STEP]
                 )
             reminder_timer_title = (
                 f'{_("in less than ")}{reminder[settings.REMINDER_ELAPSED_LABEL]}'
             )
-            self.send_reminders_and_update_liveregistrations_step(
-                liveregistrations,
+            self.send_reminders_and_update_livesessions_step(
+                livesessions,
                 step,
                 reminder[settings.REMINDER_OBJECT_MAIL],
                 {"reminder_timer_title": reminder_timer_title},

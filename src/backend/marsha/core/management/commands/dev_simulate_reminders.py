@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from marsha.core.defaults import IDLE, RAW, RUNNING
-from marsha.core.factories import LiveRegistrationFactory, VideoFactory
+from marsha.core.factories import LiveSessionFactory, VideoFactory
 
 
 class Command(BaseCommand):
@@ -40,7 +40,7 @@ class Command(BaseCommand):
         )
 
         # registration has been created 4 hours ago
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
             email="sarah@test-fun-mooc.fr",
@@ -50,7 +50,7 @@ class Command(BaseCommand):
         )
 
         # LTI registration with other reminders sent
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="chantal@test-fun-mooc.fr",
@@ -72,7 +72,7 @@ class Command(BaseCommand):
         )
 
         # registration has been created 26 hours ago (>1day)
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
             email="sarah@test-fun-mooc.fr",
@@ -82,7 +82,7 @@ class Command(BaseCommand):
         )
 
         # LTI registration with reminder 3 sent
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=26),
             email="chantal@test-fun-mooc.fr",
@@ -104,7 +104,7 @@ class Command(BaseCommand):
         )
 
         # registration has been created 32 days agp (>30 days)
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
             email="sarah@test-fun-mooc.fr",
@@ -114,7 +114,7 @@ class Command(BaseCommand):
         )
 
         # LTI registration
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
             email="chantal@test-fun-mooc.fr",
@@ -133,7 +133,7 @@ class Command(BaseCommand):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=10),
         )
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             email="sarah@test-fun-mooc.fr",
             is_registered=True,
@@ -142,7 +142,7 @@ class Command(BaseCommand):
         )
 
         # LTI registration with other reminders sent
-        LiveRegistrationFactory(
+        LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="chantal@test-fun-mooc.fr",
             is_registered=True,

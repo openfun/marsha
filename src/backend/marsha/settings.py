@@ -189,7 +189,7 @@ class Base(Configuration):
         "PAGE_SIZE": 50,
         "DEFAULT_THROTTLE_RATES": {
             "anon": "3/minute",
-            "live_registration": "3/minute",
+            "live_session": "3/minute",
         },
     }
 

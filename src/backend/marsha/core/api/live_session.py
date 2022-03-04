@@ -1,4 +1,4 @@
-"""Declare API endpoints for live registration with Django RestFramework viewsets."""
+"""Declare API endpoints for live session with Django RestFramework viewsets."""
 from logging import getLogger
 import smtplib
 
@@ -16,7 +16,7 @@ from rest_framework.throttling import SimpleRateThrottle
 from sentry_sdk import capture_exception
 
 from .. import permissions, serializers
-from ..models import ConsumerSite, LiveRegistration, Video
+from ..models import ConsumerSite, LiveSession, Video
 from ..models.account import NONE
 from .base import ObjectPkMixin
 
@@ -24,10 +24,10 @@ from .base import ObjectPkMixin
 logger = getLogger(__name__)
 
 
-class LiveRegistrationThrottle(SimpleRateThrottle):
-    """Throttling for liveregistration list requests."""
+class LiveSessionThrottle(SimpleRateThrottle):
+    """Throttling for liveSession list requests."""
 
-    scope = "live_registration"
+    scope = "live_session"
 
     def get_cache_key(self, request, view):
         if request.query_params.get("anonymous_id"):
@@ -38,18 +38,18 @@ class LiveRegistrationThrottle(SimpleRateThrottle):
         return None
 
 
-class LiveRegistrationViewSet(
+class LiveSessionViewSet(
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    """Viewset for the API of the LiveRegistration object."""
+    """Viewset for the API of the LiveSession object."""
 
     permission_classes = [permissions.IsVideoToken]
-    queryset = LiveRegistration.objects.all()
-    serializer_class = serializers.LiveRegistrationSerializer
+    queryset = LiveSession.objects.all()
+    serializer_class = serializers.LiveSessionSerializer
 
     def is_lti_token(self):
         """Read the token and confirms if the user is identified by LTI"""
@@ -73,8 +73,8 @@ class LiveRegistrationViewSet(
             and user.token.payload.get("consumer_site") is None
         )
 
-    def get_liveregistration_from_lti(self):
-        """Get or create liveregistration for a LTI connection."""
+    def get_livesession_from_lti(self):
+        """Get or create livesession for a LTI connection."""
         user = self.request.user
         video = get_object_or_404(Video, pk=user.id)
         token_user = user.token.payload.get("user")
@@ -82,7 +82,7 @@ class LiveRegistrationViewSet(
             ConsumerSite, pk=user.token.payload["consumer_site"]
         )
 
-        return LiveRegistration.objects.get_or_create(
+        return LiveSession.objects.get_or_create(
             consumer_site=consumer_site,
             lti_id=user.token.payload.get("context_id"),
             lti_user_id=token_user.get("id"),
@@ -93,18 +93,16 @@ class LiveRegistrationViewSet(
             },
         )
 
-    def get_liveregistration_from_anonymous_id(self, anonymous_id):
-        """Get or create a liveregistration for an anonymous id"""
+    def get_livesession_from_anonymous_id(self, anonymous_id):
+        """Get or create a livesession for an anonymous id"""
         user = self.request.user
         video = get_object_or_404(Video, pk=user.id)
 
-        return LiveRegistration.objects.get_or_create(
-            video=video, anonymous_id=anonymous_id
-        )
+        return LiveSession.objects.get_or_create(video=video, anonymous_id=anonymous_id)
 
     def get_queryset(self):
-        """Restrict access to liveRegistration with data contained in the JWT token.
-        Access is restricted to liveRegistration related to the video, context_id and consumer_site
+        """Restrict access to liveSession with data contained in the JWT token.
+        Access is restricted to liveSession related to the video, context_id and consumer_site
         present in the JWT token. Email is ignored. Lti user id from the token can be used as well
         depending on the role.
         """
@@ -126,41 +124,41 @@ class LiveRegistrationViewSet(
                 role in ["administrator", "instructor"]
                 for role in user.token.payload["roles"]
             ):
-                return LiveRegistration.objects.filter(**filters)
+                return LiveSession.objects.filter(**filters)
 
             # token has email or not, user has access to this registration if it's the right
             # combination of lti_user_id, lti_id and consumer_site
             # email doesn't necessary have a match
             filters["lti_user_id"] = user.token.payload["user"]["id"]
-            return LiveRegistration.objects.filter(**filters)
+            return LiveSession.objects.filter(**filters)
 
         if self.request.query_params.get("anonymous_id"):
-            return LiveRegistration.objects.filter(
+            return LiveSession.objects.filter(
                 anonymous_id=self.request.query_params.get("anonymous_id"), **filters
             )
 
-        return LiveRegistration.objects.none()
+        return LiveSession.objects.none()
 
     def get_throttles(self):
         """Depending on action, defines a throttle class"""
         throttle_class = []
         if self.action == "list":
-            throttle_class = [LiveRegistrationThrottle]
+            throttle_class = [LiveSessionThrottle]
 
         return [throttle() for throttle in throttle_class]
 
     def perform_create(self, serializer):
         """Overrides perform_create to send the mail and catch error if needed"""
-        liveregistration = serializer.save()
+        livesession = serializer.save()
         try:
-            video = Video.objects.get(id=liveregistration.video_id)
+            video = Video.objects.get(id=livesession.video_id)
             template_vars = {
-                "cancel_reminder_url": liveregistration.cancel_reminder_url,
-                "email": liveregistration.email,
+                "cancel_reminder_url": livesession.cancel_reminder_url,
+                "email": livesession.email,
                 "username": serializer.validated_data.get("username", ""),
                 "time_zone": settings.TIME_ZONE,
                 "video": video,
-                "video_access_url": liveregistration.video_access_reminder_url,
+                "video_access_url": livesession.video_access_reminder_url,
             }
             msg_plain = render_to_string("core/mail/text/register.txt", template_vars)
             msg_html = render_to_string("core/mail/html/register.html", template_vars)
@@ -168,13 +166,13 @@ class LiveRegistrationViewSet(
                 f'{_("Registration for ")}{video.title}',
                 msg_plain,
                 settings.EMAIL_FROM,
-                [liveregistration.email],
+                [livesession.email],
                 html_message=msg_html,
                 fail_silently=False,
             )
         except smtplib.SMTPException as exception:
             # no exception raised as user can't sometimes change his mail,
-            logger.warning("registration mail %s not send", liveregistration.email)
+            logger.warning("registration mail %s not send", livesession.email)
             capture_exception(exception)
 
     @action(detail=False, methods=["post"])
@@ -186,7 +184,7 @@ class LiveRegistrationViewSet(
             return Response({"detail": "Invalid request."}, status=400)
 
         if self.is_lti_token():
-            liveregistration, created = self.get_liveregistration_from_lti()
+            livesession, created = self.get_livesession_from_lti()
         elif self.is_public_token():
             anonymous_id = self.request.query_params.get("anonymous_id")
             if anonymous_id is None:
@@ -194,7 +192,7 @@ class LiveRegistrationViewSet(
                     {"detail": "anonymous_id is missing"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            liveregistration, created = self.get_liveregistration_from_anonymous_id(
+            livesession, created = self.get_livesession_from_anonymous_id(
                 anonymous_id=anonymous_id
             )
         else:
@@ -208,34 +206,32 @@ class LiveRegistrationViewSet(
             )
 
         token_user = self.request.user.token.payload.get("user", {})
-        # liveregistration already exists, we update email and username if necessary
+        # livesession already exists, we update email and username if necessary
         if not created:
-            # Update liveregistration email only if it's defined in the token user
+            # Update livesession email only if it's defined in the token user
             if token_user.get("email"):
-                liveregistration.email = token_user.get("email")
+                livesession.email = token_user.get("email")
 
-            # Update liveregistration username only it's defined in the token user
+            # Update livesession username only it's defined in the token user
             if token_user.get("username"):
-                liveregistration.username = token_user.get("username")
+                livesession.username = token_user.get("username")
 
         # update or add live_attendance information
-        if liveregistration.live_attendance:
-            liveregistration.live_attendance = (
-                serializer.data["live_attendance"] | liveregistration.live_attendance
+        if livesession.live_attendance:
+            livesession.live_attendance = (
+                serializer.data["live_attendance"] | livesession.live_attendance
             )
         else:
-            liveregistration.live_attendance = serializer.data["live_attendance"]
+            livesession.live_attendance = serializer.data["live_attendance"]
 
-        liveregistration.save()
+        livesession.save()
 
-        return Response(self.get_serializer(liveregistration).data, status.HTTP_200_OK)
+        return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
 
     @action(detail=False, methods=["put"], url_path="display_name")
     def set_display_name(self, request):
         """View handling setting display_name. Create or get registration."""
-        serializer = serializers.LiveRegistrationDisplayUsernameSerializer(
-            data=request.data
-        )
+        serializer = serializers.LiveSessionDisplayUsernameSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(
                 {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
@@ -261,7 +257,7 @@ class LiveRegistrationViewSet(
                 if token_user.get("username"):
                     update_fields.update({"username": token_user.get("username")})
 
-                liveregistration, _ = LiveRegistration.objects.update_or_create(
+                livesession, _ = LiveSession.objects.update_or_create(
                     consumer_site=consumer_site,
                     lti_id=user.token.payload.get("context_id"),
                     lti_user_id=token_user.get("id"),
@@ -274,16 +270,14 @@ class LiveRegistrationViewSet(
                         {"detail": "Invalid request."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-                liveregistration, _ = LiveRegistration.objects.update_or_create(
+                livesession, _ = LiveSession.objects.update_or_create(
                     anonymous_id=serializer.validated_data["anonymous_id"],
                     video=video,
                     defaults=update_fields,
                 )
-            return Response(
-                self.get_serializer(liveregistration).data, status.HTTP_200_OK
-            )
+            return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
         except IntegrityError as error:
-            if "liveregistration_unique_video_display_name" in error.args[0]:
+            if "livesession_unique_video_display_name" in error.args[0]:
                 return Response(
                     {"display_name": "User with that display_name already exists!"},
                     status=status.HTTP_409_CONFLICT,
