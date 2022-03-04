@@ -1,12 +1,12 @@
 import { appData } from 'data/appData';
 import { API_ENDPOINT } from 'settings';
-import { LiveRegistration } from 'types/tracks';
+import { LiveSession } from 'types/tracks';
 
 export const pushAttendance = async (
-  liveAttendance: LiveRegistration['live_attendance'],
+  liveAttendance: LiveSession['live_attendance'],
   anonymousId?: string,
-): Promise<LiveRegistration> => {
-  let endpoint = `${API_ENDPOINT}/liveregistrations/push_attendance/`;
+): Promise<LiveSession> => {
+  let endpoint = `${API_ENDPOINT}/livesessions/push_attendance/`;
   if (anonymousId) {
     endpoint = `${endpoint}?anonymous_id=${anonymousId}`;
   }

@@ -117,7 +117,7 @@ export enum LiveModeType {
   JITSI = 'jitsi',
 }
 
-export interface LiveRegistration extends Resource {
+export interface LiveSession extends Resource {
   anonymous_id: Nullable<string>;
   consumer_site: Nullable<string>;
   display_name: Nullable<string>;

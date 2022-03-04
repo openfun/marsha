@@ -54,7 +54,7 @@ export const StudentLiveRegistration = () => {
       let registrations;
       try {
         registrations = await fetchList({
-          queryKey: ['liveregistrations', queryString],
+          queryKey: ['livesessions', queryString],
           meta: {},
         });
       } catch (err) {

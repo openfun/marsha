@@ -2,14 +2,14 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { setLiveRegistrationDisplayName } from 'data/sideEffects/setLiveRegistrationDisplayName';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MAX_LENGTH,
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
-import { liveRegistrationFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
@@ -24,8 +24,8 @@ jest.mock('utils/window', () => ({
   },
 }));
 
-jest.mock('data/sideEffects/setLiveRegistrationDisplayName', () => ({
-  setLiveRegistrationDisplayName: jest.fn(),
+jest.mock('data/sideEffects/setLiveSessionDisplayName', () => ({
+  setLiveSessionDisplayName: jest.fn(),
 }));
 jest.mock('utils/checkLtiToken', () => ({
   checkLtiToken: jest.fn(),
@@ -38,9 +38,9 @@ const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
   typeof converse.claimNewNicknameInChatRoom
 >;
 
-const mockSetLiveRegistrationDisplayName =
-  setLiveRegistrationDisplayName as jest.MockedFunction<
-    typeof setLiveRegistrationDisplayName
+const mockSetLiveSessionDisplayName =
+  setLiveSessionDisplayName as jest.MockedFunction<
+    typeof setLiveSessionDisplayName
   >;
 
 describe('<InputDisplayNameOverlay />', () => {
@@ -127,10 +127,10 @@ describe('<InputDisplayNameOverlay />', () => {
         callbackError(null);
       },
     );
-    mockSetLiveRegistrationDisplayName.mockResolvedValue({
-      success: liveRegistrationFactory({ display_name: 'John_Doe' }),
+    mockSetLiveSessionDisplayName.mockResolvedValue({
+      success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
 
     render(
       wrapInIntlProvider(
@@ -143,7 +143,7 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(validateButton.querySelector('svg')).toBeTruthy();
     act(() => userEvent.click(validateButton));
     await waitFor(() =>
-      expect(mockSetLiveRegistrationDisplayName).toHaveBeenCalled(),
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
@@ -173,10 +173,10 @@ describe('<InputDisplayNameOverlay />', () => {
         );
       },
     );
-    mockSetLiveRegistrationDisplayName.mockResolvedValue({
+    mockSetLiveSessionDisplayName.mockResolvedValue({
       error: 409,
     });
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
@@ -190,7 +190,7 @@ describe('<InputDisplayNameOverlay />', () => {
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
     await waitFor(() =>
-      expect(mockSetLiveRegistrationDisplayName).toHaveBeenCalled(),
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(0);
@@ -201,7 +201,7 @@ describe('<InputDisplayNameOverlay />', () => {
     screen.getByText(
       'Your nickname is already used in the chat. Please choose another one.',
     );
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
   });
 
   it('enters a valid nickname but it is already used in the chat', async () => {
@@ -221,10 +221,10 @@ describe('<InputDisplayNameOverlay />', () => {
         );
       },
     );
-    mockSetLiveRegistrationDisplayName.mockResolvedValue({
-      success: liveRegistrationFactory({ display_name: 'John_Doe' }),
+    mockSetLiveSessionDisplayName.mockResolvedValue({
+      success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
@@ -236,7 +236,7 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(validateButton.querySelector('svg')).toBeTruthy();
     act(() => userEvent.click(validateButton));
     await waitFor(() =>
-      expect(mockSetLiveRegistrationDisplayName).toHaveBeenCalled(),
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
@@ -249,7 +249,7 @@ describe('<InputDisplayNameOverlay />', () => {
     screen.getByText(
       'Your nickname is already used in the chat. Please choose another one.',
     );
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
   });
 
   it('enters a valid nickname but the server returns an unknown response', async () => {
@@ -269,10 +269,10 @@ describe('<InputDisplayNameOverlay />', () => {
         );
       },
     );
-    mockSetLiveRegistrationDisplayName.mockResolvedValue({
-      success: liveRegistrationFactory({ display_name: 'John_Doe' }),
+    mockSetLiveSessionDisplayName.mockResolvedValue({
+      success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
 
     render(
       wrapInIntlProvider(
@@ -285,7 +285,7 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(validateButton.querySelector('svg')).toBeTruthy();
     act(() => userEvent.click(validateButton));
     await waitFor(() =>
-      expect(mockSetLiveRegistrationDisplayName).toHaveBeenCalled(),
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
@@ -296,7 +296,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(validateButton.querySelector('svg')).toBeTruthy();
     screen.getByText('Impossible to connect you to the chat. Please retry.');
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
   });
 
   it('enters a valid nickname and validates it.', async () => {
@@ -309,13 +309,13 @@ describe('<InputDisplayNameOverlay />', () => {
         callbackSuccess();
       },
     );
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       display_name: 'John_Doe',
     });
-    mockSetLiveRegistrationDisplayName.mockResolvedValue({
-      success: liveRegistration,
+    mockSetLiveSessionDisplayName.mockResolvedValue({
+      success: liveSession,
     });
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
 
     render(
       wrapInIntlProvider(
@@ -327,7 +327,7 @@ describe('<InputDisplayNameOverlay />', () => {
     userEvent.type(inputTextbox, 'John_Doe');
     act(() => userEvent.click(validateButton));
     await waitFor(() =>
-      expect(mockSetLiveRegistrationDisplayName).toHaveBeenCalled(),
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(mockSetOverlay).toHaveBeenCalledTimes(1);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
@@ -337,9 +337,7 @@ describe('<InputDisplayNameOverlay />', () => {
       expect.any(Function),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('closes the window.', () => {
@@ -353,12 +351,12 @@ describe('<InputDisplayNameOverlay />', () => {
     );
     act(() => userEvent.click(closeButton));
     expect(mockSetOverlay).toHaveBeenCalledTimes(1);
-    expect(mockSetLiveRegistrationDisplayName).not.toHaveBeenCalled();
+    expect(mockSetLiveSessionDisplayName).not.toHaveBeenCalled();
   });
 
   it('displays the component and use liveragistration username as default value', () => {
-    const liveRegistration = liveRegistrationFactory({ username: 'Foo' });
-    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    const liveSession = liveSessionFactory({ username: 'Foo' });
+    useLiveSession.getState().setLiveSession(liveSession);
     render(
       wrapInIntlProvider(
         <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,

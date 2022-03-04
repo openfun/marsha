@@ -2,7 +2,7 @@ import { Box, BoxExtendedProps } from 'grommet';
 import React, { useEffect } from 'react';
 
 import { getDecodedJwt } from 'data/appData';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
@@ -16,25 +16,23 @@ const initConverse = converseMounter();
 
 export const Chat = ({ video: baseVideo, standalone }: ChatProps) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
-  const liveRegistration = useLiveRegistration(
-    (state) => state.liveRegistration,
-  );
+  const liveSession = useLiveSession((state) => state.liveSession);
 
   useEffect(() => {
     const isAdmin = getDecodedJwt().permissions.can_access_dashboard;
     if (
       !isAdmin &&
-      liveRegistration &&
+      liveSession &&
       video.live_state &&
       video.live_state !== liveState.IDLE
     ) {
-      initConverse(video.xmpp!, liveRegistration.display_name);
+      initConverse(video.xmpp!, liveSession.display_name);
     }
 
     if (isAdmin && video.live_state && video.live_state !== liveState.IDLE) {
       initConverse(video.xmpp!);
     }
-  }, [video, liveRegistration]);
+  }, [video, liveSession]);
 
   const conditionalProps: Partial<BoxExtendedProps> = {};
   if (standalone) {

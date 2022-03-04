@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 import { Document } from '../../types/file';
 import {
-  LiveRegistration,
+  LiveSession,
   Playlist,
   PlaylistLite,
   Thumbnail,
@@ -161,10 +161,10 @@ export const documentMockFactory = (
   };
 };
 
-export const liveRegistrationFactory = (
-  liveRegistration: Partial<LiveRegistration> = {},
-): LiveRegistration => {
-  const id = liveRegistration.id || faker.datatype.uuid();
+export const liveSessionFactory = (
+  liveSession: Partial<LiveSession> = {},
+): LiveSession => {
+  const id = liveSession.id || faker.datatype.uuid();
 
   return {
     anonymous_id: null,
@@ -179,6 +179,6 @@ export const liveRegistrationFactory = (
     should_send_reminders: faker.datatype.boolean(),
     username: null,
     video: videoMockFactory().id,
-    ...liveRegistration,
+    ...liveSession,
   };
 };

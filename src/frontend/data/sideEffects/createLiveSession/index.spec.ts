@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
-import { createLiveRegistration } from '.';
+import { createLiveSession } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -9,13 +9,13 @@ jest.mock('data/appData', () => ({
   },
 }));
 
-describe('sideEffects/createLiveRegistration', () => {
+describe('sideEffects/createLiveSession', () => {
   afterEach(() => fetchMock.restore());
 
-  it('creates a new liveregistration and returns it', async () => {
+  it('creates a new livesession and returns it', async () => {
     fetchMock.mock(
       {
-        url: '/api/liveregistrations/',
+        url: '/api/livesessions/',
         body: {
           email: 'test@open-fun.fr',
         },
@@ -27,11 +27,11 @@ describe('sideEffects/createLiveRegistration', () => {
       },
     );
 
-    const liveRegistration = await createLiveRegistration('test@open-fun.fr');
+    const liveSession = await createLiveSession('test@open-fun.fr');
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
-    expect(liveRegistration).toEqual({
+    expect(liveSession).toEqual({
       id: '42',
       email: 'test@open-fun.fr',
     });
@@ -41,11 +41,11 @@ describe('sideEffects/createLiveRegistration', () => {
     });
   });
 
-  it('creates a new liveregistration with an anonymous id and returns it', async () => {
+  it('creates a new livesession with an anonymous id and returns it', async () => {
     const anonymousId = uuidv4();
     fetchMock.mock(
       {
-        url: '/api/liveregistrations/',
+        url: '/api/livesessions/',
         body: {
           anonymous_id: anonymousId,
           email: 'test@open-fun.fr',
@@ -59,14 +59,14 @@ describe('sideEffects/createLiveRegistration', () => {
       },
     );
 
-    const liveRegistration = await createLiveRegistration(
+    const liveSession = await createLiveSession(
       'test@open-fun.fr',
       anonymousId,
     );
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
-    expect(liveRegistration).toEqual({
+    expect(liveSession).toEqual({
       anonymous_id: anonymousId,
       id: '42',
       email: 'test@open-fun.fr',
@@ -77,8 +77,8 @@ describe('sideEffects/createLiveRegistration', () => {
     });
   });
 
-  it('throws when it fails to create the liveRegistration and returns a json Error', async () => {
-    fetchMock.mock('/api/liveregistrations/', {
+  it('throws when it fails to create the liveSession and returns a json Error', async () => {
+    fetchMock.mock('/api/livesessions/', {
       body: JSON.stringify({ email: 'Invalid email!' }),
       status: 400,
       headers: { 'Content-Type': 'application/json' },
@@ -86,7 +86,7 @@ describe('sideEffects/createLiveRegistration', () => {
 
     let thrownError;
     try {
-      await createLiveRegistration(uuidv4(), 'email@fun.com');
+      await createLiveSession(uuidv4(), 'email@fun.com');
     } catch (error) {
       thrownError = error;
     }

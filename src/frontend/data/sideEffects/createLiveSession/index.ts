@@ -1,19 +1,19 @@
 import { API_ENDPOINT } from 'settings';
-import { LiveRegistration } from 'types/tracks';
+import { LiveSession } from 'types/tracks';
 import { appData } from 'data/appData';
 
 /**
- * Create a new liveRegistration record for an email and the video of the jwt token.
+ * Create a new liveSession record for an email and the video of the jwt token.
  */
-export const createLiveRegistration = async (
+export const createLiveSession = async (
   email: string,
   anonymousId?: string,
-): Promise<LiveRegistration> => {
+): Promise<LiveSession> => {
   const body = {
     email,
     anonymous_id: anonymousId,
   };
-  const response = await fetch(`${API_ENDPOINT}/liveregistrations/`, {
+  const response = await fetch(`${API_ENDPOINT}/livesessions/`, {
     body: JSON.stringify(body),
     headers: {
       Authorization: `Bearer ${appData.jwt}`,

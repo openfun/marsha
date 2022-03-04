@@ -1,17 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getDecodedJwt } from 'data/appData';
-import { getLiveRegistrations } from 'data/sideEffects/getLiveRegistrations';
+import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveState } from 'types/tracks';
 import { checkLtiToken } from './checkLtiToken';
 import { initWebinarContext } from './initWebinarContext';
 import { getAnonymousId, setAnonymousId } from './localstorage';
-import { liveRegistrationFactory, videoMockFactory } from './tests/factories';
+import { liveSessionFactory, videoMockFactory } from './tests/factories';
 
-jest.mock('data/sideEffects/getLiveRegistrations', () => ({
-  getLiveRegistrations: jest.fn(),
-  liveRegistrationFactory: jest.fn(),
+jest.mock('data/sideEffects/getLiveSessions', () => ({
+  getLiveSessions: jest.fn(),
 }));
 
 jest.mock('data/sideEffects/pushAttendance', () => ({
@@ -31,8 +30,8 @@ jest.mock('data/appData', () => ({
   getDecodedJwt: jest.fn(),
 }));
 
-const mockGetLiveRegistrations = getLiveRegistrations as jest.MockedFunction<
-  typeof getLiveRegistrations
+const mockGetLiveSessions = getLiveSessions as jest.MockedFunction<
+  typeof getLiveSessions
 >;
 const mockPushAttendance = pushAttendance as jest.MockedFunction<
   typeof pushAttendance
@@ -92,23 +91,23 @@ describe('initWebinarContext', () => {
     await initWebinarContext(video);
 
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).not.toHaveBeenCalled();
+    expect(mockGetLiveSessions).not.toHaveBeenCalled();
     expect(mockPushAttendance).not.toHaveBeenCalled();
-    expect(useLiveRegistration.getState().liveRegistration).toBeUndefined();
+    expect(useLiveSession.getState().liveSession).toBeUndefined();
   });
 
   it('does nothing if a live registration is already in the store', async () => {
     const video = videoMockFactory({
       live_state: liveState.RUNNING,
     });
-    const liveRegistration = liveRegistrationFactory();
-    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    const liveSession = liveSessionFactory();
+    useLiveSession.getState().setLiveSession(liveSession);
 
     await initWebinarContext(video);
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).not.toHaveBeenCalled();
+    expect(mockGetLiveSessions).not.toHaveBeenCalled();
     expect(mockPushAttendance).not.toHaveBeenCalled();
   });
 
@@ -116,24 +115,22 @@ describe('initWebinarContext', () => {
     const video = videoMockFactory({
       live_state: liveState.RUNNING,
     });
-    const liveRegistration = liveRegistrationFactory();
+    const liveSession = liveSessionFactory();
     mockGetDecodedJwt.mockReturnValue(ltiToken);
     mockCheckLtiToken.mockReturnValue(true);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 1,
-      results: [liveRegistration],
+      results: [liveSession],
     });
 
     await initWebinarContext(video);
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(undefined);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(undefined);
     expect(mockPushAttendance).not.toHaveBeenCalled();
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('adds the live registration to the store when back returns one with anonymous_id', async () => {
@@ -141,78 +138,72 @@ describe('initWebinarContext', () => {
       live_state: liveState.RUNNING,
     });
     const anonymousId = uuidv4();
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       anonymous_id: anonymousId,
       video: video.id,
     });
     mockGetDecodedJwt.mockReturnValue(ltiToken);
     mockCheckLtiToken.mockReturnValue(false);
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 1,
-      results: [liveRegistration],
+      results: [liveSession],
     });
 
     await initWebinarContext(video);
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(anonymousId);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
     expect(mockPushAttendance).not.toHaveBeenCalled();
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('push an empty attendance when the live registration is not existing yet without anonymous_id for public access', async () => {
     const video = videoMockFactory({
       live_state: liveState.RUNNING,
     });
-    const liveRegistration = liveRegistrationFactory();
+    const liveSession = liveSessionFactory();
     mockGetDecodedJwt.mockReturnValue(publicToken);
     mockCheckLtiToken.mockReturnValue(false);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 0,
       results: [],
     });
-    mockPushAttendance.mockResolvedValue(liveRegistration);
+    mockPushAttendance.mockResolvedValue(liveSession);
 
     await initWebinarContext(video);
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(undefined);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(undefined);
     expect(mockPushAttendance).toHaveBeenCalledWith({}, undefined);
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('push an empty attendance when the live registration is not existing yet without anonymous_id for lti access', async () => {
     const video = videoMockFactory({
       live_state: liveState.RUNNING,
     });
-    const liveRegistration = liveRegistrationFactory();
+    const liveSession = liveSessionFactory();
     mockGetDecodedJwt.mockReturnValue(ltiToken);
     mockCheckLtiToken.mockReturnValue(true);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 0,
       results: [],
     });
-    mockPushAttendance.mockResolvedValue(liveRegistration);
+    mockPushAttendance.mockResolvedValue(liveSession);
 
     await initWebinarContext(video);
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(undefined);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(undefined);
     expect(mockPushAttendance).toHaveBeenCalledWith({}, undefined);
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('push an empty attendance when the live registration is not existing yet with anonymous_id for public access', async () => {
@@ -221,28 +212,26 @@ describe('initWebinarContext', () => {
     });
     const anonymousId = uuidv4();
     mockGetDecodedJwt.mockReturnValue(publicToken);
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       anonymous_id: anonymousId,
       video: video.id,
     });
 
     mockCheckLtiToken.mockReturnValue(false);
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 0,
       results: [],
     });
-    mockPushAttendance.mockResolvedValue(liveRegistration);
+    mockPushAttendance.mockResolvedValue(liveSession);
 
     await initWebinarContext(video);
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(anonymousId);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
     expect(mockPushAttendance).toHaveBeenCalledWith({}, anonymousId);
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 
   it('push an empty attendance when the live registration is not existing yet with anonymous_id for lti access', async () => {
@@ -251,28 +240,26 @@ describe('initWebinarContext', () => {
     });
     const anonymousId = uuidv4();
     mockGetDecodedJwt.mockReturnValue(ltiToken);
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       anonymous_id: anonymousId,
       video: video.id,
     });
 
     mockCheckLtiToken.mockReturnValue(false);
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 0,
       results: [],
     });
-    mockPushAttendance.mockResolvedValue(liveRegistration);
+    mockPushAttendance.mockResolvedValue(liveSession);
 
     await initWebinarContext(video);
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(anonymousId);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
     expect(mockPushAttendance).toHaveBeenCalledWith({}, anonymousId);
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
   it('adds the live registration to the store when anonymous_id is already contained in the jwt token', async () => {
     const anonymousId = uuidv4();
@@ -296,24 +283,22 @@ describe('initWebinarContext', () => {
       },
     });
 
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       anonymous_id: anonymousId,
       video: video.id,
     });
 
-    mockGetLiveRegistrations.mockResolvedValue({
+    mockGetLiveSessions.mockResolvedValue({
       count: 1,
-      results: [liveRegistration],
+      results: [liveSession],
     });
 
     await initWebinarContext(video);
     expect(mockSetAnonymousId).toHaveBeenCalledWith(anonymousId);
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
-    expect(mockGetLiveRegistrations).toHaveBeenCalledWith(anonymousId);
+    expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
     expect(mockPushAttendance).not.toHaveBeenCalled();
 
-    expect(useLiveRegistration.getState().liveRegistration).toEqual(
-      liveRegistration,
-    );
+    expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
 });

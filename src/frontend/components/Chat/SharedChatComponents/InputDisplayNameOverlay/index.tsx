@@ -6,14 +6,14 @@ import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
 import { getDecodedJwt } from 'data/appData';
-import { setLiveRegistrationDisplayName } from 'data/sideEffects/setLiveRegistrationDisplayName';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
 } from 'default/chat';
-import { LiveRegistration } from 'types/tracks';
+import { LiveSession } from 'types/tracks';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { Maybe, Nullable } from 'utils/types';
@@ -91,20 +91,18 @@ export const InputDisplayNameOverlay = ({
   const intl = useIntl();
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
-  const { liveRegistration, setLiveRegistration } = useLiveRegistration(
-    (state) => ({
-      liveRegistration: state.liveRegistration,
-      setLiveRegistration: state.setLiveRegistration,
-    }),
-  );
+  const { liveSession, setLiveSession } = useLiveSession((state) => ({
+    liveSession: state.liveSession,
+    setLiveSession: state.setLiveSession,
+  }));
   const processDisplayName = async (displayName: string) => {
     displayName = displayName.trim();
     setAlertsState([]);
     setIsWaiting(true);
 
-    const callbackSuccess = (updatedLiveRegistration: LiveRegistration) => {
+    const callbackSuccess = (updatedLiveSession: LiveSession) => {
       return () => {
-        setLiveRegistration(updatedLiveRegistration);
+        setLiveSession(updatedLiveSession);
         setIsWaiting(false);
         setOverlay(false);
       };
@@ -168,7 +166,7 @@ export const InputDisplayNameOverlay = ({
       if (!checkLtiToken(getDecodedJwt())) {
         anonymousId = getAnonymousId();
       }
-      const response = await setLiveRegistrationDisplayName(
+      const response = await setLiveSessionDisplayName(
         displayName,
         anonymousId,
       );
@@ -256,7 +254,7 @@ export const InputDisplayNameOverlay = ({
             </Box>
           </Box>
           <InputBar
-            defaultValue={liveRegistration?.username || ''}
+            defaultValue={liveSession?.username || ''}
             handleUserInput={processDisplayName}
             isChatInput={false}
             isWaiting={isWaiting}
