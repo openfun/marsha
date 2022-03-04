@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from ..defaults import IDLE, JITSI
-from ..factories import LiveRegistrationFactory, VideoFactory
+from ..factories import LiveSessionFactory, VideoFactory
 
 
 class ReminderCanceliewTestCase(TestCase):
@@ -17,7 +17,7 @@ class ReminderCanceliewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_views_reminders_cancel_good_params(self):
-        """Should inactivate reminders for the liveregistration targeted."""
+        """Should inactivate reminders for the livesession targeted."""
 
         video = VideoFactory(
             live_state=IDLE,
@@ -27,7 +27,7 @@ class ReminderCanceliewTestCase(TestCase):
         )
 
         # LTI registration
-        lti_registration = LiveRegistrationFactory(
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="chantal@test-fun-mooc.fr",
@@ -37,11 +37,11 @@ class ReminderCanceliewTestCase(TestCase):
             video=video,
         )
         # before accessing the cancel url, reminders are activated
-        self.assertEqual(lti_registration.should_send_reminders, True)
+        self.assertEqual(lti_livesession.should_send_reminders, True)
 
         response = self.client.get(
-            f"/reminders/cancel/{lti_registration.id}/"
-            f"{lti_registration.get_generate_salted_hmac()}"
+            f"/reminders/cancel/{lti_livesession.id}/"
+            f"{lti_livesession.get_generate_salted_hmac()}"
         )
         self.assertEqual(response.status_code, 200)
 
@@ -54,8 +54,8 @@ class ReminderCanceliewTestCase(TestCase):
             content,
         )
         self.assertIn("You won't receive any reminders about this webinar.", content)
-        lti_registration.refresh_from_db()
-        self.assertEqual(lti_registration.should_send_reminders, False)
+        lti_livesession.refresh_from_db()
+        self.assertEqual(lti_livesession.should_send_reminders, False)
 
     def test_views_reminders_cancel_wrong_salted_hmac(self):
         """Should not access if salted hmac is wrong."""
@@ -68,7 +68,7 @@ class ReminderCanceliewTestCase(TestCase):
         )
 
         # LTI registration
-        lti_registration = LiveRegistrationFactory(
+        lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="chantal@test-fun-mooc.fr",
@@ -78,11 +78,11 @@ class ReminderCanceliewTestCase(TestCase):
             video=video,
         )
         # non sense hmac
-        response = self.client.get(f"/reminders/cancel/{lti_registration.id}/123/")
+        response = self.client.get(f"/reminders/cancel/{lti_livesession.id}/123/")
         self.assertEqual(response.status_code, 404)
 
         # possible hmac but not the corresponding one
-        other_registration = LiveRegistrationFactory(
+        other_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="raoul@test-fun-mooc.fr",
@@ -92,7 +92,7 @@ class ReminderCanceliewTestCase(TestCase):
             video=video,
         )
         response = self.client.get(
-            f"/reminders/cancel/{lti_registration.id}/"
-            f"{other_registration.get_generate_salted_hmac()}/"
+            f"/reminders/cancel/{lti_livesession.id}/"
+            f"{other_livesession.get_generate_salted_hmac()}/"
         )
         self.assertEqual(response.status_code, 404)

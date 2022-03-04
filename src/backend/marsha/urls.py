@@ -11,7 +11,7 @@ from marsha.core import models
 from marsha.core.admin import admin_site
 from marsha.core.api import (
     DocumentViewSet,
-    LiveRegistrationViewSet,
+    LiveSessionViewSet,
     OrganizationViewSet,
     PlaylistViewSet,
     SharedLiveMediaViewSet,
@@ -38,9 +38,9 @@ router = DefaultRouter()
 router.register(models.Video.RESOURCE_NAME, VideoViewSet, basename="videos")
 router.register(models.Document.RESOURCE_NAME, DocumentViewSet, basename="documents")
 router.register(
-    models.LiveRegistration.RESOURCE_NAME,
-    LiveRegistrationViewSet,
-    basename="live_registrations",
+    models.LiveSession.RESOURCE_NAME,
+    LiveSessionViewSet,
+    basename="live_sessions",
 )
 router.register(
     models.TimedTextTrack.RESOURCE_NAME,

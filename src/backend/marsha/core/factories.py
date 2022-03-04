@@ -165,14 +165,14 @@ class DocumentFactory(DjangoModelFactory):
     lti_id = factory.Sequence("document#{:d}".format)
 
 
-class LiveRegistrationFactory(DjangoModelFactory):
-    """Factory for the LiveRegistration model."""
+class LiveSessionFactory(DjangoModelFactory):
+    """Factory for the liveSession model."""
 
     email = factory.Sequence("user{:d}@fun-mooc.fr".format)
     video = factory.SubFactory(VideoFactory)
 
     class Meta:  # noqa
-        model = models.LiveRegistration
+        model = models.LiveSession
 
 
 class LivePairingFactory(DjangoModelFactory):
