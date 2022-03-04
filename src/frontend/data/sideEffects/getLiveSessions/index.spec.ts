@@ -1,8 +1,8 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
-import { liveRegistrationFactory } from 'utils/tests/factories';
-import { getLiveRegistrations } from '.';
+import { liveSessionFactory } from 'utils/tests/factories';
+import { getLiveSessions } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -10,62 +10,62 @@ jest.mock('data/appData', () => ({
   },
 }));
 
-describe('getLiveRegistrations', () => {
+describe('getLiveSessions', () => {
   afterEach(() => fetchMock.restore());
 
   it('getLiveRegitrations without anonymous_id', async () => {
-    const expectedLiveRegistration = liveRegistrationFactory();
+    const expectedLiveSession = liveSessionFactory();
     fetchMock.mock(
-      '/api/liveregistrations/',
+      '/api/livesessions/',
       JSON.stringify({
         count: 1,
-        results: [expectedLiveRegistration],
+        results: [expectedLiveSession],
       }),
     );
 
-    const results = await getLiveRegistrations();
+    const results = await getLiveSessions();
     expect(results).toEqual({
       count: 1,
-      results: [expectedLiveRegistration],
+      results: [expectedLiveSession],
     });
   });
 
   it('getLiveRegitrations with anonymous_id', async () => {
     const anonymousId = uuidv4();
-    const expectedLiveRegistration = liveRegistrationFactory({
+    const expectedLiveSession = liveSessionFactory({
       anonymous_id: anonymousId,
     });
 
     fetchMock.mock(
-      `/api/liveregistrations/?anonymous_id=${anonymousId}`,
+      `/api/livesessions/?anonymous_id=${anonymousId}`,
       JSON.stringify({
         count: 1,
-        results: [expectedLiveRegistration],
+        results: [expectedLiveSession],
       }),
     );
 
-    const results = await getLiveRegistrations(anonymousId);
+    const results = await getLiveSessions(anonymousId);
     expect(results).toEqual({
       count: 1,
-      results: [expectedLiveRegistration],
+      results: [expectedLiveSession],
     });
   });
 
   it('raises an error when it fails to get live registrations (api)', async () => {
     fetchMock.mock(
-      '/api/liveregistrations/',
+      '/api/livesessions/',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(getLiveRegistrations()).rejects.toThrowError(
+    await expect(getLiveSessions()).rejects.toThrowError(
       'Failed to perform the request',
     );
   });
 
   it('raises an error when it fails to get live registrations (local)', async () => {
-    fetchMock.mock('/api/liveregistrations/', 500);
+    fetchMock.mock('/api/livesessions/', 500);
 
-    await expect(getLiveRegistrations()).rejects.toThrowError(
+    await expect(getLiveSessions()).rejects.toThrowError(
       'Failed to get live registrations',
     );
   });

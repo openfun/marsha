@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { Form, FormField } from 'components/Form';
 import { getDecodedJwt } from 'data/appData';
-import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
+import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
@@ -162,7 +162,7 @@ export const RegistrationForm = ({
           if (!isLtiToken) {
             anonymousId = getAnonymousId();
           }
-          await createLiveRegistration(value.email, anonymousId);
+          await createLiveSession(value.email, anonymousId);
           setLtiUserError(undefined);
           setRegistrationCompleted();
         }}

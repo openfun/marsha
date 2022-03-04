@@ -3,15 +3,12 @@ import { act, render } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
 import { getDecodedJwt } from 'data/appData';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { DecodedJwt } from 'types/jwt';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { converseMounter } from 'utils/conversejs/converse';
-import {
-  liveRegistrationFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 const mockVideo = videoMockFactory({
@@ -50,21 +47,21 @@ describe('<Chat />', () => {
   afterEach(() => {
     mockGetDecodedJwt.mockReset();
   });
-  it('does not initialize converse without liveRegistration if user can not access dashboard', async () => {
+  it('does not initialize converse without liveSession if user can not access dashboard', async () => {
     mockGetDecodedJwt.mockReturnValue({
       permissions: {
         can_access_dashboard: false,
         can_update: false,
       },
     } as DecodedJwt);
-    const liveRegistration = liveRegistrationFactory();
+    const liveSession = liveSessionFactory();
     render(wrapInIntlProvider(<Chat video={mockVideo} />));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockConverseMounter.mock.results[0].value).not.toHaveBeenCalled();
 
     act(() => {
-      useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+      useLiveSession.getState().setLiveSession(liveSession);
     });
     expect(mockConverseMounter.mock.results[0].value).toHaveBeenCalledWith(
       mockVideo.xmpp,
@@ -79,14 +76,14 @@ describe('<Chat />', () => {
       },
     } as DecodedJwt);
     mockConverseMounter.mock.results[0].value.mockReset();
-    const liveRegistration = liveRegistrationFactory({ display_name: 'john' });
+    const liveSession = liveSessionFactory({ display_name: 'john' });
     render(wrapInIntlProvider(<Chat video={mockVideo} />));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockConverseMounter.mock.results[0].value).not.toHaveBeenCalled();
 
     act(() => {
-      useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+      useLiveSession.getState().setLiveSession(liveSession);
     });
     expect(mockConverseMounter.mock.results[0].value).toHaveBeenCalledWith(
       mockVideo.xmpp,

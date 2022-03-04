@@ -3,8 +3,8 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
-import { liveRegistrationFactory } from 'utils/tests/factories';
+import { useLiveSession } from 'data/stores/useLiveSession';
+import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
@@ -81,10 +81,10 @@ describe('<StudentChat />', () => {
     screen.getByText('Display name');
   });
 
-  it('shows the message input box when liveRegistration exists with a display_name', () => {
+  it('shows the message input box when liveSession exists with a display_name', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
-    const liveRegistration = liveRegistrationFactory({ display_name: 'l33t' });
-    useLiveRegistration.getState().setLiveRegistration(liveRegistration);
+    const liveSession = liveSessionFactory({ display_name: 'l33t' });
+    useLiveSession.getState().setLiveSession(liveSession);
     render(wrapInIntlProvider(<ChatLayout />));
     expect(
       screen.queryByRole('button', {

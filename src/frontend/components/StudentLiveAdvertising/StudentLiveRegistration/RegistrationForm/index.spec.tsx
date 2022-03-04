@@ -4,8 +4,8 @@ import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
 import { getDecodedJwt } from 'data/appData';
-import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
-import { liveRegistrationFactory } from 'utils/tests/factories';
+import { createLiveSession } from 'data/sideEffects/createLiveSession';
+import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { RegistrationForm } from '.';
@@ -21,11 +21,12 @@ const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
   typeof getDecodedJwt
 >;
 
-jest.mock('data/sideEffects/createLiveRegistration', () => ({
-  createLiveRegistration: jest.fn(),
+jest.mock('data/sideEffects/createLiveSession', () => ({
+  createLiveSession: jest.fn(),
 }));
-const mockCreateLiveRegistration =
-  createLiveRegistration as jest.MockedFunction<typeof createLiveRegistration>;
+const mockCreateLiveSession = createLiveSession as jest.MockedFunction<
+  typeof createLiveSession
+>;
 
 describe('<RegistrationForm />', () => {
   beforeEach(() => {
@@ -110,7 +111,7 @@ describe('<RegistrationForm />', () => {
         user_fullname: 'user full name',
       },
     });
-    mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
+    mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
 
     render(
       wrapInIntlProvider(
@@ -136,13 +137,13 @@ describe('<RegistrationForm />', () => {
       'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
     );
 
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       id: 'id',
       email: 'email',
       should_send_reminders: true,
       video: 'id',
     });
-    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
+    mockCreateLiveSession.mockResolvedValue(liveSession);
 
     userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
@@ -158,13 +159,13 @@ describe('<RegistrationForm />', () => {
   });
 
   it('calls parent on submit success', async () => {
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       id: 'id',
       email: 'email',
       should_send_reminders: true,
       video: 'id',
     });
-    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
+    mockCreateLiveSession.mockResolvedValue(liveSession);
 
     render(
       wrapInIntlProvider(
@@ -175,14 +176,12 @@ describe('<RegistrationForm />', () => {
       ),
     );
 
-    expect(mockCreateLiveRegistration).toHaveBeenCalledTimes(0);
+    expect(mockCreateLiveSession).toHaveBeenCalledTimes(0);
     expect(setRegistrationCompleted).toHaveBeenCalledTimes(0);
 
     userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
-    await waitFor(() =>
-      expect(mockCreateLiveRegistration).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => expect(mockCreateLiveSession).toHaveBeenCalledTimes(1));
     expect(setRegistrationCompleted).toHaveBeenCalledTimes(1);
   });
 
@@ -208,7 +207,7 @@ describe('<RegistrationForm />', () => {
   });
 
   it('renders an error when validation fail server side', async () => {
-    mockCreateLiveRegistration.mockResolvedValue(Promise.reject('some error'));
+    mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
 
     render(
       wrapInIntlProvider(
