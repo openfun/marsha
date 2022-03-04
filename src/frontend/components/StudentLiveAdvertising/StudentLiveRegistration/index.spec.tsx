@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { fetchList } from 'data/queries/fetchList';
-import { createLiveRegistration } from 'data/sideEffects/createLiveRegistration';
+import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { DecodedJwt } from 'types/jwt';
-import { liveRegistrationFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { StudentLiveRegistration } from '.';
@@ -25,11 +25,12 @@ jest.mock('data/queries/fetchList', () => ({
 }));
 const mockFecthList = fetchList as jest.MockedFunction<typeof fetchList>;
 
-jest.mock('data/sideEffects/createLiveRegistration', () => ({
-  createLiveRegistration: jest.fn(),
+jest.mock('data/sideEffects/createLiveSession', () => ({
+  createLiveSession: jest.fn(),
 }));
-const mockCreateLiveRegistration =
-  createLiveRegistration as jest.MockedFunction<typeof createLiveRegistration>;
+const mockCreateLiveSession = createLiveSession as jest.MockedFunction<
+  typeof createLiveSession
+>;
 
 describe('<StudentLiveRegistration />', () => {
   beforeEach(() => {
@@ -59,13 +60,13 @@ describe('<StudentLiveRegistration />', () => {
 
   it('renders the form and the message on submit', async () => {
     mockFecthList.mockResolvedValue(() => []);
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       id: 'id',
       email: 'email',
       should_send_reminders: true,
       video: 'video_id',
     });
-    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
+    mockCreateLiveSession.mockResolvedValue(liveSession);
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
@@ -104,13 +105,13 @@ describe('<StudentLiveRegistration />', () => {
       },
     };
     mockFecthList.mockResolvedValue(() => []);
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       id: 'id',
       email: 'email',
       should_send_reminders: true,
       video: 'video_id',
     });
-    mockCreateLiveRegistration.mockResolvedValue(liveRegistration);
+    mockCreateLiveSession.mockResolvedValue(liveSession);
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
     );
@@ -130,7 +131,7 @@ describe('<StudentLiveRegistration />', () => {
 
   it('renders the form and the error when mail is already registered', async () => {
     mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveRegistration.mockImplementation(() =>
+    mockCreateLiveSession.mockImplementation(() =>
       Promise.reject({ email: ['blabla already registered'] }),
     );
 
@@ -155,7 +156,7 @@ describe('<StudentLiveRegistration />', () => {
 
   it('renders the form and the error when an error occured with the email on backend', async () => {
     mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveRegistration.mockImplementation(() =>
+    mockCreateLiveSession.mockImplementation(() =>
       Promise.reject({ email: 'something bad' }),
     );
 
@@ -179,7 +180,7 @@ describe('<StudentLiveRegistration />', () => {
 
   it('renders the form and the error when an unknown error occured with the email on backend', async () => {
     mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveRegistration.mockImplementation(() => Promise.reject({}));
+    mockCreateLiveSession.mockImplementation(() => Promise.reject({}));
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),

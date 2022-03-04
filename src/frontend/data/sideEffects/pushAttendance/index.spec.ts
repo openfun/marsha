@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
-import { liveRegistrationFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'utils/tests/factories';
 import { pushAttendance } from '.';
 
 jest.mock('data/appData', () => ({
@@ -15,12 +15,12 @@ describe('pushAttendance', () => {
 
   it('push new attendance without anonymous_id', async () => {
     const liveAttendance = { key1: 'value1' };
-    const expectedLiveRegistration = liveRegistrationFactory({
+    const expectedLiveSession = liveSessionFactory({
       live_attendance: liveAttendance,
     });
     fetchMock.mock(
       {
-        url: '/api/liveregistrations/push_attendance/',
+        url: '/api/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance },
         headers: {
           Authorization: 'Bearer some token',
@@ -28,23 +28,23 @@ describe('pushAttendance', () => {
         },
         method: 'POST',
       },
-      expectedLiveRegistration,
+      expectedLiveSession,
     );
 
     const response = await pushAttendance(liveAttendance);
-    expect(response).toEqual(expectedLiveRegistration);
+    expect(response).toEqual(expectedLiveSession);
   });
 
   it('push new attendance with anonymous_id', async () => {
     const liveAttendance = { key1: 'value1' };
     const anonymousId = uuidv4();
-    const expectedLiveRegistration = liveRegistrationFactory({
+    const expectedLiveSession = liveSessionFactory({
       anonymous_id: anonymousId,
       live_attendance: liveAttendance,
     });
     fetchMock.mock(
       {
-        url: `/api/liveregistrations/push_attendance/?anonymous_id=${anonymousId}`,
+        url: `/api/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
         body: { live_attendance: liveAttendance },
         headers: {
           Authorization: 'Bearer some token',
@@ -52,18 +52,18 @@ describe('pushAttendance', () => {
         },
         method: 'POST',
       },
-      expectedLiveRegistration,
+      expectedLiveSession,
     );
 
     const response = await pushAttendance(liveAttendance, anonymousId);
-    expect(response).toEqual(expectedLiveRegistration);
+    expect(response).toEqual(expectedLiveSession);
   });
 
   it('raises an error when it fails to push new attendance (api)', async () => {
     const liveAttendance = { key1: 'value1' };
     fetchMock.mock(
       {
-        url: '/api/liveregistrations/push_attendance/',
+        url: '/api/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance },
         headers: {
           Authorization: 'Bearer some token',
@@ -83,7 +83,7 @@ describe('pushAttendance', () => {
     const liveAttendance = { key1: 'value1' };
     fetchMock.mock(
       {
-        url: '/api/liveregistrations/push_attendance/',
+        url: '/api/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance },
         headers: {
           Authorization: 'Bearer some token',

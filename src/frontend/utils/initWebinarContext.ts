@@ -1,7 +1,7 @@
 import { getDecodedJwt } from 'data/appData';
-import { getLiveRegistrations } from 'data/sideEffects/getLiveRegistrations';
+import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useLiveRegistration } from 'data/stores/useLiveRegistration';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { Video } from 'types/tracks';
 import { checkLtiToken } from './checkLtiToken';
 import { getAnonymousId, setAnonymousId } from './localstorage';
@@ -11,7 +11,7 @@ export const initWebinarContext = async (video: Video) => {
   if (!video.live_state) return;
 
   // If live registration already present, stop it.
-  if (useLiveRegistration.getState().liveRegistration) return;
+  if (useLiveSession.getState().liveSession) return;
   const decodedJwt = getDecodedJwt();
   let anonymousId = decodedJwt.user?.anonymous_id;
   if (anonymousId) {
@@ -21,15 +21,15 @@ export const initWebinarContext = async (video: Video) => {
   }
 
   // check if registered
-  const results = await getLiveRegistrations(anonymousId);
+  const results = await getLiveSessions(anonymousId);
   // There is a record, we use it
   if (results.count > 0) {
-    useLiveRegistration.getState().setLiveRegistration(results.results[0]);
+    useLiveSession.getState().setLiveSession(results.results[0]);
   } else {
     // push an empty attendance to create the live registration
     // and then register it in the store
-    useLiveRegistration
+    useLiveSession
       .getState()
-      .setLiveRegistration(await pushAttendance({}, anonymousId));
+      .setLiveSession(await pushAttendance({}, anonymousId));
   }
 };

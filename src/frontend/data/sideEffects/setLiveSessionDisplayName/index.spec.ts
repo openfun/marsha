@@ -2,8 +2,8 @@ import * as faker from 'faker';
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
-import { liveRegistrationFactory } from 'utils/tests/factories';
-import { setLiveRegistrationDisplayName } from '.';
+import { liveSessionFactory } from 'utils/tests/factories';
+import { setLiveSessionDisplayName } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -11,11 +11,11 @@ jest.mock('data/appData', () => ({
   },
 }));
 
-describe('setLiveRegistrationDisplayName', () => {
+describe('setLiveSessionDisplayName', () => {
   afterEach(() => fetchMock.restore());
 
-  it('returns a liveRegistration without anonymous_id', async () => {
-    const liveRegistration = liveRegistrationFactory();
+  it('returns a liveSession without anonymous_id', async () => {
+    const liveSession = liveSessionFactory();
     const displayName = faker.internet.userName();
 
     fetchMock.mock(
@@ -26,25 +26,25 @@ describe('setLiveRegistrationDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/liveregistrations/display_name/',
+        url: '/api/livesessions/display_name/',
       },
       {
-        ...liveRegistration,
+        ...liveSession,
         display_name: displayName,
       },
     );
 
-    const response = await setLiveRegistrationDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(displayName);
 
     expect(response.success).toEqual({
-      ...liveRegistration,
+      ...liveSession,
       display_name: displayName,
     });
   });
 
-  it('returns a liveRegistration with an anonymous_id', async () => {
+  it('returns a liveSession with an anonymous_id', async () => {
     const anonymousId = uuidv4();
-    const liveRegistration = liveRegistrationFactory({
+    const liveSession = liveSessionFactory({
       anonymous_id: anonymousId,
     });
     const displayName = faker.internet.userName();
@@ -57,21 +57,18 @@ describe('setLiveRegistrationDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/liveregistrations/display_name/',
+        url: '/api/livesessions/display_name/',
       },
       {
-        ...liveRegistration,
+        ...liveSession,
         display_name: displayName,
       },
     );
 
-    const response = await setLiveRegistrationDisplayName(
-      displayName,
-      anonymousId,
-    );
+    const response = await setLiveSessionDisplayName(displayName, anonymousId);
 
     expect(response.success).toEqual({
-      ...liveRegistration,
+      ...liveSession,
       display_name: displayName,
     });
   });
@@ -86,12 +83,12 @@ describe('setLiveRegistrationDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/liveregistrations/display_name/',
+        url: '/api/livesessions/display_name/',
       },
       409,
     );
 
-    const response = await setLiveRegistrationDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(displayName);
 
     expect(response).toEqual({ error: 409 });
   });
@@ -106,7 +103,7 @@ describe('setLiveRegistrationDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/liveregistrations/display_name/',
+        url: '/api/livesessions/display_name/',
       },
       {
         body: { detail: 'Invalid request.' },
@@ -114,7 +111,7 @@ describe('setLiveRegistrationDisplayName', () => {
       },
     );
 
-    const response = await setLiveRegistrationDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(displayName);
 
     expect(response).toEqual({ error: { detail: 'Invalid request.' } });
   });
