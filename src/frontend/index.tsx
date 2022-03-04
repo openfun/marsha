@@ -15,6 +15,8 @@ import { isFeatureEnabled } from './utils/isFeatureEnabled';
 import { GlobalStyles } from './utils/theme/baseStyles';
 import { colors, theme } from './utils/theme/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
+// React Query Devtools are only included in bundles when process.env.NODE_ENV === 'development'
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Toaster } from 'react-hot-toast';
 
 if (isFeatureEnabled(flags.SENTRY) && appData.sentry_dsn) {
@@ -102,6 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   ReactDOM.render(
     <RawIntlProvider value={intl}>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
         <Grommet theme={theme} style={{ height: '100%' }}>
           <Toaster
             toastOptions={{
