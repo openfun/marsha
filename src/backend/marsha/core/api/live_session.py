@@ -112,8 +112,6 @@ class LiveSessionViewSet(
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
-            filters["lti_id"] = user.token.payload["context_id"]
-            filters["consumer_site"] = user.token.payload["consumer_site"]
             if self.request.query_params.get("is_registered"):
                 filters["is_registered"] = self.request.query_params.get(
                     "is_registered"
@@ -125,6 +123,9 @@ class LiveSessionViewSet(
                 for role in user.token.payload["roles"]
             ):
                 return LiveSession.objects.filter(**filters)
+
+            filters["lti_id"] = user.token.payload["context_id"]
+            filters["consumer_site"] = user.token.payload["consumer_site"]
 
             # token has email or not, user has access to this registration if it's the right
             # combination of lti_user_id, lti_id and consumer_site
