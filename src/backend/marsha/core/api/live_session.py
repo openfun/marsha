@@ -155,7 +155,7 @@ class LiveSessionViewSet(
             template_vars = {
                 "cancel_reminder_url": livesession.cancel_reminder_url,
                 "email": livesession.email,
-                "username": serializer.validated_data.get("username", ""),
+                "username": livesession.username,
                 "time_zone": settings.TIME_ZONE,
                 "video": video,
                 "video_access_url": livesession.video_access_reminder_url,
