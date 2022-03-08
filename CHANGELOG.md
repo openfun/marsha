@@ -23,6 +23,7 @@ right (and close / open it)
 ### Changed
 
 - rename LiveRegistration model in LiveSession
+- Admin can access all LiveSession belonging to a video
 
 ### Fixed
 
