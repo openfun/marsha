@@ -1,11 +1,15 @@
 import create from 'zustand';
 
-import { modelName } from '../../../types/models';
-import { StoreState } from '../../../types/stores';
-import { Video } from '../../../types/tracks';
-import { Nullable } from '../../../utils/types';
-import { appData } from '../../appData';
-import { addMultipleResources, addResource, removeResource } from '../actions';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { Video } from 'types/tracks';
+import { Nullable } from 'utils/types';
+import { appData } from 'data/appData';
+import {
+  addMultipleResources,
+  addResource,
+  removeResource,
+} from 'data/stores/actions';
 
 type VideoStateResource = {
   [modelName.VIDEOS]: {
@@ -27,10 +31,25 @@ export const useVideo = create<VideoState>((set, get) => ({
         videosToAdd,
       ) as VideoStateResource,
     ),
-  addResource: (video: Video) =>
-    set(
+  addResource: (video: Video) => {
+    // TODO: Remove this hack
+    // This is a hack to keep existing jitsi infos in updated videos.
+    // Should be removed when we have a proper way to send those infos
+    // through websocket for participants in discussion.
+    const lastVideoState = get()[modelName.VIDEOS][video.id];
+    if (lastVideoState?.live_info?.jitsi) {
+      video = {
+        ...video,
+        live_info: {
+          ...video.live_info,
+          jitsi: lastVideoState.live_info.jitsi,
+        },
+      };
+    }
+    return set(
       addResource<Video>(get(), modelName.VIDEOS, video) as VideoStateResource,
-    ),
+    );
+  },
   getVideo: (video: Nullable<Video>) => {
     return get()[modelName.VIDEOS][(video && video.id) || ''] || video;
   },

@@ -1,12 +1,13 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { appData } from '../../appData';
+import { appData } from 'data/appData';
 
+import { modelName } from 'types/models';
+import { videoMockFactory } from 'utils/tests/factories';
 import { useVideo } from '.';
-import { modelName } from '../../../types/models';
 
-jest.mock('../../appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     video: {
       description: 'Some description',
@@ -126,6 +127,38 @@ describe('stores/useVideo', () => {
     });
     expect(useVideo.getState()[modelName.VIDEOS].multi3).toEqual({
       id: 'multi3',
+    });
+  });
+  it('keeps jitsi infos if already existing', () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: { input: { endpoints: ['endpoint1'] } },
+        jitsi: {
+          external_api_url: 'https://example.com/jitsi',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+    });
+    useVideo.getState().addResource(video);
+
+    expect(useVideo.getState().getVideo(video).live_info).toEqual({
+      medialive: { input: { endpoints: ['endpoint1'] } },
+      jitsi: {
+        external_api_url: 'https://example.com/jitsi',
+        config_overwrite: {},
+        interface_config_overwrite: {},
+      },
+    });
+
+    useVideo.getState().addResource({ ...video, live_info: {} });
+
+    expect(useVideo.getState().getVideo(video).live_info).toEqual({
+      jitsi: {
+        external_api_url: 'https://example.com/jitsi',
+        config_overwrite: {},
+        interface_config_overwrite: {},
+      },
     });
   });
 });
