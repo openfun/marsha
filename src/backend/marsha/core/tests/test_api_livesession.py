@@ -3969,3 +3969,438 @@ class LiveSessionApiTest(TestCase):
             response.json(),
             {"display_name": "User with that display_name already exists!"},
         )
+
+    def test_api_livesession_put_not_allowed(self):
+        """Updating a live_session using a PUT method is not allowed."""
+        video = VideoFactory()
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "sabrina@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.put(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_api_livesession_patch_anonymous(self):
+        """Anonymous user should not be allowed to PATCH a live_session."""
+
+        video = VideoFactory()
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        response = self.client.patch(f"/api/livesessions/{live_session.id}/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_livesession_patch_staff_or_user(self):
+        """Users authenticated via a session shouldn't be able to patch a live_session."""
+        video = VideoFactory()
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        for user in [UserFactory(), UserFactory(is_staff=True)]:
+            self.client.login(username=user.username, password="test")
+            response = self.client.patch(f"/api/livesessions/{live_session.id}/")
+            self.assertEqual(response.status_code, 401)
+
+    def test_api_livesession_patch_student__not_allowed_fields(self):
+        """Only is_registered field can be patched, all other fields present should generate
+        a 400."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True, "anonymous_id": uuid.uuid4()},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"not_allowed_fields": ["anonymous_id"]})
+
+    def test_api_livesession_student_patch_email_failed_from_lti_livesession_with_email(
+        self,
+    ):
+        """live session created from an LTI session having a mail in its JWT token is not
+        allowed to modify it."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "email": "john@fun-test.fr",
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "email": (
+                    "You are not authorized to modify your email."
+                    "You can only use the email from your authentication."
+                )
+            },
+        )
+
+    def test_api_livesession_student_patch_email_from_lti_livesession_without_email_in_token(
+        self,
+    ):
+        """live session created from an LTI session not having a mail in its JWT token can
+        modify it."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Samantha63",
+                "email": "sarah@fun-test.fr",
+                "id": str(live_session.id),
+                "is_registered": True,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Sylvie",
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(live_session.email, "sarah@fun-test.fr")
+
+    def test_api_livesession_student_patch_with_an_other_LTI_session(self):
+        """Only the live_session owner can update its own live_session"""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "id": "44444",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(live_session.email, "john@fun-test.fr")
+
+    def test_api_livesession_admin_can_patch_any_record_from_the_same_consumer_site(
+        self,
+    ):
+        """An admin can update all the live_session belonging to the video he is accessing."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        other_video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Sarah",
+            email="sarah@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sarah",
+            video=video,
+        )
+        other_live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="John",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="44444",
+            lti_id="Maths",
+            username="John",
+            video=video,
+        )
+
+        anonymous_live_session = LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email=None,
+            is_registered=False,
+            video=video,
+        )
+
+        not_accessing_live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Sarah",
+            email="sarah@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sarah",
+            video=other_video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
+        jwt_token.payload["user"] = {
+            "email": "admin@fun-test.fr",
+            "id": "11111",
+            "username": "Admin",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": True, "email": "r00t@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(live_session.email, "r00t@fun-test.fr")
+
+        response = self.client.patch(
+            f"/api/livesessions/{other_live_session.id}/",
+            {"is_registered": True, "email": "l33t@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        other_live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(other_live_session.email, "l33t@fun-test.fr")
+
+        response = self.client.patch(
+            f"/api/livesessions/{anonymous_live_session.id}/",
+            {"is_registered": True, "email": "An0n@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        anonymous_live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(anonymous_live_session.email, "An0n@fun-test.fr")
+
+        response = self.client.patch(
+            f"/api/livesessions/{not_accessing_live_session.id}/",
+            {"is_registered": True, "email": "wr0ng@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_livesession_patch_email_from_anonymous_livesession(self):
+        """live session created with an anonymous_id can update its email."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        anonymous_id = uuid.uuid4()
+        live_session = LiveSessionFactory(
+            anonymous_id=anonymous_id,
+            email=None,
+            is_registered=False,
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            {"is_registered": True, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": None,
+                "email": "sarah@fun-test.fr",
+                "id": str(live_session.id),
+                "is_registered": True,
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(live_session.email, "sarah@fun-test.fr")
+
+    def test_api_livesession_update_email_with_another_anonymous_id(self):
+        """Updating an other live_session using an unknown anonymous_id should fails."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        anonymous_id = uuid.uuid4()
+        other_anonymous_id = uuid.uuid4()
+        live_session = LiveSessionFactory(
+            anonymous_id=anonymous_id,
+            email=None,
+            is_registered=False,
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/?anonymous_id={other_anonymous_id}",
+            {"is_registered": True, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 404)
+        self.assertIsNone(live_session.email)

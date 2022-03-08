@@ -42,7 +42,6 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             "consumer_site",
             "display_name",
             "id",
-            "is_registered",
             "live_attendance",
             "lti_user_id",
             "lti_id",
@@ -151,25 +150,52 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                 # Control this email hasn't already been used for this video in the public case
                 if LiveSession.objects.filter(
                     consumer_site=None,
-                    email=attrs["email"],
+                    email=validated_data["email"],
                     lti_id=None,
                     video=video,
                 ).exists():
                     raise serializers.ValidationError(
                         {
-                            "email": f"{attrs['email']} is already registered "
+                            "email": f"{validated_data['email']} is already registered "
                             "for this video, consumer site and course."
                         }
                     )
 
-                attrs["consumer_site"] = None
-                attrs["lti_id"] = None
+                validated_data["consumer_site"] = None
+                validated_data["lti_id"] = None
 
-        return super().validate(attrs)
-
-    def create(self, validated_data):
         validated_data["is_registered"] = True
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        """Do not allow to update some fields."""
+        # User here is a video as it comes from the JWT
+        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
+        user = self.context["request"].user
+        updatable_fields = ["is_registered", "email"]
+
+        extra_fields = list(set(validated_data.keys()) - set(updatable_fields))
+
+        if len(extra_fields) > 0:
+            raise serializers.ValidationError({"not_allowed_fields": extra_fields})
+        if validated_data.get("email"):
+            # If the email is present in the token, we don't allow a different email
+            token_email = user.token.payload.get("user", {}).get("email")
+            is_admin = user.token.payload.get("roles") and any(
+                role in ["administrator", "instructor"]
+                for role in user.token.payload["roles"]
+            )
+            if not is_admin and token_email and token_email != validated_data["email"]:
+                raise serializers.ValidationError(
+                    {
+                        "email": (
+                            "You are not authorized to modify your email."
+                            "You can only use the email from your authentication."
+                        )
+                    }
+                )
+
+        return super().update(instance, validated_data)
 
 
 class LiveAttendanceSerializer(serializers.ModelSerializer):

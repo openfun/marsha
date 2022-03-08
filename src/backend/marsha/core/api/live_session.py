@@ -176,6 +176,23 @@ class LiveSessionViewSet(
             logger.warning("registration mail %s not send", livesession.email)
             capture_exception(exception)
 
+    # pylint: disable=unused-argument
+    def partial_update(self, request, *args, **kwargs):
+        """Partially update live_session instance."""
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if getattr(instance, "_prefetched_objects_cache", None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            # pylint: disable=protected-access
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
     @action(detail=False, methods=["post"])
     # pylint: disable=unused-argument
     def push_attendance(self, request, pk=None):
