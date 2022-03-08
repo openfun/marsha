@@ -24,6 +24,7 @@ right (and close / open it)
 
 - rename LiveRegistration model in LiveSession
 - Disable jitsi prejoin page
+- Admin can access all LiveSession belonging to a video
 
 ### Fixed
 
