@@ -11,7 +11,8 @@ from django.views.generic.base import TemplateView
 
 from faker import Faker
 
-from ..core.models import Playlist
+from ..bbb.models import Meeting
+from ..core.models import Document, Playlist, Video
 from ..core.models.account import ConsumerSite, LTIPassport
 
 
@@ -75,15 +76,25 @@ class DevelopmentLTIView(TemplateView):
                 "oauth_signature_method": "",
             }
 
+        email = fake.email(safe=False)
+
         return {
             "domain": domain,
-            "lis_result_sourcedid": fake.user_name(),
+            "resource_link_id": fake.bs(),
+            "user_id": fake.md5(),
+            "lis_result_sourcedid": email.split("@")[0],
+            "lis_person_contact_email_primary": email,
             "uuid": uuid.uuid4(),
             "select_context_id": playlist.lti_id,
             "select_content_item_return_url": self.request.build_absolute_uri(
                 reverse("development:lti-development-view")
             ),
             "oauth_dict": oauth_dict,
+            "last_objects": {
+                "videos": Video.objects.order_by("-updated_on")[:5],
+                "documents": Document.objects.order_by("-updated_on")[:5],
+                "meetings": Meeting.objects.order_by("-updated_on")[:5],
+            },
         }
 
     # pylint: disable=unused-argument

@@ -17,6 +17,13 @@
       section {
         flex-basis: 50%;
         text-align: center;
+        width: 100%;
+      }
+      .columns {
+        display: flex;
+      }
+      .columns > div {
+        flex: 1;
       }
       section:last-of-type {
         display: flex;
@@ -42,6 +49,9 @@
         resize: both;
         overflow: auto;
         border: 1px solid lightslategray;
+      }
+      [data-autofill] {
+        cursor: pointer;
       }
     </style>
   </head>
@@ -107,6 +117,33 @@
       >
       </iframe>
     </section>
+
+    {% if last_objects %}
+      <section>
+        <h2>Form autofill</h2>
+        <div class="columns">
+          {% for resource_name, value in last_objects.items %}
+            {% if value %}
+              <div>
+                <h3>Last 5 {{ resource_name }}</h3>
+                {% for resource in value %}
+                  <span data-autofill
+                        data-model="{{ resource.RESOURCE_NAME }}"
+                        data-id="{{ resource.id }}"
+                        data-resource_link_id="{{ resource.title }}"
+                        title="{{ resource.title }}"
+                  >
+                  {{ resource.updated_on }}
+                </span>
+                  <br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
     <section>
       <h2>Iframe LTI Resource setup</h2>
       <p>
@@ -126,7 +163,7 @@
         </div>
         <div class="input-group">
           <label>ressource_link_id</label>
-          <input type="text" name="resource_link_id" value="example.com-df7" />
+          <input type="text" name="resource_link_id" value="{{ resource_link_id }}" />
         </div>
         <div class="input-group">
           <label>context_id</label>
@@ -155,11 +192,11 @@
         </div>
         <div class="input-group">
           <label>user_id</label>
-          <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
+          <input type="text" name="user_id" value="{{ user_id }}" />
         </div>
         <div class="input-group">
           <label>lis_person_contact_email_primary</label>
-          <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
+          <input type="text" name="lis_person_contact_email_primary" value="{{ lis_person_contact_email_primary}}" />
         </div>
         <div class="input-group">
           <label>launch_presentation_locale</label>
@@ -194,18 +231,14 @@
       </iframe>
       <script src="{% static 'js/iframeResizer.min.js' %}"></script>
       <script>
-        var baseUrl = "http://{{ domain }}/lti";
+        const baseUrl = "http://{{ domain }}/lti";
         document.addEventListener('DOMContentLoaded', function () {
-          var forms = document.querySelectorAll('form.resource');
-          for (var i = 0; i < forms.length; i++) {
-            var formForListener = forms[i];
+          const forms = document.querySelectorAll('form.resource');
+          for (let i = 0; i < forms.length; i++) {
+            const formForListener = forms[i];
             formForListener.addEventListener('submit', function (event) {
               event.preventDefault();
-              var form = event.target;
-              var uuid = form.querySelector('input[name="uuid"]').value;
-              var resource = form.querySelector('select[name="resource"]').value;
-              form.action = baseUrl + '/' + resource + '/' + uuid;
-              form.submit();
+              submitForm(event.target);
             });
           }
         });
@@ -231,7 +264,7 @@
         </div>
         <div class="input-group">
           <label>resource_link_id</label>
-          <input type="text" name="resource_link_id" value="example.com-df7" />
+          <input type="text" name="resource_link_id" value="{{ resource_link_id }}" />
         </div>
         <div class="input-group">
           <label>context_id</label>
@@ -260,11 +293,11 @@
         </div>
         <div class="input-group">
           <label>user_id</label>
-          <input type="text" name="user_id" value="56255f3807599c377bf0e5bf072359fd" />
+          <input type="text" name="user_id" value="{{ user_id }}" />
         </div>
         <div class="input-group">
           <label>lis_person_contact_email_primary</label>
-          <input type="text" name="lis_person_contact_email_primary" value="contact@openfun.fr" />
+          <input type="text" name="lis_person_contact_email_primary" value="{{ lis_person_contact_email_primary}}" />
         </div>
         <div class="input-group">
           <label>launch_presentation_locale</label>
@@ -292,8 +325,38 @@
         <input type="hidden" name="launch_presentation_return_url" value="" />
         <input type="hidden" name="lis_result_sourcedid" value="course-v1%3Aufr%2Bmathematics%2B0001:example.com-df7b0f2886f04b279854585735a402c4:56255f3807599c377bf0e5bf072359fd" />
         <input type="submit" />
+        <button id="launch_lti_resource_page" type="button">New tab</button>
       </form>
     </section>
   {% endif %}
+  <script>
+    document.querySelectorAll('[data-autofill]').forEach((resource) => {
+      resource.onclick = () => {
+        document.querySelectorAll('input[name="uuid"]').forEach((input) => {
+          input.value = resource.dataset.id
+        });
+        document.querySelectorAll('input[name="resource_link_id"]').forEach((input) => {
+          input.value = resource.dataset.resource_link_id
+        });
+        document.querySelectorAll('select[name="resource"]').forEach((select) => {
+          select.value = resource.dataset.model
+        });
+      };
+    });
+    document.querySelector('#launch_lti_resource_page').onclick = () => {
+      submitForm(document.querySelector('#lti_resource_page'), true);
+    };
+
+    const submitForm = (form, newTab=false) => {
+      const uuid = form.querySelector('input[name="uuid"]').value;
+      const resource = form.querySelector('select[name="resource"]').value;
+      form.action = baseUrl + '/' + resource + '/' + uuid;
+      if (newTab) {
+        form.target = '_blank';
+      }
+      form.submit();
+    };
+
+  </script>
   </body>
 </html>
