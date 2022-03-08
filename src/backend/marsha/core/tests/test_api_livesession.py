@@ -647,11 +647,7 @@ class LiveSessionApiTest(TestCase):
         )
 
     def test_api_livesession_read_token_lti_admin_instruct_email_diff(self):
-        """Admin/instructor can't read public livesession.
-
-        Admin could only read this livesession, if he had no consumer_site in his token
-        as he necessary has one, it's not possible.
-        """
+        """Admin/instructor can read all livesession belonging to a video."""
         video = VideoFactory()
         # livesession with no consumer site
         livesession = LiveSessionFactory(
@@ -676,13 +672,29 @@ class LiveSessionApiTest(TestCase):
             f"/api/livesessions/{livesession.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        # Admin/instructor with token with no context_id could only read livesession
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": str(livesession.anonymous_id),
+                "consumer_site": None,
+                "display_name": None,
+                "email": "different@aol.com",
+                "id": str(livesession.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_user_id": None,
+                "lti_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_livesession_read_token_lti_admin_instruct_record_consumer_diff(
         self,
     ):
-        """Admin/instructor can't read a livesessions part of another consumer site."""
+        """Admin/instructor can read all livesession belonging to a video."""
         video = VideoFactory()
         other_consumer_site = ConsumerSiteFactory()
         # livesession with consumer_site
@@ -710,12 +722,29 @@ class LiveSessionApiTest(TestCase):
             f"/api/livesessions/{livesession.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(other_consumer_site.id),
+                "display_name": None,
+                "email": "admin@openfun.fr",
+                "id": str(livesession.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": str(video.playlist.lti_id),
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_livesession_read_token_lti_admin_instruct_record_course_diff(
         self,
     ):
-        """Admin/instructor can't read a livesession part of another course."""
+        """Admin/instructor can read all livesession belonging to a video."""
         video = VideoFactory()
         other_consumer_site = ConsumerSiteFactory()
         # livesession with consumer_site
@@ -743,7 +772,24 @@ class LiveSessionApiTest(TestCase):
             f"/api/livesessions/{livesession.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(other_consumer_site.id),
+                "display_name": None,
+                "email": "admin@openfun.fr",
+                "id": str(livesession.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": "Maths",
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_livesession_read_token_public_wrong_video_token(self):
         """Request with wrong video in token and public token."""
@@ -2563,14 +2609,11 @@ class LiveSessionApiTest(TestCase):
             ],
         )
 
-    def test_list_livesession_lti_token_role_admin_instructeurs(
+    def test_list_livesession_lti_token_role_admin_instructors(
         self,
     ):
         """
-        Admin/Intstructors can only fetch livesessions depending of their token.
-
-        They can only fetch livesessions for the same video, same consumer site
-        and same context_id.
+        Admin/Intstructors can fetch all livesessions belonging to a video.
         """
 
         video = VideoFactory(
@@ -2601,7 +2644,7 @@ class LiveSessionApiTest(TestCase):
             video=video,
         )
         # livesession with another consumer_site
-        LiveSessionFactory(
+        livesession3 = LiveSessionFactory(
             consumer_site=ConsumerSiteFactory(),
             email="user3@test.fr",
             lti_id="Maths",
@@ -2609,12 +2652,16 @@ class LiveSessionApiTest(TestCase):
             video=video,
         )
         # livesession with another context_id
-        LiveSessionFactory(
+        livesession4 = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             email="user4@test.fr",
             lti_id="Maths2",
             lti_user_id="4444",
             video=video,
+        )
+        # anonymous live session
+        livesession5 = LiveSessionFactory(
+            anonymous_id=uuid.uuid4(), email="user1@test.fr", video=video
         )
         # livesession for another video
         LiveSessionFactory(
@@ -2623,9 +2670,6 @@ class LiveSessionApiTest(TestCase):
             lti_id="Maths",
             lti_user_id="5555",
             video=video2,
-        )
-        LiveSessionFactory(
-            anonymous_id=uuid.uuid4(), email="user1@test.fr", video=video
         )
         LiveSessionFactory(
             anonymous_id=uuid.uuid4(), email="user1@test.fr", video=video2
@@ -2649,7 +2693,7 @@ class LiveSessionApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(response.json()["count"], 5)
         self.assertEqual(
             response.json()["results"],
             [
@@ -2679,6 +2723,48 @@ class LiveSessionApiTest(TestCase):
                     "lti_id": "Maths",
                     "should_send_reminders": True,
                     "username": livesession2.username,
+                    "video": str(video.id),
+                },
+                {
+                    "anonymous_id": None,
+                    "consumer_site": str(livesession3.consumer_site.id),
+                    "display_name": None,
+                    "email": livesession3.email,
+                    "id": str(livesession3.id),
+                    "is_registered": False,
+                    "live_attendance": None,
+                    "lti_user_id": livesession3.lti_user_id,
+                    "lti_id": "Maths",
+                    "should_send_reminders": True,
+                    "username": livesession3.username,
+                    "video": str(video.id),
+                },
+                {
+                    "anonymous_id": None,
+                    "consumer_site": str(livesession4.consumer_site.id),
+                    "display_name": None,
+                    "email": livesession4.email,
+                    "id": str(livesession4.id),
+                    "is_registered": False,
+                    "live_attendance": None,
+                    "lti_user_id": livesession4.lti_user_id,
+                    "lti_id": "Maths2",
+                    "should_send_reminders": True,
+                    "username": livesession4.username,
+                    "video": str(video.id),
+                },
+                {
+                    "anonymous_id": str(livesession5.anonymous_id),
+                    "consumer_site": None,
+                    "display_name": None,
+                    "email": livesession5.email,
+                    "id": str(livesession5.id),
+                    "is_registered": False,
+                    "live_attendance": None,
+                    "lti_user_id": None,
+                    "lti_id": None,
+                    "should_send_reminders": True,
+                    "username": None,
                     "video": str(video.id),
                 },
             ],
@@ -2853,142 +2939,6 @@ class LiveSessionApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 0)
-
-    def test_list_livesession_role_admin_instruc_email_with_consumer_with_no_filtered(
-        self,
-    ):
-        """
-        Admin/instructor can access all livesessions that are registered or not.
-        """
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        other_consumer = ConsumerSiteFactory()
-        livesession = LiveSessionFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            is_registered=False,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            lti_id="Maths",
-            video=video,
-        )
-        # livesession for the same video and lti_user_id but different consumer_site
-        LiveSessionFactory(
-            email="chantal2@test-fun-mooc.fr",
-            consumer_site=other_consumer,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            lti_id="Maths",
-            is_registered=True,
-            video=video,
-        )
-        # livesession for the same consumer_site but different video
-        LiveSessionFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            is_registered=True,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            lti_id="Maths",
-            video=other_video,
-        )
-        # livesession for the same video and consumer_site but different lti_user_id
-        livesession2 = LiveSessionFactory(
-            email="chantal3@test-fun-mooc.fr",
-            is_registered=True,
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="DIFFFF3807599c377bf0e5bf072359fd",
-            lti_id="Maths",
-            video=video,
-        )
-        # livesession for different lti_id
-        LiveSessionFactory(
-            email="chantal@test-fun-mooc.fr",
-            consumer_site=video.playlist.consumer_site,
-            is_registered=False,
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            lti_id="Maths 2",
-            video=video,
-        )
-        # livesession for this video but not without is_registered set to False
-        livesession3 = LiveSessionFactory(
-            email="chantal4@test-fun-mooc.fr",
-            is_registered=False,
-            consumer_site=video.playlist.consumer_site,
-            lti_user_id="NEWDIFFFF3807599c377bf0e5bf072359fd",
-            lti_id="Maths",
-            video=video,
-        )
-        # token has context_id and email
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = [random.choice(["administrator", "instructor"])]
-        jwt_token.payload["user"] = {
-            "id": "56255f3807599c377bf0e5bf072359fd",
-            "username": "Chachou",
-            "email": "chantal@test-fun-mooc.fr",
-        }
-        response = self.client.get(
-            "/api/livesessions/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 3)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "anonymous_id": None,
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "display_name": None,
-                    "email": livesession.email,
-                    "id": str(livesession.id),
-                    "is_registered": False,
-                    "live_attendance": None,
-                    "lti_id": "Maths",
-                    "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": True,
-                    "username": None,
-                    "video": str(video.id),
-                },
-                {
-                    "anonymous_id": None,
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "display_name": None,
-                    "email": livesession2.email,
-                    "id": str(livesession2.id),
-                    "is_registered": True,
-                    "live_attendance": None,
-                    "lti_id": "Maths",
-                    "lti_user_id": "DIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": True,
-                    "username": None,
-                    "video": str(video.id),
-                },
-                {
-                    "anonymous_id": None,
-                    "consumer_site": str(video.playlist.consumer_site_id),
-                    "display_name": None,
-                    "email": livesession3.email,
-                    "id": str(livesession3.id),
-                    "is_registered": False,
-                    "live_attendance": None,
-                    "lti_id": "Maths",
-                    "lti_user_id": "NEWDIFFFF3807599c377bf0e5bf072359fd",
-                    "should_send_reminders": True,
-                    "username": None,
-                    "video": str(video.id),
-                },
-            ],
-        )
 
     def test_api_livesession_post_attendance_no_payload(self):
         """Request without payload should raise an error."""
