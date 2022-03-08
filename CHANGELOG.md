@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   or LTI ressource, based on a liveregistration
 - Auto-set in the localstorage anonymousId if it's set in the JWT token
 - Persist live video participants
+- Add PATCH endpoint to update a LiveSession
 
 ### Changed
 
