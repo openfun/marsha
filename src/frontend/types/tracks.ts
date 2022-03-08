@@ -168,6 +168,8 @@ export interface Video extends Resource {
   };
   live_type: Nullable<LiveModeType>;
   xmpp: Nullable<XMPP>;
+  is_recording?: boolean;
+  recording_time?: number;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;
