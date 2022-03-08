@@ -55,7 +55,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         read_only=True, pk_field=serializers.CharField()
     )
 
-    def validate(self, attrs):
+    def create(self, validated_data):
         """Control or set data with token informations.
         Force the video field to the video of the JWT Token if any.
         Check email, if present in the token, is equal to the one in the request.
@@ -74,15 +74,15 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
         video = get_object_or_404(Video, pk=user.id)
-        if not attrs.get("email"):
+        if not validated_data.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
         if video.is_scheduled is False:
             raise serializers.ValidationError(
                 {"video": f"video with id {user.id} doesn't accept registration."}
             )
 
-        if not attrs.get("video_id") and isinstance(user, TokenUser):
-            attrs["video_id"] = user.id
+        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+            validated_data["video_id"] = user.id
             is_lti = (
                 user.token.payload.get("context_id")
                 and user.token.payload.get("consumer_site")
@@ -91,29 +91,29 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             )
 
             if is_lti:
-                attrs["consumer_site"] = get_object_or_404(
+                validated_data["consumer_site"] = get_object_or_404(
                     ConsumerSite, pk=user.token.payload["consumer_site"]
                 )
-                attrs["lti_id"] = user.token.payload["context_id"]
-                attrs["lti_user_id"] = user.token.payload["user"]["id"]
+                validated_data["lti_id"] = user.token.payload["context_id"]
+                validated_data["lti_user_id"] = user.token.payload["user"]["id"]
 
                 # If email is present in token, we make sure the one sent is the one expected
                 # lti users can't defined their email, the one from the token is used
                 if user.token.payload["user"].get("email"):
-                    if attrs["email"] != user.token.payload["user"]["email"]:
+                    if validated_data["email"] != user.token.payload["user"]["email"]:
                         raise serializers.ValidationError(
                             {
-                                "email": "You are not authorized to register with a specific email"
-                                f" {attrs['email']}. You can only use the email from your "
-                                "authentication."
+                                "email": "You are not authorized to register with a specific "
+                                f"email {validated_data['email']}. You can only use the email "
+                                "from your authentication."
                             }
                         )
                 # We can identify the user for this context_id and consumer_site, we make sure
                 # this user hasn't already registered for this video.
                 if LiveSession.objects.filter(
-                    consumer_site=attrs["consumer_site"],
-                    lti_id=attrs["lti_id"],
-                    lti_user_id=attrs["lti_user_id"],
+                    consumer_site=validated_data["consumer_site"],
+                    lti_id=validated_data["lti_id"],
+                    lti_user_id=validated_data["lti_user_id"],
                     video=video,
                 ).exists():
                     raise serializers.ValidationError(
@@ -125,7 +125,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                     )
 
                 # If username is present in the token we catch it
-                attrs["username"] = user.token.payload["user"].get("username")
+                validated_data["username"] = user.token.payload["user"].get("username")
             else:  # public token should have no LTI info
                 if (
                     user.token.payload.get("context_id")
@@ -143,7 +143,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                         }
                     )
                 # Make sure we have the anonymous_id
-                if not attrs.get("anonymous_id"):
+                if not validated_data.get("anonymous_id"):
                     raise serializers.ValidationError(
                         {"anonymous_id": "Anonymous id is mandatory."}
                     )

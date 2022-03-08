@@ -1017,7 +1017,7 @@ class LiveSessionApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            response.json(), {"anonymous_id": ["Anonymous id is mandatory."]}
+            response.json(), {"anonymous_id": "Anonymous id is mandatory."}
         )
         # no email has been sent
         self.assertEqual(len(mail.outbox), 0)
@@ -1052,10 +1052,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "token": [
+                "token": (
                     "Public token shouldn't have any LTI information, "
                     "cases are not expected."
-                ]
+                )
             },
         )
         # no email has been sent
@@ -1095,10 +1095,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "token": [
+                "token": (
                     "Public token shouldn't have any LTI information, "
                     "cases are not expected."
-                ]
+                )
             },
         )
         # no email has been sent
@@ -1138,10 +1138,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "token": [
+                "token": (
                     "Public token shouldn't have any LTI information, "
                     "cases are not expected."
-                ]
+                )
             },
         )
         # no email has been sent
@@ -1589,11 +1589,11 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "email": [
+                "email": (
                     "You are not authorized to register with a specific email "
                     "notsaved@test-fun-mooc.fr. You can only use the email from your "
                     "authentication."
-                ]
+                )
             },
         )
         # no mail has been sent
@@ -1621,7 +1621,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
-            {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
+            {"video": f"video with id {str(video.id)} doesn't accept registration."},
         )
 
         # no mail has been sent
@@ -1651,7 +1651,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
-            {"video": [f"video with id {str(video.id)} doesn't accept registration."]},
+            {"video": f"video with id {str(video.id)} doesn't accept registration."},
         )
 
         # no mail has been sent
@@ -1692,10 +1692,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "lti_user_id": [
+                "lti_user_id": (
                     "This identified user is already registered "
                     "for this video and consumer site and course."
-                ]
+                )
             },
         )
 
@@ -1854,10 +1854,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "email": [
+                "email": (
                     "salome@test-fun-mooc.fr is already registered for "
                     "this video, consumer site and course."
-                ]
+                )
             },
         )
         self.assertEqual(len(mail.outbox), 0)
@@ -1900,10 +1900,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "lti_user_id": [
+                "lti_user_id": (
                     "This identified user is already registered "
                     "for this video and consumer site and course."
-                ]
+                )
             },
         )
         self.assertEqual(len(mail.outbox), 0)
@@ -2759,10 +2759,10 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "lti_user_id": [
+                "lti_user_id": (
                     "This identified user is already registered "
                     "for this video and consumer site and course."
-                ]
+                )
             },
         )
 
