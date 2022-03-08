@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - rename LiveRegistration model in LiveSession
+- Admin can access all LiveSession belonging to a video
 
 ### Fixed
 
