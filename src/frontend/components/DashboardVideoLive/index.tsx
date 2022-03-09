@@ -20,6 +20,7 @@ import {
 } from 'data/stores/useLivePanelState';
 import { StopLiveConfirmationProvider } from 'data/stores/useStopLiveConfirmation';
 import { Video, liveState, LiveModeType } from 'types/tracks';
+import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 
 interface DashboardVideoLiveProps {
   video: Video;
@@ -69,12 +70,15 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               actionsElement={
                 <Fragment>
                   {isLiveStarted && <TeacherLiveControlBar video={video} />}
-                  <TeacherLiveLifecycleControls
-                    canStartStreaming={canShowStartButton}
-                    flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
-                    hasRightToStart={canStartLive}
-                    video={video}
-                  />
+                  <Box flex direction="row">
+                    <TeacherLiveRecordingActions video={video} />
+                    <TeacherLiveLifecycleControls
+                      canStartStreaming={canShowStartButton}
+                      flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
+                      hasRightToStart={canStartLive}
+                      video={video}
+                    />
+                  </Box>
                 </Fragment>
               }
               displayActionsElement
