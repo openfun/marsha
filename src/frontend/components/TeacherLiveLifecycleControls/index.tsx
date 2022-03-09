@@ -110,6 +110,7 @@ export const TeacherLiveLifecycleControls = ({
     <Box
       direction="row"
       style={{ flexBasis: '0%', whiteSpace: 'nowrap' }}
+      margin={{ left: 'auto', right: 'none', vertical: 'auto' }}
       {...props}
     >
       {content}

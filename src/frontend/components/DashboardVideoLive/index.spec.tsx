@@ -2,6 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -50,8 +51,19 @@ jest.mock('components/DashboardVideoLivePairing', () => ({
   ),
 }));
 
+let queryClient: QueryClient;
+
 describe('components/DashboardVideoLive', () => {
-  beforeEach(() => jest.useFakeTimers());
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    jest.useFakeTimers();
+  });
 
   afterEach(() => {
     fetchMock.restore();
@@ -91,31 +103,42 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.IDLE }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.IDLE }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
 
     await screen.findByRole('button', { name: /start streaming/i });
+
+    expect(
+      screen.queryByRole('button', { name: 'Start recording' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Stop recording/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows alert to join the room', async () => {
     const { rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{
-                ...video,
-                live_state: liveState.IDLE,
-                live_type: LiveModeType.JITSI,
-              }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -126,15 +149,17 @@ describe('components/DashboardVideoLive', () => {
     rerender(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{
-                ...video,
-                live_state: liveState.IDLE,
-                live_type: LiveModeType.JITSI,
-              }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -146,27 +171,32 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.RUNNING }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.RUNNING }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
 
     screen.getByRole('button', { name: 'Pause live' });
+    screen.getByRole('button', { name: 'Start recording' });
   });
 
   it('shows the scheduling form when the status is IDLE', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.IDLE }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.IDLE }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -181,11 +211,13 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{ ...video, live_state: liveState.PAUSED }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.PAUSED }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -205,6 +237,14 @@ describe('components/DashboardVideoLive', () => {
     expect(
       screen.getByRole('button', { name: 'Resume streaming' }),
     ).toBeDisabled();
+
+    //  record buttons are not in the document
+    expect(
+      screen.queryByRole('button', { name: 'Start recording' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Stop recording/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("doesn't show the scheduling form when the status is not IDLE", () => {
@@ -213,9 +253,11 @@ describe('components/DashboardVideoLive', () => {
         render(
           wrapInIntlProvider(
             wrapInRouter(
-              <Suspense fallback="loading...">
-                <DashboardVideoLive video={{ ...video, live_state: state }} />
-              </Suspense>,
+              <QueryClientProvider client={queryClient}>
+                <Suspense fallback="loading...">
+                  <DashboardVideoLive video={{ ...video, live_state: state }} />
+                </Suspense>
+              </QueryClientProvider>,
             ),
           ),
         );
@@ -248,15 +290,17 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{
-                ...video,
-                live_state: liveState.IDLE,
-                starting_at: startingAtPast.toISOString(),
-              }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.IDLE,
+                  starting_at: startingAtPast.toISOString(),
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -291,17 +335,19 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <Suspense fallback="loading...">
-            <DashboardVideoLive
-              video={{
-                ...video,
-                description: 'Wonderful class!',
-                live_state: liveState.IDLE,
-                starting_at: dateScheduled.toISOString(),
-                title: 'Maths',
-              }}
-            />
-          </Suspense>,
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  description: 'Wonderful class!',
+                  live_state: liveState.IDLE,
+                  starting_at: dateScheduled.toISOString(),
+                  title: 'Maths',
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
         ),
       ),
     );
@@ -319,9 +365,11 @@ describe('components/DashboardVideoLive', () => {
       const { getByTitle, queryByTitle } = render(
         wrapInIntlProvider(
           wrapInRouter(
-            <Suspense fallback="loading...">
-              <DashboardVideoLive video={{ ...video, live_state: state }} />
-            </Suspense>,
+            <QueryClientProvider client={queryClient}>
+              <Suspense fallback="loading...">
+                <DashboardVideoLive video={{ ...video, live_state: state }} />
+              </Suspense>
+            </QueryClientProvider>,
           ),
         ),
       );
