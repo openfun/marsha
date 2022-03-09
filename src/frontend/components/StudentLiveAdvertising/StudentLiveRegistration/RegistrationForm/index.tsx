@@ -129,7 +129,7 @@ interface RegistrationFormProps {
 }
 
 export const RegistrationForm = ({
-  defaultEmail,
+  defaultEmail = '',
   setRegistrationCompleted,
 }: RegistrationFormProps) => {
   const trimedEmail = defaultEmail && defaultEmail.trim();
@@ -141,11 +141,7 @@ export const RegistrationForm = ({
     return checkLtiToken(getDecodedJwt());
   }, [getDecodedJwt]);
 
-  const displayEmailInput = !(
-    isLtiToken &&
-    values.email &&
-    values.email !== ''
-  );
+  const displayEmailInput = !(isLtiToken && trimedEmail && trimedEmail !== '');
 
   return (
     <Grommet theme={formTheme}>
