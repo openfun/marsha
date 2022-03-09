@@ -66,11 +66,17 @@ describe('<RegistrationForm />', () => {
       ),
     );
 
-    screen.getByRole('textbox', { name: 'Email address' });
+    const textbox = screen.getByRole('textbox', { name: 'Email address' });
     screen.getByRole('button', { name: 'Register' });
     expect(
       screen.queryByText('You have to submit a valid email to register.'),
     ).not.toBeInTheDocument();
+
+    const email = 'test_email@openfun.fr';
+    userEvent.type(textbox, email);
+
+    expect(textbox).toBeInTheDocument();
+    expect(textbox).toHaveValue(email);
   });
 
   it('renders the form with initial value', () => {
