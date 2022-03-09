@@ -4,24 +4,27 @@ import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import {
+  organizationMockFactory,
+  playlistMockFactory,
+  thumbnailMockFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
+
+import {
   useCreateVideo,
   useOrganization,
   usePairingVideo,
   usePlaylist,
   usePlaylists,
+  useStartLiveRecording,
+  useStopLiveRecording,
   useThumbnail,
   useTimedTextTracks,
   useUpdatePlaylist,
   useVideo,
   useVideos,
 } from './index';
-import {
-  organizationMockFactory,
-  playlistMockFactory,
-  thumbnailMockFactory,
-  timedTextMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
 
 setLogger({
   // tslint:disable-next-line:no-console
@@ -31,13 +34,13 @@ setLogger({
   error: () => {},
 });
 
-jest.mock('../appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'some token',
   },
 }));
 
-jest.mock('../../utils/errors/report', () => ({
+jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
@@ -580,6 +583,130 @@ describe('queries', () => {
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useStartLiveRecording', () => {
+    it('updates the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/start-recording/`, video);
+
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStartLiveRecording(video.id, onError),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/start-recording/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+
+      expect(onError).not.toHaveBeenCalled();
+    });
+
+    it('fails to update the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/start-recording/`, 400);
+
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStartLiveRecording(video.id, onError),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/start-recording/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+
+      expect(onError).toHaveBeenCalled();
+    });
+  });
+
+  describe('useStopLiveRecording', () => {
+    it('updates the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, video);
+
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStopLiveRecording(video.id, onError),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/stop-recording/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+
+      expect(onError).not.toHaveBeenCalled();
+    });
+
+    it('fails to update the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, 400);
+
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStopLiveRecording(video.id, onError),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/stop-recording/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+
+      expect(onError).toHaveBeenCalled();
     });
   });
 });
