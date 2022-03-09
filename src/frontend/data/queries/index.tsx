@@ -6,9 +6,11 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { APIList } from '../../types/api';
-import { Playlist, Thumbnail, TimedText, Video } from '../../types/tracks';
-import { Organization } from '../../types/Organization';
+import { useVideo as useVideoStore } from 'data/stores/useVideo';
+import { APIList } from 'types/api';
+import { Playlist, Thumbnail, TimedText, Video } from 'types/tracks';
+import { Organization } from 'types/Organization';
+
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { fetchList } from './fetchList';
@@ -191,6 +193,52 @@ export const usePairingVideo = (
         if (options?.onError) {
           options.onError(error, variables, context);
         }
+      },
+    },
+  );
+};
+
+export const useStartLiveRecording = (id: string, onError: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation<Video>(
+    () =>
+      actionOne({
+        name: 'videos',
+        id,
+        action: 'start-recording',
+        method: 'PATCH',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('videos');
+        useVideoStore.getState().addResource(data);
+      },
+      onError: () => {
+        queryClient.invalidateQueries('videos');
+        onError();
+      },
+    },
+  );
+};
+
+export const useStopLiveRecording = (id: string, onError: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation<Video>(
+    () =>
+      actionOne({
+        name: 'videos',
+        id,
+        action: 'stop-recording',
+        method: 'PATCH',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('videos');
+        useVideoStore.getState().addResource(data);
+      },
+      onError: () => {
+        queryClient.invalidateQueries('videos');
+        onError();
       },
     },
   );
