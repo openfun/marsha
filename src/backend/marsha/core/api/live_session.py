@@ -179,9 +179,8 @@ class LiveSessionViewSet(
     # pylint: disable=unused-argument
     def partial_update(self, request, *args, **kwargs):
         """Partially update live_session instance."""
-        partial = True
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
