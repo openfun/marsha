@@ -71,6 +71,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                   {isLiveStarted && <TeacherLiveControlBar video={video} />}
                   <TeacherLiveLifecycleControls
                     canStartStreaming={canShowStartButton}
+                    flex={isLiveStarted}
                     hasRightToStart={canStartLive}
                     video={video}
                   />
@@ -80,7 +81,11 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               isPanelOpen={isPanelVisible}
               isXmppReady={!!video.xmpp}
               liveTitleElement={
-                <TeacherLiveInfoBar title={video.title} startDate={null} />
+                <TeacherLiveInfoBar
+                  flex={isLiveStarted}
+                  title={video.title}
+                  startDate={null}
+                />
               }
               mainElement={
                 <TeacherLiveContent
