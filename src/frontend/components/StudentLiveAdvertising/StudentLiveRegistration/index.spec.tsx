@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { fetchList } from 'data/queries/fetchList';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
+import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { DecodedJwt } from 'types/jwt';
 import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -20,10 +20,12 @@ jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockJwt,
 }));
 
-jest.mock('data/queries/fetchList', () => ({
-  fetchList: jest.fn(),
+jest.mock('data/sideEffects/getLiveSessions', () => ({
+  getLiveSessions: jest.fn(),
 }));
-const mockFecthList = fetchList as jest.MockedFunction<typeof fetchList>;
+const mockGetLiveSessions = getLiveSessions as jest.MockedFunction<
+  typeof getLiveSessions
+>;
 
 jest.mock('data/sideEffects/createLiveSession', () => ({
   createLiveSession: jest.fn(),
@@ -59,9 +61,13 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the message on submit', async () => {
-    mockFecthList.mockResolvedValue(() => []);
+    mockGetLiveSessions.mockResolvedValue({
+      count: 0,
+      results: [],
+    });
     const liveSession = liveSessionFactory({
       id: 'id',
+      is_registered: true,
       email: 'email',
       should_send_reminders: true,
       video: 'video_id',
@@ -104,14 +110,10 @@ describe('<StudentLiveRegistration />', () => {
         email: 'not_an_email',
       },
     };
-    mockFecthList.mockResolvedValue(() => []);
-    const liveSession = liveSessionFactory({
-      id: 'id',
-      email: 'email',
-      should_send_reminders: true,
-      video: 'video_id',
+    mockGetLiveSessions.mockResolvedValue({
+      count: 0,
+      results: [],
     });
-    mockCreateLiveSession.mockResolvedValue(liveSession);
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
     );
@@ -127,13 +129,17 @@ describe('<StudentLiveRegistration />', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await screen.findByText('You have to submit a valid email to register.');
+    expect(mockCreateLiveSession).not.toHaveBeenCalled();
   });
 
   it('renders the form and the error when mail is already registered', async () => {
-    mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveSession.mockImplementation(() =>
-      Promise.reject({ email: ['blabla already registered'] }),
-    );
+    mockGetLiveSessions.mockResolvedValue({
+      count: 0,
+      results: [],
+    });
+    mockCreateLiveSession.mockRejectedValue({
+      email: ['blabla already registered'],
+    });
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
@@ -155,10 +161,11 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an error occured with the email on backend', async () => {
-    mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveSession.mockImplementation(() =>
-      Promise.reject({ email: 'something bad' }),
-    );
+    mockGetLiveSessions.mockResolvedValue({
+      count: 0,
+      results: [],
+    });
+    mockCreateLiveSession.mockRejectedValue({ email: 'something bad' });
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
@@ -179,8 +186,11 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an unknown error occured with the email on backend', async () => {
-    mockFecthList.mockResolvedValue(() => []);
-    mockCreateLiveSession.mockImplementation(() => Promise.reject({}));
+    mockGetLiveSessions.mockResolvedValue({
+      count: 0,
+      results: [],
+    });
+    mockCreateLiveSession.mockRejectedValue({});
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
@@ -201,8 +211,34 @@ describe('<StudentLiveRegistration />', () => {
     );
   });
 
+  it('renders the form when a live session exists but is_registered false', async () => {
+    const liveSession = liveSessionFactory({
+      id: 'id',
+      is_registered: false,
+      email: 'email',
+      should_send_reminders: true,
+      video: 'video_id',
+    });
+    mockGetLiveSessions.mockResolvedValue({
+      count: 1,
+      results: [liveSession],
+    });
+
+    const { container } = render(
+      wrapInIntlProvider(<StudentLiveRegistration />),
+    );
+
+    await screen.findByRole('heading', {
+      name: 'I want to subscribe to this webinar',
+    });
+    screen.getByRole('textbox', { name: 'Email address' });
+    screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
+  });
+
   it('does not render if we fail to initialize current subscription for lti user', async () => {
-    mockFecthList.mockRejectedValue(undefined);
+    mockGetLiveSessions.mockRejectedValue(undefined);
 
     const { container } = render(
       wrapInIntlProvider(<StudentLiveRegistration />),
