@@ -1,5 +1,5 @@
 import { defineMessage } from '@formatjs/intl';
-import { Box, Paragraph, Spinner } from 'grommet';
+import { Box, BoxProps, Paragraph, Spinner } from 'grommet';
 import React, { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -43,7 +43,7 @@ const messages = defineMessage({
   },
 });
 
-interface TeacherLiveLifecycleControlsProps {
+interface TeacherLiveLifecycleControlsProps extends BoxProps {
   canStartStreaming: boolean;
   hasRightToStart: boolean;
   video: Video;
@@ -53,6 +53,7 @@ export const TeacherLiveLifecycleControls = ({
   canStartStreaming,
   hasRightToStart,
   video,
+  ...props
 }: TeacherLiveLifecycleControlsProps) => {
   const intl = useIntl();
 
@@ -106,7 +107,7 @@ export const TeacherLiveLifecycleControls = ({
   }
 
   return (
-    <Box flex direction="row">
+    <Box direction="row" {...props}>
       {content}
     </Box>
   );
