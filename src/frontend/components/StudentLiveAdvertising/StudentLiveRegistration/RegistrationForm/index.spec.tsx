@@ -5,6 +5,7 @@ import React from 'react';
 
 import { getDecodedJwt } from 'data/appData';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
+import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
@@ -26,6 +27,13 @@ jest.mock('data/sideEffects/createLiveSession', () => ({
 }));
 const mockCreateLiveSession = createLiveSession as jest.MockedFunction<
   typeof createLiveSession
+>;
+
+jest.mock('data/sideEffects/updateLiveSession', () => ({
+  updateLiveSession: jest.fn(),
+}));
+const mockUpdateLiveSession = updateLiveSession as jest.MockedFunction<
+  typeof updateLiveSession
 >;
 
 describe('<RegistrationForm />', () => {
@@ -61,6 +69,7 @@ describe('<RegistrationForm />', () => {
     render(
       wrapInIntlProvider(
         <RegistrationForm
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -84,6 +93,7 @@ describe('<RegistrationForm />', () => {
       wrapInIntlProvider(
         <RegistrationForm
           defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -123,6 +133,7 @@ describe('<RegistrationForm />', () => {
       wrapInIntlProvider(
         <RegistrationForm
           defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -177,6 +188,7 @@ describe('<RegistrationForm />', () => {
       wrapInIntlProvider(
         <RegistrationForm
           defaultEmail="some.email@openfun.com"
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -196,6 +208,7 @@ describe('<RegistrationForm />', () => {
       wrapInIntlProvider(
         <RegistrationForm
           defaultEmail="some.invalid.email@openfun."
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -219,6 +232,7 @@ describe('<RegistrationForm />', () => {
       wrapInIntlProvider(
         <RegistrationForm
           defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
           setRegistrationCompleted={setRegistrationCompleted}
         />,
       ),
@@ -235,5 +249,35 @@ describe('<RegistrationForm />', () => {
     await screen.findByText(
       'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
     );
+  });
+  it('updates the live session when this one is set in the props', async () => {
+    const existingLiveSession = liveSessionFactory({
+      is_registered: false,
+      email: 'to_update@fun-test.fr',
+    });
+
+    render(
+      wrapInIntlProvider(
+        <RegistrationForm
+          liveSession={existingLiveSession}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+      ),
+    );
+    const updatedEmail = 'updatedEmail@fun-test.fr';
+    const textbox = screen.getByRole('textbox', { name: 'Email address' });
+
+    userEvent.type(textbox, updatedEmail);
+
+    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    await waitFor(() => {
+      expect(mockUpdateLiveSession).toHaveBeenCalledWith(
+        existingLiveSession,
+        updatedEmail,
+        true,
+        expect.anything(),
+      );
+    });
   });
 });

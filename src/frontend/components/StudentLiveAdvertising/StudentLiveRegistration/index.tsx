@@ -5,13 +5,14 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { getDecodedJwt } from 'data/appData';
-import { fetchList } from 'data/queries/fetchList';
+import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 
 import { RegistrationForm } from './RegistrationForm';
+import { LiveSession } from 'types/tracks';
 
 const messages = defineMessages({
   formTitle: {
@@ -41,22 +42,19 @@ export const StudentLiveRegistration = () => {
   }, [decodedJWT]);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [registered, setRegistered] = useState(false);
+  const [liveSession, setLiveSession] = useState<Maybe<LiveSession>>();
 
   useEffect(() => {
     let canceled = false;
     const checkRegistered = async () => {
-      let queryString: Maybe<{ anonymous_id: string }>;
+      let anonymousId: Maybe<string>;
       if (!checkLtiToken(decodedJWT)) {
-        queryString = { anonymous_id: getAnonymousId() };
+        anonymousId = getAnonymousId();
       }
 
-      let registrations;
+      let existingLiveSessions;
       try {
-        registrations = await fetchList({
-          queryKey: ['livesessions', queryString],
-          meta: {},
-        });
+        existingLiveSessions = await getLiveSessions(anonymousId);
       } catch (err) {
         return;
       }
@@ -65,7 +63,9 @@ export const StudentLiveRegistration = () => {
         return;
       }
       setIsLoading(false);
-      setRegistered(registrations.count > 0);
+      if (existingLiveSessions.count > 0) {
+        setLiveSession(existingLiveSessions.results[0]);
+      }
     };
 
     checkRegistered();
@@ -84,15 +84,18 @@ export const StudentLiveRegistration = () => {
         {intl.formatMessage(messages.formTitle)}
       </Heading>
 
-      {registered && (
+      {liveSession?.is_registered && (
         <Paragraph color={normalizeColor('blue-active', theme)}>
           {intl.formatMessage(messages.updateSuccessfulEmail)}
         </Paragraph>
       )}
-      {!registered && (
+      {!liveSession?.is_registered && (
         <RegistrationForm
           defaultEmail={userEmail}
-          setRegistrationCompleted={() => setRegistered(true)}
+          liveSession={liveSession}
+          setRegistrationCompleted={(updatedLiveSession) =>
+            setLiveSession(updatedLiveSession)
+          }
         />
       )}
 
