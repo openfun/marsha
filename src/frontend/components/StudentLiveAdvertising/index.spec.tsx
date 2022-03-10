@@ -43,8 +43,11 @@ jest.mock('data/appData', () => ({
   }),
 }));
 
-jest.mock('data/queries/fetchList', () => ({
-  fetchList: async () => [],
+jest.mock('data/sideEffects/getLiveSessions', () => ({
+  getLiveSessions: async () => ({
+    count: 0,
+    results: [],
+  }),
 }));
 
 describe('<StudentLiveAdvertising />', () => {
