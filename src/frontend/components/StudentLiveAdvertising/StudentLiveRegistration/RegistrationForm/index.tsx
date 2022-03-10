@@ -10,6 +10,8 @@ import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
+import { LiveSession } from 'types/tracks';
+import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 
 const formTheme: ThemeType = deepMerge(theme, {
   global: {
@@ -125,11 +127,13 @@ const messages = defineMessages({
 
 interface RegistrationFormProps {
   defaultEmail?: string;
-  setRegistrationCompleted: () => void;
+  liveSession: Maybe<LiveSession>;
+  setRegistrationCompleted: (liveSession: LiveSession) => void;
 }
 
 export const RegistrationForm = ({
   defaultEmail = '',
+  liveSession,
   setRegistrationCompleted,
 }: RegistrationFormProps) => {
   const trimedEmail = defaultEmail && defaultEmail.trim();
@@ -158,9 +162,23 @@ export const RegistrationForm = ({
           if (!isLtiToken) {
             anonymousId = getAnonymousId();
           }
-          await createLiveSession(value.email, anonymousId);
+          let updatedLiveSession: LiveSession;
+          if (!liveSession) {
+            updatedLiveSession = await createLiveSession(
+              value.email,
+              anonymousId,
+            );
+          } else {
+            updatedLiveSession = await updateLiveSession(
+              liveSession,
+              value.email,
+              true,
+              anonymousId,
+            );
+          }
+
           setLtiUserError(undefined);
-          setRegistrationCompleted();
+          setRegistrationCompleted(updatedLiveSession);
         }}
         onSubmitError={(value, error) => {
           if (!value.email) {

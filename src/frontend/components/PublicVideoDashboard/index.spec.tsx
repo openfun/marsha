@@ -650,7 +650,7 @@ describe('PublicVideoDashboard', () => {
     startingAt.setFullYear(startingAt.getFullYear() + 10);
     const anonymousId = uuidv4();
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    fetchMock.mock(`/api/livesessions/?anonymous_id=${anonymousId}&limit=999`, {
+    fetchMock.mock(`/api/livesessions/?anonymous_id=${anonymousId}`, {
       count: 0,
       results: [],
     });
