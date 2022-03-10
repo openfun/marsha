@@ -1,8 +1,8 @@
-import { Box, Heading, Paragraph } from 'grommet';
+import { Box, BoxProps, Heading, Paragraph } from 'grommet';
 import React from 'react';
 import { Nullable } from 'utils/types';
 
-interface TeacherLiveInfoBarProps {
+interface TeacherLiveInfoBarProps extends BoxProps {
   title: string;
   startDate: Nullable<string>;
 }
@@ -10,15 +10,17 @@ interface TeacherLiveInfoBarProps {
 export const TeacherLiveInfoBar = ({
   title,
   startDate,
+  ...props
 }: TeacherLiveInfoBarProps) => {
   return (
-    <Box direction="column" flex>
+    <Box direction="column" style={{ minWidth: '0' }} {...props}>
       <Heading
         color="blue-active"
         level="2"
         margin={{ bottom: 'small' }}
         size="small"
         truncate
+        style={{ maxWidth: '100%' }}
       >
         {title}
       </Heading>

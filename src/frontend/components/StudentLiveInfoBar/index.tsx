@@ -13,13 +13,14 @@ export const StudentLiveInfoBar = ({
   startDate,
 }: StudentLiveInfoBarProps) => {
   return (
-    <Box direction="column">
+    <Box direction="column" flex style={{ minWidth: '0' }}>
       <Heading
         color="blue-active"
         level="2"
         margin={{ bottom: 'small' }}
         size="small"
         truncate
+        style={{ maxWidth: '100%' }}
       >
         {title}
       </Heading>

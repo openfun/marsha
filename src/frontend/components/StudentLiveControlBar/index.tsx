@@ -35,7 +35,6 @@ export const StudentLiveControlBar = ({
   return (
     <Box
       direction="row-reverse"
-      flex
       height="100%"
       justify={size === 'small' ? 'evenly' : undefined}
     >
