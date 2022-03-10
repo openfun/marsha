@@ -110,7 +110,7 @@ class MeetingAPITest(TestCase):
     def test_api_meeting_update_anonymous(self):
         """An anonymous should not be able to update a meeting."""
         meeting = MeetingFactory()
-        response = self.client.put(f"/api/meetings/{meeting.id!s}/")
+        response = self.client.patch(f"/api/meetings/{meeting.id!s}/")
         self.assertEqual(response.status_code, 401)
 
     def test_api_meeting_update_user_logged_in(self):
@@ -120,7 +120,7 @@ class MeetingAPITest(TestCase):
         )
         meeting = MeetingFactory()
         self.client.force_login(user)
-        response = self.client.put(f"/api/meetings/{meeting.id!s}/")
+        response = self.client.patch(f"/api/meetings/{meeting.id!s}/")
         self.assertEqual(response.status_code, 401)
 
     def test_api_meeting_update_student(self):
@@ -132,7 +132,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["roles"] = ["student"]
         data = {"title": "new title"}
 
-        response = self.client.put(
+        response = self.client.patch(
             f"/api/meetings/{meeting.id!s}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -150,7 +150,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
         data = {"title": "new title"}
 
-        response = self.client.put(
+        response = self.client.patch(
             f"/api/meetings/{meeting.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -174,7 +174,7 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": True}
         data = {"title": "new title", "welcome_text": "Hello"}
 
-        response = self.client.put(
+        response = self.client.patch(
             f"/api/meetings/{meeting.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
