@@ -5,6 +5,7 @@ import smtplib
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
@@ -17,7 +18,12 @@ from sentry_sdk import capture_exception
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveSession, Video
-from ..models.account import NONE
+from ..services.live_session import (
+    get_livesession_from_anonymous_id,
+    get_livesession_from_lti,
+    is_lti_token,
+    is_public_token,
+)
 from .base import ObjectPkMixin
 
 
@@ -51,55 +57,6 @@ class LiveSessionViewSet(
     queryset = LiveSession.objects.all()
     serializer_class = serializers.LiveSessionSerializer
 
-    def is_lti_token(self):
-        """Read the token and confirms if the user is identified by LTI"""
-        user = self.request.user
-
-        return (
-            user.token.payload
-            and user.token.payload.get("context_id")
-            and user.token.payload.get("consumer_site")
-            and user.token.payload.get("user")
-            and user.token.payload["user"].get("id")
-        )
-
-    def is_public_token(self):
-        """Read the token and check it was made to fetch a public resource."""
-        user = self.request.user
-        return (
-            user.token.payload
-            and user.token.payload.get("roles") == [NONE]
-            and user.token.payload.get("context_id") is None
-            and user.token.payload.get("consumer_site") is None
-        )
-
-    def get_livesession_from_lti(self):
-        """Get or create livesession for a LTI connection."""
-        user = self.request.user
-        video = get_object_or_404(Video, pk=user.id)
-        token_user = user.token.payload.get("user")
-        consumer_site = get_object_or_404(
-            ConsumerSite, pk=user.token.payload["consumer_site"]
-        )
-
-        return LiveSession.objects.get_or_create(
-            consumer_site=consumer_site,
-            lti_id=user.token.payload.get("context_id"),
-            lti_user_id=token_user.get("id"),
-            video=video,
-            defaults={
-                "email": token_user.get("email"),
-                "username": token_user.get("username"),
-            },
-        )
-
-    def get_livesession_from_anonymous_id(self, anonymous_id):
-        """Get or create a livesession for an anonymous id"""
-        user = self.request.user
-        video = get_object_or_404(Video, pk=user.id)
-
-        return LiveSession.objects.get_or_create(video=video, anonymous_id=anonymous_id)
-
     def get_queryset(self):
         """Restrict access to liveSession with data contained in the JWT token.
         Access is restricted to liveSession related to the video, context_id and consumer_site
@@ -107,8 +64,9 @@ class LiveSessionViewSet(
         depending on the role.
         """
         user = self.request.user
+        token = user.token
         filters = {"video__id": user.id}
-        if self.is_lti_token():
+        if is_lti_token(token):
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
@@ -211,19 +169,26 @@ class LiveSessionViewSet(
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({"detail": "Invalid request."}, status=400)
+        token = self.request.user.token
+        if is_lti_token(token):
+            try:
+                livesession, created = get_livesession_from_lti(token)
+            except (Video.DoesNotExist, ConsumerSite.DoesNotExist) as exception:
+                raise Http404("No resource matches the given query.") from exception
 
-        if self.is_lti_token():
-            livesession, created = self.get_livesession_from_lti()
-        elif self.is_public_token():
+        elif is_public_token(token):
             anonymous_id = self.request.query_params.get("anonymous_id")
             if anonymous_id is None:
                 return Response(
                     {"detail": "anonymous_id is missing"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            livesession, created = self.get_livesession_from_anonymous_id(
-                anonymous_id=anonymous_id
-            )
+            try:
+                livesession, created = get_livesession_from_anonymous_id(
+                    video_id=token.payload["resource_id"], anonymous_id=anonymous_id
+                )
+            except Video.DoesNotExist as exception:
+                raise Http404("No Video matches the given query.") from exception
         else:
             return Response(
                 {
@@ -273,7 +238,7 @@ class LiveSessionViewSet(
             update_fields = {
                 "display_name": serializer.validated_data["display_name"],
             }
-            if self.is_lti_token():
+            if is_lti_token(user.token):
                 token_user = user.token.payload.get("user")
                 consumer_site = get_object_or_404(
                     ConsumerSite, pk=user.token.payload["consumer_site"]
