@@ -2973,6 +2973,58 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "Invalid request."})
 
+    def test_api_livesession_post_attendance_token_lti_video_not_existing(
+        self,
+    ):
+        """Pushing an attendance on a not existing video should fails."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["resource_id"] = str(uuid.uuid4())
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/livesessions/push_attendance/",
+            {"live_attendance": {"data": "test"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_livesession_post_attendance_token_lti_consumer_site_not_existing(
+        self,
+    ):
+        """Pushing an attendance on a not existing video should fails."""
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(uuid.uuid4())
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": None,
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/livesessions/push_attendance/",
+            {"live_attendance": {"data": "test"}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_api_livesession_post_attendance_token_lti_email_none_previous_none(
         self,
     ):
@@ -3096,6 +3148,24 @@ class LiveSessionApiTest(TestCase):
                 timestamp: {"sound": "ON", "tabs": "OFF"},
             },
         )
+
+    def test_api_livesession_post_new_attendance_token_public_unexisting_video(
+        self,
+    ):
+        """Pushing an attendance on a not existing video should fails"""
+        anonymous_id = uuid.uuid4()
+        self.assertEqual(LiveSession.objects.count(), 0)
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(uuid.uuid4())
+        jwt_token.payload["roles"] = [NONE]
+        response = self.client.post(
+            f"/api/livesessions/push_attendance/?anonymous_id={anonymous_id}",
+            {"live_attendance": {}},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(LiveSession.objects.count(), 0)
 
     def test_api_livesession_post_new_attendance_token_public(
         self,
