@@ -12,7 +12,6 @@ import { Loader } from 'components/Loader';
 import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
 import { PLAYER_ROUTE } from 'components/routes';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
-import { PUBLIC_JITSI_ROUTE } from 'components/PublicVideoLiveJitsi/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
@@ -27,9 +26,6 @@ const PlaylistPage = lazy(() => import('components/PlaylistPage'));
 const PublicVideoDashboard = lazy(
   () => import('components/PublicVideoDashboard'),
 );
-const PublicVideoLiveJitsi = lazy(
-  () => import('components/PublicVideoLiveJitsi'),
-);
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -39,11 +35,17 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
     </UploadManager>
   </MemoryRouter>
 );
-
+/***
+ * When the component Routes is called first time, no path is specified. Given the fact that all
+ * routes match exact path except the last one, this is the last route which will be reached.
+ * This route is the loading route, which will redirect the user on the exact path he needs
+ * to match, depending on the state of his appData object.
+ */
 export const Routes = () => (
   <Wrappers>
     <Suspense fallback={<Loader />}>
       <Switch>
+        <Route exact path={DASHBOARD_ROUTE()} component={Dashboard} />
         <Route
           exact
           path={PLAYER_ROUTE()}
@@ -68,17 +70,6 @@ export const Routes = () => (
                   <DocumentPlayer document={appData.document} />
                 </InstructorWrapper>
               );
-            }
-
-            return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
-          }}
-        />
-        <Route
-          exact
-          path={PUBLIC_JITSI_ROUTE()}
-          render={() => {
-            if (appData.modelName === modelName.VIDEOS && appData.video?.xmpp) {
-              return <PublicVideoLiveJitsi video={appData.video} />;
             }
 
             return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
@@ -118,7 +109,6 @@ export const Routes = () => (
             />
           )}
         />
-        <Route exact path={DASHBOARD_ROUTE()} component={Dashboard} />
         <Route exact path={PLAYLIST_ROUTE()} component={PlaylistPage} />
 
         <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />

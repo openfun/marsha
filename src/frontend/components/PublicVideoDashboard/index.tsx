@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { LiveType, LiveVideoWrapper } from 'components/StudentLiveWrapper';
+import { LiveVideoWrapper } from 'components/StudentLiveWrapper';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
 import { getDecodedJwt } from 'data/appData';
@@ -54,12 +54,7 @@ const PublicVideoDashboard = ({
     }
 
     initVideoWebsocket(video);
-    return (
-      <LiveVideoWrapper
-        video={video}
-        configuration={{ type: LiveType.VIEWER, playerType }}
-      />
-    );
+    return <LiveVideoWrapper video={video} playerType={playerType} />;
   }
 
   const transcripts = timedTextTracks
