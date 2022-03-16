@@ -34,7 +34,7 @@ describe('state.setAvailableItems()', () => {
     expect(useLivePanelState.getState().isPanelVisible).toBe(true);
   });
 
-  it('closes the panel and reset selected item with empty available items', () => {
+  it('closes the panel and empties available items', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -45,7 +45,9 @@ describe('state.setAvailableItems()', () => {
     useLivePanelState.getState().setAvailableItems([]);
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
-    expect(useLivePanelState.getState().currentItem).toEqual(undefined);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.CHAT,
+    );
     expect(useLivePanelState.getState().isPanelVisible).toBe(false);
   });
 

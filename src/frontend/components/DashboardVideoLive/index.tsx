@@ -26,10 +26,13 @@ interface DashboardVideoLiveProps {
 }
 
 export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
-  const { isPanelVisible, configPanel } = useLivePanelState((state) => ({
-    isPanelVisible: state.isPanelVisible,
-    configPanel: state.setAvailableItems,
-  }));
+  const { isPanelVisible, configPanel, currentItem } = useLivePanelState(
+    (state) => ({
+      isPanelVisible: state.isPanelVisible,
+      configPanel: state.setAvailableItems,
+      currentItem: state.currentItem,
+    }),
+  );
   const [canStartLive, setCanStartLive] = useState(
     video.live_type === LiveModeType.RAW,
   );
@@ -38,14 +41,18 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   );
 
   useEffect(() => {
-    const availableItems: LivePanelItem[] = [];
-    let currentItem;
+    // if the xmpp object is not null, panel state is filled
     if (video.xmpp !== null) {
-      availableItems.push(LivePanelItem.CHAT);
-      availableItems.push(LivePanelItem.VIEWERS_LIST);
-      currentItem = LivePanelItem.CHAT;
+      configPanel(
+        [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+        // If the panel has a previous selected tab, it is this one which is used
+        currentItem ? currentItem : LivePanelItem.CHAT,
+      );
     }
-    configPanel(availableItems, currentItem);
+    // if the xmpp object becomes unavailable, panel is uninitialized (but selected tab stays unchanged)
+    else {
+      configPanel([]);
+    }
   }, [video, configPanel]);
 
   //  When the live is started,
