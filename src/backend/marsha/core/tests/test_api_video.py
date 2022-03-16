@@ -853,6 +853,71 @@ class VideoAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    def test_api_video_read_detail_xmpp_enabled_live_state_idle(self):
+        """A video in live_state IDLE and with XMPP enabled should not return the XMPP in the
+        serialized video."""
+        video = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": PENDING,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": video.playlist.title,
+                    "lti_id": video.playlist.lti_id,
+                },
+                "shared_live_medias": [],
+                "live_state": IDLE,
+                "live_info": {},
+                "live_type": JITSI,
+                "xmpp": None,
+            },
+        )
+
     def test_api_video_read_detail_as_instructor_in_read_only(self):
         """An instructor with read_only can read the video."""
         video = factories.VideoFactory(upload_state="ready")
