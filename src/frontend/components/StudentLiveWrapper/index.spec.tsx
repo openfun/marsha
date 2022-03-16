@@ -12,10 +12,10 @@ import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
 import { createPlayer } from 'Player/createPlayer';
 
-import { LiveType, LiveVideoWrapper } from '.';
+import { LiveVideoWrapper } from '.';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow/index';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -134,13 +134,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -202,13 +197,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -268,13 +258,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -326,13 +311,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -392,13 +372,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.VIEWER, playerType: 'player_type' }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -420,7 +395,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();
-
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
       LivePanelItem.VIEWERS_LIST,
@@ -470,6 +444,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     useLiveStateStarted.setState({
       isStarted: true,
     });
+    useParticipantWorkflow.getState().setAccepted();
   });
 
   beforeAll(() => {
@@ -511,17 +486,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.ON_STAGE }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
     act(() => useLivePanelState.getState().setPanelVisibility(false));
-
     expect(mockJitsi).toHaveBeenCalled();
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
@@ -569,13 +538,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.ON_STAGE }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -625,13 +589,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.ON_STAGE }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -675,13 +634,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.ON_STAGE }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -729,16 +683,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      wrapInRouter(
-        wrapInIntlProvider(
-          <LiveVideoWrapper
-            video={video}
-            configuration={{ type: LiveType.ON_STAGE }}
-          />,
-        ),
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
       ),
     );
-
+    act(() => useParticipantWorkflow.getState().setAccepted());
     expect(mockJitsi).toHaveBeenCalled();
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
