@@ -32,6 +32,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Do not install the `marsha` Python package in `site-packages`
 - Do not allow a lti user to change his email when he registers to a scheduled 
   live
+- Expose XMPP info for a live once this one started
 
 ## [4.0.0-beta.1] - 2022-02-15
 

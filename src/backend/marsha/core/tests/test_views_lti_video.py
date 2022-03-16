@@ -331,7 +331,7 @@ class VideoLTIViewTestCase(TestCase):
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__title="foo bar",
             playlist__consumer_site=passport.consumer_site,
-            live_state=IDLE,
+            live_state=RUNNING,
             live_info={
                 "medialive": {
                     "input": {
@@ -450,7 +450,7 @@ class VideoLTIViewTestCase(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "shared_live_medias": [],
-                "live_state": IDLE,
+                "live_state": RUNNING,
                 "live_info": {
                     "medialive": {
                         "input": {
