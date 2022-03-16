@@ -648,7 +648,9 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     ).not.toBeInTheDocument();
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
-    expect(useLivePanelState.getState().currentItem).toEqual(undefined);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.CHAT,
+    );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 

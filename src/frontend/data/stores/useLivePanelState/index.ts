@@ -63,8 +63,8 @@ export const useLivePanelState = create<State>((set) => ({
           items.length > 0
           ? //  select it
             items[0]
-          : //  else pane will be closed
-            undefined,
+          : //  else the current item doesn't change
+            state.currentItem,
     })),
   setPanelVisibility: (isVisible, itemToSelect) =>
     set((state) => ({
