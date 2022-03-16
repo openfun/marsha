@@ -15,38 +15,31 @@ import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 
 import { StudentLiveViewerWrapper } from './StudentLiveViewerWrapper';
-
-export enum LiveType {
-  ON_STAGE = 'on_stage',
-  VIEWER = 'viewer',
-}
-
-interface LiveStreamerConfiguration {
-  type: LiveType.ON_STAGE;
-}
-
-interface LiveViewerConfiguration {
-  type: LiveType.VIEWER;
-  playerType: string;
-}
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 
 interface LiveVideoWrapperProps {
   video: Video;
-  configuration: LiveStreamerConfiguration | LiveViewerConfiguration;
+  playerType: string;
 }
 
 export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
   video: baseVideo,
-  configuration,
+  playerType,
 }) => {
   const video = useVideo((state) => state.getVideo(baseVideo));
-  const { isPanelVisible, configPanel } = useLivePanelState((state) => ({
-    isPanelVisible: state.isPanelVisible,
-    configPanel: state.setAvailableItems,
-  }));
+  const { isPanelVisible, configPanel, setPanelVisibility } = useLivePanelState(
+    (state) => ({
+      isPanelVisible: state.isPanelVisible,
+      configPanel: state.setAvailableItems,
+      setPanelVisibility: state.setPanelVisibility,
+    }),
+  );
   const { isStarted } = useLiveStateStarted((state) => ({
     isStarted: state.isStarted,
   }));
+  const isParticipantOnstage = useParticipantWorkflow(
+    (state) => state.accepted,
+  );
 
   useEffect(() => {
     const availableItems: LivePanelItem[] = [];
@@ -56,7 +49,7 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
       availableItems.push(LivePanelItem.VIEWERS_LIST);
       currentItem = LivePanelItem.CHAT;
       if (isStarted) {
-        useLivePanelState.getState().setPanelVisibility(true);
+        setPanelVisibility(true);
       }
     }
     configPanel(availableItems, currentItem);
@@ -66,25 +59,17 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
     <ConverseInitializer video={video}>
       <LiveVideoLayout
         actionsElement={<StudentLiveControlBar video={video} />}
-        displayActionsElement={
-          configuration.type === LiveType.ON_STAGE || isStarted
-        }
+        displayActionsElement={isParticipantOnstage || isStarted}
         isPanelOpen={isPanelVisible}
         liveTitleElement={
           <StudentLiveInfoBar title={video.title} startDate={null} />
         }
         mainElement={
-          <React.Fragment>
-            {configuration.type === LiveType.ON_STAGE && (
-              <DashboardVideoLiveJitsi video={video} />
-            )}
-            {configuration.type === LiveType.VIEWER && (
-              <StudentLiveViewerWrapper
-                video={video}
-                playerType={configuration.playerType}
-              />
-            )}
-          </React.Fragment>
+          isParticipantOnstage ? (
+            <DashboardVideoLiveJitsi video={video} />
+          ) : (
+            <StudentLiveViewerWrapper video={video} playerType={playerType} />
+          )
         }
         sideElement={<LiveVideoPanel video={video} />}
       />
