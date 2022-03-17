@@ -25,8 +25,13 @@ class MeetingAdmin(admin.ModelAdmin):
         "id",
         "title",
         "playlist",
+        "position",
         "lti_id",
         "started",
+        "description",
+        "welcome_text",
+        "starting_at",
+        "estimated_duration",
     )
     readonly_fields = [
         "id",
