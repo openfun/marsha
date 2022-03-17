@@ -78,6 +78,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               }
               displayActionsElement
               isPanelOpen={isPanelVisible}
+              isXmppReady={!!video.xmpp}
               liveTitleElement={
                 <TeacherLiveInfoBar title={video.title} startDate={null} />
               }
