@@ -11,7 +11,13 @@ from channels.testing import WebsocketCommunicator
 from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.defaults import JITSI, RUNNING
-from marsha.core.factories import ThumbnailFactory, TimedTextTrackFactory, VideoFactory
+from marsha.core.factories import (
+    LiveSessionFactory,
+    ThumbnailFactory,
+    TimedTextTrackFactory,
+    VideoFactory,
+)
+from marsha.core.models.account import NONE
 from marsha.core.serializers import (
     ThumbnailSerializer,
     TimedTextTrackSerializer,
@@ -58,14 +64,32 @@ class VideoConsumerTest(TransactionTestCase):
         serializer = TimedTextTrackSerializer(thumbnail, context=context)
         return serializer.data
 
-    async def test_connect_matching_video(self):
+    @sync_to_async
+    def _get_live_session(self, **kwargs):
+        """Create a live_session using LiveSessionFactory."""
+        return LiveSessionFactory(**kwargs)
+
+    async def test_connect_matching_video_student(self):
         """A connection with url params matching jwt resource_id should succeed."""
         video = await self._get_video()
+        live_session = await self._get_live_session(
+            video=video,
+            consumer_site=video.consumer_site,
+            lti_id="Maths",
+            lti_user_id="444444",
+        )
+
+        self.assertIsNone(live_session.channel_name)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
         jwt_token.payload["roles"] = ["student"]
         jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -73,10 +97,89 @@ class VideoConsumerTest(TransactionTestCase):
         )
 
         connected, _ = await communicator.connect()
-
         self.assertTrue(connected)
 
+        # Channel name has been set in the live_session
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNotNone(live_session.channel_name)
+
         await communicator.disconnect()
+
+        # Channel name has been removed from the live_session
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNone(live_session.channel_name)
+
+    async def test_connect_matching_video_anonymous(self):
+        """A connection with url params matching jwt resource_id should succeed."""
+        anonymous_id = uuid4()
+        video = await self._get_video()
+        live_session = await self._get_live_session(
+            video=video, anonymous_id=anonymous_id
+        )
+
+        self.assertIsNone(live_session.channel_name)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{video.id}/?jwt={jwt_token}&anonymous_id={anonymous_id}",
+        )
+
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+
+        # Channel name has been set in the live_session
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNotNone(live_session.channel_name)
+
+        await communicator.disconnect()
+
+        # Channel name has been removed from the live_session
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNone(live_session.channel_name)
+
+    async def test_connect_matching_video_admin(self):
+        """A connection with url params matching jwt resource_id should succeed."""
+        video = await self._get_video()
+        live_session = await self._get_live_session(
+            video=video,
+            consumer_site=video.consumer_site,
+            lti_id="Maths",
+            lti_user_id="55555",
+        )
+
+        self.assertIsNone(live_session.channel_name)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {
+            "id": "55555",
+        }
+
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{video.id}/?jwt={jwt_token}",
+        )
+
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+
+        # Live session should not be updated
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNone(live_session.channel_name)
+
+        await communicator.disconnect()
+
+        # Channel name has been removed from the live_session
+        await sync_to_async(live_session.refresh_from_db)()
+        self.assertIsNone(live_session.channel_name)
 
     async def test_connect_no_matching_video(self):
         """Connection with a video not matching the one in the token should be refused."""
@@ -85,8 +188,13 @@ class VideoConsumerTest(TransactionTestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
         jwt_token.payload["roles"] = ["student"]
         jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -148,6 +256,13 @@ class VideoConsumerTest(TransactionTestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -257,8 +372,13 @@ class VideoConsumerTest(TransactionTestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -359,6 +479,13 @@ class VideoConsumerTest(TransactionTestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(thumbnail.video_id)
+        jwt_token.payload["consumer_site"] = str(thumbnail.video.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -401,6 +528,15 @@ class VideoConsumerTest(TransactionTestCase):
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(timed_text_track.video_id)
+        jwt_token.payload["consumer_site"] = str(
+            timed_text_track.video.consumer_site.id
+        )
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["user"] = {
+            "id": "444444",
+        }
 
         communicator = WebsocketCommunicator(
             base_application,
