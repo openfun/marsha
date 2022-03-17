@@ -68,8 +68,9 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
     <ConverseInitializer video={video}>
       <LiveVideoLayout
         actionsElement={<StudentLiveControlBar video={video} />}
-        displayActionsElement={isParticipantOnstage || isStarted}
+        displayActionsElement={!!video.xmpp}
         isPanelOpen={isPanelVisible}
+        isXmppReady={!!video.xmpp}
         liveTitleElement={
           <StudentLiveInfoBar title={video.title} startDate={null} />
         }

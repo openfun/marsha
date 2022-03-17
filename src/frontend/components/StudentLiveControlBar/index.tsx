@@ -28,7 +28,9 @@ export const StudentLiveControlBar = ({
     video.xmpp &&
     video.live_type === LiveModeType.JITSI &&
     video.live_state &&
-    ![liveState.STOPPING, liveState.PAUSED].includes(video.live_state);
+    ![liveState.STOPPING, liveState.PAUSED, liveState.STARTING].includes(
+      video.live_state,
+    );
 
   return (
     <Box

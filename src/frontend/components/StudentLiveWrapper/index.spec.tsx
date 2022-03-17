@@ -360,15 +360,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         mp4: {},
         thumbnails: {},
       },
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
     });
 
     render(
@@ -395,13 +386,9 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();
-    expect(useLivePanelState.getState().availableItems).toEqual([
-      LivePanelItem.CHAT,
-      LivePanelItem.VIEWERS_LIST,
-    ]);
-    expect(useLivePanelState.getState().currentItem).toEqual(
-      LivePanelItem.CHAT,
-    );
+
+    expect(useLivePanelState.getState().availableItems).toEqual([]);
+    expect(useLivePanelState.getState().currentItem).toBeUndefined();
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
 
     fetchMock.mock('https://marsha.education/live.m3u8', 200, {
@@ -416,8 +403,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
         }),
       ).toHaveLength(2);
     });
-
-    await screen.findByRole('button', { name: 'Hide chat' });
 
     await waitFor(() =>
       // The player is created
