@@ -1,5 +1,5 @@
 """Tests for the meeting API."""
-
+from datetime import datetime, timedelta
 import json
 import random
 import re
@@ -8,6 +8,7 @@ from urllib.parse import quote_plus
 import uuid
 
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -55,6 +56,7 @@ class MeetingAPITest(TestCase):
                 "infos": {"returncode": "SUCCESS", "running": "true"},
                 "lti_id": str(meeting.lti_id),
                 "title": meeting.title,
+                "description": meeting.description,
                 "started": False,
                 "ended": False,
                 "meeting_id": str(meeting.meeting_id),
@@ -64,6 +66,8 @@ class MeetingAPITest(TestCase):
                     "title": meeting.playlist.title,
                     "lti_id": meeting.playlist.lti_id,
                 },
+                "starting_at": None,
+                "estimated_duration": None,
             },
             content,
         )
@@ -94,6 +98,7 @@ class MeetingAPITest(TestCase):
                 "infos": {"returncode": "SUCCESS", "running": "true"},
                 "lti_id": str(meeting.lti_id),
                 "title": meeting.title,
+                "description": meeting.description,
                 "started": False,
                 "ended": False,
                 "meeting_id": str(meeting.meeting_id),
@@ -103,6 +108,8 @@ class MeetingAPITest(TestCase):
                     "title": meeting.playlist.title,
                     "lti_id": meeting.playlist.lti_id,
                 },
+                "starting_at": None,
+                "estimated_duration": None,
             },
             content,
         )
@@ -185,6 +192,121 @@ class MeetingAPITest(TestCase):
         meeting.refresh_from_db()
         self.assertEqual("new title", meeting.title)
         self.assertEqual("Hello", meeting.welcome_text)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_update_instructor_scheduling(self, mock_get_meeting_infos):
+        """Update a meeting to be scheduled."""
+        meeting = MeetingFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
+        estimated_duration = timedelta(seconds=60)
+        data = {"starting_at": starting_at, "estimated_duration": estimated_duration}
+
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.patch(
+                f"/api/meetings/{meeting.id!s}/",
+                data,
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            {
+                "id": str(meeting.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(meeting.lti_id),
+                "title": meeting.title,
+                "description": meeting.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(meeting.meeting_id),
+                "welcome_text": meeting.welcome_text,
+                "playlist": {
+                    "id": str(meeting.playlist.id),
+                    "title": meeting.playlist.title,
+                    "lti_id": meeting.playlist.lti_id,
+                },
+                "starting_at": "2018-08-08T01:00:00Z",
+                "estimated_duration": "00:01:00",
+            },
+            response.json(),
+        )
+
+        meeting.refresh_from_db()
+        self.assertEqual(starting_at, meeting.starting_at)
+        self.assertEqual(estimated_duration, meeting.estimated_duration)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_update_put_instructor_scheduling(self, mock_get_meeting_infos):
+        """Update a meeting to be scheduled."""
+        meeting = MeetingFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
+        estimated_duration = timedelta(seconds=60)
+
+        data = {
+            "title": meeting.title,
+            "description": meeting.description,
+            "welcome_text": meeting.welcome_text,
+            "starting_at": "2018-08-08T01:00:00Z",
+            "estimated_duration": "00:01:00",
+        }
+
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.put(
+                f"/api/meetings/{meeting.id!s}/",
+                data,
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            {
+                "id": str(meeting.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(meeting.lti_id),
+                "title": meeting.title,
+                "description": meeting.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(meeting.meeting_id),
+                "welcome_text": meeting.welcome_text,
+                "playlist": {
+                    "id": str(meeting.playlist.id),
+                    "title": meeting.playlist.title,
+                    "lti_id": meeting.playlist.lti_id,
+                },
+                "starting_at": "2018-08-08T01:00:00Z",
+                "estimated_duration": "00:01:00",
+            },
+            response.json(),
+        )
+
+        meeting.refresh_from_db()
+        self.assertEqual(starting_at, meeting.starting_at)
+        self.assertEqual(estimated_duration, meeting.estimated_duration)
 
     def test_api_select_instructor_no_bbb_server(self):
         """An instructor should be able to fetch a meeting lti select."""

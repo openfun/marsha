@@ -242,7 +242,10 @@ class MeetingLTIViewTestCase(TestCase):
                 "started": False,
                 "ended": False,
                 "title": meeting.title,
+                "description": meeting.description,
                 "welcome_text": meeting.welcome_text,
+                "starting_at": None,
+                "estimated_duration": None,
             },
             context.get("resource"),
         )
