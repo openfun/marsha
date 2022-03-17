@@ -20,12 +20,15 @@ class MeetingSerializer(serializers.ModelSerializer):
             "id",
             "lti_id",
             "title",
+            "description",
             "playlist",
             "meeting_id",
             "welcome_text",
             "started",
             "ended",
             "infos",
+            "starting_at",
+            "estimated_duration",
         )
         read_only_fields = (
             "id",

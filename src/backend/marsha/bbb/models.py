@@ -105,6 +105,19 @@ class Meeting(BaseModel):
     started = models.BooleanField(default=False)
     ended = models.BooleanField(default=False)
 
+    starting_at = models.DateTimeField(
+        blank=True,
+        verbose_name=_("starting at date and time"),
+        help_text=_("Start date and time at which a meeting is scheduled."),
+        null=True,
+    )
+    estimated_duration = models.DurationField(
+        blank=True,
+        null=True,
+        verbose_name=_("estimated duration"),
+        help_text=_("Estimated duration of the meeting in seconds."),
+    )
+
     class Meta:
         """Options for the ``Meeting`` model."""
 

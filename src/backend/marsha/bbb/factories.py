@@ -20,6 +20,7 @@ class MeetingFactory(DjangoModelFactory):
 
     lti_id = factory.Faker("uuid4")
     title = factory.Sequence("Meeting {:03d}".format)
+    description = factory.Faker("paragraph")
     playlist = factory.SubFactory(PlaylistFactory)
     meeting_id = factory.Faker("uuid4")
     attendee_password = factory.Faker("word")
