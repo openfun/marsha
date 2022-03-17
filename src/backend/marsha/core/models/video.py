@@ -596,6 +596,13 @@ class LiveSession(BaseModel):
         verbose_name=_("Video"),
     )
 
+    channel_name = models.CharField(
+        blank=True,
+        max_length=255,
+        null=True,
+        help_text=_("Websocket channel_name"),
+    )
+
     class Meta:
         """Options for the `livesessions` model."""
 
