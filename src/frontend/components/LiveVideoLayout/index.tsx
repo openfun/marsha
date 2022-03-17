@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import styled from 'styled-components';
 
+import { LiveVideoResizer } from 'components/LiveVideoResizer';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { DEFAULT_PANEL_WIDTH_RATIO } from 'default/livePanel';
 import { theme } from 'utils/theme/theme';
 
-const LiveVideoInformationBarWrapper = styled(Box)`
+const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
   box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
 `;
@@ -15,6 +17,7 @@ interface LiveStudentLayoutProps {
   actionsElement: React.ReactElement;
   displayActionsElement: boolean;
   isPanelOpen?: boolean;
+  isXmppReady: boolean;
   liveTitleElement: React.ReactElement;
   mainElement: React.ReactElement;
   sideElement?: React.ReactElement;
@@ -24,12 +27,16 @@ export const LiveVideoLayout = ({
   actionsElement,
   displayActionsElement,
   isPanelOpen,
+  isXmppReady,
   liveTitleElement,
   mainElement,
   sideElement,
 }: LiveStudentLayoutProps) => {
   const size = React.useContext(ResponsiveContext);
   const isStarted = useLiveStateStarted((state) => state.isStarted);
+  const [savedPanelWidth, setSavedPanelWidthPx] = useState(
+    document.documentElement.clientWidth * DEFAULT_PANEL_WIDTH_RATIO,
+  );
 
   if (size === 'small') {
     return (
@@ -44,7 +51,7 @@ export const LiveVideoLayout = ({
 
             {isStarted && (
               <Box margin={{ top: '12px' }}>
-                <LiveVideoInformationBarWrapper />
+                <StyledLiveVideoInformationBarWrapper />
                 <Box background="white" pad={{ left: 'small' }}>
                   {liveTitleElement}
                 </Box>
@@ -70,14 +77,15 @@ export const LiveVideoLayout = ({
 
   return (
     <Box background="bg-marsha">
-      <Box direction="row">
-        {/* main view rendering player or conf to stream */}
-        <Box basis="full">{mainElement}</Box>
-
-        {sideElement && isPanelOpen && <Box basis="1/3">{sideElement}</Box>}
-      </Box>
-
-      <LiveVideoInformationBarWrapper
+      <LiveVideoResizer
+        isReadyToDisplayRightElement={isXmppReady}
+        isPanelOpen={isPanelOpen}
+        leftElement={mainElement}
+        rightElement={sideElement}
+        savedPanelWidthPx={savedPanelWidth}
+        setSavedPanelWidthPx={setSavedPanelWidthPx}
+      />
+      <StyledLiveVideoInformationBarWrapper
         align="center"
         background="white"
         direction="row-responsive"
@@ -89,7 +97,7 @@ export const LiveVideoLayout = ({
       >
         {liveTitleElement}
         {displayActionsElement && actionsElement}
-      </LiveVideoInformationBarWrapper>
+      </StyledLiveVideoInformationBarWrapper>
     </Box>
   );
 };

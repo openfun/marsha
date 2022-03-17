@@ -1,7 +1,9 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
+import React from 'react';
 
+import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { LiveVideoLayout } from '.';
 
@@ -17,6 +19,7 @@ describe('<LiveVideoLayout />', () => {
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
+          isXmppReady={true}
           isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -41,6 +44,7 @@ describe('<LiveVideoLayout />', () => {
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
+          isXmppReady={true}
           isPanelOpen={false}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -64,6 +68,7 @@ describe('<LiveVideoLayout />', () => {
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
+          isXmppReady={true}
           isPanelOpen={undefined}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -87,6 +92,7 @@ describe('<LiveVideoLayout />', () => {
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
+          isXmppReady={true}
           isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -109,6 +115,7 @@ describe('<LiveVideoLayout />', () => {
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={false}
+          isXmppReady={true}
           isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
@@ -123,5 +130,25 @@ describe('<LiveVideoLayout />', () => {
 
     const sideElenent = screen.getByText('panel component');
     expect(sideElenent).toBeVisible();
+  });
+
+  it('shows the panel when the open button is clicked', async () => {
+    useLivePanelState.setState({ isPanelVisible: false });
+    render(
+      <LiveVideoLayout
+        actionsElement={ActionsElement}
+        displayActionsElement={false}
+        isXmppReady={true}
+        isPanelOpen={false}
+        liveTitleElement={LiveTitleElement}
+        mainElement={MainCompo}
+        sideElement={PanelCompo}
+      />,
+    );
+
+    expect(screen.queryByText('panel component')).not.toBeInTheDocument();
+    const openButton = screen.getByRole('button');
+    userEvent.click(openButton);
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 });
