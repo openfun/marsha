@@ -1,10 +1,8 @@
-import { getDecodedJwt } from 'data/appData';
 import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { Video } from 'types/tracks';
-import { checkLtiToken } from './checkLtiToken';
-import { getAnonymousId, setAnonymousId } from './localstorage';
+import { getOrInitAnonymousId } from './getOrInitAnonymousId';
 
 export const initWebinarContext = async (video: Video) => {
   // if not a live, stop it.
@@ -12,13 +10,8 @@ export const initWebinarContext = async (video: Video) => {
 
   // If live registration already present, stop it.
   if (useLiveSession.getState().liveSession) return;
-  const decodedJwt = getDecodedJwt();
-  let anonymousId = decodedJwt.user?.anonymous_id;
-  if (anonymousId) {
-    setAnonymousId(anonymousId);
-  } else if (!checkLtiToken(decodedJwt)) {
-    anonymousId = getAnonymousId();
-  }
+
+  const anonymousId = getOrInitAnonymousId();
 
   // check if registered
   const results = await getLiveSessions(anonymousId);
