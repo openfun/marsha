@@ -2,15 +2,14 @@ import { Box } from 'grommet';
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { getDecodedJwt } from '../../data/appData';
-import { DashboardVideoLiveInfo } from '../DashboardVideoLiveInfo';
-import { useParticipantWorkflow } from '../../data/stores/useParticipantWorkflow';
-import { Video, liveState } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { converse } from '../../utils/window';
-import { PLAYER_ROUTE } from '../routes';
-import { modelName } from '../../types/models';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
+import { PLAYER_ROUTE } from 'components/routes';
+import { getDecodedJwt } from 'data/appData';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { modelName } from 'types/models';
+import { Video, liveState } from 'types/tracks';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { report } from 'utils/errors/report';
+import { converse } from 'utils/window';
 
 interface DashboardVideoLiveJitsiProps {
   setCanStartLive?: undefined;
@@ -236,16 +235,7 @@ const DashboardVideoLiveJitsi = ({
     }
   }, [video.live_state, video.live_info.medialive]);
 
-  return (
-    <Box>
-      <Box height={'large'} ref={jitsiNode} />
-      {isInstructor && video.live_info.medialive && (
-        <Box justify="start" direction="row">
-          <DashboardVideoLiveInfo video={video} />
-        </Box>
-      )}
-    </Box>
-  );
+  return <Box height={'large'} ref={jitsiNode} />;
 };
 
 export default DashboardVideoLiveJitsi;
