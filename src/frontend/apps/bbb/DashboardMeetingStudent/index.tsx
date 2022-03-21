@@ -1,9 +1,15 @@
-import { Box, Text } from 'grommet';
+import { Box, Button, Text } from 'grommet';
+import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
+import { Nullable } from 'utils/types';
 
+import {
+  DashboardMeetingLayout,
+  DashboardMeetingMessage,
+} from 'apps/bbb/DashboardMeetingLayout';
+import { DashboardMeetingStudentCounter } from 'apps/bbb/DashboardMeetingStudentCounter';
 import { Meeting } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
@@ -13,7 +19,7 @@ const messages = defineMessages({
     id: 'component.DashboardMeetingStudent.joinedAs',
   },
   joinMeetingLabel: {
-    defaultMessage: 'Join meeting',
+    defaultMessage: 'Click here to access meeting',
     description: 'Label for joining meeting in instructor dashboard.',
     id: 'component.DashboardMeetingStudent.joinMeetingLabel',
   },
@@ -49,53 +55,105 @@ const DashboardMeetingStudent = ({
 }: DashboardMeetingStudentProps) => {
   const intl = useIntl();
 
+  Settings.defaultLocale = intl.locale;
+
+  const startingAt = DateTime.fromISO(meeting.starting_at || '');
+  const displayedStartingAt = startingAt.toLocaleString(DateTime.DATE_HUGE);
+  const displayedStartingTime = startingAt.toLocaleString(
+    DateTime.TIME_24_SIMPLE,
+  );
+
+  let displayedEventTime = `${displayedStartingAt} - ${displayedStartingTime}`;
+
+  if (meeting.estimated_duration) {
+    const estimatedDuration = Duration.fromISOTime(meeting.estimated_duration);
+    const displayedEndingAt = startingAt
+      .plus(estimatedDuration)
+      .toLocaleString(DateTime.TIME_24_SIMPLE);
+    displayedEventTime += ` > ${displayedEndingAt}`;
+  }
+
   useEffect(() => {
-    if (!meeting.started) {
+    if (meeting.ended) {
       meetingEnded();
     }
   }, [meeting]);
 
-  let content: JSX.Element;
+  let left: JSX.Element;
+  let right: Nullable<JSX.Element> = null;
   if (joinedAs) {
-    content = (
-      <Text textAlign="center">
-        <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
-      </Text>
+    // meeting started and joined
+    left = (
+      <DashboardMeetingMessage
+        message={intl.formatMessage(messages.joinedAs, { joinedAs })}
+      />
     );
   } else if (meeting.started) {
-    content = (
-      <React.Fragment>
-        <Text textAlign="center">
-          <FormattedMessage {...messages.meetingStarted} />
-        </Text>
-        <Box direction="row" justify="center" margin={{ top: 'medium' }}>
-          <DashboardButton
-            primary={true}
-            label={intl.formatMessage(messages.joinMeetingLabel)}
-            onClick={joinMeetingAction}
-          />
-        </Box>
-      </React.Fragment>
+    // meeting started
+    left = (
+      <DashboardMeetingMessage
+        message={intl.formatMessage(messages.meetingStarted)}
+      />
+    );
+    right = (
+      <Button
+        label={intl.formatMessage(messages.joinMeetingLabel)}
+        onClick={joinMeetingAction}
+        primary
+        size="large"
+        fill="horizontal"
+      />
     );
   } else if (meeting.ended) {
-    content = (
-      <Text textAlign="center">
-        <FormattedMessage {...messages.meetingEnded} />
-      </Text>
+    // meeting ended
+    left = (
+      <DashboardMeetingMessage
+        message={intl.formatMessage(messages.meetingEnded)}
+      />
+    );
+  } else if (meeting.starting_at) {
+    // meeting scheduled
+    left = (
+      <React.Fragment>
+        <Text
+          size="large"
+          weight="bold"
+          color="blue-active"
+          textAlign="center"
+          margin={{ top: 'large' }}
+        >
+          {meeting.title}
+        </Text>
+        <Text color="blue-active" textAlign="center">
+          {meeting.description}
+        </Text>
+        <Box
+          margin={{ top: 'large', horizontal: 'small' }}
+          pad={{ vertical: 'small', horizontal: 'small' }}
+          round="xsmall"
+          border={{
+            color: 'blue-active',
+            size: 'small',
+            side: 'all',
+          }}
+        >
+          <Text color="blue-active" textAlign="center">
+            {displayedEventTime}
+          </Text>
+        </Box>
+        <DashboardMeetingStudentCounter meeting={meeting} />
+      </React.Fragment>
     );
   } else {
-    content = (
-      <Text textAlign="center">
-        <FormattedMessage {...messages.meetingNotStarted} />
-      </Text>
+    // meeting exists but not started
+    left = (
+      <DashboardMeetingMessage
+        message={intl.formatMessage(messages.meetingNotStarted)}
+      />
     );
   }
 
-  return (
-    <Box pad="large" fill>
-      {content}
-    </Box>
-  );
+  return <DashboardMeetingLayout left={left} right={right} />;
 };
 
 export default DashboardMeetingStudent;

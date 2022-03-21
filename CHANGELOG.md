@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add BBB meeting scheduling
+
 ### Fixed
 
 - patch video to publish it once harvested

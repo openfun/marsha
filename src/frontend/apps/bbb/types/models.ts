@@ -4,12 +4,15 @@ import { Nullable } from 'utils/types';
 export interface Meeting extends Resource {
   playlist: Playlist;
   title: Nullable<string>;
+  description: string;
   lti_url: string;
   started: boolean;
   ended: boolean;
   url: string;
   welcome_text: string;
   infos?: MeetingInfos;
+  starting_at: Nullable<string>;
+  estimated_duration: Nullable<string>;
 }
 
 export interface MeetingInfos {
