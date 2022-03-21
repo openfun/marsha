@@ -8,12 +8,15 @@ export const meetingMockFactory = (meeting: Partial<Meeting> = {}): Meeting => {
     id: faker.datatype.uuid(),
     playlist: playlistMockFactory(),
     title: faker.name.title(),
+    description: faker.lorem.paragraph(),
     lti_url: faker.internet.url(),
     started: faker.datatype.boolean(),
     ended: faker.datatype.boolean(),
     url: faker.internet.url(),
     welcome_text: faker.lorem.text(),
     infos: meetingInfosMockFactory(),
+    starting_at: null,
+    estimated_duration: null,
     ...meeting,
   };
 };
