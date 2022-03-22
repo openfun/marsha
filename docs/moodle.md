@@ -32,6 +32,13 @@ The new external tool should appear.
 
 ![moodle_lti_select_admin_5](images/moodle_lti_select_admin_5.png)
 
+You may want to customize the tool's icon and use one of the following in resolution 32x32:
+
+<kbd>![marsha icon blue](images/marsha_32x32_blue.png)</kbd>
+<kbd>![marsha icon yellow](images/marsha_32x32_yellow.png)</kbd>
+<kbd>![marsha icon black](images/marsha_32x32_black.png)</kbd>
+<kbd>![marsha icon white](images/marsha_32x32_white.png)</kbd>
+
 #### Cookies configuration
 
 Secured cookies needs to be enabled for Deep Linking response authentication.
