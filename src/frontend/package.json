@@ -16,7 +16,7 @@
     "lint-all": "yarn lint-fix && yarn prettier-write",
     "build-sass": "sass scss/_main.scss ../backend/marsha/static/css/main.css --load-path=node_modules",
     "build-sass-production": "sass scss/_main.scss ../backend/marsha/static/css/main.css --style=compressed --load-path=node_modules",
-    "test": "jest",
+    "test": "TZ=UTC jest",
     "storybook": "start-storybook -p 6006"
   },
   "repository": "git@github.com:openfun/marsha.git",
