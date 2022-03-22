@@ -1,18 +1,26 @@
 ### Moodle Admin setup
 
 #### Create external tool preset
-Logged as admin, go to `Site administration`
-![moodle_lti_select_admin_1](images/moodle_lti_select_admin_1.png)
 
-Go to `Plugins` tab, and click on `Manage tools` under `External Tools`
+In Moodle, logged as an admin, go to `Site administration`:
 
-![moodle_lti_select_admin_2](images/moodle_lti_select_admin_2.png)
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_1.png" alt="Moodle LTI select admin view 1"/></td>
+</tr></table>
 
-Click on `configure a tool manually`
+Go to `Plugins` tab, and click on `Manage tools` under `External Tools`:
 
-![moodle_lti_select_admin_3](images/moodle_lti_select_admin_3.png)
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_2.png" alt="Moodle LTI select admin view 2"/></td>
+</tr></table>
 
-Fill the form with following data
+Click on `configure a tool manually`:
+
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_3.png" alt="Moodle LTI select admin view 3"/></td>
+</tr></table>
+
+Fill the form with following data:
 
 Label                 | Value
 --------------------- | ------------------------------------
@@ -24,37 +32,50 @@ Shared secret         | [found in the passport]
 Supports Deep Linking | Checked
 Content Selection URL | https://marsha.education/lti/select/
 
-![moodle_lti_select_admin_4](images/moodle_lti_select_admin_4.png)
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_4.png" alt="Moodle LTI select admin view 4"/></td>
+</tr></table>
 
-Click on `Save changes`
+Click on `Save changes`.
 
-The new external tool should appear.
+The new external tool should appear:
 
-![moodle_lti_select_admin_5](images/moodle_lti_select_admin_5.png)
+
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_5.png" alt="Moodle LTI select admin view 5"/></td>
+</tr></table>
 
 You may want to customize the tool's icon and use one of the following in resolution 32x32:
 
-<kbd>![marsha icon blue](images/marsha_32x32_blue.png)</kbd>
-<kbd>![marsha icon yellow](images/marsha_32x32_yellow.png)</kbd>
-<kbd>![marsha icon black](images/marsha_32x32_black.png)</kbd>
-<kbd>![marsha icon white](images/marsha_32x32_white.png)</kbd>
+<table><tr>
+  <td><img src="images/marsha_32x32_blue.png" alt="Marsha icon blue 32x32"/></td>
+  <td><img src="images/marsha_32x32_yellow.png" alt="Marsha icon yellow 32x32"/></td>
+  <td><img src="images/marsha_32x32_black.png" alt="Marsha icon black 32x32"/></td>
+  <td><img src="images/marsha_32x32_white.png" alt="Marsha icon white 32x32"/></td>
+</td></tr></table>
 
 #### Cookies configuration
 
-Secured cookies needs to be enabled for Deep Linking response authentication.
+Secured cookies needs to be enabled for Deep Linking response authentication:
 
-![moodle_lti_select_admin_6](images/moodle_lti_select_admin_6.png)
+<table><tr>
+  <td><img src="images/moodle_lti_select_admin_6.png" alt="Moodle LTI select admin view 6"/></td>
+</tr></table>
 
 #### Iframe resizer
 
 In order to have iframes resized automatically to show their content,
 this snippet can be pasted in another admin view.
 
-Back in the admin view, on `Appearance` tab, click on `Additional HTML`
+Back in the admin view, on `Appearance` tab, click on `Additional HTML`:
 
-![moodle_iframe_resizer_admin_1](images/moodle_iframe_resizer_admin_1.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_iframe_resizer_admin_1.png" alt="Moodle iframe resizer admin view 1"/>
+  </td>
+</tr></table>
 
-Paste following code in `Within HEAD`
+Paste the following code in `Within HEAD`:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.2.11/js/iframeResizer.min.js"></script>
@@ -65,7 +86,11 @@ Paste following code in `Within HEAD`
 </script>
 ```
 
-![moodle_iframe_resizer_admin_2](images/moodle_iframe_resizer_admin_2.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_iframe_resizer_admin_2.png" alt="Moodle iframe resizer admin view 2"/>
+  </td>
+</tr></table>
 
 ### Moodle Teacher / admin usage
 
@@ -73,56 +98,118 @@ Once the external tool is setup, it can be used by teachers.
 
 #### Select an existing content
 
-Go to any course, click on `` and add an activity
+Go to any course, click on `` and add an activity:
 
-![moodle_lti_select_teacher_1](images/moodle_lti_select_teacher_1.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_1.png" alt="Moodle LTI select teacher view 1"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_2](images/moodle_lti_select_teacher_2.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_2.png" alt="Moodle LTI select teacher view 2"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_3](images/moodle_lti_select_teacher_3.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_3.png" alt="Moodle LTI select teacher view 3"/>
+  </td>
+</tr></table>
 
-Select `External source`
+Select `External source`:
 
-![moodle_lti_select_teacher_4](images/moodle_lti_select_teacher_4.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_4.png" alt="Moodle LTI select teacher view 4"/>
+  </td>
+</tr></table>
 
-Select preconfigured tool, and click on `Select content`
+Select preconfigured tool, and click on `Select content`:
 
-![moodle_lti_select_teacher_5](images/moodle_lti_select_teacher_5.png)
-![moodle_lti_select_teacher_6](images/moodle_lti_select_teacher_6.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_5.png" alt="Moodle LTI select teacher view 5"/>
+  </td>
+</tr></table>
 
-A popin will appear with available content.
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_6.png" alt="Moodle LTI select teacher view 6"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_13](images/moodle_lti_select_teacher_13.png)
+A popin will appear with available content:
 
-Click on a thumbnail, moodle form should be populated.
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_13.png" alt="Moodle LTI select teacher view 13"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_8](images/moodle_lti_select_teacher_8.png)
+Click on a thumbnail, moodle form should be populated:
 
-Click on `Save and display`, chosen video should appear.
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_8.png" alt="Moodle LTI select teacher view 8"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_12](images/moodle_lti_select_teacher_12.png)
+Click on `Save and display`, chosen video should appear:
+
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_12.png" alt="Moodle LTI select teacher view 12"/>
+  </td>
+</tr></table>
 
 #### Add a new content
 
 The steps are the same as above.
 
-When the Select content popin apears, click on `Add a video`
+When the Select content popin apears, click on `Add a video`:
 
-![moodle_lti_select_teacher_13](images/moodle_lti_select_teacher_13.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_13.png" alt="Moodle LTI select teacher view 13"/>
+  </td>
+</tr></table>
 
-The form would be populated as above.
+The form would be populated as above:
 
-![moodle_lti_select_teacher_8](images/moodle_lti_select_teacher_8.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_8.png" alt="Moodle LTI select teacher view 8"/>
+  </td>
+</tr></table>
 
-Click on `Save and display`, video dashboard will appear, allowing upload.
+Click on `Save and display`, video dashboard will appear, allowing upload:
 
-![moodle_lti_select_teacher_9](images/moodle_lti_select_teacher_9.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_9.png" alt="Moodle LTI select teacher view 9"/>
+  </td>
+</tr></table>
 
-Click on `Upload a video` and `Select a file to upload`
+Click on `Upload a video` and `Select a file to upload`:
 
-![moodle_lti_select_teacher_10](images/moodle_lti_select_teacher_10.png)
-![moodle_lti_select_teacher_11](images/moodle_lti_select_teacher_11.png)
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_10.png" alt="Moodle LTI select teacher view 10"/>
+  </td>
+</tr></table>
 
-When upload is done, the video will appear.
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_11.png" alt="Moodle LTI select teacher view 11"/>
+  </td>
+</tr></table>
 
-![moodle_lti_select_teacher_12](images/moodle_lti_select_teacher_12.png)
+When upload is done, the video will appear:
+
+<table><tr>
+  <td>
+    <img src="images/moodle_lti_select_teacher_12.png" alt="Moodle LTI select teacher view 12"/>
+  </td>
+</tr></table>
