@@ -268,9 +268,11 @@ describe('<DashboardMeetingForm />', () => {
     );
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAt.toFormat('dd/MM/yyyy') },
-    });
+    userEvent.type(inputStartingAtDate, startingAt.toFormat('yyyy/MM/dd'));
+    fireEvent.blur(inputStartingAtDate);
+    await act(async () =>
+      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+    );
 
     // using userEvent.type with following input doesn't work
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
