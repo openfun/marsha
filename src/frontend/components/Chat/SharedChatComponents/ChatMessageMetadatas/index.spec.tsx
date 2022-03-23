@@ -23,8 +23,8 @@ describe('<ChatMessageMetadatas />', () => {
     );
 
     expect(chatAvatarDiv).toHaveStyle({
-      width: '24px',
-      height: '24px',
+      width: '26px',
+      height: '26px',
     });
     expect(senderNameDiv).toHaveTextContent('John Doe');
     expect(messageTimeDiv).toHaveTextContent('12:12');
