@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 export type ParticipantType = {
+  id: string;
   isInstructor: boolean;
   isOnStage: boolean;
   name: string;
@@ -18,18 +19,21 @@ export const useParticipantsStore = create<State>((set) => ({
     set((state) => {
       if (
         !state.participants.some(
-          (participant) => participant.name === newParticipant.name,
+          (participant) =>
+            participant.name === newParticipant.name ||
+            participant.id === newParticipant.id,
         )
       ) {
         return {
           participants: state.participants
-            .concat({
-              isInstructor: newParticipant.isInstructor,
-              isOnStage: newParticipant.isOnStage,
-              name: newParticipant.name,
-            })
+            .concat(newParticipant)
+            // Order participants alphabetically, with instructors first
             .sort((participantA, participantB) =>
-              participantA.name.localeCompare(participantB.name),
+              participantA.isInstructor === participantB.isInstructor
+                ? participantA.name.localeCompare(participantB.name)
+                : participantA.isInstructor
+                ? -1
+                : 1,
             ),
         };
       } else {
