@@ -1,5 +1,11 @@
 ### Moodle Admin setup
 
+#### Prerequisites
+
+Before heading to Moodle, you should get an LTI passport from administrators of the Marsha server to which you want to connect.
+
+The passport should consist in 2 oauth credentials: a consumer key and a shared secret.
+
 #### Create external tool preset
 
 In Moodle, logged as an admin, go to `Site administration`:
