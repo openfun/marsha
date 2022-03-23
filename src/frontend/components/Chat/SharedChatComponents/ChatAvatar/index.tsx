@@ -1,7 +1,10 @@
 import { Box } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   avatarTitle: {
@@ -11,9 +14,13 @@ const messages = defineMessages({
   },
 });
 
+interface AvatarProps {
+  isInstructor: boolean;
+}
+
 const AvatarBox = styled(Box)`
-  // minWidth is set otherwise avatar width is crushed by the margin of the component next to the avatar
-  min-width: 24px;
+  outline: ${({ isInstructor }: AvatarProps) =>
+    isInstructor && `2px solid ${normalizeColor('blue-active', theme)}`};
 `;
 
 interface ChatAvatarProps {
@@ -24,19 +31,12 @@ export const ChatAvatar = ({ isInstructor }: ChatAvatarProps) => {
   const intl = useIntl();
   return (
     <AvatarBox
-      background="bg-marsha"
-      border={
-        isInstructor
-          ? {
-              color: 'blue-chat',
-              size: 'small',
-            }
-          : undefined
-      }
-      height="24px"
+      background={`${normalizeColor('blue-active', theme)}19`}
+      isInstructor={isInstructor!}
+      height="26px"
       round="6px"
       title={intl.formatMessage(messages.avatarTitle)}
-      width="24px"
+      width="26px"
     />
   );
 };
