@@ -1,35 +1,62 @@
 import { useParticipantsStore } from '.';
 
 const participant1 = {
+  id: 'example.jid.instructor1@prosody.org',
   isInstructor: true,
   isOnStage: true,
-  name: 'Instructor',
+  name: 'Instructor 1',
 };
 
 const participant2 = {
+  id: 'example.jid.instructor2@prosody.org',
+  isInstructor: true,
+  isOnStage: true,
+  name: 'Instructor 2',
+};
+
+const participant3 = {
+  id: 'example.jid.student1@prosody.org',
   isInstructor: false,
   isOnStage: true,
   name: 'Student 1',
 };
 
-const participant3 = {
+const participant4 = {
+  id: 'example.jid.student2@prosody.org',
   isInstructor: false,
   isOnStage: false,
   name: 'Student 2',
+};
+
+const sameIdParticipant1 = {
+  id: 'example.jid.instructor1@prosody.org',
+  isInstructor: false,
+  isOnStage: false,
+  name: 'Generic participant',
+};
+
+const sameNameParticipant1 = {
+  id: 'example.jid.generic@prosody.org',
+  isInstructor: false,
+  isOnStage: false,
+  name: 'Instructor 1',
 };
 
 describe('useParticipantsStore', () => {
   it('executes useParticipantsStore/addParticipant', () => {
     expect(useParticipantsStore.getState().participants).toEqual([]);
 
+    useParticipantsStore.getState().addParticipant(participant4);
     useParticipantsStore.getState().addParticipant(participant1);
-    useParticipantsStore.getState().addParticipant(participant2);
     useParticipantsStore.getState().addParticipant(participant3);
+    useParticipantsStore.getState().addParticipant(participant2);
 
+    // Expect array to be alphabetically ordered, with instructors first
     expect(useParticipantsStore.getState().participants).toEqual([
       participant1,
       participant2,
       participant3,
+      participant4,
     ]);
   });
 
@@ -44,6 +71,16 @@ describe('useParticipantsStore', () => {
     useParticipantsStore.getState().removeParticipant(participant1.name);
     expect(useParticipantsStore.getState().participants).toEqual([
       participant2,
+    ]);
+  });
+
+  it('tries to add participant with same id and same name', () => {
+    useParticipantsStore.getState().addParticipant(participant1);
+    useParticipantsStore.getState().addParticipant(sameIdParticipant1);
+    useParticipantsStore.getState().addParticipant(sameNameParticipant1);
+
+    expect(useParticipantsStore.getState().participants).toEqual([
+      participant1,
     ]);
   });
 });

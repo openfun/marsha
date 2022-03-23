@@ -12,36 +12,26 @@ const addParticipantsTrackingPlugin = () =>
       _converse.on('initialized', () => {
         _converse.connection.addHandler(
           (stanza: HTMLElement) => {
-            if (
-              stanza.getAttribute('from') !== null &&
-              stanza.getAttribute('to') !== null
-            ) {
-              const participantDisplayName = getNameFromJID(
-                stanza.getAttribute('from')!,
-              );
+            const jid = stanza.getAttribute('from');
+            if (jid && stanza.getAttribute('to')) {
+              const item = stanza.getElementsByTagName('item')[0];
+              const participantDisplayName = getNameFromJID(jid);
               if (
-                stanza.getAttribute('type') !== null &&
+                stanza.getAttribute('type') &&
                 stanza.getAttribute('type') === 'unavailable'
               ) {
                 useParticipantsStore
                   .getState()
                   .removeParticipant(participantDisplayName);
               } else if (
-                stanza.getElementsByTagName('item')[0] !== null &&
-                stanza
-                  .getElementsByTagName('item')[0]
-                  .getAttribute('affiliation') !== null &&
-                stanza
-                  .getElementsByTagName('item')[0]
-                  .getAttribute('affiliation') !== 'none'
+                item &&
+                item.getAttribute('affiliation') &&
+                item.getAttribute('affiliation') !== 'none'
               ) {
                 const participantIsInstructor =
-                  stanza
-                    .getElementsByTagName('item')[0]
-                    .getAttribute('affiliation') === 'owner'
-                    ? true
-                    : false;
+                  item.getAttribute('affiliation') === 'owner';
                 useParticipantsStore.getState().addParticipant({
+                  id: jid,
                   isInstructor: participantIsInstructor,
                   isOnStage: false,
                   name: participantDisplayName,
