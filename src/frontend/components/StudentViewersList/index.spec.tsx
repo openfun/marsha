@@ -1,17 +1,18 @@
+import { act, render, screen } from '@testing-library/react';
 import { Grommet } from 'grommet';
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
 
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
-import { imageSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { theme } from 'utils/theme/theme';
-import { StudentViewersList } from '.';
-import { GlobalStyles } from 'utils/theme/baseStyles';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
+import { imageSnapshot } from 'utils/tests/imageSnapshot';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { GlobalStyles } from 'utils/theme/baseStyles';
+import { theme } from 'utils/theme/theme';
+
+import { StudentViewersList } from '.';
 
 describe('<StudentViewersList />', () => {
   it('adds and removes several users from the list.', () => {
@@ -24,6 +25,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.instructor@prosody.org',
         isInstructor: true,
         isOnStage: true,
         name: 'Instructor',
@@ -33,6 +35,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student1@prosody.org',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 1',
@@ -42,6 +45,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student2@prosody.org',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 2',
@@ -55,6 +59,7 @@ describe('<StudentViewersList />', () => {
     const student2 = participantMockFactory({ name: 'Student 2' });
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student2@prosody.org',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 2',
@@ -83,6 +88,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.instructor@prosody.org',
         isInstructor: true,
         isOnStage: true,
         name: 'Instructor',
@@ -91,6 +97,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student1@prosody.org',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 1',
@@ -99,6 +106,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student2@prosody.org',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 2',
@@ -107,6 +115,7 @@ describe('<StudentViewersList />', () => {
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
+        id: 'example.jid.student3@prosody.org',
         isInstructor: false,
         isOnStage: true,
         name: 'Student 3',
