@@ -18,7 +18,7 @@
     "@types/jest": "27.4.1",
     "@types/request-promise-native": "1.0.18",
     "jest": "27.5.1",
-    "prettier": "2.6.0"
+    "prettier": "2.6.1"
   },
   "dependencies": {
     "update-state": "file:../utils/update-state"
