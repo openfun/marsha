@@ -13,7 +13,11 @@ export const TeacherLiveInfoBar = ({
   ...props
 }: TeacherLiveInfoBarProps) => {
   return (
-    <Box direction="column" style={{ minWidth: '0' }} {...props}>
+    <Box
+      direction="column"
+      style={{ flexBasis: '0%', minWidth: '0' }}
+      {...props}
+    >
       <Heading
         color="blue-active"
         level="2"

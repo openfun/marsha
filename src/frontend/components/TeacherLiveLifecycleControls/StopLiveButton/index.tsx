@@ -31,7 +31,7 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
       color={normalizeColor('red-active', theme)}
       disabled={shouldShowStopAler}
       label={
-        <Box flex direction="row">
+        <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
           {intl.formatMessage(messages.title)}
           <StopSVG
             iconColor="white"
