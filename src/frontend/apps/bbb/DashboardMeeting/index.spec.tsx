@@ -3,32 +3,35 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { getDecodedJwt } from 'data/appData';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Deferred } from 'utils/tests/Deferred';
+import {
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
+} from 'utils/tests/factories';
 
 import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
 import DashboardMeeting from '.';
 
-let mockCanUpdate: boolean;
-let mockUserFullname: string | undefined;
 jest.mock('data/appData', () => ({
   appData: {
     modelName: 'meetings',
     resource: {
       id: '1',
     },
+    static: {
+      img: {
+        bbbBackground: 'some_url',
+      },
+    },
   },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-    consumer_site: 'consumer_site',
-    user: {
-      id: 'user_id',
-      user_fullname: mockUserFullname,
-    },
-  }),
+  getDecodedJwt: jest.fn(),
 }));
+
+const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
+  typeof getDecodedJwt
+>;
 
 jest.mock('apps/bbb/data/bbbAppData', () => ({
   bbbAppData: {
@@ -36,6 +39,7 @@ jest.mock('apps/bbb/data/bbbAppData', () => ({
     meeting: {
       id: '1',
     },
+    jwt: 'token',
   },
 }));
 
@@ -46,7 +50,7 @@ describe('<DashboardMeeting />', () => {
   });
 
   it('shows student dashboard', async () => {
-    mockCanUpdate = false;
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     const meeting = meetingMockFactory({
       id: '1',
       started: false,
@@ -69,7 +73,7 @@ describe('<DashboardMeeting />', () => {
   });
 
   it('shows instructor dashboard', async () => {
-    mockCanUpdate = true;
+    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
     const meeting = meetingMockFactory({
       id: '1',
       started: false,
@@ -88,11 +92,15 @@ describe('<DashboardMeeting />', () => {
     );
     getByText('Loading meeting...');
     await act(async () => meetingDeferred.resolve(meeting));
-    await findByText('Create meeting in BBB');
+    await findByText('Start the meeting in BBB');
   });
 
   it('asks for fullname when joining a meeting, cancellable for instructor', async () => {
-    mockCanUpdate = true;
+    const token = ltiInstructorTokenMockFactory(
+      {},
+      { user_fullname: undefined },
+    );
+    mockGetDecodedJwt.mockReturnValue(token);
     const meeting = meetingMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
     const meetingDeferred = new Deferred();
@@ -117,7 +125,7 @@ describe('<DashboardMeeting />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Create meeting in BBB'));
+    fireEvent.click(screen.getByText('Start the meeting in BBB'));
     fireEvent.click(await findByText('Join meeting'));
 
     await findByText('Please enter your name to join the meeting');
@@ -125,8 +133,8 @@ describe('<DashboardMeeting />', () => {
   });
 
   it('asks for fullname when joining a meeting, not cancellable for student', async () => {
-    mockCanUpdate = false;
-    mockUserFullname = undefined;
+    const token = ltiStudentTokenMockFactory({}, { user_fullname: undefined });
+    mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => window);
 
     const meeting = meetingMockFactory({
@@ -146,7 +154,7 @@ describe('<DashboardMeeting />', () => {
       ),
     );
     await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('Join meeting'));
+    fireEvent.click(screen.getByText('Click here to access meeting'));
     await findByText('Please enter your name to join the meeting');
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 
@@ -163,8 +171,8 @@ describe('<DashboardMeeting />', () => {
   });
 
   it('uses appdata fullname when joining a meeting', async () => {
-    mockCanUpdate = true;
-    mockUserFullname = 'Full user name';
+    const token = ltiInstructorTokenMockFactory();
+    mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => window);
 
     const meeting = meetingMockFactory({ id: '1', started: true });
@@ -195,7 +203,7 @@ describe('<DashboardMeeting />', () => {
       },
       method: 'PATCH',
       body: JSON.stringify({
-        fullname: 'Full user name',
+        fullname: token.user?.user_fullname,
       }),
     });
     expect(window.open).toHaveBeenCalledTimes(1);
@@ -214,8 +222,8 @@ describe('<DashboardMeeting />', () => {
   });
 
   it('displays user fullname when joining a meeting', async () => {
-    mockCanUpdate = true;
-    mockUserFullname = 'Full user name';
+    const token = ltiInstructorTokenMockFactory();
+    mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => null);
 
     const meeting = meetingMockFactory({ id: '1', started: false });
@@ -248,7 +256,7 @@ describe('<DashboardMeeting />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Create meeting in BBB'));
+    fireEvent.click(screen.getByText('Start the meeting in BBB'));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
     const updatedMeeting = {
@@ -257,8 +265,8 @@ describe('<DashboardMeeting />', () => {
       infos: {
         attendees: [
           {
-            userID: 'consumer_site_user_id',
-            fullName: 'Full user name',
+            userID: `${token.consumer_site}_${token.user?.id}`,
+            fullName: token.user?.user_fullname,
             hasVideo: 'true',
             hasJoinedVoice: 'true',
             isListeningOnly: 'false',
@@ -269,6 +277,47 @@ describe('<DashboardMeeting />', () => {
     await act(async () => updatedMeetingDeferred.resolve(updatedMeeting));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
-    getByText('You have joined the meeting as Full user name.');
+    getByText(`You have joined the meeting as ${token.user?.user_fullname}.`);
+  });
+
+  it('display error when no jwt exists', async () => {
+    mockGetDecodedJwt.mockImplementation(() => {
+      throw new Error('No jwt');
+    });
+    const { getByText } = render(wrapInIntlProvider(<DashboardMeeting />));
+
+    getByText('The meeting you are looking for could not be found');
+    getByText(
+      'This meeting does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
+    );
+  });
+
+  it('shows an error message when it fails to get the meeting', async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    const meetingDeferred = new Deferred();
+    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+
+    jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
+    const { getByText } = render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <DashboardMeeting />
+        </QueryClientProvider>,
+      ),
+    );
+    getByText('Loading meeting...');
+    await act(async () => meetingDeferred.resolve(500));
+    getByText('The meeting you are looking for could not be found');
+    getByText(
+      'This meeting does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
+    );
   });
 });

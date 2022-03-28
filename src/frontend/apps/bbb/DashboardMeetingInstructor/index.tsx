@@ -1,15 +1,19 @@
-import { Box, Text } from 'grommet';
-import React, { lazy, Suspense } from 'react';
+import { Box, Button, Grid, ResponsiveContext } from 'grommet';
+import React, { lazy, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
+import { Loader } from 'components/Loader';
+import { Nullable } from 'utils/types';
 
 import { Meeting } from 'apps/bbb/types/models';
-
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useEndMeeting } from 'apps/bbb/data/queries';
-import { Loader } from '../../../components/Loader';
+import {
+  DashboardMeetingLayout,
+  DashboardMeetingMessage,
+} from 'apps/bbb/DashboardMeetingLayout';
+
 const DashboardMeetingForm = lazy(
   () => import('apps/bbb/DashboardMeetingForm'),
 );
@@ -59,6 +63,7 @@ const DashboardMeetingInstructor = ({
   meetingEnded,
 }: DashboardMeetingInstructorProps) => {
   const intl = useIntl();
+  const size = useContext(ResponsiveContext);
 
   const endMeetingMutation = useEndMeeting(bbbAppData.meeting!.id, {
     onSuccess: () => {
@@ -74,36 +79,68 @@ const DashboardMeetingInstructor = ({
     endMeetingMutation.mutate({});
   };
 
-  return (
-    <Box pad="large">
+  if (!meeting.started) {
+    return (
       <Suspense fallback={<Loader />}>
-        {joinedAs && (
-          <Text textAlign="center" margin={{ bottom: 'medium' }}>
-            <FormattedMessage {...messages.joinedAs} values={{ joinedAs }} />
-          </Text>
-        )}
-        {!meeting.started ? (
-          <DashboardMeetingForm meeting={meeting} />
-        ) : (
-          <React.Fragment>
-            <DashboardMeetingInfos infos={meeting.infos} />
-            <Box direction="row" justify="center" margin={{ top: 'medium' }}>
-              <DashboardButton
-                label={intl.formatMessage(messages.endMeetingLabel)}
-                onClick={endMeetingAction}
-              />
-              {!joinedAs && (
-                <DashboardButton
-                  primary={true}
-                  label={intl.formatMessage(messages.joinMeetingLabel)}
-                  onClick={joinMeetingAction}
-                />
-              )}
-            </Box>
-          </React.Fragment>
-        )}
+        <DashboardMeetingForm meeting={meeting} />
       </Suspense>
-    </Box>
+    );
+  }
+
+  let left: JSX.Element;
+  let right: Nullable<JSX.Element> = null;
+
+  if (joinedAs) {
+    left = (
+      <React.Fragment>
+        <DashboardMeetingMessage
+          message={intl.formatMessage(messages.joinedAs, { joinedAs })}
+        />
+        <DashboardMeetingInfos infos={meeting.infos} />
+      </React.Fragment>
+    );
+    right = (
+      <Button
+        label={intl.formatMessage(messages.endMeetingLabel)}
+        primary
+        size="large"
+        fill="horizontal"
+        onClick={endMeetingAction}
+      />
+    );
+  } else {
+    left = (
+      <Box margin={{ top: 'large' }}>
+        <DashboardMeetingInfos infos={meeting.infos} />
+      </Box>
+    );
+    right = (
+      <Grid
+        gap="small"
+        columns={{ count: size !== 'medium' ? 2 : 1, size: 'auto' }}
+        fill="horizontal"
+      >
+        <Button
+          label={intl.formatMessage(messages.endMeetingLabel)}
+          size="large"
+          fill="horizontal"
+          onClick={endMeetingAction}
+        />
+        <Button
+          label={intl.formatMessage(messages.joinMeetingLabel)}
+          primary
+          size="large"
+          fill="horizontal"
+          onClick={joinMeetingAction}
+        />
+      </Grid>
+    );
+  }
+
+  return (
+    <Suspense fallback={<Loader />}>
+      <DashboardMeetingLayout left={left} right={right} />
+    </Suspense>
   );
 };
 

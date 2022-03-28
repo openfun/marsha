@@ -21,6 +21,11 @@ jest.mock('data/appData', () => ({
     resource: {
       id: '1',
     },
+    static: {
+      img: {
+        bbbBackground: 'some_url',
+      },
+    },
   },
 }));
 
@@ -63,7 +68,7 @@ describe('<DashboardMeetingForm />', () => {
     getByText('Title');
     getByText('Welcome text');
 
-    fireEvent.click(screen.getByText('Create meeting in BBB'));
+    fireEvent.click(screen.getByText('Start the meeting in BBB'));
     await act(async () =>
       deferredPatch.resolve({ message: 'Meeting created.' }),
     );
@@ -87,7 +92,7 @@ describe('<DashboardMeetingForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
 
-    const { getByText } = render(
+    const { getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <DashboardMeetingForm meeting={meeting} />
@@ -134,7 +139,22 @@ describe('<DashboardMeetingForm />', () => {
     });
     jest.runAllTimers();
 
-    fireEvent.click(screen.getByText('Create meeting in BBB'));
+    // simulate updated meeting
+    rerender(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <DashboardMeetingForm
+            meeting={{
+              ...meeting,
+              title: 'updated title',
+              welcome_text: 'updated welcome text',
+            }}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+
+    fireEvent.click(screen.getByText('Start the meeting in BBB'));
     await act(async () =>
       deferredPatch.resolve({ message: 'Meeting created.' }),
     );

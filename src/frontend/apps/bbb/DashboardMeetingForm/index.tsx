@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  Form,
-  FormField,
-  TextArea,
-  TextInput,
-} from 'grommet';
-import React, { useRef, useState } from 'react';
+import { Button, Form, FormField, TextArea, TextInput } from 'grommet';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -38,10 +31,10 @@ const messages = defineMessages({
     description: 'Label for welcome text in meeting creation form.',
     id: 'component.DashboardMeetingForm.welcomeTextLabel',
   },
-  createMeetingLabel: {
-    defaultMessage: 'Create meeting in BBB',
-    description: 'Label for confirm button in meeting creation form.',
-    id: 'component.DashboardMeetingForm.createMeetingLabel',
+  startMeetingLabel: {
+    defaultMessage: 'Start the meeting in BBB',
+    description: 'Label for the button starting the meeting creation in BBB.',
+    id: 'component.DashboardMeetingForm.startMeetingLabel',
   },
   scheduleMeetingLabel: {
     defaultMessage: 'Update meeting scheduling',
@@ -109,17 +102,16 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
     debouncedUpdateMeeting({ ...updatedMeetingState, ...updatedMeeting });
   }
 
-  return (
-    <Form
-      value={updatedMeetingState}
-      onChange={handleChange}
-      onSubmit={(event) => {
-        createMeetingMutation.mutate(event.value);
-      }}
-    >
+  useEffect(() => {
+    setUpdatedMeetingState({});
+  }, [meeting]);
+
+  const left = (
+    <Form value={{ ...meeting, ...updatedMeetingState }}>
       <FormField
         label={intl.formatMessage(messages.titleLabel)}
         htmlFor="title"
+        margin={{ bottom: 'medium' }}
       >
         <TextInput
           name="title"
@@ -133,6 +125,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
       <FormField
         label={intl.formatMessage(messages.descriptionLabel)}
         htmlFor="description"
+        margin={{ bottom: 'medium' }}
       >
         <TextArea
           name="description"
@@ -146,6 +139,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
       <FormField
         label={intl.formatMessage(messages.welcomeTextLabel)}
         htmlFor="welcome_text"
+        margin={{ bottom: 'medium' }}
       >
         <TextArea
           name="welcome_text"
@@ -157,8 +151,11 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
         />
       </FormField>
       <SchedulingFields
+        margin="none"
         startingAt={updatedMeetingState.starting_at || meeting.starting_at}
-        estimatedDuration={updatedMeetingState.estimated_duration || meeting.estimated_duration}
+        estimatedDuration={
+          updatedMeetingState.estimated_duration || meeting.estimated_duration
+        }
         onStartingAtChange={(startingAt) => {
           return handleChange({
             starting_at: startingAt,
@@ -170,16 +167,22 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
           });
         }}
       />
-      <Box align="center">
-        <Button
-          fill="horizontal"
-          type="submit"
-          label={intl.formatMessage(messages.createMeetingLabel)}
-          primary
-        />
-      </Box>
     </Form>
   );
+  const right = (
+    <Button
+      type="submit"
+      label={intl.formatMessage(messages.startMeetingLabel)}
+      primary
+      size="large"
+      fill="horizontal"
+      onClick={() => {
+        createMeetingMutation.mutate(meeting);
+      }}
+    />
+  );
+
+  return <DashboardMeetingLayout left={left} right={right} />;
 };
 
 export default DashboardMeetingForm;
