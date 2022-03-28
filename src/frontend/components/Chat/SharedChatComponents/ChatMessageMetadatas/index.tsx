@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ChatAvatar } from 'components/Chat/SharedChatComponents/ChatAvatar';
-import { theme } from 'utils/theme/theme';
+import { chatFonts } from 'utils/theme/theme';
 
 interface ChatMessageMetadatasProps {
   msgDatetime: DateTime;
@@ -26,8 +26,6 @@ const messages = defineMessages({
     id: 'component.MessageMetadatas.messageTimeTitle',
   },
 });
-
-const { chatFonts } = theme.chat;
 
 const SenderNameTextStyled = styled(Text)`
   letter-spacing: ${chatFonts.primary.letterSpacing};

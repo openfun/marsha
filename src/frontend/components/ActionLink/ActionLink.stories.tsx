@@ -2,7 +2,7 @@ import React, { ComponentProps } from 'react';
 import { Story } from '@storybook/react';
 
 import { ActionLink } from './ActionLink';
-import { theme } from '../../utils/theme/theme';
+import { colors } from 'utils/theme/theme';
 
 // 👇 This default export determines where your story goes in the story list
 export default {
@@ -13,7 +13,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.keys(theme.global.colors),
+      options: Object.keys(colors),
     },
   },
 };

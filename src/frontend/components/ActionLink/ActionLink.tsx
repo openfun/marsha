@@ -3,10 +3,10 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { theme } from '../../utils/theme/theme';
+import { theme, colors } from 'utils/theme/theme';
 
 interface Props {
-  color: keyof typeof theme.global.colors;
+  color: keyof typeof colors;
 }
 
 const ActionLinkStyled = styled(Button)`

@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { Tabs, Box, Grommet, ResponsiveContext } from 'grommet';
+import { Tabs, Box, Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
@@ -38,6 +38,18 @@ interface LiveVideoPanelProps {
 
 export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   const size = useContext(ResponsiveContext);
+  const extendedTheme: ThemeType = {
+    ...theme,
+    tabs: {
+      header: {
+        extend: `white-space: nowrap; \
+        display: flex; \
+        flex-wrap: nowrap;`,
+      },
+      extend: `display: ${size === 'small' ? 'none' : 'flex'};`,
+      gap: 'none',
+    },
+  };
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
     (state) => ({
       currentItem: state.currentItem,
@@ -92,21 +104,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   }
 
   return (
-    <StyledGrommet
-      background="white"
-      theme={{
-        ...theme,
-        tabs: {
-          header: {
-            extend: `white-space: nowrap; \
-            display: flex; \
-            flex-wrap: nowrap;`,
-          },
-          extend: `display: ${size === 'small' ? 'none' : 'flex'};`,
-          gap: 'none',
-        },
-      }}
-    >
+    <StyledGrommet background="white" theme={extendedTheme}>
       {header}
       <RelativeBox flex="grow">
         <ContentContainer>{content}</ContentContainer>
