@@ -47,6 +47,8 @@ export interface AppData {
       icons: string;
     };
     img: {
+      bbbBackground?: string;
+      bbbLogo?: string;
       liveBackground: string;
     };
   };
