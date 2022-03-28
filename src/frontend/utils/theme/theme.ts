@@ -1,4 +1,4 @@
-import { TextProps } from 'grommet';
+import { TextProps, ThemeType } from 'grommet';
 import { ColorType } from 'grommet/utils';
 import { rgba } from 'polished';
 
@@ -74,6 +74,11 @@ const colorsMain = {
   white: '#ffffff',
 };
 
+export const colors = {
+  ...colorsMain,
+  ...colorsGeneric,
+};
+
 interface Font {
   color?: ColorType;
   fontFamily?: string;
@@ -83,7 +88,7 @@ interface Font {
   lineHeight?: string;
 }
 
-const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
+export const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   primary: {
     color: colorsGeneric['blue-focus'],
     fontFamily: 'Roboto-Medium',
@@ -109,7 +114,7 @@ const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   },
 };
 
-export const theme = {
+export const theme: ThemeType = {
   box: {
     extend: 'min-height: initial; min-width: initial;',
   },
@@ -120,10 +125,7 @@ export const theme = {
     extend: 'padding: 0.5rem 1rem;',
   },
   global: {
-    colors: {
-      ...colorsGeneric,
-      ...colorsMain,
-    },
+    colors,
     input: {
       weight: 'normal',
       extend: `color: ${colorsGeneric['blue-chat']};`,
@@ -176,9 +178,6 @@ export const theme = {
         },
       },
     },
-  },
-  image: {
-    extend: 'max-width: 100%;',
   },
   card: {
     container: {
@@ -243,8 +242,5 @@ export const theme = {
       maxWidth: 'initial',
       size: '1.5rem',
     },
-  },
-  chat: {
-    chatFonts,
   },
 };

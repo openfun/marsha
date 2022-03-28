@@ -4,17 +4,17 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { LivePanelItem } from 'data/stores/useLivePanelState';
-import { theme } from 'utils/theme/theme';
+import { colors as themeColors } from 'utils/theme/theme';
 
 interface StyledTabProps {
   selected?: boolean;
 }
 
 const colors = {
-  active: theme.global.colors['blue-active'],
-  counterPart: theme.global.colors.white,
-  disable: theme.global.colors['blue-off'],
-  focus: theme.global.colors['blue-focus'],
+  active: themeColors['blue-active'],
+  counterPart: themeColors.white,
+  disable: themeColors['blue-off'],
+  focus: themeColors['blue-focus'],
 };
 
 const StyledTab = styled(Tab)`
