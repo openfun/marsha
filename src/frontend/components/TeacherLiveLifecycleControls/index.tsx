@@ -107,7 +107,11 @@ export const TeacherLiveLifecycleControls = ({
   }
 
   return (
-    <Box direction="row" {...props}>
+    <Box
+      direction="row"
+      style={{ flexBasis: '0%', whiteSpace: 'nowrap' }}
+      {...props}
+    >
       {content}
     </Box>
   );
