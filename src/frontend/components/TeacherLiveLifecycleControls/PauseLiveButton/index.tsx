@@ -78,7 +78,7 @@ export const PauseLiveButton = ({ video, ...props }: PauseLiveButtonProps) => {
       color={normalizeColor('red-active', theme)}
       disabled={status.type !== 'idle'}
       label={
-        <Box flex direction="row">
+        <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
           {intl.formatMessage(messages.title)}
           {status.type === 'loading' && (
             <Spinner

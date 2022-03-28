@@ -75,7 +75,7 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
       primary
       disabled={status.type === 'loading'}
       label={
-        <Box flex direction="row">
+        <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
           {intl.formatMessage(messages.title)}
           {status.type === 'loading' && (
             <Spinner
