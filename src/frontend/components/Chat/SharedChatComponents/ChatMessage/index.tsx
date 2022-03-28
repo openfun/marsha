@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ChatMessageType } from 'data/stores/useChatItemsStore/index';
-import { theme } from 'utils/theme/theme';
+import { chatFonts } from 'utils/theme/theme';
 
 const messages = defineMessages({
   sentAt: {
@@ -14,7 +14,6 @@ const messages = defineMessages({
   },
 });
 
-const { chatFonts } = theme.chat;
 const MessageContentTextStyled = styled(Text)`
   line-height: ${chatFonts.secondary.lineHeight};
   letter-spacing: ${chatFonts.secondary.letterSpacing};

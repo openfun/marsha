@@ -13,7 +13,7 @@ import { isFeatureEnabled } from './utils/isFeatureEnabled';
 
 // Load our style reboot into the DOM
 import { GlobalStyles } from './utils/theme/baseStyles';
-import { theme } from './utils/theme/theme';
+import { colors, theme } from './utils/theme/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
 
@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', async () => {
               duration: 5000,
               success: {
                 style: {
-                  background: theme.global.colors['status-ok'],
+                  background: colors['status-ok'],
                 },
               },
               error: {
                 style: {
-                  color: theme.global.colors.white,
-                  background: theme.global.colors['accent-2'],
+                  color: colors.white,
+                  background: colors['accent-2'],
                 },
               },
             }}

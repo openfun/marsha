@@ -1,4 +1,4 @@
-import { Button, Grommet, Paragraph, TextInput } from 'grommet';
+import { Button, Grommet, Paragraph, TextInput, ThemeType } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -11,7 +11,7 @@ import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 
-const formTheme = deepMerge(theme, {
+const formTheme: ThemeType = deepMerge(theme, {
   global: {
     input: {
       padding: '4px',
