@@ -99,6 +99,19 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("flags"),
             {"BBB": True, "live_raw": False, "sentry": False},
         )
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.png",
+                    "bbbBackground": "/static/img/bbbBackground.png",
+                    "bbbLogo": "/static/img/bbbLogo.png",
+                },
+                "svg": {
+                    "icons": "/static/svg/icons.svg",
+                },
+            },
+        )
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -148,6 +161,19 @@ class MeetingLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "meetings")
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.png",
+                    "bbbBackground": "/static/img/bbbBackground.png",
+                    "bbbLogo": "/static/img/bbbLogo.png",
+                },
+                "svg": {
+                    "icons": "/static/svg/icons.svg",
+                },
+            },
+        )
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -251,6 +277,19 @@ class MeetingLTIViewTestCase(TestCase):
         )
         self.assertEqual(context.get("modelName"), "meetings")
         self.assertEqual(context.get("appName"), "bbb")
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.png",
+                    "bbbBackground": "/static/img/bbbBackground.png",
+                    "bbbLogo": "/static/img/bbbLogo.png",
+                },
+                "svg": {
+                    "icons": "/static/svg/icons.svg",
+                },
+            },
+        )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
