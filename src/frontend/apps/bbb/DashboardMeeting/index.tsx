@@ -1,16 +1,18 @@
-import { Box, Spinner } from 'grommet';
+import { Box, Grommet, Spinner, ThemeType } from 'grommet';
+import { deepMerge } from 'grommet/utils';
 import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import { ErrorMessage } from 'components/ErrorComponents';
 import { getDecodedJwt } from 'data/appData';
 import { Loader } from 'components/Loader';
+import { theme } from 'utils/theme/theme';
+import { Maybe } from 'utils/types';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useJoinMeeting, useMeeting } from 'apps/bbb/data/queries';
 import { Attendee } from 'apps/bbb/types/models';
-import { Maybe } from 'utils/types';
+import { DashboardMeetingError } from 'apps/bbb/DashboardMeetingError';
 
 const DashboardMeetingStudent = lazy(
   () => import('apps/bbb/DashboardMeetingStudent'),
@@ -44,9 +46,80 @@ const messages = defineMessages({
   },
 });
 
+const bbbTheme: ThemeType = deepMerge(theme, {
+  global: {
+    font: {
+      family: 'Roboto-Regular',
+    },
+  },
+  box: {
+    extend: null,
+  },
+  button: {
+    default: {
+      background: { color: 'white' },
+      border: { color: 'brand', size: 'xsmall' },
+      color: 'brand',
+      padding: { vertical: 'xsmall', horizontal: 'small' },
+    },
+    primary: {
+      background: { color: 'brand' },
+      border: undefined,
+      color: 'white',
+    },
+    border: {
+      radius: '4px',
+    },
+    size: {
+      large: {
+        border: {
+          radius: '6px',
+        },
+        pad: {
+          horizontal: '3rem',
+          vertical: '1rem',
+        },
+      },
+    },
+    extend: null,
+  },
+  formField: {
+    label: {
+      size: '0.8rem',
+      margin: '0.5rem 1rem 0',
+      color: 'bg-grey',
+    },
+    border: {
+      position: 'outer',
+      side: 'all',
+      color: 'blue-active',
+      style: 'solid',
+    },
+    round: {
+      size: 'xsmall',
+    },
+  },
+  textInput: {
+    extend: 'padding: 0 1rem 0.8rem',
+  },
+  maskedInput: {
+    extend: 'padding: 0 1rem 0.8rem',
+  },
+  dateInput: {
+    icon: {
+      size: '18px',
+    },
+  },
+});
+
 const DashboardMeeting = () => {
   const intl = useIntl();
-  const canUpdate = getDecodedJwt().permissions.can_update;
+  let canUpdate: boolean;
+  try {
+    canUpdate = getDecodedJwt().permissions.can_update;
+  } catch (e) {
+    return <DashboardMeetingError />;
+  }
 
   const meetingRefetchInterval = useRef(5000);
   const [meetingUrl, setMeetingUrl] = useState('');
@@ -136,7 +209,7 @@ const DashboardMeeting = () => {
       break;
 
     case 'error':
-      content = <ErrorMessage code="generic" />;
+      content = <DashboardMeetingError />;
       break;
 
     case 'success':
@@ -198,9 +271,11 @@ const DashboardMeeting = () => {
   }
 
   return (
-    <Box align="center" pad={{ top: 'small' }}>
-      <Suspense fallback={<Loader />}>{content}</Suspense>
-    </Box>
+    <Grommet theme={bbbTheme}>
+      <Box align="center">
+        <Suspense fallback={<Loader />}>{content}</Suspense>
+      </Box>
+    </Grommet>
   );
 };
 

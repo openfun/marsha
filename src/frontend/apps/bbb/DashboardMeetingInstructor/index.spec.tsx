@@ -19,6 +19,11 @@ jest.mock('data/appData', () => ({
     resource: {
       id: '1',
     },
+    static: {
+      img: {
+        bbbBackground: 'some_url',
+      },
+    },
   },
 }));
 

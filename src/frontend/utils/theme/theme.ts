@@ -19,6 +19,7 @@ const colorsGeneric = {
   'blue-hover': '#2d76d3',
   'blue-off': '#81ade6',
   'blue-chat': '#0a67de',
+  'blue-message': '#ecf3fc',
   'border-grey': '#979797',
   'dark-1': '#08223c',
   'dark-2': '#183653',

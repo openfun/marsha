@@ -1,10 +1,10 @@
 import { Box, DateInput, FormField, TextInput } from 'grommet';
+import { MarginType } from 'grommet/utils';
+import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Nullable } from 'utils/types';
-import { DateTime, Duration, Settings } from 'luxon';
 
 const messages = defineMessages({
   startingAtDateTextLabel: {
@@ -56,6 +56,7 @@ interface SchedulingFieldsProps {
   estimatedDuration: Nullable<string>;
   onStartingAtChange?: (date: string) => void;
   onEstimatedDurationChange?: (duration: string) => void;
+  margin?: MarginType;
 }
 
 export const SchedulingFields = ({
@@ -63,6 +64,7 @@ export const SchedulingFields = ({
   estimatedDuration,
   onStartingAtChange = () => {},
   onEstimatedDurationChange,
+  margin,
 }: SchedulingFieldsProps) => {
   const intl = useIntl();
   Settings.defaultLocale = intl.locale;
@@ -177,10 +179,11 @@ export const SchedulingFields = ({
   };
 
   return (
-    <Box direction="row" justify="between" margin="medium" gap="medium">
+    <Box direction="row" justify="between" margin={margin} gap="medium">
       <FormField
         label={intl.formatMessage(messages.startingAtDateTextLabel)}
         htmlFor="starting_at_date"
+        margin="none"
       >
         <DateInput
           id="starting_at_date"
@@ -198,6 +201,7 @@ export const SchedulingFields = ({
       <FormField
         label={intl.formatMessage(messages.startingAtTimeTextLabel)}
         htmlFor="starting_at_time"
+        margin="none"
       >
         <TextInput
           id="starting_at_time"
@@ -207,11 +211,13 @@ export const SchedulingFields = ({
           suggestions={timeSuggestions}
           defaultSuggestion={22}
           placeholder="hh:mm"
+          dropHeight="medium"
         />
       </FormField>
       <FormField
         label={intl.formatMessage(messages.estimatedDurationTextLabel)}
         htmlFor="estimated_duration"
+        margin="none"
       >
         <TextInput
           id="estimated_duration"
@@ -220,6 +226,7 @@ export const SchedulingFields = ({
           onSuggestionSelect={onEstimatedDurationSuggestionSelect}
           suggestions={durationSuggestions}
           placeholder="hh:mm"
+          dropHeight="medium"
         />
       </FormField>
     </Box>

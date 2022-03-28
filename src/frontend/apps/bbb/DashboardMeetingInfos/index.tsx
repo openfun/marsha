@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHeader, TableRow } from 'grommet';
+import { Box, Grid, Text } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -22,34 +22,58 @@ const messages = defineMessages({
   },
 });
 
+interface DashboardMeetingInfosItemProps {
+  value: string;
+  unit: 'moderators' | 'participants' | 'listeners';
+}
+
+const DashboardMeetingInfosItem = ({
+  value,
+  unit,
+}: DashboardMeetingInfosItemProps) => {
+  return (
+    <Box>
+      <Text size="large" weight="bold" color="blue-active" textAlign="center">
+        {value}
+      </Text>
+      <Text color="blue-active" textAlign="center">
+        <FormattedMessage {...messages[unit]} />
+      </Text>
+    </Box>
+  );
+};
+
 interface DashboardMeetingInfosProps {
   infos?: MeetingInfos;
 }
 
 const DashboardMeetingInfos = ({ infos }: DashboardMeetingInfosProps) => {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableCell>
-            <FormattedMessage {...messages.moderators} />
-          </TableCell>
-          <TableCell>
-            <FormattedMessage {...messages.participants} />
-          </TableCell>
-          <TableCell>
-            <FormattedMessage {...messages.listeners} />
-          </TableCell>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell>{infos?.moderatorCount || 0}</TableCell>
-          <TableCell>{infos?.voiceParticipantCount || 0}</TableCell>
-          <TableCell>{infos?.listenerCount || 0}</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <Box
+      margin={{ top: 'large' }}
+      pad={{ vertical: 'small', horizontal: 'small' }}
+      round="xsmall"
+      border={{
+        color: 'blue-active',
+        size: 'small',
+        side: 'all',
+      }}
+    >
+      <Grid columns={{ count: 3, size: 'auto' }}>
+        <DashboardMeetingInfosItem
+          unit={'moderators'}
+          value={infos?.moderatorCount || '0'}
+        />
+        <DashboardMeetingInfosItem
+          unit={'participants'}
+          value={infos?.voiceParticipantCount || '0'}
+        />
+        <DashboardMeetingInfosItem
+          unit={'listeners'}
+          value={infos?.listenerCount || '0'}
+        />
+      </Grid>
+    </Box>
   );
 };
 

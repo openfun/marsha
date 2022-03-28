@@ -120,7 +120,7 @@ describe('<DashboardMeetingStudent />', () => {
         />,
       ),
     );
-    fireEvent.click(screen.getByText('Join meeting'));
+    fireEvent.click(screen.getByText('Click here to access meeting'));
     expect(joinMeetingAction).toHaveBeenCalledTimes(1);
     expect(meetingEnded).toHaveBeenCalledTimes(0);
 
