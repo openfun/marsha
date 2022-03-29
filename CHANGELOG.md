@@ -23,6 +23,7 @@ right (and close / open it)
 ### Changed
 
 - rename LiveRegistration model in LiveSession
+- Disable jitsi prejoin page
 
 ### Fixed
 
