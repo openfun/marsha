@@ -61,7 +61,7 @@ const DashboardVideoLiveJitsi = ({
     jitsiIsRecording.current = true;
   };
 
-  const initialiseJitsi = async (forcePrejoinPageEnabled = false) => {
+  const initialiseJitsi = async () => {
     if (!window.JitsiMeetExternalAPI) {
       await loadJitsiScript();
     }
@@ -132,14 +132,11 @@ const DashboardVideoLiveJitsi = ({
       hideConferenceSubject: true,
       // Hides the conference timer.
       hideConferenceTimer: true,
+      prejoinPageEnabled: false,
       resolution: 720,
       toolbarButtons,
       ...video.live_info.jitsi!.config_overwrite,
     };
-
-    if (forcePrejoinPageEnabled) {
-      configOverwrite.prejoinPageEnabled = true;
-    }
 
     const _jitsi = new window.JitsiMeetExternalAPI(
       video.live_info.jitsi!.domain!,
@@ -208,7 +205,7 @@ const DashboardVideoLiveJitsi = ({
         _jitsi.dispose();
         setCanStartLive(false);
         setCanShowStartButton(false);
-        initialiseJitsi(true);
+        initialiseJitsi();
       });
     }
 
