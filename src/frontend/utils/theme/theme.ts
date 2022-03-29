@@ -9,6 +9,7 @@ const colorsGeneric = {
   'accent-4': '#ffca58',
   'bg-bloc': '#d4e5f5',
   'bg-darkblue': '#002438',
+  'bg-info': '#f0f6fe',
   'bg-grey': '#717171',
   'bg-lightgrey': '#afafaf',
   'bg-marsha': '#edf5fa',
