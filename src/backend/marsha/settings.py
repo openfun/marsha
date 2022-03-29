@@ -267,6 +267,8 @@ class Base(Configuration):
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
     AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.SecretValue()
+    AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
+    AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
 
     # BBB
     BBB_ENABLED = values.BooleanValue(False)

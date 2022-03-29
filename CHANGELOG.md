@@ -35,6 +35,7 @@ right (and close / open it)
 - Do not allow a lti user to change his email when he registers to a scheduled 
   live
 - Expose XMPP info for a live once this one started
+- Continue stopping live even if input waiter fails
 
 ## [4.0.0-beta.1] - 2022-02-15
 

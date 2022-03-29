@@ -5,7 +5,9 @@ import os
 from django.conf import settings
 
 import boto3
+from botocore.exceptions import WaiterError
 import requests
+from sentry_sdk import capture_exception
 
 
 class ManifestMissingException(Exception):
@@ -340,8 +342,17 @@ def delete_aws_element_stack(video):
     # Once channel deleted we have to wait until input is detached
     input_waiter = medialive_client.get_waiter("input_detached")
     medialive_input_id = video.get_medialive_input().get("id")
-    input_waiter.wait(InputId=medialive_input_id)
-    medialive_client.delete_input(InputId=medialive_input_id)
+    try:
+        input_waiter.wait(
+            InputId=medialive_input_id,
+            WaiterConfig={
+                "Delay": settings.AWS_MEDIALIVE_INPUT_WAITER_DELAY,
+                "MaxAttempts": settings.AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS,
+            },
+        )
+        medialive_client.delete_input(InputId=medialive_input_id)
+    except WaiterError as exception:
+        capture_exception(exception)
 
 
 def _get_items(  # nosec
