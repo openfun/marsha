@@ -19,6 +19,7 @@ export const StudentLiveDescription = ({
         alignSelf="center"
         color={normalizeColor('blue-active', theme)}
         level={2}
+        textAlign="center"
         size="small"
       >
         {video.title}

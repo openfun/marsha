@@ -96,6 +96,8 @@ export const TeacherLiveStopConfirmation = ({
     };
   }, [status, updateVideo]);
 
+  const title = video.title || intl.formatMessage(messages.NoTitle);
+
   return (
     <Box fill>
       <Box
@@ -104,8 +106,17 @@ export const TeacherLiveStopConfirmation = ({
         pad={{ horizontal: 'large', vertical: 'medium' }}
         style={{ width: '50%', maxWidth: '600px', borderRadius: '6px' }}
       >
-        <Heading color="white" level="3" textAlign="center">
-          {video.title || intl.formatMessage(messages.NoTitle)}
+        <Heading
+          a11yTitle={title}
+          color="white"
+          level="3"
+          margin={{ horizontal: 'auto' }}
+          title={title}
+          truncate
+          textAlign="center"
+          style={{ width: '100%' }}
+        >
+          {title}
         </Heading>
 
         {video.live_state !== liveState.STOPPED && (
