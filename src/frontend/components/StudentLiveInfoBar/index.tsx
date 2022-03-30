@@ -16,10 +16,12 @@ export const StudentLiveInfoBar = ({
     <Box direction="column" flex style={{ minWidth: '0' }}>
       {title && (
         <Heading
+          a11yTitle={title}
           color="blue-active"
           level="2"
           margin={{ bottom: 'small' }}
           size="small"
+          title={title}
           truncate
           style={{ maxWidth: '100%' }}
         >

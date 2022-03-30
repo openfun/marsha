@@ -24,6 +24,7 @@ export const TeacherLiveInfoBar = ({
 }: TeacherLiveInfoBarProps) => {
   const intl = useIntl();
 
+  const liveTitle = title || intl.formatMessage(messages.noTitle);
   return (
     <Box
       direction="column"
@@ -31,14 +32,16 @@ export const TeacherLiveInfoBar = ({
       {...props}
     >
       <Heading
+        a11yTitle={liveTitle}
         color="blue-active"
         level="2"
         margin={{ bottom: 'small' }}
         size="small"
+        title={liveTitle}
         truncate
         style={{ maxWidth: '100%' }}
       >
-        {title || intl.formatMessage(messages.noTitle)}
+        {liveTitle}
       </Heading>
 
       <Box direction="row">
