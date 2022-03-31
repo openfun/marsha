@@ -4,7 +4,9 @@ import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
+import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
@@ -52,6 +54,8 @@ jest.mock('components/DashboardVideoLivePairing', () => ({
 }));
 
 let queryClient: QueryClient;
+
+window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => {
@@ -382,5 +386,45 @@ describe('components/DashboardVideoLive', () => {
       }
       cleanup();
     }
+  });
+
+  it('prompts display name form when trying to join the chat', async () => {
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.RUNNING,
+                  xmpp: {
+                    bosh_url: null,
+                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
+                    conference_url: 'conference-url',
+                    jid: 'jid',
+                    prebind_url: 'prebind_url',
+                    websocket_url: null,
+                  },
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
+        ),
+      ),
+    );
+
+    userEvent.click(screen.getByRole('button', { name: 'Show chat' }));
+
+    const joindChatButton = await screen.findByRole('button', {
+      name: 'Join the chat',
+    });
+    userEvent.click(joindChatButton);
+
+    await screen.findByText('Display name');
   });
 });

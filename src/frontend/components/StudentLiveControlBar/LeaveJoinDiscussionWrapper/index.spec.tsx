@@ -9,6 +9,10 @@ import { LeaveJoinDiscussionWrapper } from '.';
 
 let matchMedia: MatchMediaMock;
 
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, jest.fn()],
+}));
+
 describe('<LeaveJoinDiscussionWrapper />', () => {
   beforeEach(() => {
     matchMedia = new MatchMediaMock();

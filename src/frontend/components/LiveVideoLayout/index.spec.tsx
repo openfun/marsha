@@ -12,6 +12,10 @@ const LiveTitleElement = <p>live title element</p>;
 const MainCompo = <p>main component</p>;
 const PanelCompo = <p>panel component</p>;
 
+jest.mock('data/appData', () => ({
+  getDecodedJwt: jest.fn(),
+}));
+
 describe('<LiveVideoLayout />', () => {
   it('renders components with panel', async () => {
     render(

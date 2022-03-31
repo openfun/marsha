@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Layer, Text, TextInput } from 'grommet';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 import { Button as StudentButton } from 'components/Button';
 import { JoinDiscussionSVG } from 'components/SVGIcons/JoinDiscussionSVG';
 import { converse } from 'utils/window';
@@ -44,86 +45,58 @@ const messages = defineMessages({
 
 export const StudentJoinDiscussionButton = () => {
   const intl = useIntl();
-  const [username, setUsername] = useState('');
-  const [showUsernameForm, setShowUsernameForm] = useState(false);
-  const { usernameAlreadyExisting, reset, setAsked } = useParticipantWorkflow(
-    (state) => ({
-      usernameAlreadyExisting: state.usernameAlreadyExisting,
-      setAsked: state.setAsked,
-      reset: state.reset,
-    }),
-  );
-
-  const closeUserNameForm = () => {
-    setUsername('');
-    setShowUsernameForm(false);
-    reset();
-  };
+  const session = useLiveSession();
+  const [askingToJoin, setAskingToJoin] = useState(false);
+  const [isDisplayNameFormVisible, setDisplayNameFormVisible] =
+    useSetDisplayName();
+  const { setAsked } = useParticipantWorkflow((state) => ({
+    usernameAlreadyExisting: state.usernameAlreadyExisting,
+    setAsked: state.setAsked,
+    reset: state.reset,
+  }));
 
   const askToJoinDiscussion = async () => {
-    try {
-      //  alert teacher for the request through XMPP
-      await converse.askParticipantToJoin(username);
-    } catch (error) {
-      //  when failling to alert the teacher
-      setShowUsernameForm(true);
-      return;
-    }
-
-    //  save the request in the store
-    setAsked();
+    setAskingToJoin(true);
   };
 
   useEffect(() => {
-    if (usernameAlreadyExisting) {
-      setShowUsernameForm(true);
+    const join = async () => {
+      if (!session.liveSession?.display_name) {
+        //  prompt display name form when it is not set
+        setDisplayNameFormVisible(true);
+      } else {
+        //  perform action to join the discussion
+        await converse.askParticipantToJoin();
+        //  save the request in the store
+        setAsked();
+      }
+    };
+
+    if (!askingToJoin) {
+      //  do nothing if you don't want to join the discussion
+      return;
     }
-  }, [usernameAlreadyExisting]);
+    join();
+  }, [askingToJoin, session.liveSession?.display_name]);
+
+  useEffect(() => {
+    //  when display name form is closed without a display name (meaning it has been closed)
+    if (!isDisplayNameFormVisible && !session.liveSession?.display_name) {
+      //  reset the join discussion state
+      setAskingToJoin(false);
+    }
+  }, [
+    isDisplayNameFormVisible,
+    setAskingToJoin,
+    session.liveSession?.display_name,
+  ]);
 
   return (
-    <React.Fragment>
-      {showUsernameForm && (
-        <Layer
-          position="center"
-          onClickOutside={closeUserNameForm}
-          onEsc={closeUserNameForm}
-        >
-          <Box gap="medium" pad="large">
-            <FormattedMessage {...messages.chooseUsername} />
-            {usernameAlreadyExisting && (
-              <Text color="status-error">
-                <FormattedMessage {...messages.UsernameAlreadyExists} />
-              </Text>
-            )}
-            <TextInput
-              aria-label="username"
-              name="username"
-              type="text"
-              placeholder={intl.formatMessage(messages.username)}
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <Box align="center" direction="row" gap="medium">
-              <Button
-                label={intl.formatMessage(messages.confirm)}
-                onClick={askToJoinDiscussion}
-                primary
-                disabled={!username.length}
-              />
-              <Button
-                label={intl.formatMessage(messages.cancel)}
-                onClick={closeUserNameForm}
-              />
-            </Box>
-          </Box>
-        </Layer>
-      )}
-      <StudentButton
-        label={intl.formatMessage(messages.askInstructor)}
-        Icon={JoinDiscussionSVG}
-        onClick={askToJoinDiscussion}
-        title={intl.formatMessage(messages.askInstructor)}
-      />
-    </React.Fragment>
+    <StudentButton
+      label={intl.formatMessage(messages.askInstructor)}
+      Icon={JoinDiscussionSVG}
+      onClick={askToJoinDiscussion}
+      title={intl.formatMessage(messages.askInstructor)}
+    />
   );
 };

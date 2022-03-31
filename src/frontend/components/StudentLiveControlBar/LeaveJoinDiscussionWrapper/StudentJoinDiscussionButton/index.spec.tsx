@@ -1,19 +1,22 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import MatchMediaMock from 'jest-matchmedia-mock';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { converse } from 'utils/window';
 
 import { StudentJoinDiscussionButton } from '.';
 
-let matchMedia: MatchMediaMock;
-
 jest.mock('utils/window', () => ({
   converse: {
     askParticipantToJoin: jest.fn(),
   },
+}));
+
+const mockSetDisplayName = jest.fn();
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, mockSetDisplayName],
 }));
 
 const mockAskParticipantToJoin =
@@ -22,35 +25,34 @@ const mockAskParticipantToJoin =
   >;
 
 describe('<StudentJoinDiscussionButton />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
-    matchMedia.clear();
     jest.resetAllMocks();
-  });
-
-  beforeEach(() => {
-    /*
-        Cleanup doesn't clean portal rendered outside of the root div and grommet Layer uses a portal.
-        We must remove all body children.
-        https://github.com/grommet/grommet/issues/5200#issuecomment-837451175
-      */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
   });
 
   it('renders the ask button', async () => {
     render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
 
     screen.getByRole('button', { name: 'Send request to join the discussion' });
-    expect(
-      screen.queryByRole('textbox', { name: 'username' }),
-    ).not.toBeInTheDocument();
   });
 
-  it('clicks on the button to ask to join the discussion', async () => {
+  it('clicks on the button to ask to join the discussion when display name is set', async () => {
+    useLiveSession.setState({
+      liveSession: {
+        anonymous_id: 'anonymous-id',
+        consumer_site: 'consumer',
+        display_name: 'display name',
+        email: 'my-email@openfun.fr',
+        id: 'id',
+        is_registered: true,
+        live_attendance: null,
+        lti_id: 'lti-id',
+        lti_user_id: 'lti-id',
+        should_send_reminders: false,
+        username: 'username',
+        video: 'video',
+      },
+    });
+
     render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
 
     const askButton = screen.getByRole('button', {
@@ -67,83 +69,34 @@ describe('<StudentJoinDiscussionButton />', () => {
     );
   });
 
-  it('displays the username input text and clicks on cancel button', async () => {
+  it('clicks on the button ask for display name when one is not set in the live session', async () => {
+    useLiveSession.setState({
+      liveSession: {
+        anonymous_id: 'anonymous-id',
+        consumer_site: 'consumer',
+        display_name: null,
+        email: 'my-email@openfun.fr',
+        id: 'id',
+        is_registered: true,
+        live_attendance: null,
+        lti_id: 'lti-id',
+        lti_user_id: 'lti-id',
+        should_send_reminders: false,
+        username: 'username',
+        video: 'video',
+      },
+    });
+
     render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
-    mockAskParticipantToJoin.mockRejectedValueOnce(
-      Error('must be in the room before asking to join'),
-    );
 
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
     });
-    expect(
-      screen.queryByRole('textbox', { name: 'username' }),
-    ).not.toBeInTheDocument();
 
     expect(useParticipantWorkflow.getState().asked).toEqual(false);
     fireEvent.click(askButton);
 
-    expect(mockAskParticipantToJoin).toHaveBeenCalled();
-
-    const inputUsername = await screen.findByRole('textbox', {
-      name: 'username',
-    });
-    const confirmButton = screen.getByRole('button', { name: /confirm/i });
-    const cancelButton = screen.getByRole('button', { name: /cancel/i });
-
-    // at first rendering the confirm button is disabled
-    expect(confirmButton).toBeDisabled();
-
-    // the input value is filled
-    fireEvent.change(inputUsername, { target: { value: 'Joe' } });
-    // then the confirm button is enabled
-    expect(confirmButton).toBeEnabled();
-
-    // clicking on cancel button remove the input and the ask button is displayed again
-    fireEvent.click(cancelButton);
-    await screen.findByRole('textbox', { name: 'username' });
-    expect(inputUsername).not.toBeInTheDocument();
-    screen.getByRole('button', {
-      name: 'Send request to join the discussion',
-    });
-  });
-
-  it('displays the username input text and clicks on the confirm button', async () => {
-    render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
-    mockAskParticipantToJoin
-      .mockRejectedValueOnce(Error('must be in the room before asking to join'))
-      .mockResolvedValueOnce();
-
-    const askButton = screen.getByRole('button', {
-      name: 'Send request to join the discussion',
-    });
-    expect(
-      screen.queryByRole('textbox', { name: 'username' }),
-    ).not.toBeInTheDocument();
-
-    expect(useParticipantWorkflow.getState().asked).toEqual(false);
-    fireEvent.click(askButton);
-
-    expect(mockAskParticipantToJoin).toHaveBeenCalled();
-
-    const inputUsername = await screen.findByRole('textbox', {
-      name: 'username',
-    });
-    const confirmButton = screen.getByRole('button', { name: /confirm/i });
-    screen.getByRole('button', { name: /cancel/i });
-
-    // at first rendering the confirm button is disabled
-    expect(confirmButton).toBeDisabled();
-
-    // the input value is filled
-    fireEvent.change(inputUsername, { target: { value: 'Doe' } });
-    // then the confirm button is enabled
-    expect(confirmButton).toBeEnabled();
-
-    fireEvent.click(confirmButton);
-
-    await waitFor(() =>
-      expect(useParticipantWorkflow.getState().asked).toEqual(true),
-    );
+    expect(mockSetDisplayName).toHaveBeenCalled();
+    expect(mockSetDisplayName).toHaveBeenCalledWith(true);
   });
 });

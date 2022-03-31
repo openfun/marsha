@@ -3,11 +3,13 @@ import fetchMock from 'fetch-mock';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow/index';
 import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -15,7 +17,6 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { createPlayer } from 'Player/createPlayer';
 
 import { LiveVideoWrapper } from '.';
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow/index';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -421,6 +422,45 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
   });
+
+  it('prompts for display name when trying to join the chat', async () => {
+    const video = videoMockFactory({
+      title: 'live title',
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    render(
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    const joindChatButton = await screen.findByRole('button', {
+      name: 'Join the chat',
+    });
+    userEvent.click(joindChatButton);
+
+    await screen.findByText('Display name');
+  });
 });
 
 describe('<StudentLiveWrapper /> as a streamer', () => {
@@ -704,5 +744,47 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       LivePanelItem.CHAT,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
+  });
+
+  it('prompts for display name when trying to join the chat', async () => {
+    const video = videoMockFactory({
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          room_name: 'room',
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    render(
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    const joindChatButton = await screen.findByRole('button', {
+      name: 'Join the chat',
+    });
+    userEvent.click(joindChatButton);
+
+    await screen.findByText('Display name');
   });
 });
