@@ -15,6 +15,10 @@ import { StudentLiveControlBar } from '.';
 
 const mockEmptyVideo = videoMockFactory();
 
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, jest.fn()],
+}));
+
 describe('<StudentLiveControlBar />', () => {
   afterEach(() => {
     jest.resetAllMocks();

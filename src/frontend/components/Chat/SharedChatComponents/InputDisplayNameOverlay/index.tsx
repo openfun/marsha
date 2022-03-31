@@ -8,6 +8,7 @@ import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
 import { getDecodedJwt } from 'data/appData';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { useLiveSession } from 'data/stores/useLiveSession';
+import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MIN_LENGTH,
@@ -81,14 +82,9 @@ const messages = defineMessages({
   },
 });
 
-interface InputDisplayNameOverlayProps {
-  setOverlay: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const InputDisplayNameOverlay = ({
-  setOverlay,
-}: InputDisplayNameOverlayProps) => {
+export const InputDisplayNameOverlay = () => {
   const intl = useIntl();
+  const [_, setDiplayName] = useSetDisplayName();
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const { liveSession, setLiveSession } = useLiveSession((state) => ({
@@ -104,7 +100,7 @@ export const InputDisplayNameOverlay = ({
       return () => {
         setLiveSession(updatedLiveSession);
         setIsWaiting(false);
-        setOverlay(false);
+        setDiplayName(false);
       };
     };
 
@@ -188,7 +184,7 @@ export const InputDisplayNameOverlay = ({
   };
 
   const handleExitCrossClick = () => {
-    setOverlay(false);
+    setDiplayName(false);
   };
 
   return (
@@ -215,8 +211,9 @@ export const InputDisplayNameOverlay = ({
       </Box>
       <Box
         margin={{
-          horizontal: '20px',
-          vertical: '30px',
+          bottom: 'medium',
+          horizontal: 'medium',
+          top: 'small',
         }}
         pad="3px"
       >

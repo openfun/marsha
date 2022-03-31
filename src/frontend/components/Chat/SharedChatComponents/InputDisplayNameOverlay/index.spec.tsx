@@ -16,7 +16,10 @@ import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 import { InputDisplayNameOverlay } from './index';
 
-const mockSetOverlay = jest.fn();
+const mockSetDisplayName = jest.fn();
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, mockSetDisplayName],
+}));
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -54,11 +57,8 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
@@ -71,15 +71,11 @@ describe('<InputDisplayNameOverlay />', () => {
       screen.queryByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`),
     ).toBeNull();
     expect(inputTextbox).toHaveValue(`${ANONYMOUS_ID_PREFIX}-John`);
-    expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'JD');
@@ -92,15 +88,11 @@ describe('<InputDisplayNameOverlay />', () => {
       screen.queryByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`),
     ).toBeNull();
     expect(inputTextbox).toHaveValue('JD');
-    expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John Doe the legend');
@@ -113,7 +105,6 @@ describe('<InputDisplayNameOverlay />', () => {
       screen.queryByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`),
     ).toBeNull();
     expect(inputTextbox).toHaveValue('John Doe the legend');
-    expect(mockSetOverlay).not.toHaveBeenCalled();
   });
 
   it('enters a valid nickname but the server takes too long to answer.', async () => {
@@ -132,11 +123,8 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
@@ -145,7 +133,6 @@ describe('<InputDisplayNameOverlay />', () => {
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
-    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
@@ -177,11 +164,9 @@ describe('<InputDisplayNameOverlay />', () => {
       error: 409,
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
@@ -192,7 +177,6 @@ describe('<InputDisplayNameOverlay />', () => {
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
-    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(0);
     await act(async () => {
       jest.advanceTimersByTime(3000);
@@ -225,11 +209,9 @@ describe('<InputDisplayNameOverlay />', () => {
       success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
@@ -238,7 +220,6 @@ describe('<InputDisplayNameOverlay />', () => {
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
-    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
@@ -274,11 +255,8 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
@@ -287,7 +265,6 @@ describe('<InputDisplayNameOverlay />', () => {
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
-    expect(mockSetOverlay).toHaveBeenCalledTimes(0);
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
@@ -317,11 +294,8 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
@@ -329,7 +303,7 @@ describe('<InputDisplayNameOverlay />', () => {
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
-    expect(mockSetOverlay).toHaveBeenCalledTimes(1);
+
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenNthCalledWith(
       1,
       'John_Doe',
@@ -338,36 +312,34 @@ describe('<InputDisplayNameOverlay />', () => {
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
+
+    expect(mockSetDisplayName).toHaveBeenCalled();
+    expect(mockSetDisplayName).toHaveBeenCalledWith(false);
   });
 
   it('closes the window.', () => {
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     const closeButton = screen.getByTitle(
       'Click this button to close the overlay.',
     );
     act(() => userEvent.click(closeButton));
-    expect(mockSetOverlay).toHaveBeenCalledTimes(1);
     expect(mockSetLiveSessionDisplayName).not.toHaveBeenCalled();
+
+    expect(mockSetDisplayName).toHaveBeenCalled();
+    expect(mockSetDisplayName).toHaveBeenCalledWith(false);
   });
 
   it('displays the component and use liveragistration username as default value', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
-    render(
-      wrapInIntlProvider(
-        <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-      ),
-    );
+
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });
 
   it('displays the component and compares it with previous render.', async () => {
-    await renderImageSnapshot(
-      <InputDisplayNameOverlay setOverlay={mockSetOverlay} />,
-    );
+    await renderImageSnapshot(<InputDisplayNameOverlay />);
   });
 });
