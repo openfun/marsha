@@ -210,6 +210,7 @@ class VideoSerializer(VideoBaseSerializer):
     has_transcript = serializers.SerializerMethodField()
     live_info = serializers.SerializerMethodField()
     xmpp = serializers.SerializerMethodField()
+    title = serializers.CharField(allow_blank=False, allow_null=False, max_length=255)
 
     def validate_starting_at(self, value):
         """Add extra controls for starting_at field."""

@@ -66,7 +66,11 @@ class BaseFile(UploadableFileMixin, BaseModel):
     """Base file model used by all our File based models."""
 
     title = models.CharField(
-        max_length=255, verbose_name=_("title"), help_text=_("title of the file")
+        max_length=255,
+        verbose_name=_("title"),
+        help_text=_("title of the file"),
+        null=True,
+        blank=True,
     )
     lti_id = models.CharField(
         max_length=255,

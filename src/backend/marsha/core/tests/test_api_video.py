@@ -2186,41 +2186,6 @@ class VideoAPITest(TestCase):
         self.assertEqual(models.Video.objects.count(), 0)
         self.assertEqual(response.status_code, 403)
 
-    def test_api_video_create_by_playlist_admin_missing_title(self):
-        """
-        Create video with missing parameter.
-
-        Requests from an authorized user with a missing mandatory property should result
-        in an error message.
-        """
-        user = factories.UserFactory()
-        playlist = factories.PlaylistFactory()
-        factories.PlaylistAccessFactory(
-            role=models.ADMINISTRATOR, playlist=playlist, user=user
-        )
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
-
-        self.assertEqual(models.Video.objects.count(), 0)
-
-        response = self.client.post(
-            "/api/videos/",
-            {"playlist": str(playlist.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(models.Video.objects.count(), 0)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json(),
-            {"errors": [{"title": ["This field is required."]}]},
-        )
-
     def test_api_video_create_by_playlist_instructor(self):
         """
         Create video with playlist instructor access.
@@ -2498,6 +2463,44 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertEqual(video.title, "my new title")
+
+    def test_api_video_update_detail_token_user_title_null(self):
+        """Token users can not set a null title."""
+        video = factories.VideoFactory(title="my title")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"title": None}
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"title": ["This field may not be null."]})
+        video.refresh_from_db()
+        self.assertEqual(video.title, "my title")
+
+    def test_api_video_update_detail_token_user_title_empty(self):
+        """Token users can not set an empty title."""
+        video = factories.VideoFactory(title="my title")
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"title": " "}
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"title": ["This field may not be blank."]})
+        video.refresh_from_db()
+        self.assertEqual(video.title, "my title")
 
     def test_api_video_update_detail_token_scheduled_date_future(self):
         """
