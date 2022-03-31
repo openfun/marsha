@@ -49,7 +49,11 @@ class Meeting(BaseModel):
         null=True,
     )
     title = models.CharField(
-        max_length=255, verbose_name=_("title"), help_text=_("title of the meeting")
+        max_length=255,
+        verbose_name=_("title"),
+        help_text=_("title of the meeting"),
+        null=True,
+        blank=True,
     )
     description = models.TextField(
         verbose_name=_("description"),
