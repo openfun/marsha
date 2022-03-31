@@ -128,6 +128,5 @@ def get_or_create_resource(model, lti):
         lti_id=lti.resource_link_id,
         playlist=playlist,
         upload_state=PENDING,
-        title=lti.resource_link_title,
         show_download=lti.get_consumer_site().video_show_download_default,
     )
