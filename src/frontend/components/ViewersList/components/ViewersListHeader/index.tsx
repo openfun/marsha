@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, BoxProps, Text } from 'grommet';
 import styled from 'styled-components';
 
-const StyledTextHeader = styled(Text)`
+const StyledText = styled(Text)`
   font-family: 'Roboto-Regular';
   letter-spacing: -0.2px;
 `;
@@ -29,9 +29,9 @@ export const ViewersListHeader = ({
         }}
         round="14px"
       >
-        <StyledTextHeader color="blue-active" size="0.625rem" weight="normal">
+        <StyledText color="blue-active" size="0.625rem" weight="normal">
           {text}
-        </StyledTextHeader>
+        </StyledText>
       </Box>
     </Box>
   );

@@ -280,8 +280,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
-    expect(screen.queryByText('On stage')).toBeNull();
-    expect(screen.queryByText('Other participants')).toBeNull();
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -590,8 +594,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
-    expect(screen.queryByText('On stage')).toBeNull();
-    expect(screen.queryByText('Other participants')).toBeNull();
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,

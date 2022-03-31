@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Box, Button, List } from 'grommet';
+import React, { ReactNode, useMemo } from 'react';
+import { Box, Button, List, Paragraph } from 'grommet';
 import { AddCircle } from 'grommet-icons';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -13,6 +13,8 @@ import { ViewersListItem } from 'components/ViewersList/components/ViewersListIt
 import { converse } from 'utils/window';
 import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
 import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
+import { normalizeColor } from 'grommet/utils';
+import { colors } from 'utils/theme/theme';
 
 const messages = defineMessages({
   demands: {
@@ -43,7 +45,67 @@ const messages = defineMessages({
       'The text displayed in the button in charge of making students on stage exiting the stage, in the viewers list.',
     id: 'components.ViewersList.endOnStageButton',
   },
+  nobodyOnStage: {
+    defaultMessage:
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    description:
+      'Message displayed in the users list for viewers when nobody is on stage',
+    id: 'components.ViewersList.nobodyOnStage',
+  },
+  noViewers: {
+    defaultMessage: 'No viewers are currently connected to your stream.',
+    description:
+      'Message displayed in the users list when no viewers are connected',
+    id: 'components.ViewersList.noViewers',
+  },
 });
+
+interface SectionProps {
+  children?: (item: ParticipantType) => ReactNode;
+  items: ParticipantType[];
+  noItemsTitle?: string;
+  title: string;
+}
+
+const Section = ({ children, items, noItemsTitle, title }: SectionProps) => {
+  if (items.length === 0 && !noItemsTitle) {
+    //  no content to render
+    return null;
+  }
+
+  return (
+    <Box margin={{ top: 'medium' }}>
+      {(items.length !== 0 || noItemsTitle) && (
+        <ViewersListHeader
+          margin={{ left: 'medium', bottom: 'xsmall' }}
+          text={title}
+        />
+      )}
+      {items.length !== 0 && (
+        <List border={false} data={items} pad={{ top: '8px' }}>
+          {(item: ParticipantType, index: number) => (
+            <ViewersListItemContainer key={index}>
+              <ViewersListItem
+                isInstructor={item.isInstructor}
+                name={item.name}
+              />
+              {children && children(item)}
+            </ViewersListItemContainer>
+          )}
+        </List>
+      )}
+      {items.length === 0 && noItemsTitle && (
+        <Paragraph
+          color={normalizeColor('blue-chat', colors)}
+          margin={{ horizontal: 'medium', top: 'small', bottom: 'none' }}
+          size="0.7rem"
+        >
+          {noItemsTitle}
+        </Paragraph>
+      )}
+    </Box>
+  );
+};
 
 interface ViewersListProps {
   isInstructor: boolean;
@@ -63,7 +125,6 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
       ),
     [participants, video.participants_in_discussion],
   );
-
   const participantsNotOnStageAndNotAsking = useMemo(
     () =>
       participants.filter(
@@ -82,104 +143,73 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
       video.participants_asking_to_join,
     ],
   );
+  const participantsAskingToJoin = useMemo(
+    () =>
+      video.participants_asking_to_join
+        .sort((participantA, participantB) =>
+          participantA.name.localeCompare(participantB.name),
+        )
+        .map((item) => ({
+          id: item.id,
+          isInstructor: false,
+          isOnStage: false,
+          name: item.name,
+        })),
+    [video.participants_asking_to_join],
+  );
   const intl = useIntl();
 
   return (
     <Box
       fill
-      gap="30px"
       overflow={{
         horizontal: 'hidden',
         vertical: 'auto',
       }}
-      pad={{ bottom: 'medium', top: '30px' }}
     >
-      {isInstructor && video.participants_asking_to_join.length !== 0 && (
-        <React.Fragment>
-          <ViewersListHeader
-            margin={{ left: 'medium', bottom: 'xsmall' }}
-            text={intl.formatMessage(messages.demands)}
-          />
-          <List
-            border={false}
-            data={video.participants_asking_to_join.sort(
-              (participantA, participantB) =>
-                participantA.name.localeCompare(participantB.name),
-            )}
-            pad="none"
-          >
-            {(item: ParticipantType, index: number) => (
-              <ViewersListItemContainer key={index}>
-                <ViewersListItem
-                  isInstructor={item.isInstructor}
-                  name={item.name}
-                />
-                <Box direction="row" align="center" gap="small">
-                  <Button
-                    icon={<AddCircle color="red-active" size="20px" />}
-                    onClick={() => converse.rejectParticipantToJoin(item)}
-                    plain
-                    style={{ padding: '0px', transform: 'rotate(45deg)' }}
-                  />
-                  <ViewersListTextButton
-                    onClick={() =>
-                      converse.acceptParticipantToJoin(item, video)
-                    }
-                    text={intl.formatMessage(messages.acceptButton)}
-                  />
-                </Box>
-              </ViewersListItemContainer>
-            )}
-          </List>
-        </React.Fragment>
+      {isInstructor && (
+        <Section
+          items={participantsAskingToJoin}
+          title={intl.formatMessage(messages.demands)}
+        >
+          {(item: ParticipantType) => (
+            <Box direction="row" align="center" gap="small">
+              <Button
+                icon={<AddCircle color="red-active" size="20px" />}
+                onClick={() => converse.rejectParticipantToJoin(item)}
+                plain
+                style={{ padding: '0px', transform: 'rotate(45deg)' }}
+              />
+              <ViewersListTextButton
+                onClick={() => converse.acceptParticipantToJoin(item, video)}
+                text={intl.formatMessage(messages.acceptButton)}
+              />
+            </Box>
+          )}
+        </Section>
       )}
 
-      {participantsOnStage.length !== 0 && (
-        <React.Fragment>
-          <ViewersListHeader
-            margin={{ left: 'medium', bottom: 'xsmall' }}
-            text={intl.formatMessage(messages.onStage)}
-          />
-          <List border={false} data={participantsOnStage} pad="none">
-            {(item: ParticipantType, index: number) => (
-              <ViewersListItemContainer key={index}>
-                <ViewersListItem
-                  isInstructor={item.isInstructor}
-                  name={item.name}
-                />
-                {isInstructor && !item.isInstructor && (
-                  <ViewersListTextButton
-                    onClick={() => converse.kickParticipant(item)}
-                    text={intl.formatMessage(messages.endOnStageButton)}
-                  />
-                )}
-              </ViewersListItemContainer>
-            )}
-          </List>
-        </React.Fragment>
-      )}
-      {participantsNotOnStageAndNotAsking.length !== 0 && (
-        <React.Fragment>
-          <ViewersListHeader
-            margin={{ left: 'medium', bottom: 'xsmall' }}
-            text={intl.formatMessage(messages.otherViewers)}
-          />
-          <List
-            border={false}
-            data={participantsNotOnStageAndNotAsking}
-            pad="none"
-          >
-            {(item: ParticipantType, index: number) => (
-              <ViewersListItemContainer key={index}>
-                <ViewersListItem
-                  isInstructor={item.isInstructor}
-                  name={item.name}
-                />
-              </ViewersListItemContainer>
-            )}
-          </List>
-        </React.Fragment>
-      )}
+      <Section
+        items={participantsOnStage}
+        noItemsTitle={intl.formatMessage(messages.nobodyOnStage)}
+        title={intl.formatMessage(messages.onStage)}
+      >
+        {(item: ParticipantType) =>
+          isInstructor &&
+          !item.isInstructor && (
+            <ViewersListTextButton
+              onClick={() => converse.kickParticipant(item)}
+              text={intl.formatMessage(messages.endOnStageButton)}
+            />
+          )
+        }
+      </Section>
+
+      <Section
+        items={participantsNotOnStageAndNotAsking}
+        noItemsTitle={intl.formatMessage(messages.noViewers)}
+        title={intl.formatMessage(messages.otherViewers)}
+      />
     </Box>
   );
 };
