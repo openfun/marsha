@@ -9,6 +9,7 @@ import {
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
 import { converse } from 'utils/window';
+
 import { ViewersList } from '.';
 
 jest.mock('utils/window', () => ({
@@ -69,9 +70,13 @@ describe('<ViewersList /> when user is an instructor', () => {
       wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
     );
 
-    expect(screen.queryByText('Demands')).toEqual(null);
-    expect(screen.queryByText('On stage')).toEqual(null);
-    expect(screen.queryByText('Other participants')).toEqual(null);
+    expect(screen.queryByText('Demands')).not.toBeInTheDocument();
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
 
     act(() => useParticipantsStore.getState().addParticipant(participant1));
     act(() => useParticipantsStore.getState().addParticipant(participant2));
@@ -133,8 +138,12 @@ describe('<ViewersList /> when user is an instructor', () => {
     );
 
     screen.getByText('Demands');
-    expect(screen.queryByText('On stage')).toEqual(null);
-    expect(screen.queryByText('Other participants')).toEqual(null);
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnDemands1.name);
 
     const acceptButton = screen.getByRole('button', { name: 'Accept' });
@@ -152,8 +161,12 @@ describe('<ViewersList /> when user is an instructor', () => {
     );
 
     screen.getByText('Demands');
-    expect(screen.queryByText('On stage')).toEqual(null);
-    expect(screen.queryByText('Other participants')).toEqual(null);
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnDemands1.name);
 
     const rejectButton = screen.getAllByRole('button')[0];
@@ -174,9 +187,10 @@ describe('<ViewersList /> when user is an instructor', () => {
       wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
     );
 
-    expect(screen.queryByText('Demands')).toEqual(null);
+    expect(screen.queryByText('Demands')).not.toBeInTheDocument();
     screen.getByText('On stage');
-    expect(screen.queryByText('Other participants')).toEqual(null);
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnStage1Full.name);
 
     const terminateButton = screen.getByRole('button', { name: 'Terminate' });
@@ -191,9 +205,14 @@ describe('<ViewersList /> when user is a student', () => {
     const { rerender } = render(
       wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
     );
-    expect(screen.queryByText('Demands')).toEqual(null);
-    expect(screen.queryByText('On stage')).toEqual(null);
-    expect(screen.queryByText('Other participants')).toEqual(null);
+
+    expect(screen.queryByText('Demands')).not.toBeInTheDocument();
+    screen.getByText('On stage');
+    screen.getByText(
+      'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
+    );
+    screen.getByText('Other participants');
+    screen.getByText('No viewers are currently connected to your stream.');
 
     act(() =>
       useParticipantsStore.getState().addParticipant({
