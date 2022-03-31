@@ -7,6 +7,10 @@ import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, jest.fn()],
+}));
+
 const mockVideo = videoMockFactory({
   id: '5cffe85a-1829-4000-a6ca-a45d4647dc0d',
   live_state: liveState.RUNNING,

@@ -1,12 +1,14 @@
-import React, { Fragment, useState } from 'react';
-import { Box, ResponsiveContext } from 'grommet';
+import React, { useRef, useState } from 'react';
+import { Box, ResponsiveContext, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import styled from 'styled-components';
 
 import { LiveVideoResizer } from 'components/LiveVideoResizer';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { SetDisplayNameProvider } from 'data/stores/useSetDisplayName';
 import { DEFAULT_PANEL_WIDTH_RATIO } from 'default/livePanel';
 import { theme } from 'utils/theme/theme';
+import { DisplayNameForm } from './DisplayNameForm';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
@@ -35,6 +37,7 @@ export const LiveVideoLayout = ({
   sideElement,
 }: LiveStudentLayoutProps) => {
   const size = React.useContext(ResponsiveContext);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isStarted = useLiveStateStarted((state) => state.isStarted);
   const [savedPanelWidth, setSavedPanelWidthPx] = useState(
     document.documentElement.clientWidth * DEFAULT_PANEL_WIDTH_RATIO,
@@ -42,48 +45,52 @@ export const LiveVideoLayout = ({
 
   if (size === 'small') {
     return (
-      <Box height={{ min: '100vh' }}>
+      <SetDisplayNameProvider value={false}>
+        <DisplayNameForm />
         <Box height={{ min: '100vh' }}>
-          <Box flex="grow">
-            <Box flex="grow" hidden={isPanelOpen}>
-              <Box flex="grow">
-                <Box margin={{ top: 'auto', bottom: 'auto' }} flex="grow">
-                  {mainElement}
-                </Box>
-              </Box>
-
-              {isStarted && (
-                <Box margin={{ top: 'medium' }}>
-                  <StyledLiveVideoInformationBarWrapper />
-                  <Box background="white" pad={{ left: 'small' }}>
-                    {liveTitleElement}
+          <Box height={{ min: '100vh' }}>
+            <Box flex="grow">
+              <Stack interactiveChild="last">
+                <Box flex="grow">
+                  <Box flex="grow">
+                    <Box margin={{ top: 'auto', bottom: 'auto' }} flex="grow">
+                      {mainElement}
+                    </Box>
                   </Box>
+
+                  {isStarted && (
+                    <Box margin={{ top: 'medium' }}>
+                      <StyledLiveVideoInformationBarWrapper />
+                      <Box background="white" pad={{ left: 'small' }}>
+                        {liveTitleElement}
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
-              )}
+
+                {sideElement && isPanelOpen && (
+                  <Box height="100%">{sideElement}</Box>
+                )}
+              </Stack>
             </Box>
 
-            {sideElement && (
-              <Box flex="grow" hidden={!isPanelOpen}>
-                {sideElement}
+            {displayActionsElement && (
+              <Box height={'67px'} margin={{ top: 'small' }}>
+                {actionsElement}
               </Box>
             )}
           </Box>
 
-          {displayActionsElement && (
-            <Box height={'67px'} margin={{ top: 'small' }}>
-              {actionsElement}
-            </Box>
-          )}
+          {additionalContent}
         </Box>
-
-        {additionalContent}
-      </Box>
+      </SetDisplayNameProvider>
     );
   }
 
   return (
-    <Fragment>
-      <Box background="bg-marsha">
+    <SetDisplayNameProvider value={false}>
+      <DisplayNameForm target={containerRef.current} />
+      <Box ref={containerRef} background="bg-marsha">
         <LiveVideoResizer
           isReadyToDisplayRightElement={isXmppReady}
           isPanelOpen={isPanelOpen}
@@ -112,6 +119,6 @@ export const LiveVideoLayout = ({
         </StyledLiveVideoInformationBarWrapper>
       </Box>
       {additionalContent}
-    </Fragment>
+    </SetDisplayNameProvider>
   );
 };

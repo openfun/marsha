@@ -1,21 +1,21 @@
 import { Box, Spinner } from 'grommet';
-import React, { useState } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ChatConversationDisplayer } from 'components/Chat/SharedChatComponents/ChatConversationDisplayer';
 import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
-import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/InputDisplayNameOverlay';
 import { JoinChatButton } from 'components/Chat/SharedChatComponents/JoinChatButton';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { converse } from 'utils/window';
 import { useLiveSession } from 'data/stores/useLiveSession';
+import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 
 export const ChatLayout = () => {
   const liveSession = useLiveSession((state) => state.liveSession);
+  const [_, setDisplayName] = useSetDisplayName();
   const hasReceivedMessageHistory = useChatItemState(
     (state) => state.hasReceivedMessageHistory,
   );
-  const [overlay, setOverlay] = useState(false);
   const intl = useIntl();
 
   const processChatMessage = (chatMsg: string) => {
@@ -33,40 +33,34 @@ export const ChatLayout = () => {
   });
 
   const handleJoinChatButton = () => {
-    setOverlay(true);
+    setDisplayName(true);
   };
 
   return (
     <Box direction="column" fill>
-      {overlay ? (
-        <InputDisplayNameOverlay setOverlay={setOverlay} />
-      ) : (
-        <Box direction="column" fill>
-          {!hasReceivedMessageHistory ? (
-            <Box align="center" fill justify="center">
-              <Spinner size="large" />
-            </Box>
-          ) : (
-            <ChatConversationDisplayer />
-          )}
-          <Box margin="10px">
-            {liveSession?.display_name ? (
-              <InputBar
-                handleUserInput={processChatMessage}
-                isChatInput={true}
-                placeholderText={intl.formatMessage(
-                  messages.inputBarPlaceholder,
-                )}
-              />
-            ) : (
-              <JoinChatButton
-                disabled={!hasReceivedMessageHistory}
-                handleClick={handleJoinChatButton}
-              />
-            )}
+      <Box direction="column" fill>
+        {!hasReceivedMessageHistory ? (
+          <Box align="center" fill justify="center">
+            <Spinner size="large" />
           </Box>
+        ) : (
+          <ChatConversationDisplayer />
+        )}
+        <Box margin="small">
+          {liveSession?.display_name ? (
+            <InputBar
+              handleUserInput={processChatMessage}
+              isChatInput={true}
+              placeholderText={intl.formatMessage(messages.inputBarPlaceholder)}
+            />
+          ) : (
+            <JoinChatButton
+              disabled={!hasReceivedMessageHistory}
+              handleClick={handleJoinChatButton}
+            />
+          )}
         </Box>
-      )}
+      </Box>
     </Box>
   );
 };

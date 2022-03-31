@@ -8,7 +8,13 @@ import { liveSessionFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
+
 import { ChatLayout } from '.';
+
+const mockSetDisplayName = jest.fn();
+jest.mock('data/stores/useSetDisplayName', () => ({
+  useSetDisplayName: () => [false, mockSetDisplayName],
+}));
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
 jest.mock('data/appData', () => ({
@@ -39,9 +45,10 @@ mockConverse.mockImplementation(
   },
 );
 
-describe('<StudentChat />', () => {
+describe('<ChatLayout />', () => {
   it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
     render(wrapInIntlProvider(<ChatLayout />));
+
     // If no set, hasReceivedMessageHistory default value is false
     expect(useChatItemState.getState().hasReceivedMessageHistory).toEqual(
       false,
@@ -58,6 +65,7 @@ describe('<StudentChat />', () => {
 
   it('has received history message and has no display_name, the join button is not disabled anymore.', () => {
     render(wrapInIntlProvider(<ChatLayout />));
+
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
     });
@@ -68,24 +76,13 @@ describe('<StudentChat />', () => {
     expect(joinChatButton).not.toBeDisabled();
   });
 
-  it('clicks on the join button and the input display_name is mounted', () => {
-    useChatItemState.getState().setHasReceivedMessageHistory(true);
-    render(wrapInIntlProvider(<ChatLayout />));
-    const joinChatButton = screen.getByRole('button', {
-      name: 'Join the chat',
-    });
-    expect(joinChatButton).not.toBeDisabled();
-    act(() => {
-      userEvent.click(joinChatButton);
-    });
-    screen.getByText('Display name');
-  });
-
   it('shows the message input box when liveSession exists with a display_name', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
     const liveSession = liveSessionFactory({ display_name: 'l33t' });
     useLiveSession.getState().setLiveSession(liveSession);
+
     render(wrapInIntlProvider(<ChatLayout />));
+
     expect(
       screen.queryByRole('button', {
         name: 'Join the chat',
@@ -93,5 +90,19 @@ describe('<StudentChat />', () => {
     ).not.toBeInTheDocument();
     screen.getByText('Message...');
     expect(screen.queryByText('Display name')).not.toBeInTheDocument();
+  });
+
+  it('configures to ask for display name on ask button click', () => {
+    useChatItemState.getState().setHasReceivedMessageHistory(true);
+
+    render(wrapInIntlProvider(<ChatLayout />));
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: 'Join the chat',
+      }),
+    );
+
+    expect(mockSetDisplayName).toHaveBeenCalledWith(true);
   });
 });
