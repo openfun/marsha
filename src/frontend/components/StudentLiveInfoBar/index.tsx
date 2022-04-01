@@ -4,7 +4,7 @@ import { Box, Paragraph, Heading } from 'grommet';
 import { Nullable } from 'utils/types';
 
 interface StudentLiveInfoBarProps {
-  title: string;
+  title: Nullable<string>;
   startDate: Nullable<string>;
 }
 
@@ -14,16 +14,18 @@ export const StudentLiveInfoBar = ({
 }: StudentLiveInfoBarProps) => {
   return (
     <Box direction="column" flex style={{ minWidth: '0' }}>
-      <Heading
-        color="blue-active"
-        level="2"
-        margin={{ bottom: 'small' }}
-        size="small"
-        truncate
-        style={{ maxWidth: '100%' }}
-      >
-        {title}
-      </Heading>
+      {title && (
+        <Heading
+          color="blue-active"
+          level="2"
+          margin={{ bottom: 'small' }}
+          size="small"
+          truncate
+          style={{ maxWidth: '100%' }}
+        >
+          {title}
+        </Heading>
+      )}
 
       <Box direction="row">
         <Paragraph

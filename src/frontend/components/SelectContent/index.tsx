@@ -223,7 +223,7 @@ const ContentCard = ({
           {thumbnail ? (
             <Image
               alignSelf="stretch"
-              alt={content.title}
+              alt={content.title || undefined}
               fit="cover"
               fill="vertical"
               src={thumbnail}
@@ -242,7 +242,7 @@ interface SelectContentSectionProps {
   newTitle: MessageDescriptor;
   newLtiUrl: string;
   items: Nullable<Video[] | Document[]>;
-  selectContent: (url: string, title: string) => void;
+  selectContent: (url: string, title: Nullable<string>) => void;
 }
 
 export const SelectContentSection = ({
@@ -339,7 +339,7 @@ export const SelectContent = ({
     return () => clipboard.destroy();
   }, []);
 
-  const selectContent = (ltiUrl: string, title: string) => {
+  const selectContent = (ltiUrl: string, title: Nullable<string>) => {
     const contentItems = {
       '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
       '@graph': [
@@ -417,5 +417,5 @@ export const SelectContent = ({
 };
 
 export interface SelectContentTabProps {
-  selectContent: (url: string, title: string) => void;
+  selectContent: (url: string, title: Nullable<string>) => void;
 }

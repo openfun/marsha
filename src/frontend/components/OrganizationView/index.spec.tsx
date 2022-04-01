@@ -86,7 +86,7 @@ describe('<OrganizationView />', () => {
       screen.queryByRole('status', { name: 'Loading videos...' }),
     ).toBeNull();
     expect(screen.getAllByRole('table').length).toEqual(1);
-    screen.getByRole('rowheader', { name: video.title });
+    screen.getByRole('rowheader', { name: video.title! });
     screen.getByRole('heading', { name: 'Playlists', level: 2 });
     screen.getByRole('status', { name: 'Loading playlists...' });
 

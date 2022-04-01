@@ -3,7 +3,7 @@ import { Nullable } from 'utils/types';
 
 export interface Meeting extends Resource {
   playlist: Playlist;
-  title: string;
+  title: Nullable<string>;
   lti_url: string;
   started: boolean;
   ended: boolean;

@@ -141,7 +141,7 @@ interface SelectContentSectionProps {
   newTitle: MessageDescriptor;
   newLtiUrl: string;
   items: Nullable<Meeting[]>;
-  selectContent: (url: string, title: string) => void;
+  selectContent: (url: string, title: Nullable<string>) => void;
 }
 
 export const SelectContentSection = ({

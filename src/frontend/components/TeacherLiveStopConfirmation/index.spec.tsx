@@ -67,7 +67,7 @@ describe('<TeacherLiveStopConfirmation />', () => {
       ),
     );
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
 
     screen.getByRole('button', { name: 'Stop the live' });
     screen.getByRole('button', { name: 'Cancel' });

@@ -56,9 +56,9 @@ describe('<VideosList />', () => {
     screen.getByRole('columnheader', { name: 'Playlist' });
     screen.getByRole('columnheader', { name: 'Upload state' });
 
-    screen.getByRole('rowheader', { name: video1.title });
+    screen.getByRole('rowheader', { name: video1.title! });
     screen.getByRole('cell', { name: video1.playlist.title });
-    screen.getByRole('rowheader', { name: video2.title });
+    screen.getByRole('rowheader', { name: video2.title! });
     screen.getByRole('cell', { name: video2.playlist.title });
   });
 
