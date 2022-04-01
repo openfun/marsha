@@ -15,18 +15,18 @@ const UploadSuccessHandler = ({
     if (objectState.status === UploadManagerStatus.SUCCESS) {
       const { file, objectId, objectType } = objectState;
       const object = await getResource(objectType, objectId);
-      if (object!.hasOwnProperty('title')) {
+      if ('title' in object! && !object.title) {
         // Add the new object with title and upload_state in the store
         // to replace the old state.
         await addResource(objectType, {
-          ...object!,
+          ...object,
           title: file.name,
         });
 
         // Fetch the API to update the title resource.
         await updateResource(
           {
-            ...object!,
+            ...object,
             title: file.name,
           },
           objectType,
