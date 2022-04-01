@@ -1,6 +1,7 @@
 import * as faker from 'faker';
 
 import { Document } from 'types/file';
+import { DecodedJwt, DecodedJwtPermission, DecodedJwtUser } from 'types/jwt';
 import { Organization } from 'types/Organization';
 import { Participant } from 'types/Participant';
 import {
@@ -194,5 +195,62 @@ export const participantMockFactory = (
     id: faker.datatype.uuid(),
     name: faker.name.findName(),
     ...participant,
+  };
+};
+
+export const publicTokenMockFactory = (
+  token: Partial<DecodedJwt> = {},
+  permission: Partial<DecodedJwtPermission> = {},
+): DecodedJwt => {
+  return {
+    locale: 'en',
+    maintenance: false,
+    permissions: {
+      can_access_dashboard: false,
+      can_update: false,
+      ...permission,
+    },
+    resource_id: faker.datatype.uuid(),
+    roles: ['none'],
+    session_id: faker.datatype.uuid(),
+    ...token,
+  };
+};
+
+export const ltiStudentTokenMockFactory = (
+  token: Partial<DecodedJwt> = {},
+  user: Partial<DecodedJwtUser> = {},
+  permission: Partial<DecodedJwtPermission> = {},
+): DecodedJwt => {
+  return {
+    ...publicTokenMockFactory(token, permission),
+    context_id: faker.lorem.sentence(2),
+    consumer_site: faker.datatype.uuid(),
+    roles: ['student'],
+    user: {
+      email: faker.internet.email(),
+      id: faker.datatype.uuid(),
+      username: faker.internet.userName(),
+      user_fullname: faker.name.findName(),
+      ...user,
+    },
+    ...token,
+  };
+};
+
+export const ltiInstructorTokenMockFactory = (
+  token: Partial<DecodedJwt> = {},
+  user: Partial<DecodedJwtUser> = {},
+  permission: Partial<DecodedJwtPermission> = {},
+): DecodedJwt => {
+  return {
+    ...ltiStudentTokenMockFactory(token, user, permission),
+    permissions: {
+      can_access_dashboard: true,
+      can_update: true,
+      ...permission,
+    },
+    roles: ['instructor'],
+    ...token,
   };
 };
