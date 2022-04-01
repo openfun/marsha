@@ -76,144 +76,6 @@ class SendRemindersTest(TestCase):
         self.assertEqual("", out.getvalue())
         out.close()
 
-    def test_send_reminders_started_earlier(self):
-        """Command should send reminders when video started before scheduled date
-        but shouldn't send reminders after. Reminders should only be sent to users that
-        have not unsubscribed to mails, that haven't already received this specific reminder,
-        that are registered for this video."""
-        video = VideoFactory(
-            live_state=RUNNING,
-            live_type=RAW,
-            starting_at=self.date_future,
-        )
-        public_livesession = LiveSessionFactory(
-            anonymous_id=uuid.uuid4(),
-            created_on=self.date_past,
-            email="sarah@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            video=video,
-        )
-        # livesession with is_registered False
-        LiveSessionFactory(
-            anonymous_id=uuid.uuid4(),
-            created_on=self.date_past,
-            email="not_registered@test-fun-mooc.fr",
-            is_registered=False,
-            should_send_reminders=True,
-            video=video,
-        )
-
-        # livesession with reminder settings.REMINDER_IS_STARTED already sent
-        LiveSessionFactory(
-            anonymous_id=uuid.uuid4(),
-            created_on=self.date_past,
-            email="settings.REMINDER_sent@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            reminders=[settings.REMINDER_IS_STARTED],
-            video=video,
-        )
-
-        # livesession with should_send_reminders False
-        LiveSessionFactory(
-            anonymous_id=uuid.uuid4(),
-            created_on=self.date_past,
-            email="unsubscribed@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=False,
-            video=video,
-        )
-
-        # LTI livesession with other reminders sent
-        lti_livesession = LiveSessionFactory(
-            consumer_site=video.playlist.consumer_site,
-            created_on=self.date_past,
-            email="chantal@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            reminders=[settings.REMINDER_1, settings.REMINDER_2, settings.REMINDER_3],
-            video=video,
-        )
-
-        out = StringIO()
-        call_command("send_reminders", stdout=out)
-
-        # check email have been sent
-        self.assertEqual(len(mail.outbox), 2)
-        # orders of email is not always the same
-        list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
-
-        # check we send it to the the right emails
-        self.assertIn("sarah@test-fun-mooc.fr", list_to)
-        self.assertIn("chantal@test-fun-mooc.fr", list_to)
-
-        # check it's the right content
-        self.assertEqual(
-            mail.outbox[0].subject,
-            "Webinar started earlier, come quickly to join us.",
-        )
-        self.assertEqual(
-            mail.outbox[1].subject,
-            "Webinar started earlier, come quickly to join us.",
-        )
-
-        self.assertIn(
-            f"Sending email for livesession {public_livesession.id} for "
-            f"video {public_livesession.video.id} step {settings.REMINDER_IS_STARTED}",
-            out.getvalue(),
-        )
-
-        self.assertIn(
-            f"Sending email for livesession {lti_livesession.id} for "
-            f"video {lti_livesession.video.id} step {settings.REMINDER_IS_STARTED}",
-            out.getvalue(),
-        )
-        # join content of both mails to avoid order problem
-        mails_content = " ".join(mail.outbox[0].body.split()) + " ".join(
-            mail.outbox[1].body.split()
-        )
-        self.assertIn(
-            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
-            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
-            mails_content,
-        )
-        self.assertIn(
-            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
-            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
-            mails_content,
-        )
-
-        self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
-            f"{lti_livesession.get_generate_salted_hmac()}]",
-            mails_content,
-        )
-
-        self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
-            f"{public_livesession.get_generate_salted_hmac()}]",
-            mails_content,
-        )
-
-        public_livesession.refresh_from_db()
-        lti_livesession.refresh_from_db()
-
-        # key has been added in both livesessions
-        self.assertIn(settings.REMINDER_IS_STARTED, public_livesession.reminders)
-        self.assertIn(settings.REMINDER_IS_STARTED, lti_livesession.reminders)
-        out.close()
-
-        # call the command a new time, no new email should be sent
-        out = StringIO()
-        call_command("send_reminders", stdout=out)
-        # still two
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual("", out.getvalue())
-        out.close()
-
     def test_send_reminders_subscribe_over_five_minutes(self):
         """Command should send reminders 5 minutes before the live if user has subscribed
         at least three hours before. Reminders should only be sent to users that
@@ -322,7 +184,6 @@ class SendRemindersTest(TestCase):
             created_on=timezone.now() - timedelta(hours=4),
             email="video_started@test-fun-mooc.fr",
             is_registered=True,
-            reminders=[settings.REMINDER_IS_STARTED],
             should_send_reminders=True,
             video=video_started,
         )
@@ -533,7 +394,6 @@ class SendRemindersTest(TestCase):
             created_on=timezone.now() - timedelta(hours=26),
             email="video_started@test-fun-mooc.fr",
             is_registered=True,
-            reminders=[settings.REMINDER_IS_STARTED],
             should_send_reminders=True,
             video=video_started,
         )
@@ -706,19 +566,6 @@ class SendRemindersTest(TestCase):
             video=video,
         )
 
-        # livesession off because reminder settings.REMINDER_IS_STARTED already sent
-        LiveSessionFactory(
-            consumer_site=video.playlist.consumer_site,
-            created_on=timezone.now() - timedelta(days=32),
-            email="notif_off@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            lti_id="Maths",
-            lti_user_id="76255f3807599c377bf0e5bf072359fd",
-            reminders=[settings.REMINDER_IS_STARTED],
-            video=video,
-        )
-
         # livesession with settings.REMINDER_1 reminder already sent
         LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
@@ -770,7 +617,6 @@ class SendRemindersTest(TestCase):
             created_on=timezone.now() - timedelta(days=32),
             email="video_started@test-fun-mooc.fr",
             is_registered=True,
-            reminders=[settings.REMINDER_IS_STARTED],
             should_send_reminders=True,
             video=video_started,
         )

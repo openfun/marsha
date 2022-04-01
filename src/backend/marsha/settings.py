@@ -362,11 +362,10 @@ class Base(Configuration):
     EMAIL_FROM = values.Value("from@fun-mooc.fr")
 
     # REMINDERS SENT for scheduled webinars
-    REMINDER_1, REMINDER_2, REMINDER_3, REMINDER_IS_STARTED, REMINDER_ERROR = (
+    REMINDER_1, REMINDER_2, REMINDER_3, REMINDER_ERROR = (
         "REMINDER_1",
         "REMINDER_2",
         "REMINDER_3",
-        "REMINDER_IS_STARTED",
         "REMINDER_ERROR",
     )
     # keys for REMINDERS_STEP

@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sentry_sdk import capture_exception
 
-from marsha.core.defaults import IDLE, RUNNING
+from marsha.core.defaults import IDLE
 from marsha.core.models import LiveSession
 
 
@@ -39,7 +39,6 @@ class Command(BaseCommand):
             .exclude(
                 reminders__overlap=[
                     step,
-                    settings.REMINDER_IS_STARTED,
                     settings.REMINDER_ERROR,
                 ]
             )
@@ -94,31 +93,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Execute management command."""
-        self.send_reminders_is_already_started()
         self.send_reminders_depending_on_time()
-
-    def send_reminders_is_already_started(self):
-        """Videos that have been started before send a reminder.
-
-        Search for all livesessions that have a scheduled webinar planned ahead
-        but are already running. Only concerns livesessions that have is_registered
-        True and should_send_reminders True.
-        """
-        livesessions = LiveSession.objects.filter(
-            should_send_reminders=True,
-            is_registered=True,
-            video__starting_at__gt=timezone.now(),
-            video__live_state=RUNNING,
-        ).exclude(
-            reminders__overlap=[settings.REMINDER_IS_STARTED, settings.REMINDER_ERROR]
-        )
-        self.send_reminders_and_update_livesessions_step(
-            livesessions,
-            settings.REMINDER_IS_STARTED,
-            _("Webinar started earlier, come quickly to join us."),
-            {},
-            "reminder_already_started",
-        )
 
     def send_reminders_depending_on_time(self):
         """Send reminders depending on time. Videos mustn't be started yet,
@@ -144,7 +119,6 @@ class Command(BaseCommand):
                 ).exclude(
                     reminders__overlap=[
                         step,
-                        settings.REMINDER_IS_STARTED,
                         settings.REMINDER_ERROR,
                     ]
                 )
