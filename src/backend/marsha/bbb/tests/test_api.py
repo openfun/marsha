@@ -16,6 +16,7 @@ from marsha.bbb import api, serializers
 from marsha.core import factories as core_factories
 
 from ..factories import MeetingFactory
+from ..models import Meeting
 from ..utils.bbb_utils import ApiMeetingException
 
 
@@ -246,6 +247,50 @@ class MeetingAPITest(TestCase):
         meeting.refresh_from_db()
         self.assertEqual(starting_at, meeting.starting_at)
         self.assertEqual(estimated_duration, meeting.estimated_duration)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_update_instructor_scheduling_past_date(
+        self, mock_get_meeting_infos
+    ):
+        """Scheduling a meeting in the pash is not allowed."""
+        meeting = MeetingFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (now - timedelta(hours=1)).replace(microsecond=0)
+        estimated_duration = timedelta(seconds=60)
+        data = {"starting_at": starting_at, "estimated_duration": estimated_duration}
+
+        with mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.patch(
+                f"/api/meetings/{meeting.id!s}/",
+                data,
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "starting_at": [
+                    f"{starting_at} is not a valid date, date should be planned after!"
+                ]
+            },
+        )
+
+        updated_meeting = Meeting.objects.get(id=meeting.id)
+        self.assertNotEqual(starting_at, updated_meeting.starting_at)
+        self.assertEqual(meeting.starting_at, updated_meeting.starting_at)
+        self.assertEqual(meeting.estimated_duration, updated_meeting.estimated_duration)
 
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_meeting_update_put_instructor_scheduling(self, mock_get_meeting_infos):

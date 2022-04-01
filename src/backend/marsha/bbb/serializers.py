@@ -1,6 +1,7 @@
 """Structure of BBB related models API responses with Django Rest Framework serializers."""
 
 from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import serializers
 
@@ -49,6 +50,18 @@ class MeetingSerializer(serializers.ModelSerializer):
             return get_meeting_infos(meeting=obj)
         except ApiMeetingException:
             return None
+
+    def validate_starting_at(self, value):
+        """Add extra controls for starting_at field."""
+        # Field starting_at has a new value
+        if value != self.instance.starting_at:
+            # New value is past, it can't be updated
+            if value is not None and value < timezone.now():
+                raise serializers.ValidationError(
+                    f"{value} is not a valid date, date should be planned after!"
+                )
+
+        return value
 
 
 class MeetingSelectLTISerializer(MeetingSerializer):
