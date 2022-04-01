@@ -41,6 +41,10 @@ right (and close / open it)
 - Expose XMPP info for a live once this one started
 - Continue stopping live even if input waiter fails
 
+### Removed
+
+- Remove email when the webinar started earlier
+
 ## [4.0.0-beta.1] - 2022-02-15
 
 ### Added

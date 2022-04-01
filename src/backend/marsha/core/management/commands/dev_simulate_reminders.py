@@ -7,7 +7,7 @@ from django.core.management import CommandError, call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from marsha.core.defaults import IDLE, RAW, RUNNING
+from marsha.core.defaults import IDLE, RAW
 from marsha.core.factories import LiveSessionFactory, VideoFactory
 
 
@@ -27,7 +27,6 @@ class Command(BaseCommand):
         self.get_data_five_minutes_before()
         self.get_data_three_hours_before()
         self.get_data_three_days_before()
-        self.get_data_already_started()
         call_command("send_reminders")
         self.stdout.write("Command was executed in DEBUG mode.")
 
@@ -123,33 +122,5 @@ class Command(BaseCommand):
             lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             username="Super Chantal",
-            video=video,
-        )
-
-    def get_data_already_started(self):
-        """Data to simulate reminder sent when live is already started."""
-        video = VideoFactory(
-            live_state=RUNNING,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=10),
-        )
-        LiveSessionFactory(
-            anonymous_id=uuid.uuid4(),
-            email="sarah@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            video=video,
-        )
-
-        # LTI registration with other reminders sent
-        LiveSessionFactory(
-            consumer_site=video.playlist.consumer_site,
-            email="chantal@test-fun-mooc.fr",
-            is_registered=True,
-            should_send_reminders=True,
-            lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            reminders=[settings.REMINDER_1, settings.REMINDER_2, settings.REMINDER_3],
-            username="Mysterious Chantal",
             video=video,
         )
