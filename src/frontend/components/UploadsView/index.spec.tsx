@@ -87,15 +87,15 @@ describe('<UploadsView />', () => {
 
     await act(async () => video0Deferred.resolve(video0));
     expect(screen.queryByText('video0.mp4')).toBeNull();
-    screen.getByText(video0.title);
+    screen.getByText(video0.title!);
 
     await act(async () => video1Deferred.resolve(video1));
     expect(screen.queryByText('video1.mp4')).toBeNull();
-    screen.getByText(video1.title);
+    screen.getByText(video1.title!);
 
     await act(async () => video2Deferred.resolve(video2));
     expect(screen.queryByText('video2.mp4')).toBeNull();
-    screen.getByText(video2.title);
+    screen.getByText(video2.title!);
   });
 
   it('shows relevant messages if there are no uploads', () => {

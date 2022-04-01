@@ -15,7 +15,7 @@ export const StudentLiveDescription = ({
   return (
     <Box margin={{ top: 'small' }}>
       <Heading
-        a11yTitle={video.title}
+        a11yTitle={video.title || undefined}
         alignSelf="center"
         color={normalizeColor('blue-active', theme)}
         level={2}

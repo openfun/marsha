@@ -37,7 +37,7 @@ export const DashboardDocumentTitleForm = ({
   const { updateDocument } = useDocument((state) => ({
     updateDocument: state.addResource,
   }));
-  const [title, setTitle] = useState(document.title);
+  const [title, setTitle] = useState(document.title || '');
   const [error, setError] = useState<Maybe<string>>(undefined);
   const [udpated, setUpdated] = useState(false);
   const intl = useIntl();

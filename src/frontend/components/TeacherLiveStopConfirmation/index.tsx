@@ -38,6 +38,11 @@ const messages = defineMessages({
       'Message displayed at the end of a live until harvesting began.',
     id: 'components.TeacherLiveStopConfirmation.stopped',
   },
+  NoTitle: {
+    defaultMessage: 'No title',
+    description: 'Title placeholder when no title is defined for this live',
+    id: 'components.TeacherLiveStopConfirmation.noTitle',
+  },
 });
 
 type EndLiveStatus =
@@ -100,7 +105,7 @@ export const TeacherLiveStopConfirmation = ({
         style={{ width: '50%', maxWidth: '600px', borderRadius: '6px' }}
       >
         <Heading color="white" level="3" textAlign="center">
-          {video.title}
+          {video.title || intl.formatMessage(messages.NoTitle)}
         </Heading>
 
         {video.live_state !== liveState.STOPPED && (

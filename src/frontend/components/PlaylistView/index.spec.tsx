@@ -72,6 +72,6 @@ describe('<PlaylistView />', () => {
     expect(
       screen.queryByRole('status', { name: 'Loading videos...' }),
     ).toBeNull();
-    screen.getByRole('rowheader', { name: video.title });
+    screen.getByRole('rowheader', { name: video.title! });
   });
 });
