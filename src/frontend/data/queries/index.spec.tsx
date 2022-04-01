@@ -390,7 +390,7 @@ describe('queries', () => {
       });
       result.current.mutate({
         playlist: video.playlist.id,
-        title: video.title,
+        title: video.title!,
       });
       await waitFor(() => result.current.isSuccess);
 
@@ -419,7 +419,7 @@ describe('queries', () => {
       });
       result.current.mutate({
         playlist: video.playlist.id,
-        title: video.title,
+        title: video.title!,
       });
 
       await waitFor(() => result.current.isError);

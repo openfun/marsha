@@ -116,7 +116,7 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
     await act(async () =>
@@ -178,7 +178,7 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
     screen.getByText(
       'The video is currently being uploaded. You will be able to see it or replace it here after it is processed.',
     );
@@ -208,7 +208,7 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
     screen.getByText(
       'The video is currently being processed. You will be able to see it or replace it here after it is finished.',
     );
@@ -252,7 +252,7 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
     await act(async () => getTimedTextTracksDeferred.resolve(500));
@@ -287,7 +287,7 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title });
+    screen.getByRole('heading', { name: video.title! });
     screen.getByText(
       'There is currently no video file for this Video. You can add one by dropping or picking a file below.',
     );

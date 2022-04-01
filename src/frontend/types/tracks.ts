@@ -141,7 +141,7 @@ export interface Video extends Resource {
   show_download: boolean;
   thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];
-  title: string;
+  title: Nullable<string>;
   upload_state: uploadState;
   urls: Nullable<VideoUrls>;
   lti_url?: Nullable<string>;

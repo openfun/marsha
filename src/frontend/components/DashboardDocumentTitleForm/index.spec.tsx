@@ -1,16 +1,16 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import React from 'react';
 
 import { DashboardDocumentTitleForm } from '.';
-import { uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { documentMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { documentMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     document: null,
     jwt: 'cool_token_m8',
@@ -21,7 +21,7 @@ describe('DashboardDocumentTitleForm', () => {
   afterEach(() => fetchMock.restore());
 
   it('shows the title form', () => {
-    const { container } = render(
+    render(
       wrapInIntlProvider(
         <Grommet>
           <DashboardDocumentTitleForm
@@ -35,7 +35,7 @@ describe('DashboardDocumentTitleForm', () => {
       ),
     );
 
-    const inputTitle = container.querySelector('#title') as HTMLInputElement;
+    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
 
     expect(inputTitle.value).toEqual('document title');
   });
@@ -50,7 +50,7 @@ describe('DashboardDocumentTitleForm', () => {
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
 
-    const { container, getByText } = render(
+    render(
       wrapInIntlProvider(
         <Grommet>
           <DashboardDocumentTitleForm document={document} />
@@ -58,12 +58,12 @@ describe('DashboardDocumentTitleForm', () => {
       ),
     );
 
-    const inputTitle = container.querySelector('#title') as HTMLInputElement;
+    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
 
     fireEvent.change(inputTitle!, {
       target: { value: 'updated document title' },
     });
-    fireEvent.click(getByText('Submit'));
+    fireEvent.click(screen.getByText('Submit'));
     await act(async () =>
       deferred.resolve(
         JSON.stringify({
@@ -77,7 +77,47 @@ describe('DashboardDocumentTitleForm', () => {
     );
 
     expect(inputTitle.value).toEqual('updated document title');
-    getByText('Title successfully updated');
+    screen.getByText('Title successfully updated');
+  });
+
+  it('successfully update null document title', async () => {
+    const deferred = new Deferred();
+    const document = documentMockFactory({
+      id: '46',
+      title: null,
+      upload_state: uploadState.READY,
+    });
+
+    fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
+
+    render(
+      wrapInIntlProvider(
+        <Grommet>
+          <DashboardDocumentTitleForm document={document} />
+        </Grommet>,
+      ),
+    );
+
+    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
+
+    fireEvent.change(inputTitle!, {
+      target: { value: 'updated document title' },
+    });
+    fireEvent.click(screen.getByText('Submit'));
+    await act(async () =>
+      deferred.resolve(
+        JSON.stringify({
+          ...document,
+          title: 'updated document title',
+        }),
+      ),
+    );
+    expect(fetchMock.called('/api/documents/46/', { method: 'PUT' })).toBe(
+      true,
+    );
+
+    expect(inputTitle.value).toEqual('updated document title');
+    screen.getByText('Title successfully updated');
   });
 
   it('fails to update document title', async () => {
