@@ -92,6 +92,46 @@ describe('<LTIUploadHandlers />', () => {
     });
   });
 
+  it('does not update the object name to the file when the object title is already set', async () => {
+    mockGetResource.mockResolvedValue({
+      ...object,
+      title: 'title already present',
+    });
+
+    const { rerender } = render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: { [objectState.objectId]: objectState },
+        }}
+      >
+        <LTIUploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    expect(mockAddResource).not.toHaveBeenCalled();
+    expect(mockUpdateResource).not.toHaveBeenCalled();
+
+    rerender(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [objectState.objectId]: {
+              ...objectState,
+              status: UploadManagerStatus.SUCCESS,
+            },
+          },
+        }}
+      >
+        <LTIUploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    expect(mockAddResource).not.toHaveBeenCalled();
+    expect(mockUpdateResource).not.toHaveBeenCalled();
+  });
+
   it('fetch the resource when the upload manager status is UPLOADING', async () => {
     mockFetResource.mockResolvedValue(object);
 
