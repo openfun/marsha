@@ -291,6 +291,9 @@ class Base(Configuration):
     BBB_API_ENDPOINT = values.Value()
     BBB_API_SECRET = values.Value(None)
 
+    # Markdown application
+    MARKDOWN_ENABLED = values.BooleanValue(False)
+
     # LIVE_RAW
     LIVE_RAW_ENABLED = values.BooleanValue(False)
 

@@ -47,7 +47,7 @@ class SelectLTIViewTestCase(TestCase):
 
         self.assertEqual(
             context.get("flags"),
-            {"BBB": True, "live_raw": False, "sentry": False},
+            {"BBB": True, "live_raw": False, "markdown": True, "sentry": False},
         )
 
     @override_settings(BBB_ENABLED=False)
@@ -79,5 +79,5 @@ class SelectLTIViewTestCase(TestCase):
 
         self.assertEqual(
             context.get("flags"),
-            {"BBB": False, "live_raw": False, "sentry": False},
+            {"BBB": False, "live_raw": False, "markdown": True, "sentry": False},
         )
