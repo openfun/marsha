@@ -120,6 +120,7 @@ class Base(Configuration):
         # Marsha
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
+        "marsha.markdown.apps.MarkdownConfig",
         "marsha.websocket.apps.WebsocketConfig",
     ]
     MIDDLEWARE = [
