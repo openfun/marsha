@@ -73,10 +73,10 @@ RUN rdfind -makesymlinks true -followsymlinks true -makeresultsfile false ${MARS
 # ---- final application image ----
 FROM base
 ARG MARSHA_STATIC_ROOT=/data/static
-# Install gettext
+# Install gettext & latex + dvisvgm
 RUN apt-get update && \
     apt-get install -y \
-    gettext && \
+    gettext texlive-latex-extra dvisvgm && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies

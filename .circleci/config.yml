@@ -349,6 +349,11 @@ jobs:
       - restore_cache:
           keys:
             - v4-back-dependencies-{{ .Revision }}
+      - run:
+          name: Install latex (required to run tests)
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y texlive-latex-extra dvisvgm
       # Run back-end (Django) test suite
       #
       # Nota bene: to run the django test suite, we need to ensure that the
