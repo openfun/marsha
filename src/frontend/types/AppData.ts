@@ -10,6 +10,7 @@ export enum appState {
 
 export enum flags {
   BBB = 'BBB',
+  MARKDOWN = 'markdown',
   SENTRY = 'sentry',
   LIVE_RAW = 'live_raw',
 }
@@ -20,6 +21,7 @@ export enum flags {
  */
 export enum appNames {
   BBB = 'bbb',
+  MARKDOWN = 'markdown',
 }
 
 export interface AppData {
