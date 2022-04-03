@@ -14,7 +14,7 @@ from marsha.core import permissions as core_permissions
 from marsha.core.api import ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
-from . import permissions, serializers
+from . import serializers
 from .models import Meeting
 
 
@@ -52,7 +52,7 @@ class MeetingViewSet(
         methods=["get"],
         detail=False,
         url_path="lti-select",
-        permission_classes=[permissions.HasPlaylistToken],
+        permission_classes=[core_permissions.HasPlaylistToken],
     )
     def lti_select(self, request):
         """Get selectable content for LTI.

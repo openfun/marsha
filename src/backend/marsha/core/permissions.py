@@ -482,3 +482,23 @@ class IsRelatedVideoOrganizationAdmin(permissions.BasePermission):
             organization__playlists__videos=video_related_object.video,
             user__id=request.user.id,
         ).exists()
+
+
+class HasPlaylistToken(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user has a playlist token payload.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the playlist exists.
+        """
+        user = request.user
+        if isinstance(user, TokenUser):
+            playlist_id = user.token.payload.get("playlist_id")
+            return models.Playlist.objects.filter(id=playlist_id).exists()
+        return False
