@@ -27,6 +27,7 @@ COPY ./src/frontend /app/
 RUN yarn install --frozen-lockfile && \
     yarn compile-translations && \
     yarn sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=node_modules  && \
+    mkdir -p /app/marsha/static/css/fonts && cp node_modules/katex/dist/fonts/* /app/marsha/static/css/fonts && \
     yarn build --mode=production --output-path /app/marsha/static/js/build/
 
 # ---- mails ----

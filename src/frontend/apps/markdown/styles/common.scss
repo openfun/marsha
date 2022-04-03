@@ -1,0 +1,17 @@
+// KaTeX style
+@use "katex/dist/katex.min.css";
+
+// Codemirror editor
+.cm-editor {
+  max-height: inherit;
+}
+
+// Mermaid content centering
+.markdown-body {
+  pre {
+    code.language-mermaid {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

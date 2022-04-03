@@ -1,0 +1,14 @@
+// Github markdown style
+@use "github-markdown-css/github-markdown-dark.css";
+
+// Highlight.JS for code rendering
+@use 'highlight.js/styles/github-dark.css';
+
+// Rendering of backend rendered LaTeX SVG
+.markdown-body {
+  img.latex-inline, p.latex-inline {
+    -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+    filter: invert(100%);
+    background-color: transparent;
+  }
+}
