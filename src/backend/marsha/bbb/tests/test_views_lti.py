@@ -97,7 +97,7 @@ class MeetingLTIViewTestCase(TestCase):
         )
         self.assertEqual(
             context.get("flags"),
-            {"BBB": True, "live_raw": False, "sentry": False},
+            {"BBB": True, "live_raw": False, "markdown": True, "sentry": False},
         )
         self.assertEqual(
             context.get("static"),
