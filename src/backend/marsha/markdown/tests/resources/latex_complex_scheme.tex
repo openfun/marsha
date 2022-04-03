@@ -1,0 +1,152 @@
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{tikz}
+
+\usetikzlibrary{matrix,shapes.symbols,fit,positioning}
+\begin{document}
+
+\def\monitor{--+(6mm,0mm)--+(5mm,2mm)--+(3mm,2mm)--+(2mm,4mm)--+(5mm,4mm)--+(5mm,11mm)--+
+(-5mm,11mm)--+(-5mm,4mm)--+(-2mm,4mm)--+(-3mm,2mm)--+(-5mm,2mm)--+(-6mm,0mm)--cycle}
+\def\display{++(3mm,5mm) --++(0,5mm)--++(-6mm,0mm)--++(0mm,-5mm)--cycle}
+\def\casa{--++(5mm,0mm)--++(0,7mm)--++(2mm,0mm)--++(-7mm,4mm)
+--++(-7mm,-4mm)--++(2mm,0mm)--++(0mm,-7mm)--cycle}
+
+\begin{tikzpicture}[font=\sffamily,
+host/.style={draw, text width=3.5cm, fill=orange!10,font=\sffamily\small, align=left},
+falshost/.style={rectangle, minimum width=2cm, minimum height=8mm},
+router/.style={draw, text width=3cm, minimum height=1cm, fill=blue!20, align=center},
+etiqueta/.style={font=\sffamily\small, align=center}]
+
+
+\begin{scope}
+\matrix[ampersand replacement=\&,column sep=2mm,row sep=2mm] {
+    \node[host] (bsdclient) {
+        em0: 10.10.11.177\\MAC: 00:0e:0c:3b:8f:94\\(Intel\_3b:8f:94)\\IPv6: fe80::20e:cff:fe3b:8f94}; \&
+    \node[host] (lnxserver) {
+        eth0: 10.10.11.66\\MAC: 00:db:b7:1f:fe:e6\\(Intel\_1f:fe:e6)\\IPv6: fe80::2d0:b7ff:fe1f:fee6}; \&
+    \node[host] (wincli1) {
+        LAN2: 10.10.11.51\\MAC: 00:0e:0c:3b:88:3c\\(Intel\_3b:88:3c)\\IPv6: fe80::20e:cff:fe3b:883c}; \&
+    \node[host] (winsvr1) {
+        LAN2: 10.10.11.111\\MAC: 00:0e:0c:3b:87:36\\(Intel\_3b:87:36)\\IPv6: fe80::20e:cff:fe3b:8736};\\[4mm]
+    \node[falshost] (sbsdclient) {}; \&
+    \node[falshost] (slnxserver) {}; \&
+    \node[falshost] (swincli1) {}; \&
+    \node[falshost] (swinsvr1) {}; \\
+};
+
+    \node[fill=gray!30, inner sep=0pt, rectangle, rounded corners=4mm,fit=(sbsdclient)  (swinsvr1)] (lan1) {Ethernet LAN Switch with Twisted Pair-Wiring};
+    \node[below,anchor=north east] at (lan1.south east) {\textbf{LAN1}};
+    \draw (bsdclient) -- (sbsdclient);
+    \draw (lnxserver) -- (slnxserver);
+    \draw (wincli1) -- (swincli1);
+    \draw (winsvr1) -- (swinsvr1);
+
+    \foreach \a in {bsdclient, lnxserver, wincli1, winsvr1}
+    {
+        \fill[gray!30] ([yshift=1mm]\a.north) \monitor;
+        \fill[white] ([yshift=1mm]\a.north) \display;
+        \path (\a.north) ++(0mm,12mm) node[above] {\textbf{\a}};
+    }
+
+    \node[router,anchor=north] (CE0) [below = of lan1] {CE0\\\textbf{lo0: 192.168.0.1}};
+    \draw (lan1)--(CE0);
+    \path (CE0.east)++(2mm,0mm) node[anchor=west,align=left,font=\sffamily\small] (tCE0)  {fe-1/3/0: 10.10.11.1\\
+MAC= 00:05:85:88:cc:db\\(Juniper\_88:cc:db)\\IPv6: fe80:205:85ff:fe88:ccdb};
+    \node[text width=2cm,align=center] () at (bsdclient|-CE0) {Los Angeles\\Office};
+\end{scope}
+
+\begin{scope}[xshift=16cm]
+\matrix[ampersand replacement=\&,column sep=2mm,row sep=2mm] {
+    \node[host] (bsdserver) {
+        eth0: 10.10.12.77\\MAC: 00:0e:0c:3b:87:32\\(Intel\_3b:87:32)\\IPv6: fe80::20e:cff:fe3b:8732}; \&
+    \node[host] (lnxclient) {
+        eth0: 10.10.12.166\\MAC: 00:b0:d0:45:34:64\\(Dell\_45:34:64)\\IPv6: fe80::2b0:d0ff:fe45:3464}; \&
+    \node[host] (winsvr2) {
+        LAN2: 10.10.12.52\\MAC: 00:0e:0c:3b:88:56\\(Intel\_3b:88:56)\\IPv6: fe80::20e:cff:fe3b:8856}; \&
+    \node[host] (wincli2) {
+        LAN2: 10.10.11.222\\MAC: 00:02:b3:27:fa:8c\\\mbox{\null} \\IPv6: fe80::202:b3ff:fe27:fa8c};\\[4mm]
+    \node[falshost] (sbsdserver) {}; \&
+    \node[falshost] (slnxclient) {}; \&
+    \node[falshost] (swinsvr2) {}; \&
+    \node[falshost] (swincli2) {}; \\
+};
+
+    \node[fill=gray!30, inner sep=0pt, rectangle, rounded corners=4mm,fit=(sbsdserver)  (swincli2)] (lan2) {Ethernet LAN Switch with Twisted Pair-Wiring};
+    \node[below,anchor=north east] at (lan2.south east) {\textbf{LAN2}};
+    \draw (bsdserver) -- (sbsdserver);
+    \draw (lnxclient) -- (slnxclient);
+    \draw (winsvr2) -- (swinsvr2);
+    \draw (wincli2) -- (swincli2);
+
+    \foreach \a in {bsdserver, lnxclient, winsvr2, wincli2}
+    {
+        \fill[gray!30] ([yshift=1mm]\a.north) \monitor;
+        \fill[white] ([yshift=1mm]\a.north) \display;
+        \path (\a.north) ++(0mm,12mm) node[above] {\textbf{\a}};
+    }
+
+    \node[router,anchor=north] (CE6) [below = of lan2] {CE6\\\textbf{lo0: 192.168.6.1}};
+    \draw (lan2)--(CE6);
+    \path (CE6.east)++(2mm,0mm) node[anchor=west,align=left,font=\sffamily\small] (tCE6)  {fe-1/3/0: 10.10.12.1\\
+MAC= 00:05:85:8b:bc:db\\(Juniper\_8b:bc:db)\\IPv6: fe80:205:85ff:fe8b:bcdb};
+    \node[text width=2cm,align=center] () at (bsdserver|-CE6) {New York\\Office};
+\end{scope}
+
+\begin{scope}[shift={(8cm,-9cm)}]
+\matrix [ampersand replacement=\&,column sep=2.5cm,row sep=1.5cm]  {
+    \& \node[router] (P9) {P9\\\textbf{lo0: 192.168.9.1}}; \& \& \node[router] (P7) {P7\\\textbf{lo0: 192.168.7.1}}; \& \\
+    \node[router] (PE5) {PE5\\\textbf{lo0: 192.168.5.1}}; \& \& \& \&  \node[router] (PE1) {PE1\\\textbf{lo0: 192.168.1.1}}; \\
+    \& \node[router] (P4) {P4\\\textbf{lo0: 192.168.4.1}}; \& \& \node[router] (P2) {P2\\\textbf{lo0: 192.168.2.1}}; \& \\
+};
+\draw (P9.east) -- (P7.west)
+    node[etiqueta,very near start] {so-0/0/1\\79.2}
+    node[etiqueta,very near end] {so-0/0/1\\79.1};
+\draw (P9.south) -- (P4.north)
+    node[etiqueta,very near start,align=right,left] {so-0/0/3\\49.2}
+    node[etiqueta,very near end,align=right,left] {so-0/0/3\\49.1};
+\draw (P4.east) -- (P2.west)
+    node[etiqueta,very near start] {so-0/0/1\\24.2}
+    node[etiqueta,very near end] {so-0/0/1\\24.1};
+\draw (P7.south) -- (P2.north)
+    node[etiqueta,very near start,align=left,right] {so-0/0/3\\27.2}
+    node[etiqueta,very near end,align=left,right] {so-0/0/3\\27.1};
+\draw (P9.south east) -- (P2.north west)
+    node[etiqueta,very near start,sloped] {so-0/0/2\\29.2}
+    node[etiqueta,very near end,sloped] {so-0/0/2\\29.1};
+\draw (P4.north east) -- (P7.south west)
+    node[etiqueta,very near start,sloped] {so-0/0/0\\47.1}
+    node[etiqueta,very near end,sloped] {so-0/0/0\\47.2};
+\draw (PE5.east) -- (P9.west)
+    node[etiqueta,near start,sloped] {so-0/0/0\\59.1}
+    node[etiqueta,near end,sloped] {so-0/0/0\\59.2};
+\draw (PE5.east) -- (P4.west)
+    node[etiqueta,near start,sloped] {so-0/0/2\\45.2}
+    node[etiqueta,near end,sloped] {so-0/0/2\\45.1};
+\draw (P7.east) -- (PE1.west)
+    node[etiqueta,near start,sloped] {so-0/0/2\\17.2}
+    node[etiqueta,near end,sloped] {so-0/0/2\\17.1};
+\draw (P2.east) -- (PE1.west)
+    node[etiqueta,near start,sloped] {so-0/0/0\\12.2}
+    node[etiqueta,near end,sloped] {so-0/0/0\\12.1};
+\draw[dashed,very thick,gray] (PE5.north) -- (CE0.south)
+    node[etiqueta,pos=.15,sloped,black] {ge-0/0/3\\50.1}
+    node[etiqueta,pos=.85,sloped,black] (ge502) {ge-0/0/3\\50.2};
+\draw[dashed,very thick,gray] (CE6.south) -- (PE1.north)
+    node[etiqueta,pos=.15,sloped,black] (ge162) {ge-0/0/3\\16.2}
+    node[etiqueta,pos=.85,sloped,black] {ge-0/0/3\\16.1};
+\end{scope}
+
+    \fill[green!50] (bsdclient|-P9) \casa;
+    \node[xshift=1cm,align=center,anchor=south west] at (bsdclient|-P9) {\textbf{Wireless}\\\textbf{in home}};
+    \draw[dotted] (bsdclient|-P9) -- (PE5.north) node[above,sloped,pos=0.5] {DSL Link};
+    \draw[dashed] (bsdclient.west|-ge502.west)--(winsvr1.east|-ge502.west);
+    \draw[dashed] (bsdserver.west|-ge162.east)--(wincli2.east|-ge162.east);
+
+    \node[cloud,draw,aspect=2,cloud puffs=15,text width=3cm, align=center,anchor=north,fill=violet!20] (internet) at (PE1|-P2.south)  {\textbf{Global Public}\\\textbf{Internet}};
+    \draw (P4) |- ([yshift=-3mm]internet) node [pos=0.6,above] {AS 65459};
+    \draw (P2) |- ([yshift=3mm]internet) node [pos=0.7,above] {AS 65127};
+
+    \node[text width=5cm, align=left, font=\sffamily\small,anchor=south west] at (bsdclient.west|-internet.south) {Solid rules = SONET/SDH\\Dashed rules = Gigabit Ethernet\\\emph{Note}:All links use 10.0.x.y\\addressing. Only the last\\two octets are shown.};
+\end{tikzpicture}
+
+\end{document}
