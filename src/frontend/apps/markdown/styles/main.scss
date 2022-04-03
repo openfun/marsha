@@ -1,0 +1,10 @@
+// Lightmode CSS
+@import './lightmode';  // light mode by default
+
+// Darkmode CSS - disabled as the whole site does not allow darkmode
+//@media (prefers-color-scheme: dark) {
+//  @import './darkmode';
+//}
+
+// Common CSS
+@import "./common";
