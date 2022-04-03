@@ -104,6 +104,9 @@ urlpatterns = [
 if settings.BBB_ENABLED:
     urlpatterns += [path("", include("marsha.bbb.urls"))]
 
+if settings.MARKDOWN_ENABLED:
+    urlpatterns += [path("", include("marsha.markdown.urls"))]
+
 if settings.DEBUG:
     urlpatterns += [path("", include("marsha.development.urls"))]
 

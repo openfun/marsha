@@ -1,4 +1,5 @@
 """Helpers to create a dedicated resources."""
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 
 from ..defaults import PENDING
@@ -7,6 +8,15 @@ from ..models import Playlist
 
 class PortabilityError(Exception):
     """An error raised when trying to access a resource that is not portable."""
+
+
+def field_exists_on_model(model, field_name):
+    """Simple function to test whether a field exist on a model."""
+    try:
+        model._meta.get_field(field_name)  # will raise if field does not exist
+    except FieldDoesNotExist:
+        return False
+    return True
 
 
 def get_selectable_resources(model, lti):
@@ -123,10 +133,20 @@ def get_or_create_resource(model, lti):
         defaults={"title": lti.context_title},
     )
 
-    return model.objects.create(
-        pk=lti.resource_id,
-        lti_id=lti.resource_link_id,
-        playlist=playlist,
-        upload_state=PENDING,
-        show_download=lti.get_consumer_site().video_show_download_default,
+    default_attributes = {
+        "pk": lti.resource_id,
+        "lti_id": lti.resource_link_id,
+        "playlist": playlist,
+    }
+
+    # Apply attributes when the resource allows it
+    specific_attributes = (
+        ("upload_state", PENDING),
+        ("show_download", lti.get_consumer_site().video_show_download_default),
     )
+    for field_name, field_value in specific_attributes:
+        if field_exists_on_model(model, field_name):
+            default_attributes[field_name] = field_value
+
+    # Create resource
+    return model.objects.create(**default_attributes)
