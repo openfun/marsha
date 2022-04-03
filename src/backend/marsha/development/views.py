@@ -14,6 +14,7 @@ from faker import Faker
 from ..bbb.models import Meeting
 from ..core.models import Document, Playlist, Video
 from ..core.models.account import ConsumerSite, LTIPassport
+from ..markdown.models import MarkdownDocument
 
 
 logger = getLogger(__name__)
@@ -94,6 +95,9 @@ class DevelopmentLTIView(TemplateView):
                 "videos": Video.objects.order_by("-updated_on")[:5],
                 "documents": Document.objects.order_by("-updated_on")[:5],
                 "meetings": Meeting.objects.order_by("-updated_on")[:5],
+                "markdown_documents": MarkdownDocument.objects.order_by("-updated_on")[
+                    :5
+                ],
             },
         }
 
