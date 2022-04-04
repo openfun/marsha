@@ -444,4 +444,4 @@ class ParticipantSerializer(serializers.Serializer):
     """A serializer to validate a participant submitted on the live participants API endpoint."""
 
     name = serializers.CharField(required=True, max_length=128)
-    id = serializers.CharField(required=True, max_length=128)
+    id = serializers.UUIDField(required=True)

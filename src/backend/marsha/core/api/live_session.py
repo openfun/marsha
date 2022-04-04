@@ -20,6 +20,7 @@ from rest_framework.throttling import SimpleRateThrottle
 from sentry_sdk import capture_exception
 
 from marsha.core.defaults import VIDEO_ATTENDANCE_KEY_CACHE
+from marsha.websocket.utils import channel_layers_utils
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveSession, Video
@@ -30,6 +31,13 @@ from ..services.live_session import (
     is_public_token,
 )
 from .base import APIViewMixin, ObjectPkMixin
+from ..services.video_participants import (
+    VideoParticipantsException,
+    add_participant_asking_to_join,
+    remove_participant_asking_to_join,
+    remove_participant_from_discussion,
+)
+from .base import ObjectPkMixin
 
 
 logger = getLogger(__name__)
@@ -379,3 +387,69 @@ class LiveSessionViewSet(
             cache.set(prefix_key, list_keys_timeout)
 
         return Response(data)
+    
+    
+    @action(
+        methods=["post"],
+        detail=True,
+    )
+    # pylint: disable=unused-argument
+    def ask_to_join(
+        self,
+        request,
+        pk=None,
+    ):
+        """Current live session owner ask to join the video discussion."""
+        live_session = self.get_object()
+
+        if not live_session.display_name:
+            return Response(
+                {
+                    "display_name": "display_name must be set before asking to join the discussion"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        participant = {
+            "id": str(live_session.id),
+            "name": live_session.display_name,
+        }
+        video = live_session.video
+
+        try:
+            if request.method == "POST":
+                add_participant_asking_to_join(video=video, participant=participant)
+        except VideoParticipantsException as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
+        return Response({}, status=status.HTTP_200_OK)
+
+    @action(
+        methods=["delete"],
+        detail=True,
+    )
+    # pylint: disable=unused-argument
+    def leave_discussion(
+        self,
+        request,
+        pk=None,
+    ):
+        """Current live session owner ask to leave the video discussion."""
+        live_session = self.get_object()
+
+        participant = {
+            "id": live_session.id,
+            "name": live_session.display_name,
+        }
+        video = live_session.video
+
+        try:
+            remove_participant_from_discussion(video=video, participant=participant)
+        except VideoParticipantsException as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
+        return Response(status=status.HTTP_200_OK)
