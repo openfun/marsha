@@ -49,6 +49,7 @@ the video to the ViewersList in the right panel
 - Send registration email when livesession is updated and is_registered
   set to True
 - Stop trying to start recording jitsi when this one is already live
+- Live layout for teacher on smartphone
 
 ### Removed
 
