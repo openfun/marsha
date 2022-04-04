@@ -64,59 +64,60 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     <ConverseInitializer video={video}>
       <LiveFeedbackProvider value={false}>
         <StopLiveConfirmationProvider value={false}>
-          <Box>
-            <LiveVideoLayout
-              actionsElement={
-                <Fragment>
-                  {isLiveStarted && <TeacherLiveControlBar video={video} />}
-                  <Box flex direction="row">
-                    <TeacherLiveRecordingActions video={video} />
-                    <TeacherLiveLifecycleControls
-                      canStartStreaming={canShowStartButton}
-                      flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
-                      hasRightToStart={canStartLive}
-                      video={video}
-                    />
+          <LiveVideoLayout
+            actionsElement={
+              <Fragment>
+                {isLiveStarted && <TeacherLiveControlBar video={video} />}
+                <Box flex direction="row">
+                  <TeacherLiveRecordingActions video={video} />
+                  <TeacherLiveLifecycleControls
+                    canStartStreaming={canShowStartButton}
+                    flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
+                    hasRightToStart={canStartLive}
+                    video={video}
+                  />
+                </Box>
+              </Fragment>
+            }
+            additionalContent={
+              <Fragment>
+                <Box direction={'row'} justify={'center'} margin={'small'}>
+                  {appData.flags?.live_raw &&
+                    video.live_state &&
+                    [liveState.IDLE, liveState.PAUSED].includes(
+                      video.live_state,
+                    ) && <TeacherLiveTypeSwitch video={video} />}
+                </Box>
+
+                {video.live_state !== liveState.STOPPED && (
+                  <Box direction={'row'} justify={'center'} margin={'small'}>
+                    <DashboardVideoLivePairing video={video} />
                   </Box>
-                </Fragment>
-              }
-              displayActionsElement
-              isPanelOpen={isPanelVisible}
-              isXmppReady={!!video.xmpp}
-              liveTitleElement={
-                <TeacherLiveInfoBar
-                  flex={isLiveStarted ? { grow: 1, shrink: 2 } : true}
-                  title={video.title}
-                  startDate={null}
-                />
-              }
-              mainElement={
-                <TeacherLiveContent
-                  setCanShowStartButton={setCanShowStartButton}
-                  setCanStartLive={setCanStartLive}
-                  video={video}
-                />
-              }
-              sideElement={<LiveVideoPanel video={video} />}
-            />
-
-            <Box direction={'row'} justify={'center'} margin={'small'}>
-              {appData.flags?.live_raw &&
-                video.live_state &&
-                [liveState.IDLE, liveState.PAUSED].includes(
-                  video.live_state,
-                ) && <TeacherLiveTypeSwitch video={video} />}
-            </Box>
-
-            {video.live_state !== liveState.STOPPED && (
-              <Box direction={'row'} justify={'center'} margin={'small'}>
-                <DashboardVideoLivePairing video={video} />
-              </Box>
-            )}
-            {video.live_state === liveState.IDLE && (
-              <ScheduledVideoForm video={video} />
-            )}
-          </Box>
+                )}
+                {video.live_state === liveState.IDLE && (
+                  <ScheduledVideoForm video={video} />
+                )}
+              </Fragment>
+            }
+            displayActionsElement
+            isPanelOpen={isPanelVisible}
+            isXmppReady={!!video.xmpp}
+            liveTitleElement={
+              <TeacherLiveInfoBar
+                flex={isLiveStarted ? { grow: 1, shrink: 2 } : true}
+                title={video.title}
+                startDate={null}
+              />
+            }
+            mainElement={
+              <TeacherLiveContent
+                setCanShowStartButton={setCanShowStartButton}
+                setCanStartLive={setCanStartLive}
+                video={video}
+              />
+            }
+            sideElement={<LiveVideoPanel video={video} />}
+          />
         </StopLiveConfirmationProvider>
       </LiveFeedbackProvider>
     </ConverseInitializer>
