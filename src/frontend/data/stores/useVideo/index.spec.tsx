@@ -137,6 +137,7 @@ describe('stores/useVideo', () => {
           external_api_url: 'https://example.com/jitsi',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
     });
@@ -148,6 +149,7 @@ describe('stores/useVideo', () => {
         external_api_url: 'https://example.com/jitsi',
         config_overwrite: {},
         interface_config_overwrite: {},
+        room_name: 'jitsi_conference',
       },
     });
 
@@ -158,6 +160,7 @@ describe('stores/useVideo', () => {
         external_api_url: 'https://example.com/jitsi',
         config_overwrite: {},
         interface_config_overwrite: {},
+        room_name: 'jitsi_conference',
       },
     });
   });

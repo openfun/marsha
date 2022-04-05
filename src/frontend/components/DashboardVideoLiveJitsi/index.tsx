@@ -147,8 +147,9 @@ const DashboardVideoLiveJitsi = ({
           TOOLBAR_BUTTONS: toolbarButtons,
           ...video.live_info.jitsi!.interface_config_overwrite,
         },
+        jwt: video.live_info.jitsi?.token,
         parentNode: jitsiNode.current!,
-        roomName: video.id,
+        roomName: video.live_info.jitsi!.room_name,
         userInfo: {
           displayName: getDecodedJwt().user?.username,
         },
