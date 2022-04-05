@@ -337,6 +337,9 @@ class Base(Configuration):
     JITSI_DOMAIN = values.Value("meet.jit.si")
     JITSI_CONFIG_OVERWRITE = values.DictValue({})
     JITSI_INTERFACE_CONFIG_OVERWRITE = values.DictValue({})
+    JITSI_JWT_APP_ID = values.Value()
+    JITSI_JWT_APP_SECRET = values.Value()
+    JITSI_JWT_TOKEN_EXPIRATION_SECONDS = values.PositiveIntegerValue(600)
 
     # LIVE PAIRING
     LIVE_PAIRING_EXPIRATION_SECONDS = 60

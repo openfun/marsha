@@ -4221,6 +4221,93 @@ class VideoAPITest(TestCase):
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
                         "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
+                    }
+                },
+                "live_type": JITSI,
+                "xmpp": None,
+            },
+        )
+
+    @override_settings(JITSI_JWT_APP_ID="jitsi_app_id")
+    @override_settings(JITSI_JWT_APP_SECRET="jitsi_jwt_app_secret")
+    def test_api_video_instructor_initiate_jitsi_live_with_token(self):
+        """Admin or instructor should be able to initiate a jitsi live and generate a token to
+        connect to jitsi."""
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        now = datetime(2022, 5, 4, tzinfo=timezone.utc)
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video"
+        ) as mock_dispatch_video, mock.patch.object(timezone, "now", return_value=now):
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-live/",
+                {"type": "jitsi"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video.assert_called_with(video, to_admin=True)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "allow_recording": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": "pending",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": "idle",
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
+                        "token": (
+                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9."
+                            "eyJleHAiOjE2NTE2MjMwMDAsImlhdCI6MTY1MTYyMjQwMCwibW9kZXJhdG9yIjp0cnVl"
+                            "LCJhdWQiOiJqaXRzaSIsImlzcyI6ImppdHNpX2FwcF9pZCIsInN1YiI6Im1lZXQuaml0"
+                            "LnNpIiwicm9vbSI6IjI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNyJ9"
+                            ".LpHprY_P63wuKiIasYNev_LJmQJsPAWEfo0qz6MwoGc"
+                        ),
                     }
                 },
                 "live_type": JITSI,
@@ -4343,6 +4430,7 @@ class VideoAPITest(TestCase):
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
                         "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
                     },
                     "medialive": {
                         "input": {
@@ -4479,6 +4567,7 @@ class VideoAPITest(TestCase):
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
                         "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
                     },
                     "medialive": {
                         "input": {
@@ -5012,6 +5101,7 @@ class VideoAPITest(TestCase):
                         "domain": "meet.jit.si",
                         "external_api_url": "https://meet.jit.si/external_api.js",
                         "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
                     },
                 },
                 "live_type": JITSI,

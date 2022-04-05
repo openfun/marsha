@@ -347,6 +347,7 @@ class TestVideoSharedLiveMedia(TestCase):
                             "domain": "meet.jit.si",
                             "external_api_url": "https://meet.jit.si/external_api.js",
                             "interface_config_overwrite": {},
+                            "room_name": str(video.pk),
                         },
                         "medialive": {
                             "input": {
@@ -695,6 +696,7 @@ class TestVideoSharedLiveMedia(TestCase):
                             "domain": "meet.jit.si",
                             "external_api_url": "https://meet.jit.si/external_api.js",
                             "interface_config_overwrite": {},
+                            "room_name": str(video.pk),
                         },
                         "medialive": {
                             "input": {
@@ -1089,6 +1091,7 @@ class TestVideoSharedLiveMedia(TestCase):
                             "domain": "meet.jit.si",
                             "external_api_url": "https://meet.jit.si/external_api.js",
                             "interface_config_overwrite": {},
+                            "room_name": str(video.pk),
                         },
                         "medialive": {
                             "input": {
