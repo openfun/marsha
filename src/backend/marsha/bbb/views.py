@@ -7,7 +7,7 @@ from .models import Meeting
 from .serializers import MeetingSerializer
 
 
-class MeetingView(BaseLTIView):
+class MeetingLTIView(BaseLTIView):
     """Video view."""
 
     model = Meeting

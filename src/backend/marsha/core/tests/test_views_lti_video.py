@@ -1805,3 +1805,18 @@ class VideoLTIViewTestCase(TestCase):
                 "xmpp": None,
             },
         )
+
+    def test_views_lti_video_get_request(
+        self,
+    ):
+        """LTI GET request should not be allowed."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+
+        response = self.client.get(f"/lti/videos/{video.id}")
+
+        self.assertEqual(response.status_code, 405)
