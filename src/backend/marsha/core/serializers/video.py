@@ -12,7 +12,7 @@ from rest_framework import serializers
 
 from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import Thumbnail, Video
-from ..utils import cloudfront_utils, time_utils, xmpp_utils
+from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
 from .base import TimestampField
 from .playlist import PlaylistLiteSerializer
@@ -318,16 +318,19 @@ class VideoSerializer(VideoBaseSerializer):
             )
 
         if obj.live_type == JITSI:
-            live_info.update(
-                {
-                    "jitsi": {
-                        "external_api_url": settings.JITSI_EXTERNAL_API_URL,
-                        "domain": settings.JITSI_DOMAIN,
-                        "config_overwrite": settings.JITSI_CONFIG_OVERWRITE,
-                        "interface_config_overwrite": settings.JITSI_INTERFACE_CONFIG_OVERWRITE,
-                    }
-                }
-            )
+            jitsi = {
+                "external_api_url": settings.JITSI_EXTERNAL_API_URL,
+                "domain": settings.JITSI_DOMAIN,
+                "config_overwrite": settings.JITSI_CONFIG_OVERWRITE,
+                "interface_config_overwrite": settings.JITSI_INTERFACE_CONFIG_OVERWRITE,
+                "room_name": str(obj.pk),
+            }
+            if settings.JITSI_JWT_APP_ID and settings.JITSI_JWT_APP_SECRET:
+                jitsi["token"] = jitsi_utils.generate_token(
+                    str(obj.pk), self.context.get("is_admin")
+                )
+
+            live_info.update({"jitsi": jitsi})
 
         return live_info
 
