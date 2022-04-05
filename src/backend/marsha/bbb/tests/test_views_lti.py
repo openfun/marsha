@@ -323,3 +323,18 @@ class MeetingLTIViewTestCase(TestCase):
         with self.assertRaises(ConnectionError):
             self.client.post(f"/lti/meetings/{uuid.uuid4()}", data)
         self.assertEqual(mock_verify.call_count, 1)
+
+    def test_views_lti_meeting_get_request(
+        self,
+    ):
+        """LTI GET request should not be allowed."""
+        passport = ConsumerSiteLTIPassportFactory()
+        meeting = MeetingFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
+        )
+
+        response = self.client.get(f"/lti/meetings/{meeting.id}")
+
+        self.assertEqual(response.status_code, 405)
