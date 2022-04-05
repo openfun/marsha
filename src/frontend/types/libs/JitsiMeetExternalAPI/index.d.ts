@@ -9,6 +9,7 @@ declare class JitsiMeetExternalAPI {
     options?: {
       configOverwrite?: JitsiMeetExternalAPI.ConfigOverwriteOptions;
       interfaceConfigOverwrite?: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
+      jwt?: string;
       parentNode?: HTMLElement;
       roomName?: string;
       userInfo?: {

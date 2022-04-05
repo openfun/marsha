@@ -163,6 +163,8 @@ export interface Video extends Resource {
       domain?: string;
       config_overwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions;
       interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
+      room_name: string;
+      token?: string;
     };
     paused_at?: string;
   };

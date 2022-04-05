@@ -68,6 +68,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.IDLE,
@@ -137,7 +138,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         TOOLBAR_BUTTONS: toolbarButtons,
       },
       parentNode: expect.any(HTMLElement),
-      roomName: video.id,
+      roomName: 'jitsi_conference',
       userInfo: {
         displayName: 'jane_doe',
       },
@@ -221,6 +222,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
             external_api_url: 'https://meet.jit.si/external_api.js',
             config_overwrite: {},
             interface_config_overwrite: {},
+            room_name: 'jitsi_conference',
           },
         },
         live_state: liveState.IDLE,
@@ -290,13 +292,108 @@ describe('<DashboardVideoLiveJitsi />', () => {
           TOOLBAR_BUTTONS: toolbarButtons,
         },
         parentNode: expect.any(HTMLElement),
-        roomName: video.id,
+        roomName: 'jitsi_conference',
         userInfo: {
           displayName: undefined,
         },
       });
       cleanup();
       jest.clearAllMocks();
+    });
+  });
+
+  it('configures jitsi with a JWT', () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+          token: 'jitsi_jwt_token',
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+    const toolbarButtons = [
+      'microphone',
+      'camera',
+      'closedcaptions',
+      'desktop',
+      'fullscreen',
+      'fodeviceselection',
+      'hangup',
+      'profile',
+      'settings',
+      'raisehand',
+      'videoquality',
+      'filmstrip',
+      'feedback',
+      'shortcuts',
+      'tileview',
+      'select-background',
+      'help',
+      'mute-everyone',
+      'mute-video-everyone',
+      'security',
+    ];
+    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
+      configOverwrite: {
+        constraints: {
+          video: {
+            height: {
+              ideal: 720,
+              max: 720,
+              min: 240,
+            },
+          },
+        },
+        conferenceInfo: {
+          alwaysVisible: ['recording'],
+
+          autoHide: [],
+        },
+        disableDeepLinking: true,
+        disablePolls: true,
+        doNotStoreRoom: true,
+        hideConferenceSubject: true,
+        hideConferenceTimer: true,
+        prejoinPageEnabled: false,
+        resolution: 720,
+        toolbarButtons,
+      },
+      interfaceConfigOverwrite: {
+        HIDE_INVITE_MORE_HEADER: true,
+        TOOLBAR_BUTTONS: toolbarButtons,
+      },
+      jwt: 'jitsi_jwt_token',
+      parentNode: expect.any(HTMLElement),
+      roomName: 'jitsi_conference',
+      userInfo: {
+        displayName: 'jane_doe',
+      },
     });
   });
 
@@ -316,6 +413,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -386,6 +484,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -438,6 +537,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -509,7 +609,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         TOOLBAR_BUTTONS: toolbarButtons,
       },
       parentNode: expect.any(HTMLElement),
-      roomName: video.id,
+      roomName: 'jitsi_conference',
       userInfo: {
         displayName: 'jane_doe',
       },
@@ -556,7 +656,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         TOOLBAR_BUTTONS: toolbarButtons,
       },
       parentNode: expect.any(HTMLElement),
-      roomName: video.id,
+      roomName: 'jitsi_conference',
       userInfo: {
         displayName: 'jane_doe',
       },
@@ -581,6 +681,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -616,6 +717,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -642,6 +744,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
@@ -687,6 +790,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
           external_api_url: 'https://meet.jit.si/external_api.js',
           config_overwrite: {},
           interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
         },
       },
       live_state: liveState.RUNNING,
