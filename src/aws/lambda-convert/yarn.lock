@@ -1168,10 +1168,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@openfun/subsrt@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@openfun/subsrt/-/subsrt-1.0.4.tgz#7ff6df88be7c91fdf70ce341d98b1b05f204e0f4"
-  integrity sha512-+K+Ok4E/opi270VLSGVqX789HFHeJY0jUrBcx57uTGJrTdkFjpih9IAbw1Jj73G/TMPJuSOVUSdN2YiEC0Qorw==
+"@openfun/subsrt@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@openfun/subsrt/-/subsrt-1.0.5.tgz#a765b5647999c461507758452ff1135046821635"
+  integrity sha512-XS1x7KZPdpWqkID115slsF1HXuPXpmzzG01IpA//8g4iwP3GmPcAWbSnWG0XxDCxgksWylpftlRY4dGM5jzslg==
 
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
