@@ -217,7 +217,8 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
 class BaseLTIView(ABC, TemplateResponseMixin, View):
-    """Base view called to serve a resource and how to use it by the front application.
+    """Base LTI view called to serve a resource on an LTI context
+    and how to use it by the front application.
 
     It is designed to work as a React single page application.
 
@@ -383,6 +384,89 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         return app_data
 
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Populated with context retrieved by get_context_data in the LTI launch request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        HTML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response(self.get_context_data())
+
+
+class BaseView(BaseLTIView, ABC):
+    """Base view called to serve a resource."""
+
+    def _get_app_data(self, cache_key, lti=None, resource_id=None):
+        """Build app data for the frontend for public ressources.
+
+        Returns
+        -------
+        dictionary
+            Configuration data to bootstrap the frontend:
+
+            - modelName: the type of resource (video, document,...)
+            - resource: representation of the targetted resource including urls for the resource
+                file (e.g. for a video: all resolutions, thumbnails and timed text tracks).
+
+        """
+        app_data = cache.get(cache_key)
+
+        session_id = str(uuid.uuid4())
+        if app_data is None:
+            resource = self._get_public_resource(resource_id)
+
+            app_data = self._get_base_app_data()
+            app_data.update(
+                {
+                    "flags": {
+                        SENTRY: switch_is_active(SENTRY),
+                        BBB: settings.BBB_ENABLED,
+                        LIVE_RAW: settings.LIVE_RAW_ENABLED,
+                    },
+                    "resource": self.serializer_class(
+                        resource,
+                        context={
+                            "is_admin": False,
+                            "user_id": None,
+                            "session_id": session_id,
+                        },
+                    ).data
+                    if resource
+                    else None,
+                    "state": "success",
+                    "player": settings.VIDEO_PLAYER,
+                    "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
+                }
+            )
+
+            cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
+
+        if app_data["resource"] is not None:
+            jwt_token = build_jwt_token(
+                permissions={"can_access_dashboard": False, "can_update": False},
+                session_id=session_id,
+                lti=None,
+                resource_id=app_data["resource"]["id"],
+            )
+            app_data["jwt"] = str(jwt_token)
+
+        return app_data
+
     def _get_public_resource(self, resource_id):
         """Fetch a resource publicly accessible.
 
@@ -429,29 +513,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         return self._get_prepare_to_render(app_data)
 
     # pylint: disable=unused-argument
-    def post(self, request, *args, **kwargs):
-        """Respond to POST request.
-
-        Populated with context retrieved by get_context_data in the LTI launch request.
-
-        Parameters
-        ----------
-        request : Request
-            passed by Django
-        args : list
-            positional extra arguments
-        kwargs : dictionary
-            keyword extra arguments
-
-        Returns
-        -------
-        HTML
-            generated from applying the data to the template
-
-        """
-        return self.render_to_response(self.get_context_data())
-
-    # pylint: disable=unused-argument
     def get(self, request, *args, **kwargs):
         """Respond to GET request.
 
@@ -475,7 +536,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
         return self.render_to_response(self.get_public_data())
 
 
-class VideoView(BaseLTIView):
+class VideoView(BaseView):
     """Video view."""
 
     model = Video
@@ -586,8 +647,22 @@ class VideoView(BaseLTIView):
         raise Http404
 
 
-class DocumentView(BaseLTIView):
+class VideoLTIView(BaseLTIView):
+    """Video LTI view."""
+
+    model = Video
+    serializer_class = VideoSerializer
+
+
+class DocumentView(BaseView):
     """Document view."""
+
+    model = Document
+    serializer_class = DocumentSerializer
+
+
+class DocumentLTIView(BaseLTIView):
+    """Document LTI view."""
 
     model = Document
     serializer_class = DocumentSerializer
