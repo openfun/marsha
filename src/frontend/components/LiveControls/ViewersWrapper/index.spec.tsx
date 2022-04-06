@@ -5,6 +5,10 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import {
+  participantMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { ViewersWrapper } from '.';
 
@@ -64,5 +68,57 @@ describe('<ViewersWrapper />', () => {
       screen.queryByRole('button', { name: 'Show viewers' }),
     ).not.toBeInTheDocument();
     screen.getByRole('button', { name: 'Hide viewers' });
+  });
+
+  it('renders <StudentShowViewersButton /> with one user wanting to go on stage', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [participantMockFactory()],
+    });
+
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
+    });
+
+    render(wrapInIntlProvider(<ViewersWrapper video={video} />));
+
+    expect(
+      screen.queryByRole('button', { name: 'Show viewers' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', { name: 'Hide viewers' });
+    screen.getByText(1);
+  });
+
+  it('renders <StudentShowViewersButton /> with several users wanting to go on stage', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+        participantMockFactory(),
+      ],
+    });
+
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.VIEWERS_LIST,
+      availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
+    });
+
+    render(wrapInIntlProvider(<ViewersWrapper video={video} />));
+
+    expect(
+      screen.queryByRole('button', { name: 'Show viewers' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', { name: 'Hide viewers' });
+    screen.getByText(11);
   });
 });

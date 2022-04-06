@@ -21,7 +21,12 @@ const messages = defineMessages({
   },
 });
 
-export const StudentShowViewersButton = () => {
+interface StudentShowViewersButtonProps {
+  nbrOfOnStageRequests?: number;
+}
+export const StudentShowViewersButton = ({
+  nbrOfOnStageRequests,
+}: StudentShowViewersButtonProps) => {
   const intl = useIntl();
   const { setPanelVisibility } = useLivePanelState((state) => ({
     setPanelVisibility: state.setPanelVisibility,
@@ -29,6 +34,11 @@ export const StudentShowViewersButton = () => {
 
   return (
     <Button
+      badge={
+        nbrOfOnStageRequests !== 0
+          ? nbrOfOnStageRequests?.toString()
+          : undefined
+      }
       label={intl.formatMessage(messages.viewers)}
       Icon={ViewersSVG}
       onClick={() => {
