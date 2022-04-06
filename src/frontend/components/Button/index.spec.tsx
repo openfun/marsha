@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '.';
 
 const Icon = jest.fn(() => <span>icon</span>);
-const Badge = () => <span>badge</span>;
+const badge = 'badge';
 
 describe('<Button />', () => {
   afterEach(() => {
@@ -28,14 +28,14 @@ describe('<Button />', () => {
   });
 
   it('does not render the badge if there is no Icon set', () => {
-    render(<Button label="Button" badge={<Badge />} />);
+    render(<Button label="Button" badge={badge} />);
 
     screen.getByRole('button', { name: /Button/i });
     expect(screen.queryByText('badge')).not.toBeInTheDocument();
   });
 
   it('renders the Button component with default style', () => {
-    render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
+    render(<Button label="Button" Icon={Icon} badge={badge} />);
 
     screen.getByRole('button', { name: /Button/i });
 
@@ -45,7 +45,7 @@ describe('<Button />', () => {
       {
         height: '100%',
         iconColor: '#055fd2',
-        focusColor: 'none',
+        focusColor: undefined,
       },
       {},
     );
@@ -54,7 +54,7 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with default style disabled', () => {
-    render(<Button label="Button" Icon={Icon} badge={<Badge />} disabled />);
+    render(<Button label="Button" Icon={Icon} badge={badge} disabled />);
 
     screen.getByRole('button', { name: /Button/i });
 
@@ -64,7 +64,7 @@ describe('<Button />', () => {
       {
         height: '100%',
         iconColor: '#81ade6',
-        focusColor: 'none',
+        focusColor: undefined,
       },
       {},
     );
@@ -73,7 +73,7 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with default style hovered', () => {
-    render(<Button label="Button" Icon={Icon} badge={<Badge />} />);
+    render(<Button label="Button" Icon={Icon} badge={badge} />);
 
     fireEvent.mouseEnter(screen.getByRole('button', { name: /Button/i }));
 
@@ -84,7 +84,7 @@ describe('<Button />', () => {
       {
         height: '100%',
         iconColor: '#055fd2',
-        focusColor: 'none',
+        focusColor: undefined,
       },
       {},
     );
@@ -102,7 +102,7 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with reversed style', () => {
-    render(<Button label="Button" Icon={Icon} badge={<Badge />} reversed />);
+    render(<Button label="Button" Icon={Icon} badge={badge} reversed />);
 
     screen.getByRole('button', { name: /Button/i });
 
@@ -122,7 +122,7 @@ describe('<Button />', () => {
 
   it('renders the Button component with reversed style disabled', () => {
     render(
-      <Button label="Button" Icon={Icon} badge={<Badge />} disabled reversed />,
+      <Button label="Button" Icon={Icon} badge={badge} disabled reversed />,
     );
 
     screen.getByRole('button', { name: /Button/i });
@@ -142,7 +142,7 @@ describe('<Button />', () => {
   });
 
   it('renders the Button component with reversed style hovered', () => {
-    render(<Button label="Button" Icon={Icon} badge={<Badge />} reversed />);
+    render(<Button label="Button" Icon={Icon} badge={badge} reversed />);
 
     fireEvent.mouseEnter(screen.getByRole('button'));
 
@@ -164,7 +164,7 @@ describe('<Button />', () => {
       {
         height: '100%',
         iconColor: '#055fd2',
-        focusColor: 'none',
+        focusColor: undefined,
       },
       {},
     );

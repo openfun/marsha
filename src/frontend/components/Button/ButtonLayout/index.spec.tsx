@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { ButtonLayout } from '.';
 
 const Icon = jest.fn(() => <span>icon</span>);
-const Badge = () => <span>badge</span>;
+const badge = 'badge';
 
 describe('<ButtonLayout />', () => {
   afterEach(() => {
@@ -29,7 +29,7 @@ describe('<ButtonLayout />', () => {
   it('does not render the badge if there is no Icon set', () => {
     render(
       <ButtonLayout
-        badge={<Badge />}
+        badge={badge}
         label="Button"
         reversedColor={'reversed-color'}
         tintColor={'int-color'}
@@ -61,7 +61,7 @@ describe('<ButtonLayout />', () => {
   it('renders the icon and the badge and the title', () => {
     render(
       <ButtonLayout
-        badge={<Badge />}
+        badge={badge}
         Icon={() => <span>icon</span>}
         label="Button"
         reversedColor={'reversed-color'}
@@ -78,7 +78,7 @@ describe('<ButtonLayout />', () => {
   it('renders the Button component with default style', () => {
     render(
       <ButtonLayout
-        badge={<Badge />}
+        badge={badge}
         Icon={Icon}
         label="Button"
         reversedColor={'#ffffff'}
@@ -96,7 +96,7 @@ describe('<ButtonLayout />', () => {
       {
         height: '100%',
         iconColor: '#0a67de',
-        focusColor: 'none',
+        focusColor: undefined,
       },
       {},
     );
@@ -107,7 +107,7 @@ describe('<ButtonLayout />', () => {
   it('renders the Button component with reversed style', () => {
     render(
       <ButtonLayout
-        badge={<Badge />}
+        badge={badge}
         Icon={Icon}
         label="Button"
         reversed
