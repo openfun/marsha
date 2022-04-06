@@ -91,4 +91,36 @@ describe('<SchedulingFields />', () => {
     );
     screen.getByDisplayValue(estimatedDuration.toFormat('h:mm'));
   });
+
+  it('clears inputs', () => {
+    const queryClient = new QueryClient();
+    const startingAt = DateTime.local(2022, 1, 27, 14, 22);
+    const estimatedDuration = Duration.fromObject({ minutes: 30 });
+    const onStartingAtChange = jest.fn();
+    const onEstimatedDurationChange = jest.fn();
+    render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <SchedulingFields
+            startingAt={startingAt.toISO()}
+            estimatedDuration={estimatedDuration.toFormat('hh:mm:ss')}
+            onStartingAtChange={onStartingAtChange}
+            onEstimatedDurationChange={onEstimatedDurationChange}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+
+    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+    fireEvent.change(inputStartingAtDate, { target: { value: null } });
+    expect(onStartingAtChange).toHaveBeenCalledWith(null);
+
+    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+    fireEvent.change(inputStartingAtTime, { target: { value: null } });
+    expect(onStartingAtChange).toHaveBeenCalledWith(null);
+
+    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
+    fireEvent.change(inputEstimatedDuration, { target: { value: null } });
+    expect(onEstimatedDurationChange).toHaveBeenCalledWith(null);
+  });
 });

@@ -39,7 +39,9 @@ const displayedDuration = (duration: Duration) => {
 
 const returnedDuration = (durationString: string) => {
   if (durationString.length === 4) durationString = '0' + durationString;
-  return Duration.fromISOTime(durationString).toFormat('hh:mm:ss');
+  return durationString
+    ? Duration.fromISOTime(durationString).toFormat('hh:mm:ss')
+    : null;
 };
 
 // build a list of durations from 15 minutes to 12 hours
@@ -54,8 +56,8 @@ const allDurationSuggestions = Array.from(
 interface SchedulingFieldsProps {
   startingAt: Nullable<string>;
   estimatedDuration: Nullable<string>;
-  onStartingAtChange?: (date: string) => void;
-  onEstimatedDurationChange?: (duration: string) => void;
+  onStartingAtChange?: (date: string | null) => void;
+  onEstimatedDurationChange?: (duration: string | null) => void;
   margin?: MarginType;
 }
 
@@ -110,7 +112,7 @@ export const SchedulingFields = ({
         currentStartingAtTime ? currentStartingAtTime : '00:00:00',
       ),
     );
-    onStartingAtChange(updatedStartingAt.toISO());
+    onStartingAtChange(updatedStartingAt ? updatedStartingAt.toISO() : null);
   };
 
   const onStartingAtTimeInputChange = (
