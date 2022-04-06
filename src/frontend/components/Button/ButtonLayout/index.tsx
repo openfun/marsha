@@ -22,7 +22,6 @@ const IconBox = styled(Box)`
 
 const TextBox = styled(Box)`
   display: flex;
-  margin-top: 6px;
   text-align: center;
 `;
 
@@ -34,11 +33,14 @@ const StyledText = styled(Text)`
     screenSize === 'small' ? '-0.3px' : '-0.13px'};
   line-height: ${({ screenSize }: ResponsiveProps) =>
     screenSize === 'small' ? '0.8rem' : '0.9rem'};
-  margin: auto;
+`;
+
+const StyledTextBadge = styled(Text)`
+  font-family: 'Roboto-Bold';
 `;
 
 export interface ButtonLayoutSubComponentProps {
-  badge?: JSX.Element;
+  badge?: string;
   Icon?: React.FC<SvgProps>;
   label?: string;
 }
@@ -61,29 +63,37 @@ export const ButtonLayout = ({
 }: ButtonLayoutProps) => {
   const size = useContext(ResponsiveContext);
 
-  let iconColor;
-  let rectColor;
-
-  if (!reversed) {
-    iconColor = tintColor;
-    rectColor = 'none';
-  } else {
-    iconColor = reversedColor;
-    rectColor = tintColor;
-  }
+  const iconColor = reversed ? reversedColor : tintColor;
+  const rectColor = reversed ? tintColor : undefined;
 
   return (
-    <Box align="center" fill>
+    <Box align="center" flex height="100%">
       {Icon && (
         <IconBox screenSize={size}>
           <Icon iconColor={iconColor} focusColor={rectColor} height="100%" />
-          {badge}
+          {badge && (
+            <Box
+              align="center"
+              background="white"
+              border={{
+                color: tintColor,
+                size: 'xsmall',
+              }}
+              pad={{ horizontal: '3px', vertical: '1px' }}
+              round="6px"
+              style={{ position: 'absolute', bottom: '0px', right: '0px' }}
+            >
+              <StyledTextBadge color={tintColor} size="0.688rem">
+                {badge}
+              </StyledTextBadge>
+            </Box>
+          )}
         </IconBox>
       )}
 
       {label && (
-        <TextBox>
-          <StyledText color={textColor} screenSize={size} size=".8rem">
+        <TextBox align="center" margin={{ top: '6px' }}>
+          <StyledText color={textColor} screenSize={size}>
             {label}
           </StyledText>
         </TextBox>

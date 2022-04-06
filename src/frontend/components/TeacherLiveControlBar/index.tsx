@@ -65,7 +65,7 @@ export const TeacherLiveControlBar = ({
 
       {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
-          <ViewersWrapper />
+          <ViewersWrapper video={video} />
         </Box>
       )}
 
