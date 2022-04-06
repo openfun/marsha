@@ -857,6 +857,9 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             start_recording(video)
         except VideoRecordingError as error:
             return Response({"detail": str(error)}, status=400)
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
         serializer = self.get_serializer(video)
         return Response(serializer.data)
 
@@ -894,5 +897,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             stop_recording(video)
         except VideoRecordingError as error:
             return Response({"detail": str(error)}, status=400)
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
         serializer = self.get_serializer(video)
         return Response(serializer.data)

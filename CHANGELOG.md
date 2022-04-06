@@ -44,6 +44,7 @@ the video to the ViewersList in the right panel
   live
 - Expose XMPP info for a live once this one started
 - Continue stopping live even if input waiter fails
+- Dispatch video in the websocket when start/stop recording
 
 ### Removed
 
