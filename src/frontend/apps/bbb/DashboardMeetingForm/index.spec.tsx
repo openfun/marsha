@@ -395,7 +395,8 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.clear(inputTitle);
     userEvent.type(inputTitle, 'updated title');
 
-    jest.runAllTimers();
+    // Blur event should trigger update
+    fireEvent.blur(inputTitle);
     await act(async () =>
       deferredPatch.resolve({ message: 'Meeting scheduled.' }),
     );
