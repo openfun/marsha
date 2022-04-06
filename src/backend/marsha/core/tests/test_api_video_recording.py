@@ -158,7 +158,9 @@ class TestApiVideoRecording(TestCase):
         now = timezone.now()
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{video.id}/start-recording/",
@@ -166,6 +168,7 @@ class TestApiVideoRecording(TestCase):
             )
         video.refresh_from_db()
 
+        mock_dispatch_video_to_groups.assert_called_once_with(video)
         self.assertEqual(response.status_code, 200)
 
         content = response.json()
@@ -284,13 +287,17 @@ class TestApiVideoRecording(TestCase):
         now = timezone.now()
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{video.id}/start-recording/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         video.refresh_from_db()
+
+        mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 400)
 
@@ -346,13 +353,17 @@ class TestApiVideoRecording(TestCase):
         now = timezone.now()
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{video.id}/start-recording/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         video.refresh_from_db()
+
+        mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 400)
 
@@ -409,7 +420,9 @@ class TestApiVideoRecording(TestCase):
 
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{video.id}/stop-recording/",
@@ -417,6 +430,10 @@ class TestApiVideoRecording(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+
+        video.refresh_from_db()
+
+        mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         content = response.json()
         self.assertEqual(
