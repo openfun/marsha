@@ -291,7 +291,7 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
 
     page, _ = _preview_meeting(page, live_server)
 
-    page.click("text=Start the meeting in BBB")
+    page.click("text=Launch now the meeting in BBB")
     with page.expect_event("popup") as bbb_meeting_page_info:
         page.click("text=Join meeting")
     bbb_meeting_page = bbb_meeting_page_info.value

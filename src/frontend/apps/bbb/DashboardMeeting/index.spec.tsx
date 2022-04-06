@@ -92,7 +92,7 @@ describe('<DashboardMeeting />', () => {
     );
     getByText('Loading meeting...');
     await act(async () => meetingDeferred.resolve(meeting));
-    await findByText('Start the meeting in BBB');
+    await findByText('Launch the meeting now in BBB');
   });
 
   it('asks for fullname when joining a meeting, cancellable for instructor', async () => {
@@ -125,7 +125,7 @@ describe('<DashboardMeeting />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Start the meeting in BBB'));
+    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
     fireEvent.click(await findByText('Join meeting'));
 
     await findByText('Please enter your name to join the meeting');
@@ -256,7 +256,7 @@ describe('<DashboardMeeting />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Start the meeting in BBB'));
+    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
     const updatedMeeting = {
