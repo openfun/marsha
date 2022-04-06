@@ -39,23 +39,17 @@ export const Button = ({
     >
       {({ hover }) => {
         let tintColor;
+        let reverseLayout;
         if (disabled) {
           tintColor = normalizeColor('blue-off', theme);
-        } else if (reversed) {
-          tintColor = normalizeColor(
-            hover ? 'blue-active' : 'blue-focus',
-            theme,
-          );
+          reverseLayout = reversed;
+        } else if (hover) {
+          tintColor = normalizeColor('blue-active', theme);
+          reverseLayout = true;
         } else {
-          tintColor = normalizeColor(
-            hover ? 'blue-focus' : 'blue-active',
-            theme,
-          );
+          tintColor = normalizeColor('blue-focus', theme);
+          reverseLayout = reversed;
         }
-
-        const shouldHover = hover && !disabled;
-        const reverseLayout =
-          (reversed && !shouldHover) || (!reversed && shouldHover);
 
         return (
           <ButtonLayout
