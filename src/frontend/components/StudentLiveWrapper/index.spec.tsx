@@ -280,7 +280,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
-    screen.getByText('Other participants');
+    expect(screen.queryByText('On stage')).toBeNull();
+    expect(screen.queryByText('Other participants')).toBeNull();
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -586,7 +587,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
-    screen.getByText('Other participants');
+    expect(screen.queryByText('On stage')).toBeNull();
+    expect(screen.queryByText('Other participants')).toBeNull();
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
