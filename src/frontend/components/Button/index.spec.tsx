@@ -44,7 +44,7 @@ describe('<Button />', () => {
     expect(Icon).toHaveBeenCalledWith(
       {
         height: '100%',
-        iconColor: '#055fd2',
+        iconColor: '#031963',
         focusColor: undefined,
       },
       {},
@@ -83,7 +83,7 @@ describe('<Button />', () => {
       1,
       {
         height: '100%',
-        iconColor: '#055fd2',
+        iconColor: '#031963',
         focusColor: undefined,
       },
       {},
@@ -93,7 +93,7 @@ describe('<Button />', () => {
       {
         height: '100%',
         iconColor: '#ffffff',
-        focusColor: '#031963',
+        focusColor: '#055fd2',
       },
       {},
     );
@@ -163,8 +163,8 @@ describe('<Button />', () => {
       2,
       {
         height: '100%',
-        iconColor: '#055fd2',
-        focusColor: undefined,
+        iconColor: '#ffffff',
+        focusColor: '#055fd2',
       },
       {},
     );
