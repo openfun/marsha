@@ -32,7 +32,7 @@ const messages = defineMessages({
     id: 'component.DashboardMeetingForm.welcomeTextLabel',
   },
   startMeetingLabel: {
-    defaultMessage: 'Start the meeting in BBB',
+    defaultMessage: 'Launch the meeting now in BBB',
     description: 'Label for the button starting the meeting creation in BBB.',
     id: 'component.DashboardMeetingForm.startMeetingLabel',
   },
