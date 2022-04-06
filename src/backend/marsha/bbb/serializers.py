@@ -51,6 +51,14 @@ class MeetingSerializer(serializers.ModelSerializer):
         except ApiMeetingException:
             return None
 
+    def update(self, instance, validated_data):
+        if any(
+            attribute in validated_data
+            for attribute in ["starting_at", "estimated_duration"]
+        ):
+            validated_data["ended"] = False
+        return super().update(instance, validated_data)
+
     def validate_starting_at(self, value):
         """Add extra controls for starting_at field."""
         # Field starting_at has a new value
