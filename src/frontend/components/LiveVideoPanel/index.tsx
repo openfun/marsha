@@ -3,7 +3,8 @@ import { Tabs, Box, Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
-import { StudentViewersList } from 'components/StudentViewersList';
+import { ViewersList } from 'components/ViewersList';
+import { getDecodedJwt } from 'data/appData';
 import {
   LivePanelItem,
   useLivePanelState,
@@ -11,7 +12,6 @@ import {
 import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
 import { theme } from 'utils/theme/theme';
-
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
 const StyledGrommet = styled(Grommet)`
@@ -57,6 +57,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       setPanelVisibility: state.setPanelVisibility,
     }),
   );
+  const canUpdate = getDecodedJwt().permissions.can_update;
 
   //  close panel if there is nothing to display
   useEffect(() => {
@@ -97,7 +98,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       content = <p>application content</p>;
       break;
     case LivePanelItem.VIEWERS_LIST:
-      content = <StudentViewersList video={video} />;
+      content = <ViewersList isInstructor={canUpdate} video={video} />;
       break;
     default:
       throw new ShouldNotHappen(currentItem);
