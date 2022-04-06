@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
-import { DashboardVideoLiveRunning } from 'components/DashboardVideoLiveRunning';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { ScheduledVideoForm } from 'components/ScheduledVideoForm';
@@ -107,9 +106,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                 [liveState.IDLE, liveState.PAUSED].includes(
                   video.live_state,
                 ) && <TeacherLiveTypeSwitch video={video} />}
-              {video.live_state === liveState.RUNNING && (
-                <DashboardVideoLiveRunning video={video} />
-              )}
             </Box>
 
             {video.live_state !== liveState.STOPPED && (
