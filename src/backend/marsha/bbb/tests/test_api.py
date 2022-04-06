@@ -353,6 +353,64 @@ class MeetingAPITest(TestCase):
         self.assertEqual(starting_at, meeting.starting_at)
         self.assertEqual(estimated_duration, meeting.estimated_duration)
 
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_update_starting_at_ended(self, mock_get_meeting_infos):
+        """Updating starting at of a meeting sets ended to false."""
+        meeting = MeetingFactory(ended=True)
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
+        data = {"starting_at": starting_at}
+
+        with mock.patch.object(timezone, "now", return_value=now):
+            self.client.patch(
+                f"/api/meetings/{meeting.id!s}/",
+                data,
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        meeting.refresh_from_db()
+        self.assertFalse(meeting.ended)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_update_estimated_duration_ended(self, mock_get_meeting_infos):
+        """Updating estimated duration of a meeting sets ended to false."""
+        meeting = MeetingFactory(ended=True)
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        estimated_duration = timedelta(seconds=60)
+        data = {"estimated_duration": estimated_duration}
+
+        self.client.patch(
+            f"/api/meetings/{meeting.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        meeting.refresh_from_db()
+        self.assertFalse(meeting.ended)
+
     def test_api_select_instructor_no_bbb_server(self):
         """An instructor should be able to fetch a meeting lti select."""
         playlist = core_factories.PlaylistFactory()
