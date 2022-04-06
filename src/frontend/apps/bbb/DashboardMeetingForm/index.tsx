@@ -93,21 +93,35 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
 
   const debouncedUpdateMeeting = React.useRef(
     debounce(async (updatedMeeting: Partial<Meeting>) => {
-      updateMeetingMutation.mutate(updatedMeeting);
+      if (JSON.stringify(updatedMeeting) !== '{}') {
+        updateMeetingMutation.mutate(updatedMeeting);
+      }
     }),
   ).current;
 
-  async function handleChange(updatedMeeting: Partial<Meeting>) {
-    setUpdatedMeetingState({ ...updatedMeetingState, ...updatedMeeting });
-    debouncedUpdateMeeting({ ...updatedMeetingState, ...updatedMeeting });
-  }
+  const handleChange = async (updatedMeetingAttribute: Partial<Meeting>) => {
+    const updatedMeeting = {
+      ...updatedMeetingState,
+      ...updatedMeetingAttribute,
+    };
+    setUpdatedMeetingState(updatedMeeting);
+    window.clearTimeout(timeoutId.current);
+    debouncedUpdateMeeting(updatedMeeting);
+  };
+
+  const handleBlur = () => {
+    if (JSON.stringify(updatedMeetingState) !== '{}') {
+      window.clearTimeout(timeoutId.current);
+      updateMeetingMutation.mutate(updatedMeetingState);
+    }
+  };
 
   useEffect(() => {
     setUpdatedMeetingState({});
   }, [meeting]);
 
   const left = (
-    <Form value={{ ...meeting, ...updatedMeetingState }}>
+    <Form value={{ ...meeting, ...updatedMeetingState }} onBlur={handleBlur}>
       <FormField
         label={intl.formatMessage(messages.titleLabel)}
         htmlFor="title"
