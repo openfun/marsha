@@ -68,7 +68,7 @@ describe('<DashboardMeetingForm />', () => {
     getByText('Title');
     getByText('Welcome text');
 
-    fireEvent.click(screen.getByText('Start the meeting in BBB'));
+    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
     await act(async () =>
       deferredPatch.resolve({ message: 'Meeting created.' }),
     );
@@ -154,7 +154,7 @@ describe('<DashboardMeetingForm />', () => {
       ),
     );
 
-    fireEvent.click(screen.getByText('Start the meeting in BBB'));
+    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
     await act(async () =>
       deferredPatch.resolve({ message: 'Meeting created.' }),
     );
