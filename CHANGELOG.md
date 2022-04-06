@@ -27,6 +27,9 @@ right (and close / open it)
 - rename LiveRegistration model in LiveSession
 - Disable jitsi prejoin page
 - Admin can access all LiveSession belonging to a video
+- Move on-stage request functional (in Instructor view) from under
+the video to the ViewersList in the right panel
+
 
 ### Fixed
 
