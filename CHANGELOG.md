@@ -45,6 +45,8 @@ the video to the ViewersList in the right panel
 - Expose XMPP info for a live once this one started
 - Continue stopping live even if input waiter fails
 - Dispatch video in the websocket when start/stop recording
+- Send registration email when livesession is updated and is_registered
+  set to True
 
 ### Removed
 

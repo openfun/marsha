@@ -106,11 +106,10 @@ class LiveSessionViewSet(
 
         return [throttle() for throttle in throttle_class]
 
-    def perform_create(self, serializer):
-        """Overrides perform_create to send the mail and catch error if needed"""
-        livesession = serializer.save()
+    def _send_registration_email(self, livesession):
+        """Send a registration email and catch error if needed."""
         try:
-            video = Video.objects.get(id=livesession.video_id)
+            video = livesession.video
             template_vars = {
                 "cancel_reminder_url": livesession.cancel_reminder_url,
                 "email": livesession.email,
@@ -134,14 +133,21 @@ class LiveSessionViewSet(
             logger.warning("registration mail %s not send", livesession.email)
             capture_exception(exception)
 
+    def perform_create(self, serializer):
+        """Overrides perform_create to send the mail and catch error if needed"""
+        livesession = serializer.save()
+        self._send_registration_email(livesession)
+
     # pylint: disable=unused-argument
     def partial_update(self, request, *args, **kwargs):
         """Partially update live_session instance."""
         instance = self.get_object()
+        was_registered = instance.is_registered
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+
         try:
-            serializer.save()
+            livesession = serializer.save()
         except IntegrityError as error:
             if (
                 "livesession_unique_email_video_with_consumer_site_none"
@@ -154,11 +160,14 @@ class LiveSessionViewSet(
 
             raise error
 
-        if getattr(instance, "_prefetched_objects_cache", None):
+        if livesession.is_registered and not was_registered:
+            self._send_registration_email(livesession)
+
+        if getattr(livesession, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             # pylint: disable=protected-access
-            instance._prefetched_objects_cache = {}
+            livesession._prefetched_objects_cache = {}
 
         return Response(serializer.data)
 
