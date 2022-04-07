@@ -1,5 +1,5 @@
 """Tests for the livesession API."""
-from datetime import timedelta
+from datetime import datetime, timedelta
 from logging import Logger
 import random
 import smtplib
@@ -24,6 +24,7 @@ from ..factories import (
 )
 from ..models import LiveSession
 from ..models.account import NONE
+from ..serializers.live_session import timezone as LiveSessionTimezone
 
 
 # pylint: disable=too-many-lines
@@ -1006,16 +1007,18 @@ class LiveSessionApiTest(TestCase):
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         anonymous_id = uuid.uuid4()
-        response = self.client.post(
-            "/api/livesessions/",
-            {
-                "anonymous_id": anonymous_id,
-                "email": "salome@test-fun-mooc.fr",
-                "is_registered": False,
-            },
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
+            response = self.client.post(
+                "/api/livesessions/",
+                {
+                    "anonymous_id": anonymous_id,
+                    "email": "salome@test-fun-mooc.fr",
+                    "is_registered": False,
+                },
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
         self.assertEqual(response.status_code, 201)
         created_livesession = LiveSession.objects.last()
         self.assertEqual(
@@ -1038,6 +1041,7 @@ class LiveSessionApiTest(TestCase):
         self.checkRegistrationEmailSent(
             "salome@test-fun-mooc.fr", video, None, created_livesession
         )
+        self.assertEqual(created_livesession.registered_at, now)
 
     def test_api_livesession_create_public_token_anonymous_mandatory(
         self,
@@ -4107,7 +4111,7 @@ class LiveSessionApiTest(TestCase):
             response = self.client.patch(f"/api/livesessions/{live_session.id}/")
             self.assertEqual(response.status_code, 401)
 
-    def test_api_livesession_patch_student__not_allowed_fields(self):
+    def test_api_livesession_patch_student_not_allowed_fields(self):
         """Only is_registered field can be patched, all other fields present should generate
         a 400."""
 
@@ -4219,6 +4223,8 @@ class LiveSessionApiTest(TestCase):
             video=video,
         )
 
+        self.assertIsNone(live_session.registered_at)
+
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
@@ -4229,12 +4235,14 @@ class LiveSessionApiTest(TestCase):
             "username": "Token",
         }
 
-        response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
-            {"is_registered": True, "email": "sarah@fun-test.fr"},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
+            response = self.client.patch(
+                f"/api/livesessions/{live_session.id}/",
+                {"is_registered": True, "email": "sarah@fun-test.fr"},
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
         live_session.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -4258,11 +4266,12 @@ class LiveSessionApiTest(TestCase):
         self.checkRegistrationEmailSent(
             live_session.email, video, live_session.username, live_session
         )
+        self.assertEqual(live_session.registered_at, now)
 
     def test_api_livesession_student_unregister_should_not_send_email(
         self,
     ):
-        """A student inregistering should not receive a registration email."""
+        """A student unregistering should not receive a registration email."""
 
         video = VideoFactory(
             live_state=IDLE,
@@ -4276,6 +4285,7 @@ class LiveSessionApiTest(TestCase):
             is_registered=True,
             lti_user_id="55555",
             lti_id="Maths",
+            registered_at=datetime(2022, 4, 7, tzinfo=timezone.utc),
             username="Sylvie",
             video=video,
         )
@@ -4316,6 +4326,72 @@ class LiveSessionApiTest(TestCase):
             },
         )
         self.assertEqual(len(mail.outbox), 0)
+        self.assertIsNone(live_session.registered_at)
+
+    def test_api_livesession_student_not_changing_registration_should_not_change_registered_at(
+        self,
+    ):
+        """When is_registered is not modified, registered_at should not be changed."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        is_registered = random.choice([True, False])
+        registered_at = (
+            datetime(2022, 4, 7, tzinfo=timezone.utc) if is_registered else None
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=is_registered,
+            lti_user_id="55555",
+            lti_id="Maths",
+            registered_at=registered_at,
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Samantha63",
+                "email": "sarah@fun-test.fr",
+                "id": str(live_session.id),
+                "is_registered": is_registered,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Sylvie",
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(live_session.is_registered, is_registered)
+        self.assertEqual(live_session.registered_at, registered_at)
 
     def test_api_livesession_student_patch_with_an_other_LTI_session(self):
         """Only the live_session owner can update its own live_session"""
@@ -4516,17 +4592,20 @@ class LiveSessionApiTest(TestCase):
             is_registered=False,
             video=video,
         )
+        self.assertIsNone(live_session.registered_at)
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [NONE]
 
-        response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
-            {"is_registered": True, "email": "sarah@fun-test.fr"},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
+            response = self.client.patch(
+                f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+                {"is_registered": True, "email": "sarah@fun-test.fr"},
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
 
         live_session.refresh_from_db()
         self.assertEqual(response.status_code, 200)
@@ -4551,6 +4630,7 @@ class LiveSessionApiTest(TestCase):
         self.checkRegistrationEmailSent(
             live_session.email, video, live_session.username, live_session
         )
+        self.assertEqual(live_session.registered_at, now)
 
     def test_api_livesession_update_email_with_another_anonymous_id(self):
         """Updating an other live_session using an unknown anonymous_id should fails."""
