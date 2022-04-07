@@ -15,6 +15,7 @@ import {
   NICKNAME_MAX_LENGTH,
 } from 'default/chat';
 import { LiveSession } from 'types/tracks';
+import { isAnonymous } from 'utils/chat/chat';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { Maybe, Nullable } from 'utils/types';
@@ -135,7 +136,7 @@ export const InputDisplayNameOverlay = () => {
     };
 
     const alerts: string[] = [];
-    if (displayName.toLowerCase().includes(ANONYMOUS_ID_PREFIX)) {
+    if (isAnonymous(displayName)) {
       alerts.push(
         intl.formatMessage(
           messages.inputAnonymousKeywordForbiddenAlertMessage,

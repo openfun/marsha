@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { Box, Button, List, Paragraph } from 'grommet';
 import { AddCircle } from 'grommet-icons';
+import { normalizeColor } from 'grommet/utils';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
@@ -13,8 +14,9 @@ import { ViewersListItem } from 'components/ViewersList/components/ViewersListIt
 import { converse } from 'utils/window';
 import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
 import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
-import { normalizeColor } from 'grommet/utils';
 import { colors } from 'utils/theme/theme';
+
+import { sortParticipantNotOnStage } from './utils';
 
 const messages = defineMessages({
   demands: {
@@ -127,15 +129,17 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
   );
   const participantsNotOnStageAndNotAsking = useMemo(
     () =>
-      participants.filter(
-        (participant) =>
-          !participantsOnStage.includes(participant) &&
-          (isInstructor
-            ? !video.participants_asking_to_join.some(
-                (p) => p.name === participant.name,
-              )
-            : true),
-      ),
+      participants
+        .filter(
+          (participant) =>
+            !participantsOnStage.includes(participant) &&
+            (isInstructor
+              ? !video.participants_asking_to_join.some(
+                  (p) => p.name === participant.name,
+                )
+              : true),
+        )
+        .sort(sortParticipantNotOnStage),
     [
       isInstructor,
       participants,
