@@ -4255,6 +4255,67 @@ class LiveSessionApiTest(TestCase):
             },
         )
         self.assertEqual(live_session.email, "sarah@fun-test.fr")
+        self.checkRegistrationEmailSent(
+            live_session.email, video, live_session.username, live_session
+        )
+
+    def test_api_livesession_student_unregister_should_not_send_email(
+        self,
+    ):
+        """A student inregistering should not receive a registration email."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        live_session = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=True,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["roles"] = [random.choice(["student"])]
+        jwt_token.payload["user"] = {
+            "id": "55555",
+            "username": "Token",
+        }
+
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/",
+            {"is_registered": False},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": "Samantha63",
+                "email": "john@fun-test.fr",
+                "id": str(live_session.id),
+                "is_registered": False,
+                "live_attendance": None,
+                "lti_id": "Maths",
+                "lti_user_id": "55555",
+                "should_send_reminders": True,
+                "username": "Sylvie",
+                "video": str(video.id),
+            },
+        )
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_api_livesession_student_patch_with_an_other_LTI_session(self):
         """Only the live_session owner can update its own live_session"""
@@ -4487,6 +4548,9 @@ class LiveSessionApiTest(TestCase):
             },
         )
         self.assertEqual(live_session.email, "sarah@fun-test.fr")
+        self.checkRegistrationEmailSent(
+            live_session.email, video, live_session.username, live_session
+        )
 
     def test_api_livesession_update_email_with_another_anonymous_id(self):
         """Updating an other live_session using an unknown anonymous_id should fails."""
