@@ -22,6 +22,7 @@ right (and close / open it)
 - Add PATCH endpoint to update a LiveSession
 - Add start and stop live recording
 - Generate a JWT token to connect to jitsi
+- Save livesession registration date
 
 ### Changed
 

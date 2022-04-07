@@ -604,6 +604,13 @@ class LiveSession(BaseModel):
         help_text=_("Is the user registered?"),
     )
 
+    registered_at = models.DateTimeField(
+        verbose_name=_("registered at"),
+        help_text=_("date and time at which the user registered"),
+        blank=True,
+        null=True,
+    )
+
     key_access = models.CharField(
         blank=False,
         default=set_random_key_access,
