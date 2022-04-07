@@ -51,6 +51,11 @@ const messages = defineMessages({
     description: 'Message when meeting update failed.',
     id: 'component.DashboardMeetingForm.updateMeetingFail',
   },
+  requiredTitle: {
+    defaultMessage: 'Title is required to launch the meeting.',
+    description: 'Message when meeting title is missing.',
+    id: 'component.DashboardMeetingForm.requiredTitle',
+  },
 });
 
 interface DashboardMeetingFormProps {
@@ -120,11 +125,20 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
     setUpdatedMeetingState({});
   }, [meeting]);
 
+  const titleError = !{ ...meeting, ...updatedMeetingState }.title && (
+    <Text size="small" color="status-error">
+      <FormattedMessage {...messages.requiredTitle} />
+    </Text>
+  );
+
   const left = (
     <Form value={{ ...meeting, ...updatedMeetingState }} onBlur={handleBlur}>
       <FormField
         label={intl.formatMessage(messages.titleLabel)}
         htmlFor="title"
+        required={true}
+        error={titleError}
+        background={titleError ? 'status-error-off' : 'white'}
         margin={{ bottom: 'medium' }}
       >
         <TextInput
@@ -187,6 +201,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
     <Button
       type="submit"
       label={intl.formatMessage(messages.startMeetingLabel)}
+      disabled={!meeting.title}
       primary
       size="large"
       fill="horizontal"
