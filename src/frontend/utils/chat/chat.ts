@@ -19,3 +19,7 @@ export const generateAnonymousNickname = () => {
 export const getNameFromJID = (jid: string): string => {
   return converse.env.Strophe.getResourceFromJid(jid);
 };
+
+export const isAnonymous = (name: string) => {
+  return name.toLowerCase().startsWith(`${ANONYMOUS_ID_PREFIX}-`);
+};

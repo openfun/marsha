@@ -1,6 +1,6 @@
 import { ANONYMOUS_ID_PREFIX } from 'default/chat';
 import { converse } from 'utils/window';
-import { generateAnonymousNickname, getNameFromJID } from './chat';
+import { generateAnonymousNickname, getNameFromJID, isAnonymous } from './chat';
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -30,5 +30,17 @@ describe('utils/chat/chat', () => {
       'id_of_the_room@conference.prosody/JohnDoe',
     );
     expect(converse.env.Strophe.getResourceFromJid).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('utils/chat/isAnonymous', () => {
+  it('returns true if name is anonymous', () => {
+    expect(isAnonymous(generateAnonymousNickname())).toBe(true);
+    expect(isAnonymous(generateAnonymousNickname().toUpperCase())).toBe(true);
+  });
+
+  it('return false for names that are not anonymous', () => {
+    expect(isAnonymous('some name')).toBe(false);
+    expect(isAnonymous(`efzef-${ANONYMOUS_ID_PREFIX}-faef`)).toBe(false);
   });
 });
