@@ -67,6 +67,13 @@ class Video(BaseFile):
         verbose_name=_("enable video live media"),
         help_text=_("Enable video live media?"),
     )
+    must_notify = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        help_text=_("List of new notification to send"),
+        default=list,
+        verbose_name=_("List of new notification to send"),
+    )
     participants_asking_to_join = models.JSONField(
         blank=True,
         default=list,
@@ -89,6 +96,12 @@ class Video(BaseFile):
         blank=True,
         verbose_name=_("starting at"),
         help_text=_("date and time at which a video live is scheduled"),
+        null=True,
+    )
+    starting_at_updated_on = models.DateTimeField(
+        verbose_name=_("starting updated on"),
+        help_text=_("date and time at which a starting_at was last updated"),
+        blank=True,
         null=True,
     )
     should_use_subtitle_as_transcript = models.BooleanField(
@@ -637,6 +650,7 @@ class LiveSession(BaseModel):
         null=True,
         verbose_name=_("LTI user identifier"),
     )
+
     reminders = ArrayField(
         models.CharField(max_length=200),
         blank=True,

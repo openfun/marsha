@@ -5,7 +5,9 @@ import random
 from unittest import mock
 import uuid
 
+from django.conf import settings
 from django.test import TestCase, override_settings
+from django.utils import dateformat
 
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -2534,6 +2536,164 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.starting_at, starting_at)
         self.assertTrue(video.is_scheduled)
+
+    def test_api_video_update_detail_token_scheduled_date_future_live_session(self):
+        """
+        Update the starting_at of a video, the field must_notify should be updated
+        """
+        video = factories.VideoFactory(
+            title="my title",
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # we only change the title
+        data = {
+            "title": "new title",
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.title, "new title")
+        self.assertEqual(video.starting_at, None)
+        self.assertFalse(video.is_scheduled)
+        # no update is done on field must_notify
+        self.assertEqual(video.must_notify, [])
+        # no update is done on field starting_at_updated_on
+        self.assertIsNone(video.starting_at_updated_on)
+
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        # create a livesession for this video
+        livesession = factories.LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=1),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+        starting_at = (timezone.now() + timedelta(days=1)).replace(microsecond=0)
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+        # starting_at has just been set, no need for a notification
+        self.assertEqual(models.LiveSession.objects.filter(video=video).count(), 1)
+        self.assertEqual(video.must_notify, [])
+        self.assertIsNone(video.starting_at_updated_on)
+
+        # we temporaly set the livesession to another video so it's not related
+        # to our video
+        livesession.video = factories.VideoFactory()
+        livesession.save()
+        starting_at = (timezone.now() + timedelta(days=2)).replace(microsecond=0)
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+        # there is no livesession related so no need to notify
+        self.assertEqual(video.must_notify, [])
+        self.assertEqual(models.LiveSession.objects.filter(video=video).count(), 0)
+        self.assertGreater(
+            video.starting_at_updated_on + timedelta(seconds=1), timezone.now()
+        )
+
+        # reassign the video
+        livesession.video = video
+        livesession.save()
+        date_update_starting_at = livesession.video.starting_at_updated_on
+        # send the same date
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+        # no update
+        self.assertEqual(video.starting_at_updated_on ,date_update_starting_at)
+        # still nothing changes
+        self.assertEqual(video.must_notify, [])
+
+        # send None as date
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        # no update is done
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertFalse(video.is_scheduled)
+        # no update
+        self.assertEqual(video.starting_at_updated_on ,date_update_starting_at)
+        # still nothing changes
+        self.assertEqual(video.must_notify, [])
+        
+        # send this time a new date
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (timezone.now() + timedelta(days=30)).replace(microsecond=0)
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+        # this time key has been added
+        self.assertEqual(video.must_notify, [settings.REMINDER_DATE_UPDATED])
+        self.assertGreater(
+            video.starting_at_updated_on + timedelta(seconds=1), timezone.now()
+        )
 
     def test_api_video_update_detail_token_scheduled_date_past(self):
         """

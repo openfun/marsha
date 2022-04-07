@@ -10,6 +10,8 @@ from django.utils.text import slugify
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
+from marsha.core.models import LiveSession
+
 from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
 from ..models import Thumbnail, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
@@ -216,6 +218,7 @@ class VideoSerializer(VideoBaseSerializer):
         """Add extra controls for starting_at field."""
         # Field starting_at has a new value
         if value != self.instance.starting_at:
+
             # New value is past, it can't be updated
             if value is not None and value < timezone.now():
                 raise serializers.ValidationError(
@@ -236,6 +239,17 @@ class VideoSerializer(VideoBaseSerializer):
                     f"Field starting_at {self.instance.starting_at} is already "
                     "past and can't be updated!"
                 )
+
+            if ( value is not None and self.instance.starting_at is not None):
+                self.instance.starting_at_updated_on = timezone.now()
+
+                # if the starting_at time has changed, add flag to notify the update of date
+                # previous tests have validated value is in the future and live_state is IDLE
+                # we only update must_notify if the video already has LiveSession
+                if (settings.REMINDER_DATE_UPDATED not in self.instance.must_notify
+                    and LiveSession.objects.filter(video=self.instance).count() > 0
+                ):
+                    self.instance.must_notify.append(settings.REMINDER_DATE_UPDATED)
 
         return value
 
