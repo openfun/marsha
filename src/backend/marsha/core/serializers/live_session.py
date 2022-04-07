@@ -1,5 +1,6 @@
 """Structure of liveSession related models API responses with DRF serializers."""
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
@@ -165,6 +166,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                 validated_data["lti_id"] = None
 
         validated_data["is_registered"] = True
+        validated_data["registered_at"] = timezone.now()
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -194,6 +196,8 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
+        if (is_registered := validated_data.get("is_registered")) is not None:
+            validated_data["registered_at"] = timezone.now() if is_registered else None
 
         return super().update(instance, validated_data)
 
