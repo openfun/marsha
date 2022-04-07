@@ -519,4 +519,34 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
   });
+
+  it('shows an error when meeting title is missing', async () => {
+    const meeting = meetingMockFactory({ title: null, id: '1' });
+    const queryClient = new QueryClient();
+
+    const deferredPatch = new Deferred();
+    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
+
+    const { getByText, queryByText } = render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <Toaster />
+          <DashboardMeetingForm meeting={meeting} />
+        </QueryClientProvider>,
+      ),
+    );
+
+    // title empty, error message should be shown
+    getByText('Title is required to launch the meeting.');
+    const launchButton = getByText('Launch the meeting now in BBB');
+    expect(launchButton).toBeDisabled();
+
+    // title filled, error message should be hidden
+    const inputTitle = screen.getByRole('textbox', {
+      name: /title/i,
+    });
+    userEvent.type(inputTitle, 'updated title');
+    const titleError = queryByText('Title is required to launch the meeting.');
+    expect(titleError).not.toBeInTheDocument();
+  });
 });

@@ -45,6 +45,7 @@ const colorsGeneric = {
   'status-critical': 'accent-2',
   'status-disabled': '#cccccc',
   'status-error': 'accent-2',
+  'status-error-off': '#f9e8e8',
   'status-ok': '#00c781',
   'status-unknown': '#cccccc',
   'status-warning': '#ffaa15',
@@ -188,6 +189,7 @@ export const theme: ThemeType = {
   },
   formField: {
     label: {
+      requiredIndicator: true,
       size: '1.5rem',
     },
   },
