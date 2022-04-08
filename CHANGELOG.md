@@ -48,6 +48,7 @@ the video to the ViewersList in the right panel
 - Dispatch video in the websocket when start/stop recording
 - Send registration email when livesession is updated and is_registered
   set to True
+- Stop trying to start recording jitsi when this one is already live
 
 ### Removed
 
