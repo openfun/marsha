@@ -50,6 +50,7 @@ the video to the ViewersList in the right panel
   set to True
 - Stop trying to start recording jitsi when this one is already live
 - Live layout for teacher on smartphone
+- Live recording actions visibility
 
 ### Removed
 
