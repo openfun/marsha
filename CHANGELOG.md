@@ -88,6 +88,7 @@ the video to the ViewersList in the right panel
 - settings DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE as fallback value when
   launch_presentation_locale missing in the LTI request
 - allow to configure CSRF_TRUSTED_ORIGINS django setting
+- send email when the date of a scheduled video is changed
 
 ### Changed
 

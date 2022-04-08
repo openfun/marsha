@@ -1,6 +1,7 @@
 """Tests for send_reminders command."""
 from datetime import datetime, timedelta
 from io import StringIO
+import random
 import smtplib
 from unittest import mock
 import uuid
@@ -9,11 +10,13 @@ from django.conf import settings
 from django.core import mail
 from django.core.management import call_command
 from django.test import TestCase
-from django.utils import timezone
+from django.utils import dateformat, timezone
+
+from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.management.commands import send_reminders
 
-from ..defaults import IDLE, RAW, RUNNING
+from ..defaults import IDLE, JITSI, RAW, RUNNING
 from ..factories import LiveSessionFactory, VideoFactory
 
 
@@ -963,3 +966,369 @@ class SendRemindersTest(TestCase):
         )
         # this time email is sent
         self.assertEqual(len(mail.outbox), 1)
+
+    def test_send_reminders_date_has_changed(self):
+        """If date of video has been updated, check reminder has been sent."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=200),
+        )
+        video_live_state = VideoFactory(
+            live_state=RUNNING,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=400),
+        )
+        # video past and not started
+        video_past = VideoFactory(
+            live_state=IDLE, live_type=RAW, starting_at=self.date_past
+        )
+
+        public_livesession = LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            video=video,
+        )
+        # reminders have the tag REMINDER_ERROR
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah3@test-fun-mooc.fr",
+            is_registered=True,
+            reminders=[settings.REMINDER_ERROR],
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # must_notify has another tag
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah2@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=["SOME_DATA"],
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # video past
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="video_started@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            video=video_past,
+        )
+
+        # LTI livesession
+        lti_livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(days=32),
+            email="chantal@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # livesession with settings.REMINDER_DATE_UPDATED reminder
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(days=32),
+            email="already_sent@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            lti_id="Maths",
+            lti_user_id="66255f3807599c377bf0e5bf072359fd",
+            reminders=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # not registered
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=32),
+            email="not_registered@test-fun-mooc.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=False,
+            should_send_reminders=True,
+            video=video,
+        )
+        # unsubscribed
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=32),
+            email="unsubscribed@test-fun-mooc.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=True,
+            should_send_reminders=False,
+            video=video,
+        )
+
+        # video in the past
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=32),
+            email="video_in_the_past@test-fun-mooc.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video_past,
+        )
+        # video live_state running
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=32),
+            email="video_in_the_past@test-fun-mooc.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video_live_state,
+        )
+
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+
+        # orders of email is not always the same
+        list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
+        # check we send it to the the right emails
+        self.assertIn("sarah@test-fun-mooc.fr", list_to)
+        self.assertIn("chantal@test-fun-mooc.fr", list_to)
+        # check it's the right content
+        self.assertEqual(
+            mail.outbox[0].subject,
+            "Webinar has been updated.",
+        )
+        self.assertEqual(
+            mail.outbox[1].subject,
+            "Webinar has been updated.",
+        )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_livesession.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+
+        self.assertIn(
+            f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
+            f"{public_livesession.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
+            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
+            " ".join(mail.outbox[1].body.split()),
+        )
+        self.assertIn(
+            "Do not forward this email or share this link. "
+            "It contains your personal code to access the event.",
+            " ".join(mail.outbox[1].body.split()),
+        )
+
+        self.assertIn(
+            f"Sending email for livesession {public_livesession.id} for video "
+            f"{public_livesession.video.id} step {settings.REMINDER_DATE_UPDATED}",
+            out.getvalue(),
+        )
+
+        self.assertIn(
+            f"Sending email for livesession {lti_livesession.id} for video "
+            f"{lti_livesession.video.id} step {settings.REMINDER_DATE_UPDATED}",
+            out.getvalue(),
+        )
+        public_livesession.refresh_from_db()
+        lti_livesession.refresh_from_db()
+        # key has been added
+        key_updated = (
+            f"{settings.REMINDER_DATE_UPDATED}_"
+            f'{dateformat.format(timezone.now(), "Y-m-d H:i")}'
+        )
+        self.assertIn(key_updated, public_livesession.reminders)
+        self.assertIn(key_updated, lti_livesession.reminders)
+        # key has been deleted from must_notify field
+        self.assertNotIn(settings.REMINDER_DATE_UPDATED, public_livesession.must_notify)
+        self.assertNotIn(settings.REMINDER_DATE_UPDATED, lti_livesession.must_notify)
+
+        out.close()
+
+        # call the command a new time, no new email should be sent
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        # there is still two emails sent
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual("", out.getvalue())
+        out.close()
+
+    # pylint: disable=too-many-statements
+    def test_scenario_video_date_has_changed(self):
+        """
+        Scenario of video updates used in combinaison of the commande send_reminders
+        with livesession created after the update.
+        """
+
+        video = VideoFactory(
+            title="my title", live_state=IDLE, live_type=JITSI, starting_at=None
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        self.assertFalse(video.is_scheduled)
+        livesession = LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@test-fun-mooc.fr",
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # at this point nothing happens, video has just been created
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        self.assertEqual("", out.getvalue())
+        out.close()
+
+        # a change of the title only won't update the must_notify
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            {
+                "title": "new title",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+        self.assertEqual(livesession.video.title, "new title")
+        self.assertEqual(livesession.must_notify, [])
+
+        # Now we change the date
+        starting_at = (timezone.now() + timedelta(days=1)).replace(microsecond=0)
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            {
+                "title": "title",
+                "starting_at": starting_at,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        livesession.refresh_from_db()
+        self.assertEqual(livesession.video.title, "title")
+        self.assertEqual(livesession.must_notify, [settings.REMINDER_DATE_UPDATED])
+        # create another live_session after the video has been updated
+        # this one shouldn't be notified as it has been created after the update
+        livesession_2 = LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah2@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=["DATA"],
+            reminders=["ONE"],
+            should_send_reminders=True,
+            video=video,
+        )
+
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(
+            f"Sending email for livesession {livesession.id} for video "
+            f"{livesession.video.id} step {settings.REMINDER_DATE_UPDATED}",
+            out.getvalue(),
+        )
+        out.close()
+        livesession.refresh_from_db()
+        livesession_2.refresh_from_db()
+        self.assertEqual(livesession.video.starting_at, starting_at)
+        # key has been added
+        key_updated = (
+            f"{settings.REMINDER_DATE_UPDATED}_"
+            f'{dateformat.format(timezone.now(), "Y-m-d H:i")}'
+        )
+        self.assertEqual(livesession.reminders, [key_updated])
+        self.assertEqual(livesession_2.reminders, ["ONE"])
+        self.assertEqual(livesession.must_notify, [])
+        self.assertEqual(livesession_2.must_notify, ["DATA"])
+
+        # we change sending the same date
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            {
+                "title": "title",
+                "starting_at": starting_at,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+        livesession_2.refresh_from_db()
+        # nothing is added
+        self.assertEqual(livesession_2.must_notify, ["DATA"])
+        self.assertEqual(livesession.must_notify, [])
+
+        # if we replay the send_reminders command, nothing happens
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        self.assertEqual("", out.getvalue())
+        out.close()
+
+        # we change sending a new date
+        new_date = timezone.now() + timedelta(days=2)
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            {
+                "title": "title",
+                "starting_at": new_date,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+        livesession_2.refresh_from_db()
+        # must_notify is updated for the two livesessions
+        self.assertEqual(
+            livesession_2.must_notify,
+            ["DATA", settings.REMINDER_DATE_UPDATED],
+        )
+        self.assertEqual(livesession.must_notify, [settings.REMINDER_DATE_UPDATED])
+
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        self.assertIn(
+            f"Sending email for livesession {livesession.id} for video "
+            f"{livesession.video.id} step {settings.REMINDER_DATE_UPDATED}",
+            out.getvalue(),
+        )
+        self.assertIn(
+            f"Sending email for livesession {livesession_2.id} for video "
+            f"{livesession_2.video.id} step {settings.REMINDER_DATE_UPDATED}",
+            out.getvalue(),
+        )
+        out.close()
+
+        livesession.refresh_from_db()
+        livesession_2.refresh_from_db()
+        self.assertEqual(livesession.must_notify, [])
+        self.assertEqual(livesession_2.must_notify, ["DATA"])
+        self.assertEqual(livesession_2.reminders, ["ONE", key_updated])
+        self.assertEqual(livesession.reminders, [key_updated, key_updated])
