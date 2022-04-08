@@ -159,8 +159,15 @@ const DashboardVideoLiveJitsi = ({
     _jitsi.addListener('recordingStatusChanged', async (event) => {
       // recording as stopped with an error
       if (!event.on && event.error) {
+        // When a live is running, all moderators are triggering the startRecording command
+        // Only one will success all others will fail with the error `unexpected-request`.
+        // In that case we must not start trying to start the recording again and again like
+        // for other errors. We must stop the function here.
+        if (event.error === 'unexpected-request') {
+          return;
+        }
         jitsiIsRecording.current = false;
-        report(event.error);
+        report(event);
         await new Promise((resolve) =>
           window.setTimeout(resolve, retryStartRecordingDelay.current),
         );
