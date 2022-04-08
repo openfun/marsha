@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.utils import timezone
+from django.utils import dateformat, timezone
 from django.utils.translation import gettext_lazy as _
 
 from sentry_sdk import capture_exception
@@ -33,6 +33,9 @@ class Command(BaseCommand):
         else:
             livesession.reminders = [step]
 
+        if livesession.must_notify and step in livesession.must_notify:
+            livesession.must_notify.remove(step)
+
         # to send mails if still appropriate
         return (
             LiveSession.objects.filter(id=livesession.id, should_send_reminders=True)
@@ -42,7 +45,9 @@ class Command(BaseCommand):
                     settings.REMINDER_ERROR,
                 ]
             )
-            .update(reminders=livesession.reminders)
+            .update(
+                reminders=livesession.reminders, must_notify=livesession.must_notify
+            )
         )
 
     def send_reminders_and_update_livesessions_step(
@@ -94,6 +99,50 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Execute management command."""
         self.send_reminders_depending_on_time()
+        self.send_reminders_video_updated()
+
+    def send_reminders_video_updated(self):
+        """
+        Send reminders when video's starting_at time has
+        changed.
+        """
+
+        livesessions = (
+            LiveSession.objects.filter(
+                should_send_reminders=True,
+                is_registered=True,
+                video__starting_at__gt=timezone.now(),
+                video__live_state=IDLE,
+                must_notify__overlap=[
+                    settings.REMINDER_DATE_UPDATED,
+                ],
+            ).exclude(
+                reminders__overlap=[
+                    settings.REMINDER_DATE_UPDATED,
+                    settings.REMINDER_ERROR,
+                ]
+            )
+        ).order_by("created_on")
+
+        self.send_reminders_and_update_livesessions_step(
+            livesessions,
+            settings.REMINDER_DATE_UPDATED,
+            _("Webinar has been updated."),
+            {},
+            "reminder_date_updated",
+        )
+
+        # now reminders have been sent, we delete the step for these specific livesession
+        # step was only used not to update simultaneously the same record
+        date_updated = dateformat.format(timezone.now(), "Y-m-d H:i")
+        for livesession in livesessions:
+            """For each livesession we reinit this step, so new update can be send"""
+            livesession.reminders.remove(settings.REMINDER_DATE_UPDATED)
+            # keep the trace of this reminder
+            livesession.reminders.append(
+                f"{settings.REMINDER_DATE_UPDATED}_{date_updated}"
+            )
+            livesession.save()
 
     def send_reminders_depending_on_time(self):
         """Send reminders depending on time. Videos mustn't be started yet,
