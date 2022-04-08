@@ -41,7 +41,7 @@ export const StartRecording = ({ video }: StartRecordingProps) => {
       primary
       ref={buttonRef}
     >
-      <Box direction="row" flex>
+      <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
         {isLoading && (
           <Spinner
             data-testid="loader-id"
