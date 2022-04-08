@@ -644,6 +644,15 @@ class LiveSession(BaseModel):
         null=True,
         verbose_name=_("LTI user identifier"),
     )
+
+    must_notify = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        default=list,
+        help_text=_("List of new notifications to send"),
+        verbose_name=_("List of new notifications to send"),
+    )
+
     reminders = ArrayField(
         models.CharField(max_length=200),
         blank=True,

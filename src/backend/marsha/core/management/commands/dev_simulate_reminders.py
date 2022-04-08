@@ -27,6 +27,7 @@ class Command(BaseCommand):
         self.get_data_five_minutes_before()
         self.get_data_three_hours_before()
         self.get_data_three_days_before()
+        self.get_data_video_date_updated()
         call_command("send_reminders")
         self.stdout.write("Command was executed in DEBUG mode.")
 
@@ -121,6 +122,41 @@ class Command(BaseCommand):
             should_send_reminders=True,
             lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            username="Super Chantal",
+            video=video,
+        )
+
+    def get_data_video_date_updated(self):
+        """
+        Data to simulate the reminder sent when video had its starting date
+        updated
+        """
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=2),
+        )
+
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            created_on=timezone.now() - timedelta(days=32),
+            email="sarah@test-fun-mooc.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+
+        # LTI registration
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(days=32),
+            email="chantal@test-fun-mooc.fr",
+            is_registered=True,
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            should_send_reminders=True,
             username="Super Chantal",
             video=video,
         )

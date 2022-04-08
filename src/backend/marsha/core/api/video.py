@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
-from django.db.models import Q
+from django.db.models import F, Func, Q, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -17,7 +17,7 @@ from marsha.core.defaults import JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
-from ..models import LivePairing, SharedLiveMedia, Video
+from ..models import LivePairing, LiveSession, SharedLiveMedia, Video
 from ..services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
@@ -114,7 +114,35 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         return context
 
     def perform_update(self, serializer):
+        instance = self.get_object()
         super().perform_update(serializer)
+
+        # if the starting_at time has changed, add flag to livesessions that have subscribed
+        if (
+            serializer.instance.is_scheduled
+            and serializer.instance.starting_at != instance.starting_at
+        ):
+            LiveSession.objects.filter(
+                should_send_reminders=True,
+                is_registered=True,
+                video=serializer.instance,
+            ).exclude(  # exclude current ones already tagged
+                must_notify__overlap=[
+                    settings.REMINDER_DATE_UPDATED,
+                ]
+            ).exclude(
+                reminders__overlap=[
+                    settings.REMINDER_DATE_UPDATED,  # exclude current ones getting updated
+                    settings.REMINDER_ERROR,
+                ]
+            ).update(
+                must_notify=Func(
+                    F("must_notify"),
+                    Value(settings.REMINDER_DATE_UPDATED),
+                    function="array_append",
+                    arity=2,
+                )
+            )
         channel_layers_utils.dispatch_video_to_groups(serializer.instance)
 
     def create(self, request, *args, **kwargs):

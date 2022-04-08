@@ -5,6 +5,7 @@ import random
 from unittest import mock
 import uuid
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
@@ -2534,6 +2535,140 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.starting_at, starting_at)
         self.assertTrue(video.is_scheduled)
+
+    def test_api_video_update_detail_token_scheduled_date_future_live_session(self):
+        """
+        Update date of video with scheduled date.
+
+        Live_sessions registered for this video should have their field must_notify
+        updated
+        """
+        video = factories.VideoFactory(
+            title="my title",
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+        video2 = factories.VideoFactory(
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+        ls_must_notify_none = factories.LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            should_send_reminders=True,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        ls_dont_send_reminders = factories.LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            is_registered=True,
+            should_send_reminders=False,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="66255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        ls_not_registered = factories.LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            is_registered=False,
+            should_send_reminders=False,
+            lti_id=str(video.playlist.lti_id),
+            lti_user_id="76255f3807599c377bf0e5bf072359fd",
+            video=video,
+        )
+        ls_must_notify_data = factories.LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="sarah@openfun.fr",
+            must_notify=["SOME_VAL"],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+        ls_video2 = factories.LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="raoul@openfun.fr",
+            must_notify=["SOME_VAL"],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video2,
+        )
+        # livesession already has the tag, it won't be added
+        ls_with_tag = factories.LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="with_tag@openfun.fr",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+        # livesession has a reminder in error, it won't be added
+        ls_with_reminder_error = factories.LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            email="with_error@openfun.fr",
+            reminders=[settings.REMINDER_1, settings.REMINDER_ERROR],
+            is_registered=True,
+            should_send_reminders=True,
+            video=video,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        # we only change the title
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            {
+                "title": "new title",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        # data have been updated but field must_notify has not changed
+        self.assertEqual(video.title, "new title")
+        ls_must_notify_none.refresh_from_db()
+        ls_must_notify_data.refresh_from_db()
+        self.assertEqual(ls_must_notify_none.must_notify, [])
+        self.assertEqual(ls_must_notify_data.must_notify, ["SOME_VAL"])
+
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (timezone.now() + timedelta(days=1)).replace(microsecond=0)
+        data = {
+            "title": "title required",
+            "starting_at": starting_at,
+        }
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.starting_at, starting_at)
+        self.assertTrue(video.is_scheduled)
+        ls_must_notify_data.refresh_from_db()
+        ls_must_notify_none.refresh_from_db()
+        self.assertEqual(
+            ls_must_notify_data.must_notify,
+            ["SOME_VAL", settings.REMINDER_DATE_UPDATED],
+        )
+        self.assertEqual(
+            ls_must_notify_none.must_notify, [settings.REMINDER_DATE_UPDATED]
+        )
+
+        # these records haven't changed
+        ls_dont_send_reminders.refresh_from_db()
+        ls_not_registered.refresh_from_db()
+        ls_video2.refresh_from_db()
+        ls_with_reminder_error.refresh_from_db()
+        ls_with_tag.refresh_from_db()
+        self.assertEqual(ls_dont_send_reminders.must_notify, [])
+        self.assertEqual(ls_not_registered.must_notify, [])
+        self.assertEqual(ls_video2.must_notify, ["SOME_VAL"])
+        self.assertEqual(ls_with_reminder_error.must_notify, [])
+        self.assertEqual(ls_with_tag.must_notify, [settings.REMINDER_DATE_UPDATED])
 
     def test_api_video_update_detail_token_scheduled_date_past(self):
         """
