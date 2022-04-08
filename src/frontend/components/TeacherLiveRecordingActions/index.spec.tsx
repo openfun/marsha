@@ -31,7 +31,7 @@ describe('<TeacherLiveRecordingActions />', () => {
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions video={video} />
+          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
         </QueryClientProvider>,
       ),
     );
@@ -50,7 +50,7 @@ describe('<TeacherLiveRecordingActions />', () => {
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions video={video} />
+          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
         </QueryClientProvider>,
       ),
     );
@@ -70,7 +70,7 @@ describe('<TeacherLiveRecordingActions />', () => {
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions video={video} />
+          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
         </QueryClientProvider>,
       ),
     );
@@ -90,7 +90,7 @@ describe('<TeacherLiveRecordingActions />', () => {
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions video={video} />
+          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
         </QueryClientProvider>,
       ),
     );
@@ -99,5 +99,30 @@ describe('<TeacherLiveRecordingActions />', () => {
       screen.queryByRole('button', { name: 'Start recording' }),
     ).not.toBeInTheDocument();
     screen.getByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' });
+  });
+
+  it('does not render buttons if you are not an administrator', () => {
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+      is_recording: true,
+    });
+
+    render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <TeacherLiveRecordingActions
+            isJitsiAdministrator={false}
+            video={video}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Start recording' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /stop recording/i }),
+    ).not.toBeInTheDocument();
   });
 });

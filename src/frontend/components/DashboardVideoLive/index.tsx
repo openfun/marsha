@@ -69,7 +69,10 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               <Fragment>
                 {isLiveStarted && <TeacherLiveControlBar video={video} />}
                 <Box flex direction="row">
-                  <TeacherLiveRecordingActions video={video} />
+                  <TeacherLiveRecordingActions
+                    isJitsiAdministrator={canStartLive}
+                    video={video}
+                  />
                   <TeacherLiveLifecycleControls
                     canStartStreaming={canShowStartButton}
                     flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}

@@ -7,13 +7,15 @@ import { StartRecording } from './StartRecording';
 import { StopRecording } from './StopRecording';
 
 interface TeacherLiveRecordingActionsProps {
+  isJitsiAdministrator: boolean;
   video: Video;
 }
 
 export const TeacherLiveRecordingActions = ({
+  isJitsiAdministrator,
   video,
 }: TeacherLiveRecordingActionsProps) => {
-  if (video.live_state !== liveState.RUNNING) {
+  if (video.live_state !== liveState.RUNNING || !isJitsiAdministrator) {
     return <Fragment />;
   }
 
