@@ -53,6 +53,7 @@ the video to the ViewersList in the right panel
 ### Removed
 
 - Remove email when the webinar started earlier
+- Remove video constraint video_unique_idx
 
 ## [4.0.0-beta.1] - 2022-02-15
 
