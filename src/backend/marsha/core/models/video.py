@@ -142,11 +142,6 @@ class Video(BaseFile):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
         constraints = [
-            models.UniqueConstraint(
-                fields=["lti_id", "playlist"],
-                condition=models.Q(deleted=None),
-                name="video_unique_idx",
-            ),
             models.CheckConstraint(
                 name="live_type_check",
                 check=models.expressions.RawSQL(
