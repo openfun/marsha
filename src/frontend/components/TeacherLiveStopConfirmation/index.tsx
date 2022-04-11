@@ -104,7 +104,8 @@ export const TeacherLiveStopConfirmation = ({
         background="#001a29"
         margin="auto"
         pad={{ horizontal: 'large', vertical: 'medium' }}
-        style={{ width: '50%', maxWidth: '600px', borderRadius: '6px' }}
+        round="small"
+        style={{ minWidth: '45vw', maxWidth: '600px', width: '50%' }}
       >
         <Heading
           a11yTitle={title}
