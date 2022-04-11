@@ -3,12 +3,9 @@ from datetime import datetime, timedelta
 import random
 from unittest import mock
 
-from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
-
-from safedelete.models import SOFT_DELETE_CASCADE
 
 from ..defaults import (
     DELETED,
@@ -36,8 +33,15 @@ class VideoModelsTestCase(TestCase):
         video.delete()
         self.assertEqual(str(video), "j'espère [deleted]")
 
-    def test_models_video_fields_lti_id_unique(self):
-        """Videos should be unique for a given duo lti_id/playlist (see LTI specification)."""
+    def test_models_video_live_state_set_without_live_type(self):
+        """A video live_state should not be set without a live_type."""
+        with self.assertRaises(IntegrityError):
+            VideoFactory(
+                live_state=random.choice([choice[0] for choice in LIVE_CHOICES])
+            )
+
+    def test_models_video_fields_lti_id_non_unique(self):
+        """it should be possible to create 2 videos sharing the samme playlists and lti_id."""
         video = VideoFactory()
 
         # A video with a different lti_id and the same playlist can still be created
@@ -46,22 +50,8 @@ class VideoModelsTestCase(TestCase):
         # A video for a different playlist and the same lti_id can still be created
         VideoFactory(lti_id=video.lti_id)
 
-        # Trying to create a video with the same duo lti_id/playlist should raise a
-        # database error
-        with self.assertRaises(IntegrityError):
-            with transaction.atomic():
-                VideoFactory(lti_id=video.lti_id, playlist=video.playlist)
-
-        # Soft deleted videos should not count for unicity
-        video.delete(force_policy=SOFT_DELETE_CASCADE)
+        # A video with an already existing lti_id and playlist_id can still be created
         VideoFactory(lti_id=video.lti_id, playlist=video.playlist)
-
-    def test_models_video_live_state_set_without_live_type(self):
-        """A video live_state should not be set without a live_type."""
-        with self.assertRaises(IntegrityError):
-            VideoFactory(
-                live_state=random.choice([choice[0] for choice in LIVE_CHOICES])
-            )
 
     def test_models_video_live_type_set_without_live_state(self):
         """A video live_type should not be set without a live_state."""
