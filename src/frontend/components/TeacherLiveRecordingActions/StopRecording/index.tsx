@@ -1,6 +1,6 @@
 import { defineMessage } from '@formatjs/intl';
 import { Box, Button, Clock, Spinner } from 'grommet';
-import React, { useRef } from 'react';
+import React from 'react';
 import toast from 'react-hot-toast';
 import { useIntl } from 'react-intl';
 
@@ -49,7 +49,6 @@ interface StopRecordingProps {
 
 export const StopRecording = ({ video }: StopRecordingProps) => {
   const intl = useIntl();
-  const buttonRef = useRef(null);
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));
   });
@@ -60,33 +59,33 @@ export const StopRecording = ({ video }: StopRecordingProps) => {
       margin="auto"
       onClick={() => mutate()}
       primary
-      ref={buttonRef}
-    >
-      <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-        {isLoading && (
-          <Spinner
-            data-testid="loader-id"
-            color="white"
-            margin={{ right: 'small' }}
-          />
-        )}
-        {!isLoading && (
-          <PauseSVG
-            iconColor="white"
-            width="25px"
-            height="25px"
-            containerStyle={{ margin: 'auto', marginRight: '8px' }}
-          />
-        )}
-        {intl.formatMessage(messages.title)}
-        {!isLoading && (
-          <Clock
-            type="digital"
-            margin={{ left: 'small' }}
-            time={formatSecToTimeStamp(video.recording_time, intl.locale)}
-          />
-        )}
-      </Box>
-    </Button>
+      label={
+        <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
+          {isLoading && (
+            <Spinner
+              data-testid="loader-id"
+              color="white"
+              margin={{ right: 'small' }}
+            />
+          )}
+          {!isLoading && (
+            <PauseSVG
+              iconColor="white"
+              width="25px"
+              height="25px"
+              containerStyle={{ margin: 'auto', marginRight: '8px' }}
+            />
+          )}
+          {intl.formatMessage(messages.title)}
+          {!isLoading && (
+            <Clock
+              type="digital"
+              margin={{ left: 'small' }}
+              time={formatSecToTimeStamp(video.recording_time, intl.locale)}
+            />
+          )}
+        </Box>
+      }
+    />
   );
 };
