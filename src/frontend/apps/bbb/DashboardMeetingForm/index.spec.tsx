@@ -30,7 +30,7 @@ jest.mock('data/appData', () => ({
 }));
 
 Settings.defaultLocale = 'en';
-Settings.defaultZone = 'utc';
+Settings.defaultZone = 'Europe/Paris';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
 describe('<DashboardMeetingForm />', () => {

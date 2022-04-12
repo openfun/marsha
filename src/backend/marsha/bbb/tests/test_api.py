@@ -6,6 +6,7 @@ import re
 from unittest import mock
 from urllib.parse import quote_plus
 import uuid
+import zoneinfo
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -69,6 +70,55 @@ class MeetingAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+            },
+            content,
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_fetch_student_scheduled(self, mock_get_meeting_infos):
+        """A student should be allowed to fetch a scheduled meeting."""
+        now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
+
+        # set microseconds to 0 to compare date surely as serializer truncate them
+        starting_at = (now + timedelta(hours=3)).replace(microsecond=0)
+        estimated_duration = timedelta(seconds=60)
+
+        meeting = MeetingFactory(
+            starting_at=starting_at, estimated_duration=estimated_duration
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        response = self.client.get(
+            f"/api/meetings/{meeting.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertDictEqual(
+            {
+                "id": str(meeting.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(meeting.lti_id),
+                "title": meeting.title,
+                "description": meeting.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(meeting.meeting_id),
+                "welcome_text": meeting.welcome_text,
+                "playlist": {
+                    "id": str(meeting.playlist.id),
+                    "title": meeting.playlist.title,
+                    "lti_id": meeting.playlist.lti_id,
+                },
+                "starting_at": "2018-08-08T01:00:00Z",
+                "estimated_duration": "00:01:00",
             },
             content,
         )
@@ -208,11 +258,16 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(meeting.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+
+        now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
-        starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
+        starting_at = (now + timedelta(hours=3)).replace(microsecond=0)
         estimated_duration = timedelta(seconds=60)
-        data = {"starting_at": starting_at, "estimated_duration": estimated_duration}
+        data = {
+            # starting_at sent with timezone : "2018-08-08T03:00:00+02:00"
+            "starting_at": starting_at.isoformat(),
+            "estimated_duration": estimated_duration,
+        }
 
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(
@@ -238,7 +293,10 @@ class MeetingAPITest(TestCase):
                     "title": meeting.playlist.title,
                     "lti_id": meeting.playlist.lti_id,
                 },
-                "starting_at": "2018-08-08T01:00:00Z",
+                # starting_at is stored in UTC : "2018-08-08T01:00:00Z"
+                "starting_at": starting_at.astimezone(timezone.utc)
+                .isoformat()
+                .replace("+00:00", "Z"),
                 "estimated_duration": "00:01:00",
             },
             response.json(),
@@ -264,11 +322,15 @@ class MeetingAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(meeting.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+
+        now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
-        starting_at = (now - timedelta(hours=1)).replace(microsecond=0)
+        starting_at = (now - timedelta(hours=3)).replace(microsecond=0)
         estimated_duration = timedelta(seconds=60)
-        data = {"starting_at": starting_at, "estimated_duration": estimated_duration}
+        data = {
+            "starting_at": starting_at.isoformat(),
+            "estimated_duration": estimated_duration,
+        }
 
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.patch(

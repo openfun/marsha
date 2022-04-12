@@ -1,4 +1,5 @@
 """Structure of BBB related models API responses with Django Rest Framework serializers."""
+from datetime import datetime
 
 from django.urls import reverse
 from django.utils import timezone
@@ -65,8 +66,11 @@ class MeetingSerializer(serializers.ModelSerializer):
         if value != self.instance.starting_at:
             # New value is past, it can't be updated
             if value is not None and value < timezone.now():
+                sent_date_with_timezone = datetime.fromisoformat(
+                    self.context.get("request").data.get("starting_at")
+                )
                 raise serializers.ValidationError(
-                    f"{value} is not a valid date, date should be planned after!"
+                    f"{sent_date_with_timezone} is not a valid date, date should be planned after!"
                 )
 
         return value
