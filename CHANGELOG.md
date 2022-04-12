@@ -148,6 +148,7 @@ the video to the ViewersList in the right panel
   earlier
 - Update store in the WaitingLiveVideo component
 - Set specific timeout to 30 seconds in pollForLive to update the store
+- Fix registration to scheduled events 
 
 ### Removed
 
