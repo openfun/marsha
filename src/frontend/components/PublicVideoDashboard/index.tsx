@@ -1,10 +1,11 @@
 import { Box } from 'grommet';
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { Loader } from 'components/Loader';
 import { LiveVideoWrapper } from 'components/StudentLiveWrapper';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
@@ -36,10 +37,13 @@ const PublicVideoDashboard = ({
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
+  const [isReadyLive, setIsReadyLive] = useState(false);
 
   useAsyncEffect(async () => {
-    if (video.live_state && video.live_state !== liveState.IDLE) {
+    if (video.live_state && video.live_state !== liveState.STOPPED) {
       await initWebinarContext(video);
+      initVideoWebsocket(video);
+      setIsReadyLive(true);
     }
   }, [video.live_state]);
 
@@ -53,9 +57,11 @@ const PublicVideoDashboard = ({
       // otherwise the user can only see a message
       return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
     }
-
-    initVideoWebsocket(video);
-    return <LiveVideoWrapper video={video} playerType={playerType} />;
+    return isReadyLive ? (
+      <LiveVideoWrapper video={video} playerType={playerType} />
+    ) : (
+      <Loader />
+    );
   }
 
   const transcripts = timedTextTracks
