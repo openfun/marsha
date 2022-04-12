@@ -570,7 +570,7 @@ describe('PublicVideoDashboard', () => {
     screen.getByText('Error Component: liveStopped');
   });
 
-  it('redirects to the dashboard when user has update permission and live state is stopped', () => {
+  it('redirects to the dashboard when user has update permission and live state is stopped', async () => {
     mockCanUpdate = true;
     const video = videoMockFactory({
       live_state: liveState.STOPPED,
@@ -596,7 +596,6 @@ describe('PublicVideoDashboard', () => {
         ),
       ),
     );
-
     screen.getByText('dashboard videos');
   });
 
@@ -615,14 +614,13 @@ describe('PublicVideoDashboard', () => {
         ),
       ),
     );
-
-    screen.getByRole('heading', {
-      name: 'Live is starting',
+    await waitFor(() => {
+      expect(mockInitWebinarContext).toHaveBeenCalled();
     });
-    expect(mockInitWebinarContext).not.toHaveBeenCalled();
+    screen.getByRole('heading', { name: 'Live is starting' });
   });
 
-  it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', () => {
+  it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', async () => {
     const video = videoMockFactory({
       live_state: liveState.IDLE,
       is_scheduled: false,
@@ -639,10 +637,8 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByRole('heading', {
-      name: 'Live is starting',
-    });
-    expect(mockInitWebinarContext).not.toHaveBeenCalled();
+    await screen.findByRole('heading', { name: 'Live is starting' });
+    expect(mockInitWebinarContext).toHaveBeenCalled();
   });
 
   it('displays the SubscribeScheduledVideo component when live_state is IDLE and video is scheduled', async () => {
@@ -671,11 +667,10 @@ describe('PublicVideoDashboard', () => {
         ),
       ),
     );
-
     await screen.findByRole('button', { name: /register/i });
     screen.getByRole('heading', {
       name: /Live will start in 2 days at 11:00 AM/i,
     });
-    expect(mockInitWebinarContext).not.toHaveBeenCalled();
+    expect(mockInitWebinarContext).toHaveBeenCalled();
   });
 });
