@@ -17,6 +17,7 @@ import {
   liveState,
   timedTextMode,
   TimedTextTranscript,
+  uploadState,
   Video,
 } from 'types/tracks';
 import { initWebinarContext } from 'utils/initWebinarContext';
@@ -64,6 +65,14 @@ const PublicVideoDashboard = ({
         ? timedTextMode.SUBTITLE === track.mode
         : timedTextMode.TRANSCRIPT === track.mode,
     );
+
+  if (video.upload_state === uploadState.DELETED) {
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+  }
+
+  if (!video.urls) {
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE()} />;
+  }
 
   return (
     <Box>
