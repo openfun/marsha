@@ -21,13 +21,21 @@ export const TeacherLiveRecordingActions = ({
 
   if (video.is_recording) {
     return (
-      <Box flex pad={{ horizontal: 'auto', vertical: 'small' }}>
+      <Box
+        flex
+        margin={{ horizontal: 'medium' }}
+        pad={{ horizontal: 'auto', vertical: 'small' }}
+      >
         <StopRecording video={video} />
       </Box>
     );
   } else {
     return (
-      <Box flex pad={{ horizontal: 'auto', vertical: 'small' }}>
+      <Box
+        flex
+        margin={{ horizontal: 'medium' }}
+        pad={{ horizontal: 'auto', vertical: 'small' }}
+      >
         <StartRecording video={video} />
       </Box>
     );
