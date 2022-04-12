@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
@@ -12,9 +13,17 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
 import { StudentLiveViewerWrapper } from './StudentLiveViewerWrapper';
+
+const messages = defineMessages({
+  defaultLiveTitle: {
+    defaultMessage: 'No title',
+    description:
+      'Default live title for students (if the live has no title set)',
+    id: 'components.StudentLiveWrapper.defaultLiveTitle',
+  },
+});
 
 interface LiveVideoWrapperProps {
   video: Video;
@@ -22,10 +31,10 @@ interface LiveVideoWrapperProps {
 }
 
 export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
-  video: baseVideo,
+  video,
   playerType,
 }) => {
-  const video = useVideo((state) => state.getVideo(baseVideo));
+  const intl = useIntl();
   const { isPanelVisible, configPanel, currentItem, setPanelVisibility } =
     useLivePanelState((state) => ({
       isPanelVisible: state.isPanelVisible,
@@ -72,7 +81,10 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
         isPanelOpen={isPanelVisible}
         isXmppReady={!!video.xmpp}
         liveTitleElement={
-          <StudentLiveInfoBar title={video.title} startDate={null} />
+          <StudentLiveInfoBar
+            title={video.title ?? intl.formatMessage(messages.defaultLiveTitle)}
+            startDate={null}
+          />
         }
         mainElement={
           isParticipantOnstage ? (

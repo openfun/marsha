@@ -9,7 +9,7 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow/index';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -461,6 +461,37 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     await screen.findByText('Display name');
   });
+
+  it('prompts for display name when trying to join the chat', async () => {
+    const video = videoMockFactory({
+      title: null,
+      live_state: liveState.RUNNING,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    screen.getByText('No title');
+  });
 });
 
 describe('<StudentLiveWrapper /> as a streamer', () => {
@@ -786,5 +817,39 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     userEvent.click(joindChatButton);
 
     await screen.findByText('Display name');
+  });
+
+  it('inits the live title bar with the default title', () => {
+    const video = videoMockFactory({
+      title: null,
+      live_info: {
+        jitsi: {
+          room_name: 'room',
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInIntlProvider(
+        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    screen.getByText('No title');
   });
 });

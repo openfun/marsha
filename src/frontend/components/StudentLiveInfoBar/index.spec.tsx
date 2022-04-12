@@ -21,11 +21,4 @@ describe('<StudentLiveInfoBar />', () => {
 
     await imageSnapshot();
   });
-
-  it('does not render the live title when this one is null', async () => {
-    render(<StudentLiveInfoBar title={null} startDate="2021/12/12 14:00:00" />);
-
-    expect(screen.queryByText('title')).not.toBeInTheDocument();
-    screen.getByText('2021/12/12 14:00:00');
-  });
 });
