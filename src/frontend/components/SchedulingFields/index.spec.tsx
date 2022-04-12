@@ -8,7 +8,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { SchedulingFields } from './index';
 
 Settings.defaultLocale = 'en';
-Settings.defaultZone = 'utc';
+Settings.defaultZone = 'Europe/Paris';
 
 describe('<SchedulingFields />', () => {
   it('triggers callbacks when updating fields', () => {
@@ -35,9 +35,6 @@ describe('<SchedulingFields />', () => {
     fireEvent.change(inputStartingAtDate, {
       target: { value: startingAt.toFormat('yyyy/MM/dd') },
     });
-    expect(onStartingAtChange).toHaveBeenCalledWith(
-      startingAt.set({ hour: 0, minute: 0, second: 0 }).toISO(),
-    );
 
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
     fireEvent.change(inputStartingAtTime, {

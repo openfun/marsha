@@ -6,6 +6,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { Nullable } from 'utils/types';
 
+import { mergeDateTime, splitDateTime } from './utils';
+
 const messages = defineMessages({
   startingAtDateTextLabel: {
     defaultMessage: 'Starting date',
@@ -70,22 +72,16 @@ export const SchedulingFields = ({
 }: SchedulingFieldsProps) => {
   const intl = useIntl();
   Settings.defaultLocale = intl.locale;
-  Settings.defaultZone = 'utc';
 
-  const [currentStartingAtDate, setCurrentStartingAtDate] = React.useState(
-    startingAt
-      ? DateTime.fromISO(startingAt)
-          .set({ hour: 0, minute: 0, second: 0 })
-          .toISO()
-      : '',
-  );
+  const { date, time } = splitDateTime(startingAt);
+  const [currentStartingAtDate, setCurrentStartingAtDate] =
+    React.useState(date);
+  const [currentStartingAtTime, setCurrentStartingAtTime] =
+    React.useState(time);
+
   const [timeSuggestions, setTimeSuggestions] =
     React.useState(allTimesSuggestions);
-  const [currentStartingAtTime, setCurrentStartingAtTime] = React.useState(
-    startingAt
-      ? DateTime.fromISO(startingAt).toLocaleString(DateTime.TIME_24_SIMPLE)
-      : '',
-  );
+
   const [durationSuggestions, setDurationSuggestions] = React.useState(
     allDurationSuggestions,
   );
@@ -106,44 +102,39 @@ export const SchedulingFields = ({
     } else {
       value = event.value;
     }
-    setCurrentStartingAtDate(value);
-    const updatedStartingAt = DateTime.fromISO(value).plus(
-      Duration.fromISOTime(
-        currentStartingAtTime ? currentStartingAtTime : '00:00:00',
-      ),
-    );
-    onStartingAtChange(updatedStartingAt ? updatedStartingAt.toISO() : null);
+    onStartingAtChangeTrigger(value, currentStartingAtTime);
+  };
+
+  const onStartingAtChangeTrigger = (
+    dateUpdated: string,
+    timeUpdated: string,
+  ) => {
+    setCurrentStartingAtDate(dateUpdated);
+    setCurrentStartingAtTime(timeUpdated);
+    const updatedStartingAt = mergeDateTime(dateUpdated, timeUpdated);
+    if (updatedStartingAt !== startingAt) {
+      onStartingAtChange(updatedStartingAt);
+    }
   };
 
   const onStartingAtTimeInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const nextValue = event.target.value;
-    setCurrentStartingAtTime(nextValue);
-    if (!nextValue) setTimeSuggestions(allTimesSuggestions);
-    else {
+    if (!nextValue) {
+      setTimeSuggestions(allTimesSuggestions);
+    } else {
       const regexp = new RegExp(`^${nextValue}`);
       setTimeSuggestions(allTimesSuggestions.filter((s) => regexp.test(s)));
     }
-    if (currentStartingAtDate) {
-      const updatedStartingAt = DateTime.fromISO(currentStartingAtDate).plus(
-        Duration.fromISOTime(nextValue),
-      );
-      onStartingAtChange(updatedStartingAt.toISO());
-    }
+    onStartingAtChangeTrigger(currentStartingAtDate, nextValue);
   };
 
   const onStartingAtTimeSuggestionSelect = (event: {
     suggestion: React.SetStateAction<string>;
   }) => {
-    setCurrentStartingAtTime(event.suggestion);
-    if (currentStartingAtDate) {
-      if (typeof event.suggestion === 'string') {
-        const updatedStartingAt = DateTime.fromISO(currentStartingAtDate).plus(
-          Duration.fromISOTime(event.suggestion),
-        );
-        onStartingAtChange(updatedStartingAt.toISO());
-      }
+    if (typeof event.suggestion === 'string' && event.suggestion) {
+      onStartingAtChangeTrigger(currentStartingAtDate, event.suggestion);
     }
   };
 
