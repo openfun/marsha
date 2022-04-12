@@ -51,7 +51,9 @@ export const ChatMessageMetadatas = ({
         bottom: '9px',
       }}
     >
-      <ChatAvatar />
+      <Box>
+        <ChatAvatar />
+      </Box>
       <Box
         margin={{
           left: '10px',
