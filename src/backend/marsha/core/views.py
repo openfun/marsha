@@ -815,7 +815,11 @@ class LTISelectView(TemplateResponseMixin, View):
             {
                 "frontend": "LTI",
                 "lti_select_form_action_url": reverse("respond_lti_view"),
-                "lti_select_form_data": {"jwt": str(jwt_token)},
+                "lti_select_form_data": {
+                    "jwt": str(jwt_token),
+                    "activity_title": self.request.POST.get("title"),
+                    "activity_description": self.request.POST.get("text"),
+                },
                 "new_document_url": new_document_url,
                 "new_video_url": new_video_url,
                 "documents": documents,

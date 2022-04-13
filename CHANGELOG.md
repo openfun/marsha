@@ -17,7 +17,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Use custom policy to generate cloudfront signed url
-- Upgrade front and mail apps to node version 16, the current LTS 
+- Upgrade front and mail apps to node version 16, the current LTS
+- On LTI select request, only send title and description for existing resources
+- Adding a new resource through LTI select (deeplinking) now creates it
+with data from Moodle activity titles and description.
 
 ### Fixed
 

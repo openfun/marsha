@@ -48,6 +48,8 @@ class SelectLTIViewTestCase(TestCase):
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",
             "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
         }
         lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
@@ -101,9 +103,16 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(
             new_document_url, f"http://testserver/lti/documents/{new_uuid}"
         )
-
         self.assertEqual(
             context.get("new_video_url"), f"http://testserver/lti/videos/{new_uuid}"
+        )
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_title"),
+            "Sent LMS activity title",
+        )
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_description"),
+            "Sent LMS activity text",
         )
 
         form_data = context.get("lti_select_form_data")
