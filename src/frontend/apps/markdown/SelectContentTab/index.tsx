@@ -172,7 +172,11 @@ interface SelectContentSectionProps {
   newTitle: MessageDescriptor;
   newLtiUrl: string;
   items: Nullable<MarkdownDocument[]>;
-  selectContent: (url: string, title: string) => void;
+  selectContent: (
+    url: string,
+    title: Nullable<string>,
+    description: Nullable<string>,
+  ) => void;
   language: string;
 }
 
@@ -212,7 +216,7 @@ export const SelectContentSection = ({
             <ContentCard
               content={item!}
               key={item.id}
-              onClick={() => selectContent(item!.lti_url!, title)}
+              onClick={() => selectContent(item!.lti_url!, title, null)}
               title={title}
             />
           );

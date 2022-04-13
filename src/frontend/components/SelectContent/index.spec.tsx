@@ -35,6 +35,7 @@ const mockCustomSelectContentTab = ({
         selectContent(
           'custom-select-content-url',
           'Custom select content title',
+          'Custom select content description',
         )
       }
     >
@@ -60,6 +61,7 @@ const mockOtherCustomSelectContentTab = ({
         selectContent(
           'other-custom-select-content-url',
           'Other custom select content title',
+          'Other custom select content description',
         )
       }
     >
@@ -338,6 +340,7 @@ describe('<SelectContent />', () => {
             documentMockFactory({
               id: '1',
               title: 'Document 1',
+              description: 'Document 1 description',
               upload_state: uploadState.PROCESSING,
               is_ready_to_show: false,
             }),
@@ -368,8 +371,106 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: 'https://example.com/lti/documents/1',
-            title: 'Document 1',
             frame: [],
+            title: 'Document 1',
+            text: 'Document 1 description',
+          },
+        ],
+      }),
+    });
+  });
+
+  it('select content with activity title and description', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <SelectContent
+          documents={[
+            documentMockFactory({
+              id: '1',
+              title: 'Document 1',
+              description: 'Document 1 description',
+              upload_state: uploadState.PROCESSING,
+              is_ready_to_show: false,
+            }),
+          ]}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />,
+      ),
+    );
+
+    const documentTab = screen.getByRole('tab', {
+      name: 'Documents',
+    });
+    userEvent.click(documentTab);
+    userEvent.click(screen.getByTitle('Select Document 1'));
+
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+
+    expect(container.querySelector('form')).toHaveFormValues({
+      lti_response_url: 'https://example.com/lti',
+      lti_message_type: 'ContentItemSelection',
+      content_items: JSON.stringify({
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: 'https://example.com/lti/documents/1',
+            frame: [],
+            title: 'Activity title',
+            text: 'Activity description',
+          },
+        ],
+      }),
+    });
+  });
+
+  it('select content without document title', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <SelectContent
+          documents={[
+            documentMockFactory({
+              id: '1',
+              title: null,
+              description: 'Document 1 description',
+              upload_state: uploadState.PROCESSING,
+              is_ready_to_show: false,
+            }),
+          ]}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />,
+      ),
+    );
+
+    const documentTab = screen.getByRole('tab', {
+      name: 'Documents',
+    });
+    userEvent.click(documentTab);
+    userEvent.click(screen.getByTitle('Select'));
+
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+
+    expect(container.querySelector('form')).toHaveFormValues({
+      lti_response_url: 'https://example.com/lti',
+      lti_message_type: 'ContentItemSelection',
+      content_items: JSON.stringify({
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: 'https://example.com/lti/documents/1',
+            frame: [],
+            text: 'Document 1 description',
           },
         ],
       }),
@@ -401,8 +502,46 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: 'https://example.com/lti/videos/new-hash',
-            title: 'New video',
             frame: [],
+          },
+        ],
+      }),
+    });
+    expect(form).toHaveAttribute('action', '/lti/select/');
+  });
+
+  it('add new content with activity title and description', async () => {
+    const { container } = render(
+      wrapInIntlProvider(
+        <SelectContent
+          documents={appData.documents}
+          videos={appData.videos}
+          new_document_url={appData.new_document_url}
+          new_video_url={appData.new_video_url}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            ...appData.lti_select_form_data!,
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />,
+      ),
+    );
+    fireEvent.click(screen.getByText('Add a video'));
+
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+
+    const form = container.querySelector('form');
+    expect(form).toHaveFormValues({
+      content_items: JSON.stringify({
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: 'https://example.com/lti/videos/new-hash',
+            frame: [],
+            title: 'Activity title',
+            text: 'Activity description',
           },
         ],
       }),
@@ -452,8 +591,9 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: 'custom-select-content-url',
-            title: 'Custom select content title',
             frame: [],
+            title: 'Custom select content title',
+            text: 'Custom select content description',
           },
         ],
       }),

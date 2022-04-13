@@ -85,3 +85,49 @@ from this list, please feel free to submit a Pull Request to add it to the list 
   "oauth_signature": "4UedAqFXIsLuBto0pAtJuRXeQIw="
 }
 ```
+
+# Deep Linking request sent by Moodle
+
+```json
+{
+  "oauth_version": "1.0",
+  "oauth_nonce": "fac452792511fd88c173f2208c1ad3c9",
+  "oauth_timestamp": "1649681644",
+  "oauth_consumer_key": "A9H5YBAYNERTBIBVEQS4",
+  "user_id": "2",
+  "lis_person_sourcedid": "",
+  "roles": "Instructor,urn:lti:sysrole:ims/lis/Administrator,urn:lti:instrole:ims/lis/Administrator",
+  "context_id": "2",
+  "context_label": "My first course",
+  "context_title": "My first course",
+  "context_type": "CourseSection",
+  "lis_course_section_sourcedid": "",
+  "lis_person_name_given": "Admin",
+  "lis_person_name_family": "User",
+  "lis_person_name_full": "Admin User",
+  "ext_user_username": "admin",
+  "lis_person_contact_email_primary": "demo@moodle.a",
+  "launch_presentation_locale": "en",
+  "ext_lms": "moodle-2",
+  "tool_consumer_info_product_family_code": "moodle",
+  "tool_consumer_info_version": "2021051706",
+  "oauth_callback": "about:blank",
+  "lti_version": "LTI-1p0",
+  "lti_message_type": "ContentItemSelectionRequest",
+  "tool_consumer_instance_guid": "1f60aaf6991f55818465e52f3d2879b7",
+  "tool_consumer_instance_name": "Sandbox",
+  "tool_consumer_instance_description": "Moodle sandbox demo",
+  "accept_media_types": "application/vnd.ims.lti.v1.ltilink",
+  "accept_presentation_document_targets": "frame,iframe,window",
+  "accept_copy_advice": "false",
+  "accept_multiple": "true",
+  "accept_unsigned": "false",
+  "auto_create": "false",
+  "can_confirm": "false",
+  "content_item_return_url": "https://sandbox.moodledemo.net/mod/lti/contentitem_return.php?course=2&id=1&sesskey=yzHWN1EYAM",
+  "title": "Marsha LTI provider (never empty : fallback to moodle external tool name)",
+  "text": "(current activity description if exists)",
+  "oauth_signature_method": "HMAC-SHA1",
+  "oauth_signature": "GEetrp41W4gCH5m1Fe6RPhf55W4="
+}
+```
