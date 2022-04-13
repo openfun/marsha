@@ -1,7 +1,7 @@
-import { Box, DateInput, FormField, TextInput } from 'grommet';
+import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { DateTime, Duration, Settings } from 'luxon';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Nullable } from 'utils/types';
@@ -26,6 +26,13 @@ const messages = defineMessages({
     description:
       'Label of the input field to add/update the estimated duration of the scheduled event',
     id: 'component.SchedulingFields.estimatedDurationTextLabel',
+  },
+  invalidStartingAt: {
+    defaultMessage:
+      '{updatedStartingAt} is not valid: Starting date and time should be set in the future.',
+    description:
+      'Error message when event scheduling date time update is in the past.',
+    id: 'component.SchedulingFields.invalidStartingAt',
   },
 });
 
@@ -91,6 +98,7 @@ export const SchedulingFields = ({
         ? displayedDuration(Duration.fromISOTime(estimatedDuration))
         : '',
     );
+  const [startingAtError, setStartingAtError] = useState<Nullable<string>>();
 
   const onStartingAtDateInputChange = (event: { value: string | string[] }) => {
     let value: string;
@@ -113,7 +121,18 @@ export const SchedulingFields = ({
     setCurrentStartingAtTime(timeUpdated);
     const updatedStartingAt = mergeDateTime(dateUpdated, timeUpdated);
     if (updatedStartingAt !== startingAt) {
-      onStartingAtChange(updatedStartingAt);
+      if (updatedStartingAt && updatedStartingAt < DateTime.local().toISO()) {
+        setStartingAtError(
+          intl.formatMessage(messages.invalidStartingAt, {
+            updatedStartingAt: DateTime.fromISO(
+              updatedStartingAt,
+            ).toLocaleString(DateTime.DATETIME_MED),
+          }),
+        );
+      } else {
+        setStartingAtError(null);
+        onStartingAtChange(updatedStartingAt);
+      }
     }
   };
 
@@ -171,57 +190,79 @@ export const SchedulingFields = ({
     }
   };
 
+  useEffect(() => {
+    const { date: dateUpdated, time: timeUpdated } = splitDateTime(startingAt);
+    setCurrentStartingAtDate(dateUpdated);
+    setCurrentStartingAtTime(timeUpdated);
+    setCurrentEstimatedDuration(
+      estimatedDuration
+        ? displayedDuration(Duration.fromISOTime(estimatedDuration))
+        : '',
+    );
+  }, [startingAt, estimatedDuration]);
+
   return (
-    <Box direction="row" justify="between" margin={margin} gap="medium">
-      <FormField
-        label={intl.formatMessage(messages.startingAtDateTextLabel)}
-        htmlFor="starting_at_date"
-        margin="none"
-      >
-        <DateInput
-          id="starting_at_date"
-          format={intl.locale === 'en' ? 'm/d/yyyy' : 'dd/mm/yyyy'}
-          value={currentStartingAtDate || undefined}
-          onChange={onStartingAtDateInputChange}
-          calendarProps={{
-            bounds: [
-              DateTime.local().toISO(),
-              DateTime.local().plus({ years: 1 }).toISO(),
-            ],
-          }}
-        />
-      </FormField>
-      <FormField
-        label={intl.formatMessage(messages.startingAtTimeTextLabel)}
-        htmlFor="starting_at_time"
-        margin="none"
-      >
-        <TextInput
-          id="starting_at_time"
-          value={currentStartingAtTime}
-          onChange={onStartingAtTimeInputChange}
-          onSuggestionSelect={onStartingAtTimeSuggestionSelect}
-          suggestions={timeSuggestions}
-          defaultSuggestion={22}
-          placeholder="hh:mm"
-          dropHeight="medium"
-        />
-      </FormField>
-      <FormField
-        label={intl.formatMessage(messages.estimatedDurationTextLabel)}
-        htmlFor="estimated_duration"
-        margin="none"
-      >
-        <TextInput
-          id="estimated_duration"
-          value={currentEstimatedDuration}
-          onChange={onEstimatedDurationInputChange}
-          onSuggestionSelect={onEstimatedDurationSuggestionSelect}
-          suggestions={durationSuggestions}
-          placeholder="hh:mm"
-          dropHeight="medium"
-        />
-      </FormField>
-    </Box>
+    <React.Fragment>
+      <Box direction="row" justify="between" margin={margin} gap="medium">
+        <FormField
+          label={intl.formatMessage(messages.startingAtDateTextLabel)}
+          htmlFor="starting_at_date"
+          margin="none"
+          background={startingAtError ? 'status-error-off' : 'white'}
+        >
+          <DateInput
+            id="starting_at_date"
+            format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
+            value={currentStartingAtDate || undefined}
+            onChange={onStartingAtDateInputChange}
+            calendarProps={{
+              bounds: [
+                DateTime.local().toISO(),
+                DateTime.local().plus({ years: 1 }).toISO(),
+              ],
+            }}
+          />
+        </FormField>
+        <FormField
+          label={intl.formatMessage(messages.startingAtTimeTextLabel)}
+          htmlFor="starting_at_time"
+          margin="none"
+          background={startingAtError ? 'status-error-off' : 'white'}
+        >
+          <TextInput
+            id="starting_at_time"
+            value={currentStartingAtTime}
+            onChange={onStartingAtTimeInputChange}
+            onSuggestionSelect={onStartingAtTimeSuggestionSelect}
+            suggestions={timeSuggestions}
+            defaultSuggestion={22}
+            placeholder="hh:mm"
+            dropHeight="medium"
+          />
+        </FormField>
+        <FormField
+          label={intl.formatMessage(messages.estimatedDurationTextLabel)}
+          htmlFor="estimated_duration"
+          margin="none"
+        >
+          <TextInput
+            id="estimated_duration"
+            value={currentEstimatedDuration}
+            onChange={onEstimatedDurationInputChange}
+            onSuggestionSelect={onEstimatedDurationSuggestionSelect}
+            suggestions={durationSuggestions}
+            placeholder="hh:mm"
+            dropHeight="medium"
+          />
+        </FormField>
+      </Box>
+      {startingAtError && (
+        <Box margin={{ top: 'small' }}>
+          <Text alignSelf="center" color="status-critical">
+            {startingAtError}
+          </Text>
+        </Box>
+      )}
+    </React.Fragment>
   );
 };
