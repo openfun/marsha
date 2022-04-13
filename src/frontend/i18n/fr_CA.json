@@ -107,21 +107,37 @@
     "description": "Label for joining meeting in instructor dashboard.",
     "message": "Join meeting"
   },
-  "component.DashboardMeetingJoin.blockedPopups": {
-    "description": "Message when browser is blocking popups.",
-    "message": "Your browser is blocking popups."
+  "component.DashboardMeetingInstructor.joinedAs": {
+    "description": "Message when user has joined the meeting.",
+    "message": "You have joined the meeting as {joinedAs}."
   },
   "component.DashboardMeetingJoin.joinLinkLabel": {
     "description": "Label for link used to join a meeting.",
     "message": "Please click here to access meeting."
   },
+  "component.DashboardMeetingStudent.joinMeetingLabel": {
+    "description": "Label for joining meeting in instructor dashboard.",
+    "message": "Join meeting"
+  },
+  "component.DashboardMeetingStudent.joinedAs": {
+    "description": "Message when user has joined the meeting.",
+    "message": "You have joined the meeting as {joinedAs}."
+  },
+  "component.DashboardMeetingStudent.meetingEnded": {
+    "description": "Message when meeting has ended.",
+    "message": "Meeting ended."
+  },
   "component.DashboardMeetingStudent.meetingNotStarted": {
     "description": "Message when meeting is not started.",
     "message": "Meeting not started yet."
   },
-  "component.DashboardMeetingStudent.meetingRedirection": {
-    "description": "Message when meeting is started and redirection should be triggered.",
-    "message": "You should be redirected to the meeting."
+  "component.DashboardMeetingStudent.meetingStarted": {
+    "description": "Message when meeting is started.",
+    "message": "Meeting is started."
+  },
+  "component.DashboardVideoLiveWidgetTemplate.infoTitle": {
+    "description": "The title displays in the info modal.",
+    "message": "Widget's function"
   },
   "component.DashboardVideoPaneDownloadOption.allowDownload": {
     "description": "",
@@ -138,6 +154,14 @@
   "component.DashboardVideoPaneTranscriptOption.useTranscript": {
     "description": "",
     "message": "Use subtitles as transcripts"
+  },
+  "component.HideLiveFeedback.label": {
+    "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
+    "message": "Live feedback"
+  },
+  "component.HideLiveFeedback.title": {
+    "description": "Title for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
+    "message": "Hide live feedback"
   },
   "component.LiveVideoPanel.LiveVideoTabPanel.application": {
     "description": "Application tab title in live panel",
@@ -207,6 +231,26 @@
     "description": "Title for the current playlist.",
     "message": "Playlist {title} ({id})"
   },
+  "component.ShowLiveFeedback.label": {
+    "description": "Label for the button in actions during a live in raw mode for a teacher to show his live feedback.",
+    "message": "Live feedback"
+  },
+  "component.ShowLiveFeedback.title": {
+    "description": "Title for the button in actions during a live in raw mode for a teacher to show his live feedback.",
+    "message": "Show live feedback"
+  },
+  "component.TeacherLiveTypeSwitch.JITSI": {
+    "description": "Title for live mode JITSI",
+    "message": "Jitsi"
+  },
+  "component.TeacherLiveTypeSwitch.RAW": {
+    "description": "Title for live mode RAW",
+    "message": "Raw"
+  },
+  "component.TeacherLiveTypeSwitch.message": {
+    "description": "Message displayed when an error occured when trying to switch live mode",
+    "message": "An error occured, pease try again."
+  },
   "components.ConfirmationLayer.Cancel": {
     "description": "Label for the cancel button",
     "message": "Cancel"
@@ -275,26 +319,6 @@
     "description": "message display when the title is successfully updated",
     "message": "Title successfully updated"
   },
-  "components.DashboardJoinDiscussion.participantAsking": {
-    "description": "Message to inform the instructor that a participant is asking to join the discussion",
-    "message": "is asking to join the discussion."
-  },
-  "components.DashboardJoinDiscussion.participantInDiscussion": {
-    "description": "Message to inform the instructor that a participant has joined the discussion",
-    "message": "has joined the discussion."
-  },
-  "components.DashboardJoinDiscussionAcceptButton.acceptParticipant": {
-    "description": "Accept the participant in the discussion",
-    "message": "accept"
-  },
-  "components.DashboardJoinDiscussionKickButton.kickParticipant": {
-    "description": "Kick the participant out of the discussion",
-    "message": "kick out participant"
-  },
-  "components.DashboardJoinDiscussionRejectButton.rejectParticipant": {
-    "description": "Reject the participant who requests to join the discussion",
-    "message": "reject"
-  },
   "components.DashboardThumbnail.error": {
     "description": "Generic error message when we fail to create a thumbnail.",
     "message": "There was an error during thumbnail creation."
@@ -323,45 +347,13 @@
     "description": "Button to watch the video.",
     "message": "watch"
   },
-  "components.DashboardVideoLive.jitsi": {
-    "description": "DashboardVideoLive jitsi title.",
-    "message": "Webinar"
-  },
-  "components.DashboardVideoLive.liveStarting": {
-    "description": "Helptext explainig to wait until the live is ready.",
-    "message": "Live streaming is starting. This can take a few minutes."
-  },
-  "components.DashboardVideoLive.liveStopped": {
-    "description": "Helptext explaining that the live is ended and the live to VOD process has started.",
-    "message": "Live streaming is ended. The process to transform the live to VOD has started. You can close the window and come back later."
-  },
-  "components.DashboardVideoLive.liveStopping": {
-    "description": "Helptext explaining that the live is stopping and will be paused in few moments.",
-    "message": "Pause live streaming, please wait a few moments to be able to resume it."
-  },
-  "components.DashboardVideoLive.raw": {
-    "description": "DashboardVideoLive main title.",
-    "message": "Streaming link"
-  },
-  "components.DashboardVideoLive.url": {
-    "description": "Video url streaming.",
-    "message": "url"
-  },
   "components.DashboardVideoLiveEndButton.confirmEndLive": {
     "description": "Confirmation to end the video streaming.",
     "message": "Are you sure you want to end the video streaming ? This action is definitive"
   },
   "components.DashboardVideoLiveEndButton.endLive": {
-    "description": "End a video streaming.",
+    "description": "Title for the button to end streaming as a teacher.",
     "message": "End live"
-  },
-  "components.DashboardVideoLiveInfo.copied": {
-    "description": "Message displayed when endpoints info are copied.",
-    "message": "Copied!"
-  },
-  "components.DashboardVideoLiveInfo.liveInfo": {
-    "description": "Message that displays live rtmp information",
-    "message": "You want to use an external streaming source, find the RTMP adresses here"
   },
   "components.DashboardVideoLivePairing.pairingSecretCountdownExpired": {
     "description": "Message displayed when the secret for pairing an external device has expired.",
@@ -379,6 +371,14 @@
     "description": "Message displayed when endpoints info are copied.",
     "message": "Copied!"
   },
+  "components.DashboardVideoLiveRaw.idlingDescription": {
+    "description": "Description to inform user he is using raw mode and have to starts the live using an external tool.",
+    "message": "Start the live to access stream enpoint and configure your external tool with it."
+  },
+  "components.DashboardVideoLiveRaw.idlingTitle": {
+    "description": "Title to inform user he is using raw mode and have to starts the live using an external tool.",
+    "message": "You are about to start a live using an external source provider."
+  },
   "components.DashboardVideoLiveRaw.streamKey": {
     "description": "Video key streaming.",
     "message": "stream key"
@@ -390,22 +390,6 @@
   "components.DashboardVideoLiveRaw.url": {
     "description": "Video url streaming.",
     "message": "url"
-  },
-  "components.DashboardVideoLiveRunning.chatOnly": {
-    "description": "button to redirect to the chat only view.",
-    "message": "show chat only"
-  },
-  "components.DashboardVideoLiveRunning.hideChat": {
-    "description": "button to hide the chat during a jitsi live.",
-    "message": "hide chat"
-  },
-  "components.DashboardVideoLiveRunning.showChat": {
-    "description": "button to show the chat during a jitsi live.",
-    "message": "show chat"
-  },
-  "components.DashboardVideoLiveRunning.showLive": {
-    "description": "button to redirect use to video player.",
-    "message": "show live"
   },
   "components.DashboardVideoLiveStartButton.confirmResumeLive": {
     "description": "Confirmation to resume a video streaming.",
@@ -599,42 +583,6 @@
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Instructor Preview 👆"
   },
-  "components.JoinDiscussionAskButton.askInstructor": {
-    "description": "Ask the instructor to join the discussion",
-    "message": "Send request to join the discussion"
-  },
-  "components.JoinDiscussionAskButton.cancel": {
-    "description": "Label used by the cancel button",
-    "message": "Cancel"
-  },
-  "components.JoinDiscussionAskButton.chooseUsername": {
-    "description": "Title displayed in the layer to ask the user to choose a username in order to connect to the chat",
-    "message": "Choose a username"
-  },
-  "components.JoinDiscussionAskButton.confirm": {
-    "description": "Label used by the confirm button",
-    "message": "Confirm"
-  },
-  "components.JoinDiscussionAskButton.rejected": {
-    "description": "Text to tell participant his/her request is not accepted",
-    "message": "Your request to join the discussion has not been accepted."
-  },
-  "components.JoinDiscussionAskButton.username": {
-    "description": "label used by the input text to write the username to choose",
-    "message": "username"
-  },
-  "components.JoinDiscussionAskButton.usernameAlreadyExists": {
-    "description": "Error message shown when the connection to the chat failed if the username is already in use.",
-    "message": "Username already exists, please choose another one"
-  },
-  "components.JoinDiscussionAskButton.waitingInstructor": {
-    "description": "Text that replace the JoinDiscussion button before the instructor response.",
-    "message": "Waiting for Instructor's response"
-  },
-  "components.JoinDiscussionLeaveButton.leaveDiscussion": {
-    "description": "Leave the discussion",
-    "message": "Leave the discussion"
-  },
   "components.LTINav.linkDashboard": {
     "description": "Title for the dashboard, where the user can see the status of the video/audio/timed text upload\n      & processing, and will be able to manage them.",
     "message": "Dashboard"
@@ -735,6 +683,14 @@
     "description": "Title for the list of videos in the organization view.",
     "message": "Videos"
   },
+  "components.PauseLiveButton.endLive": {
+    "description": "Title for the button to pause streaming as a teacher",
+    "message": "Pause live"
+  },
+  "components.PauseLiveButton.error": {
+    "description": "Error message displayed when and error occured when trying to pause",
+    "message": "An error occured, please try again."
+  },
   "components.PlaylistPortability.copied": {
     "description": "Message displayed when playlist info are copied.",
     "message": "{text} copied!"
@@ -766,6 +722,14 @@
   "components.PublicPausedLive.title": {
     "description": "Title for the public paused live component",
     "message": "Webinar is paused"
+  },
+  "components.ResumeLiveButton.error": {
+    "description": "Error message displayed when and error occured when trying to pause",
+    "message": "An error occured, please try again."
+  },
+  "components.ResumeLiveButton.title": {
+    "description": "Title for the button to resume streaming as a teacher.",
+    "message": "Resume streaming"
   },
   "components.ScheduledVideo.form.date": {
     "description": "Label of the input field to add/update the scheduled date and time of the webinar",
@@ -887,6 +851,14 @@
     "description": "Text for the login button in the header of the marsha site",
     "message": "Log in"
   },
+  "components.StartLiveButton.error": {
+    "description": "Error message displayed when and error occured when trying to pause",
+    "message": "An error occured, please try again."
+  },
+  "components.StartLiveButton.title": {
+    "description": "Title for the button to start streaming as a teacher.",
+    "message": "Start streaming"
+  },
   "components.StudentHideAppsButton.apps": {
     "description": "Label for the hide apps button",
     "message": "Apps"
@@ -967,6 +939,10 @@
     "description": "Message display when the live is starting to tell the user to wait in the current page, it will be refresh automaticaly",
     "message": "You can wait here, the page will be refreshed as soon as the event starts."
   },
+  "components.StudentLiveWrapper.defaultLiveTitle": {
+    "description": "Default live title for students (if the live has no title set)",
+    "message": "No title"
+  },
   "components.StudentShowAppsButton.apps": {
     "description": "Label for the show apps button",
     "message": "Apps"
@@ -1015,10 +991,6 @@
     "description": "Error message if input value does not conform to email regex.",
     "message": "You have to submit a valid email to register."
   },
-  "components.SubscribScheduledVideoEmail.form.field.email.placeholder": {
-    "description": "Placeholder for email textfield in live registration form",
-    "message": "example@openfun.fr"
-  },
   "components.SubscribScheduledVideoEmail.form.submit.title": {
     "description": "Title for the submit button in registration form",
     "message": "Register"
@@ -1030,6 +1002,34 @@
   "components.SubscribScheduledVideoEmail.form.title": {
     "description": "Title presented at the top of the subscription form.",
     "message": "I want to subscribe to this webinar"
+  },
+  "components.TeacherLiveInfobar.noTitle": {
+    "description": "Title placeholder when no title is defined for this live",
+    "message": "No title"
+  },
+  "components.TeacherLiveStopConfirmation.alertInfo": {
+    "description": "Message shows when the teacher needs to confirm he wants to stop the live.",
+    "message": "You are about to stop the live.{br}Every viewers will be disconnected.{br}Are you sure you want to stop this Live ?"
+  },
+  "components.TeacherLiveStopConfirmation.cancelButtonTitle": {
+    "description": "Cancel button title",
+    "message": "Cancel"
+  },
+  "components.TeacherLiveStopConfirmation.error": {
+    "description": "Error message displayed when and error occured when trying to pause",
+    "message": "An error occured, please try again."
+  },
+  "components.TeacherLiveStopConfirmation.noTitle": {
+    "description": "Title placeholder when no title is defined for this live",
+    "message": "No title"
+  },
+  "components.TeacherLiveStopConfirmation.stopButtonTitle": {
+    "description": "Stop Button title",
+    "message": "Stop the live"
+  },
+  "components.TeacherLiveStopConfirmation.stopped": {
+    "description": "Message displayed at the end of a live until harvesting began.",
+    "message": "Live is stopped, harvesting will begin soon."
   },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
@@ -1274,6 +1274,26 @@
   "components.VideosList.thUploadState": {
     "description": "Column title for the upload state column in the list of videos.",
     "message": "Upload state"
+  },
+  "components.ViewersList.acceptButton": {
+    "description": "The text displayed in the button in charge of accepting on-stage request, in the viewers list.",
+    "message": "Accept"
+  },
+  "components.ViewersList.demands": {
+    "description": "Participants asking for going on stage are displayed under this label.",
+    "message": "Demands"
+  },
+  "components.ViewersList.endOnStageButton": {
+    "description": "The text displayed in the button in charge of making students on stage exiting the stage, in the viewers list.",
+    "message": "Terminate"
+  },
+  "components.ViewersList.noViewers": {
+    "description": "Message displayed in the users list when no viewers are connected",
+    "message": "No viewers are currently connected to your stream."
+  },
+  "components.ViewersList.nobodyOnStage": {
+    "description": "Message displayed in the users list for viewers when nobody is on stage",
+    "message": "Oops, nobody is on stage. Wait for your teacher to ask joining the stage."
   },
   "components.ViewersList.onStage": {
     "description": "On-stage participants are displayed under this label.",
