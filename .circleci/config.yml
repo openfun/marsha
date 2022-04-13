@@ -1272,6 +1272,7 @@ workflows:
       - build-back-i18n:
           requires:
             - build-back
+            - build-mails
           filters:
             tags:
               only: /.*/
