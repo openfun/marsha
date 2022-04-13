@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.2] - 2022-04-13
+
 ### Added
 
 - Add a view to cancel reminder mails, link added in the footer of mails
@@ -1064,7 +1066,8 @@ the video to the ViewersList in the right panel
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.2...master
+[4.0.0-beta.2]: https://github.com/openfun/marsha/compare/v4.0.0-beta.1...v4.0.0-beta.2
 [4.0.0-beta.1]: https://github.com/openfun/marsha/compare/v3.27.0...v4.0.0-beta.1
 [3.27.0]: https://github.com/openfun/marsha/compare/v3.26.0...v3.27.0
 [3.26.0]: https://github.com/openfun/marsha/compare/v3.25.0...v3.26.0
