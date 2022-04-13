@@ -57,16 +57,6 @@ const messages = defineMessages({
     description: `Text displayed on a button to confirm content selection.`,
     id: 'components.SelectContent.confirm',
   },
-  newVideo: {
-    defaultMessage: 'New video',
-    description: `Default LTI consumer title for a new video.`,
-    id: 'components.SelectContent.newVideo',
-  },
-  newDocument: {
-    defaultMessage: 'New document',
-    description: `Default LTI consumer title for a new document.`,
-    id: 'components.SelectContent.newDocument',
-  },
   uploaded: {
     defaultMessage: 'Uploaded',
     description: `Text helper displayed if a video or a document is uploaded.`,
@@ -237,23 +227,23 @@ const ContentCard = ({
   );
 };
 
-interface SelectContentSectionProps {
+export interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
-  newTitle: MessageDescriptor;
   newLtiUrl: string;
   items: Nullable<Video[] | Document[]>;
-  selectContent: (url: string, title: Nullable<string>) => void;
+  selectContent: (
+    url: string,
+    title: Nullable<string>,
+    description: Nullable<string>,
+  ) => void;
 }
 
 export const SelectContentSection = ({
   addMessage,
-  newTitle,
   newLtiUrl,
   items,
   selectContent,
 }: SelectContentSectionProps) => {
-  const intl = useIntl();
-
   return (
     <Box>
       <Grid columns="small" gap="small">
@@ -262,7 +252,7 @@ export const SelectContentSection = ({
           justify="center"
           background="light-3"
           align="center"
-          onClick={() => selectContent(newLtiUrl, intl.formatMessage(newTitle))}
+          onClick={() => selectContent(newLtiUrl)}
         >
           <Text alignSelf="center">
             <FormattedMessage {...addMessage} />
@@ -274,7 +264,9 @@ export const SelectContentSection = ({
             <ContentCard
               content={item!}
               key={index}
-              onClick={() => selectContent(item!.lti_url!, item!.title)}
+              onClick={() =>
+                selectContent(item!.lti_url!, item!.title, item!.description)
+              }
             />
           ),
         )}
@@ -339,18 +331,47 @@ export const SelectContent = ({
     return () => clipboard.destroy();
   }, []);
 
-  const selectContent = (ltiUrl: string, title: Nullable<string>) => {
-    const contentItems = {
+  interface ContentItemsStructure {
+    '@context': string;
+    '@graph': {
+      '@type': string;
+      url: string;
+      title?: Nullable<string>;
+      text?: Nullable<string>;
+      frame: [];
+    }[];
+  }
+
+  const selectContent = (
+    ltiUrl: string,
+    title: Nullable<string>,
+    description: Nullable<string>,
+  ) => {
+    const contentItems: ContentItemsStructure = {
       '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
       '@graph': [
         {
           '@type': 'ContentItem',
           url: ltiUrl,
-          title,
           frame: [],
         },
       ],
     };
+
+    if (title) {
+      contentItems['@graph'][0].title = title;
+    }
+    if (description) {
+      contentItems['@graph'][0].text = description;
+    }
+
+    if (lti_select_form_data?.activity_title) {
+      contentItems['@graph'][0].title = lti_select_form_data?.activity_title;
+    }
+    if (lti_select_form_data?.activity_description) {
+      contentItems['@graph'][0].text =
+        lti_select_form_data?.activity_description;
+    }
 
     setContentItemsValue(JSON.stringify(contentItems));
   };
@@ -389,7 +410,6 @@ export const SelectContent = ({
         <Tab title="Videos">
           <SelectContentSection
             addMessage={messages.addVideo}
-            newTitle={messages.newVideo}
             newLtiUrl={new_video_url!}
             items={videos!}
             selectContent={selectContent}
@@ -399,7 +419,6 @@ export const SelectContent = ({
         <Tab title="Documents">
           <SelectContentSection
             addMessage={messages.addDocument}
-            newTitle={messages.newDocument}
             newLtiUrl={new_document_url!}
             items={documents!}
             selectContent={selectContent}
@@ -417,5 +436,9 @@ export const SelectContent = ({
 };
 
 export interface SelectContentTabProps {
-  selectContent: (url: string, title: Nullable<string>) => void;
+  selectContent: (
+    url: string,
+    title: Nullable<string>,
+    description: Nullable<string>,
+  ) => void;
 }

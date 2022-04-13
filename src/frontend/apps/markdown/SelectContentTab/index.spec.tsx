@@ -94,15 +94,15 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: markdownDocument.lti_url,
-            title: 'Easy to find title',
             frame: [],
+            title: 'Easy to find title',
           },
         ],
       }),
     });
   });
 
-  it('select content with mising translation', async () => {
+  it('select content with missing translation', async () => {
     const queryClient = new QueryClient();
 
     const { container } = render(
@@ -138,8 +138,8 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: documentNotTranslated.lti_url,
-            title: 'Missing title',
             frame: [],
+            title: 'Missing title',
           },
         ],
       }),
@@ -181,8 +181,8 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: 'https://example.com/markdown_documents/new_uuid/',
-            title: 'New markdown document',
             frame: [],
+            title: 'New markdown document',
           },
         ],
       }),

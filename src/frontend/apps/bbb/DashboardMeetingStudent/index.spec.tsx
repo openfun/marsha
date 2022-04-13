@@ -78,7 +78,7 @@ describe('<DashboardMeetingStudent />', () => {
       ),
     );
     getByText(meeting.title!);
-    getByText(meeting.description);
+    getByText(meeting.description!);
     const displayedStartingDate = startingAt.toLocaleString(DateTime.DATE_HUGE);
     const displayedStartingTime = startingAt.toLocaleString(
       DateTime.TIME_24_SIMPLE,

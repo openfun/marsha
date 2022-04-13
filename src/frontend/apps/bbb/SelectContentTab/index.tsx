@@ -28,11 +28,6 @@ const messages = defineMessages({
     description: `Text displayed on a button to add a new meeting.`,
     id: 'apps.bbb.SelectContent.addMeeting',
   },
-  newMeeting: {
-    defaultMessage: 'New meeting',
-    description: `Default LTI consumer title for a new meeting.`,
-    id: 'apps.bbb.SelectContent.newMeeting',
-  },
   select: {
     defaultMessage: 'Select {title}',
     description: 'Accessible message for selecting a meeting.',
@@ -138,21 +133,21 @@ const ContentCard = ({
 
 interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
-  newTitle: MessageDescriptor;
   newLtiUrl: string;
   items: Nullable<Meeting[]>;
-  selectContent: (url: string, title: Nullable<string>) => void;
+  selectContent: (
+    url: string,
+    title: Nullable<string>,
+    description: Nullable<string>,
+  ) => void;
 }
 
 export const SelectContentSection = ({
   addMessage,
-  newTitle,
   newLtiUrl,
   items,
   selectContent,
 }: SelectContentSectionProps) => {
-  const intl = useIntl();
-
   return (
     <Box>
       <Grid columns="small" gap="small">
@@ -161,7 +156,7 @@ export const SelectContentSection = ({
           justify="center"
           background="light-3"
           align="center"
-          onClick={() => selectContent(newLtiUrl, intl.formatMessage(newTitle))}
+          onClick={() => selectContent(newLtiUrl)}
         >
           <Text alignSelf="center">
             <FormattedMessage {...addMessage} />
@@ -172,7 +167,9 @@ export const SelectContentSection = ({
           <ContentCard
             content={item!}
             key={item.id}
-            onClick={() => selectContent(item!.lti_url!, item!.title)}
+            onClick={() =>
+              selectContent(item!.lti_url!, item!.title, item!.description)
+            }
           />
         ))}
       </Grid>
@@ -203,7 +200,6 @@ const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
       content = (
         <SelectContentSection
           addMessage={messages.addMeeting}
-          newTitle={messages.newMeeting}
           newLtiUrl={selectMeeting!.new_url!}
           items={selectMeeting!.meetings!}
           selectContent={selectContent}

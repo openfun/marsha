@@ -12,6 +12,7 @@ from pytest_django.live_server_helper import LiveServer
 import responses
 
 from marsha.bbb.factories import MeetingFactory
+from marsha.bbb.models import Meeting
 from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
 
@@ -123,6 +124,8 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         "context_id": "sent_lti_context_id",
         "lti_message_type": "ContentItemSelectionRequest",
         "lti_version": "LTI-1p0",
+        "title": "Sent LMS activity title",
+        "text": "Sent LMS activity text",
     }
     lti_parameters, passport = generate_passport_and_signed_lti_parameters(
         url=f"{live_server.url}/lti/select/",
@@ -158,8 +161,9 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
                     {
                         "@type": "ContentItem",
                         "url": f"{live_server.url}/lti/meetings/{meeting.id}",
-                        "title": f"{meeting.title}",
                         "frame": [],
+                        "title": lti_consumer_parameters.get("title"),
+                        "text": lti_consumer_parameters.get("text"),
                     }
                 ],
             }
@@ -172,6 +176,22 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         lti_select_iframe.click(f'[title="Select {meeting.title}"]')
     lti_select_iframe.wait_for_selector("dd")
     assert meeting_content_items in lti_select_iframe.content()
+
+    # Select a new meeting
+    page.click('#lti_select input[type="submit"]')
+
+    lti_select_iframe.click('button[role="tab"]:has-text("Meetings")')
+    sent_title_and_text = (
+        f'"title":"{lti_consumer_parameters.get("title")}",'
+        f'"text":"{lti_consumer_parameters.get("text")}"'
+    )
+    assert sent_title_and_text not in lti_select_iframe.content()
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click("text=Add a meeting")
+    lti_select_iframe.wait_for_selector("dd")
+
+    assert sent_title_and_text in lti_select_iframe.content()
+    assert Meeting.objects.count() == 1
 
 
 @pytest.mark.django_db()

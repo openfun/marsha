@@ -81,8 +81,9 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: meeting.lti_url,
-            title: meeting.title,
             frame: [],
+            title: meeting.title,
+            text: meeting.description,
           },
         ],
       }),
@@ -124,7 +125,6 @@ describe('<SelectContent />', () => {
           {
             '@type': 'ContentItem',
             url: 'https://example.com/meetings/new_uuid/',
-            title: 'New meeting',
             frame: [],
           },
         ],
