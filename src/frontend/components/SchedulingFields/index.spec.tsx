@@ -120,4 +120,53 @@ describe('<SchedulingFields />', () => {
     fireEvent.change(inputEstimatedDuration, { target: { value: null } });
     expect(onEstimatedDurationChange).toHaveBeenCalledWith(null);
   });
+
+  it('shows error when setting a past start date', () => {
+    const queryClient = new QueryClient();
+    const onStartingAtChange = jest.fn();
+    const onEstimatedDurationChange = jest.fn();
+    render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <SchedulingFields
+            startingAt={null}
+            estimatedDuration={null}
+            onStartingAtChange={onStartingAtChange}
+            onEstimatedDurationChange={onEstimatedDurationChange}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+
+    const startingAtPast = DateTime.local().minus({ days: 1 });
+    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+    fireEvent.change(inputStartingAtDate, {
+      target: { value: startingAtPast.toFormat('yyyy/MM/dd') },
+    });
+
+    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+    fireEvent.change(inputStartingAtTime, {
+      target: { value: startingAtPast.toLocaleString(DateTime.TIME_24_SIMPLE) },
+    });
+    expect(onStartingAtChange).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(
+        `${startingAtPast.toLocaleString(
+          DateTime.DATETIME_MED,
+        )} is not valid: Starting date and time should be set in the future.`,
+      ),
+    ).toBeInTheDocument();
+
+    const startingAtFuture = DateTime.local().plus({ days: 1 });
+    fireEvent.change(inputStartingAtDate, {
+      target: { value: startingAtFuture.toFormat('yyyy/MM/dd') },
+    });
+    expect(
+      screen.queryByText(
+        `${startingAtPast.toLocaleString(
+          DateTime.DATETIME_MED,
+        )} is not valid: Starting date and time should be set in the future.`,
+      ),
+    ).not.toBeInTheDocument();
+  });
 });
