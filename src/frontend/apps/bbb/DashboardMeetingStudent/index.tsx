@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   meetingEnded: {
     defaultMessage: 'Meeting ended.',
-    description: 'Message when meeting is ended.',
+    description: 'Message when meeting has ended.',
     id: 'component.DashboardMeetingStudent.meetingEnded',
   },
   meetingNotStarted: {
