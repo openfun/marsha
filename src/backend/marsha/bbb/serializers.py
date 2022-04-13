@@ -86,6 +86,7 @@ class MeetingSelectLTISerializer(MeetingSerializer):
             "lti_id",
             "lti_url",
             "title",
+            "description",
             "playlist",
             "meeting_id",
         )

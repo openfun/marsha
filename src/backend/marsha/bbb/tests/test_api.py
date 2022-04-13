@@ -565,6 +565,7 @@ class MeetingAPITest(TestCase):
                         "lti_id": str(meeting.lti_id),
                         "lti_url": f"http://testserver/lti/meetings/{str(meeting.id)}",
                         "title": meeting.title,
+                        "description": meeting.description,
                         "meeting_id": str(meeting.meeting_id),
                         "playlist": {
                             "id": str(meeting.playlist_id),

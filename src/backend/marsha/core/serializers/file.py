@@ -136,6 +136,7 @@ class DocumentSelectLTISerializer(serializers.ModelSerializer):
             "id",
             "is_ready_to_show",
             "title",
+            "description",
             "upload_state",
             "lti_url",
         )
@@ -143,6 +144,7 @@ class DocumentSelectLTISerializer(serializers.ModelSerializer):
             "id",
             "is_ready_to_show",
             "title",
+            "description",
             "upload_state",
             "lti_url",
         )
