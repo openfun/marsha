@@ -4,7 +4,7 @@
     <mj-section background-color="#2a5cab" padding="10px 0">
       <mj-column background-color="#e51a2d">
         <mj-text>{% load i18n %}</mj-text>
-        <mj-text align="center" color="#ffffff" font-size="15px" padding="8px 8px"><strong>{% trans "Our event has been updated, the date has changed!" %}</strong></mj-text>
+        <mj-text align="center" color="#ffffff" font-size="15px" padding="8px 8px"><strong>{%trans "Our event has been updated, the date has changed!"%}</strong></mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./partial/video_description.mjml" />
@@ -12,8 +12,8 @@
       <mj-column width="100%">
         <mj-include path="./partial/hello.mjml" />
         <mj-text align="center" font-size="18px" padding="20px 50px">
-          {% trans "Our event" %} "{{video.title}}" {% trans "had some updates." %}
-          {% trans "We'll meet you at " %}{{video.starting_at}} {{time_zone}} {% trans "for the start of the webinar." %}
+          {%trans "Our event" %} "{{video.title}}" {%trans "had some updates."%}
+          {%trans "We'll meet you at " %}{{video.starting_at}} {{time_zone}} {% trans "for the start of the webinar."%}
         </mj-text>
       </mj-column>
     </mj-section>

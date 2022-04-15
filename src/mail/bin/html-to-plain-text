@@ -13,7 +13,7 @@ if [ ! -d "${DIR_MAILS}"html/ ]; then
 fi
 
 for file in "${DIR_MAILS}"html/*.html; 
-    do html-to-text < "$file" > "${file%.html}".txt; done; 
+    do html-to-text --wordwrap=600 < "$file" > "${file%.html}".txt; done; 
 
 if [ ! -d "${DIR_MAILS}"text/ ]; then
   mkdir -p "${DIR_MAILS}"text/;
