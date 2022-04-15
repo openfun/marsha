@@ -266,7 +266,7 @@ jobs:
             sudo apt-get install -y gettext
       # Compile translation messages already present in the project
       - run:
-          name: Generate a POT file from strings extracted from the project
+          name: Generate a MO file from strings extracted from the project
           command: python manage.py compilemessages
       # Generate and persist the translations base file
       - run:
@@ -275,7 +275,7 @@ jobs:
       - persist_to_workspace:
           root: ~/marsha
           paths:
-            - src/backend/locale/django.pot
+            - src/backend/locale
 
   lint-back:
     docker:
@@ -1243,6 +1243,7 @@ workflows:
           requires:
             - build-back
             - build-mails
+            - build-back-i18n
           filters:
             tags:
               only: /.*/
