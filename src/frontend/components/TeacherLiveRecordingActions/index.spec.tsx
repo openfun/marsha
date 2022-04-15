@@ -125,4 +125,29 @@ describe('<TeacherLiveRecordingActions />', () => {
       screen.queryByRole('button', { name: /stop recording/i }),
     ).not.toBeInTheDocument();
   });
+
+  it('does not render buttons if the live recording is disallowed', () => {
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+      allow_recording: false,
+    });
+
+    render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <TeacherLiveRecordingActions
+            isJitsiAdministrator={false}
+            video={video}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Start recording' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /stop recording/i }),
+    ).not.toBeInTheDocument();
+  });
 });

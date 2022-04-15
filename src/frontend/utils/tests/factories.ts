@@ -102,6 +102,7 @@ export const timedTextMockFactory = (
 export const videoMockFactory = (video: Partial<Video> = {}): Video => {
   const id = video.id || faker.datatype.uuid();
   return {
+    allow_recording: true,
     description: '',
     has_transcript: false,
     id,

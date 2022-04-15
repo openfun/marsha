@@ -15,7 +15,11 @@ export const TeacherLiveRecordingActions = ({
   isJitsiAdministrator,
   video,
 }: TeacherLiveRecordingActionsProps) => {
-  if (video.live_state !== liveState.RUNNING || !isJitsiAdministrator) {
+  if (
+    video.live_state !== liveState.RUNNING ||
+    !isJitsiAdministrator ||
+    !video.allow_recording
+  ) {
     return <Fragment />;
   }
 
