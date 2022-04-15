@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- patch video to publish it once harvested
+
 ## [4.0.0-beta.2] - 2022-04-13
 
 ### Added

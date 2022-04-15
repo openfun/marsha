@@ -1,6 +1,7 @@
 import { cleanup, render, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
@@ -234,15 +235,19 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the buttons only when the video is pending or ready', async () => {
     for (const state of Object.values(uploadState)) {
+      const queryClient = new QueryClient();
+
       const { getByText, queryByText } = render(
         wrapInIntlProvider(
           wrapInRouter(
-            <DashboardVideoPane
-              video={videoMockFactory({
-                is_ready_to_show: false,
-                upload_state: state,
-              })}
-            />,
+            <QueryClientProvider client={queryClient}>
+              <DashboardVideoPane
+                video={videoMockFactory({
+                  is_ready_to_show: false,
+                  upload_state: state,
+                })}
+              />
+            </QueryClientProvider>,
           ),
         ),
       );
@@ -268,15 +273,18 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the thumbnail only when the video is ready', async () => {
     for (const state of Object.values(uploadState)) {
+      const queryClient = new QueryClient();
       const { getByAltText, queryByAltText } = render(
         wrapInIntlProvider(
           wrapInRouter(
-            <DashboardVideoPane
-              video={videoMockFactory({
-                is_ready_to_show: false,
-                upload_state: state,
-              })}
-            />,
+            <QueryClientProvider client={queryClient}>
+              <DashboardVideoPane
+                video={videoMockFactory({
+                  is_ready_to_show: false,
+                  upload_state: state,
+                })}
+              />
+            </QueryClientProvider>,
           ),
         ),
       );
@@ -319,18 +327,21 @@ describe('<DashboardVideoPane />', () => {
 
   it('does not show the upload progress when the video is not uploading', () => {
     for (const state of Object.values(uploadState)) {
+      const queryClient = new QueryClient();
       render(
         <UploadManagerContext.Provider
           value={{ setUploadState: jest.fn(), uploadManagerState: {} }}
         >
           {wrapInIntlProvider(
             wrapInRouter(
-              <DashboardVideoPane
-                video={videoMockFactory({
-                  is_ready_to_show: false,
-                  upload_state: state,
-                })}
-              />,
+              <QueryClientProvider client={queryClient}>
+                <DashboardVideoPane
+                  video={videoMockFactory({
+                    is_ready_to_show: false,
+                    upload_state: state,
+                  })}
+                />
+              </QueryClientProvider>,
             ),
           )}
         </UploadManagerContext.Provider>,
@@ -344,9 +355,16 @@ describe('<DashboardVideoPane />', () => {
     const video = videoMockFactory({
       upload_state: uploadState.HARVESTED,
     });
+    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(wrapInRouter(<DashboardVideoPane video={video} />)),
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <DashboardVideoPane video={video} />
+          </QueryClientProvider>,
+        ),
+      ),
     );
 
     screen.getByRole('button', { name: 'watch' });
