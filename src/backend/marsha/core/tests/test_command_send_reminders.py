@@ -218,6 +218,8 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 5 minutes",
         )
+        # check this kind of template is well formed
+        self.assertNotIn("trans", mail.outbox[0].body)
 
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
@@ -430,6 +432,9 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 3 hours",
         )
+        # check this kind of template is well formed
+        self.assertNotIn("trans", mail.outbox[0].body)
+
         self.assertIn(
             f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
             f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
@@ -651,6 +656,9 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 3 days",
         )
+        # check this kind of template is well formed
+        self.assertNotIn("trans", mail.outbox[0].body)
+
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
             f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
@@ -1110,6 +1118,9 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Webinar has been updated.",
         )
+        # check this kind of template is well formed
+        self.assertNotIn("trans", mail.outbox[0].body)
+
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
             f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",

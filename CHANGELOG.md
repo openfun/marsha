@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - patch video to publish it once harvested
+- mjml files format not to break `trans` instructions
 
 ## [4.0.0-beta.2] - 2022-04-13
 

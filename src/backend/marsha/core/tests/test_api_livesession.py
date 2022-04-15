@@ -87,6 +87,10 @@ class LiveSessionApiTest(TestCase):
             email_content,
         )
 
+        # emails are generated from mjml format, test rendering of email doesn't
+        # contain any trans tag, it might happens if \n are generated
+        self.assertNotIn("trans", email_content)
+
     def test_api_livesession_read_anonymous(self):
         """Anonymous users should not be allowed to fetch a livesession."""
         video = VideoFactory()
