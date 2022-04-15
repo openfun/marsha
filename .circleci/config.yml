@@ -254,6 +254,8 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - attach_workspace:
+          at: ~/marsha
       - restore_cache:
           keys:
             - v4-back-dependencies-{{ .Revision }}
