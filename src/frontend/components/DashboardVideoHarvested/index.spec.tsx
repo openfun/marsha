@@ -1,26 +1,35 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { useVideo } from '../../data/stores/useVideo';
-import { uploadState } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useVideo } from 'data/stores/useVideo';
+import { uploadState } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
 
 import { DashboardVideoHarvested } from './';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     video: {},
   },
 }));
 
-jest.mock('../../utils/errors/report', () => ({
+jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
+
+setLogger({
+  // tslint:disable-next-line:no-console
+  log: console.log,
+  warn: console.warn,
+  // no more errors on the console
+  error: () => {},
+});
 
 describe('DashboardVideoHarvested', () => {
   beforeEach(() => {
@@ -32,10 +41,15 @@ describe('DashboardVideoHarvested', () => {
     const video = videoMockFactory({
       upload_state: uploadState.HARVESTED,
     });
+    const queryClient = new QueryClient();
 
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoHarvested video={video} />),
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <DashboardVideoHarvested video={video} />
+          </QueryClientProvider>,
+        ),
       ),
     );
     screen.getByRole('button', { name: 'watch' });
@@ -56,17 +70,22 @@ describe('DashboardVideoHarvested', () => {
     fetchMock.mock(
       {
         url: '/api/videos/bd1ab4c9-a051-423b-a71c-e7ddae9d404b/',
-        body: updatedVideo,
-        method: 'put',
+        body: { upload_state: uploadState.READY },
+        method: 'patch',
       },
       {
         status: 200,
         body: updatedVideo,
       },
     );
+    const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoHarvested video={video} />),
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <DashboardVideoHarvested video={video} />
+          </QueryClientProvider>,
+        ),
       ),
     );
 
@@ -86,32 +105,33 @@ describe('DashboardVideoHarvested', () => {
       upload_state: uploadState.HARVESTED,
     });
 
-    const updatedVideo = {
-      ...video,
-      upload_state: uploadState.READY,
-    };
-
     fetchMock.mock(
       {
         url: '/api/videos/bd1ab4c9-a051-423b-a71c-e7ddae9d404b/',
-        body: updatedVideo,
-        method: 'put',
+        body: { upload_state: uploadState.READY },
+        method: 'patch',
       },
       {
         status: 400,
+        body: { error: 'impossible to publish video' },
       },
     );
-
+    const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoHarvested video={video} />, [
-          {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
-            ),
-          },
-        ]),
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <DashboardVideoHarvested video={video} />
+          </QueryClientProvider>,
+          [
+            {
+              path: FULL_SCREEN_ERROR_ROUTE(),
+              render: ({ match }) => (
+                <span>{`Error Component: ${match.params.code}`}</span>
+              ),
+            },
+          ],
+        ),
       ),
     );
 
