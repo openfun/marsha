@@ -120,12 +120,12 @@ class Base(Configuration):
         "marsha.websocket.apps.WebsocketConfig",
         "channels",
     ]
-
     MIDDLEWARE = [
         "corsheaders.middleware.CorsMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
+        "django.middleware.locale.LocaleMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -227,7 +227,7 @@ class Base(Configuration):
     # when their preferred language, whatever it is, is unavailable
     LANGUAGES = [("en", _("english")), ("fr", _("french"))]
     LANGUAGES_DICT = dict(LANGUAGES)
-
+    LOCALE_PATHS = (os.path.join(BASE_DIR, "../locale"),)
     # Internationalization
     TIME_ZONE = "UTC"
     USE_I18N = True
