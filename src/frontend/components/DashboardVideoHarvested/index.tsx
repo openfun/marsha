@@ -6,14 +6,14 @@ import { Redirect } from 'react-router-dom';
 import {
   DashboardButton,
   DashboardButtonWithLink,
-} from '../DashboardPaneButtons/DashboardButtons';
-import { PLAYER_ROUTE } from '../routes';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { updateResource } from '../../data/sideEffects/updateResource';
-import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
-import { Video, uploadState } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
+} from 'components/DashboardPaneButtons/DashboardButtons';
+import { PLAYER_ROUTE } from 'components/routes';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useVideo } from 'data/stores/useVideo';
+import { useUpdateVideo } from 'data/queries';
+import { modelName } from 'types/models';
+import { Video, uploadState } from 'types/tracks';
+import { report } from 'utils/errors/report';
 
 const messages = defineMessages({
   publish: {
@@ -40,19 +40,20 @@ export const DashboardVideoHarvested = ({
     updateVideo: state.addResource,
   }));
   const [error, setError] = useState<unknown>();
-
-  const onClick = async () => {
-    const updatedVideo = {
-      ...video,
-      upload_state: uploadState.READY,
-    };
-    try {
-      await updateResource(updatedVideo, modelName.VIDEOS);
+  const mutation = useUpdateVideo(video.id, {
+    onSuccess: (updatedVideo) => {
       updateVideo(updatedVideo);
-    } catch (err) {
+    },
+    onError: (err) => {
       report(err);
       setError(err);
-    }
+    },
+  });
+
+  const onClick = () => {
+    mutation.mutate({
+      upload_state: uploadState.READY,
+    });
   };
 
   if (error) {
