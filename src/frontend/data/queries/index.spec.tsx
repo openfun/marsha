@@ -22,6 +22,7 @@ import {
   useThumbnail,
   useTimedTextTracks,
   useUpdatePlaylist,
+  useUpdateVideo,
   useVideo,
   useVideos,
 } from './index';
@@ -434,6 +435,62 @@ describe('queries', () => {
         body: JSON.stringify({
           playlist: video.playlist.id,
           title: video.title,
+        }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useUpdateVideo', () => {
+    it('updates the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/`, video);
+
+      const { result, waitFor } = renderHook(() => useUpdateVideo(video.id), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'updated title',
+        }),
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to update the resource', async () => {
+      const video = videoMockFactory();
+      fetchMock.patch(`/api/videos/${video.id}/`, 400);
+
+      const { result, waitFor } = renderHook(() => useUpdateVideo(video.id), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'updated title',
         }),
       });
       expect(result.current.data).toEqual(undefined);
