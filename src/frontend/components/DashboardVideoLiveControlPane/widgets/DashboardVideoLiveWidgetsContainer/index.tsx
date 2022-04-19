@@ -26,11 +26,11 @@ export const DashboardVideoLiveWidgetsContainer = ({
   }
 
   return (
-    <Box direction="row" gap="10px" pad={{ horizontal: '10px' }}>
+    <Box direction="row" background="bg-marsha" gap="small" pad="small">
       {[...Array(nbrOfColumns)].map((_, indexColumn) => (
         <Box
           direction="column"
-          gap="10px"
+          gap="small"
           key={indexColumn}
           width={`${100 / nbrOfColumns}%`}
         >
