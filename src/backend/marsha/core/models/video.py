@@ -51,11 +51,11 @@ class Video(BaseFile):
         verbose_name=_("allow video recording"),
         help_text=_("Allow video recording?"),
     )
-    estimated_duration = models.PositiveIntegerField(
+    estimated_duration = models.DurationField(
         blank=True,
         null=True,
         verbose_name=_("estimated duration"),
-        help_text=_("Estimated duration of the video in seconds."),
+        help_text=_("Estimated duration of the video."),
     )
     has_chat = models.BooleanField(
         default=True,

@@ -239,6 +239,16 @@ class VideoSerializer(VideoBaseSerializer):
 
         return value
 
+    def validate_estimated_duration(self, value):
+        """Reject negative duration"""
+        if value != self.instance.estimated_duration:
+            if value.days < 0:
+                raise serializers.ValidationError(
+                    "Ensure this value is greater than or equal to 0."
+                )
+
+        return value
+
     def get_xmpp(self, obj):
         """Chat info.
 
