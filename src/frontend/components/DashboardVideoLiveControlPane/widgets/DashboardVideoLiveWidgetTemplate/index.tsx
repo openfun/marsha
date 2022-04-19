@@ -4,16 +4,7 @@ import styled from 'styled-components';
 
 import { DownArrowSVG } from 'components/SVGIcons/DownArrowSVG';
 import { InfoCircleSVG } from 'components/SVGIcons/InfoCircleSVG';
-import { defineMessages, useIntl } from 'react-intl';
 import { DashboardVideoLiveInfoModal } from 'components/DashboardVideoLiveInfoModal';
-
-const messages = defineMessages({
-  infoTitle: {
-    defaultMessage: "Widget's function",
-    description: 'The title displays in the info modal.',
-    id: 'component.DashboardVideoLiveWidgetTemplate.infoTitle',
-  },
-});
 
 const StyledTitleText = styled(Text)`
   font-family: 'Roboto-Bold';
@@ -34,7 +25,6 @@ export const DashboardVideoLiveWidgetTemplate = ({
 }: DashboardVideoLiveWidgetTemplateProps) => {
   const [open, setOpen] = useState(initialOpenValue);
   const [showInfoTextModal, setShowInfoTextModal] = useState(false);
-  const intl = useIntl();
 
   return (
     <Box
@@ -61,7 +51,7 @@ export const DashboardVideoLiveWidgetTemplate = ({
       {infoText && showInfoTextModal && (
         <DashboardVideoLiveInfoModal
           text={infoText}
-          title={intl.formatMessage(messages.infoTitle)}
+          title={title}
           onModalClose={() => setShowInfoTextModal(false)}
         />
       )}
