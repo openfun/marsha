@@ -2,6 +2,7 @@ import { Box } from 'grommet';
 import React, { Fragment, useEffect, useState } from 'react';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
+import { DashboardVideoLiveControlPane } from 'components/DashboardVideoLiveControlPane';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
@@ -10,6 +11,7 @@ import { TeacherLiveContent } from 'components/TeacherLiveContent';
 import { TeacherLiveLifecycleControls } from 'components/TeacherLiveLifecycleControls';
 import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
+import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
 import { appData } from 'data/appData';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
@@ -19,7 +21,6 @@ import {
 } from 'data/stores/useLivePanelState';
 import { StopLiveConfirmationProvider } from 'data/stores/useStopLiveConfirmation';
 import { Video, liveState, LiveModeType } from 'types/tracks';
-import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 
 interface DashboardVideoLiveProps {
   video: Video;
@@ -97,6 +98,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                     <DashboardVideoLivePairing video={video} />
                   </Box>
                 )}
+                <DashboardVideoLiveControlPane video={video} />
                 {video.live_state === liveState.IDLE && (
                   <ScheduledVideoForm video={video} />
                 )}

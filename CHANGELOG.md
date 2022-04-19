@@ -8,6 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add a control pane destined to contain widgets for the instructor to 
+control the live
+- Add a widget to modify live title and allow / disallow live recording
+
+
 ## [4.0.0-beta.3] - 2022-04-22
 
 ### Added
