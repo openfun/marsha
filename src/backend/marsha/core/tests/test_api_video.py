@@ -3070,7 +3070,8 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        data = {"estimated_duration": "5400"}
+        estimated_duration = timedelta(seconds=2100)
+        data = {"estimated_duration": estimated_duration}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
             data,
@@ -3078,9 +3079,9 @@ class VideoAPITest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json().get("estimated_duration"), 5400)
+        self.assertEqual(response.json().get("estimated_duration"), "00:35:00")
         video.refresh_from_db()
-        self.assertEqual(video.estimated_duration, 5400)
+        self.assertEqual(video.estimated_duration, estimated_duration)
 
     def test_api_video_patch_detail_token_user_estimated_duration_negative(self):
         """Sending a negative integer for estimated_daration should be rejected."""
@@ -3091,7 +3092,41 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
-        data = {"estimated_duration": "-5400"}
+        # from -7 days to -1 second
+        estimated_duration = timedelta(seconds=random.randint(-604800, -1))
+        data = {"estimated_duration": estimated_duration}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "estimated_duration": [
+                    "Ensure this value is greater than or equal to 0."
+                ]
+            },
+        )
+        video.refresh_from_db()
+        self.assertIsNone(video.estimated_duration)
+
+    def test_api_video_patch_detail_token_user_estimated_duration_negative_one_second(
+        self,
+    ):
+        """As soon as the estimated_duration is negative, the request should be rejected."""
+        video = factories.VideoFactory()
+        self.assertIsNone(video.estimated_duration)
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        estimated_duration = timedelta(seconds=-1)
+        data = {"estimated_duration": estimated_duration}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
             data,
