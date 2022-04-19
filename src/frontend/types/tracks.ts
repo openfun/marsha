@@ -147,6 +147,7 @@ export interface Video extends Resource {
   lti_url?: Nullable<string>;
   should_use_subtitle_as_transcript: boolean;
   starting_at: Nullable<string>;
+  estimated_duration: Nullable<string>;
   has_transcript: boolean;
   participants_asking_to_join: Participant[];
   participants_in_discussion: Participant[];
