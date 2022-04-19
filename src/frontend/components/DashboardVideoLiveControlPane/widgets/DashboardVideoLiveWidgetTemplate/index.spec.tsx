@@ -1,9 +1,10 @@
 import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardVideoLiveWidgetTemplate } from '.';
-import userEvent from '@testing-library/user-event';
 
 const genericComponent1 = <p>Generic component 1</p>;
 
@@ -12,15 +13,18 @@ const genericInfoText = 'An example info text';
 
 describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate opened, with an info text ', () => {
+    const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={true}
-          infoText={genericInfoText}
-          title={genericTitle}
-        >
-          {genericComponent1}
-        </DashboardVideoLiveWidgetTemplate>,
+        <QueryClientProvider client={queryClient}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={true}
+            infoText={genericInfoText}
+            title={genericTitle}
+          >
+            {genericComponent1}
+          </DashboardVideoLiveWidgetTemplate>
+        </QueryClientProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -32,14 +36,17 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetTemplate closed without info text and clicks on the title.', () => {
+    const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={false}
-          title={genericTitle}
-        >
-          {genericComponent1}
-        </DashboardVideoLiveWidgetTemplate>,
+        <QueryClientProvider client={queryClient}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={false}
+            title={genericTitle}
+          >
+            {genericComponent1}
+          </DashboardVideoLiveWidgetTemplate>
+        </QueryClientProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -54,15 +61,19 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', () => {
+    const queryClient = new QueryClient();
+
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={false}
-          infoText={genericInfoText}
-          title={genericTitle}
-        >
-          {genericComponent1}
-        </DashboardVideoLiveWidgetTemplate>,
+        <QueryClientProvider client={queryClient}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={false}
+            infoText={genericInfoText}
+            title={genericTitle}
+          >
+            {genericComponent1}
+          </DashboardVideoLiveWidgetTemplate>
+        </QueryClientProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -72,7 +83,8 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
     expect(screen.queryByText(genericInfoText)).toEqual(null);
 
     act(() => userEvent.click(infoButton));
-    screen.getByText("Widget's function");
+    // Indeed, in addition to the title of the widget, there is also the one on the modal
+    expect(screen.getAllByText(genericTitle)).toHaveLength(2);
     screen.getByText(genericInfoText);
   });
 });
