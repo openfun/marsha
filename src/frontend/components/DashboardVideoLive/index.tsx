@@ -83,7 +83,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               </Fragment>
             }
             additionalContent={
-              <Fragment>
+              <Box background="bg-marsha">
                 <Box direction={'row'} justify={'center'} margin={'small'}>
                   {appData.flags?.live_raw &&
                     video.live_state &&
@@ -98,7 +98,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                   </Box>
                 )}
                 <DashboardVideoLiveControlPane video={video} />
-              </Fragment>
+              </Box>
             }
             displayActionsElement
             isPanelOpen={isPanelVisible}
