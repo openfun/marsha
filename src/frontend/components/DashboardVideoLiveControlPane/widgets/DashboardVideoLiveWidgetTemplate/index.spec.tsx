@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { DashboardVideoLiveWidgetTemplate } from '.';
 
@@ -11,6 +12,7 @@ const genericInfoText = 'An example info text';
 
 describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate opened, with an info text ', () => {
+    const queryClient = new QueryClient();
     render(
       <DashboardVideoLiveWidgetTemplate
         initialOpenValue={true}
@@ -29,6 +31,7 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetTemplate closed without info text and clicks on the title.', () => {
+    const queryClient = new QueryClient();
     render(
       <DashboardVideoLiveWidgetTemplate
         initialOpenValue={false}
@@ -49,6 +52,8 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', () => {
+    const queryClient = new QueryClient();
+
     render(
       <DashboardVideoLiveWidgetTemplate
         initialOpenValue={false}
