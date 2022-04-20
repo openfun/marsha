@@ -127,8 +127,6 @@ describe('<DashboardVideoWrapper />', () => {
     );
 
     expect(spiedInitVideoWebsocket).toHaveBeenCalled();
-
-    await screen.findByRole('button', { name: 'Pair an external device' });
   });
 
   it('renders the video layout when live_state is null', async () => {
