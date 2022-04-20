@@ -3,7 +3,7 @@ import { Grommet } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { presenceType, useChatItemState } from 'data/stores/useChatItemsStore';
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { theme } from 'utils/theme/theme';
@@ -33,23 +33,12 @@ describe('<ChatConversationDisplayer />', () => {
         }),
       );
     }
-    for (let i = 0; i < 2; i++) {
-      act(() =>
-        useChatItemState.getState().addPresence({
-          receivedAt: DateTime.fromISO(`2020-01-01T12:2${i}:12`),
-          sender: `John Doe n°${i}`,
-          type: presenceType.ARRIVAL,
-        }),
-      );
-    }
 
     for (let i = 0; i < 5; i++) {
       screen.getByText(`(12:1${i})`);
       screen.getByText(`John Doe n°${i}`);
       screen.getByText(`This is example message n°${i}`);
     }
-    screen.queryByText('John Doe n°1 has joined');
-    screen.queryByText('John Doe n°2 has joined');
   });
 
   it('scrolls down to bottom, when scroll bar is previously set to bottom.', async () => {
@@ -89,14 +78,6 @@ describe('<ChatConversationDisplayer />', () => {
     }
 
     act(() =>
-      useChatItemState.getState().addPresence({
-        receivedAt: DateTime.fromISO('2020-01-01T12:12:00'),
-        sender: 'John_Doe',
-        type: presenceType.ARRIVAL,
-      }),
-    );
-
-    act(() =>
       useChatItemState.getState().addMessage({
         content: 'Hello everyone !',
         sender: 'John_Doe',
@@ -111,15 +92,6 @@ describe('<ChatConversationDisplayer />', () => {
         sentAt: DateTime.fromISO('2020-01-01T12:12:25'),
       }),
     );
-
-    act(() =>
-      useChatItemState.getState().addPresence({
-        receivedAt: DateTime.fromISO('2020-01-01T12:12:27'),
-        sender: 'John_Doe',
-        type: presenceType.DEPARTURE,
-      }),
-    );
-
     await imageSnapshot(800, 1000);
   });
 });

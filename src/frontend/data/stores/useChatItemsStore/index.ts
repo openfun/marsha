@@ -19,19 +19,8 @@ export type ChatMessageGroupType = {
   sender: string;
 };
 
-export enum presenceType {
-  ARRIVAL = 'arrival',
-  DEPARTURE = 'departure',
-}
-export type ChatPresenceType = {
-  receivedAt: DateTime;
-  sender: string;
-  type: presenceType;
-};
-
 export enum chatItemType {
   GROUP_MESSAGE = 'chat_message',
-  PRESENCE = 'presence',
 }
 
 export interface ChatMessageGroupWrapper {
@@ -39,19 +28,13 @@ export interface ChatMessageGroupWrapper {
   messageGroupData: ChatMessageGroupType;
 }
 
-export interface ChatPresenceItemWrapper {
-  type: chatItemType.PRESENCE;
-  presenceData: ChatPresenceType;
-}
-
-export type ChatItem = ChatMessageGroupWrapper | ChatPresenceItemWrapper;
+export type ChatItem = ChatMessageGroupWrapper;
 
 type State = {
   hasReceivedMessageHistory: boolean;
   setHasReceivedMessageHistory: (hasReceivedMessageHistory: boolean) => void;
   chatItems: ChatItem[];
   addMessage: (newMessage: ReceivedMessageType) => void;
-  addPresence: (newPresence: ChatPresenceType) => void;
 };
 
 export const useChatItemState = create<State>((set) => ({
@@ -98,11 +81,4 @@ export const useChatItemState = create<State>((set) => ({
         }),
       };
     }),
-  addPresence: (presence) =>
-    set((state) => ({
-      chatItems: state.chatItems.concat({
-        type: chatItemType.PRESENCE,
-        presenceData: presence,
-      }),
-    })),
 }));
