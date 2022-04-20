@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _, override
 
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -109,25 +109,34 @@ class LiveSessionViewSet(
     def _send_registration_email(self, livesession):
         """Send a registration email and catch error if needed."""
         try:
-            video = livesession.video
-            template_vars = {
-                "cancel_reminder_url": livesession.cancel_reminder_url,
-                "email": livesession.email,
-                "username": livesession.username,
-                "time_zone": settings.TIME_ZONE,
-                "video": video,
-                "video_access_url": livesession.video_access_reminder_url,
-            }
-            msg_plain = render_to_string("core/mail/text/register.txt", template_vars)
-            msg_html = render_to_string("core/mail/html/register.html", template_vars)
-            send_mail(
-                f'{_("Registration for ")}{video.title}',
-                msg_plain,
-                settings.EMAIL_FROM,
-                [livesession.email],
-                html_message=msg_html,
-                fail_silently=False,
-            )
+            with override(livesession.language):
+                video = livesession.video
+                template_vars = {
+                    "cancel_reminder_url": livesession.cancel_reminder_url,
+                    "email": livesession.email,
+                    "username": livesession.username,
+                    "time_zone": settings.TIME_ZONE,
+                    "video": video,
+                    "video_access_url": livesession.video_access_reminder_url,
+                }
+
+                msg_plain = render_to_string(
+                    "core/mail/text/register.txt", template_vars
+                )
+                msg_html = render_to_string(
+                    "core/mail/html/register.html", template_vars
+                )
+                # translation needs to be out a f" to be detected
+                # pylint:disable=redefined-builtin
+                object = _("Registration validated!")
+                send_mail(
+                    f"{object} {video.title}",
+                    msg_plain,
+                    settings.EMAIL_FROM,
+                    [livesession.email],
+                    html_message=msg_html,
+                    fail_silently=False,
+                )
         except smtplib.SMTPException as exception:
             # no exception raised as user can't sometimes change his mail,
             logger.warning("registration mail %s not send", livesession.email)
@@ -178,6 +187,7 @@ class LiveSessionViewSet(
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({"detail": "Invalid request."}, status=400)
+
         token = self.request.user.token
         if is_lti_token(token):
             try:
@@ -220,12 +230,14 @@ class LiveSessionViewSet(
                 livesession.username = token_user.get("username")
 
         # update or add live_attendance information
-        if livesession.live_attendance:
-            livesession.live_attendance = (
-                serializer.data["live_attendance"] | livesession.live_attendance
-            )
-        else:
-            livesession.live_attendance = serializer.data["live_attendance"]
+        livesession.live_attendance = (
+            (serializer.data["live_attendance"] | livesession.live_attendance)
+            if livesession.live_attendance
+            else serializer.data["live_attendance"]
+        )
+
+        if serializer.data.get("language"):
+            livesession.language = serializer.data["language"]
 
         livesession.save()
 

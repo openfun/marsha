@@ -221,9 +221,11 @@ class SendRemindersTest(TestCase):
         # check this kind of template is well formed
         self.assertNotIn("trans", mail.outbox[0].body)
 
+        lti_key_access = lti_livesession.get_generate_salted_hmac()
+        public_key_access = public_livesession.get_generate_salted_hmac()
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
-            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_livesession.pk}&amp;key={lti_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -234,13 +236,13 @@ class SendRemindersTest(TestCase):
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
-            f"{lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(
             f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
-            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
+            f"{public_livesession.pk}&amp;key={public_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -250,7 +252,7 @@ class SendRemindersTest(TestCase):
         )
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
-            f"{public_livesession.get_generate_salted_hmac()}]",
+            f"{public_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
 
@@ -434,10 +436,11 @@ class SendRemindersTest(TestCase):
         )
         # check this kind of template is well formed
         self.assertNotIn("trans", mail.outbox[0].body)
-
+        lti_key_access = lti_livesession.get_generate_salted_hmac()
+        public_key_access = public_livesession.get_generate_salted_hmac()
         self.assertIn(
             f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
-            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
+            f"{public_livesession.pk}&amp;key={public_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -448,18 +451,18 @@ class SendRemindersTest(TestCase):
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
-            f"{public_livesession.get_generate_salted_hmac()}]",
+            f"{public_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
-            f"{lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
-            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_livesession.pk}&amp;key={lti_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -658,10 +661,11 @@ class SendRemindersTest(TestCase):
         )
         # check this kind of template is well formed
         self.assertNotIn("trans", mail.outbox[0].body)
-
+        lti_key_access = lti_livesession.get_generate_salted_hmac()
+        public_key_access = public_livesession.get_generate_salted_hmac()
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
-            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_livesession.pk}&amp;key={lti_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -672,18 +676,18 @@ class SendRemindersTest(TestCase):
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
-            f"{lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
-            f"{public_livesession.get_generate_salted_hmac()}]",
+            f"{public_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
             f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
-            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
+            f"{public_livesession.pk}&amp;key={public_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -1120,10 +1124,12 @@ class SendRemindersTest(TestCase):
         )
         # check this kind of template is well formed
         self.assertNotIn("trans", mail.outbox[0].body)
+        lti_key_access = lti_livesession.get_generate_salted_hmac()
+        public_key_access = public_livesession.get_generate_salted_hmac()
 
         self.assertIn(
             f"Access the event [//example.com/videos/{lti_livesession.video.pk}?lrpk="
-            f"{lti_livesession.pk}&amp;key={lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_livesession.pk}&amp;key={lti_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
         self.assertIn(
@@ -1134,18 +1140,18 @@ class SendRemindersTest(TestCase):
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{lti_livesession.pk}/"
-            f"{lti_livesession.get_generate_salted_hmac()}]",
+            f"{lti_key_access}]",
             " ".join(mail.outbox[0].body.split()),
         )
 
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{public_livesession.pk}/"
-            f"{public_livesession.get_generate_salted_hmac()}]",
+            f"{public_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
             f"Access the event [//example.com/videos/{public_livesession.video.pk}?lrpk="
-            f"{public_livesession.pk}&amp;key={public_livesession.get_generate_salted_hmac()}]",
+            f"{public_livesession.pk}&amp;key={public_key_access}]",
             " ".join(mail.outbox[1].body.split()),
         )
         self.assertIn(
@@ -1304,6 +1310,10 @@ class SendRemindersTest(TestCase):
 
         # we change sending a new date
         new_date = timezone.now() + timedelta(days=2)
+        key_updated = (
+            f"{settings.REMINDER_DATE_UPDATED}_"
+            f'{dateformat.format(timezone.now(), "Y-m-d H:i")}'
+        )
         response = self.client.put(
             f"/api/videos/{video.id}/",
             {
@@ -1343,3 +1353,55 @@ class SendRemindersTest(TestCase):
         self.assertEqual(livesession_2.must_notify, ["DATA"])
         self.assertEqual(livesession_2.reminders, ["ONE", key_updated])
         self.assertEqual(livesession.reminders, [key_updated, key_updated])
+
+    def test_send_reminders_date_i18n(self):
+        """Livesession's language is used to send email."""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=200),
+        )
+        # LTI livesession
+        lti_livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(days=32),
+            email="chantal@test-fun-mooc.fr",
+            is_registered=True,
+            language="fr",
+            lti_id="Maths",
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            video=video,
+        )
+
+        out = StringIO()
+        call_command("send_reminders", stdout=out)
+        self.assertIn(
+            "Mail sent chantal@test-fun-mooc.fr Votre webinaire a été mis à jour.",
+            out.getvalue(),
+        )
+        out.close()
+        self.assertEqual(len(mail.outbox), 1)
+
+        lti_key_access = lti_livesession.get_generate_salted_hmac()
+
+        # check we send it to the the right mail.outbox[0].to[0]
+        self.assertEqual("chantal@test-fun-mooc.fr", mail.outbox[0].to[0])
+        # check it's the right content
+
+        self.assertIn(
+            f"Accéder au webinaire [//example.com/videos/{lti_livesession.video.pk}?lrpk="
+            f"{lti_livesession.pk}&amp;key={lti_key_access}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertIn(
+            f"se désabonner [//example.com/reminders/cancel/{lti_livesession.pk}/"
+            f"{lti_key_access}]",
+            " ".join(mail.outbox[0].body.split()),
+        )
+        self.assertEqual(
+            mail.outbox[0].subject,
+            "Votre webinaire a été mis à jour.",
+        )
