@@ -6,7 +6,6 @@ import { DashboardVideoLiveControlPane } from 'components/DashboardVideoLiveCont
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
-import { ScheduledVideoForm } from 'components/ScheduledVideoForm';
 import { TeacherLiveContent } from 'components/TeacherLiveContent';
 import { TeacherLiveLifecycleControls } from 'components/TeacherLiveLifecycleControls';
 import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
@@ -99,9 +98,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                   </Box>
                 )}
                 <DashboardVideoLiveControlPane video={video} />
-                {video.live_state === liveState.IDLE && (
-                  <ScheduledVideoForm video={video} />
-                )}
               </Fragment>
             }
             displayActionsElement

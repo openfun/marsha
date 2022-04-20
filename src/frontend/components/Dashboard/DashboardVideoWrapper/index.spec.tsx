@@ -129,8 +129,6 @@ describe('<DashboardVideoWrapper />', () => {
     expect(spiedInitVideoWebsocket).toHaveBeenCalled();
 
     await screen.findByRole('button', { name: 'Pair an external device' });
-
-    screen.getByRole('heading', { name: 'Schedule a webinar' });
   });
 
   it('renders the video layout when live_state is null', async () => {
