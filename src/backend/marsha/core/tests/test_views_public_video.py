@@ -306,6 +306,7 @@ class VideoPublicViewTestCase(TestCase):
             consumer_site=video.playlist.consumer_site,
             email="sarah@openfun.fr",
             is_registered=True,
+            language="fr",
             lti_id=str(video.playlist.lti_id),
             lti_user_id="5555",
             video=video,
@@ -351,7 +352,7 @@ class VideoPublicViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
-        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(jwt_token.payload["context_id"], video.playlist.lti_id)
         self.assertEqual(
             jwt_token.payload["consumer_site"], str(livesession.consumer_site.id)
