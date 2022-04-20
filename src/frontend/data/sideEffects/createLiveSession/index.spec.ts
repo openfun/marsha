@@ -18,22 +18,25 @@ describe('sideEffects/createLiveSession', () => {
         url: '/api/livesessions/',
         body: {
           email: 'test@open-fun.fr',
+          language: 'fr',
         },
         method: 'POST',
       },
       {
         id: '42',
         email: 'test@open-fun.fr',
+        language: 'fr',
       },
     );
 
-    const liveSession = await createLiveSession('test@open-fun.fr');
+    const liveSession = await createLiveSession('test@open-fun.fr', 'fr');
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
     expect(liveSession).toEqual({
       id: '42',
       email: 'test@open-fun.fr',
+      language: 'fr',
     });
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer token',
@@ -49,18 +52,21 @@ describe('sideEffects/createLiveSession', () => {
         body: {
           anonymous_id: anonymousId,
           email: 'test@open-fun.fr',
+          language: 'fr',
         },
         method: 'POST',
       },
       {
         anonymous_id: anonymousId,
-        id: '42',
         email: 'test@open-fun.fr',
+        id: '42',
+        language: 'fr',
       },
     );
 
     const liveSession = await createLiveSession(
       'test@open-fun.fr',
+      'fr',
       anonymousId,
     );
 
@@ -68,8 +74,9 @@ describe('sideEffects/createLiveSession', () => {
 
     expect(liveSession).toEqual({
       anonymous_id: anonymousId,
-      id: '42',
       email: 'test@open-fun.fr',
+      id: '42',
+      language: 'fr',
     });
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer token',

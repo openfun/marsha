@@ -17,6 +17,7 @@ describe('updateLiveSession', () => {
     const liveSession = liveSessionFactory({
       email: 'john@fun-test.fr',
       is_registered: false,
+      language: 'fr',
     });
 
     fetchMock.mock(
@@ -25,6 +26,7 @@ describe('updateLiveSession', () => {
         body: {
           email: 'updated@fun-test.fr',
           is_registered: true,
+          language: 'en',
         },
         method: 'PATCH',
       },
@@ -32,17 +34,20 @@ describe('updateLiveSession', () => {
         ...liveSession,
         email: 'updated@fun-test.fr',
         is_registered: true,
+        language: 'en',
       },
     );
 
     const updatedLiveSession = await updateLiveSession(
       liveSession,
+      'en',
       'updated@fun-test.fr',
       true,
     );
 
     expect(updatedLiveSession.email).toEqual('updated@fun-test.fr');
     expect(updatedLiveSession.is_registered).toEqual(true);
+    expect(updatedLiveSession.language).toEqual('en');
   });
 
   it('updates a live session using an anonymoud_id and returns it', async () => {
@@ -51,6 +56,7 @@ describe('updateLiveSession', () => {
       anonymous_id: anonymousId,
       email: 'john@fun-test.fr',
       is_registered: false,
+      language: 'en',
     });
 
     fetchMock.mock(
@@ -59,6 +65,7 @@ describe('updateLiveSession', () => {
         body: {
           email: 'updated@fun-test.fr',
           is_registered: true,
+          language: 'fr',
         },
         method: 'PATCH',
       },
@@ -66,11 +73,13 @@ describe('updateLiveSession', () => {
         ...liveSession,
         email: 'updated@fun-test.fr',
         is_registered: true,
+        language: 'fr',
       },
     );
 
     const updatedLiveSession = await updateLiveSession(
       liveSession,
+      'fr',
       'updated@fun-test.fr',
       true,
       anonymousId,
@@ -78,6 +87,7 @@ describe('updateLiveSession', () => {
 
     expect(updatedLiveSession.email).toEqual('updated@fun-test.fr');
     expect(updatedLiveSession.is_registered).toEqual(true);
+    expect(updatedLiveSession.language).toEqual('fr');
   });
 
   it('throws when it fails to update a live session and returns a json Error', async () => {
@@ -98,7 +108,13 @@ describe('updateLiveSession', () => {
 
     let thrownError;
     try {
-      await updateLiveSession(liveSession, 'wrong email', true, anonymousId);
+      await updateLiveSession(
+        liveSession,
+        'fr',
+        'wrong email',
+        true,
+        anonymousId,
+      );
     } catch (error) {
       thrownError = error;
     }

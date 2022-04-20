@@ -4,6 +4,7 @@ import { LiveSession } from 'types/tracks';
 
 export const updateLiveSession = async (
   liveSession: LiveSession,
+  language: string,
   email?: string,
   isRegistered?: boolean,
   anonymousId?: string,
@@ -11,6 +12,7 @@ export const updateLiveSession = async (
   const body = {
     email,
     is_registered: isRegistered,
+    language,
   };
 
   let endpoint = `${API_ENDPOINT}/livesessions/${liveSession.id}/`;

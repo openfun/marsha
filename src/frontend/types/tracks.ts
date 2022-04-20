@@ -125,6 +125,7 @@ export interface LiveSession extends Resource {
   email: Nullable<string>;
   id: string;
   is_registered: boolean;
+  language: string;
   live_attendance: Nullable<object>;
   lti_id: Nullable<string>;
   lti_user_id: Nullable<string>;

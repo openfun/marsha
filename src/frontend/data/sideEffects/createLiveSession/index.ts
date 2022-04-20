@@ -7,10 +7,12 @@ import { appData } from 'data/appData';
  */
 export const createLiveSession = async (
   email: string,
+  language: string,
   anonymousId?: string,
 ): Promise<LiveSession> => {
   const body = {
     email,
+    language,
     anonymous_id: anonymousId,
   };
   const response = await fetch(`${API_ENDPOINT}/livesessions/`, {
