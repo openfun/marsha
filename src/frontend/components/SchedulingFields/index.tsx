@@ -68,6 +68,7 @@ interface SchedulingFieldsProps {
   onStartingAtChange?: (date: string | null) => void;
   onEstimatedDurationChange?: (duration: string | null) => void;
   margin?: MarginType;
+  disabled?: boolean;
 }
 
 export const SchedulingFields = ({
@@ -76,6 +77,7 @@ export const SchedulingFields = ({
   onStartingAtChange = () => {},
   onEstimatedDurationChange,
   margin,
+  disabled,
 }: SchedulingFieldsProps) => {
   const intl = useIntl();
   Settings.defaultLocale = intl.locale;
@@ -203,7 +205,7 @@ export const SchedulingFields = ({
 
   return (
     <React.Fragment>
-      <Box direction="row" justify="between" margin={margin} gap="medium">
+      <Box direction="row" justify="between" margin={margin} gap="small">
         <FormField
           label={intl.formatMessage(messages.startingAtDateTextLabel)}
           htmlFor="starting_at_date"
@@ -221,6 +223,9 @@ export const SchedulingFields = ({
                 DateTime.local().plus({ years: 1 }).toISO(),
               ],
             }}
+            // TODO : calendar icon still clickable even when component is disabled
+            // need to open an issue on grommet's github
+            disabled={disabled}
           />
         </FormField>
         <FormField
@@ -238,6 +243,7 @@ export const SchedulingFields = ({
             defaultSuggestion={22}
             placeholder="hh:mm"
             dropHeight="medium"
+            disabled={disabled}
           />
         </FormField>
         <FormField
@@ -253,6 +259,7 @@ export const SchedulingFields = ({
             suggestions={durationSuggestions}
             placeholder="hh:mm"
             dropHeight="medium"
+            disabled={disabled}
           />
         </FormField>
       </Box>
