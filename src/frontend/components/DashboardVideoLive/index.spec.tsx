@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
@@ -46,12 +46,6 @@ jest.mock(
   'components/DashboardVideoLiveJitsi',
   () => mockDashboardVideoLiveJitsi,
 );
-
-jest.mock('components/DashboardVideoLivePairing', () => ({
-  DashboardVideoLivePairing: (props: { video: Video }) => (
-    <span title={`Pairing button for ${props.video.id}`} />
-  ),
-}));
 
 let queryClient: QueryClient;
 
@@ -253,30 +247,6 @@ describe('components/DashboardVideoLive', () => {
     );
     screen.getByRole('textbox', { name: 'Enter title of your live here' });
     screen.getByDisplayValue(/maths/i);
-  });
-
-  it('shows the pairing button when the status is not STOPPED', () => {
-    for (const state of Object.values(liveState)) {
-      const { getByTitle, queryByTitle } = render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <QueryClientProvider client={queryClient}>
-              <Suspense fallback="loading...">
-                <DashboardVideoLive video={{ ...video, live_state: state }} />
-              </Suspense>
-            </QueryClientProvider>,
-          ),
-        ),
-      );
-      if (state !== liveState.STOPPED) {
-        getByTitle(`Pairing button for ${video.id}`);
-      } else {
-        expect(
-          queryByTitle(`Pairing button for ${video.id}`),
-        ).not.toBeInTheDocument();
-      }
-      cleanup();
-    }
   });
 
   it('prompts display name form when trying to join the chat', async () => {

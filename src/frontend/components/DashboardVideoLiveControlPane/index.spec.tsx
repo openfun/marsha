@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -70,5 +71,14 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     expect(textArea).toHaveValue('An example description');
     screen.getByPlaceholderText('Description...');
+
+    // DashboardVideoLiveWidgetLivePairing
+    const openButton = screen.getByRole('button', {
+      name: 'External broadcast sources',
+    });
+    userEvent.click(openButton);
+    screen.getByRole('button', {
+      name: /pair an external device/i,
+    });
   });
 });

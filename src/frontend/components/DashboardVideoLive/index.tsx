@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { DashboardVideoLiveControlPane } from 'components/DashboardVideoLiveControlPane';
-import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { TeacherLiveContent } from 'components/TeacherLiveContent';
@@ -83,22 +82,18 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               </Fragment>
             }
             additionalContent={
-              <Box background="bg-marsha">
-                <Box direction={'row'} justify={'center'} margin={'small'}>
-                  {appData.flags?.live_raw &&
-                    video.live_state &&
-                    [liveState.IDLE, liveState.PAUSED].includes(
-                      video.live_state,
-                    ) && <TeacherLiveTypeSwitch video={video} />}
-                </Box>
-
-                {video.live_state !== liveState.STOPPED && (
-                  <Box direction={'row'} justify={'center'} margin={'small'}>
-                    <DashboardVideoLivePairing video={video} />
-                  </Box>
-                )}
+              <Fragment>
+                {appData.flags?.live_raw &&
+                  video.live_state &&
+                  [liveState.IDLE, liveState.PAUSED].includes(
+                    video.live_state,
+                  ) && (
+                    <Box direction={'row'} justify={'center'} margin={'small'}>
+                      <TeacherLiveTypeSwitch video={video} />
+                    </Box>
+                  )}
                 <DashboardVideoLiveControlPane video={video} />
-              </Box>
+              </Fragment>
             }
             displayActionsElement
             isPanelOpen={isPanelVisible}
