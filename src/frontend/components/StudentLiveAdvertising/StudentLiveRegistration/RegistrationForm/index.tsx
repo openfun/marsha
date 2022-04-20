@@ -166,11 +166,13 @@ export const RegistrationForm = ({
           if (!liveSession) {
             updatedLiveSession = await createLiveSession(
               value.email,
+              intl.locale,
               anonymousId,
             );
           } else {
             updatedLiveSession = await updateLiveSession(
               liveSession,
+              intl.locale,
               value.email,
               true,
               anonymousId,

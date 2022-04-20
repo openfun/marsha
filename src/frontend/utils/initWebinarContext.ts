@@ -4,7 +4,7 @@ import { useLiveSession } from 'data/stores/useLiveSession';
 import { Video } from 'types/tracks';
 import { getOrInitAnonymousId } from './getOrInitAnonymousId';
 
-export const initWebinarContext = async (video: Video) => {
+export const initWebinarContext = async (video: Video, language: string) => {
   // if not a live, stop it.
   if (!video.live_state) return;
 
@@ -23,6 +23,6 @@ export const initWebinarContext = async (video: Video) => {
     // and then register it in the store
     useLiveSession
       .getState()
-      .setLiveSession(await pushAttendance({}, anonymousId));
+      .setLiveSession(await pushAttendance({}, language, anonymousId));
   }
 };

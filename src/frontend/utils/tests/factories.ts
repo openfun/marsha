@@ -171,6 +171,7 @@ export const liveSessionFactory = (
   liveSession: Partial<LiveSession> = {},
 ): LiveSession => {
   const id = liveSession.id || faker.datatype.uuid();
+  const languages = ['en', 'fr'];
 
   return {
     anonymous_id: null,
@@ -179,6 +180,7 @@ export const liveSessionFactory = (
     email: null,
     id,
     is_registered: faker.datatype.boolean(),
+    language: languages[Math.floor(Math.random() * languages.length)],
     live_attendance: null,
     lti_id: null,
     lti_user_id: null,
