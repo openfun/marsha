@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a control pane destined to contain widgets for the instructor to 
 control the live
 - Add a widget to modify live title and allow / disallow live recording
+- Add a widget to schedule live and modify description
 
 
 ## [4.0.0-beta.3] - 2022-04-22
@@ -24,10 +25,6 @@ control the live
 - Send emails in current livesession's language
 - Load livesession's language in the JWT token for direct access 
 from email
-- Add a control pane destined to contain widgets for the instructor to 
-control the live
-- Add a widget to modify live title and allow / disallow live recording
-
 
 ### Fixed
 
