@@ -36,7 +36,7 @@ jobs:
   lint-git:
     docker:
       # stay in python 3.8
-      - image: circleci/python:3.8-buster
+      - image: cimg/python:3.8
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -54,6 +54,7 @@ jobs:
       - run:
           name: Install gitlint
           command: |
+            pip install requests
             pip install --user gitlint
       - run:
           name: lint commit messages added to master
@@ -63,7 +64,7 @@ jobs:
   # Check that the CHANGELOG has been updated in the current branch
   check-changelog:
     docker:
-      - image: circleci/buildpack-deps:stretch-scm
+      - image: cimg/base:2022.04
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -110,7 +111,7 @@ jobs:
   # Build the Docker image ready for production
   build-docker:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/base:2022.04
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -176,7 +177,7 @@ jobs:
 
   build-ffmpeg-transmux-docker:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/base:2022.04
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -330,7 +331,7 @@ jobs:
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
           DJANGO_BBB_API_SECRET: bbb-api-secret
-      - image: circleci/postgres:10.3-alpine-ram
+      - image: cimg/postgres:10.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -352,7 +353,7 @@ jobs:
       # Nota bene: to run the django test suite, we need to ensure that the
       # PostgreSQL service is up and ready. To achieve this,
       # we wrap the command execution with dockerize, a tiny tool
-      # installed in circleci/python image. In our case, dockerize will wait
+      # installed in cimg/python image. In our case, dockerize will wait
       # up to one minute until the database container is answering on port 5432.
       - run:
           name: Run tests
@@ -365,7 +366,7 @@ jobs:
   # ---- Front-end jobs ----
   build-front:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -402,7 +403,7 @@ jobs:
   # ---- mail jobs ----
   build-mails:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -432,7 +433,7 @@ jobs:
 
   lint-front:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -452,7 +453,7 @@ jobs:
 
   test-front:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -513,7 +514,7 @@ jobs:
 
   test-storybook-build:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -556,7 +557,7 @@ jobs:
           DJANGO_ALLOW_ASYNC_UNSAFE: 1
           DJANGO_BBB_ENABLED: 1
           DEBUG: pw:browser*
-      - image: circleci/postgres:10.3-alpine-ram
+      - image: cimg/postgres:10.20
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -631,7 +632,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -658,7 +659,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -685,7 +686,7 @@ jobs:
 
   test-lambda-medialive:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -711,7 +712,7 @@ jobs:
 
   test-lambda-mediapackage:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -737,7 +738,7 @@ jobs:
 
   test-lambda-elemental-routing:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -763,7 +764,7 @@ jobs:
 
   lint-lambda-configure:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -785,7 +786,7 @@ jobs:
 
   lint-lambda-convert:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -804,7 +805,7 @@ jobs:
 
   lint-lambda-complete:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -826,7 +827,7 @@ jobs:
 
   lint-lambda-medialive:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -848,7 +849,7 @@ jobs:
 
   lint-lambda-mediapackage:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -870,7 +871,7 @@ jobs:
 
   lint-lambda-elemental-routing:
     docker:
-      - image: cimg/node:14.18.2
+      - image: cimg/node:14.19
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -911,7 +912,7 @@ jobs:
   # ---- DockerHub publication job ----
   hub:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/base:2022.04
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -975,7 +976,7 @@ jobs:
 
   hub-ffmpeg-transmux:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/base:2022.04
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
