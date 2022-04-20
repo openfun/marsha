@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
@@ -9,7 +9,7 @@ import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveC
 import { useUpdateVideo } from 'data/queries';
 import { Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import { Maybe } from 'utils/types';
+import { debounce } from 'utils/widgets/widgets';
 
 const messages = defineMessages({
   info: {
@@ -86,20 +86,8 @@ export const DashboardVideoLiveWidgetGeneralTitle = ({
     },
   });
 
-  const timeoutId = useRef<Maybe<number>>();
-
-  const debounceVideo = (
-    fn: (updatedVideoProperty: Partial<Video>) => void,
-    ms = 500,
-  ) => {
-    return (updatedVideoProperty: Partial<Video>) => {
-      window.clearTimeout(timeoutId.current);
-      timeoutId.current = window.setTimeout(() => fn(updatedVideoProperty), ms);
-    };
-  };
-
   const debouncedUpdatedVideo = useCallback(
-    debounceVideo((updatedVideoProperty: Partial<Video>) => {
+    debounce<Video>((updatedVideoProperty: Partial<Video>) => {
       if (updatedVideoProperty.title === '') {
         toast.error(intl.formatMessage(messages.updateTitleBlank), {
           position: 'bottom-center',
@@ -109,12 +97,11 @@ export const DashboardVideoLiveWidgetGeneralTitle = ({
       }
       videoMutation.mutate(updatedVideoProperty);
     }),
-    [debounceVideo, videoMutation.mutate, video.title],
+    [debounce, videoMutation.mutate, video.title],
   );
 
   const handleChange = async (inputText: string) => {
     setTitle(inputText);
-    window.clearTimeout(timeoutId.current);
     debouncedUpdatedVideo({ title: inputText });
   };
 
