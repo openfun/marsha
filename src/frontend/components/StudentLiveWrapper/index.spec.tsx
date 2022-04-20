@@ -400,7 +400,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     fetchMock.mock('https://marsha.education/live.m3u8', 200, {
       overwriteRoutes: true,
     });
-    jest.advanceTimersToNextTimer();
+    jest.runOnlyPendingTimers();
 
     await waitFor(() => {
       expect(
@@ -462,7 +462,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     await screen.findByText('Display name');
   });
 
-  it('prompts for display name when trying to join the chat', async () => {
+  it('displays no title in the info bar when no one is set in the video', async () => {
     const video = videoMockFactory({
       title: null,
       live_state: liveState.RUNNING,
@@ -487,6 +487,18 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     render(
       wrapInIntlProvider(
         <LiveVideoWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
       ),
     );
 

@@ -12,12 +12,12 @@ const GenericComponent5 = () => <p>Generic component 5</p>;
 const GenericComponent6 = () => <p>Generic component 6</p>;
 
 const genericComponentsList = [
-  <GenericComponent1 />,
-  <GenericComponent2 />,
-  <GenericComponent3 />,
-  <GenericComponent4 />,
-  <GenericComponent5 />,
-  <GenericComponent6 />,
+  <GenericComponent1 key="1" />,
+  <GenericComponent2 key="2" />,
+  <GenericComponent3 key="3" />,
+  <GenericComponent4 key="4" />,
+  <GenericComponent5 key="5" />,
+  <GenericComponent6 key="6" />,
 ];
 
 describe('<DashboardVideoLiveWidgetContainer />', () => {
