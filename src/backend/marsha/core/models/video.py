@@ -592,6 +592,14 @@ class LiveSession(BaseModel):
         verbose_name=_("LTI consumer site"),
     )
 
+    language = models.CharField(
+        max_length=10,
+        choices=settings.LANGUAGES,
+        default=settings.DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE,
+        verbose_name=_("language"),
+        help_text=_("language of this livesession"),
+    )
+
     is_registered = models.BooleanField(
         db_index=True,
         default=False,

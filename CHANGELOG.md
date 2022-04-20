@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add BBB meeting scheduling
+- Save current language of a livesession
 
 ### Fixed
 
