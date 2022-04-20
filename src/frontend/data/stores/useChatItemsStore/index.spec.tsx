@@ -1,13 +1,7 @@
 import { DateTime } from 'luxon';
 
 import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'default/chat';
-import {
-  chatItemType,
-  ChatPresenceType,
-  presenceType,
-  ReceivedMessageType,
-  useChatItemState,
-} from '.';
+import { chatItemType, ReceivedMessageType, useChatItemState } from '.';
 
 describe('useChatItemState', () => {
   it('executes useChatItemState/setHasReceivedMessageHistory', () => {
@@ -21,79 +15,6 @@ describe('useChatItemState', () => {
     expect(useChatItemState.getState()).toEqual(
       expect.objectContaining({
         hasReceivedMessageHistory: true,
-      }),
-    );
-  });
-
-  it('executes useChatItemState/addPresence', () => {
-    const JohnArrivalPresence: ChatPresenceType = {
-      receivedAt: DateTime.fromISO('2020-12-12T12:12:00'),
-      sender: 'John Doe',
-      type: presenceType.ARRIVAL,
-    };
-    const JaneArrivalPresence: ChatPresenceType = {
-      receivedAt: DateTime.fromISO('2020-12-12T12:12:05'),
-      sender: 'Jane Doe',
-      type: presenceType.ARRIVAL,
-    };
-    const JohnDeparturePresence: ChatPresenceType = {
-      receivedAt: DateTime.fromISO('2020-12-12T12:12:10'),
-      sender: 'John Doe',
-      type: presenceType.DEPARTURE,
-    };
-
-    // initial state
-    expect(useChatItemState.getState()).toEqual(
-      expect.objectContaining({
-        chatItems: [],
-      }),
-    );
-
-    useChatItemState.getState().addPresence(JohnArrivalPresence);
-    expect(useChatItemState.getState()).toEqual(
-      expect.objectContaining({
-        chatItems: [
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JohnArrivalPresence,
-          },
-        ],
-      }),
-    );
-
-    useChatItemState.getState().addPresence(JaneArrivalPresence);
-    expect(useChatItemState.getState()).toEqual(
-      expect.objectContaining({
-        chatItems: [
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JohnArrivalPresence,
-          },
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JaneArrivalPresence,
-          },
-        ],
-      }),
-    );
-
-    useChatItemState.getState().addPresence(JohnDeparturePresence);
-    expect(useChatItemState.getState()).toEqual(
-      expect.objectContaining({
-        chatItems: [
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JohnArrivalPresence,
-          },
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JaneArrivalPresence,
-          },
-          {
-            type: chatItemType.PRESENCE,
-            presenceData: JohnDeparturePresence,
-          },
-        ],
       }),
     );
   });

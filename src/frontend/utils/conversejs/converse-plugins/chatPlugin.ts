@@ -1,12 +1,9 @@
 import { DateTime } from 'luxon';
 
 import {
-  chatItemType,
-  presenceType,
   ReceivedMessageType,
   useChatItemState,
 } from 'data/stores/useChatItemsStore';
-import { ANONYMOUS_ID_PREFIX } from 'default/chat';
 import { MessageType, XMPP } from 'types/XMPP';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
@@ -14,7 +11,6 @@ import { converse } from 'utils/window';
 enum StanzaType {
   IQ = 'iq',
   MESSAGE = 'message',
-  PRESENCE = 'presence',
 }
 
 enum StanzaMessageType {
@@ -74,57 +70,6 @@ const addChatPlugin = (xmpp: XMPP) =>
                     );
                 }
 
-                break;
-
-              case StanzaType.PRESENCE:
-                const stanzaFrom = stanza.getAttribute('from');
-                const stanzaTo = stanza.getAttribute('to');
-                const items = stanza.getElementsByTagName('item');
-                if (!stanzaFrom || !stanzaTo || !items.length) {
-                  break;
-                }
-                const sender = getNameFromJID(stanzaFrom);
-                const item = items[0];
-                // Anonymous are not annouced in the chat
-                if (
-                  sender.startsWith(ANONYMOUS_ID_PREFIX + '-') ||
-                  !item ||
-                  item.getAttribute('affiliation') === 'none'
-                ) {
-                  break;
-                }
-
-                const receivedAt = DateTime.now();
-                let type: presenceType;
-                if (
-                  stanza.getAttribute('type') &&
-                  stanza.getAttribute('type') === 'unavailable'
-                ) {
-                  type = presenceType.DEPARTURE;
-                } else {
-                  type = presenceType.ARRIVAL;
-                }
-                // If the new presence is of the same type as the last one it is not registered
-                const listSenderPresences = useChatItemState
-                  .getState()
-                  .chatItems.map((chatItem) => {
-                    if (chatItem.type === chatItemType.PRESENCE) {
-                      return chatItem.presenceData;
-                    }
-                  })
-                  .filter((presence) => presence?.sender === sender);
-                const lastSenderPresence =
-                  listSenderPresences[listSenderPresences.length - 1];
-                if (
-                  (!lastSenderPresence || lastSenderPresence.type !== type) &&
-                  useChatItemState.getState().hasReceivedMessageHistory
-                ) {
-                  useChatItemState.getState().addPresence({
-                    receivedAt,
-                    sender,
-                    type,
-                  });
-                }
                 break;
 
               case StanzaType.IQ:

@@ -2,8 +2,7 @@ import { Box } from 'grommet';
 import React, { useEffect, useRef } from 'react';
 
 import { ChatMessageGroupItem } from 'components/Chat/SharedChatComponents/ChatMessageGroupItem';
-import { ChatPresenceItem } from 'components/Chat/SharedChatComponents/ChatPresenceItem';
-import { chatItemType, useChatItemState } from 'data/stores/useChatItemsStore';
+import { useChatItemState } from 'data/stores/useChatItemsStore';
 
 export const ChatConversationDisplayer = () => {
   const { chatItems } = useChatItemState();
@@ -41,21 +40,12 @@ export const ChatConversationDisplayer = () => {
       ref={scrollableContainerRef}
     >
       {chatItems.map((chatItem, index) => {
-        if (chatItem.type === chatItemType.PRESENCE) {
-          return (
-            <ChatPresenceItem
-              key={index}
-              presenceItem={chatItem.presenceData}
-            />
-          );
-        } else {
-          return (
-            <ChatMessageGroupItem
-              key={index}
-              msgGroup={chatItem.messageGroupData}
-            />
-          );
-        }
+        return (
+          <ChatMessageGroupItem
+            key={index}
+            msgGroup={chatItem.messageGroupData}
+          />
+        );
       })}
     </Box>
   );
