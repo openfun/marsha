@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetGeneralTitle';
+import { DashboardVideoLiveWidgetSchedulingAndDescription } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSchedulingAndDescription';
 import { Video } from 'types/tracks';
 
 interface DashboardVideoLiveControlPaneProps {
@@ -14,7 +15,7 @@ export const DashboardVideoLiveControlPane = ({
   return (
     <DashboardVideoLiveWidgetsContainer>
       <DashboardVideoLiveWidgetGeneralTitle video={video} />
-      <Fragment />
+      <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
     </DashboardVideoLiveWidgetsContainer>
   );
 };

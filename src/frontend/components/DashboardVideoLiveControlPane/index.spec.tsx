@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
+import { DateTime } from 'luxon';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -7,21 +8,29 @@ import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardVideoLiveControlPane } from './index';
 
-const mockVideo = videoMockFactory({
-  title: 'An example title',
-  allow_recording: false,
-});
-
 jest.mock('data/appData', () => ({
-  appData: {
-    video: mockVideo,
-  },
+  appData: {},
 }));
 
-// tests must be added one after another, as the widgets are added
+const currentDate = DateTime.fromISO('2022-01-13T12:00');
+
 describe('<DashboardVideoLiveControlPane />', () => {
-  // since there aren't any widgets for now, we expect DashboardVideoLiveControlPane to be empty
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(currentDate.toJSDate());
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
   it('renders DashboardVideoLiveControlPane', () => {
+    const mockVideo = videoMockFactory({
+      title: 'An example title',
+      allow_recording: false,
+      starting_at: currentDate.toString(),
+      estimated_duration: '00:30',
+      description: 'An example description',
+    });
+
     const queryClient = new QueryClient();
 
     render(
@@ -34,7 +43,7 @@ describe('<DashboardVideoLiveControlPane />', () => {
       ),
     );
 
-    // DashboardVideoLiveGeneralTitle
+    // DashboardVideoLiveWidgetGeneralTitle
     screen.getByText('General');
     const textInput = screen.getByRole('textbox', {
       name: 'Enter title of your live here',
@@ -45,5 +54,21 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     expect(toggleButton).not.toBeChecked();
     screen.getByText('Activate live recording');
+
+    // DashboardVideoLiveWidgetSchedulingAndDescription
+    screen.getByText('Description');
+    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+    expect(inputStartingAtDate).toHaveValue('2022/01/13');
+    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+    expect(inputStartingAtTime).toHaveValue('12:00');
+    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
+    expect(inputEstimatedDuration).toHaveValue('0:30');
+    screen.getByText("Webinar's end");
+    screen.getByText('2022/01/13, 12:30');
+    const textArea = screen.getByRole('textbox', {
+      name: 'Description...',
+    });
+    expect(textArea).toHaveValue('An example description');
+    screen.getByPlaceholderText('Description...');
   });
 });
