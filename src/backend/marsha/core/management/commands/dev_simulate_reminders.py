@@ -43,7 +43,7 @@ class Command(BaseCommand):
         LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=4),
-            email="sarah@test-fun-mooc.fr",
+            email="sarah5@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             video=video,
@@ -53,13 +53,28 @@ class Command(BaseCommand):
         LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
-            email="chantal@test-fun-mooc.fr",
+            email="chantal5@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_user_id="56255f3807599c377bf0e5bf07235955",
             reminders=[settings.REMINDER_2, settings.REMINDER_3],
-            username="Mummy",
+            username="Mummy5",
+            video=video,
+        )
+
+        # french
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(hours=10),
+            email="french5@test-fun-mooc.fr",
+            is_registered=True,
+            language="fr",
+            lti_id="Maths",
+            lti_user_id="26255f3807599c377bf0e5bf07235555",
+            reminders=[settings.REMINDER_2, settings.REMINDER_3],
+            should_send_reminders=True,
+            username="French Mummy5",
             video=video,
         )
 
@@ -75,7 +90,7 @@ class Command(BaseCommand):
         LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(hours=26),
-            email="sarah@test-fun-mooc.fr",
+            email="sarah3h@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             video=video,
@@ -85,13 +100,28 @@ class Command(BaseCommand):
         LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=26),
-            email="chantal@test-fun-mooc.fr",
+            email="chantal3h@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_user_id="56255f3807599c377bf0e5bf0723593h",
             reminders=[settings.REMINDER_3],
-            username="Chantal",
+            username="Chantal3h",
+            video=video,
+        )
+
+        # french
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(hours=26),
+            email="french@test-fun-mooc.fr",
+            is_registered=True,
+            language="fr",
+            lti_id="Maths",
+            lti_user_id="26255f3807599c377bf0e5bf0723593h",
+            reminders=[settings.REMINDER_3],
+            should_send_reminders=True,
+            username="Caroline3h",
             video=video,
         )
 
@@ -103,11 +133,11 @@ class Command(BaseCommand):
             starting_at=timezone.now() + timedelta(days=2),
         )
 
-        # registration has been created 32 days agp (>30 days)
+        # registration has been created 32 days ago (>30 days)
         LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
             created_on=timezone.now() - timedelta(days=32),
-            email="sarah@test-fun-mooc.fr",
+            email="sarah3d@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             video=video,
@@ -117,12 +147,26 @@ class Command(BaseCommand):
         LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(days=32),
-            email="chantal@test-fun-mooc.fr",
+            email="chantal3d@test-fun-mooc.fr",
             is_registered=True,
             should_send_reminders=True,
             lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
-            username="Super Chantal",
+            lti_user_id="56255f3807599c377bf0e5bf0723593d",
+            username="Super Chantal3d",
+            video=video,
+        )
+
+        # french
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(days=32),
+            email="french3d@test-fun-mooc.fr",
+            is_registered=True,
+            language="fr",
+            lti_id="Maths",
+            lti_user_id="16255f3807599c377bf0e5bf0723593d",
+            should_send_reminders=True,
+            username="French Chantal3d",
             video=video,
         )
 
@@ -139,8 +183,8 @@ class Command(BaseCommand):
 
         LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
-            created_on=timezone.now() - timedelta(days=32),
-            email="sarah@test-fun-mooc.fr",
+            created_on=timezone.now() - timedelta(hours=1),
+            email="sarahupdated@test-fun-mooc.fr",
             must_notify=[settings.REMINDER_DATE_UPDATED],
             is_registered=True,
             should_send_reminders=True,
@@ -150,13 +194,28 @@ class Command(BaseCommand):
         # LTI registration
         LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
-            created_on=timezone.now() - timedelta(days=32),
-            email="chantal@test-fun-mooc.fr",
+            created_on=timezone.now() - timedelta(hours=1),
+            email="chantalupadated@test-fun-mooc.fr",
             is_registered=True,
             must_notify=[settings.REMINDER_DATE_UPDATED],
             lti_id="Maths",
-            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_user_id="56255f3807599c377bf0e5bf072359fu",
             should_send_reminders=True,
-            username="Super Chantal",
+            username="Super Chantal updated",
+            video=video,
+        )
+
+        # french
+        LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            created_on=timezone.now() - timedelta(hours=1),
+            email="french@test-fun-mooc.fr",
+            is_registered=True,
+            language="fr",
+            lti_id="Maths",
+            lti_user_id="36255f3807599c377bf0e5bf072359fu",
+            must_notify=[settings.REMINDER_DATE_UPDATED],
+            should_send_reminders=True,
+            username="French Chantal updated",
             video=video,
         )

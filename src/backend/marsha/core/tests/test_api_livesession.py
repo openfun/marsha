@@ -50,7 +50,9 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(mail.outbox[0].to[0], email)
 
         # check it's the right email content
-        self.assertEqual(mail.outbox[0].subject, f"Registration for {video.title}")
+        self.assertEqual(
+            mail.outbox[0].subject, f"Registration validated! {video.title}"
+        )
         email_content = " ".join(mail.outbox[0].body.split())
         self.assertIn(f"Registration validated! {video.title}", email_content)
         if username:
@@ -59,13 +61,14 @@ class LiveSessionApiTest(TestCase):
             self.assertIn("Hello,", email_content)
             self.assertNotIn("None", email_content)
 
+        key_access = livesession.get_generate_salted_hmac()
         self.assertIn(
             f'We have taken note of your interest in the event "{video.title}".',
             email_content,
         )
         self.assertIn(
             f"Access the event [//example.com/videos/{video.id}?lrpk="
-            f"{livesession.pk}&amp;key={livesession.get_generate_salted_hmac()}]",
+            f"{livesession.pk}&amp;key={key_access}]",
             email_content,
         )
         self.assertIn(
@@ -83,7 +86,7 @@ class LiveSessionApiTest(TestCase):
         )
         self.assertIn(
             f"unsubscribe [//example.com/reminders/cancel/{livesession.pk}/"
-            f"{livesession.get_generate_salted_hmac()}]",
+            f"{key_access}]",
             email_content,
         )
 
@@ -4774,6 +4777,102 @@ class LiveSessionApiTest(TestCase):
         live_session.refresh_from_db()
         self.assertEqual(response.status_code, 404)
         self.assertIsNone(live_session.email)
+
+    def test_api_livesession_send_mail_i18n(self):
+        """Mails are sent in the language of the livesession"""
+
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        self.assertTrue(video.is_scheduled)
+        other_playlist = PlaylistFactory()
+        # token has different context_id than the video
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(other_playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "salome@test-fun-mooc.fr",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+        response = self.client.post(
+            "/api/livesessions/",
+            {
+                "email": "salome@test-fun-mooc.fr",
+                "language": "fr",
+                "should_send_reminders": False,
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 201)
+        livesession = LiveSession.objects.last()
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": str(video.playlist.consumer_site.id),
+                "display_name": None,
+                "email": "salome@test-fun-mooc.fr",
+                "id": str(livesession.id),
+                "is_registered": True,
+                "language": "fr",
+                "live_attendance": None,
+                "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
+                "lti_id": str(other_playlist.lti_id),
+                "should_send_reminders": False,
+                "username": "Token",
+                "video": str(video.id),
+            },
+        )
+
+        # check email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        # check we send it to the the right email
+        self.assertEqual(mail.outbox[0].to[0], "salome@test-fun-mooc.fr")
+
+        # check it's the right email content
+        self.assertEqual(mail.outbox[0].subject, f"Inscription validée ! {video.title}")
+        email_content = " ".join(mail.outbox[0].body.split())
+        self.assertIn("Inscription validée !", email_content)
+        self.assertIn("Bonjour Token,", email_content)
+        key_access = livesession.get_generate_salted_hmac()
+        self.assertIn(
+            f'Nous avons pris connaissance de votre intérêt pour cet événement "{video.title}".',
+            email_content,
+        )
+        self.assertIn(
+            f"Accéder au webinaire [//example.com/videos/{video.id}?lrpk="
+            f"{livesession.pk}&amp;key={key_access}]",
+            email_content,
+        )
+        self.assertIn(
+            "Ne partagez pas cet email, il contient vos identifiants "
+            "personnels pour accéder au webinaire.",
+            email_content,
+        )
+
+        self.assertIn(
+            "Ce mail a été envoyé à salome@test-fun-mooc.fr par Marsha", email_content
+        )
+        self.assertIn(
+            "Votre adresse e-mail est utilisée parce que vous avez manifesté votre intérêt pour "
+            "ce webinaire. Si vous souhaitez vous désabonner de ces notifications, "
+            "veuillez suivre le lien : ",
+            email_content,
+        )
+        self.assertIn(
+            f"se désabonner [//example.com/reminders/cancel/{livesession.pk}/"
+            f"{key_access}]",
+            email_content,
+        )
 
     def test_api_livesession_patch_language(self):
         """Check language can be updated"""
