@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
@@ -14,6 +15,7 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
+
 import {
   liveState,
   timedTextMode,
@@ -38,10 +40,10 @@ const PublicVideoDashboard = ({
     state.getTimedTextTracks(),
   );
   const [isReadyLive, setIsReadyLive] = useState(false);
-
+  const intl = useIntl();
   useAsyncEffect(async () => {
     if (video.live_state && video.live_state !== liveState.STOPPED) {
-      await initWebinarContext(video);
+      await initWebinarContext(video, intl.locale);
       initVideoWebsocket(video);
       setIsReadyLive(true);
     }

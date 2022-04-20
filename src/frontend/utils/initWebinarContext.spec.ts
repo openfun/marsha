@@ -88,7 +88,7 @@ describe('initWebinarContext', () => {
   it('does nothing if the video is not a live', async () => {
     const video = videoMockFactory();
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'fr');
 
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
     expect(mockGetLiveSessions).not.toHaveBeenCalled();
@@ -103,7 +103,7 @@ describe('initWebinarContext', () => {
     const liveSession = liveSessionFactory();
     useLiveSession.getState().setLiveSession(liveSession);
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'fr');
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
@@ -123,7 +123,7 @@ describe('initWebinarContext', () => {
       results: [liveSession],
     });
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'fr');
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
@@ -150,7 +150,7 @@ describe('initWebinarContext', () => {
       results: [liveSession],
     });
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'fr');
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
@@ -173,12 +173,12 @@ describe('initWebinarContext', () => {
     });
     mockPushAttendance.mockResolvedValue(liveSession);
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'en');
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
     expect(mockGetLiveSessions).toHaveBeenCalledWith(undefined);
-    expect(mockPushAttendance).toHaveBeenCalledWith({}, undefined);
+    expect(mockPushAttendance).toHaveBeenCalledWith({}, 'en', undefined);
 
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
@@ -196,12 +196,12 @@ describe('initWebinarContext', () => {
     });
     mockPushAttendance.mockResolvedValue(liveSession);
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'en');
 
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
     expect(mockGetLiveSessions).toHaveBeenCalledWith(undefined);
-    expect(mockPushAttendance).toHaveBeenCalledWith({}, undefined);
+    expect(mockPushAttendance).toHaveBeenCalledWith({}, 'en', undefined);
 
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
@@ -225,11 +225,11 @@ describe('initWebinarContext', () => {
     });
     mockPushAttendance.mockResolvedValue(liveSession);
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'fr');
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
     expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
-    expect(mockPushAttendance).toHaveBeenCalledWith({}, anonymousId);
+    expect(mockPushAttendance).toHaveBeenCalledWith({}, 'fr', anonymousId);
 
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
@@ -253,11 +253,11 @@ describe('initWebinarContext', () => {
     });
     mockPushAttendance.mockResolvedValue(liveSession);
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'en');
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockCheckLtiToken).toHaveBeenCalled();
     expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);
-    expect(mockPushAttendance).toHaveBeenCalledWith({}, anonymousId);
+    expect(mockPushAttendance).toHaveBeenCalledWith({}, 'en', anonymousId);
 
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
   });
@@ -293,7 +293,7 @@ describe('initWebinarContext', () => {
       results: [liveSession],
     });
 
-    await initWebinarContext(video);
+    await initWebinarContext(video, 'en');
     expect(mockSetAnonymousId).toHaveBeenCalledWith(anonymousId);
     expect(mockCheckLtiToken).not.toHaveBeenCalled();
     expect(mockGetLiveSessions).toHaveBeenCalledWith(anonymousId);

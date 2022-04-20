@@ -274,6 +274,7 @@ describe('<RegistrationForm />', () => {
     await waitFor(() => {
       expect(mockUpdateLiveSession).toHaveBeenCalledWith(
         existingLiveSession,
+        'en',
         updatedEmail,
         true,
         expect.anything(),

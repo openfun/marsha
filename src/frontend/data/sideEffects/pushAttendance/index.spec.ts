@@ -21,7 +21,7 @@ describe('pushAttendance', () => {
     fetchMock.mock(
       {
         url: '/api/livesessions/push_attendance/',
-        body: { live_attendance: liveAttendance },
+        body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ describe('pushAttendance', () => {
       expectedLiveSession,
     );
 
-    const response = await pushAttendance(liveAttendance);
+    const response = await pushAttendance(liveAttendance, 'fr');
     expect(response).toEqual(expectedLiveSession);
   });
 
@@ -40,12 +40,13 @@ describe('pushAttendance', () => {
     const anonymousId = uuidv4();
     const expectedLiveSession = liveSessionFactory({
       anonymous_id: anonymousId,
+      language: 'fr',
       live_attendance: liveAttendance,
     });
     fetchMock.mock(
       {
         url: `/api/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
-        body: { live_attendance: liveAttendance },
+        body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ describe('pushAttendance', () => {
       expectedLiveSession,
     );
 
-    const response = await pushAttendance(liveAttendance, anonymousId);
+    const response = await pushAttendance(liveAttendance, 'fr', anonymousId);
     expect(response).toEqual(expectedLiveSession);
   });
 
@@ -64,7 +65,7 @@ describe('pushAttendance', () => {
     fetchMock.mock(
       {
         url: '/api/livesessions/push_attendance/',
-        body: { live_attendance: liveAttendance },
+        body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ describe('pushAttendance', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(pushAttendance(liveAttendance)).rejects.toThrowError(
+    await expect(pushAttendance(liveAttendance, 'fr')).rejects.toThrowError(
       'Failed to perform the request',
     );
   });
@@ -84,7 +85,7 @@ describe('pushAttendance', () => {
     fetchMock.mock(
       {
         url: '/api/livesessions/push_attendance/',
-        body: { live_attendance: liveAttendance },
+        body: { live_attendance: liveAttendance, language: 'en' },
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ describe('pushAttendance', () => {
       400,
     );
 
-    await expect(pushAttendance(liveAttendance)).rejects.toThrowError(
+    await expect(pushAttendance(liveAttendance, 'en')).rejects.toThrowError(
       'Failed to push attendance',
     );
   });
