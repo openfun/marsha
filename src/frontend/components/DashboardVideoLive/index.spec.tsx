@@ -190,27 +190,6 @@ describe('components/DashboardVideoLive', () => {
     screen.getByRole('button', { name: 'Start recording' });
   });
 
-  it('shows the scheduling form when the status is IDLE', () => {
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{ ...video, live_state: liveState.IDLE }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
-        ),
-      ),
-    );
-    screen.getByRole('heading', { name: /schedule a webinar/i });
-    screen.getByRole('textbox', { name: /title/i });
-    screen.getByRole('textbox', { name: /description/i });
-    screen.getByText(/starting date and time/i);
-    screen.getByRole('button', { name: /submit/i });
-  });
-
   it('shows confirmation modal when clicking the stop button', async () => {
     render(
       wrapInIntlProvider(
@@ -251,89 +230,6 @@ describe('components/DashboardVideoLive', () => {
     ).not.toBeInTheDocument();
   });
 
-  it("doesn't show the scheduling form when the status is not IDLE", () => {
-    for (const state of Object.values(liveState)) {
-      if (state !== liveState.IDLE) {
-        render(
-          wrapInIntlProvider(
-            wrapInRouter(
-              <QueryClientProvider client={queryClient}>
-                <Suspense fallback="loading...">
-                  <DashboardVideoLive video={{ ...video, live_state: state }} />
-                </Suspense>
-              </QueryClientProvider>,
-            ),
-          ),
-        );
-        expect(screen.queryByRole('textbox')).toEqual(null);
-        expect(
-          screen.queryByRole('heading', { name: /schedule a webinar/i }),
-        ).not.toBeInTheDocument();
-        expect(
-          screen.queryByRole('textbox', { name: /title/i }),
-        ).not.toBeInTheDocument();
-        expect(
-          screen.queryByRole('textbox', {
-            name: /description/i,
-          }),
-        ).not.toBeInTheDocument();
-        expect(
-          screen.queryByRole(/starting date and time/i),
-        ).not.toBeInTheDocument();
-        expect(
-          screen.queryByRole('button', { name: /submit/i }),
-        ).not.toBeInTheDocument();
-        cleanup();
-      }
-    }
-  });
-
-  it("doesn't show the scheduling form when the status is IDLE and starting_at date is past", () => {
-    const startingAtPast = new Date();
-    startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  live_state: liveState.IDLE,
-                  starting_at: startingAtPast.toISOString(),
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
-        ),
-      ),
-    );
-    screen.getByRole('heading', {
-      name: `Webinar was scheduled at ${startingAtPast.toLocaleString('en')}.`,
-    });
-    screen.getByText(
-      /date is past, please, create a new webinar or start this one/i,
-    );
-    expect(screen.queryByRole('textbox')).toEqual(null);
-    expect(
-      screen.queryByRole('heading', { name: /schedule a webinar/i }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', { name: /title/i }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', {
-        name: /description/i,
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole(/starting date and time/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /submit/i }),
-    ).not.toBeInTheDocument();
-  });
-
   it('displays data when the video is scheduled and the status is IDLE', async () => {
     const dateScheduled = new Date(new Date().getTime() + 10 * 86400000);
     render(
@@ -355,13 +251,8 @@ describe('components/DashboardVideoLive', () => {
         ),
       ),
     );
-    screen.getByRole('textbox', { name: 'Title' });
-    screen.getByRole('heading', {
-      name: `Webinar is scheduled at ${dateScheduled.toLocaleString('en')}.`,
-    });
+    screen.getByRole('textbox', { name: 'Enter title of your live here' });
     screen.getByDisplayValue(/maths/i);
-    screen.getByText(/wonderful class!/i);
-    screen.getByRole('textbox', { name: /description/i });
   });
 
   it('shows the pairing button when the status is not STOPPED', () => {
