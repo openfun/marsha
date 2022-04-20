@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 from django.utils import dateformat, timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _, override
 
 from sentry_sdk import capture_exception
 
@@ -51,7 +51,7 @@ class Command(BaseCommand):
         )
 
     def send_reminders_and_update_livesessions_step(
-        self, livesessions, step, mail_object, extra_vars={}, template="reminder"
+        self, livesessions, step, mail_object, trans_vars={}, template="reminder"
     ):
         """Send email with template and update reminders field."""
 
@@ -61,40 +61,44 @@ class Command(BaseCommand):
             # if record was updated
             if self.query_to_update_step(livesession, step) == 1:
 
-                self.stdout.write(
-                    f"Sending email for livesession {livesession.id} "
-                    f"for video {livesession.video.id} step {step}"
-                )
-
-                # send email with the appropriate template and object
-                vars = {
-                    "cancel_reminder_url": livesession.cancel_reminder_url,
-                    "email": livesession.email,
-                    "time_zone": settings.TIME_ZONE,
-                    "username": livesession.username,
-                    "video": livesession.video,
-                    "video_access_url": livesession.video_access_reminder_url,
-                }
-                if extra_vars:
-                    vars = vars | extra_vars
-
-                msg_plain = render_to_string(f"core/mail/text/{template}.txt", vars)
-                msg_html = render_to_string(f"core/mail/html/{template}.html", vars)
-
-                try:
-                    send_mail(
-                        mail_object,
-                        msg_plain,
-                        settings.EMAIL_FROM,
-                        [livesession.email],
-                        html_message=msg_html,
-                        fail_silently=False,
+                with override(livesession.language):
+                    self.stdout.write(
+                        f"Sending email for livesession {livesession.id} "
+                        f"for video {livesession.video.id} step {step}"
                     )
-                except smtplib.SMTPException as exception:
-                    # send error to sentry and print it
-                    livesession.update_reminders(settings.REMINDER_ERROR)
-                    self.stderr.write(f"Mail failed {livesession.email} ")
-                    capture_exception(exception)
+                    # send email with the appropriate template and object
+                    vars = {
+                        "cancel_reminder_url": livesession.cancel_reminder_url,
+                        "email": livesession.email,
+                        "time_zone": settings.TIME_ZONE,
+                        "username": livesession.username,
+                        "video": livesession.video,
+                        "video_access_url": livesession.video_access_reminder_url,
+                    }
+                    if trans_vars:
+                        vars = vars | {
+                            key: _(value) for key, value in trans_vars.items()
+                        }
+                    msg_plain = render_to_string(f"core/mail/text/{template}.txt", vars)
+                    msg_html = render_to_string(f"core/mail/html/{template}.html", vars)
+
+                    try:
+                        send_mail(
+                            _(mail_object),
+                            msg_plain,
+                            settings.EMAIL_FROM,
+                            [livesession.email],
+                            html_message=msg_html,
+                            fail_silently=False,
+                        )
+                        self.stdout.write(
+                            f"Mail sent {livesession.email} {_(mail_object)}"
+                        )
+                    except smtplib.SMTPException as exception:
+                        # send error to sentry and print it
+                        livesession.update_reminders(settings.REMINDER_ERROR)
+                        self.stderr.write(f"Mail failed {livesession.email} ")
+                        capture_exception(exception)
 
     def handle(self, *args, **options):
         """Execute management command."""
@@ -127,7 +131,7 @@ class Command(BaseCommand):
         self.send_reminders_and_update_livesessions_step(
             livesessions,
             settings.REMINDER_DATE_UPDATED,
-            _("Webinar has been updated."),
+            "Webinar has been updated.",
             {},
             "reminder_date_updated",
         )
@@ -178,12 +182,9 @@ class Command(BaseCommand):
                 livesessions = livesessions.exclude(
                     reminders__overlap=reminder[settings.REGISTER_EXCLUDE_STEP]
                 )
-            reminder_timer_title = (
-                f'{_("in less than ")}{reminder[settings.REMINDER_ELAPSED_LABEL]}'
-            )
             self.send_reminders_and_update_livesessions_step(
                 livesessions,
                 step,
                 reminder[settings.REMINDER_OBJECT_MAIL],
-                {"reminder_timer_title": reminder_timer_title},
+                {"reminder_timer_title": reminder[settings.REMINDER_ELAPSED_LABEL]},
             )
