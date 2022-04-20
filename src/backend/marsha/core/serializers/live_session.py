@@ -32,6 +32,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             "email",
             "id",
             "is_registered",
+            "language",
             "live_attendance",
             "lti_user_id",
             "lti_id",
@@ -174,7 +175,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
-        updatable_fields = ["is_registered", "email"]
+        updatable_fields = ["is_registered", "email", "language"]
 
         extra_fields = list(set(validated_data.keys()) - set(updatable_fields))
 
@@ -209,6 +210,7 @@ class LiveAttendanceSerializer(serializers.ModelSerializer):
         model = LiveSession
         fields = (
             "id",
+            "language",
             "live_attendance",
             "video",
         )

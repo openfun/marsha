@@ -157,6 +157,7 @@ class LiveSessionApiTest(TestCase):
                 "email": livesession.email,
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -207,6 +208,7 @@ class LiveSessionApiTest(TestCase):
                 "email": livesession.email,
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -256,6 +258,7 @@ class LiveSessionApiTest(TestCase):
                 "email": livesession.email,
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -306,6 +309,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sarah@openfun.fr",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "5555",
@@ -589,6 +593,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "different@aol.com",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": livesession.lti_user_id,
                 "lti_id": "Maths",
@@ -642,6 +647,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "somemail@aol.com",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
@@ -687,6 +693,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "different@aol.com",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": None,
                 "lti_id": None,
@@ -737,6 +744,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "admin@openfun.fr",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": str(video.playlist.lti_id),
@@ -787,6 +795,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "admin@openfun.fr",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
@@ -935,6 +944,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -983,6 +993,7 @@ class LiveSessionApiTest(TestCase):
                 "display_name": None,
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
+                "language": "en",
                 "live_attendance": None,
                 "is_registered": True,
                 "lti_id": None,
@@ -1034,6 +1045,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -1241,6 +1253,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -1294,6 +1307,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -1348,6 +1362,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": str(other_playlist.lti_id),
@@ -1406,6 +1421,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": None,
                 "lti_id": None,
@@ -1470,6 +1486,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
@@ -1533,6 +1550,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths2",
@@ -1597,6 +1615,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "NEW",
                 "lti_id": "Maths",
@@ -1803,6 +1822,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": str(video.playlist.lti_id),
@@ -1867,6 +1887,7 @@ class LiveSessionApiTest(TestCase):
                 "lti_id": str(video.playlist.lti_id),
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "should_send_reminders": False,
                 "username": "Token",
@@ -2013,6 +2034,7 @@ class LiveSessionApiTest(TestCase):
                 "lti_id": None,
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "should_send_reminders": True,
                 "username": None,
@@ -2079,6 +2101,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "chantal@test-fun-mooc.fr",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -2136,6 +2159,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "salome@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lti_id": "Maths",
@@ -2502,6 +2526,7 @@ class LiveSessionApiTest(TestCase):
                     "id": str(livesession.id),
                     "is_registered": False,
                     "live_attendance": None,
+                    "language": "en",
                     "lti_user_id": None,
                     "lti_id": None,
                     "should_send_reminders": True,
@@ -2608,6 +2633,7 @@ class LiveSessionApiTest(TestCase):
                     "id": str(livesession.id),
                     "is_registered": False,
                     "live_attendance": None,
+                    "language": "en",
                     "lti_user_id": str(user.id),
                     "lti_id": "Maths",
                     "should_send_reminders": True,
@@ -2712,6 +2738,7 @@ class LiveSessionApiTest(TestCase):
                     "email": livesession.email,
                     "id": str(livesession.id),
                     "is_registered": True,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": livesession.lti_user_id,
                     "lti_id": "Maths",
@@ -2726,6 +2753,7 @@ class LiveSessionApiTest(TestCase):
                     "email": livesession2.email,
                     "id": str(livesession2.id),
                     "is_registered": False,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": livesession2.lti_user_id,
                     "lti_id": "Maths",
@@ -2740,6 +2768,7 @@ class LiveSessionApiTest(TestCase):
                     "email": livesession3.email,
                     "id": str(livesession3.id),
                     "is_registered": False,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": livesession3.lti_user_id,
                     "lti_id": "Maths",
@@ -2754,6 +2783,7 @@ class LiveSessionApiTest(TestCase):
                     "email": livesession4.email,
                     "id": str(livesession4.id),
                     "is_registered": False,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": livesession4.lti_user_id,
                     "lti_id": "Maths2",
@@ -2768,6 +2798,7 @@ class LiveSessionApiTest(TestCase):
                     "email": livesession5.email,
                     "id": str(livesession5.id),
                     "is_registered": False,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": None,
                     "lti_id": None,
@@ -2832,6 +2863,7 @@ class LiveSessionApiTest(TestCase):
                     "email": "chantal@test-fun-mooc.fr",
                     "id": str(livesession.id),
                     "is_registered": False,
+                    "language": "en",
                     "live_attendance": None,
                     "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                     "lti_id": str(video.playlist.lti_id),
@@ -2897,6 +2929,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "saved@test-fun-mooc.fr",
                 "id": str(created_livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -3052,7 +3085,7 @@ class LiveSessionApiTest(TestCase):
         }
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"data": "test"}},
+            {"live_attendance": {"data": "test"}, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3068,6 +3101,7 @@ class LiveSessionApiTest(TestCase):
                 "email": None,
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "fr",
                 "live_attendance": {"data": "test"},
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -3133,6 +3167,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "chantal@aol.com",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": {
                     "key1": {"sound": "OFF", "tabs": "OFF"},
                     timestamp: {"sound": "ON", "tabs": "OFF"},
@@ -3187,7 +3222,7 @@ class LiveSessionApiTest(TestCase):
         jwt_token.payload["roles"] = [NONE]
         response = self.client.post(
             f"/api/livesessions/push_attendance/?anonymous_id={anonymous_id}",
-            {"live_attendance": {}},
+            {"language": "fr", "live_attendance": {}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3203,6 +3238,7 @@ class LiveSessionApiTest(TestCase):
                 "email": None,
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "fr",
                 "live_attendance": {},
                 "lti_id": None,
                 "lti_user_id": None,
@@ -3253,6 +3289,7 @@ class LiveSessionApiTest(TestCase):
                 "email": None,
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}},
                 "lti_id": None,
                 "lti_user_id": None,
@@ -3348,6 +3385,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "chantal@aol.com",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": {"key1": "val1"},
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -3411,6 +3449,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "chantal@aol.com",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": {"key1": "val1"},
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -3460,7 +3499,7 @@ class LiveSessionApiTest(TestCase):
 
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"key1": "val1"}},
+            {"live_attendance": {"key1": "val1"}, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3476,6 +3515,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "chantal@aol.com",
                 "id": str(livesession.id),
                 "is_registered": True,
+                "language": "fr",
                 "live_attendance": {"key1": "val1"},
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
@@ -3492,6 +3532,56 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(livesession.username, "Sylvie")
         # live_attendance has been set
         self.assertEqual(livesession.live_attendance, {"key1": "val1"})
+
+    def test_api_livesession_post_attendance_wrong_language(self):
+        """Wrong value of language generates an error"""
+        video = VideoFactory()
+        livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="chantal@aol.com",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        self.assertEqual(LiveSession.objects.count(), 1)
+        self.assertEqual(livesession.live_attendance, None)
+        jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "",
+        }
+
+        response = self.client.post(
+            "/api/livesessions/push_attendance/",
+            {"live_attendance": {"key1": "val1"}, "language": "whatever"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        livesession.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+        # now with empty
+        response = self.client.post(
+            "/api/livesessions/push_attendance/",
+            {"live_attendance": {"key1": "val1"}, "language": ""},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        livesession.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid request."})
 
     def test_api_livesession_post_attendance_token_with_could_match_other_records(
         self,
@@ -3575,7 +3665,10 @@ class LiveSessionApiTest(TestCase):
         timestamp = str(timezone.now())
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}}},
+            {
+                "language": "fr",
+                "live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}},
+            },
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3593,6 +3686,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sabrina@fun-test.fr",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "fr",
                 "live_attendance": {
                     "r2": {"sound": "OFF", "tabs": "OFF"},
                     timestamp: {"sound": "ON", "tabs": "OFF"},
@@ -3608,6 +3702,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(livesession.lti_user_id, "55555")
         self.assertEqual(livesession.lti_id, "Maths")
         self.assertEqual(livesession.username, "Token")
+        self.assertEqual(livesession.language, "fr")
 
         self.assertEqual(
             livesession.live_attendance,
@@ -3686,6 +3781,7 @@ class LiveSessionApiTest(TestCase):
                 "email": livesession.email,
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -3734,6 +3830,7 @@ class LiveSessionApiTest(TestCase):
                 "email": None,
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -3777,6 +3874,7 @@ class LiveSessionApiTest(TestCase):
                 "email": None,
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -3887,6 +3985,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sabrina@fun-test.fr",
                 "id": str(livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -3953,6 +4052,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sabrina@fun-test.fr",
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -4003,6 +4103,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sabrina@fun-test.fr",
                 "id": str(created_livesession.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -4258,6 +4359,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sarah@fun-test.fr",
                 "id": str(live_session.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -4321,6 +4423,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "john@fun-test.fr",
                 "id": str(live_session.id),
                 "is_registered": False,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -4385,6 +4488,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sarah@fun-test.fr",
                 "id": str(live_session.id),
                 "is_registered": is_registered,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": "Maths",
                 "lti_user_id": "55555",
@@ -4502,33 +4606,36 @@ class LiveSessionApiTest(TestCase):
 
         response = self.client.patch(
             f"/api/livesessions/{live_session.id}/",
-            {"is_registered": True, "email": "r00t@fun-test.fr"},
+            {"is_registered": True, "email": "r00t@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         live_session.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(live_session.email, "r00t@fun-test.fr")
+        self.assertEqual(live_session.language, "fr")
 
         response = self.client.patch(
             f"/api/livesessions/{other_live_session.id}/",
-            {"is_registered": True, "email": "l33t@fun-test.fr"},
+            {"is_registered": True, "email": "l33t@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         other_live_session.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(other_live_session.email, "l33t@fun-test.fr")
+        self.assertEqual(other_live_session.language, "fr")
 
         response = self.client.patch(
             f"/api/livesessions/{anonymous_live_session.id}/",
-            {"is_registered": True, "email": "An0n@fun-test.fr"},
+            {"is_registered": True, "email": "An0n@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         anonymous_live_session.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(anonymous_live_session.email, "An0n@fun-test.fr")
+        self.assertEqual(anonymous_live_session.language, "fr")
 
         response = self.client.patch(
             f"/api/livesessions/{not_accessing_live_session.id}/",
@@ -4622,6 +4729,7 @@ class LiveSessionApiTest(TestCase):
                 "email": "sarah@fun-test.fr",
                 "id": str(live_session.id),
                 "is_registered": True,
+                "language": "en",
                 "live_attendance": None,
                 "lti_id": None,
                 "lti_user_id": None,
@@ -4666,3 +4774,90 @@ class LiveSessionApiTest(TestCase):
         live_session.refresh_from_db()
         self.assertEqual(response.status_code, 404)
         self.assertIsNone(live_session.email)
+
+    def test_api_livesession_patch_language(self):
+        """Check language can be updated"""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        anonymous_id = uuid.uuid4()
+        live_session = LiveSessionFactory(
+            anonymous_id=anonymous_id,
+            email=None,
+            is_registered=False,
+            video=video,
+        )
+        self.assertIsNone(live_session.registered_at)
+        self.assertEqual(live_session.language, "en")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [NONE]
+
+        # if a wrong language is set
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            {
+                "is_registered": True,
+                "email": "sarah@fun-test.fr",
+                "language": "whatever",
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        live_session.refresh_from_db()
+        self.assertEqual(live_session.language, "en")
+        self.assertEqual(
+            response.json(), {"language": ['"whatever" is not a valid choice.']}
+        )
+
+        # now with empty
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            {
+                "is_registered": True,
+                "email": "sarah@fun-test.fr",
+                "language": "",
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        live_session.refresh_from_db()
+        self.assertEqual(live_session.language, "en")
+        self.assertEqual(response.json(), {"language": ['"" is not a valid choice.']})
+
+        # now with a value accepted
+        response = self.client.patch(
+            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            {
+                "is_registered": True,
+                "email": "sarah@fun-test.fr",
+                "language": "fr",
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        live_session.refresh_from_db()
+        self.assertEqual(live_session.language, "fr")
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": str(anonymous_id),
+                "consumer_site": None,
+                "display_name": None,
+                "email": "sarah@fun-test.fr",
+                "id": str(live_session.id),
+                "is_registered": True,
+                "language": "fr",
+                "live_attendance": None,
+                "lti_user_id": None,
+                "lti_id": None,
+                "should_send_reminders": True,
+                "username": None,
+                "video": str(video.id),
+            },
+        )
