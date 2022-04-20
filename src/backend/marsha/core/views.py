@@ -17,6 +17,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import translation
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
@@ -521,6 +522,9 @@ class VideoView(BaseLTIView):
             cache_key = f"app_data|direct_access|{self.model.__name__}|{video_pk}"
             app_data = cache.get(cache_key)
 
+            # activate language depending on livesession
+            translation.activate(livesession.language)
+
             if app_data is None:
                 app_data = self._get_base_app_data()
                 app_data.update(
@@ -568,7 +572,7 @@ class VideoView(BaseLTIView):
             jwt_token.payload.update(
                 {
                     "session_id": session_id,
-                    "locale": define_locales(None),
+                    "locale": react_locale(livesession.language),
                     "permissions": {"can_access_dashboard": False, "can_update": False},
                     "maintenance": settings.MAINTENANCE_MODE,
                 }

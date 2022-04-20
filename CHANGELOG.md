@@ -13,6 +13,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add BBB meeting scheduling
 - Save current language of a livesession
 - Send emails in current livesession's language
+- Load livesession's language in the JWT token for direct access 
+from email
 
 ### Fixed
 
