@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import { Grommet } from 'grommet';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { liveState } from 'types/tracks';
 
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -93,5 +94,28 @@ describe('<DashboardVideoLivePairing />', () => {
       'Pairing secret expired',
     );
     expect(pairingSecretExpiration).not.toBeInTheDocument();
+  });
+
+  it('disables the button when the live state is stopped', () => {
+    const video = videoMockFactory({
+      live_state: liveState.STOPPED,
+    });
+
+    const queryClient = new QueryClient();
+    render(
+      wrapInIntlProvider(
+        <Grommet>
+          <QueryClientProvider client={queryClient}>
+            <DashboardVideoLivePairing video={video} />
+          </QueryClientProvider>
+        </Grommet>,
+      ),
+    );
+
+    const pairButton = screen.getByRole('button', {
+      name: /pair an external device/i,
+    });
+
+    expect(pairButton).toBeDisabled();
   });
 });
