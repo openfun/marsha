@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
 import { usePairingVideo } from 'data/queries';
-import { Video } from 'types/tracks';
+import { liveState, Video } from 'types/tracks';
 
 const messages = defineMessages({
   pairingSecretLabel: {
@@ -135,6 +135,8 @@ export const DashboardVideoLivePairing = ({
       color={buttonColor}
       onClick={pairVideoAction}
       label={content}
+      style={{ margin: 0, maxWidth: '100%' }}
+      disabled={video.live_state === liveState.STOPPED}
     />
   );
 };
