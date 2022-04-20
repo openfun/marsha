@@ -104,15 +104,15 @@ class ReminderCanceliewTestCase(TestCase):
             live_state=IDLE,
             live_type=JITSI,
             starting_at=timezone.now() + timedelta(hours=10),
-            title="How to be perfect!",
         )
 
-        # LTI registration
+        # LTI registration with fr language
         lti_livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
             created_on=timezone.now() - timedelta(hours=10),
             email="chantal@test-fun-mooc.fr",
             is_registered=True,
+            language="fr",
             lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
             video=video,
@@ -127,8 +127,11 @@ class ReminderCanceliewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, "<html>")
-        self.assertIn("Reminders disabled", response.content.decode("utf-8"))
+        # still french is displayed as livesession is french
+        self.assertIn("Rappels désactivés", response.content.decode("utf-8"))
 
+        lti_livesession.language = "en"
+        lti_livesession.save()
         # now we force the language to fr
         response = self.client.get(
             f"/reminders/cancel/{lti_livesession.id}/"
@@ -138,4 +141,5 @@ class ReminderCanceliewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
-        self.assertIn("Rappels désactivés", response.content.decode("utf-8"))
+        # still, english is displayed as livesession is english
+        self.assertIn("Reminders disabled", response.content.decode("utf-8"))

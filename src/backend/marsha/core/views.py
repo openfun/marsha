@@ -857,6 +857,7 @@ class RemindersCancelView(TemplateResponseMixin, View):
             if livesession.get_generate_salted_hmac() == kwargs["key"]:
                 livesession.should_send_reminders = False
                 livesession.save()
+                translation.activate(livesession.language)
                 return self.render_to_response({"video": livesession.video})
 
         raise Http404
