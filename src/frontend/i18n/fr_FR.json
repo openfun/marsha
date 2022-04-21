@@ -67,13 +67,33 @@
     "description": "Message when meeting creation failed.",
     "message": "Classe virtuelle non créée !"
   },
-  "component.DashboardMeetingForm.createMeetingLabel": {
-    "description": "Label for confirm button in meeting creation form.",
-    "message": "Créer une classe virtuelle BBB"
+  "component.DashboardMeetingForm.descriptionLabel": {
+    "description": "Label for description in meeting creation form.",
+    "message": "Description"
+  },
+  "component.DashboardMeetingForm.requiredTitle": {
+    "description": "Message when meeting title is missing.",
+    "message": "Le titre est requis pour lancer la classe virtuelle."
+  },
+  "component.DashboardMeetingForm.scheduleMeetingLabel": {
+    "description": "Label for confirm button in meeting scheduling form.",
+    "message": "Mettre à jour la date programmée de la classe virtuelle"
+  },
+  "component.DashboardMeetingForm.startMeetingLabel": {
+    "description": "Label for the button starting the meeting creation in BBB.",
+    "message": "Lancer la classe virtuelle maintenant dans BBB"
   },
   "component.DashboardMeetingForm.titleLabel": {
     "description": "Label for title in meeting creation form.",
     "message": "Titre"
+  },
+  "component.DashboardMeetingForm.updateMeetingFail": {
+    "description": "Message when meeting update failed.",
+    "message": "Classe virtuelle non mise à jour !"
+  },
+  "component.DashboardMeetingForm.updateMeetingSuccess": {
+    "description": "Message when meeting update is successful.",
+    "message": "Classe virtuelle mise à jour."
   },
   "component.DashboardMeetingForm.welcomeTextLabel": {
     "description": "Label for welcome text in meeting creation form.",
@@ -117,7 +137,7 @@
   },
   "component.DashboardMeetingStudent.joinMeetingLabel": {
     "description": "Label for joining meeting in instructor dashboard.",
-    "message": "Rejoindre la classe virtuelle"
+    "message": "Cliquez ici pour accéder à la classe virtuelle"
   },
   "component.DashboardMeetingStudent.joinedAs": {
     "description": "Message when user has joined the meeting.",
@@ -227,6 +247,22 @@
     "description": "Message when playlist update is successful.",
     "message": "Liste de lecture mise à jour."
   },
+  "component.SchedulingFields.estimatedDurationTextLabel": {
+    "description": "Label of the input field to add/update the estimated duration of the scheduled event",
+    "message": "Durée estimée"
+  },
+  "component.SchedulingFields.invalidStartingAt": {
+    "description": "Error message when event scheduling date time update is in the past.",
+    "message": "{updatedStartingAt} n'est pas valide : la date et l'heure de début doivent être définies dans le futur."
+  },
+  "component.SchedulingFields.startingAtDateTextLabel": {
+    "description": "Label of the input field to add/update the start date of the scheduled event",
+    "message": "Débute le"
+  },
+  "component.SchedulingFields.startingAtTextLabel": {
+    "description": "Label of the input field to add/update the start time of the scheduled event",
+    "message": "Heure de début"
+  },
   "component.SelectContent.playlistTitle": {
     "description": "Title for the current playlist.",
     "message": "Liste de lecture {title} ({id})"
@@ -318,6 +354,14 @@
   "components.DashboardDocumentTitleForm.form.success": {
     "description": "message display when the title is successfully updated",
     "message": "Titre mis à jour"
+  },
+  "components.DashboardMeetingError.notFound.text": {
+    "description": "Helpful text for the 404 Not Found error page",
+    "message": "La classe virtuelle n'existe pas ou n'a pas encore été publiée. Si vous êtes un instructeur assurez vous d'être correctement authentifié."
+  },
+  "components.DashboardMeetingError.notFound.title": {
+    "description": "Title for the 404 Not Found error page",
+    "message": "The meeting you are looking for could not be found"
   },
   "components.DashboardThumbnail.error": {
     "description": "Generic error message when we fail to create a thumbnail.",
