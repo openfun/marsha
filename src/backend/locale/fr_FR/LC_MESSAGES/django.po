@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-20 14:28+0000\n"
-"PO-Revision-Date: 2022-04-21 16:35\n"
+"POT-Creation-Date: 2022-04-22 07:14+0000\n"
+"PO-Revision-Date: 2022-04-22 08:01\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -284,7 +284,7 @@ msgstr "raw"
 msgid "jitsi"
 msgstr "jitsi"
 
-#: marsha/core/management/commands/send_reminders.py:130
+#: marsha/core/management/commands/send_reminders.py:134
 msgid "Webinar has been updated."
 msgstr "Votre webinaire a été mis à jour."
 
@@ -1209,3 +1209,4 @@ msgstr "Le webinaire va débuter dans moins de 3 jours"
 #: marsha/websocket/apps.py:11
 msgid "Marsha websockets"
 msgstr "Websockets de Marsha"
+

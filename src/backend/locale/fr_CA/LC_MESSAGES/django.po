@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-13 19:17+0000\n"
-"PO-Revision-Date: 2022-04-13 19:22\n"
+"POT-Creation-Date: 2022-04-22 07:14+0000\n"
+"PO-Revision-Date: 2022-04-22 08:01\n"
 "Last-Translator: \n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
@@ -35,17 +35,17 @@ msgid "playlist to which this meeting belongs"
 msgstr ""
 
 #: marsha/bbb/models.py:46 marsha/core/models/file.py:77
-#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:629
+#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:637
 msgid "lti id"
 msgstr ""
 
 #: marsha/bbb/models.py:47 marsha/core/models/file.py:78
-#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:626
+#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:634
 msgid "ID for synchronization with an external LTI tool"
 msgstr ""
 
 #: marsha/bbb/models.py:53 marsha/core/models/file.py:70
-#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:871
+#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:879
 msgid "title"
 msgstr ""
 
@@ -101,15 +101,31 @@ msgstr ""
 msgid "A welcome message that gets displayed on the chat window when the participant joins."
 msgstr ""
 
-#: marsha/bbb/models.py:112
+#: marsha/bbb/models.py:110
+msgid "starting at date and time"
+msgstr ""
+
+#: marsha/bbb/models.py:111
+msgid "Start date and time at which a meeting is scheduled."
+msgstr ""
+
+#: marsha/bbb/models.py:117 marsha/core/models/video.py:57
+msgid "estimated duration"
+msgstr ""
+
+#: marsha/bbb/models.py:118
+msgid "Estimated duration of the meeting in seconds."
+msgstr ""
+
+#: marsha/bbb/models.py:125
 msgid "meeting"
 msgstr ""
 
-#: marsha/bbb/models.py:113
+#: marsha/bbb/models.py:126
 msgid "meetings"
 msgstr ""
 
-#: marsha/bbb/models.py:145 marsha/core/models/account.py:259
+#: marsha/bbb/models.py:158 marsha/core/models/account.py:259
 #: marsha/core/models/file.py:132 marsha/core/models/playlist.py:106
 msgid "{:s} [deleted]"
 msgstr ""
@@ -156,13 +172,13 @@ msgid "consumer sites"
 msgstr ""
 
 #: marsha/core/admin.py:299 marsha/core/models/video.py:42
-#: marsha/core/models/video.py:674 marsha/core/models/video.py:864
+#: marsha/core/models/video.py:682 marsha/core/models/video.py:872
 msgid "Video"
 msgstr ""
 
 #: marsha/core/admin.py:306 marsha/core/models/video.py:142
 #: marsha/core/models/video.py:333 marsha/core/models/video.py:498
-#: marsha/core/models/video.py:800
+#: marsha/core/models/video.py:808
 msgid "video"
 msgstr ""
 
@@ -196,6 +212,12 @@ msgstr ""
 
 #: marsha/core/admin.py:445 marsha/core/models/account.py:131
 msgid "LTI passport"
+msgstr ""
+
+#: marsha/core/api/live_session.py:131
+#: marsha/core/templates/core/mail/html/register.html:133
+#: marsha/core/templates/core/mail/text/register.txt:2
+msgid "Registration validated!"
 msgstr ""
 
 #: marsha/core/apps.py:11
@@ -262,7 +284,7 @@ msgstr ""
 msgid "jitsi"
 msgstr ""
 
-#: marsha/core/management/commands/send_reminders.py:130
+#: marsha/core/management/commands/send_reminders.py:134
 msgid "Webinar has been updated."
 msgstr ""
 
@@ -597,7 +619,7 @@ msgid "file extension"
 msgstr ""
 
 #: marsha/core/models/file.py:152 marsha/core/models/video.py:402
-#: marsha/core/models/video.py:889
+#: marsha/core/models/video.py:897
 msgid "extension"
 msgstr ""
 
@@ -701,12 +723,8 @@ msgstr ""
 msgid "Allow video recording?"
 msgstr ""
 
-#: marsha/core/models/video.py:57
-msgid "estimated duration"
-msgstr ""
-
 #: marsha/core/models/video.py:58
-msgid "Estimated duration of the video in seconds."
+msgid "Estimated duration of the video."
 msgstr ""
 
 #: marsha/core/models/video.py:62
@@ -809,7 +827,7 @@ msgstr ""
 msgid "video for which this track is"
 msgstr ""
 
-#: marsha/core/models/video.py:341
+#: marsha/core/models/video.py:341 marsha/core/models/video.py:599
 msgid "language"
 msgstr ""
 
@@ -889,119 +907,123 @@ msgstr ""
 msgid "LTI consumer site"
 msgstr ""
 
-#: marsha/core/models/video.py:598
+#: marsha/core/models/video.py:600
+msgid "language of this livesession"
+msgstr ""
+
+#: marsha/core/models/video.py:606
 msgid "is the user registered"
 msgstr ""
 
-#: marsha/core/models/video.py:599
+#: marsha/core/models/video.py:607
 msgid "Is the user registered?"
 msgstr ""
 
-#: marsha/core/models/video.py:603
+#: marsha/core/models/video.py:611
 msgid "registered at"
 msgstr ""
 
-#: marsha/core/models/video.py:604
+#: marsha/core/models/video.py:612
 msgid "date and time at which the user registered"
 msgstr ""
 
-#: marsha/core/models/video.py:612
+#: marsha/core/models/video.py:620
 msgid "Field to build url with encryption to target the record"
 msgstr ""
 
-#: marsha/core/models/video.py:620
+#: marsha/core/models/video.py:628
 msgid "Live attendance"
 msgstr ""
 
-#: marsha/core/models/video.py:621
+#: marsha/core/models/video.py:629
 msgid "Live online presence"
 msgstr ""
 
-#: marsha/core/models/video.py:636
+#: marsha/core/models/video.py:644
 msgid "Unique identifier for the user on the tool consumer, only present for lti users."
 msgstr ""
 
-#: marsha/core/models/video.py:640
+#: marsha/core/models/video.py:648
 msgid "LTI user identifier"
 msgstr ""
 
-#: marsha/core/models/video.py:647 marsha/core/models/video.py:648
+#: marsha/core/models/video.py:655 marsha/core/models/video.py:656
 msgid "List of new notifications to send"
 msgstr ""
 
-#: marsha/core/models/video.py:654
+#: marsha/core/models/video.py:662
 msgid "List of reminders already sent"
 msgstr ""
 
-#: marsha/core/models/video.py:656
+#: marsha/core/models/video.py:664
 msgid "List of reminders sent"
 msgstr ""
 
-#: marsha/core/models/video.py:662
+#: marsha/core/models/video.py:670
 msgid "whether user reminders are enabled for this live"
 msgstr ""
 
-#: marsha/core/models/video.py:663
+#: marsha/core/models/video.py:671
 msgid "should send reminders"
 msgstr ""
 
-#: marsha/core/models/video.py:667
+#: marsha/core/models/video.py:675
 msgid "Username"
 msgstr ""
 
-#: marsha/core/models/video.py:681
+#: marsha/core/models/video.py:689
 msgid "Websocket channel_name"
 msgstr ""
 
-#: marsha/core/models/video.py:735
+#: marsha/core/models/video.py:743
 msgid "live session"
 msgstr ""
 
-#: marsha/core/models/video.py:793
+#: marsha/core/models/video.py:801
 msgid "secret"
 msgstr ""
 
-#: marsha/core/models/video.py:794
+#: marsha/core/models/video.py:802
 msgid "live pairing secret"
 msgstr ""
 
-#: marsha/core/models/video.py:801
+#: marsha/core/models/video.py:809
 msgid "live pairing video"
 msgstr ""
 
-#: marsha/core/models/video.py:811
+#: marsha/core/models/video.py:819
 msgid "live pairing"
 msgstr ""
 
-#: marsha/core/models/video.py:812
+#: marsha/core/models/video.py:820
 msgid "live pairings"
 msgstr ""
 
-#: marsha/core/models/video.py:851
+#: marsha/core/models/video.py:859
 msgid "device"
 msgstr ""
 
-#: marsha/core/models/video.py:852
+#: marsha/core/models/video.py:860
 msgid "devices"
 msgstr ""
 
-#: marsha/core/models/video.py:872
+#: marsha/core/models/video.py:880
 msgid "title of the shared live media"
 msgstr ""
 
-#: marsha/core/models/video.py:880
+#: marsha/core/models/video.py:888
 msgid "Number of pages contained by the media"
 msgstr ""
 
-#: marsha/core/models/video.py:886
+#: marsha/core/models/video.py:894
 msgid "media extension"
 msgstr ""
 
-#: marsha/core/models/video.py:896
+#: marsha/core/models/video.py:904
 msgid "shared live media"
 msgstr ""
 
-#: marsha/core/models/video.py:897
+#: marsha/core/models/video.py:905
 msgid "shared live medias"
 msgstr ""
 
@@ -1013,11 +1035,6 @@ msgstr ""
 msgid "Some playlists don't exist: {', '.join(ids_diff):s}."
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:133
-#: marsha/core/templates/core/mail/text/register.txt:2
-msgid "Registration validated!"
-msgstr ""
-
 #: marsha/core/templates/core/mail/html/register.html:229
 #: marsha/core/templates/core/mail/html/reminder.html:229
 #: marsha/core/templates/core/mail/html/reminder_date_updated.html:229
@@ -1027,90 +1044,107 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:235
-#: marsha/core/templates/core/mail/text/register.txt:10
+#: marsha/core/templates/core/mail/html/register.html:229
+#: marsha/core/templates/core/mail/html/reminder.html:229
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:229
+#: marsha/core/templates/core/mail/text/register.txt:8
+#: marsha/core/templates/core/mail/text/reminder.txt:8
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:8
+msgid "Hello,"
+msgstr ""
+
+#: marsha/core/templates/core/mail/html/register.html:234
+#: marsha/core/templates/core/mail/text/register.txt:9
 msgid "We have taken note of your interest in the event "
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:235
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:235
-#: marsha/core/templates/core/mail/text/register.txt:11
+#: marsha/core/templates/core/mail/html/register.html:234
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:234
+#: marsha/core/templates/core/mail/text/register.txt:9
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:9
 msgid "We'll meet you at "
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:235
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:235
-#: marsha/core/templates/core/mail/text/register.txt:12
+#: marsha/core/templates/core/mail/html/register.html:234
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:234
+#: marsha/core/templates/core/mail/text/register.txt:9
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:9
 msgid "for the start of the webinar."
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:271
-#: marsha/core/templates/core/mail/html/reminder.html:276
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:271
-#: marsha/core/templates/core/mail/text/register.txt:14
-#: marsha/core/templates/core/mail/text/reminder.txt:14
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:14
+#: marsha/core/templates/core/mail/html/register.html:270
+#: marsha/core/templates/core/mail/html/reminder.html:275
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:270
+#: marsha/core/templates/core/mail/text/register.txt:11
+#: marsha/core/templates/core/mail/text/reminder.txt:12
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:11
 msgid "Access the event"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:319
-#: marsha/core/templates/core/mail/html/reminder.html:324
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:319
+#: marsha/core/templates/core/mail/html/register.html:318
+#: marsha/core/templates/core/mail/html/reminder.html:323
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:318
+#: marsha/core/templates/core/mail/text/register.txt:15
+#: marsha/core/templates/core/mail/text/reminder.txt:16
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:15
 msgid "Do not forward this email or share this link. It contains your personal code to access the event."
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:351
-#: marsha/core/templates/core/mail/html/reminder.html:356
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:351
-#: marsha/core/templates/core/mail/text/register.txt:21
-#: marsha/core/templates/core/mail/text/reminder.txt:21
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:21
+#: marsha/core/templates/core/mail/html/register.html:350
+#: marsha/core/templates/core/mail/html/reminder.html:355
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:350
+#: marsha/core/templates/core/mail/text/register.txt:17
+#: marsha/core/templates/core/mail/text/reminder.txt:18
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:17
 msgid "This mail has been sent to"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:351
-#: marsha/core/templates/core/mail/html/reminder.html:356
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:351
-#: marsha/core/templates/core/mail/text/register.txt:21
-#: marsha/core/templates/core/mail/text/reminder.txt:21
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:21
+#: marsha/core/templates/core/mail/html/register.html:350
+#: marsha/core/templates/core/mail/html/reminder.html:355
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:350
+#: marsha/core/templates/core/mail/text/register.txt:17
+#: marsha/core/templates/core/mail/text/reminder.txt:18
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:17
 msgid "by Marsha"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:371
-#: marsha/core/templates/core/mail/html/reminder.html:376
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:371
+#: marsha/core/templates/core/mail/html/register.html:370
+#: marsha/core/templates/core/mail/html/reminder.html:375
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:370
+#: marsha/core/templates/core/mail/text/register.txt:19
+#: marsha/core/templates/core/mail/text/reminder.txt:20
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:19
 msgid "Your email address is used because you have shown interest in this webinar. If you want to unsubscribe your email from these notifications, please follow the link : "
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/register.html:371
-#: marsha/core/templates/core/mail/html/reminder.html:376
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:371
-#: marsha/core/templates/core/mail/text/register.txt:25
-#: marsha/core/templates/core/mail/text/reminder.txt:25
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:25
+#: marsha/core/templates/core/mail/html/register.html:370
+#: marsha/core/templates/core/mail/html/reminder.html:375
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:370
+#: marsha/core/templates/core/mail/text/register.txt:19
+#: marsha/core/templates/core/mail/text/reminder.txt:20
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:19
 msgid "unsubscribe"
 msgstr ""
 
 #: marsha/core/templates/core/mail/html/reminder.html:133
 #: marsha/core/templates/core/mail/text/reminder.txt:2
-msgid "Get ready! The live is starting "
+msgid "Get ready! The live is starting in less than "
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/reminder.html:235
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:235
-#: marsha/core/templates/core/mail/text/reminder.txt:10
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:10
+#: marsha/core/templates/core/mail/html/reminder.html:234
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:234
+#: marsha/core/templates/core/mail/text/reminder.txt:9
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:9
 msgid "Our event"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/reminder.html:235
-#: marsha/core/templates/core/mail/text/reminder.txt:10
-msgid "will start"
+#: marsha/core/templates/core/mail/html/reminder.html:234
+#: marsha/core/templates/core/mail/text/reminder.txt:9
+msgid "will start in less than "
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/reminder.html:240
-#: marsha/core/templates/core/mail/text/reminder.txt:12
+#: marsha/core/templates/core/mail/html/reminder.html:239
+#: marsha/core/templates/core/mail/text/reminder.txt:10
 msgid "Get ready to join us."
 msgstr ""
 
@@ -1119,8 +1153,8 @@ msgstr ""
 msgid "Our event has been updated, the date has changed!"
 msgstr ""
 
-#: marsha/core/templates/core/mail/html/reminder_date_updated.html:235
-#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:10
+#: marsha/core/templates/core/mail/html/reminder_date_updated.html:234
+#: marsha/core/templates/core/mail/text/reminder_date_updated.txt:9
 msgid "had some updates."
 msgstr ""
 

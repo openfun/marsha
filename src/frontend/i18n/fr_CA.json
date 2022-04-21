@@ -67,13 +67,33 @@
     "description": "Message when meeting creation failed.",
     "message": "Meeting not created!"
   },
-  "component.DashboardMeetingForm.createMeetingLabel": {
-    "description": "Label for confirm button in meeting creation form.",
-    "message": "Create meeting in BBB"
+  "component.DashboardMeetingForm.descriptionLabel": {
+    "description": "Label for description in meeting creation form.",
+    "message": "Description"
+  },
+  "component.DashboardMeetingForm.requiredTitle": {
+    "description": "Message when meeting title is missing.",
+    "message": "Title is required to launch the meeting."
+  },
+  "component.DashboardMeetingForm.scheduleMeetingLabel": {
+    "description": "Label for confirm button in meeting scheduling form.",
+    "message": "Update meeting scheduling"
+  },
+  "component.DashboardMeetingForm.startMeetingLabel": {
+    "description": "Label for the button starting the meeting creation in BBB.",
+    "message": "Launch the meeting now in BBB"
   },
   "component.DashboardMeetingForm.titleLabel": {
     "description": "Label for title in meeting creation form.",
     "message": "Title"
+  },
+  "component.DashboardMeetingForm.updateMeetingFail": {
+    "description": "Message when meeting update failed.",
+    "message": "Meeting not updated!"
+  },
+  "component.DashboardMeetingForm.updateMeetingSuccess": {
+    "description": "Message when meeting update is successful.",
+    "message": "Meeting updated."
   },
   "component.DashboardMeetingForm.welcomeTextLabel": {
     "description": "Label for welcome text in meeting creation form.",
@@ -117,7 +137,7 @@
   },
   "component.DashboardMeetingStudent.joinMeetingLabel": {
     "description": "Label for joining meeting in instructor dashboard.",
-    "message": "Join meeting"
+    "message": "Click here to access meeting"
   },
   "component.DashboardMeetingStudent.joinedAs": {
     "description": "Message when user has joined the meeting.",
@@ -227,6 +247,22 @@
     "description": "Message when playlist update is successful.",
     "message": "Playlist updated."
   },
+  "component.SchedulingFields.estimatedDurationTextLabel": {
+    "description": "Label of the input field to add/update the estimated duration of the scheduled event",
+    "message": "Estimated duration"
+  },
+  "component.SchedulingFields.invalidStartingAt": {
+    "description": "Error message when event scheduling date time update is in the past.",
+    "message": "{updatedStartingAt} is not valid: Starting date and time should be set in the future."
+  },
+  "component.SchedulingFields.startingAtDateTextLabel": {
+    "description": "Label of the input field to add/update the start date of the scheduled event",
+    "message": "Starting date"
+  },
+  "component.SchedulingFields.startingAtTextLabel": {
+    "description": "Label of the input field to add/update the start time of the scheduled event",
+    "message": "Starting time"
+  },
   "component.SelectContent.playlistTitle": {
     "description": "Title for the current playlist.",
     "message": "Playlist {title} ({id})"
@@ -318,6 +354,14 @@
   "components.DashboardDocumentTitleForm.form.success": {
     "description": "message display when the title is successfully updated",
     "message": "Title successfully updated"
+  },
+  "components.DashboardMeetingError.notFound.text": {
+    "description": "Helpful text for the 404 Not Found error page",
+    "message": "This meeting does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated."
+  },
+  "components.DashboardMeetingError.notFound.title": {
+    "description": "Title for the 404 Not Found error page",
+    "message": "The meeting you are looking for could not be found"
   },
   "components.DashboardThumbnail.error": {
     "description": "Generic error message when we fail to create a thumbnail.",
