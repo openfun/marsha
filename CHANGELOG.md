@@ -14,6 +14,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 control the live
 - Add a widget to modify live title and allow / disallow live recording
 - Add a widget to schedule live and modify description
+- Add a widget to hide / unhide the chat, for the instructor and for its 
+students
 
 ### Changed
 
