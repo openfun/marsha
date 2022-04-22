@@ -108,6 +108,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     id,
     is_ready_to_show: true,
     is_scheduled: false,
+    has_chat: true,
     lti_url: `https://example.com/lti/videos/${id}`,
     show_download: true,
     starting_at: null,

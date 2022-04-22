@@ -42,8 +42,13 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled
     if (video.xmpp !== null) {
+      const items = [];
+      if (video.has_chat) {
+        items.push(LivePanelItem.CHAT);
+      }
+      items.push(LivePanelItem.VIEWERS_LIST);
       configPanel(
-        [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+        items,
         // If the panel has a previous selected tab, it is this one which is used
         currentItem ? currentItem : LivePanelItem.CHAT,
       );

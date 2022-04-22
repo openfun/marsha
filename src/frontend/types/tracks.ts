@@ -140,6 +140,7 @@ export interface Video extends Resource {
   description: string;
   is_ready_to_show: boolean;
   is_scheduled: boolean;
+  has_chat: boolean;
   show_download: boolean;
   thumbnail: Nullable<Thumbnail>;
   timed_text_tracks: TimedText[];
