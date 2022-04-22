@@ -131,7 +131,7 @@ class Command(BaseCommand):
         self.send_reminders_and_update_livesessions_step(
             livesessions,
             settings.REMINDER_DATE_UPDATED,
-            "Webinar has been updated.",
+            _("Webinar has been updated."),
             {},
             "reminder_date_updated",
         )
