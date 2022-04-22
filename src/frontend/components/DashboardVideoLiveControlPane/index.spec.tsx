@@ -44,16 +44,24 @@ describe('<DashboardVideoLiveControlPane />', () => {
       ),
     );
 
+    // DashboardVideoLiveWidgetToolsAndApplications
+    screen.getByText('Tools and applications');
+    const hasChatToggleButton = screen.getByRole('checkbox', {
+      name: 'Activate chat',
+    });
+    expect(hasChatToggleButton).toBeChecked();
+    screen.getByText('Activate chat');
+
     // DashboardVideoLiveWidgetGeneralTitle
     screen.getByText('General');
     const textInput = screen.getByRole('textbox', {
       name: 'Enter title of your live here',
     });
     expect(textInput).toHaveValue('An example title');
-    const toggleButton = screen.getByRole('checkbox', {
+    const liveRecordingToggleButton = screen.getByRole('checkbox', {
       name: 'Activate live recording',
     });
-    expect(toggleButton).not.toBeChecked();
+    expect(liveRecordingToggleButton).not.toBeChecked();
     screen.getByText('Activate live recording');
 
     // DashboardVideoLiveWidgetSchedulingAndDescription
