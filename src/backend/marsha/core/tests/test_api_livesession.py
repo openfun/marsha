@@ -4854,8 +4854,8 @@ class LiveSessionApiTest(TestCase):
             email_content,
         )
         self.assertIn(
-            "Ne partagez pas cet email, il contient vos identifiants "
-            "personnels pour accéder au webinaire.",
+            "Ne transmettez pas cet e-mail ou ne partagez pas ce lien. "
+            "Il contient votre code personnel pour accéder à l'événement.",
             email_content,
         )
 
