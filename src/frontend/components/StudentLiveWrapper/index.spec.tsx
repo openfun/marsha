@@ -16,7 +16,7 @@ import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { createPlayer } from 'Player/createPlayer';
 
-import { LiveVideoWrapper } from '.';
+import { StudentLiveWrapper } from '.';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -136,7 +136,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -199,7 +199,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -260,7 +260,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -318,7 +318,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -370,7 +370,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -450,7 +450,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -486,7 +486,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -561,7 +561,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
     act(() => useLivePanelState.getState().setPanelVisibility(false));
@@ -614,7 +614,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -666,7 +666,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -717,7 +717,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -734,6 +734,54 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       LivePanelItem.CHAT,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
+  });
+
+  it('configures live state without chat when chat is disabled', () => {
+    const video = videoMockFactory({
+      title: 'live title',
+      has_chat: false,
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: null,
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        conference_url: 'conference-url',
+        jid: 'jid',
+        prebind_url: 'prebind_url',
+        websocket_url: null,
+      },
+    });
+
+    render(
+      wrapInIntlProvider(
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
+    screen.getByText('live title');
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.VIEWERS_LIST,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.VIEWERS_LIST,
+    );
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 
   it('configures live state with action elements even if the live is not really started', async () => {
@@ -769,7 +817,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
     act(() => useParticipantWorkflow.getState().setAccepted());
@@ -819,7 +867,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 
@@ -858,7 +906,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <LiveVideoWrapper video={video} playerType={'player_type'} />,
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
 

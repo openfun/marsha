@@ -25,12 +25,12 @@ const messages = defineMessages({
   },
 });
 
-interface LiveVideoWrapperProps {
+interface StudentLiveWrapperProps {
   video: Video;
   playerType: string;
 }
 
-export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
+export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   video,
   playerType,
 }) => {
@@ -53,8 +53,13 @@ export const LiveVideoWrapper: React.FC<LiveVideoWrapperProps> = ({
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled
     if (video.xmpp !== null) {
+      const items = [];
+      if (video.has_chat) {
+        items.push(LivePanelItem.CHAT);
+      }
+      items.push(LivePanelItem.VIEWERS_LIST);
       configPanel(
-        [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+        items,
         // if the panel has a previous selected tab, it is this one which is used
         currentItem ? currentItem : LivePanelItem.CHAT,
       );

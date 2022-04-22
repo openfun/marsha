@@ -7,7 +7,7 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { DownloadVideo } from 'components/DownloadVideo';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { Loader } from 'components/Loader';
-import { LiveVideoWrapper } from 'components/StudentLiveWrapper';
+import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { Transcripts } from 'components/Transcripts';
 import VideoPlayer from 'components/VideoPlayer';
 import { getDecodedJwt } from 'data/appData';
@@ -60,7 +60,7 @@ const PublicVideoDashboard = ({
       return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveStopped')} />;
     }
     return isReadyLive ? (
-      <LiveVideoWrapper video={video} playerType={playerType} />
+      <StudentLiveWrapper video={video} playerType={playerType} />
     ) : (
       <Loader />
     );

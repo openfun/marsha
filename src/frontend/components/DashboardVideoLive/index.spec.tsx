@@ -1,10 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from 'data/stores/useLivePanelState';
 import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -287,5 +291,51 @@ describe('components/DashboardVideoLive', () => {
     userEvent.click(joindChatButton);
 
     await screen.findByText('Display name');
+  });
+
+  it('configures live state without chat when chat is disabled', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  has_chat: false,
+                  live_state: liveState.STARTING,
+                  xmpp: {
+                    bosh_url: null,
+                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
+                    conference_url: 'conference-url',
+                    jid: 'jid',
+                    prebind_url: 'prebind_url',
+                    websocket_url: null,
+                  },
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
+        ),
+      ),
+    );
+
+    // Force panel to display, because on instructor view it's hidden by default
+    act(() => useLivePanelState.setState({ isPanelVisible: true }));
+
+    expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+
+    screen.getByText('No viewers are currently connected to your stream.');
+
+    expect(useLivePanelState.getState().availableItems).toEqual([
+      LivePanelItem.VIEWERS_LIST,
+    ]);
+    expect(useLivePanelState.getState().currentItem).toEqual(
+      LivePanelItem.VIEWERS_LIST,
+    );
+    expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 });
