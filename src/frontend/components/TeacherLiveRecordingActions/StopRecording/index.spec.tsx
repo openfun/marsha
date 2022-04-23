@@ -66,7 +66,7 @@ describe('<StopRecording />', () => {
     );
 
     userEvent.click(
-      screen.getByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' }),
+      screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
     );
 
     await waitFor(() => expect(mockAddResource).toHaveBeenCalled());
@@ -87,7 +87,7 @@ describe('<StopRecording />', () => {
     );
 
     userEvent.click(
-      screen.getByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' }),
+      screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
     );
 
     await screen.findByText('An error occured. Please try again later.');
@@ -105,6 +105,6 @@ describe('<StopRecording />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Stop recording 0 1 : 0 2 : 0 2' });
+    screen.getByRole('button', { name: 'REC 0 1 : 0 2 : 0 2' });
   });
 });
