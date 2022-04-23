@@ -118,12 +118,8 @@ describe('components/DashboardVideoLive', () => {
 
     await screen.findByRole('button', { name: /start streaming/i });
 
-    expect(
-      screen.queryByRole('button', { name: 'Start recording' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Stop recording/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('shows alert to join the room', async () => {
@@ -185,7 +181,7 @@ describe('components/DashboardVideoLive', () => {
     );
 
     screen.getByRole('button', { name: 'Pause live' });
-    screen.getByRole('button', { name: 'Start recording' });
+    screen.getByTestId('start-recording');
   });
 
   it('shows confirmation modal when clicking the stop button', async () => {
@@ -220,12 +216,8 @@ describe('components/DashboardVideoLive', () => {
     ).toBeDisabled();
 
     //  record buttons are not in the document
-    expect(
-      screen.queryByRole('button', { name: 'Start recording' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /Stop recording/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('displays data when the video is scheduled and the status is IDLE', async () => {

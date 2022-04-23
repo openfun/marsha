@@ -1,37 +1,37 @@
 import { defineMessage } from '@formatjs/intl';
-import { Box, Button, Clock, Spinner } from 'grommet';
+import { Box, Button, Clock, Spinner, Stack } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { useIntl } from 'react-intl';
+import styled from 'styled-components';
 
-import { PauseSVG } from 'components/SVGIcons/PauseSVG';
+import { RecordSVG } from 'components/SVGIcons/RecordSVG';
 import { useStopLiveRecording } from 'data/queries';
 import { Video } from 'types/tracks';
-import { Maybe } from 'utils/types';
+import { theme } from 'utils/theme/theme';
 
-const formatDigits = (value: number, locale: string) => {
-  return value.toLocaleString(locale, {
-    minimumIntegerDigits: 2,
-    useGrouping: false,
-  });
-};
+import { formatSecToTimeStamp } from '../utils';
 
-const formatSecToTimeStamp = (duration: Maybe<number>, locale: string) => {
-  let recordedTime = 'T00:00:00';
-  if (duration) {
-    const sec = formatDigits(duration % 60, locale);
-    const min = formatDigits(Math.floor(duration / 60) % 60, locale);
-    const hour = formatDigits(Math.floor(duration / 3600), locale);
+const BlinkedBox = styled(Box)`
+  animation: blink-animation 1s ease-in infinite;
+  -webkit-animation: blink-animation 1s ease-in infinite;
 
-    recordedTime = `T${hour}:${min}:${sec}`;
+  @keyframes blink-animation {
+    50% {
+      opacity: 0;
+    }
   }
-
-  return recordedTime;
-};
+  @-webkit-keyframes blink-animation {
+    50% {
+      opacity: 0;
+    }
+  }
+`;
 
 const messages = defineMessage({
   title: {
-    defaultMessage: 'Stop recording',
+    defaultMessage: 'REC',
     description: 'Title for the stop recording button',
     id: 'components.StopRecording.title',
   },
@@ -55,37 +55,43 @@ export const StopRecording = ({ video }: StopRecordingProps) => {
 
   return (
     <Button
+      color={normalizeColor('red-active', theme)}
+      data-testid="stop-recording"
       disabled={isLoading}
       margin="auto"
       onClick={() => mutate()}
       primary
       label={
-        <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-          {isLoading && (
-            <Spinner
-              data-testid="loader-id"
-              color="white"
-              margin={{ right: 'small' }}
-            />
-          )}
-          {!isLoading && (
-            <PauseSVG
-              iconColor="white"
-              width="25px"
-              height="25px"
-              containerStyle={{ margin: 'auto', marginRight: '8px' }}
-            />
-          )}
-          {intl.formatMessage(messages.title)}
-          {!isLoading && (
+        <Stack>
+          <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
+            <BlinkedBox>
+              <RecordSVG
+                iconColor="white"
+                width="25px"
+                height="25px"
+                containerStyle={{ margin: 'auto', marginRight: '8px' }}
+              />
+            </BlinkedBox>
+
+            {intl.formatMessage(messages.title)}
             <Clock
               type="digital"
               margin={{ left: 'small' }}
               time={formatSecToTimeStamp(video.recording_time, intl.locale)}
             />
+          </Box>
+          {isLoading && (
+            <Box fill>
+              <Spinner
+                data-testid="loader-id"
+                color="white"
+                margin={{ right: 'small' }}
+              />
+            </Box>
           )}
-        </Box>
+        </Stack>
       }
+      style={{ borderRadius: '25px' }}
     />
   );
 };
