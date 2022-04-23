@@ -36,12 +36,8 @@ describe('<TeacherLiveRecordingActions />', () => {
       ),
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Start recording' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('renders start recording when live is running and is_recording is undefined', () => {
@@ -55,10 +51,8 @@ describe('<TeacherLiveRecordingActions />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Start recording' });
-    expect(
-      screen.queryByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' }),
-    ).not.toBeInTheDocument();
+    screen.getByTestId('start-recording');
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('renders start recording when live is running and is_recording is false', () => {
@@ -75,10 +69,8 @@ describe('<TeacherLiveRecordingActions />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Start recording' });
-    expect(
-      screen.queryByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' }),
-    ).not.toBeInTheDocument();
+    screen.getByTestId('start-recording');
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('renders the stop button when live is running and we are recording', () => {
@@ -95,10 +87,8 @@ describe('<TeacherLiveRecordingActions />', () => {
       ),
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Start recording' }),
-    ).not.toBeInTheDocument();
-    screen.getByRole('button', { name: 'Stop recording 0 0 : 0 0 : 0 0' });
+    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    screen.getByTestId('stop-recording');
   });
 
   it('does not render buttons if you are not an administrator', () => {
@@ -118,12 +108,8 @@ describe('<TeacherLiveRecordingActions />', () => {
       ),
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Start recording' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /stop recording/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 
   it('does not render buttons if the live recording is disallowed', () => {

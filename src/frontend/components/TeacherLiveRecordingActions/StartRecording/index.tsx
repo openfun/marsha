@@ -1,5 +1,6 @@
 import { defineMessage } from '@formatjs/intl';
-import { Box, Button, Spinner } from 'grommet';
+import { Box, Button, Clock, Spinner, Stack } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { useIntl } from 'react-intl';
@@ -7,10 +8,13 @@ import { useIntl } from 'react-intl';
 import { RecordSVG } from 'components/SVGIcons/RecordSVG';
 import { useStartLiveRecording } from 'data/queries';
 import { Video } from 'types/tracks';
+import { theme } from 'utils/theme/theme';
+
+import { formatSecToTimeStamp } from '../utils';
 
 const messages = defineMessage({
   title: {
-    defaultMessage: 'Start recording',
+    defaultMessage: 'REC',
     description: 'Title for the start recording button',
     id: 'components.StartRecording.title',
   },
@@ -34,30 +38,41 @@ export const StartRecording = ({ video }: StartRecordingProps) => {
 
   return (
     <Button
+      color={normalizeColor('red-active', theme)}
+      data-testid="start-recording"
       disabled={isLoading}
       margin="auto"
       onClick={() => mutate()}
-      primary
+      secondary
       label={
-        <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-          {isLoading && (
-            <Spinner
-              data-testid="loader-id"
-              color="white"
-              margin={{ right: 'small' }}
-            />
-          )}
-          {!isLoading && (
+        <Stack>
+          <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
             <RecordSVG
-              iconColor="white"
+              iconColor="red-active"
               width="25px"
               height="25px"
               containerStyle={{ margin: 'auto', marginRight: '8px' }}
             />
+            {intl.formatMessage(messages.title)}
+            <Clock
+              type="digital"
+              margin={{ left: 'small' }}
+              run={false}
+              time={formatSecToTimeStamp(video.recording_time, intl.locale)}
+            />
+          </Box>
+          {isLoading && (
+            <Box fill>
+              <Spinner
+                data-testid="loader-id"
+                color="white"
+                margin={{ right: 'small' }}
+              />
+            </Box>
           )}
-          {intl.formatMessage(messages.title)}
-        </Box>
+        </Stack>
       }
+      style={{ borderRadius: '25px' }}
     />
   );
 };
