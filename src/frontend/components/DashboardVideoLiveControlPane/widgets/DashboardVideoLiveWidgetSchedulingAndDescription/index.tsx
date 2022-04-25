@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 import styled from 'styled-components';
 
+import { DashboardVideoLiveWidgetDashedBoxCustom } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveWidgetDashedBoxCustom';
 import { DashboardVideoLiveWidgetTextAreaInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetTextAreaInput';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { SchedulingFields } from 'components/SchedulingFields';
@@ -180,17 +181,7 @@ export const DashboardVideoLiveWidgetSchedulingAndDescription = ({
           />
         </Grommet>
 
-        <Box
-          border={{
-            color: '#81ade6',
-            size: 'xsmall',
-            style: 'dashed',
-          }}
-          direction="row"
-          justify="between"
-          pad={{ horizontal: 'medium', vertical: '12px' }}
-          round="6px"
-        >
+        <DashboardVideoLiveWidgetDashedBoxCustom>
           {video.starting_at ? (
             <Fragment>
               <StyledText color="blue-active" size="0.875rem">
@@ -220,7 +211,7 @@ export const DashboardVideoLiveWidgetSchedulingAndDescription = ({
               </StyledText>
             </Box>
           )}
-        </Box>
+        </DashboardVideoLiveWidgetDashedBoxCustom>
 
         <DashboardVideoLiveWidgetTextAreaInput
           placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
