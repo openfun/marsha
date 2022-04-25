@@ -27,6 +27,7 @@ describe('<DashboardVideoLiveControlPane />', () => {
     const mockVideo = videoMockFactory({
       title: 'An example title',
       allow_recording: false,
+      is_public: true,
       starting_at: currentDate.toString(),
       estimated_duration: '00:30',
       description: 'An example description',
@@ -51,6 +52,18 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     expect(hasChatToggleButton).toBeChecked();
     screen.getByText('Activate chat');
+
+    // DashboardVideoLiveWidgetVisibilityAndInteraction
+    screen.getByText('Visibility and interaction parameters');
+    const visibilityToggleButton = screen.getByRole('checkbox', {
+      name: 'Make the video publicly available',
+    });
+    expect(visibilityToggleButton).toBeChecked();
+    screen.getByText('Make the video publicly available');
+    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
+    screen.getByRole('button', {
+      name: "A button to copy the video's publicly available url in clipboard",
+    });
 
     // DashboardVideoLiveWidgetGeneralTitle
     screen.getByText('General');

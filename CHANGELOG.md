@@ -17,6 +17,9 @@ control the live
 - Add a widget to hide / unhide the chat, for the instructor and for its 
 students
 - Add Markdown document edition (new feature)
+- Add a widget to make live publicly available and get the shareable url
+
+
 
 ### Changed
 
