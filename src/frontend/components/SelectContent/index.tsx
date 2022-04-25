@@ -406,11 +406,11 @@ export const SelectContent = ({
           />
         </Tab>
 
-        <Suspense fallback={<Loader />}>
-          {appTabs.map((LazyComponent, index) => (
-            <LazyComponent key={index} selectContent={selectContent} />
-          ))}
-        </Suspense>
+        {appTabs.map((LazyComponent, index) => (
+          <Suspense key={index} fallback={<Loader />}>
+            <LazyComponent selectContent={selectContent} />
+          </Suspense>
+        ))}
       </Tabs>
     </Box>
   );
