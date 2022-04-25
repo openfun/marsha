@@ -9,16 +9,16 @@ const StyledBadge = styled(Box)`
   background-color: ${normalizeColor('white', theme)};
   border: 1px solid ${normalizeColor('blue-focus', theme)};
   border-radius: 6px;
-  bottom: 2px;
+  bottom: 0px;
   color: ${normalizeColor('blue-focus', theme)};
-  font-weight: bold;
-  padding: 3px 6px;
+  font-family: 'Roboto-Bold';
+  padding: 1px 3px;
   position: absolute;
   right: -8px;
 `;
 
 interface BadgeProps {
-  value: number;
+  value: string;
 }
 
 export const Badge = ({ value }: BadgeProps) => {

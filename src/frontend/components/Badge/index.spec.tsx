@@ -5,9 +5,9 @@ import { imageSnapshot } from 'utils/tests/imageSnapshot';
 
 import { Badge } from '.';
 
-describe('<StudentShowChatButton />', () => {
+describe('<Badge />', () => {
   it('renders the badge component', async () => {
-    render(<Badge value={24} />);
+    render(<Badge value="24" />);
 
     screen.getByText('24');
 
@@ -15,13 +15,12 @@ describe('<StudentShowChatButton />', () => {
     expect(badge).toHaveStyle('background-color: #ffffff;');
     expect(badge).toHaveStyle('border: 1px solid #031963;');
     expect(badge).toHaveStyle('border-radius: 6px;');
-    expect(badge).toHaveStyle('bottom: 2px;');
+    expect(badge).toHaveStyle('bottom: 0px;');
     expect(badge).toHaveStyle('color: #031963;');
-    expect(badge).toHaveStyle('font-weight: bold;');
-    expect(badge).toHaveStyle('padding: 3px 6px;');
+    expect(badge).toHaveStyle('padding: 1px 3px;');
     expect(badge).toHaveStyle('position: absolute;');
     expect(badge).toHaveStyle('right: -8px;');
 
-    await imageSnapshot();
+    await imageSnapshot(60, 60);
   });
 });
