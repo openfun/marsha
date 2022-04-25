@@ -51,12 +51,38 @@ jest.mock(
   },
 );
 
+const mockOtherCustomSelectContentTab = ({
+  selectContent,
+}: SelectContentTabProps) => (
+  <Tab title="Other custom app tab">
+    <p
+      onClick={() =>
+        selectContent(
+          'other-custom-select-content-url',
+          'Other custom select content title',
+        )
+      }
+    >
+      Other select app content
+    </p>
+  </Tab>
+);
+
+jest.mock(
+  '../../apps/other_custom_app/SelectContentTab',
+  () => mockOtherCustomSelectContentTab,
+  {
+    virtual: true,
+  },
+);
+
 /**
  * Mock available app type in the front to provide the app used in the test
  */
 jest.mock('types/AppData.ts', () => ({
   appNames: {
     custom_app: 'custom_app',
+    other_custom_app: 'other_custom_app',
   },
 }));
 
@@ -399,10 +425,20 @@ describe('<SelectContent />', () => {
       ),
     );
 
+    const otherCustomAppTab = await screen.findByRole('tab', {
+      name: 'Other custom app tab',
+    });
+    fireEvent.click(otherCustomAppTab);
+    screen.getByText('Other select app content');
+    expect(screen.queryByText('Select app content')).not.toBeInTheDocument();
+
     const customAppTab = await screen.findByRole('tab', {
       name: 'Custom app tab',
     });
     fireEvent.click(customAppTab);
+    expect(
+      screen.queryByText('Other select app content'),
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByText('Select app content'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
