@@ -585,6 +585,9 @@ jobs:
       - checkout:
           path: ~/marsha
       - run:
+          name: Install pip
+          command: apt-get update && apt-get install -y python3-pip
+      - run:
           name: Install e2e dependencies
           command: pip install --user .[dev,e2e]
       - run:
