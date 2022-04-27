@@ -228,13 +228,13 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
       return (
         <DashboardVideoPaneInnerContainer>
           <Box direction={'row'}>
-            <Box basis={'1/2'} margin={'small'}>
+            <Box flex margin={'small'}>
               <CommonStatusLine video={video} />
               {intl.formatMessage(messages[READY])}
               <DashboardVideoPaneDownloadOption video={video} />
               <DashboardVideoPaneTranscriptOption video={video} />
             </Box>
-            <Box basis={'1/2'} margin={'small'}>
+            <Box flex margin={'small'} width={{ max: '50%' }}>
               <DashboardThumbnail video={video} />
             </Box>
           </Box>
