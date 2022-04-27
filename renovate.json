@@ -15,11 +15,20 @@
         "@storybook/addon-actions",
         "@storybook/addon-essentials",
         "@storybook/react",
+        "@testing-library/react",
+        "@testing-library/user-event",
         "@types/faker",
+        "@types/react",
+        "@types/react-dom",
+        "@types/react-test-renderer",
         "faker",
         "node",
         "node-fetch",
-        "react-router-dom"
+        "react",
+        "react-dom",
+        "react-intl",
+        "react-router-dom",
+        "react-test-renderer"
       ]
     }
   ]
