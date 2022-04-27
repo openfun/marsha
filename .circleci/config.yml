@@ -604,7 +604,7 @@ jobs:
           command: yarn copy-iframe-resizer
       - run:
           name: Ensure << parameters.browser >> browser is installed
-          command: python -m playwright install "<< parameters.browser >>"
+          command: python3 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
           command: |
@@ -625,7 +625,7 @@ jobs:
                 command: apt update
             - run:
                 name: Install chrome
-                command: python -m playwright install chrome
+                command: python3 -m playwright install chrome
       - run:
           name: Run e2e tests
           command: |
