@@ -34,9 +34,9 @@ export const TeacherLiveInfoBar = ({
       <Heading
         a11yTitle={liveTitle}
         color="blue-active"
-        level="2"
+        level="1"
         margin={{ bottom: 'small' }}
-        size="small"
+        size="1.3rem"
         title={liveTitle}
         truncate
         style={{ maxWidth: '100%' }}
