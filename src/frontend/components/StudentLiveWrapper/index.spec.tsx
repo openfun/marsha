@@ -386,9 +386,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     screen.getByText('Live is starting');
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { name: 'live title' })).toHaveLength(
-      2,
-    );
+    screen.getByRole('heading', { name: 'live title' });
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();
