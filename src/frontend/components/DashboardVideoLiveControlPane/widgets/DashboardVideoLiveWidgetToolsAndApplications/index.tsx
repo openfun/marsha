@@ -82,7 +82,6 @@ export const DashboardVideoLiveWidgetToolsAndApplications = ({
     >
       <Box direction="column" gap="small">
         <DashboardVideoLiveWidgetToggleInput
-          disabled={video.is_recording}
           checked={isChatActive}
           onChange={onChatActiveChange}
           label={intl.formatMessage(messages.chatActiveLabel)}
