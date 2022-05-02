@@ -43,5 +43,15 @@ module.exports = async (objectKey, sourceBucket) => {
         })
         .promise();
     })
-  ).then(() => ({ nbPages, extension }));
+  )
+    .then(() => {
+      return s3
+        .copyObject({
+          Bucket: destinationBucket,
+          Key: `${videoId}/sharedlivemedia/${sharedliveMediaId}/${parts[3]}`,
+          CopySource: `${sourceBucket}/${objectKey}`,
+        })
+        .promise();
+    })
+    .then(() => ({ nbPages, extension }));
 };
