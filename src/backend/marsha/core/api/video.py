@@ -381,15 +381,15 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
     @action(
         methods=["post"],
         detail=True,
-        url_path="end-live",
+        url_path="harvest-live",
         permission_classes=[
             permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
             | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
         ],
     )
     # pylint: disable=unused-argument
-    def end_live(self, request, pk=None):
-        """end a medialive channel on AWS and delete its stack.
+    def harvest_live(self, request, pk=None):
+        """harvest a medialive channel on AWS and delete its stack.
 
         Parameters
         ----------
@@ -406,7 +406,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         video = self.get_object()
 
         if video.live_state is None:
-            return Response({"error": "Impossible to stop a non live video."}, 400)
+            return Response({"error": "Impossible to harvest a non live video."}, 400)
 
         if video.live_state not in [defaults.IDLE, defaults.PAUSED]:
             return Response(
