@@ -18,6 +18,8 @@ control the live
 students
 - Add Markdown document edition (new feature)
 - Add a widget to make live publicly available and get the shareable url
+- New field deleted_by_cascade on all model inheriting from SafeDeleteModel
+  Field added in django-safedelete version 1.2.0
 
 
 
