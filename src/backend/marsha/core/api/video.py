@@ -408,52 +408,40 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if video.live_state is None:
             return Response({"error": "Impossible to harvest a non live video."}, 400)
 
-        if video.live_state not in [defaults.IDLE, defaults.PAUSED]:
+        if video.live_state != defaults.STOPPED:
             return Response(
                 {
                     "error": (
-                        "Live video must be stopped before deleting it."
+                        "Live video must be stopped before harvesting it."
                         f" Current status is {video.live_state}"
                     )
                 },
                 400,
             )
 
+        if not video.recording_slices:
+            return Response(
+                {"error": "Live video must be recording before harvesting it."}, 400
+            )
+
         if video.is_recording:
             stop_recording(video)
-
-        if video.live_state == defaults.IDLE:
-            video.upload_state = defaults.DELETED
-            video.live_state = None
-            video.live_info = None
-            video.live_type = None
-            video.save()
-            channel_layers_utils.dispatch_video_to_groups(video)
-            serializer = self.get_serializer(video)
-
-            return Response(serializer.data)
 
         delete_aws_element_stack(video)
         if settings.LIVE_CHAT_ENABLED:
             close_room(video.id)
 
-        if video.allow_recording and video.recording_slices:
-            try:
-                create_mediapackage_harvest_job(video)
-                video.live_state = defaults.STOPPED
-                video.upload_state = defaults.HARVESTING
-            except ManifestMissingException:
-                delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
-                video.upload_state = defaults.DELETED
-                video.live_state = None
-                video.live_info = None
-                video.live_type = None
-        else:
-            video.delete()
-            video.upload_state = defaults.DELETED
-            video.live_state = None
-            video.live_info = None
-            video.live_type = None
+        try:
+            create_mediapackage_harvest_job(video)
+            video.live_state = defaults.HARVESTING
+        except ManifestMissingException:
+            delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
+            video.upload_state = defaults.PENDING
+            video.live_state = defaults.STOPPED
+            video.live_info = {
+                "started_at": video.live_info.get("started_at"),
+                "stopped_at": video.live_info.get("stopped_at"),
+            }
 
         video.save()
         channel_layers_utils.dispatch_video_to_groups(video)
@@ -529,7 +517,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 live_info.update({"started_at": stamp})
 
         if serializer.validated_data["state"] == defaults.STOPPED:
-            video.live_state = defaults.PAUSED
+            video.live_state = defaults.STOPPED
             live_info.update({"stopped_at": stamp})
             video.live_info = live_info
 
