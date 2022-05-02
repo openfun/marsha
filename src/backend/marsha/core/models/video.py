@@ -191,12 +191,6 @@ class Video(BaseFile):
         if "resolutions" in extra_parameters:
             self.resolutions = extra_parameters.get("resolutions")
 
-        if upload_state == HARVESTED:
-            # reset live state and info
-            self.live_state = None
-            self.live_info = None
-            self.live_type = None
-
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 
         # This function is imported using import_string to avoid circular import error.

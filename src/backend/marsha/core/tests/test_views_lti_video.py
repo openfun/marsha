@@ -1123,12 +1123,6 @@ class VideoLTIViewTestCase(TestCase):
                         "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_720.0000000.jpg",
                     },
-                    "manifests": {
-                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "cmaf/1569309880.m3u8",
-                    },
-                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                    "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
                 "has_transcript": False,

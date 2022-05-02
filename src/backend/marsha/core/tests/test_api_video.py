@@ -13,7 +13,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
-    DELETED,
     HARVESTING,
     IDLE,
     JITSI,
@@ -2833,7 +2832,15 @@ class VideoAPITest(TestCase):
 
     def test_api_video_update_detail_token_user_upload_state(self):
         """Token users should be able to update "upload_state" of their video through the API."""
-        video = factories.VideoFactory()
+        video = factories.VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="playlist-002",
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
+            uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[240, 480, 720],
+        )
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -2854,6 +2861,66 @@ class VideoAPITest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": "1569309880",
+                "allow_recording": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": READY,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "mp4": {
+                        "240": f"https://abc.cloudfront.net/{video.id}/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "480": f"https://abc.cloudfront.net/{video.id}/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "720": f"https://abc.cloudfront.net/{video.id}/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "240": f"https://abc.cloudfront.net/{video.id}/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": f"https://abc.cloudfront.net/{video.id}/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": f"https://abc.cloudfront.net/{video.id}/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                    },
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": HARVESTED,
+                "live_info": {},
+                "live_type": JITSI,
+                "xmpp": None,
+            },
+        )
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "ready")
 
@@ -5085,7 +5152,7 @@ class VideoAPITest(TestCase):
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     def test_api_video_instructor_harvest_idle_live(self):
-        """An instructor can harvest a live in idle state."""
+        """An instructor can not harvest a live in idle state."""
         video = factories.VideoFactory(
             live_state=IDLE,
             live_type=JITSI,
@@ -5095,57 +5162,17 @@ class VideoAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
+        response = self.client.post(
+            f"/api/videos/{video.id}/harvest-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
 
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
-            response = self.client.post(
-                f"/api/videos/{video.id}/harvest-live/",
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
-
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            content,
+            response.json(),
             {
-                "active_shared_live_media": None,
-                "active_shared_live_media_page": None,
-                "allow_recording": True,
-                "description": video.description,
-                "estimated_duration": None,
-                "has_chat": True,
-                "has_live_media": True,
-                "id": str(video.id),
-                "title": video.title,
-                "active_stamp": None,
-                "is_public": False,
-                "is_ready_to_show": False,
-                "is_recording": False,
-                "is_scheduled": False,
-                "show_download": True,
-                "starting_at": None,
-                "upload_state": DELETED,
-                "thumbnail": None,
-                "timed_text_tracks": [],
-                "urls": None,
-                "should_use_subtitle_as_transcript": False,
-                "has_transcript": False,
-                "participants_asking_to_join": [],
-                "participants_in_discussion": [],
-                "playlist": {
-                    "id": str(video.playlist.id),
-                    "title": video.playlist.title,
-                    "lti_id": video.playlist.lti_id,
-                },
-                "recording_time": 0,
-                "shared_live_medias": [],
-                "live_state": None,
-                "live_info": {},
-                "live_type": None,
-                "xmpp": None,
+                "error": f"Live video must be stopped before harvesting it. "
+                f"Current status is {IDLE}"
             },
         )
 
@@ -5162,7 +5189,7 @@ class VideoAPITest(TestCase):
         stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
             recording_slices=[{"start": to_timestamp(start)}],
-            live_state=PAUSED,
+            live_state=STOPPED,
             live_type=JITSI,
             live_info={
                 "medialive": {
@@ -5235,7 +5262,7 @@ class VideoAPITest(TestCase):
                 "is_scheduled": False,
                 "show_download": True,
                 "starting_at": None,
-                "upload_state": HARVESTING,
+                "upload_state": PENDING,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "urls": {
@@ -5256,7 +5283,7 @@ class VideoAPITest(TestCase):
                 },
                 "recording_time": 600,
                 "shared_live_medias": [],
-                "live_state": STOPPED,
+                "live_state": HARVESTING,
                 "live_info": {
                     "medialive": {
                         "input": {
@@ -5430,7 +5457,7 @@ class VideoAPITest(TestCase):
         start = timezone.now()
         stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
-            live_state=PAUSED,
+            live_state=STOPPED,
             live_type=JITSI,
             live_info={
                 "medialive": {
@@ -5476,63 +5503,25 @@ class VideoAPITest(TestCase):
                 f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
-            mock_delete_aws_element_stack.assert_called_once()
+            mock_delete_aws_element_stack.assert_not_called()
             mock_create_mediapackage_harvest_job.assert_not_called()
-            mock_close_room.assert_called_once_with(video.id)
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_close_room.assert_not_called()
+            mock_dispatch_video_to_groups.assert_not_called()
 
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            content,
-            {
-                "active_shared_live_media": None,
-                "active_shared_live_media_page": None,
-                "allow_recording": True,
-                "description": video.description,
-                "estimated_duration": None,
-                "has_chat": True,
-                "has_live_media": True,
-                "id": str(video.id),
-                "title": video.title,
-                "active_stamp": None,
-                "is_public": False,
-                "is_ready_to_show": False,
-                "is_recording": False,
-                "is_scheduled": False,
-                "show_download": True,
-                "starting_at": None,
-                "upload_state": DELETED,
-                "thumbnail": None,
-                "timed_text_tracks": [],
-                "urls": None,
-                "should_use_subtitle_as_transcript": False,
-                "has_transcript": False,
-                "playlist": {
-                    "id": str(video.playlist.id),
-                    "title": video.playlist.title,
-                    "lti_id": video.playlist.lti_id,
-                },
-                "recording_time": 0,
-                "shared_live_medias": [],
-                "live_state": None,
-                "live_info": {},
-                "live_type": None,
-                "participants_asking_to_join": [],
-                "participants_in_discussion": [],
-                "xmpp": None,
-            },
+            response.json(),
+            {"error": "Live video must be recording before harvesting it."},
         )
 
     def test_api_video_instructor_harvest_paused_live_missing_manifest(self):
-        """An instructor harvesting a live with a missing manifest should delete the video"""
+        """An instructor harvesting a live with a missing manifest should delete the aws stack."""
         start = timezone.now()
         video = factories.VideoFactory(
             recording_slices=[
                 {"start": to_timestamp(start), "stop": to_timestamp(start)}
             ],
-            live_state=PAUSED,
+            live_state=STOPPED,
             live_type=JITSI,
             live_info={
                 "medialive": {
@@ -5555,6 +5544,8 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
+                "started_at": "1533686400",
+                "stopped_at": "1533686400",
             },
         )
 
@@ -5600,12 +5591,12 @@ class VideoAPITest(TestCase):
                 "title": video.title,
                 "active_stamp": None,
                 "is_public": False,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
                 "show_download": True,
                 "starting_at": None,
-                "upload_state": DELETED,
+                "upload_state": PENDING,
                 "thumbnail": None,
                 "timed_text_tracks": [],
                 "urls": None,
@@ -5620,10 +5611,28 @@ class VideoAPITest(TestCase):
                 },
                 "recording_time": 0,
                 "shared_live_medias": [],
-                "live_state": None,
-                "live_info": {},
-                "live_type": None,
+                "live_state": STOPPED,
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.id),
+                    },
+                    "started_at": "1533686400",
+                    "stopped_at": "1533686400",
+                },
+                "live_type": JITSI,
                 "xmpp": None,
+            },
+        )
+        video.refresh_from_db()
+        self.assertEqual(
+            video.live_info,
+            {
+                "started_at": "1533686400",
+                "stopped_at": "1533686400",
             },
         )
 
@@ -5631,7 +5640,7 @@ class VideoAPITest(TestCase):
         """An instructor can not harvest a live not in STOPPED state."""
         video = factories.VideoFactory(
             live_state=random.choice(
-                [s[0] for s in LIVE_CHOICES if s[0] not in [PAUSED, IDLE]]
+                [s[0] for s in LIVE_CHOICES if s[0] is not STOPPED]
             ),
             live_type=JITSI,
         )
@@ -5655,7 +5664,7 @@ class VideoAPITest(TestCase):
             content,
             {
                 "error": (
-                    "Live video must be stopped before deleting it."
+                    "Live video must be stopped before harvesting it."
                     f" Current status is {video.live_state}"
                 )
             },
@@ -5752,7 +5761,7 @@ class VideoAPITest(TestCase):
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_stopped(self):
-        """Receiving stopped event should pause the video."""
+        """Receiving stopped event should stop the video."""
         # test works with or without a starting_at date
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = random.choice(
@@ -5813,7 +5822,7 @@ class VideoAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.live_state, PAUSED)
+        self.assertEqual(video.live_state, STOPPED)
         self.assertEqual(video.upload_state, PENDING)
         self.assertEqual(video.starting_at, starting_at)
         self.assertEqual(
