@@ -148,6 +148,7 @@
     "remark-code-blocks": "2.0.1",
     "remark-math": "5.1.1",
     "reselect": "4.1.6",
+    "resize-observer-polyfill": "^1.5.1",
     "stream-browserify": "3.0.0",
     "styled-components": "5.3.5",
     "styled-reboot": "5.0.0",
