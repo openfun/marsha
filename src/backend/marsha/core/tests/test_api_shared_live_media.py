@@ -430,15 +430,15 @@ class SharedLiveMediaAPITest(TestCase):
                 "urls": {
                     "media": (
                         "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400/"
-                        "1638230400/1638230400.pdf?response-content-disposition=attachment"
-                        "%3B+filename%3Dpython-structures.pdf&Expires=1638237600&Signature="
-                        "PkRRV0~r3xUyzh9KiemFgRypYCh7fFQDzUlrnFSH0qi57lzvAmGjkteT1it7kjgEK"
-                        "jYFMYy-0aB7bTTu0RMUXQlhiHvFUasieJF66f2jMmhaSYTqXwDpSo4bbrThUp4LkI"
-                        "Jwn0C-KcBwBSxsBAo~72G8fsAQRR52TXL~Ya3~~RVAyMX6D3QbFE-dtdwZHcrH1uC"
-                        "89DGPq~~lXwBZv2MBwvNXwUMs6P4SwEPX96xYV8NUGOlf4tr2024JPtZz0RfKteIv"
-                        "-JutS0o5cyTxABx3pkPgDG~F018w2vrLCHHmsgNoiMEcASTLkBwWVJyivsKoOpQo-"
-                        "tb4VS0c07PimdClUw__&Key-Pair-Id=cloudfront-access-key-id"
+                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400."
+                        "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
+                        "-structures.pdf&Expires=1638237600&Signature=Sm8I4Mnuc6e8sn9mxYY"
+                        "Vt53G6wpBeGEBQCKdkpXpd2Keyq9U-Vcm7pkYVjoHpqyeUcfpFBfkYXb1iwQAZvJ"
+                        "SxIP0-4wtO~118oDd11SzjkoQWXA8~ksCK13YR0WqrBH78SaUmwx3mCkE4IAHqZA"
+                        "R46o2ATZ7YTo9rA4qme9wYoKEj1dOgc~FNVv~ROuc-~xFzh~te39ngxoTw4E2ZRe"
+                        "8zLOvwfAri1yzaBk4EjZlCI90lp-Kyv~sLjpO47uIZ2k1g-llTFwscyH8rRpQSDv"
+                        "Rn1yzlrlrGa3yhdieH-hElr1iaHZUAQx-FdH11HXBSwe1eUeRrk1iOoxowEKS9rP"
+                        "DWA__&Key-Pair-Id=cloudfront-access-key-id"
                     ),
                     "pages": {
                         "1": (
@@ -714,16 +714,15 @@ class SharedLiveMediaAPITest(TestCase):
                 "urls": {
                     "media": (
                         "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400"
-                        "/1638230400/1638230400.pdf?response-content-disposition="
-                        "attachment%3B+filename%3Dpython-compound-statements.pdf&Expires="
-                        "1638237600&Signature=EvCA76D7FQYvvY7bjw~40M7Z2h8GfRkc-mczxiVDT52w"
-                        "YTo97PbLNWtR2F0Gipp1uNfcqrGLl-PhH4YUN8AoDM7j8Mz1lXDo0tF6R3FEZAAvA"
-                        "WILQusIlWQ24hgkN9PEAFax8icz5PM~bcTpQkWqbQroX~7krph92yj3E6YurChkYd"
-                        "KmOM8IGdwFU7p3ymFOMMrdLy01~O4ofg~mqDf7GjdTQYrk~6bIWmMWhFBxb9JqsE5"
-                        "gcuo5i8hl2nOhySZEzs7VUhN3R3zgRALMsWojPcoU3DILwkhkxq5u3Sf41jY5M~Ax"
-                        "IX9TJP4mrNAxdx0Ae~8bP2Up3lLRxH7DJO0LHw__"
-                        "&Key-Pair-Id=cloudfront-access-key-id"
+                        "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400."
+                        "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
+                        "-compound-statements.pdf&Expires=1638237600&Signature=FfdLhpZUfM"
+                        "Iu5NtKTZFCcu7GmrlmwL356YwnFAO4nW8hSQ6KxiZfsOoo47vWhtztMFOhPKQHTn"
+                        "ayQvM574G-usHhfyih9Anw22mziKALfAh5l6sDgoRTSZNA1vt7C1wC-k~pJoIYBD"
+                        "2FOohrJnFXHhipHDIzlCYu3d6u5Dgs~QHmLufbNBYth6SsE9AI7kMt1bXhSZTGf6"
+                        "UqWRkQvmfUVNgSE1VQAQgRIBgcB8xLbxMdPcXkld~qkyyxqw7k7ZJbbTabqhzsno"
+                        "wBRH6L44pird2l0r5rWtCT088ecXSOQEUvDpUpgLVoGt0Dzj-~pjc9gQOJcps2l5"
+                        "MUl0ufvjGspA__&Key-Pair-Id=cloudfront-access-key-id"
                     ),
                     "pages": {
                         "1": (
@@ -1188,16 +1187,15 @@ class SharedLiveMediaAPITest(TestCase):
                         "urls": {
                             "media": (
                                 "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                                "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400"
-                                "/1638230400/1638230400.pdf?response-content-disposition="
-                                "attachment%3B+filename%3Dpython-expressions.pdf&Expires="
-                                "1638237600&Signature=Ss-CtLdmMVkAV-Wjfikpo0jebecQE~mgOcJSBEZFXUX"
-                                "qcz3IGhOu-nK-7pbCVLP7GQB3f-FF4OJfxOeCS0IgjXfhbzffBo8~Z6E9MUzTF8GT"
-                                "82B9cb4C9CwXYpSui~altLJyvnMRGoCQVMYqApj050KRBOc4zHa6fTysdbUmkFP1Q"
-                                "ZZPbb0gqT4R4M-xZZ8YTkKTa2fYrgUPDMdbTEovEi-wTaz8C4qTLhxAI9VI4gdv6A"
-                                "s55c8P~RxbQudk3W~GI4vZhQhj1xfJxI45cagJcQch8U1tAjhSbditodllgGb7LXA"
-                                "yJKAZConUMHJCrXCwaFULgIWsJHPwUP3NiO8Iqg__"
-                                "&Key-Pair-Id=cloudfront-access-key-id"
+                                "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400."
+                                "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
+                                "-expressions.pdf&Expires=1638237600&Signature=FrElaE~yVca9D~Phjo"
+                                "cqk2FOGPXqWe7Aq3Jga74i9A~RxjA3qjXy436X6Mu0RMV~iYRqrOUYNlPYq7rYX9"
+                                "zsXwGeiJ9K12PIs~KsbjnOG5cv9aJrO0vn3JOrgNtjnK-L6ggrNbb8eAmQrdcdKb"
+                                "jjrAa1r2b0g8-vuR0XCztIGOQCfVDjA-7qdL9WPKiCCILrCV2qOkSmA41ENW1wrd"
+                                "F6~19Yn3YLvlJ3edBqI1Uvoo-5nY5ry8vLmh0TXUz2Mn7RjEmNb-j0UHkNlf93Fs"
+                                "a3oXZiL97KiilZkWD7MlPMMTH0Mv9~QuQsR~8fqJNFMyD7FE2yJaKckNGNp2YVOa"
+                                "vU7A__&Key-Pair-Id=cloudfront-access-key-id"
                             ),
                             "pages": {
                                 "1": (
