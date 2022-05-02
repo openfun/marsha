@@ -127,7 +127,7 @@ class SharedLiveMediaSerializer(
         if (self.context.get("is_admin") or obj.show_download) and cloudfront_signer:
             extension = f".{obj.extension}" if obj.extension else ""
             urls["media"] = cloudfront_signer.generate_presigned_url(
-                f"{base}/{stamp}/{stamp}{extension}?response-content-disposition="
+                f"{base}{extension}?response-content-disposition="
                 f"{quote_plus('attachment; filename=' + self.get_filename(obj))}",
                 date_less_than=date_less_than,
             )
