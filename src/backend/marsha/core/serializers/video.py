@@ -75,7 +75,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if obj.live_info is not None:
+        if obj.live_info is not None and obj.live_info.get("mediapackage"):
             # Adaptive Bit Rate manifests
             return {
                 "manifests": {
@@ -133,13 +133,14 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
             urls["mp4"][resolution] = mp4_url
 
-        # Adaptive Bit Rate manifests
-        urls["manifests"] = {
-            "hls": f"{base}/cmaf/{stamp}.m3u8",
-        }
+        if obj.live_state != HARVESTED:
+            # Adaptive Bit Rate manifests
+            urls["manifests"] = {
+                "hls": f"{base}/cmaf/{stamp}.m3u8",
+            }
 
-        # Previews
-        urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
+            # Previews
+            urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
 
         return urls
 
