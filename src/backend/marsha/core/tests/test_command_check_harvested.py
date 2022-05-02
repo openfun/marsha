@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from botocore.stub import Stubber
 
-from ..defaults import DELETED, HARVESTED
+from ..defaults import DELETED, HARVESTED, JITSI, PENDING
 from ..factories import VideoFactory
 from ..management.commands import check_harvested
 
@@ -29,9 +29,13 @@ class CheckWaitingLiveToVodTest(TestCase):
 
     def test_check_harvested_video_to_process_and_expired(self):
         """Command should delete objects related to an expired video."""
+        now = timezone.now()
         video = VideoFactory(
             id="9847c1c9-88a1-4afa-bce6-8a9d3ddd4e5b",
-            upload_state=HARVESTED,
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
+            starting_at=now,
         )
 
         out = StringIO()
@@ -70,7 +74,7 @@ class CheckWaitingLiveToVodTest(TestCase):
                 },
             )
 
-            generate_expired_date_mock.return_value = timezone.now() + timedelta(days=1)
+            generate_expired_date_mock.return_value = now + timedelta(days=1)
 
             call_command("check_harvested", stdout=out)
             s3_client_stubber.assert_no_pending_responses()
@@ -84,15 +88,41 @@ class CheckWaitingLiveToVodTest(TestCase):
 
     def test_check_harvested_video_to_process_not_expired(self):
         """Command should do nothing when there is no video expired."""
+        now = timezone.now()
         VideoFactory(
             id="9847c1c9-88a1-4afa-bce6-8a9d3ddd4e5b",
-            upload_state=HARVESTED,
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
+            starting_at=now,
         )
         out = StringIO()
         with Stubber(check_harvested.s3_client) as s3_client_stubber, mock.patch(
             "marsha.core.management.commands.check_harvested.generate_expired_date"
         ) as generate_expired_date_mock:
-            generate_expired_date_mock.return_value = timezone.now() - timedelta(days=1)
+            generate_expired_date_mock.return_value = now - timedelta(days=1)
+            call_command("check_harvested", stdout=out)
+            s3_client_stubber.assert_no_pending_responses()
+
+        self.assertEqual("", out.getvalue())
+        out.close()
+
+    def test_check_harvested_video_to_process_scheduled_not_expired(self):
+        """Command should do nothing when there is no video expired."""
+        now = timezone.now()
+        VideoFactory(
+            id="9847c1c9-88a1-4afa-bce6-8a9d3ddd4e5b",
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
+            starting_at=now + timedelta(days=2),
+            uploaded_on=now - timedelta(days=3),
+        )
+        out = StringIO()
+        with Stubber(check_harvested.s3_client) as s3_client_stubber, mock.patch(
+            "marsha.core.management.commands.check_harvested.generate_expired_date"
+        ) as generate_expired_date_mock:
+            generate_expired_date_mock.return_value = now + timedelta(days=1)
             call_command("check_harvested", stdout=out)
             s3_client_stubber.assert_no_pending_responses()
 
