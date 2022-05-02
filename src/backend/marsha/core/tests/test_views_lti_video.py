@@ -17,6 +17,7 @@ from ..defaults import (
     DELETED,
     HARVESTED,
     IDLE,
+    JITSI,
     PENDING,
     RAW,
     READY,
@@ -1023,17 +1024,19 @@ class VideoLTIViewTestCase(TestCase):
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_video_harvested_upload_state(
+    def test_views_lti_video_harvested_live_state_student(
         self, mock_get_consumer_site, mock_verify
     ):
-        """upload_state harvested should return urls and is_ready_to_show False."""
+        """A student requesting a harvested live should not get urls."""
         passport = ConsumerSiteLTIPassportFactory()
         video = VideoFactory(
             id="59c0fc7a-0f64-46c0-993f-bdf47ecd837f",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__consumer_site=passport.consumer_site,
             playlist__title="playlist-002",
-            upload_state=HARVESTED,
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
@@ -1092,7 +1095,114 @@ class VideoLTIViewTestCase(TestCase):
                 "has_chat": True,
                 "has_live_media": True,
                 "is_public": False,
-                "is_ready_to_show": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": video.upload_state,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": HARVESTED,
+                "live_info": {},
+                "live_type": JITSI,
+                "xmpp": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_harvested_live_state_instructor(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """An instructor requesting a harvested live should get urls."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            id="59c0fc7a-0f64-46c0-993f-bdf47ecd837f",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="playlist-002",
+            live_state=HARVESTED,
+            live_type=JITSI,
+            upload_state=PENDING,
+            uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[240, 480, 720],
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = AccessToken(context.get("jwt"))
+        self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "email": None,
+                "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
+                "user_fullname": None,
+            },
+        )
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
+
+        self.assertEqual(context.get("state"), "success")
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": "1569309880",
+                "allow_recording": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
                 "show_download": True,
@@ -1135,9 +1245,9 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "recording_time": 0,
                 "shared_live_medias": [],
-                "live_state": None,
+                "live_state": HARVESTED,
                 "live_info": {},
-                "live_type": None,
+                "live_type": JITSI,
                 "xmpp": None,
             },
         )

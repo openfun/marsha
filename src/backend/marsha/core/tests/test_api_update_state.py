@@ -12,7 +12,6 @@ from channels.layers import get_channel_layer
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
 
-from ..defaults import HARVESTED, PENDING, RAW, STOPPED
 from ..factories import (
     DocumentFactory,
     SharedLiveMediaFactory,
@@ -96,69 +95,6 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, None)
         self.assertEqual(video.upload_state, "processing")
         self.assertEqual(video.resolutions, None)
-        message = async_to_sync(channel_layer.receive)("test_channel")
-        self.assertEqual(message["type"], "video_updated")
-        message = async_to_sync(channel_layer.receive)("test_channel_admin")
-        self.assertEqual(message["type"], "video_updated")
-
-    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
-    def test_api_update_state_video_harvested(self):
-        """Video `upload_state` to `harvested` should reset live state and live info."""
-        video = VideoFactory(
-            id="1c5a998a-5bb9-41ea-836e-22be0cdeb834",
-            upload_state=PENDING,
-            live_state=STOPPED,
-            live_info={
-                "medialive": {
-                    "input": {
-                        "id": "medialive_input_1",
-                        "endpoints": [
-                            "https://live_endpoint1",
-                            "https://live_endpoint2",
-                        ],
-                    },
-                    "channel": {"id": "medialive_channel_1"},
-                },
-                "mediapackage": {
-                    "id": "mediapackage_channel_1",
-                    "endpoints": {
-                        "hls": {
-                            "id": "endpoint1",
-                            "url": "https://channel_endpoint1/live.m3u8",
-                        },
-                    },
-                },
-            },
-            live_type=RAW,
-        )
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_add)(
-            VIDEO_ROOM_NAME.format(video_id=str(video.id)), "test_channel"
-        )
-        async_to_sync(channel_layer.group_add)(
-            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)), "test_channel_admin"
-        )
-        data = {
-            "extraParameters": {"resolutions": [240, 480, 720]},
-            "key": f"{video.pk}/video/{video.pk}/1533686400",
-            "state": "harvested",
-        }
-        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.post(
-            "/api/update-state",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
-        video.refresh_from_db()
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), {"success": True})
-        self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc))
-        self.assertEqual(video.upload_state, HARVESTED)
-        self.assertEqual(video.resolutions, [240, 480, 720])
-        self.assertEqual(video.live_state, HARVESTED)
-        self.assertIsNone(video.live_info)
         message = async_to_sync(channel_layer.receive)("test_channel")
         self.assertEqual(message["type"], "video_updated")
         message = async_to_sync(channel_layer.receive)("test_channel_admin")
