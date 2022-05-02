@@ -548,15 +548,15 @@ class VideoAPITest(TestCase):
                         "urls": {
                             "media": (
                                 "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                                "sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400/"
-                                "1638230400/1638230400.pdf?response-content-disposition=attachment"
-                                "%3B+filename%3Dpython-expressions.pdf&Expires=1638237600&Signatur"
-                                "e=O3B-Zc9XN1xmS~c05JvXdvHV~yfo1Exf~9vK3xLwlufMUASfLkngGKg4O7ut5di"
-                                "Pa7uyTbpU2lfroX0gl3ichbSWvBjPOLK5EZE8QRrp7U2vOE5Z74V1397IvcMMq7kT"
-                                "CYP3pH9IDSYhheVO3AurBN4kh6zVm1fjiQWxjqZwF5gBgue-G13OsCldfZBTXDoFe"
-                                "ZkY9HCEsZV9jXKkcDAsDLJaGcEodS2RMBi~ZjlmY2CrCipHZ3zOMKJ38bLHo2G1wb"
-                                "PbGt8vloPM30kytiMrsK3zTciyhGDreSSvqsgDMuE3MpxeGWM4LWkdLF7CcPPKP6A"
-                                "OpCzIp3tnp7M9nT~D8w__&Key-Pair-Id=cloudfront-access-key-id"
+                                "sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400."
+                                "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
+                                "-expressions.pdf&Expires=1638237600&Signature=KJeU8~a7gmBi9tOgPk"
+                                "3WuLzSpO0vn6F1Mxk7XTp7MkmjOW5zZN96aRP3TixixWLY58vsHNH6atGD22MBl7"
+                                "gQiVdaW5Aehjb0t23fZZRavIo~A3d5P4zJsw1xjJxULSxZMj~4Pirs61Tnx5DShz"
+                                "bHH3iXlACFvjYxjbknzSwuWnrk9XvgEXCcrtNArMNrAYWySdy69YkEp5MkBu83r2"
+                                "XAUP0Uli6KlqcOacMJNXq-HOSiWboTecPNkxaNIEvxrwu6fhCrimfXeA2YPg0wQv"
+                                "4YZ0vY8aGuUmKUcrABa2DLGjaCo3s1lyeDfXftb2DAe5ifgOOdsVJ8nq2ar8wRrr"
+                                "vo-A__&Key-Pair-Id=cloudfront-access-key-id"
                             ),
                             "pages": {
                                 "1": (
