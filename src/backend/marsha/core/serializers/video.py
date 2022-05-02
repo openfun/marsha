@@ -10,7 +10,15 @@ from django.utils.text import slugify
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
-from ..defaults import IDLE, JITSI, LIVE_CHOICES, LIVE_TYPE_CHOICES, RUNNING, STOPPED
+from ..defaults import (
+    HARVESTED,
+    IDLE,
+    JITSI,
+    LIVE_CHOICES,
+    LIVE_TYPE_CHOICES,
+    RUNNING,
+    STOPPED,
+)
 from ..models import Thumbnail, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
@@ -25,10 +33,11 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the UpdateLiveState API endpoint."""
 
     state = serializers.ChoiceField(
-        tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED))
+        tuple(c for c in LIVE_CHOICES if c[0] in (RUNNING, STOPPED, HARVESTED))
     )
     logGroupName = serializers.CharField()
     requestId = serializers.CharField()
+    extraParameters = serializers.DictField(allow_null=True, required=False)
 
 
 class InitLiveStateSerializer(serializers.Serializer):
@@ -75,6 +84,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
+        if not self.context.get("is_admin") and obj.live_state == HARVESTED:
+            return None
+
         if obj.live_info is not None and obj.live_info.get("mediapackage"):
             # Adaptive Bit Rate manifests
             return {
@@ -305,7 +317,7 @@ class VideoSerializer(VideoBaseSerializer):
             The data are filtered to only return RTMP endpoints and jitsi configuration if needed.
             All other data are sensitive, used only by the backend and must never be exposed.
         """
-        if obj.live_state is None:
+        if obj.live_state is None or obj.live_state == HARVESTED:
             return {}
 
         live_info = {}

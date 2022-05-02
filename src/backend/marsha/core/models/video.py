@@ -221,8 +221,7 @@ class Video(BaseFile):
         `uploaded_on` field but it is necessary for conveniency and clarity in the client.
         """
         return (
-            self.uploaded_on is not None
-            and self.upload_state not in [HARVESTED, DELETED]
+            self.uploaded_on is not None and self.upload_state != DELETED
         ) or self.live_state is not None
 
     @staticmethod

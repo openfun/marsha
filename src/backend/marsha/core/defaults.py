@@ -34,10 +34,8 @@ from django.utils.translation import gettext_lazy as _
 STATE_CHOICES = (
     (PENDING, _("pending")),
     (PROCESSING, _("processing")),
-    (HARVESTING, _("processing live to VOD")),
     (ERROR, _("error")),
     (READY, _("ready")),
-    (HARVESTED, _("harvested")),
     (DELETED, _("deleted")),
 )
 
@@ -45,7 +43,6 @@ LIVE_CHOICES = (
     (HARVESTED, _("harvested")),
     (HARVESTING, _("processing live to VOD")),
     (IDLE, _("idle")),
-    (PAUSED, _("paused")),
     (RUNNING, _("running")),
     (STARTING, _("starting")),
     (STOPPED, _("stopped")),
