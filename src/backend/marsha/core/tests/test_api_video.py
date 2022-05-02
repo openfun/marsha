@@ -5026,11 +5026,11 @@ class VideoAPITest(TestCase):
             mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
 
-    def test_api_video_end_live_anonymous_user(self):
-        """Anonymous users are not allowed to end a live."""
+    def test_api_video_harvest_live_anonymous_user(self):
+        """Anonymous users are not allowed to harvest a live."""
         video = factories.VideoFactory()
 
-        response = self.client.post(f"/api/videos/{video.id}/end-live/")
+        response = self.client.post(f"/api/videos/{video.id}/harvest-live/")
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -5038,8 +5038,8 @@ class VideoAPITest(TestCase):
             content, {"detail": "Authentication credentials were not provided."}
         )
 
-    def test_api_video_instructor_end_live_in_read_only(self):
-        """An instructor with read_only set to true should not be able to end a live."""
+    def test_api_video_instructor_harvest_live_in_read_only(self):
+        """An instructor with read_only set to true should not be able to harvest a live."""
         video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -5047,20 +5047,20 @@ class VideoAPITest(TestCase):
         jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.post(
-            f"/api/videos/{video.id}/end-live/",
+            f"/api/videos/{video.id}/harvest-live/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_video_student_end_live(self):
-        """A student should not be able to end a live."""
+    def test_api_video_student_harvest_live(self):
+        """A student should not be able to harvest a live."""
         video = factories.VideoFactory()
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = ["student"]
 
         response = self.client.post(
-            f"/api/videos/{video.id}/end-live/",
+            f"/api/videos/{video.id}/harvest-live/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -5070,13 +5070,13 @@ class VideoAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    def test_api_video_end_live_staff_or_user(self):
-        """Users authenticated via a session should not be able to end a live."""
+    def test_api_video_harvest_live_staff_or_user(self):
+        """Users authenticated via a session should not be able to harvest a live."""
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post(f"/api/videos/{video.id}/end-live/")
+            response = self.client.post(f"/api/videos/{video.id}/harvest-live/")
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -5084,8 +5084,8 @@ class VideoAPITest(TestCase):
             )
 
     @override_settings(LIVE_CHAT_ENABLED=True)
-    def test_api_video_instructor_end_idle_live(self):
-        """An instructor can end a live in idle state."""
+    def test_api_video_instructor_harvest_idle_live(self):
+        """An instructor can harvest a live in idle state."""
         video = factories.VideoFactory(
             live_state=IDLE,
             live_type=JITSI,
@@ -5100,7 +5100,7 @@ class VideoAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.post(
-                f"/api/videos/{video.id}/end-live/",
+                f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -5154,8 +5154,8 @@ class VideoAPITest(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_api_video_instructor_end_paused_live_recording_slice(self):
-        """An instructor can end a live in paused state during recording.
+    def test_api_video_instructor_harvest_paused_live_recording_slice(self):
+        """An instructor can harvest a live in stopped state during recording.
 
         If recording slices exist, the live should be harvested."""
         start = timezone.now()
@@ -5205,7 +5205,7 @@ class VideoAPITest(TestCase):
         ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
-                f"/api/videos/{video.id}/end-live/",
+                f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_delete_aws_element_stack.assert_called_once()
@@ -5423,8 +5423,8 @@ class VideoAPITest(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
-    def test_api_video_instructor_end_paused_live_no_recording_slice(self):
-        """An instructor can end a live in paused state during recording.
+    def test_api_video_instructor_harvest_paused_live_no_recording_slice(self):
+        """An instructor can harvest a live in paused state during recording.
 
         If no recording slices exist, the live should not be harvested."""
         start = timezone.now()
@@ -5473,7 +5473,7 @@ class VideoAPITest(TestCase):
         ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
-                f"/api/videos/{video.id}/end-live/",
+                f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_delete_aws_element_stack.assert_called_once()
@@ -5525,8 +5525,8 @@ class VideoAPITest(TestCase):
             },
         )
 
-    def test_api_video_instructor_end_paused_live_missing_manifest(self):
-        """An instructor ending a live with a missing manifest should delete the video"""
+    def test_api_video_instructor_harvest_paused_live_missing_manifest(self):
+        """An instructor harvesting a live with a missing manifest should delete the video"""
         start = timezone.now()
         video = factories.VideoFactory(
             recording_slices=[
@@ -5575,7 +5575,7 @@ class VideoAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.post(
-                f"/api/videos/{video.id}/end-live/",
+                f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_delete_aws_element_stack.assert_called_once()
@@ -5627,8 +5627,8 @@ class VideoAPITest(TestCase):
             },
         )
 
-    def test_api_video_instructor_end_live_wrong_live_state(self):
-        """An instructor can not end a live not in IDLE or PAUSED state."""
+    def test_api_video_instructor_harvest_live_wrong_live_state(self):
+        """An instructor can not harvest a live not in STOPPED state."""
         video = factories.VideoFactory(
             live_state=random.choice(
                 [s[0] for s in LIVE_CHOICES if s[0] not in [PAUSED, IDLE]]
@@ -5644,7 +5644,7 @@ class VideoAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.post(
-                f"/api/videos/{video.id}/end-live/",
+                f"/api/videos/{video.id}/harvest-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_not_called()
