@@ -3,11 +3,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.utils import timezone
 
 import boto3
 
-from marsha.core.defaults import DELETED, HARVESTED
+from marsha.core.defaults import DELETED, HARVESTED, PENDING
 from marsha.core.models import Video
 
 
@@ -29,22 +30,28 @@ def generate_expired_date():
 
 
 class Command(BaseCommand):
-    """Check every video in harvested and remove them if they are too old."""
+    """Check every video in ready and remove them if they are too old."""
 
     help = (
-        "Check every video having harvested upload state and remove them if "
+        "Check every video having ready upload state and remove them if "
         "they are too old."
     )
 
     def handle(self, *args, **options):
         """Execute management command."""
+        expired_date = generate_expired_date()
         videos = Video.objects.filter(
-            upload_state=HARVESTED,
-            updated_on__lte=generate_expired_date(),
+            Q(live_state=HARVESTED, upload_state=PENDING, starting_at__lte=expired_date)
+            | Q(
+                live_state=HARVESTED,
+                upload_state=PENDING,
+                starting_at__isnull=True,
+                uploaded_on__lte=expired_date,
+            ),
         )
         for video in videos:
             """
-            For each video harvested we check the updated_at value and if it's
+            For each video ready we check the updated_at value and if it's
             setting.NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS old, the video must be put offline and
             all related objects on aws removed.
             """

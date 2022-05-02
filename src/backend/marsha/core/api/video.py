@@ -30,6 +30,7 @@ from ..services.video_recording import (
     start_recording,
     stop_recording,
 )
+from ..utils import time_utils
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -300,7 +301,11 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         if video.live_state is None:
             return Response({"error": "Call initiate-live before starting a live"}, 400)
 
-        if video.live_state not in [defaults.IDLE, defaults.PAUSED]:
+        if video.live_state not in [
+            defaults.IDLE,
+            defaults.STOPPED,
+            defaults.HARVESTED,
+        ]:
             return Response(
                 {
                     "error": (
@@ -310,7 +315,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
-        if video.live_info is None:
+        if video.live_info is None or video.live_state == defaults.HARVESTED:
             now = timezone.now()
             stamp = to_timestamp(now)
             key = f"{video.pk}_{stamp}"
@@ -321,11 +326,18 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         start_live_channel(video.get_medialive_channel().get("id"))
 
-        video.live_state = defaults.STARTING
-        video.save()
-        channel_layers_utils.dispatch_video_to_groups(video)
-        serializer = self.get_serializer(video)
+        # if the video has been harvested, we need to reset its recordings
+        if video.live_state == defaults.HARVESTED:
+            video.recording_slices = []
 
+        video.live_state = defaults.STARTING
+        video.upload_state = defaults.PENDING
+        video.resolutions = None
+        video.save()
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
+        serializer = self.get_serializer(video)
         return Response(serializer.data)
 
     @action(
@@ -520,6 +532,20 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             video.live_state = defaults.STOPPED
             live_info.update({"stopped_at": stamp})
             video.live_info = live_info
+
+        if serializer.validated_data["state"] == defaults.HARVESTED:
+            video.live_state = defaults.HARVESTED
+            video.resolutions = serializer.validated_data["extraParameters"].get(
+                "resolutions"
+            )
+            live_info = {
+                "started_at": video.live_info.get("started_at"),
+                "stopped_at": video.live_info.get("stopped_at"),
+                "jitsi": video.live_info.get("jitsi"),
+            }
+            video.uploaded_on = time_utils.to_datetime(
+                serializer.validated_data["extraParameters"].get("uploaded_on")
+            )
 
         video.live_info = live_info
         video.save()
