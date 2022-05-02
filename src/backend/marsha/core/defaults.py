@@ -42,6 +42,8 @@ STATE_CHOICES = (
 )
 
 LIVE_CHOICES = (
+    (HARVESTED, _("harvested")),
+    (HARVESTING, _("processing live to VOD")),
     (IDLE, _("idle")),
     (PAUSED, _("paused")),
     (RUNNING, _("running")),

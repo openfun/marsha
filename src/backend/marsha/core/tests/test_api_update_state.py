@@ -157,7 +157,7 @@ class UpdateStateAPITest(TestCase):
         self.assertEqual(video.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc))
         self.assertEqual(video.upload_state, HARVESTED)
         self.assertEqual(video.resolutions, [240, 480, 720])
-        self.assertIsNone(video.live_state)
+        self.assertEqual(video.live_state, HARVESTED)
         self.assertIsNone(video.live_info)
         message = async_to_sync(channel_layer.receive)("test_channel")
         self.assertEqual(message["type"], "video_updated")
