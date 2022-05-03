@@ -3,6 +3,23 @@ locals {
   static_origin_id = "marsha-static-origin"
 }
 
+resource "tls_private_key" "marsha_cloudfront_ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+resource "aws_cloudfront_public_key" "marsha_cloudfront_signer_public_key" {
+  comment     = "Public key signing cloudfront urls"
+  encoded_key = tls_private_key.marsha_cloudfront_ssh_key.public_key_pem
+  name        = "${terraform.workspace}-marsha_cloudfront_signer_public_key"
+}
+
+resource "aws_cloudfront_key_group" "marsha_cloudfront_signer_key_group" {
+  comment = "Key group containing public key signing cloudfront urls"
+  items   = [aws_cloudfront_public_key.marsha_cloudfront_signer_public_key.id]
+  name    = "${terraform.workspace}-marsha_cloudfront_signer_key_group"
+}
+
 # Create an origin access identity that will allow CloudFront to access S3
 # See bucket policies in s3.tf or documentation for more details:
 # https://www.terraform.io/docs/providers/aws/r/cloudfront_origin_access_identity.html
@@ -43,7 +60,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = [var.cloudfront_trusted_signer_id]
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = false
@@ -67,7 +85,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = [var.cloudfront_trusted_signer_id]
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -90,7 +109,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = [var.cloudfront_trusted_signer_id]
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -113,7 +133,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = [var.cloudfront_trusted_signer_id]
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -137,7 +158,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = [var.cloudfront_trusted_signer_id]
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
