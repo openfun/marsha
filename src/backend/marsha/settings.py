@@ -298,12 +298,12 @@ class Base(Configuration):
     LIVE_RAW_ENABLED = values.BooleanValue(False)
 
     # Cloud Front key pair for signed urls
-    CLOUDFRONT_ACCESS_KEY_ID = values.Value(None)
     CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
         os.path.join(BASE_DIR, "..", ".ssh", "cloudfront_private_key")
     )
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
+    CLOUDFRONT_SIGNED_PUBLIC_KEY_ID = values.Value(None)
 
     CLOUDFRONT_DOMAIN = values.Value(None)
 

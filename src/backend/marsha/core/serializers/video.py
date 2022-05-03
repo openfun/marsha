@@ -124,7 +124,8 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             # Sign the urls of mp4 videos only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
                 cloudfront_signer = CloudFrontSigner(
-                    settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+                    settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID,
+                    cloudfront_utils.rsa_signer,
                 )
                 mp4_url = cloudfront_signer.generate_presigned_url(
                     mp4_url, date_less_than=date_less_than

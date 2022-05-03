@@ -7,6 +7,31 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.27.x to 4.0.x
+
+### Before deploying
+
+First you have to install `hashicorp/tls` provider by running `./bin/terraform init` in the `src/aws` directory.
+
+Then the new terraform plan must be applied:
+
+```bash
+$ cd src/aws
+$ make apply
+```
+
+Once done, a new ssh key pair has been generated. The public key is in the cloudfront management public keys and you have to use the corresponding ssh private key in your marsha installation. You have to retrieve it and replace your actual ssh private key by this one.
+
+```bash
+$ ./bin/terraform output cloudfront_ssh_private_key
+```
+
+You also have to remove the `DJANGO_CLOUDFRONT_ACCESS_KEY_ID` environment variable and add the new one `DJANGO_CLOUDFRONT_SIGNED_PUBLIC_KEY_ID`. It's value can be retrieve in the terraform output:
+
+```bash
+$ /bin/terraform output cloudfront_publick_key_id
+```
+
 ## 3.0.0 to 3.1.0
 
 ### After deploying
