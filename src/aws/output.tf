@@ -2,6 +2,15 @@ output "cloudfront_domain" {
   value = aws_cloudfront_distribution.marsha_cloudfront_distribution.domain_name
 }
 
+output "cloudfront_publick_key_id" {
+  value = aws_cloudfront_public_key.marsha_cloudfront_signer_public_key.id
+}
+
+output "cloudfront_ssh_private_key" {
+  value = tls_private_key.marsha_cloudfront_ssh_key.private_key_pem
+  sensitive = true
+}
+
 output "endpoint" {
   value = data.aws_lambda_invocation.configure_lambda_endpoint.result
 }
