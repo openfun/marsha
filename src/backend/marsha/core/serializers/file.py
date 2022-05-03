@@ -118,7 +118,7 @@ class DocumentSerializer(
                 seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
             )
             cloudfront_signer = CloudFrontSigner(
-                settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+                settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
             )
             url = cloudfront_signer.generate_presigned_url(
                 url, date_less_than=date_less_than

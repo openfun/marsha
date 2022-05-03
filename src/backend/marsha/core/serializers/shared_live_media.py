@@ -109,7 +109,7 @@ class SharedLiveMediaSerializer(
                 seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
             )
             cloudfront_signer = CloudFrontSigner(
-                settings.CLOUDFRONT_ACCESS_KEY_ID, cloudfront_utils.rsa_signer
+                settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
             )
 
         pages = {}
