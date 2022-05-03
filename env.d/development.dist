@@ -34,7 +34,7 @@ DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE=False
 DJANGO_CLOUDFRONT_DOMAIN=yourCloudfrontUrl
 # variable below should be uncommented if DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE is set to True
 # DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH=/path/to/cloudfront/ssh/private_key
-# DJANGO_CLOUDFRONT_ACCESS_KEY_ID=YourCloudfrontAccessKeyId
+# DJANGO_CLOUDFRONT_SIGNED_PUBLIC_KEY_ID=YourCloudfrontPublicKeyId
 
 # Medialive ARN role
 DJANGO_AWS_MEDIALIVE_ROLE_ARN=aws:medialive:arn:role

@@ -20,12 +20,17 @@ students
 - Add a widget to make live publicly available and get the shareable url
 - New field deleted_by_cascade on all model inheriting from SafeDeleteModel
   Field added in django-safedelete version 1.2.0
-
-
+- CLOUDFRONT_SIGNED_PUBLIC_KEY_ID settings is added. It contains the 
+  public key id created on AWS cloudfront public keys
 
 ### Changed
 
 - Move appairing device component in the widget dashboard
+- Use cloudfront key groups to sign urls instead of using root AWS ssh key
+
+### Removed
+
+- CLOUDFRONT_ACCESS_KEY_ID settings is removed
 
 ## [4.0.0-beta.3] - 2022-04-22
 

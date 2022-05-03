@@ -383,7 +383,7 @@ class SharedLiveMediaAPITest(TestCase):
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     def test_api_shared_live_media_read_detail_student_ready_to_show_and_signed_url_active(
         self,
@@ -482,7 +482,7 @@ class SharedLiveMediaAPITest(TestCase):
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     def test_api_shared_live_media_read_detail_student_ready_to_show_and_show_download_off(
         self,
@@ -667,7 +667,7 @@ class SharedLiveMediaAPITest(TestCase):
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     def test_api_shared_live_media_read_detail_instructor_ready_to_show_and_signed_url_on(
         self,
@@ -1122,7 +1122,7 @@ class SharedLiveMediaAPITest(TestCase):
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     def test_api_shared_live_media_list_instructor_ready_to_show_and_signed_url_active(
         self,

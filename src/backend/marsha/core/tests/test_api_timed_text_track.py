@@ -375,7 +375,7 @@ class TimedTextTrackAPITest(TestCase):
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_ACCESS_KEY_ID="cloudfront-access-key-id",
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
     def test_api_timed_text_track_read_detail_token_user_signed_urls(self, mock_open):

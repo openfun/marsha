@@ -247,11 +247,10 @@ versions of the app can run in parallel without interfering with each other.
 - Required: No
 - Default: `staticfiles.json`
 
-#### DJANGO_CLOUDFRONT_ACCESS_KEY_ID
+#### DJANGO_CLOUDFRONT_SIGNED_PUBLIC_KEY_ID
 
-The access key ID of the AWS master account (not its account id!) with which we want to sign urls (it is declared in the CloudFront distribution as a signing account).
-
-Note: Must be associated with a master account as IAM accounts cannot sign URLs.
+The public key id saved in AWS cloudfront public keys management. This public key is created by terraform and you can pick
+the id using `terraform output cloudfront_publick_key_id`
 
 - Type: string
 - Required:
@@ -259,9 +258,10 @@ Note: Must be associated with a master account as IAM accounts cannot sign URLs.
   - No otherwise.
 - Default: None;
 
-#### CLOUDFRONT_PRIVATE_KEY_PATH
+#### DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
 
-Path to a private key corresponding to the acess key ID in `DJANGO_CLOUDFRONT_ACCESS_KEY_ID`. Also used to sign Cloudfront URLs.
+Path to a private key corresponding to the public key ID in `DJANGO_CLOUDFRONT_SIGNED_PUBLIC_KEY_ID`. Also used to sign Cloudfront URLs.
+The private key can be retrieve from the terraform output `terraform output cloudfront_ssh_private_key`
 
 - Type: string
 - Required:
