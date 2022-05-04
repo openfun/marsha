@@ -18,8 +18,8 @@ export const DashboardVideoLiveControlPane = ({
   return (
     <DashboardVideoLiveWidgetsContainer>
       <DashboardVideoLiveWidgetToolsAndApplications video={video} />
-      <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
       <DashboardVideoLiveWidgetGeneralTitle video={video} />
+      <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
       <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
       <DashboardVideoLiveWidgetLivePairing video={video} />
     </DashboardVideoLiveWidgetsContainer>
