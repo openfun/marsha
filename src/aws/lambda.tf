@@ -196,7 +196,7 @@ resource "aws_lambda_function" "marsha_mediapackage_lambda" {
       DISABLE_SSL_VALIDATION = var.update_state_disable_ssl_validation
       ECS_CLUSTER = aws_ecs_cluster.marsha_ffmpeg_transmux_cluster.arn
       ECS_TASK_DEFINITION = aws_ecs_task_definition.marsha_ffmpeg_transmux_definition.arn
-      ENDPOINT = "${var.marsha_base_url}${var.update_state_endpoint}"
+      MARSHA_URL = var.marsha_base_url
       RECORDING_SLICES_MANIFEST_ENDPOINT = "${var.marsha_base_url}${var.recording_slices_manifest_endpoint}"
       RECORDING_SLICES_STATE_ENDPOINT = "${var.marsha_base_url}${var.recording_slices_state_endpoint}"
       SECURITY_GROUP = aws_security_group.fargate_ffmpeg_transmux_security_group.id
