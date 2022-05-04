@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
     case 'MediaPackage HarvestJob Notification':
       return harvest(event, context.functionName);
     case 'check':
-      return check(event);
+      return check(event, context);
     default:
       return Promise.reject(
         new Error(`type "${type}" not managed by this lambda"`),

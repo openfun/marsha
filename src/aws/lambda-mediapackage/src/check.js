@@ -1,14 +1,19 @@
 // This module if all videos are transmuxed to call the update state.
 'use strict';
 
+const { computeSignature, sendRequest } = require('update-state/utils');
+
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 
-const { DESTINATION_BUCKET_NAME } = process.env;
+const {
+  DESTINATION_BUCKET_NAME,
+  DISABLE_SSL_VALIDATION,
+  MARSHA_URL,
+  SHARED_SECRET,
+} = process.env;
 
-const updateState = require('update-state');
-
-module.exports = async (event) => {
+module.exports = async (event, context) => {
   const expectedFilesResponse = await s3
     .getObject({
       Bucket: DESTINATION_BUCKET_NAME,
@@ -34,8 +39,23 @@ module.exports = async (event) => {
     }
   }
 
-  // update state
-  return updateState(event.videoEndpoint, 'harvested', {
-    resolutions: expectedFiles.resolutions.map(Number), // force casting resolutions in number
-  });
+  const videoId = event.expectedFilesKey.split('/')[0];
+  const body = {
+    logGroupName: context.logGroupName,
+    requestId: context.awsRequestId,
+    state: 'harvested',
+    extraParameters: {
+      resolutions: expectedFiles.resolutions.map(Number), // force casting resolutions in number
+      uploaded_on: event.videoEndpoint.split('/')[3],
+    },
+  };
+  const signature = computeSignature(SHARED_SECRET, JSON.stringify(body));
+
+  return sendRequest(
+    body,
+    signature,
+    DISABLE_SSL_VALIDATION ? false : true,
+    `${MARSHA_URL}/api/videos/${videoId}/update-live-state/`,
+    'PATCH',
+  );
 };
