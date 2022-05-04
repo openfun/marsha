@@ -976,3 +976,10 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
             self.extension = extra_parameters.get("extension")
 
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
+
+        # This function is imported using import_string to avoid circular import error.
+        channel_layers_utils = import_string(
+            "marsha.websocket.utils.channel_layers_utils"
+        )
+        channel_layers_utils.dispatch_shared_live_media(self)
+        channel_layers_utils.dispatch_video(self.video, to_admin=True)
