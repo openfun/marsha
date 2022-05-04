@@ -4,8 +4,14 @@ from django.test import TestCase
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from marsha.core.factories import ThumbnailFactory, TimedTextTrackFactory, VideoFactory
+from marsha.core.factories import (
+    SharedLiveMediaFactory,
+    ThumbnailFactory,
+    TimedTextTrackFactory,
+    VideoFactory,
+)
 from marsha.core.serializers import (
+    SharedLiveMediaSerializer,
     ThumbnailSerializer,
     TimedTextTrackSerializer,
     VideoSerializer,
@@ -88,4 +94,22 @@ class ChannelLayersUtilsTest(TestCase):
         self.assertEqual(message["type"], "timed_text_track_updated")
         self.assertEqual(
             message["timed_text_track"], TimedTextTrackSerializer(timed_text_track).data
+        )
+
+    def test_dispatch_shared_live_media(self):
+        """A message containing serialized shared_live_media is dispatched to the admin group."""
+        shared_live_media = SharedLiveMediaFactory()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_add)(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(shared_live_media.video.id)),
+            "test_channel",
+        )
+
+        channel_layers_utils.dispatch_shared_live_media(shared_live_media)
+
+        message = async_to_sync(channel_layer.receive)("test_channel")
+        self.assertEqual(message["type"], "shared_live_media_updated")
+        self.assertEqual(
+            message["shared_live_media"],
+            SharedLiveMediaSerializer(shared_live_media).data,
         )
