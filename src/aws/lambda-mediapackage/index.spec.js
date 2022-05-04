@@ -95,10 +95,12 @@ describe('lambda mediapackage', () => {
 
     const context = {
       functionName: 'test-lambda-mediapackage',
+      awsRequestId: '7954d4d1-9dd3-47f4-9542-e7fd5f937fe6',
+      logGroupName: '/aws/lambda/dev-test-marsha-mediapackage',
     };
 
     await lambda(event, context);
 
-    expect(mockCheck).toHaveBeenCalledWith(event);
+    expect(mockCheck).toHaveBeenCalledWith(event, context);
   });
 });
