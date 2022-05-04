@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 from marsha.core.serializers import (
+    SharedLiveMediaSerializer,
     ThumbnailSerializer,
     TimedTextTrackSerializer,
     VideoSerializer,
@@ -46,5 +47,18 @@ def dispatch_timed_text_track(timed_text_track):
         {
             "type": "timed_text_track_updated",
             "timed_text_track": serialized_thumbnail.data,
+        },
+    )
+
+
+def dispatch_shared_live_media(shared_live_media):
+    """Send the shared_live_media to admin users connected to the video consumer."""
+    channel_layer = get_channel_layer()
+    serialized_shared_live_media = SharedLiveMediaSerializer(shared_live_media)
+    async_to_sync(channel_layer.group_send)(
+        VIDEO_ADMIN_ROOM_NAME.format(video_id=str(shared_live_media.video_id)),
+        {
+            "type": "shared_live_media_updated",
+            "shared_live_media": serialized_shared_live_media.data,
         },
     )
