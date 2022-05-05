@@ -21,7 +21,7 @@ export const getLiveSessions = async (
   });
 
   if (!response.ok) {
-    throw new Error('Failed to get live registrations');
+    throw new Error('Failed to get livesessions');
   }
 
   return response.json();
