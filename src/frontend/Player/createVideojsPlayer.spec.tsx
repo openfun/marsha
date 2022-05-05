@@ -3,12 +3,19 @@ import React from 'react';
 import videojs from 'video.js';
 
 import VideoPlayer from 'components/VideoPlayer';
+import { getDecodedJwt } from 'data/appData';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import { liveState, timedTextMode, uploadState } from 'types/tracks';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
+import {
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
+} from 'utils/tests/factories';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { createPlayer } from './createPlayer';
@@ -36,7 +43,19 @@ mockXAPIStatement.mockReturnValue(mockXAPIStatementInterface);
 jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
-jest.mock('../utils/isMSESupported', () => ({
+jest.mock('data/appData', () => ({
+  appData: {
+    jwt: 'foo',
+    video: mockVideo,
+  },
+  getDecodedJwt: jest.fn(),
+}));
+
+jest.mock('data/sideEffects/pushAttendance', () => ({
+  pushAttendance: jest.fn(),
+}));
+
+jest.mock('utils/isMSESupported', () => ({
   isMSESupported: jest.fn(),
 }));
 
@@ -47,6 +66,18 @@ const mockIsMSESupported = isMSESupported as jest.MockedFunction<
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
+
+const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
+  typeof getDecodedJwt
+>;
+
+const mockPushAttendance = pushAttendance as jest.MockedFunction<
+  typeof pushAttendance
+>;
+
+// It prevents console to display error when it tries to play a non existing media
+jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+jest.spyOn(console, 'log').mockImplementation(() => jest.fn());
 
 const mockVideo = videoMockFactory({
   id: 'video-test-videojs-instance',
@@ -78,18 +109,7 @@ const mockVideo = videoMockFactory({
   ],
 });
 
-jest.mock('../data/appData', () => ({
-  appData: {
-    jwt: 'foo',
-    video: mockVideo,
-  },
-  getDecodedJwt: jest.fn().mockImplementation(() => ({
-    locale: 'en',
-    session_id: 'abcd',
-  })),
-}));
-
-jest.mock('../data/stores/useTimedTextTrackLanguageChoices', () => ({
+jest.mock('data/stores/useTimedTextTrackLanguageChoices', () => ({
   useTimedTextTrackLanguageChoices: () => ({
     getChoices: jest.fn(),
     choices: [],
@@ -106,13 +126,17 @@ describe('createVideoJsPlayer', () => {
     });
     // remove all subscribers
     useTranscriptTimeSelector.destroy();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   it('creates videojs player and configures it', async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       wrapInIntlProvider(
@@ -164,6 +188,7 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('creates videojs player without HLS compat and configures it', async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       wrapInIntlProvider(
@@ -243,6 +268,7 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('configures for a live video', async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const video = videoMockFactory({
       urls: {
@@ -375,5 +401,133 @@ describe('createVideoJsPlayer', () => {
     useTranscriptTimeSelector.getState().setTime(10);
 
     expect(player.cache_.initTime).toEqual(10);
+  });
+
+  it('sends attendance for a student watching a live', async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockIsMSESupported.mockReturnValue(true);
+    const video = videoMockFactory({
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      live_state: liveState.RUNNING,
+    });
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={video}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
+
+    expect(player.options_.liveui).toBe(true);
+
+    expect(mockPushAttendance).not.toHaveBeenCalled();
+    // to initialize the video for a live
+    player.qualityLevels().trigger('change');
+    Date.now = jest.fn(() => 1651732370000);
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).toHaveBeenCalledWith(
+      {
+        1651732370000: {
+          fullScreen: false,
+          muted: false,
+          player_timer: 0,
+          playing: false,
+          timestamp: 1651732370000,
+          volume: 1,
+        },
+      },
+      'en',
+      getOrInitAnonymousId(),
+    );
+  });
+
+  it("doesn't send attendance for an admin or instructor watching a live", async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
+    mockIsMSESupported.mockReturnValue(true);
+    const video = videoMockFactory({
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      live_state: liveState.RUNNING,
+    });
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={video}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
+
+    expect(player.currentSources()).toEqual([
+      { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
+    ]);
+    expect(player.options_.liveui).toBe(true);
+
+    // to initialize the video for a live
+    player.qualityLevels().trigger('change');
+    expect(mockPushAttendance).not.toHaveBeenCalled();
+  });
+
+  it("doesn't send attendance when it's not a live", async () => {
+    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockIsMSESupported.mockReturnValue(true);
+    const { container } = render(
+      wrapInIntlProvider(
+        <VideoPlayer
+          video={mockVideo}
+          playerType={'videojs'}
+          timedTextTracks={[]}
+        />,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    const player = createVideojsPlayer(
+      videoElement!,
+      jest.fn(),
+      mockVideo,
+      'en',
+    );
+
+    player.trigger('canplaythrough');
+    expect(mockPushAttendance).not.toHaveBeenCalled();
   });
 });

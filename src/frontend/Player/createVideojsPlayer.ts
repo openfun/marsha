@@ -9,6 +9,9 @@ import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
 import { appData, getDecodedJwt } from 'data/appData';
+import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
+import { liveState } from 'types/tracks';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import {
   QualityLevels,
@@ -20,6 +23,7 @@ import {
   InteractedContextExtensions,
 } from 'types/XAPI';
 import { report } from 'utils/errors/report';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
 import { Maybe, Nullable } from 'utils/types';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
@@ -38,6 +42,7 @@ export const createVideojsPlayer = (
 
   const sources: VideoJsExtendedSourceObject[] = [];
   const plugins: VideoJsPlayerPluginOptions = {};
+  const anonymousId = getOrInitAnonymousId();
 
   if (!isMSESupported()) {
     plugins.qualitySelector = {
@@ -128,6 +133,24 @@ export const createVideojsPlayer = (
   let seekingAt: number = 0;
   let hasSeeked: boolean = false;
   let isInitialized: boolean = false;
+  let interval: number;
+  const hasAttendance =
+    video.live_state === liveState.RUNNING &&
+    getDecodedJwt().permissions.can_update === false;
+
+  const trackAttendance = () => {
+    const attendance = {
+      [Date.now()]: {
+        fullScreen: player.isFullscreen(),
+        muted: player.muted(),
+        player_timer: player.currentTime(),
+        playing: !player.paused(),
+        timestamp: Date.now(),
+        volume: player.volume(),
+      },
+    };
+    pushAttendance(attendance, locale!, anonymousId);
+  };
 
   const getCurrentTrack = (): Nullable<TextTrack> => {
     // TextTrackList is not an iterable object
@@ -157,6 +180,10 @@ export const createVideojsPlayer = (
 
     xapiStatement.initialized(contextExtensions);
     isInitialized = true;
+    // setTimer
+    if (hasAttendance) {
+      interval = window.setInterval(trackAttendance, PUSH_ATTENDANCE_DELAY);
+    }
   };
 
   player.on('canplaythrough', initialize);
@@ -249,6 +276,10 @@ export const createVideojsPlayer = (
     }
 
     xapiStatement.terminated({ time: player.currentTime() });
+
+    if (hasAttendance) {
+      window.clearInterval(interval);
+    }
   });
 
   return player;

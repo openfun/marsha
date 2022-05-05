@@ -22,6 +22,7 @@ students
   Field added in django-safedelete version 1.2.0
 - CLOUDFRONT_SIGNED_PUBLIC_KEY_ID settings is added. It contains the 
   public key id created on AWS cloudfront public keys
+- Push attendances for students watching a live
 
 ### Changed
 
