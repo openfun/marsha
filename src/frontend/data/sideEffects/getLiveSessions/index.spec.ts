@@ -51,7 +51,7 @@ describe('getLiveSessions', () => {
     });
   });
 
-  it('raises an error when it fails to get live registrations (api)', async () => {
+  it('raises an error when it fails to get livesessions (api)', async () => {
     fetchMock.mock(
       '/api/livesessions/',
       Promise.reject(new Error('Failed to perform the request')),
@@ -62,11 +62,11 @@ describe('getLiveSessions', () => {
     );
   });
 
-  it('raises an error when it fails to get live registrations (local)', async () => {
+  it('raises an error when it fails to get live livesessions (local)', async () => {
     fetchMock.mock('/api/livesessions/', 500);
 
     await expect(getLiveSessions()).rejects.toThrowError(
-      'Failed to get live registrations',
+      'Failed to get livesessions',
     );
   });
 });
