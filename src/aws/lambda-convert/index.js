@@ -81,6 +81,7 @@ exports.handler = async (event, context, callback) => {
 
     case "sharedlivemedia":
       try {
+        await updateState(objectKey, PROCESSING);
         const { nbPages, extension } = await convertSharedLiveMedia(
           objectKey,
           sourceBucket
