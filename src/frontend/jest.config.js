@@ -15,8 +15,10 @@ module.exports = {
     './testSetup.ts',
   ],
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'https://localhost'
+  },
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
-  testURL: 'https://localhost',
   transformIgnorePatterns: [
     '/node_modules/(?!(' +
       '@mdx-js/mdx2|' +
@@ -68,4 +70,5 @@ module.exports = {
       'robust-predicates' +
       ')/)',
   ],
+  resolver: '<rootDir>/utils/tests/resolver.js',
 };

@@ -24,7 +24,11 @@ import { wrapInRouter } from 'utils/tests/router';
 import PublicVideoDashboard from '.';
 
 jest.mock('Player/createPlayer', () => ({
-  createPlayer: jest.fn(),
+  createPlayer: jest.fn(() => ({
+    destroy: jest.fn(),
+    getSource: jest.fn(),
+    setSource: jest.fn(),
+  })),
 }));
 jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn().mockResolvedValue(null),
@@ -91,6 +95,12 @@ jest.mock('data/appData', () => ({
 window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('PublicVideoDashboard', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    //    set system date to 2022-01-27T14:00:00
+    jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
+  });
+
   beforeEach(() => {
     fetchMock.mock(
       '/api/timedtexttracks/',
@@ -108,19 +118,10 @@ describe('PublicVideoDashboard', () => {
       },
       { method: 'OPTIONS' },
     );
-    mockCreatePlayer.mockReturnValue({
-      destroy: jest.fn(),
-      getSource: jest.fn(),
-      setSource: jest.fn(),
-    });
     mockCanUpdate = false;
     useLiveStateStarted.setState({
       isStarted: true,
     });
-
-    jest.useFakeTimers();
-    //    set system date to 2022-01-27T14:00:00
-    jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
   });
 
   afterEach(() => {
@@ -128,9 +129,6 @@ describe('PublicVideoDashboard', () => {
     jest.clearAllMocks();
   });
 
-  afterAll(() => {
-    jest.useRealTimers();
-  });
 
   it('displays the video player alone', async () => {
     const video = videoMockFactory({
@@ -351,7 +349,7 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    await waitFor(() =>
+    await waitFor(() => {
       // The player is created
       expect(mockCreatePlayer).toHaveBeenCalledWith(
         'videojs',
@@ -360,8 +358,8 @@ describe('PublicVideoDashboard', () => {
         video,
         'en',
         expect.any(Function),
-      ),
-    );
+      );
+    });
 
     await waitFor(() => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
@@ -371,7 +369,6 @@ describe('PublicVideoDashboard', () => {
     expect(videoElement.tabIndex).toEqual(-1);
 
     screen.getByText('live title');
-
     screen.getByRole('button', { name: 'Hide chat' });
     screen.getByRole('button', { name: 'Show viewers' });
     screen.getByText('Join the chat');
