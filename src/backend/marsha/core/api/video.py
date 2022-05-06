@@ -464,6 +464,53 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(
+        methods=["post"],
+        detail=True,
+        url_path="live-to-vod",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+        ],
+    )
+    # pylint: disable=unused-argument
+    def live_to_vod(self, request, pk=None):
+        """Transforms an harvested live to a VOD.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        video = self.get_object()
+
+        if video.live_state != defaults.HARVESTED:
+            return Response(
+                {
+                    "error": (
+                        "Live video must be harvested before transforming it to VOD."
+                        f" Current status is {video.live_state}"
+                    )
+                },
+                400,
+            )
+
+        video.live_state = defaults.ENDED
+        video.upload_state = defaults.READY
+        video.save()
+
+        channel_layers_utils.dispatch_video_to_groups(video)
+
+        serializer = self.get_serializer(video)
+        return Response(serializer.data)
+
+    @action(
         methods=["patch"],
         detail=True,
         url_path="update-live-state",
@@ -543,7 +590,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             live_info = {
                 "started_at": video.live_info.get("started_at"),
                 "stopped_at": video.live_info.get("stopped_at"),
-                "jitsi": video.live_info.get("jitsi"),
             }
             video.uploaded_on = time_utils.to_datetime(
                 serializer.validated_data["extraParameters"].get("uploaded_on")
