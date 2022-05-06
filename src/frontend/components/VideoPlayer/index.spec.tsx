@@ -3,8 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { createPlayer } from 'Player/createPlayer';
-import { liveState, timedTextMode, uploadState } from 'types/tracks';
-import { PersistentStore } from 'types/XMPP';
+import { timedTextMode, uploadState } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import VideoPlayer from './index';
@@ -166,53 +165,5 @@ describe('VideoPlayer', () => {
       'https://example.com/thumbnail/1080p.jpg',
     );
     expect(screen.queryByText('Webinar is paused')).not.toBeInTheDocument();
-  });
-
-  it('displays the waiting message when a live is paused or stopping', async () => {
-    const pausedStates = [liveState.STOPPING, liveState.PAUSED];
-    const video = videoMockFactory({
-      live_state: pausedStates[Math.floor(Math.random() * pausedStates.length)],
-      urls: {
-        manifests: {
-          hls: 'https://example.com/hls.m3u8',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
-    });
-
-    const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={video}
-          playerType={'videojs'}
-          timedTextTracks={[]}
-        />,
-      ),
-    );
-    await waitFor(() =>
-      // The player is created and initialized with DashJS for adaptive bitrate
-      expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'videojs',
-        expect.any(Element),
-        expect.anything(),
-        video,
-        'en',
-        expect.any(Function),
-      ),
-    );
-
-    const videoElement = container.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-    screen.getByText('Webinar is paused');
   });
 });

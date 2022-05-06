@@ -19,17 +19,6 @@ const messages = defineMessages({
       'Badge text for an uploadable object that encountered an error.',
     id: 'components.UploadableObjectStatusBadge.error',
   },
-  [uploadState.HARVESTED]: {
-    defaultMessage: 'Harvested',
-    description: 'Badge text for an uploadable object that was harvested.',
-    id: 'components.UploadableObjectStatusBadge.harvested',
-  },
-  [uploadState.HARVESTING]: {
-    defaultMessage: 'Harvesting',
-    description:
-      'Badge text for an uploadable object for which harvesting is in progress..',
-    id: 'components.UploadableObjectStatusBadge.harvesting',
-  },
   [uploadState.PENDING]: {
     defaultMessage: 'Pending',
     description:
@@ -87,8 +76,6 @@ export const UploadableObjectStatusBadge = ({
       );
 
     case uploadState.DELETED:
-    case uploadState.HARVESTED:
-    case uploadState.HARVESTING:
     case uploadState.PROCESSING:
       return (
         <Badge role="status" background="brand">

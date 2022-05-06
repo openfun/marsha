@@ -6,12 +6,17 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { liveState } from 'types/tracks';
 
 import { TeacherLiveLifecycleControls } from '.';
-import { StopLiveConfirmationProvider } from 'data/stores/useStopLiveConfirmation';
+
+jest.mock('data/stores/useLiveModale', () => ({
+  useLiveModaleConfiguration: () => [false, jest.fn()],
+}));
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
   appData: { jwt: 'cool_token_m8' },
 }));
+
+jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
 describe('<TeacherLiveLifecycleControls />', () => {
   it('renders info when you are not an jitsi moderator', () => {
@@ -38,15 +43,11 @@ describe('<TeacherLiveLifecycleControls />', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Starting')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
   });
 
   it('renders info to join the room to be able to start the stream', () => {
@@ -73,15 +74,11 @@ describe('<TeacherLiveLifecycleControls />', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Starting')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
   });
 
   it('renders the start button when live is idle', () => {
@@ -108,15 +105,11 @@ describe('<TeacherLiveLifecycleControls />', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Starting')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
   });
 
   it('renders the starting message', () => {
@@ -145,18 +138,14 @@ describe('<TeacherLiveLifecycleControls />', () => {
       screen.queryByRole('button', { name: 'Start streaming' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
   });
 
-  it('renders the pause button when live is running', () => {
+  it('renders the end button when live is running', () => {
     const video = videoMockFactory({ live_state: liveState.RUNNING });
 
     render(
@@ -170,7 +159,7 @@ describe('<TeacherLiveLifecycleControls />', () => {
     );
 
     //  live is running, we can pause it
-    screen.getByRole('button', { name: 'Pause live' });
+    screen.getByRole('button', { name: 'End live' });
 
     expect(
       screen.queryByText('Only the admin can administrate the live'),
@@ -182,51 +171,12 @@ describe('<TeacherLiveLifecycleControls />', () => {
       screen.queryByRole('button', { name: 'Start streaming' }),
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Starting')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'End live' }),
-    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
   });
 
-  it('renders the stop and resume buttons when live is paused', () => {
-    const video = videoMockFactory({ live_state: liveState.PAUSED });
-
-    render(
-      wrapInIntlProvider(
-        <StopLiveConfirmationProvider value={false}>
-          <TeacherLiveLifecycleControls
-            canStartStreaming={true}
-            hasRightToStart={true}
-            video={video}
-          />
-        </StopLiveConfirmationProvider>,
-      ),
-    );
-
-    //  live is paused, you can stop it or resume it
-    screen.getByRole('button', { name: 'End live' });
-    screen.getByRole('button', { name: 'Resume streaming' });
-
-    expect(
-      screen.queryByText('Only the admin can administrate the live'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText('Join the room before start streaming'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Start streaming' }),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText('Starting')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText('Pausing')).not.toBeInTheDocument();
-  });
-
-  it('renders the pause message when live is stopping', () => {
+  it('renders the stop message when live is stopping', () => {
     const video = videoMockFactory({ live_state: liveState.STOPPING });
 
     render(
@@ -239,8 +189,8 @@ describe('<TeacherLiveLifecycleControls />', () => {
       ),
     );
 
-    //  live is pausing, render the message
-    screen.getByText('Pausing');
+    //  live is stopping, render the message
+    screen.getByText('Stopping');
 
     expect(
       screen.queryByText('Only the admin can administrate the live'),
@@ -253,13 +203,64 @@ describe('<TeacherLiveLifecycleControls />', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Starting')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Pause live' }),
+      screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Resume streaming' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the harvesting message when live is harvesting', () => {
+    const video = videoMockFactory({ live_state: liveState.HARVESTING });
+
+    render(
+      wrapInIntlProvider(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+          video={video}
+        />,
+      ),
+    );
+
+    //  live is stopping, render the message
+    screen.getByText('Harvesting in progress');
+
+    expect(
+      screen.queryByText('Only the admin can administrate the live'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Join the room before start streaming'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Start streaming' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Starting')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'End live' }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Resume streaming' }),
     ).not.toBeInTheDocument();
+  });
+
+  it('throws an error when live has no live_state', () => {
+    const video = videoMockFactory({ live_state: null });
+
+    try {
+      render(
+        wrapInIntlProvider(
+          <TeacherLiveLifecycleControls
+            canStartStreaming={true}
+            hasRightToStart={true}
+            video={video}
+          />,
+        ),
+      );
+    } catch (e: any) {
+      expect(e.message).toEqual(
+        'This should not happen, you need to check a live is ready for the video before using this component.',
+      );
+    }
   });
 });

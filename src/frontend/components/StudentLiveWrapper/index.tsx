@@ -5,18 +5,15 @@ import { ConverseInitializer } from 'components/ConverseInitializer';
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
-import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
-import { pollForLive } from 'data/sideEffects/pollForLive';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { liveState, Video } from 'types/tracks';
+import { Video } from 'types/tracks';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -44,10 +41,6 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       currentItem: state.currentItem,
       setPanelVisibility: state.setPanelVisibility,
     }));
-  const { isStarted, setIsLiveStarted } = useLiveStateStarted((state) => ({
-    isStarted: state.isStarted,
-    setIsLiveStarted: state.setIsStarted,
-  }));
   const isParticipantOnstage = useParticipantWorkflow(
     (state) => state.accepted,
   );
@@ -75,41 +68,11 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
 
   // show panel only when user first time comes on the live
   useEffect(() => {
-    if (video.xmpp && isStarted && currentItem && showPanelTrigger) {
+    if (video.xmpp && currentItem && showPanelTrigger) {
       setPanelVisibility(true);
       setShowPanelTrigger(false);
     }
-  }, [video.xmpp, isStarted, currentItem, showPanelTrigger]);
-
-  useEffect(() => {
-    let canceled = false;
-    const poll = async () => {
-      if (
-        isStarted ||
-        !video.urls ||
-        !video.live_state ||
-        [liveState.IDLE, liveState.STARTING].includes(video.live_state)
-      ) {
-        return;
-      }
-
-      await pollForLive(video.urls);
-      if (canceled) {
-        return;
-      }
-
-      setIsLiveStarted(true);
-    };
-
-    poll();
-    return () => {
-      canceled = true;
-    };
-  }, [video, isStarted]);
-
-  if (!isStarted && !isParticipantOnstage) {
-    return <StudentLiveAdvertising video={video} />;
-  }
+  }, [video.xmpp, currentItem, showPanelTrigger]);
 
   return (
     <ConverseInitializer video={video}>

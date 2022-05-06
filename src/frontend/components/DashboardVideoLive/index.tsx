@@ -17,7 +17,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { StopLiveConfirmationProvider } from 'data/stores/useStopLiveConfirmation';
+import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import { Video, liveState, LiveModeType } from 'types/tracks';
 
 interface DashboardVideoLiveProps {
@@ -67,7 +67,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   return (
     <ConverseInitializer video={video}>
       <LiveFeedbackProvider value={false}>
-        <StopLiveConfirmationProvider value={false}>
+        <LiveModaleConfigurationProvider value={null}>
           <LiveVideoLayout
             actionsElement={
               <Fragment>
@@ -90,7 +90,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               <Fragment>
                 {appData.flags?.live_raw &&
                   video.live_state &&
-                  [liveState.IDLE, liveState.PAUSED].includes(
+                  [liveState.IDLE, liveState.STOPPED].includes(
                     video.live_state,
                   ) && (
                     <Box direction={'row'} justify={'center'} margin={'small'}>
@@ -119,7 +119,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
             }
             sideElement={<LiveVideoPanel video={video} />}
           />
-        </StopLiveConfirmationProvider>
+        </LiveModaleConfigurationProvider>
       </LiveFeedbackProvider>
     </ConverseInitializer>
   );

@@ -1,12 +1,10 @@
 import { defineMessage } from '@formatjs/intl';
 import { Box, BoxProps, Paragraph, Spinner } from 'grommet';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useIntl } from 'react-intl';
 
 import { liveState, Video } from 'types/tracks';
 
-import { PauseLiveButton } from './PauseLiveButton';
-import { ResumeLiveButton } from './ResumeLiveButton';
 import { StartLiveButton } from './StartLiveButton';
 import { StopLiveButton } from './StopLiveButton';
 
@@ -36,10 +34,16 @@ const messages = defineMessage({
       'Message displayed when the live is currently starting or resuming',
     id: 'component.TeacherLiveLifecycleControls.starting',
   },
-  pausing: {
-    defaultMessage: 'Pausing',
-    description: 'Message displayed when the live is currently pausing',
-    id: 'component.TeacherLiveLifecycleControls.pausing',
+  stopping: {
+    defaultMessage: 'Stopping',
+    description: 'Message displayed when the live is currently stopping',
+    id: 'component.TeacherLiveLifecycleControls.stopping',
+  },
+  harvesting: {
+    defaultMessage: 'Harvesting in progress',
+    description:
+      'Title render in the teacher control bar when live state is harvesting.',
+    id: 'component.TeacherLiveLifecycleControls.harvesting',
   },
 });
 
@@ -75,7 +79,11 @@ export const TeacherLiveLifecycleControls = ({
         {intl.formatMessage(messages.notAnAdministrator)}
       </Paragraph>
     );
-  } else if (video.live_state === liveState.IDLE) {
+  } else if (
+    [liveState.IDLE, liveState.STOPPED, liveState.HARVESTED].includes(
+      video.live_state,
+    )
+  ) {
     content = <StartLiveButton video={video} margin={firstItemMargin} />;
   } else if (video.live_state === liveState.STARTING) {
     content = (
@@ -87,19 +95,21 @@ export const TeacherLiveLifecycleControls = ({
       </Box>
     );
   } else if (video.live_state === liveState.RUNNING) {
-    content = <PauseLiveButton video={video} margin={firstItemMargin} />;
-  } else if (video.live_state === liveState.PAUSED) {
-    content = (
-      <Fragment>
-        <StopLiveButton video={video} margin={firstItemMargin} />
-        <ResumeLiveButton video={video} margin={{ left: 'small' }} />
-      </Fragment>
-    );
+    content = <StopLiveButton video={video} margin={firstItemMargin} />;
   } else if (video.live_state === liveState.STOPPING) {
     content = (
       <Box direction="row" flex="shrink" margin={firstItemMargin}>
         <Paragraph margin="auto">
-          {intl.formatMessage(messages.pausing)}
+          {intl.formatMessage(messages.stopping)}
+        </Paragraph>
+        <Spinner margin={{ left: 'small' }} />
+      </Box>
+    );
+  } else if (video.live_state === liveState.HARVESTING) {
+    content = (
+      <Box direction="row" flex="shrink" margin={firstItemMargin}>
+        <Paragraph margin="auto">
+          {intl.formatMessage(messages.harvesting)}
         </Paragraph>
         <Spinner margin={{ left: 'small' }} />
       </Box>

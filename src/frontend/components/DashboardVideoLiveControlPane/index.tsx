@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
-import { DashboardVideoLiveWidgetGeneralTitle } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetGeneralTitle';
-import { DashboardVideoLiveWidgetToolsAndApplications } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetToolsAndApplications';
-import { DashboardVideoLiveWidgetLivePairing } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetLivePairing';
-import { DashboardVideoLiveWidgetSchedulingAndDescription } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSchedulingAndDescription';
-import { DashboardVideoLiveWidgetVisibilityAndInteraction } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { Video } from 'types/tracks';
+
+import { DashboardVideoLiveWidgetsContainer } from './widgets/DashboardVideoLiveWidgetsContainer';
+import { DashboardVideoLiveWidgetGeneralTitle } from './widgets/DashboardVideoLiveWidgetGeneralTitle';
+import { DashboardVideoLiveWidgetToolsAndApplications } from './widgets/DashboardVideoLiveWidgetToolsAndApplications';
+import { DashboardVideoLiveWidgetLivePairing } from './widgets/DashboardVideoLiveWidgetLivePairing';
+import { DashboardVideoLiveWidgetSchedulingAndDescription } from './widgets/DashboardVideoLiveWidgetSchedulingAndDescription';
+import { DashboardVideoLiveWidgetVisibilityAndInteraction } from './widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
+import { DashboardVideoLiveWidgetVOD } from './widgets/DashboardVideoLiveWidgetVOD';
 
 interface DashboardVideoLiveControlPaneProps {
   video: Video;
@@ -22,6 +24,7 @@ export const DashboardVideoLiveControlPane = ({
       <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
       <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
       <DashboardVideoLiveWidgetLivePairing video={video} />
+      <DashboardVideoLiveWidgetVOD video={video} />
     </DashboardVideoLiveWidgetsContainer>
   );
 };

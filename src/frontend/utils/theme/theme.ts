@@ -49,6 +49,7 @@ const colorsGeneric = {
   'status-ok': '#00c781',
   'status-unknown': '#cccccc',
   'status-warning': '#ffaa15',
+  'dark-background': '#001a29',
 };
 
 const colorsMain = {

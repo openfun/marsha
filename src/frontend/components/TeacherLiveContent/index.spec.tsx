@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import React, { Suspense } from 'react';
+import { LiveModaleProps } from 'components/LiveModale';
+import React, { Fragment, Suspense } from 'react';
 
 import { LiveModeType } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
+import { Nullable } from 'utils/types';
 
 import { TeacherLiveContent } from '.';
 
@@ -12,18 +14,18 @@ jest.mock('components/TeacherLiveRawWrapper', () => () => (
 jest.mock('components/DashboardVideoLiveJitsi', () => () => (
   <span>video live jitsi</span>
 ));
-jest.mock('components/TeacherLiveStopConfirmation', () => ({
-  TeacherLiveStopConfirmation: () => <span>stop confirmation</span>,
+jest.mock('components/LiveModale', () => ({
+  LiveModale: () => <span>stop confirmation</span>,
 }));
 
-let mockStopLiveConfirmation = false;
-jest.mock('data/stores/useStopLiveConfirmation', () => ({
-  useStopLiveConfirmation: () => [mockStopLiveConfirmation, jest.fn()],
+let mockLiveModaleConfiguration: Nullable<LiveModaleProps>;
+jest.mock('data/stores/useLiveModale', () => ({
+  useLiveModaleConfiguration: () => [mockLiveModaleConfiguration, jest.fn()],
 }));
 
 describe('<TeacherLiveContent />', () => {
   beforeEach(() => {
-    mockStopLiveConfirmation = false;
+    mockLiveModaleConfiguration = null;
   });
 
   it('renders the raw wrapper', async () => {
@@ -44,7 +46,10 @@ describe('<TeacherLiveContent />', () => {
     expect(screen.queryByText('stop confirmation')).not.toBeInTheDocument();
     expect(screen.queryByText('video live jitsi')).not.toBeInTheDocument();
 
-    mockStopLiveConfirmation = true;
+    mockLiveModaleConfiguration = {
+      content: <Fragment></Fragment>,
+      actions: [],
+    };
 
     rerender(
       <Suspense fallback={'loading'}>
@@ -80,7 +85,10 @@ describe('<TeacherLiveContent />', () => {
     expect(screen.queryByText('stop confirmation')).not.toBeInTheDocument();
     expect(screen.queryByText('live raw wrapper')).not.toBeInTheDocument();
 
-    mockStopLiveConfirmation = true;
+    mockLiveModaleConfiguration = {
+      content: <Fragment></Fragment>,
+      actions: [],
+    };
 
     rerender(
       <Suspense fallback={'loading'}>
