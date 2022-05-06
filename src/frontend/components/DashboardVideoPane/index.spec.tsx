@@ -350,24 +350,4 @@ describe('<DashboardVideoPane />', () => {
       cleanup();
     }
   });
-
-  it('shows the video harvested dashboard when the video is in HARVESTED state', () => {
-    const video = videoMockFactory({
-      upload_state: uploadState.HARVESTED,
-    });
-    const queryClient = new QueryClient();
-
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <DashboardVideoPane video={video} />
-          </QueryClientProvider>,
-        ),
-      ),
-    );
-
-    screen.getByRole('button', { name: 'watch' });
-    screen.getByRole('button', { name: 'publish the video' });
-  });
 });

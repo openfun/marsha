@@ -84,31 +84,6 @@ describe('<DashboardVideo />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('hides timed text pane when the upload state is HARVESTING', () => {
-    const videoProps = videoMockFactory({
-      id: 'dd43',
-      upload_state: uploadState.HARVESTING,
-    });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
-
-    screen.getByTitle('dd43');
-    expect(
-      screen.queryByText('dashboard timed text pane'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('hides timed text pane when the upload state is HARVESTED', () => {
-    const videoProps = videoMockFactory({
-      id: 'dd43',
-      upload_state: uploadState.HARVESTED,
-    });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
-
-    screen.getByTitle('dd43');
-    expect(
-      screen.queryByText('dashboard timed text pane'),
-    ).not.toBeInTheDocument();
-  });
   it('hides timed text pane when the upload state is PENDING', () => {
     const videoProps = videoMockFactory({
       id: 'dd43',

@@ -10,9 +10,17 @@ import { ObjectStatusPicker } from '.';
 
 jest.mock('../../data/appData', () => ({}));
 
-const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
-  uploadState;
-const { IDLE, PAUSED, RUNNING, STARTING, STOPPED, STOPPING } = liveState;
+const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
+const {
+  IDLE,
+  RUNNING,
+  STARTING,
+  STOPPED,
+  HARVESTED,
+  HARVESTING,
+  STOPPING,
+  ENDED,
+} = liveState;
 
 describe('<ObjectStatusPicker />', () => {
   describe('upload state', () => {
@@ -190,50 +198,6 @@ describe('<ObjectStatusPicker />', () => {
 
       screen.getByText('Deleted ❌');
     });
-
-    it('renders status info for an object in state HARVESTING', () => {
-      const object = {
-        id: uuidv4(),
-        upload_state: HARVESTING,
-      } as UploadableObject;
-
-      render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
-      );
-
-      screen.getByText('Transforming live in VOD');
-    });
-
-    it('renders status info for an object in state HARVESTED', () => {
-      const object = {
-        id: uuidv4(),
-        upload_state: HARVESTED,
-      } as UploadableObject;
-
-      render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
-      );
-
-      screen.getByText('Waiting VOD publication ✔️');
-    });
   });
 
   describe('live state', () => {
@@ -352,10 +316,10 @@ describe('<ObjectStatusPicker />', () => {
       screen.getByText('Live is stopping');
     });
 
-    it('renders status info for an object in live state PAUSED', () => {
+    it('renders status info for an object in live state HARVESTED', () => {
       const object = {
         id: uuidv4(),
-        live_state: PAUSED,
+        live_state: HARVESTED,
         upload_state: PENDING,
       } as UploadableObject;
 
@@ -372,7 +336,53 @@ describe('<ObjectStatusPicker />', () => {
         ),
       );
 
-      screen.getByText('Live is paused');
+      screen.getByText('Waiting VOD publication');
+    });
+
+    it('renders status info for an object in live state HARVESTING', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: HARVESTING,
+        upload_state: PENDING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Transforming live in VOD');
+    });
+
+    it('renders status info for an object in live state ENDED', () => {
+      const object = {
+        id: uuidv4(),
+        live_state: ENDED,
+        upload_state: PENDING,
+      } as UploadableObject;
+
+      render(
+        wrapInIntlProvider(
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <ObjectStatusPicker object={object} />
+          </UploadManagerContext.Provider>,
+        ),
+      );
+
+      screen.getByText('Live has ended');
     });
   });
 });

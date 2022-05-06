@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { DashboardVideoLiveWidgetTemplate } from '.';
 
@@ -12,13 +13,15 @@ const genericInfoText = 'An example info text';
 describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate opened, with an info text ', () => {
     render(
-      <DashboardVideoLiveWidgetTemplate
-        initialOpenValue={true}
-        infoText={genericInfoText}
-        title={genericTitle}
-      >
-        <GenericComponent />
-      </DashboardVideoLiveWidgetTemplate>,
+      wrapInIntlProvider(
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={true}
+          infoText={genericInfoText}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>,
+      ),
     );
     screen.getByText(genericTitle);
     screen.getByText('Generic component');
@@ -30,12 +33,14 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
 
   it('renders DashboardVideoLiveWidgetTemplate closed without info text and clicks on the title.', () => {
     render(
-      <DashboardVideoLiveWidgetTemplate
-        initialOpenValue={false}
-        title={genericTitle}
-      >
-        <GenericComponent />
-      </DashboardVideoLiveWidgetTemplate>,
+      wrapInIntlProvider(
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={false}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>,
+      ),
     );
     screen.getByText(genericTitle);
     const openButton = screen.getByRole('button', { name: genericTitle });
@@ -50,13 +55,15 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
 
   it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', () => {
     render(
-      <DashboardVideoLiveWidgetTemplate
-        initialOpenValue={false}
-        infoText={genericInfoText}
-        title={genericTitle}
-      >
-        <GenericComponent />
-      </DashboardVideoLiveWidgetTemplate>,
+      wrapInIntlProvider(
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={false}
+          infoText={genericInfoText}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>,
+      ),
     );
     screen.getByText(genericTitle);
     screen.getByRole('button', { name: genericTitle });
