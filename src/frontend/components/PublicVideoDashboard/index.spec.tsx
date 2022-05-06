@@ -13,7 +13,7 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
-import { liveState, timedTextMode } from 'types/tracks';
+import { liveState, timedTextMode, uploadState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { initWebinarContext } from 'utils/initWebinarContext';
 import { getAnonymousId } from 'utils/localstorage';
@@ -377,7 +377,7 @@ describe('PublicVideoDashboard', () => {
     screen.getByText('Join the chat');
   });
 
-  it('displays the video player and the waiting message when the live is stopping', async () => {
+  it('displays the the ended message when the live is stopping', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -405,21 +405,9 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { container } = render(
+    render(
       wrapInIntlProvider(
         <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'videojs',
-        expect.any(Element),
-        expect.anything(),
-        video,
-        'en',
-        expect.any(Function),
       ),
     );
 
@@ -427,16 +415,10 @@ describe('PublicVideoDashboard', () => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
     });
 
-    const videoElement = container.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-
-    screen.getByText('live title');
-
-    screen.getByRole('button', { name: 'Hide chat' });
-    screen.getByRole('button', { name: 'Show viewers' });
-    screen.getByText('Join the chat');
-
-    screen.getByText('Webinar is paused');
+    screen.getByText('This live has ended');
+    screen.getByText(
+      'This live has now ended. If the host decides to publish the recording, the video will be available here in a while.',
+    );
   });
 
   it('displays the waiting message when the live is starting', async () => {
@@ -479,71 +461,9 @@ describe('PublicVideoDashboard', () => {
     });
   });
 
-  it('displays the video player and the waiting message when the live is paused', async () => {
-    useLivePanelState.setState({
-      isPanelVisible: true,
-      currentItem: LivePanelItem.CHAT,
-      availableItems: [LivePanelItem.CHAT],
-    });
-    useLiveStateStarted.getState().setIsStarted(true);
+  it('redirects to the error component when upload state is deleted', () => {
     const video = videoMockFactory({
-      title: 'live title',
-      live_state: liveState.PAUSED,
-      urls: {
-        manifests: {
-          hls: 'https://example.com/hls.m3u8',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
-    });
-
-    const { container } = render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalledWith(
-        'videojs',
-        expect.any(Element),
-        expect.anything(),
-        video,
-        'en',
-        expect.any(Function),
-      ),
-    );
-
-    await waitFor(() => {
-      expect(mockInitWebinarContext).toHaveBeenCalled();
-    });
-
-    const videoElement = container.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-
-    screen.getByText('live title');
-
-    screen.getByRole('button', { name: 'Hide chat' });
-    screen.getByRole('button', { name: 'Show viewers' });
-    screen.getByText('Join the chat');
-
-    screen.getByText('Webinar is paused');
-  });
-
-  it('redirects to the error component when user has no update permission and live state is stopped', () => {
-    const video = videoMockFactory({
-      live_state: liveState.STOPPED,
+      upload_state: uploadState.DELETED,
     });
     render(
       wrapInIntlProvider(
@@ -567,13 +487,12 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText('Error Component: liveStopped');
+    screen.getByText('Error Component: videoDeleted');
   });
 
-  it('redirects to the dashboard when user has update permission and live state is stopped', async () => {
-    mockCanUpdate = true;
+  it('redirects to the error component when video has no urls', () => {
     const video = videoMockFactory({
-      live_state: liveState.STOPPED,
+      urls: null,
     });
     render(
       wrapInIntlProvider(
@@ -588,15 +507,14 @@ describe('PublicVideoDashboard', () => {
             },
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
+              render: () => <span>{`Error Component`}</span>,
             },
           ],
         ),
       ),
     );
-    screen.getByText('dashboard videos');
+
+    screen.getByText('Error Component');
   });
 
   it('displays the WaitingLiveVideo component when live is not ready', async () => {

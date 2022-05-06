@@ -11,9 +11,17 @@ import {
 import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
-const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
-  uploadState;
-const { IDLE, PAUSED, RUNNING, STARTING, STOPPED, STOPPING } = liveStateTrack;
+const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
+const {
+  IDLE,
+  RUNNING,
+  STARTING,
+  STOPPED,
+  STOPPING,
+  HARVESTED,
+  HARVESTING,
+  ENDED,
+} = liveStateTrack;
 
 const messages = defineMessages({
   [DELETED]: {
@@ -76,10 +84,10 @@ const messages = defineMessages({
     description: 'The video is in live state and is stopping',
     id: 'components.ObjectStatusPicker.STOPPING',
   },
-  [PAUSED]: {
-    defaultMessage: 'Live is paused',
-    description: 'The video is in live state and is paused',
-    id: 'components.ObjectStatusPicker.PAUSED',
+  [ENDED]: {
+    defaultMessage: 'Live has ended',
+    description: 'The video is in live state and is ended',
+    id: 'components.ObjectStatusPicker.ENDED',
   },
   uploadingObject: {
     defaultMessage: 'Uploading',

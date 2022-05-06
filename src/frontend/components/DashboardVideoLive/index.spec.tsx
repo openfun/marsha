@@ -165,7 +165,7 @@ describe('components/DashboardVideoLive', () => {
     await screen.findByText('Only a jitsi moderator can administrate the live');
   });
 
-  it('shows the pause button when the status is RUNNING', () => {
+  it('shows the stop button when the status is RUNNING', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
@@ -180,7 +180,7 @@ describe('components/DashboardVideoLive', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Pause live' });
+    screen.getByRole('button', { name: /end live/i });
     screen.getByTestId('start-recording');
   });
 
@@ -191,7 +191,7 @@ describe('components/DashboardVideoLive', () => {
           <QueryClientProvider client={queryClient}>
             <Suspense fallback="loading...">
               <DashboardVideoLive
-                video={{ ...video, live_state: liveState.PAUSED }}
+                video={{ ...video, live_state: liveState.RUNNING }}
               />
             </Suspense>
           </QueryClientProvider>,
@@ -208,15 +208,12 @@ describe('components/DashboardVideoLive', () => {
     userEvent.click(stopButton);
 
     //  modal is open
-    await screen.findByRole('button', { name: 'Cancel' });
+    await screen.findByRole('button', { name: /Cancel/i });
     screen.getByRole('button', { name: 'Stop the live' });
     expect(stopButton).toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: 'Resume streaming' }),
-    ).toBeDisabled();
 
-    //  record buttons are not in the document
-    expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
+    // start recording button should be in the document, the live is running
+    screen.getByTestId('start-recording');
     expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
   });
 

@@ -3,23 +3,14 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { PublicPausedLiveVideo } from 'components/PublicPausedLiveVideo';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
-import {
-  liveState,
-  TimedText,
-  timedTextMode,
-  Video,
-  videoSize,
-} from 'types/tracks';
+import { TimedText, timedTextMode, Video, videoSize } from 'types/tracks';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
-import { resumeLive } from 'utils/resumeLive';
 import { Nullable } from 'utils/types';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useIntl } from 'react-intl';
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
@@ -42,11 +33,7 @@ const VideoPlayer = ({
 }: BaseVideoPlayerProps) => {
   const intl = useIntl();
   const [player, setPlayer] = useState<VideoPlayerInterface>();
-  const videoNodeRef = useRef(null as Nullable<HTMLVideoElement>);
-  const [isLivePausedOrStopping, setIsLivePausedOrStopping] = useState(
-    video?.live_state &&
-      [liveState.STOPPING, liveState.PAUSED].includes(video.live_state),
-  );
+  const videoNodeRef = useRef<Nullable<HTMLVideoElement>>(null);
 
   const { choices, getChoices } = useTimedTextTrackLanguageChoices(
     (state) => state,
@@ -106,27 +93,6 @@ const VideoPlayer = ({
     }
   }, []);
 
-  useAsyncEffect(async () => {
-    // live is resuming
-    if (video?.live_state === liveState.STARTING && player) {
-      setIsLivePausedOrStopping(true);
-    }
-
-    if (
-      video?.live_state &&
-      [liveState.STOPPING, liveState.PAUSED].includes(video.live_state)
-    ) {
-      setIsLivePausedOrStopping(true);
-    }
-
-    // live is running and the player is ready, we check if the hls manifest contains frame to display
-    if (video?.live_state === liveState.RUNNING && player) {
-      await resumeLive(video);
-      player.setSource(player.getSource());
-      setIsLivePausedOrStopping(false);
-    }
-  }, [video?.live_state, player, setIsLivePausedOrStopping]);
-
   // The video is somehow missing and jwt must be set
   if (!video) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
@@ -178,12 +144,6 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-      {isLivePausedOrStopping && player && (
-        <PublicPausedLiveVideo
-          video={video}
-          videoNodeRef={videoNodeRef.current!}
-        />
-      )}
     </Stack>
   );
 };

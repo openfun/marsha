@@ -1,8 +1,8 @@
 import { Stack } from 'grommet';
 import React, { Dispatch, lazy, SetStateAction } from 'react';
 
-import { TeacherLiveStopConfirmation } from 'components/TeacherLiveStopConfirmation';
-import { useStopLiveConfirmation } from 'data/stores/useStopLiveConfirmation';
+import { LiveModale } from 'components/LiveModale';
+import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { LiveModeType, Video } from 'types/tracks';
 
 const TeacherLiveRawWrapper = lazy(
@@ -23,7 +23,7 @@ export const TeacherLiveContent = ({
   setCanStartLive,
   video,
 }: TeacherLiveContentProps) => {
-  const shouldShowStopConfirmation = useStopLiveConfirmation()[0];
+  const [modaleConfiguration] = useLiveModaleConfiguration();
 
   return (
     <Stack fill interactiveChild="last">
@@ -38,9 +38,7 @@ export const TeacherLiveContent = ({
           video={video}
         />
       )}
-      {shouldShowStopConfirmation && (
-        <TeacherLiveStopConfirmation video={video} />
-      )}
+      {modaleConfiguration && <LiveModale {...modaleConfiguration} />}
     </Stack>
   );
 };

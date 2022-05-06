@@ -174,7 +174,7 @@ describe('<DashboardVideoWrapper />', () => {
           room_name: 'jitsi_conference',
         },
       },
-      upload_state: uploadState.HARVESTING,
+      upload_state: uploadState.READY,
     });
 
     render(
@@ -184,8 +184,6 @@ describe('<DashboardVideoWrapper />', () => {
     screen.getByRole('link', { name: 'Dashboard' });
     screen.getByRole('link', { name: 'Playlist' });
 
-    screen.getByText(
-      'Your video is currently converting from a live video to a VOD. This may take up to an hour. You can close the window and come back later.',
-    );
+    screen.getByText('Your video is ready to play.');
   });
 });

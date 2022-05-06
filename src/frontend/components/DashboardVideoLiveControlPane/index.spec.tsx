@@ -101,5 +101,8 @@ describe('<DashboardVideoLiveControlPane />', () => {
     screen.getByRole('button', {
       name: /pair an external device/i,
     });
+
+    // DashboardVideoLiveWidgetVOD
+    screen.getByText(/There is nothing to harvest/);
   });
 });
