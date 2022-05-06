@@ -18,12 +18,7 @@ const DashboardVideo = (props: DashboardVideoProps) => {
   const { uploadManagerState } = useUploadManager();
 
   const displayTimedTextPane =
-    ![
-      uploadState.DELETED,
-      uploadState.HARVESTED,
-      uploadState.HARVESTING,
-      uploadState.PENDING,
-    ].includes(video.upload_state) ||
+    ![uploadState.DELETED, uploadState.PENDING].includes(video.upload_state) ||
     (video.upload_state === uploadState.PENDING &&
       (uploadManagerState[video.id]?.status === UploadManagerStatus.UPLOADING ||
         uploadManagerState[video.id]?.status === UploadManagerStatus.SUCCESS));

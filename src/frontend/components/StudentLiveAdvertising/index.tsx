@@ -34,12 +34,19 @@ export const StudentLiveAdvertising = ({
     return DateTime.fromISO(video.starting_at).setLocale(intl.locale);
   }, [video, intl]);
   const [isWaitingOver, setIsWaitingOver] = useState(
-    video.live_state !== liveState.IDLE ||
-      (!!liveScheduleStartDate && liveScheduleStartDate < DateTime.now()),
+    (video.live_state &&
+      [liveState.STARTING, liveState.RUNNING].includes(video.live_state)) ||
+      //  scheduled live never started with an expirted schedule start date
+      (!!liveScheduleStartDate &&
+        video.live_state === liveState.IDLE &&
+        liveScheduleStartDate < DateTime.now()),
   );
 
   useEffect(() => {
-    if (video.live_state !== liveState.IDLE) {
+    if (
+      video.live_state &&
+      [liveState.STARTING, liveState.RUNNING].includes(video.live_state)
+    ) {
       setIsWaitingOver(true);
     }
   }, [video]);

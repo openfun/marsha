@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
 import { DashboardPaneButtons } from 'components/DashboardPaneButtons';
 import { DashboardThumbnail } from 'components/DashboardThumbnail';
-import { DashboardVideoHarvested } from 'components/DashboardVideoHarvested';
 import { DashboardVideoPaneDownloadOption } from 'components/DashboardVideoPaneDownloadOption';
 import { DashboardVideoPaneTranscriptOption } from 'components/DashboardVideoPaneTranscriptOption';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
@@ -24,8 +23,7 @@ import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 
-const { DELETED, ERROR, HARVESTED, HARVESTING, PENDING, PROCESSING, READY } =
-  uploadState;
+const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 
 const messages = defineMessages({
   [DELETED]: {
@@ -39,19 +37,6 @@ const messages = defineMessages({
     description:
       'Dashboard helptext for when the video failed to upload or get processed.',
     id: 'components.DashboardVideoPane.helptextError',
-  },
-  [HARVESTED]: {
-    defaultMessage:
-      'The video has been converted in VOD. You must explicitly publish the video by clicking the button below.',
-    description: 'Dashboard helptext to ask user to finish VOD conversion',
-    id: 'components.DashboardVideoPane.helptextHarvested',
-  },
-  [HARVESTING]: {
-    defaultMessage:
-      'Your video is currently converting from a live video to a VOD. This may take up to an hour. You can close the window and come back later.',
-    description:
-      'Dashboard helptext to warn users not to wait for video processing in front of this page.',
-    id: 'components.DashboardVideoPane.helptextHarvesting',
   },
   [PENDING]: {
     defaultMessage: 'There is currently no video to display.',
@@ -216,7 +201,6 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     case PROCESSING:
     case ERROR:
     case DELETED:
-    case HARVESTING:
       return (
         <DashboardVideoPaneInnerContainer>
           <CommonStatusLine video={video} />
@@ -239,21 +223,6 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
             </Box>
           </Box>
           <DashboardPaneButtons object={video} objectType={modelName.VIDEOS} />
-        </DashboardVideoPaneInnerContainer>
-      );
-
-    case HARVESTED:
-      return (
-        <DashboardVideoPaneInnerContainer>
-          <Box direction={'column'}>
-            <Box basis={'1/2'} margin={'small'}>
-              <CommonStatusLine video={video} />
-              {intl.formatMessage(messages[video.upload_state])}
-            </Box>
-            <Box basis={'1/2'} margin={'small'}>
-              <DashboardVideoHarvested video={video} />
-            </Box>
-          </Box>
         </DashboardVideoPaneInnerContainer>
       );
   }

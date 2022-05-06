@@ -25,8 +25,6 @@ export interface Resource {
 export enum uploadState {
   DELETED = 'deleted',
   ERROR = 'error',
-  HARVESTED = 'harvested',
-  HARVESTING = 'harvesting',
   PENDING = 'pending',
   PROCESSING = 'processing',
   READY = 'ready',
@@ -34,11 +32,13 @@ export enum uploadState {
 
 export enum liveState {
   IDLE = 'idle',
-  PAUSED = 'paused',
-  RUNNING = 'running',
   STARTING = 'starting',
-  STOPPED = 'stopped',
+  RUNNING = 'running',
   STOPPING = 'stopping',
+  STOPPED = 'stopped',
+  HARVESTING = 'harvesting',
+  HARVESTED = 'harvested',
+  ENDED = 'ended',
 }
 
 /** Possible modes for a timed text track.
@@ -177,6 +177,10 @@ export interface Video extends Resource {
   xmpp: Nullable<XMPP>;
   is_recording?: boolean;
   recording_time?: number;
+}
+
+export interface Live extends Omit<Video, 'live_state'> {
+  live_state: Exclude<liveState, liveState.ENDED>;
 }
 
 export type UploadableObject = TimedText | Video | Thumbnail | Document;

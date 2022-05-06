@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 
 import {
   LivePanelItem,
@@ -213,76 +213,48 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not render wrapper if live_state is liveState.STOPPING', () => {
-    useLivePanelState.setState({});
-
-    const mockVideo = videoMockFactory({
-      live_type: LiveModeType.JITSI,
-      live_state: liveState.STOPPING,
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
-    });
-
-    render(
-      wrapInRouter(
-        wrapInIntlProvider(<StudentLiveControlBar video={mockVideo} />),
-      ),
+  it('does not render wrapper if live_state is not liveState.RUNNING', () => {
+    const values = Object.values(liveState).filter(
+      (state) => state !== liveState.RUNNING,
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Show apps' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', {
-        name: 'Send request to join the discussion',
-      }),
-    ).not.toBeInTheDocument();
-  });
+    values.forEach((myLiveState) => {
+      useLivePanelState.setState({});
 
-  it('does not render wrapper if live_state is liveState.PAUSED', () => {
-    useLivePanelState.setState({});
+      const mockVideo = videoMockFactory({
+        live_type: LiveModeType.JITSI,
+        live_state: myLiveState,
+        xmpp: {
+          bosh_url: 'https://xmpp-server.com/http-bind',
+          converse_persistent_store: PersistentStore.LOCALSTORAGE,
+          websocket_url: null,
+          conference_url:
+            '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+          prebind_url: 'https://xmpp-server.com/http-pre-bind',
+          jid: 'xmpp-server.com',
+        },
+      });
 
-    const mockVideo = videoMockFactory({
-      live_type: LiveModeType.JITSI,
-      live_state: liveState.PAUSED,
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
+      render(
+        wrapInRouter(
+          wrapInIntlProvider(<StudentLiveControlBar video={mockVideo} />),
+        ),
+      );
+
+      expect(
+        screen.queryByRole('button', { name: 'Show apps' }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Show chat' }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', {
+          name: 'Send request to join the discussion',
+        }),
+      ).not.toBeInTheDocument();
+
+      cleanup();
     });
-
-    render(
-      wrapInRouter(
-        wrapInIntlProvider(<StudentLiveControlBar video={mockVideo} />),
-      ),
-    );
-
-    expect(
-      screen.queryByRole('button', { name: 'Show apps' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', {
-        name: 'Send request to join the discussion',
-      }),
-    ).not.toBeInTheDocument();
   });
 
   it('renders leave/join discussion button', () => {
