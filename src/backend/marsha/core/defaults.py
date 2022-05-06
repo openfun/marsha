@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
     HARVESTING,
     HARVESTED,
     ERROR,
+    ENDED,
     READY,
     IDLE,
     STARTING,
@@ -22,6 +23,7 @@ from django.utils.translation import gettext_lazy as _
     "harvesting",
     "harvested",
     "error",
+    "ended",
     "ready",
     "idle",
     "starting",
@@ -40,6 +42,7 @@ STATE_CHOICES = (
 )
 
 LIVE_CHOICES = (
+    (ENDED, _("ended")),
     (HARVESTED, _("harvested")),
     (HARVESTING, _("processing live to VOD")),
     (IDLE, _("idle")),

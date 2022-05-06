@@ -11,6 +11,7 @@ from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
 from ..defaults import (
+    ENDED,
     HARVESTED,
     IDLE,
     JITSI,
@@ -203,6 +204,7 @@ class VideoSerializer(VideoBaseSerializer):
             "is_ready_to_show",
             "is_recording",
             "is_scheduled",
+            "upload_state",
             "urls",
             "has_transcript",
             "recording_time",
@@ -317,18 +319,20 @@ class VideoSerializer(VideoBaseSerializer):
             The data are filtered to only return RTMP endpoints and jitsi configuration if needed.
             All other data are sensitive, used only by the backend and must never be exposed.
         """
-        if obj.live_state is None or obj.live_state == HARVESTED:
+        if obj.live_state in [None, ENDED]:
             return {}
 
         live_info = {}
 
-        if obj.live_info is not None and obj.live_info.get("paused_at"):
-            live_info.update({"paused_at": obj.live_info["paused_at"]})
+        if obj.live_info is not None:
+            for attribute in ["paused_at", "started_at", "stopped_at"]:
+                if obj.live_info.get(attribute):
+                    live_info.update({attribute: obj.live_info[attribute]})
 
         if not self.context.get("is_admin"):
             return live_info
 
-        if obj.live_info is not None:
+        if obj.live_info is not None and obj.live_info.get("medialive"):
             live_info.update(
                 {
                     "medialive": {

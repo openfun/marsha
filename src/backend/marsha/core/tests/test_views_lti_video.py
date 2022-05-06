@@ -1246,7 +1246,15 @@ class VideoLTIViewTestCase(TestCase):
                 "recording_time": 0,
                 "shared_live_medias": [],
                 "live_state": HARVESTED,
-                "live_info": {},
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.id),
+                    },
+                },
                 "live_type": JITSI,
                 "xmpp": None,
             },
