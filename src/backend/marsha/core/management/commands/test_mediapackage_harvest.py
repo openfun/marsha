@@ -70,7 +70,7 @@ class Command(BaseCommand):
 
         self.wait_slices_harvesting(video)
 
-        self.wait_video_state(video, "upload_state", "harvested")
+        self.wait_video_state(video, "live_state", "harvested")
 
         self.stdout.write(f"\nvideo harvested {video.id} {video.title}")
 
