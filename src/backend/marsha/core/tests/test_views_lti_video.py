@@ -27,6 +27,7 @@ from ..defaults import (
 )
 from ..factories import (
     ConsumerSiteLTIPassportFactory,
+    SharedLiveMediaFactory,
     TimedTextTrackFactory,
     VideoFactory,
 )
@@ -1832,3 +1833,43 @@ class VideoLTIViewTestCase(TestCase):
         response = self.client.get(f"/lti/videos/{video.id}")
 
         self.assertEqual(response.status_code, 405)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_with_shared_live_media(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Make sure the LTI Video view functions when the Video has associated SharedLiveMedia.
+
+        NB: This is a bug-reproducing test case.
+        The comprehensive test suite in test_api_video does not cover this case as it uses a JWT
+        and therefore falls in another case when it comes to handling of video ids.
+        """
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+        # Create a SharedLiveMedia associated with the video to trigger the error
+        SharedLiveMediaFactory(video=video)
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        self.assertEqual(
+            context.get("resource").get("shared_live_medias")[0].get("video"),
+            str(video.id),
+        )

@@ -51,6 +51,10 @@ class SharedLiveMediaSerializer(
     filename = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
     urls = serializers.SerializerMethodField()
+    # Make sure video UUID is converted to a string during serialization
+    video = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
 
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
