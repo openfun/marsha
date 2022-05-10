@@ -211,8 +211,11 @@ export const SchedulingFields = ({
           htmlFor="starting_at_date"
           margin="none"
           background={startingAtError ? 'status-error-off' : 'white'}
+          // Fix of the calendar icon still clickable when component disabled (see below)
+          style={{ pointerEvents: disabled ? 'none' : undefined }}
         >
           <DateInput
+            dropProps={{ align: { bottom: 'top' } }}
             id="starting_at_date"
             format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
             value={currentStartingAtDate || undefined}
