@@ -1,7 +1,8 @@
 import { Anchor, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
+import { Logout } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -22,6 +23,11 @@ const messages = defineMessages({
     description: 'Text for the login button in the header of the marsha site',
     id: 'components.SiteHeader.logInBtn',
   },
+  logOutLabel: {
+    defaultMessage: 'Log out',
+    description: 'Text for the logout button in the header of the marsha site',
+    id: 'components.SiteHeader.logOutLabel',
+  },
 });
 
 const TitleLink = withLink(Anchor);
@@ -40,7 +46,12 @@ const SidebarLink = styled(Link)`
 `;
 
 export const SiteLayout: React.FC = ({ children }) => {
+  const intl = useIntl();
   const currentUser = useCurrentUser().getCurrentUser();
+
+  const redirectTo = (location: string) => () => {
+    window.location.assign(location);
+  };
 
   return (
     <Box direction="row" pad="none" height="full">
@@ -60,7 +71,7 @@ export const SiteLayout: React.FC = ({ children }) => {
           </Box>
           {currentUser ? (
             currentUser === AnonymousUser.ANONYMOUS ? (
-              <Button>
+              <Button onClick={redirectTo('/account/login/')}>
                 <FormattedMessage {...messages.logInBtn} />
               </Button>
             ) : (
@@ -101,6 +112,13 @@ export const SiteLayout: React.FC = ({ children }) => {
                         </SidebarLink>
                       ))}
                   </div>
+                  <Button
+                    onClick={redirectTo('/account/logout/')}
+                    icon={<Logout />}
+                    label={intl.formatMessage(messages.logOutLabel)}
+                    justify="start"
+                    plain={true}
+                  />
                 </Box>
               </React.Fragment>
             ) : null}
