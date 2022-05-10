@@ -4631,7 +4631,9 @@ class VideoAPITest(TestCase):
             mock_wait_medialive_channel_is_created.assert_called_with(
                 "medialive_channel_1"
             )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4768,7 +4770,9 @@ class VideoAPITest(TestCase):
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -4913,7 +4917,9 @@ class VideoAPITest(TestCase):
                 f"/api/videos/{video.id}/start-live/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -5084,7 +5090,9 @@ class VideoAPITest(TestCase):
             mock_wait_medialive_channel_is_created.assert_called_with(
                 "medialive_channel_1"
             )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
 
@@ -5614,7 +5622,9 @@ class VideoAPITest(TestCase):
             mock_delete_aws_element_stack.assert_called_once()
             mock_create_mediapackage_harvest_job.assert_called_once()
             mock_close_room.assert_called_once_with(video.id)
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -5948,7 +5958,9 @@ class VideoAPITest(TestCase):
             mock_delete_aws_element_stack.assert_called_once()
             mock_create_mediapackage_harvest_job.assert_called_once()
             mock_delete_mediapackage_channel.assert_called_once()
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
