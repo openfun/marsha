@@ -1,4 +1,8 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
+# We don't enforce arguments documentation in tests
+# pylint: disable=too-many-lines
+from copy import deepcopy
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
@@ -315,13 +319,19 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
+        # dispatch earlier in the websocket that the live is starting without saving it
+        tmp_video = deepcopy(video)
+        tmp_video.live_state = defaults.STARTING
+        if settings.LIVE_CHAT_ENABLED:
+            create_room(video.id)
+        channel_layers_utils.dispatch_video_to_groups(tmp_video)
+        del tmp_video
+
         if video.live_info is None or video.live_state == defaults.HARVESTED:
             now = timezone.now()
             stamp = to_timestamp(now)
             key = f"{video.pk}_{stamp}"
             video.live_info = create_live_stream(key)
-            if settings.LIVE_CHAT_ENABLED:
-                create_room(video.id)
             wait_medialive_channel_is_created(video.get_medialive_channel().get("id"))
 
         start_live_channel(video.get_medialive_channel().get("id"))
@@ -437,6 +447,12 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             return Response(
                 {"error": "Live video must be recording before harvesting it."}, 400
             )
+
+        # dispatch earlier in the websocket that the live is harvesting without saving it
+        tmp_video = deepcopy(video)
+        tmp_video.live_state = defaults.HARVESTING
+        channel_layers_utils.dispatch_video_to_groups(tmp_video)
+        del tmp_video
 
         if video.is_recording:
             stop_recording(video)
