@@ -60,6 +60,8 @@ router.register(
 )
 
 urlpatterns = [
+    # Account
+    path("account/", include("marsha.account.urls")),
     # Admin
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI

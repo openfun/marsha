@@ -118,6 +118,7 @@ class Base(Configuration):
         "channels",
         "parler",  # django-parler, for translated models
         # Marsha
+        "marsha.account.apps.AccountConfig",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
         "marsha.markdown.apps.MarkdownConfig",
@@ -198,6 +199,10 @@ class Base(Configuration):
 
     # WAFFLE
     WAFFLE_CREATE_MISSING_SWITCHES = True
+
+    # User login base Django settings
+    LOGIN_REDIRECT_URL = "site"  # redirect to home (React site)
+    LOGIN_URL = "account:login"
 
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
