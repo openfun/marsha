@@ -1,0 +1,40 @@
+{% extends 'account/base.html' %}
+{% load i18n %}
+
+{% block content %}
+{{ block.super }}
+<div id="content-main" class="inner-container">
+
+  {% if form.errors and not form.non_field_errors %}
+  <p class="errornote">
+  {% if form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+  </p>
+  {% endif %}
+
+  {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <p class="errornote">
+      {{ error }}
+  </p>
+  {% endfor %}
+  {% endif %}
+
+  <form action="" method="post" id="login-form">{% csrf_token %}
+    <div class="form-row">
+      {{ form.username.errors }}
+      {{ form.username.label_tag }} {{ form.username }}
+    </div>
+    <div class="form-row">
+      {{ form.password.errors }}
+      {{ form.password.label_tag }} {{ form.password }}
+      <input type="hidden" name="next" value="{{ next }}">
+    </div>
+    <div class="password-reset-link">
+      <a href="{% url 'account:password_reset' %}">{% translate 'Forgotten your password or username?' %}</a>
+    </div>
+    <div class="submit-row">
+      <button class="btn-primary" type="submit" value="{% translate 'Log in' %}">{% translate 'Log in' %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
