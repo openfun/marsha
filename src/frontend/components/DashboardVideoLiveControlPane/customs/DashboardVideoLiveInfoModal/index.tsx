@@ -30,8 +30,8 @@ export const DashboardVideoLiveInfoModal = ({
 
   return (
     <Layer
-      onEsc={() => onModalClose()}
-      onClickOutside={() => onModalClose()}
+      onEsc={onModalClose}
+      onClickOutside={onModalClose}
       responsive={false}
       style={{
         width: size === 'small' ? '95%' : '500px',
@@ -44,7 +44,7 @@ export const DashboardVideoLiveInfoModal = ({
           pad={{ horizontal: 'small', top: 'small' }}
         >
           <Button
-            onClick={() => onModalClose()}
+            onClick={onModalClose}
             plain
             style={{ display: 'block', padding: 0 }}
           >
