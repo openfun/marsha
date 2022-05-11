@@ -2,11 +2,10 @@ import { Box, Button, Collapsible, Text } from 'grommet';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { DashboardVideoLiveInfoModal } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveInfoModal';
 import { DownArrowSVG } from 'components/SVGIcons/DownArrowSVG';
 import { InfoCircleSVG } from 'components/SVGIcons/InfoCircleSVG';
-import { DashboardVideoLiveInfoModal } from 'components/DashboardVideoLiveInfoModal';
-import { defineMessages } from '@formatjs/intl';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   helpButtonTitle: {

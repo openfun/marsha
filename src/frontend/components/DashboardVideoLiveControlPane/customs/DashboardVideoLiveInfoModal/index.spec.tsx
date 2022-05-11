@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import { ResponsiveContext } from 'grommet';
+import React from 'react';
 
-import { DashboardVideoLiveInfoModal } from './index';
+import { DashboardVideoLiveInfoModal } from '.';
 
 const mockModalOnClose = jest.fn();
 const genericTitle = 'A generic title';
