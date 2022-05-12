@@ -24,11 +24,16 @@ from ..defaults import (
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     PENDING,
+    RUNNING,
+    STOPPING,
 )
 from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
+
+
+# pylint: disable=too-many-lines
 
 
 class Video(BaseFile):
@@ -303,6 +308,49 @@ class Video(BaseFile):
                 self.recording_slices[-1].get("start")
             )
         return recording_time
+
+    @property
+    def live_duration(self):
+        """
+        Return the duration since the live started.
+        """
+        if self.live_info:
+            end = self.live_ended_at
+            start = self.live_info.get("started_at")
+            if end and start:
+                return int(end) - int(start)
+        return 0
+
+    @property
+    def live_ended_at(self):
+        """
+        Return the timestamp at which the live ended or current timestamp if it's still running
+        """
+        if self.live_info and self.live_info.get("stopped_at"):
+            return int(self.live_info.get("stopped_at"))
+
+        if self.live_state in (RUNNING, STOPPING):
+            return int(to_timestamp(timezone.now()))
+
+        return None
+
+    def get_list_timestamps_attendences(self):
+        """
+        Depending on the duration of the video, build an array of timestamps.
+        """
+
+        timestamp_list = {}
+
+        duration = self.live_duration
+        if duration > settings.ATTENDANCE_POINTS:
+            # we expect to have a minimum a point per seconds
+            started = int(self.live_info.get("started_at"))
+            elapsed = int(duration / (settings.ATTENDANCE_POINTS - 1))
+            for index in range(settings.ATTENDANCE_POINTS):
+                sec = index * elapsed + started
+                timestamp_list[str(sec)] = {}
+
+        return timestamp_list
 
     def set_recording_slice_manifest_key(self, harvest_job_id, manifest_key):
         """Set the manifest key for a recording slice."""

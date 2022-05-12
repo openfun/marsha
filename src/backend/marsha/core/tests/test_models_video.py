@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 import random
 from unittest import mock
 
+from django.core.cache import cache
 from django.db.utils import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from ..defaults import (
@@ -17,14 +18,25 @@ from ..defaults import (
     PENDING,
     PROCESSING,
     RAW,
+    RUNNING,
     STATE_CHOICES,
+    STOPPING,
 )
 from ..factories import VideoFactory
 from ..utils.time_utils import to_timestamp
 
 
+# pylint: disable=too-many-public-methods
+
+
 class VideoModelsTestCase(TestCase):
     """Test our intentions about the Video model."""
+
+    def setUp(self):
+        """
+        Reset the cache so that no cache key will be actve
+        """
+        cache.clear()
 
     def test_models_video_str(self):
         """The str method should display the title of the video and its eventual soft deletion."""
@@ -348,3 +360,369 @@ class VideoModelsTestCase(TestCase):
                 },
             ],
         )
+
+    def test_model_video_duration_and_live_ended_at_still_running(self):
+        """
+        When  a live is still running or is stopping, the live_ended_at
+        property corresponds to the current timestamp and the duration
+        varies with the time.
+        """
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=random.choice([RUNNING, STOPPING]),
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": "1533686400",
+            },
+            live_type=RAW,
+        )
+        now = int(to_timestamp(timezone.now()))
+        duration = now - 1533686400
+        self.assertEqual(video.live_ended_at, now)
+        self.assertEqual(video.live_duration, duration)
+
+        elapsed = 10
+        date_now = datetime.fromtimestamp(now + elapsed)
+        # live_duration and live_ended_at varies with time
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            self.assertEqual(video.live_duration, duration + elapsed)
+            self.assertEqual(video.live_ended_at, now + elapsed)
+
+    def test_model_video_duration_and_live_ended_at_finished_running(self):
+        """
+        When a live has ended, the live_ended_at property corresponds
+        to the current timestamp and the duration doesn't varie with
+        the time.
+        """
+        started = 1533686400
+        ended = 1535686400
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=ENDED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": started,
+                "stopped_at": ended,
+            },
+            live_type=RAW,
+        )
+        now = int(to_timestamp(timezone.now()))
+        duration = ended - started
+        self.assertEqual(video.live_ended_at, ended)
+        self.assertEqual(video.live_duration, duration)
+
+        elapsed = 10
+        date_now = datetime.fromtimestamp(now + elapsed)
+        # duration and live_ended_at property don't change
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            self.assertEqual(video.live_duration, duration)
+            self.assertEqual(video.live_ended_at, ended)
+
+    def test_model_video_duration_and_live_ended_at_not_running_no_end(self):
+        """
+        When a live is not running anymore and has no stopped_at, the live_ended_at
+        property returns None. Live has no live_duration as well.
+        """
+        started = 1533686400
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=ENDED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": started,
+            },
+            live_type=RAW,
+        )
+        self.assertEqual(video.live_ended_at, None)
+        self.assertEqual(video.live_duration, 0)
+        self.assertEqual(video.get_list_timestamps_attendences(), {})
+
+    def test_model_video_duration_and_live_ended_at_not_running_no_started_at(self):
+        """
+        When  a live is not running anymore and has a property stopped_at but no
+        started_at, the live_duration is 0
+        """
+        ended = 1535686400
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=ENDED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "stopped_at": ended,
+            },
+            live_type=RAW,
+        )
+        self.assertEqual(video.live_ended_at, ended)
+        # no property started_at so live_duration is 0
+        self.assertEqual(video.live_duration, 0)
+        self.assertEqual(video.get_list_timestamps_attendences(), {})
+
+    def test_model_video_duration_and_live_ended_at_not_running_no_live_info(self):
+        """
+        When  a live has no live_info, we control the live_duration, the_live_ended_at
+        properties and the get_list_timestamps_attendences method retun the expected
+        default values
+        """
+        video = VideoFactory()
+        self.assertEqual(video.live_ended_at, None)
+        # no property started_at so live_duration is 0
+        self.assertEqual(video.live_duration, 0)
+        self.assertEqual(video.get_list_timestamps_attendences(), {})
+
+    @override_settings(ATTENDANCE_POINTS=4)
+    def test_model_video_get_list_timestamps_attendences(self):
+        """
+        Check get_list_timestamps_attendences builds an array of timestamp
+        depending of the duration of the video
+        """
+        # video end one hour later
+        started = 1600000000
+        one_hour = 3600
+        ended = started + one_hour
+
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=ENDED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": started,
+                "stopped_at": ended,
+            },
+            live_type=RAW,
+        )
+        now = int(to_timestamp(timezone.now()))
+        expected_list_timestamp = {
+            "1600000000": {},
+            "1600001200": {},
+            "1600002400": {},
+            "1600003600": {},
+        }
+        self.assertEqual(video.live_ended_at, ended)
+        self.assertEqual(video.live_duration, one_hour)
+        self.assertEqual(
+            video.get_list_timestamps_attendences(),
+            expected_list_timestamp,
+        )
+
+        elapsed = 10
+        date_now = datetime.fromtimestamp(now + elapsed)
+        # duration and live_ended_at property don't change as live is ended
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            self.assertEqual(video.live_duration, one_hour)
+            self.assertEqual(video.live_ended_at, ended)
+            self.assertEqual(
+                video.get_list_timestamps_attendences(), expected_list_timestamp
+            )
+
+    @override_settings(ATTENDANCE_POINTS=4)
+    def test_model_video_get_list_timestamps_attendences_still_running(
+        self,
+    ):
+        """
+        Check get_list_timestamps_attendences builds an array of timestamp
+        depending of the duration of the video.
+        """
+        # video ends one hour later
+        started = 1600000000
+        one_hour = 3600
+
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": started,
+            },
+            live_type=RAW,
+        )
+
+        date_now = datetime.fromtimestamp(started + one_hour)
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            list_timestamp_ori = {
+                "1600000000": {},
+                "1600001200": {},
+                "1600002400": {},
+                "1600003600": {},
+            }
+            self.assertEqual(video.live_duration, one_hour)
+            self.assertEqual(video.live_ended_at, started + one_hour)
+            self.assertEqual(
+                video.get_list_timestamps_attendences(), list_timestamp_ori
+            )
+
+        # duration and live_ended_at property change as live is still running,
+        # get_list_timestamps_attendences as well
+        date_now = datetime.fromtimestamp(started + one_hour + 10)
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            self.assertEqual(video.live_duration, one_hour + 10)
+            self.assertEqual(video.live_ended_at, started + one_hour + 10)
+            self.assertNotEqual(
+                video.get_list_timestamps_attendences(), list_timestamp_ori
+            )
+
+    @override_settings(ATTENDANCE_POINTS=100)
+    def test_model_video_get_list_timestamps_attendences_less_seconds_than_number_of_points(
+        self,
+    ):
+        """
+        We control that when the video is not as long as the number of points required,
+        it doesn't return a list of timestamp for the video
+        """
+
+        started = 1600000000
+
+        video = VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": started,
+            },
+            live_type=RAW,
+        )
+        # ATTENDANCE_POINTS=100, 99 is less than the number of points
+        date_now = datetime.fromtimestamp(started + 99)
+        with mock.patch.object(timezone, "now", return_value=date_now):
+            self.assertEqual(video.live_duration, 99)
+            self.assertEqual(video.live_ended_at, started + 99)
+            self.assertEqual(video.get_list_timestamps_attendences(), {})
