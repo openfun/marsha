@@ -15,6 +15,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.bbb import api, serializers
 from marsha.core import factories as core_factories
+from marsha.core.tests.utils import reload_urlconf
 
 from ..factories import MeetingFactory
 from ..models import Meeting
@@ -32,6 +33,13 @@ class MeetingAPITest(TestCase):
     """Test for the Meeting API."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use BBB_ENABLED
+        reload_urlconf()
 
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_meeting_fetch_student(self, mock_get_meeting_infos):
