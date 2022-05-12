@@ -338,7 +338,7 @@ class VideoSerializer(VideoBaseSerializer):
         live_info = {}
 
         if obj.live_info is not None:
-            for attribute in ["paused_at", "started_at", "stopped_at"]:
+            for attribute in ["started_at", "stopped_at"]:
                 if obj.live_info.get(attribute):
                     live_info.update({attribute: obj.live_info[attribute]})
 
