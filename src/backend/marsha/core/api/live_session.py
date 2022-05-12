@@ -1,9 +1,12 @@
 """Declare API endpoints for live session with Django RestFramework viewsets."""
+from collections import OrderedDict
 from logging import getLogger
 import smtplib
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -15,6 +18,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
 from sentry_sdk import capture_exception
+
+from marsha.core.defaults import VIDEO_ATTENDANCE_KEY_CACHE
 
 from .. import permissions, serializers
 from ..models import ConsumerSite, LiveSession, Video
@@ -76,19 +81,19 @@ class LiveSessionViewSet(
                 )
 
             # admin and instructors can access all registrations of this course
-            if user.token.payload.get("roles") and any(
+            if token.payload.get("roles") and any(
                 role in ["administrator", "instructor"]
-                for role in user.token.payload["roles"]
+                for role in token.payload["roles"]
             ):
                 return LiveSession.objects.filter(**filters)
 
-            filters["lti_id"] = user.token.payload["context_id"]
-            filters["consumer_site"] = user.token.payload["consumer_site"]
+            filters["lti_id"] = token.payload["context_id"]
+            filters["consumer_site"] = token.payload["consumer_site"]
 
             # token has email or not, user has access to this registration if it's the right
             # combination of lti_user_id, lti_id and consumer_site
             # email doesn't necessary have a match
-            filters["lti_user_id"] = user.token.payload["user"]["id"]
+            filters["lti_user_id"] = token.payload["user"]["id"]
             return LiveSession.objects.filter(**filters)
 
         if self.request.query_params.get("anonymous_id"):
@@ -185,8 +190,7 @@ class LiveSessionViewSet(
     def push_attendance(self, request, pk=None):
         """View handling pushing new attendance"""
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response({"detail": "Invalid request."}, status=400)
+        serializer.is_valid(raise_exception=True)
 
         token = self.request.user.token
         if is_lti_token(token):
@@ -299,3 +303,81 @@ class LiveSessionViewSet(
                 )
 
             raise error
+
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[permissions.IsTokenInstructor | permissions.IsTokenAdmin],
+        url_path="list_attendances",
+    )
+    def list_attendances(self, request, *args, **kwargs):
+        """
+        Retrieve the list of attendances computed for livesessions where is_registered
+        equals True or with the live_attendance field not empty. As we request a list
+        of statistics, we want the timeline of the video to be identical for all
+        students so we pass the list of timestamp to the serializer context.
+        The same one will then be used for all the students on this list.
+        Serializer is cached so the listing don't get recalculated too often
+        """
+        prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{self.request.user.id}"
+        cache_key = (
+            f"{prefix_key}offset:{self.request.query_params.get('offset')}"
+            f"limit:{self.request.query_params.get('limit')}"
+        )
+        if cached_data := cache.get(cache_key, None):
+            return Response(
+                OrderedDict(
+                    [
+                        ("count", cached_data.get("count")),
+                        ("next", cached_data.get("next")),
+                        ("previous", cached_data.get("previous")),
+                        ("results", cached_data.get("results")),
+                    ]
+                )
+            )
+
+        try:
+            video = Video.objects.get(pk=self.request.user.id)
+        except (Video.DoesNotExist) as exception:
+            raise Http404("No resource matches the given query.") from exception
+
+        # we only want livesessions that are registered or with live_attendance not empty
+        queryset = LiveSession.objects.filter(
+            (
+                Q(is_registered=True)
+                | ~(Q(live_attendance__isnull=True) | Q(live_attendance__exact={}))
+            )
+            & Q(video__id=video.id)
+        )
+        page = self.paginate_queryset(self.filter_queryset(queryset))
+        serializer = serializers.LiveAttendanceGraphSerializer(
+            page,
+            many=True,
+            context={"video_timestamps": video.get_list_timestamps_attendences()},
+        )
+        # if the video is stopped, there is no need to limit the cache timeout
+        cache_timeout = (
+            None
+            if video.live_info and video.live_info.get("stopped_at")
+            else settings.VIDEO_ATTENDANCES_CACHE_DURATION
+        )
+        data = OrderedDict(
+            [
+                ("count", self.paginator.count),
+                ("next", self.paginator.get_next_link()),
+                ("previous", self.paginator.get_previous_link()),
+                ("results", serializer.data),
+            ]
+        )
+        cache.set(
+            cache_key,
+            data,
+            timeout=cache_timeout,
+        )
+        # save the key generated with no timeout in case it needs to be reinitialized
+        if not cache_timeout:
+            list_keys_timeout = cache.get(prefix_key, [])
+            list_keys_timeout.append(cache_key)
+            cache.set(prefix_key, list_keys_timeout)
+
+        return Response(data)

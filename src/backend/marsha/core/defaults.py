@@ -75,3 +75,5 @@ BBB = "BBB"
 LIVE_RAW = "live_raw"
 MARKDOWN = "markdown"
 RENATER_FER_SAML = "renater_fer_saml"
+
+VIDEO_ATTENDANCE_KEY_CACHE = "attendances:video:"

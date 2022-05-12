@@ -4,6 +4,7 @@
 from copy import deepcopy
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
 from django.db.models import F, Func, Q, Value
@@ -594,11 +595,16 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         live_info.update(
             {"cloudwatch": {"logGroupName": serializer.validated_data["logGroupName"]}}
         )
-
         if serializer.validated_data["state"] == defaults.RUNNING:
             video.live_state = defaults.RUNNING
             live_info.update({"started_at": stamp})
             live_info.pop("stopped_at", None)
+
+            # if keys with no timeout were cached for this video, it needs to be reinitialized
+            key_cache_video = f"{defaults.VIDEO_ATTENDANCE_KEY_CACHE}{video.id}"
+            if list_keys := cache.get(key_cache_video, None):
+                cache.delete_many(list_keys)
+                cache.delete(key_cache_video)
 
         if serializer.validated_data["state"] == defaults.STOPPED:
             video.live_state = defaults.STOPPED

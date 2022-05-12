@@ -342,6 +342,7 @@ class Base(Configuration):
 
     # Cache
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
+    VIDEO_ATTENDANCES_CACHE_DURATION = values.Value(300)  # 5 minutes
 
     SENTRY_DSN = values.Value(None)
 
@@ -484,6 +485,8 @@ class Base(Configuration):
             ),
         }
     )
+    ATTENDANCE_POINTS = values.Value(20)
+    ATTENDANCE_PUSH_DELAY = values.Value(60)
 
     # Python social auth
     SOCIAL_AUTH_JSONFIELD_ENABLED = True
