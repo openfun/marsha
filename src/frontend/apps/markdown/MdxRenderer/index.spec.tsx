@@ -274,8 +274,8 @@ describe('<MdxRenderer />', () => {
     );
 
     // Can't match full snapshot here, because content may vary from a tiny pixel.
-    // We only check whether the content seems rendered then.
-    expect(screen.getByText('A Gantt Diagram')).toBeInTheDocument();
+    // We look for the rendered SVG having title "A Gantt Diagram"
+    screen.getByRole('img', { name: /A Gantt Diagram/i });
   });
 
   it('renders markdown with LaTeX content', async () => {

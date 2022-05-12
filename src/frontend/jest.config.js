@@ -65,7 +65,8 @@ module.exports = {
       'd3-[^/]+|' +
       'internmap|' +
       'delaunator|' +
-      'robust-predicates' +
+      'robust-predicates|' +
+      'khroma' +
       ')/)',
   ],
 };
