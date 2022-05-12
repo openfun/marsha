@@ -1,10 +1,28 @@
 """Test utils module."""
 
+from importlib import reload
+import sys
 from urllib.parse import unquote, urlparse
+
+from django.conf import settings
+from django.urls import clear_url_caches
 
 from oauthlib import oauth1
 
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
+
+
+def reload_urlconf():
+    """
+    Enforce URL configuration reload.
+    Required when using override_settings for a
+    setting present in `marsha.urls`.
+    """
+    if settings.ROOT_URLCONF in sys.modules:
+        # The module is already loaded, need to reload
+        reload(sys.modules[settings.ROOT_URLCONF])
+        clear_url_caches()
+    # Otherwise, the module will be loaded normally by Django
 
 
 def generate_passport_and_signed_lti_parameters(
