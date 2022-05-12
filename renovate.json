@@ -10,6 +10,7 @@
         "npm"
       ],
       "matchPackageNames": [
+        "@codemirror/view",
         "@converse/headless",
         "@storybook/addon-a11y",
         "@storybook/addon-actions",
