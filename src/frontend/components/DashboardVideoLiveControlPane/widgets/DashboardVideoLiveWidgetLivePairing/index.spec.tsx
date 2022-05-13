@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -24,7 +25,9 @@ describe('DashboardVideoLiveWidgetLivePairing', () => {
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveWidgetLivePairing video={video} />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetLivePairing video={video} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );

@@ -13,6 +13,7 @@ import React from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -91,9 +92,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -135,9 +138,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -176,9 +181,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={{ ...mockedVideo, starting_at: startingAt.toString() }}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={{ ...mockedVideo, starting_at: startingAt.toString() }}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -223,13 +230,15 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={{
-              ...mockedVideo,
-              starting_at: startingAt.toString(),
-              estimated_duration: estimatedDuration.toISOTime(),
-            }}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={{
+                ...mockedVideo,
+                starting_at: startingAt.toString(),
+                estimated_duration: estimatedDuration.toISOTime(),
+              }}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -254,9 +263,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -308,9 +319,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
         'fr',
       ),
@@ -345,9 +358,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -394,9 +409,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -438,9 +455,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetSchedulingAndDescription
-            video={mockedVideo}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetSchedulingAndDescription
+              video={mockedVideo}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
