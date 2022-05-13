@@ -9,7 +9,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { JoinMode } from 'types/tracks';
-import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import {
+  sharedLiveMediaMockFactory,
+  thumbnailMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardVideoLiveControlPane } from '.';
 
@@ -39,6 +44,10 @@ describe('<DashboardVideoLiveControlPane />', () => {
       video: videoId,
       is_ready_to_show: true,
     });
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
     const mockVideo = videoMockFactory({
       id: videoId,
       title: 'An example title',
@@ -49,9 +58,11 @@ describe('<DashboardVideoLiveControlPane />', () => {
       estimated_duration: '00:30',
       description: 'An example description',
       thumbnail: mockedThumbnail,
+      shared_live_medias: [mockedSharedLiveMedia],
     });
 
     useThumbnail.getState().addResource(mockedThumbnail);
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
     const queryClient = new QueryClient();
 
@@ -73,18 +84,6 @@ describe('<DashboardVideoLiveControlPane />', () => {
     expect(hasChatToggleButton).toBeChecked();
     screen.getByText('Activate chat');
 
-    // DashboardVideoLiveWidgetVisibilityAndInteraction
-    screen.getByText('Visibility and interaction parameters');
-    const visibilityToggleButton = screen.getByRole('checkbox', {
-      name: 'Make the video publicly available',
-    });
-    expect(visibilityToggleButton).toBeChecked();
-    screen.getByText('Make the video publicly available');
-    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
-    screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
-    });
-
     // DashboardVideoLiveWidgetGeneralTitle
     screen.getByText('General');
     const textInput = screen.getByRole('textbox', {
@@ -96,6 +95,18 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     expect(liveRecordingToggleButton).not.toBeChecked();
     screen.getByText('Activate live recording');
+
+    // DashboardVideoLiveWidgetVisibilityAndInteraction
+    screen.getByText('Visibility and interaction parameters');
+    const visibilityToggleButton = screen.getByRole('checkbox', {
+      name: 'Make the video publicly available',
+    });
+    expect(visibilityToggleButton).toBeChecked();
+    screen.getByText('Make the video publicly available');
+    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
+    screen.getByRole('button', {
+      name: "A button to copy the video's publicly available url in clipboard",
+    });
 
     // DashboardVideoLiveWidgetSchedulingAndDescription
     screen.getByText('Description');

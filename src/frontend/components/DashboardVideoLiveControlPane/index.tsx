@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { Video } from 'types/tracks';
 import { DashboardVideoLiveWidgetsContainer } from './widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from './widgets/DashboardVideoLiveWidgetGeneralTitle';
@@ -19,15 +20,17 @@ export const DashboardVideoLiveControlPane = ({
   video,
 }: DashboardVideoLiveControlPaneProps) => {
   return (
-    <DashboardVideoLiveWidgetsContainer>
-      <DashboardVideoLiveWidgetToolsAndApplications video={video} />
-      <DashboardVideoLiveWidgetGeneralTitle video={video} />
-      <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
-      <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
-      <DashboardVideoLiveWidgetLivePairing video={video} />
-      <DashboardVideoLiveWidgetVOD video={video} />
-      <DashboardVideoLiveWidgetJoinMode video={video} />
-      <DashboardVideoLiveWidgetThumbnail />
-    </DashboardVideoLiveWidgetsContainer>
+    <InfoWidgetModalProvider value={null}>
+      <DashboardVideoLiveWidgetsContainer>
+        <DashboardVideoLiveWidgetToolsAndApplications video={video} />
+        <DashboardVideoLiveWidgetGeneralTitle video={video} />
+        <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
+        <DashboardVideoLiveWidgetLivePairing video={video} />
+        <DashboardVideoLiveWidgetVOD video={video} />
+        <DashboardVideoLiveWidgetJoinMode video={video} />
+        <DashboardVideoLiveWidgetThumbnail />
+      </DashboardVideoLiveWidgetsContainer>
+    </InfoWidgetModalProvider>
   );
 };
