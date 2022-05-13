@@ -9,7 +9,7 @@ import { StudentLiveScheduleInfo } from '.';
 const mockSetTimeIsOver = jest.fn();
 
 describe('<StudentLiveScheduleInfo />', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     jest.useFakeTimers();
     //    set system date to 2022-01-27T14:00:00
     jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));

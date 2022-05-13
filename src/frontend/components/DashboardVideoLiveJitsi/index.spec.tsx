@@ -44,7 +44,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     };
     events = {};
     jest.clearAllMocks();
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterEach(() => {

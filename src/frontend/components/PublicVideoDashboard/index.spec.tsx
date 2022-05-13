@@ -71,10 +71,8 @@ const mockInitWebinarContext = initWebinarContext as jest.MockedFunction<
 >;
 
 let mockCanUpdate: boolean;
-const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
   appData: {
-    video: mockVideo,
     static: {
       img: {
         liveBackground: 'some_url',
@@ -91,6 +89,11 @@ jest.mock('data/appData', () => ({
 window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('PublicVideoDashboard', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    //    set system date to 2022-01-27T14:00:00
+    jest.setSystemTime(new Date(2022, 0, 27, 14, 0, 0));
+  });
   beforeEach(() => {
     fetchMock.mock(
       '/api/timedtexttracks/',
@@ -117,19 +120,11 @@ describe('PublicVideoDashboard', () => {
     useLiveStateStarted.setState({
       isStarted: true,
     });
-
-    jest.useFakeTimers();
-    //    set system date to 2022-01-27T14:00:00
-    jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
   });
 
   afterEach(() => {
     fetchMock.restore();
     jest.clearAllMocks();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
   });
 
   it('displays the video player alone', async () => {
@@ -653,7 +648,7 @@ describe('PublicVideoDashboard', () => {
 
     const video = videoMockFactory({
       live_state: liveState.IDLE,
-      starting_at: DateTime.fromJSDate(new Date(2022, 1, 29, 11, 0, 0)).toISO(),
+      starting_at: DateTime.fromJSDate(new Date(2022, 0, 29, 11, 0, 0)).toISO(),
       is_scheduled: true,
     });
     useLiveStateStarted.setState({

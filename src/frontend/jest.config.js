@@ -9,14 +9,17 @@ module.exports = {
     'default',
     'jest-image-snapshot/src/outdated-snapshot-reporter.js',
   ],
+  resolver: `${__dirname}/utils/tests/resolver.js`,
   setupFilesAfterEnv: [
     'core-js',
     'regenerator-runtime/runtime',
     './testSetup.ts',
   ],
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'https://localhost',
+  },
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
-  testURL: 'https://localhost',
   transformIgnorePatterns: [
     '/node_modules/(?!(' +
       '@mdx-js/mdx2|' +
