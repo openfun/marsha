@@ -9,15 +9,15 @@ import {
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { APIList } from 'types/api';
 import { Document } from 'types/file';
+import { Organization } from 'types/Organization';
 import {
   Playlist,
+  SharedLiveMedia,
   Thumbnail,
   TimedText,
   Video,
   VideoStats,
 } from 'types/tracks';
-import { Organization } from 'types/Organization';
-
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { deleteOne } from './deleteOne';
@@ -368,6 +368,171 @@ export const useCreateDocument = (options?: UseCreateDocumentOptions) => {
         queryClient.invalidateQueries('documents');
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
+        }
+      },
+    },
+  );
+};
+type UseUpdateSharedLiveMediaData = Partial<SharedLiveMedia>;
+type UseUpdateSharedLiveMediaError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseUpdateSharedLiveMediaData]?: string[] }[];
+    };
+type UseUpdateSharedLiveMediaOptions = UseMutationOptions<
+  SharedLiveMedia,
+  UseUpdateSharedLiveMediaError,
+  UseUpdateSharedLiveMediaData
+>;
+export const useUpdateSharedLiveMedia = (
+  id: string,
+  options?: UseUpdateSharedLiveMediaOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    SharedLiveMedia,
+    UseUpdateSharedLiveMediaError,
+    UseUpdateSharedLiveMediaData
+  >(
+    (updatedSharedLiveMedia) =>
+      updateOne({
+        name: 'sharedlivemedias',
+        id,
+        object: updatedSharedLiveMedia,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('sharedlivemedias');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('sharedlivemedias');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
+type UseDeleteSharedLiveMediaData = string;
+type UseDeleteSharedLiveMediaError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseUpdateSharedLiveMediaData]?: string[] }[];
+    };
+type UseDeleteSharedLiveMediaOptions = UseMutationOptions<
+  SharedLiveMedia,
+  UseUpdateSharedLiveMediaError,
+  UseDeleteSharedLiveMediaData
+>;
+export const useDeleteSharedLiveMedia = (
+  options?: UseDeleteSharedLiveMediaOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    SharedLiveMedia,
+    UseDeleteSharedLiveMediaError,
+    UseDeleteSharedLiveMediaData
+  >(
+    (sharedLiveMediaId) =>
+      deleteOne({
+        name: 'sharedlivemedias',
+        id: sharedLiveMediaId,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('sharedlivemedias');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('sharedlivemedias');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
+type UseStartSharingLiveMediaOptions = UseMutationOptions<
+  SharedLiveMedia,
+  UseUpdateVideoError,
+  { sharedlivemedia: string }
+>;
+export const useStartSharingMedia = (
+  videoId: string,
+  options?: UseStartSharingLiveMediaOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    SharedLiveMedia,
+    UseUpdateVideoError,
+    { sharedlivemedia: string }
+  >(
+    (sharedLiveMedia) =>
+      actionOne({
+        name: 'videos',
+        id: videoId,
+        action: 'start-sharing',
+        method: 'PATCH',
+        object: sharedLiveMedia,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
+type UseStopSharingLiveMediaOptions = UseMutationOptions<
+  SharedLiveMedia,
+  UseUpdateVideoError
+>;
+export const useStopSharingMedia = (
+  videoId: string,
+  options?: UseStopSharingLiveMediaOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<SharedLiveMedia, UseUpdateVideoError>(
+    () =>
+      actionOne({
+        name: 'videos',
+        id: videoId,
+        action: 'end-sharing',
+        method: 'PATCH',
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('videos');
+        if (options?.onError) {
+          options.onError(error, variables, context);
         }
       },
     },
