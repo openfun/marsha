@@ -456,6 +456,15 @@ describe('createVideoJsPlayer', () => {
       'en',
       getOrInitAnonymousId(),
     );
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
+
+    window.dispatchEvent(new Event('unload'));
+
+    jest.runOnlyPendingTimers();
+
+    // it didn't get called a new time
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
   });
 
   it("doesn't send attendance for an admin or instructor watching a live", async () => {

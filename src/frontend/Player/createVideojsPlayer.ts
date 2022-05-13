@@ -277,7 +277,7 @@ export const createVideojsPlayer = (
 
     xapiStatement.terminated({ time: player.currentTime() });
 
-    if (hasAttendance) {
+    if (interval) {
       window.clearInterval(interval);
     }
   });
