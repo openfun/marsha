@@ -23,7 +23,6 @@
         "@types/react-dom",
         "@types/react-test-renderer",
         "faker",
-        "jest",
         "node",
         "node-fetch",
         "react",
