@@ -3,4 +3,5 @@ export enum modelName {
   THUMBNAILS = 'thumbnails',
   VIDEOS = 'videos',
   DOCUMENTS = 'documents',
+  SHAREDLIVEMEDIAS = 'sharedlivemedias',
 }

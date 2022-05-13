@@ -1,4 +1,4 @@
-import { Nullable } from '../utils/types';
+import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
@@ -105,6 +105,24 @@ export interface Thumbnail extends Resource {
   video: Video['id'];
 }
 
+/** A SharedLiveMedia record as it exists on the backend. */
+export interface SharedLiveMedia extends Resource {
+  active_stamp: Nullable<number>;
+  filename: Nullable<string>;
+  is_ready_to_show: boolean;
+  nb_pages: Nullable<number>;
+  show_download: boolean;
+  title: Nullable<string>;
+  upload_state: uploadState;
+  urls: Nullable<{
+    media?: string;
+    pages: {
+      [key in number]: string;
+    };
+  }>;
+  video: Video['id'];
+}
+
 export interface VideoUrls {
   manifests: {
     hls: string;
@@ -142,6 +160,8 @@ export interface LiveSession extends Resource {
 
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
+  active_shared_live_media: Nullable<SharedLiveMedia>;
+  active_shared_live_media_page: Nullable<number>;
   allow_recording: boolean;
   description: Nullable<string>;
   is_ready_to_show: boolean;
@@ -184,10 +204,16 @@ export interface Video extends Resource {
   xmpp: Nullable<XMPP>;
   is_recording?: boolean;
   recording_time?: number;
+  shared_live_medias: SharedLiveMedia[];
 }
 
 export interface Live extends Omit<Video, 'live_state'> {
   live_state: Exclude<liveState, liveState.ENDED>;
 }
 
-export type UploadableObject = TimedText | Video | Thumbnail | Document;
+export type UploadableObject =
+  | TimedText
+  | Video
+  | Thumbnail
+  | Document
+  | SharedLiveMedia;

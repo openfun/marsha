@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { initiateUpload } from '../../data/sideEffects/initiateUpload';
-import { uploadFile } from '../../data/sideEffects/uploadFile';
-import { AWSPresignedPost } from '../../types/AWSPresignedPost';
-import { modelName } from '../../types/models';
-import { makeFormData } from '../../utils/makeFormData/makeFormData';
+import { initiateUpload } from 'data/sideEffects/initiateUpload';
+import { uploadFile } from 'data/sideEffects/uploadFile';
+import { AWSPresignedPost } from 'types/AWSPresignedPost';
+import { modelName } from 'types/models';
+import { makeFormData } from 'utils/makeFormData/makeFormData';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',
@@ -76,7 +76,11 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
             key,
             presignedPost.fields[key],
           ]),
-          ...(([modelName.VIDEOS, modelName.THUMBNAILS].includes(objectType)
+          ...(([
+            modelName.VIDEOS,
+            modelName.THUMBNAILS,
+            modelName.SHAREDLIVEMEDIAS,
+          ].includes(objectType)
             ? [['Content-Type', file!.type]]
             : []) as any),
           // Add the file after all of the text fields
