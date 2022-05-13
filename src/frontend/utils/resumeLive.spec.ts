@@ -22,7 +22,7 @@ const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 describe('resumeLive', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterEach(() => {

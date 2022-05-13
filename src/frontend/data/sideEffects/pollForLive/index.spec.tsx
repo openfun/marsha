@@ -7,7 +7,7 @@ import { pollForLive } from '.';
 describe('createPlayer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
