@@ -9,6 +9,7 @@ import {
   LiveSession,
   Playlist,
   PlaylistLite,
+  SharedLiveMedia,
   Thumbnail,
   TimedText,
   timedTextMode,
@@ -103,6 +104,8 @@ export const timedTextMockFactory = (
 export const videoMockFactory = (video: Partial<Video> = {}): Video => {
   const id = video.id || faker.datatype.uuid();
   return {
+    active_shared_live_media: null,
+    active_shared_live_media_page: null,
     allow_recording: true,
     description: '',
     has_transcript: false,
@@ -147,6 +150,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     live_info: {},
     live_type: null,
     xmpp: null,
+    shared_live_medias: [],
     ...video,
   };
 };
@@ -260,5 +264,33 @@ export const ltiInstructorTokenMockFactory = (
     },
     roles: ['instructor'],
     ...token,
+  };
+};
+
+export const sharedLiveMediaMockFactory = (
+  sharedLiveMedia: Partial<SharedLiveMedia> = {},
+): SharedLiveMedia => {
+  const id = sharedLiveMedia.id || faker.datatype.uuid();
+  return {
+    id,
+    active_stamp: faker.date.past().getTime().valueOf(),
+    filename: 'shared_live_media.pdf',
+    is_ready_to_show: true,
+    nb_pages: 5,
+    show_download: true,
+    title: 'share_live_media_title',
+    upload_state: uploadState.READY,
+    urls: {
+      media: `https://example.com/sharedLiveMedia/${id}`,
+      pages: {
+        1: `https://example.com/sharedLiveMedia/${id}/1`,
+        2: `https://example.com/sharedLiveMedia/${id}/2`,
+        3: `https://example.com/sharedLiveMedia/${id}/3`,
+        4: `https://example.com/sharedLiveMedia/${id}/4`,
+        5: `https://example.com/sharedLiveMedia/${id}/5`,
+      },
+    },
+    video: faker.datatype.uuid(),
+    ...sharedLiveMedia,
   };
 };
