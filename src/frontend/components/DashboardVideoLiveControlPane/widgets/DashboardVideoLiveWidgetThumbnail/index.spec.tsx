@@ -18,6 +18,7 @@ import { uploadState } from 'types/tracks';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { thumbnailMockFactory } from 'utils/tests/factories';
 import { DashboardVideoLiveWidgetThumbnail } from '.';
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 
 jest.mock('components/UploadManager', () => ({
   useUploadManager: jest.fn(),
@@ -76,15 +77,18 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
       });
     }
   });
+
   it('renders the component with default thumbnail', () => {
     const queryClient = new QueryClient();
     render(
       wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <DashboardVideoLiveWidgetThumbnail />
-        </QueryClientProvider>,
+        <InfoWidgetModalProvider value={null}>
+          <QueryClientProvider client={queryClient}>
+            <Toaster />
+            <ToastHack />
+            <DashboardVideoLiveWidgetThumbnail />
+          </QueryClientProvider>
+        </InfoWidgetModalProvider>,
       ),
     );
 
@@ -119,18 +123,20 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
 
     render(
       wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <Toaster />
-            <ToastHack />
-            <DashboardVideoLiveWidgetThumbnail />
-          </QueryClientProvider>
-        </UploadManagerContext.Provider>,
+        <InfoWidgetModalProvider value={null}>
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <QueryClientProvider client={queryClient}>
+              <Toaster />
+              <ToastHack />
+              <DashboardVideoLiveWidgetThumbnail />
+            </QueryClientProvider>
+          </UploadManagerContext.Provider>
+        </InfoWidgetModalProvider>,
       ),
     );
     const uploadButton = screen.getByRole('button', {
@@ -192,18 +198,20 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
 
     render(
       wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <Toaster />
-            <ToastHack />
-            <DashboardVideoLiveWidgetThumbnail />
-          </QueryClientProvider>
-        </UploadManagerContext.Provider>,
+        <InfoWidgetModalProvider value={null}>
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <QueryClientProvider client={queryClient}>
+              <Toaster />
+              <ToastHack />
+              <DashboardVideoLiveWidgetThumbnail />
+            </QueryClientProvider>
+          </UploadManagerContext.Provider>
+        </InfoWidgetModalProvider>,
       ),
     );
 
@@ -230,11 +238,13 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
 
     render(
       wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <DashboardVideoLiveWidgetThumbnail />
-        </QueryClientProvider>,
+        <InfoWidgetModalProvider value={null}>
+          <QueryClientProvider client={queryClient}>
+            <Toaster />
+            <ToastHack />
+            <DashboardVideoLiveWidgetThumbnail />
+          </QueryClientProvider>
+        </InfoWidgetModalProvider>,
       ),
     );
     const img = screen.getByRole('img', { name: 'Live video thumbnail' });
@@ -262,11 +272,13 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
 
     render(
       wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <DashboardVideoLiveWidgetThumbnail />
-        </QueryClientProvider>,
+        <InfoWidgetModalProvider value={null}>
+          <QueryClientProvider client={queryClient}>
+            <Toaster />
+            <ToastHack />
+            <DashboardVideoLiveWidgetThumbnail />
+          </QueryClientProvider>
+        </InfoWidgetModalProvider>,
       ),
     );
     const removeButton = screen.getByRole('button', {

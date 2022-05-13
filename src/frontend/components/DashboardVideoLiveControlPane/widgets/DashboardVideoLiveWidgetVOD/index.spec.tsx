@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
+
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -31,12 +32,19 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     });
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
-    render(wrapInIntlProvider(<DashboardVideoLiveWidgetVOD video={video} />));
+    render(
+      wrapInIntlProvider(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVOD video={video} />
+        </InfoWidgetModalProvider>,
+      ),
+    );
 
     screen.getByText('VOD');
-    userEvent.click(screen.getByTitle('help'));
-    screen.getByText('This widget allows you to handle live VOD features.');
     screen.getByRole('button', { name: /help/i });
+    screen.getByText(
+      'To transform your recorded session in VOD, you have first to generate it to become available. Then you will be able to download it and convert it in VOD when you will be ready.',
+    );
   });
 
   it('shows harvesting message when live is harvesting', () => {
@@ -45,7 +53,13 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     });
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
-    render(wrapInIntlProvider(<DashboardVideoLiveWidgetVOD video={video} />));
+    render(
+      wrapInIntlProvider(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVOD video={video} />{' '}
+        </InfoWidgetModalProvider>,
+      ),
+    );
 
     screen.getByText('Harvesting in progress...');
     screen.getByRole('button', { name: /help/i });
@@ -75,7 +89,13 @@ describe('DashboardVideoLiveWidgetVOD', () => {
         recording_time: 10,
       });
 
-      render(wrapInIntlProvider(<DashboardVideoLiveWidgetVOD video={video} />));
+      render(
+        wrapInIntlProvider(
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetVOD video={video} />
+          </InfoWidgetModalProvider>,
+        ),
+      );
 
       screen.getByText(
         /There is nothing to harvest. To create your video, you have to record your stream./,
@@ -104,7 +124,13 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     });
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
-    render(wrapInIntlProvider(<DashboardVideoLiveWidgetVOD video={video} />));
+    render(
+      wrapInIntlProvider(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVOD video={video} />
+        </InfoWidgetModalProvider>,
+      ),
+    );
 
     screen.getByRole('button', { name: 'Generate file' });
     screen.getByRole('button', { name: /help/i });
@@ -132,7 +158,13 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     });
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
-    render(wrapInIntlProvider(<DashboardVideoLiveWidgetVOD video={video} />));
+    render(
+      wrapInIntlProvider(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVOD video={video} />
+        </InfoWidgetModalProvider>,
+      ),
+    );
 
     screen.getByRole('button', { name: 'Convert into VOD' });
     expect(

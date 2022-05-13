@@ -6,6 +6,7 @@ import React from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -67,7 +68,9 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />,
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -97,7 +100,9 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />,
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -142,7 +147,9 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />,
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -185,7 +192,9 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />,
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );

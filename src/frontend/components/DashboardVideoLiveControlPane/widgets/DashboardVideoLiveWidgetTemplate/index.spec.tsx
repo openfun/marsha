@@ -1,9 +1,19 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import React, { PropsWithChildren } from 'react';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
+import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardVideoLiveWidgetTemplate } from '.';
+
+const mockSetInfoWidgetModal = jest.fn();
+jest.mock('data/stores/useInfoWidgetModal', () => ({
+  useInfoWidgetModal: () => [
+    { isVisible: false, text: null, title: null },
+    mockSetInfoWidgetModal,
+  ],
+  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
+}));
 
 const GenericComponent = () => <p>Generic component</p>;
 
@@ -14,13 +24,15 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate opened, with an info text ', () => {
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={true}
-          infoText={genericInfoText}
-          title={genericTitle}
-        >
-          <GenericComponent />
-        </DashboardVideoLiveWidgetTemplate>,
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={true}
+            infoText={genericInfoText}
+            title={genericTitle}
+          >
+            <GenericComponent />
+          </DashboardVideoLiveWidgetTemplate>
+        </InfoWidgetModalProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -34,12 +46,14 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate closed without info text and clicks on the title.', () => {
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={false}
-          title={genericTitle}
-        >
-          <GenericComponent />
-        </DashboardVideoLiveWidgetTemplate>,
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={false}
+            title={genericTitle}
+          >
+            <GenericComponent />
+          </DashboardVideoLiveWidgetTemplate>
+        </InfoWidgetModalProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -53,16 +67,18 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
     screen.getByText('Generic component');
   });
 
-  it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', () => {
+  it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', async () => {
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveWidgetTemplate
-          initialOpenValue={false}
-          infoText={genericInfoText}
-          title={genericTitle}
-        >
-          <GenericComponent />
-        </DashboardVideoLiveWidgetTemplate>,
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetTemplate
+            initialOpenValue={false}
+            infoText={genericInfoText}
+            title={genericTitle}
+          >
+            <GenericComponent />
+          </DashboardVideoLiveWidgetTemplate>
+        </InfoWidgetModalProvider>,
       ),
     );
     screen.getByText(genericTitle);
@@ -72,8 +88,10 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
     expect(screen.queryByText(genericInfoText)).toEqual(null);
 
     act(() => userEvent.click(infoButton));
-    // Indeed, in addition to the title of the widget, there is also the one on the modal
-    expect(screen.getAllByText(genericTitle)).toHaveLength(2);
-    screen.getByText(genericInfoText);
+    expect(mockSetInfoWidgetModal).toHaveBeenCalled();
+    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
+      title: genericTitle,
+      text: genericInfoText,
+    });
   });
 });
