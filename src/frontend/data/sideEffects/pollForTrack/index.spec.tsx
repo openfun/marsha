@@ -26,7 +26,7 @@ jest.mock('../../stores/generics', () => ({
 describe('sideEffects/pollForTrack', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterEach(() => {

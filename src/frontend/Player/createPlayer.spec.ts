@@ -26,7 +26,7 @@ jest.mock('utils/errors/report');
 describe('createPlayer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
