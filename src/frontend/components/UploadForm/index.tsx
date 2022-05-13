@@ -3,19 +3,22 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { appData } from '../../data/appData';
-import { getResource } from '../../data/stores/generics';
-import { modelName } from '../../types/models';
-import { TimedText, timedTextMode, UploadableObject } from '../../types/tracks';
-import { Maybe } from '../../utils/types';
-import { useAsyncEffect } from '../../utils/useAsyncEffect';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { IframeHeading } from '../Headings';
-import { LayoutMainArea } from '../LayoutMainArea';
-import { Loader } from '../Loader';
-import { UploadField } from '../UploadField';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { IframeHeading } from 'components/Headings';
+import { LayoutMainArea } from 'components/LayoutMainArea';
+import { Loader } from 'components/Loader';
+import { UploadField } from 'components/UploadField';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
+import { appData } from 'data/appData';
+import { getResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
+import { Maybe } from 'utils/types';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -145,7 +148,8 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
               <FormattedMessage
                 {...(objectType === modelName.TIMEDTEXTTRACKS
                   ? timedtexttrackTitleMessages[(object as TimedText).mode]
-                  : titleMessages[objectType])}
+                  : objectType !== modelName.SHAREDLIVEMEDIAS &&
+                    titleMessages[objectType])}
               />
             </IframeHeadingWithLayout>
             <UploadFieldContainer>

@@ -1,5 +1,5 @@
-import { modelName } from '../../types/models';
-import { UploadableObject } from '../../types/tracks';
+import { modelName } from 'types/models';
+import { UploadableObject } from 'types/tracks';
 
 const getStore = async (objectType: modelName) => {
   switch (objectType) {
@@ -15,6 +15,9 @@ const getStore = async (objectType: modelName) => {
     case modelName.DOCUMENTS:
       const { useDocument } = await import('./useDocument');
       return useDocument;
+    case modelName.SHAREDLIVEMEDIAS:
+      const { useSharedLiveMedia } = await import('./useSharedLiveMedia');
+      return useSharedLiveMedia;
   }
 };
 

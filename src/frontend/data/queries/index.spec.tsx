@@ -1,35 +1,39 @@
+import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
-import { useDeleteThumbnail } from './index';
 
+import { useDeleteThumbnail } from './index';
 import {
   documentMockFactory,
   organizationMockFactory,
   playlistMockFactory,
+  sharedLiveMediaMockFactory,
   thumbnailMockFactory,
   timedTextMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-
 import {
   useCreateDocument,
   useCreateVideo,
+  useDeleteSharedLiveMedia,
   useOrganization,
   usePairingVideo,
   usePlaylist,
   usePlaylists,
   useStatsVideo,
   useStartLiveRecording,
+  useStartSharingMedia,
   useStopLiveRecording,
+  useStopSharingMedia,
   useThumbnail,
   useTimedTextTracks,
   useUpdatePlaylist,
+  useUpdateSharedLiveMedia,
   useUpdateVideo,
   useVideo,
   useVideos,
-} from './index';
+} from '.';
 
 setLogger({
   // tslint:disable-next-line:no-console
@@ -897,6 +901,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
+
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -958,6 +963,299 @@ describe('queries', () => {
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useUpdateSharedLiveMedia', () => {
+    it('updates the resource', async () => {
+      const sharedLiveMedia = sharedLiveMediaMockFactory();
+      fetchMock.patch(
+        `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+        sharedLiveMedia,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'updated title',
+        }),
+      });
+      expect(result.current.data).toEqual(sharedLiveMedia);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to update the resource', async () => {
+      const sharedLiveMedia = sharedLiveMediaMockFactory();
+      fetchMock.patch(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        title: 'updated title',
+      });
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: 'updated title',
+        }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useDeleteSharedLiveMedia', () => {
+    it('deletes the resource', async () => {
+      const sharedLiveMedia = sharedLiveMediaMockFactory();
+      fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 204);
+
+      const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(sharedLiveMedia.id);
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to delete the resource', async () => {
+      const sharedLiveMedia = sharedLiveMediaMockFactory();
+      fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
+
+      const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(sharedLiveMedia.id);
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useStartSharingMedia', () => {
+    it('updates the resource', async () => {
+      const videoId = 'id_video';
+      const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+      const video = videoMockFactory({
+        id: videoId,
+        active_shared_live_media: sharedLiveMedia,
+        active_shared_live_media_page: 1,
+        shared_live_medias: [sharedLiveMedia],
+      });
+      fetchMock.patch(`/api/videos/${video.id}/start-sharing/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        status: 200,
+        body: JSON.stringify(video),
+      });
+
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStartSharingMedia(video.id, { onSuccess, onError }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({ sharedlivemedia: sharedLiveMedia.id });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/start-sharing/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+
+      expect(onSuccess).toHaveBeenCalled();
+      expect(onError).not.toHaveBeenCalled();
+    });
+
+    it('fails to update the resource', async () => {
+      const videoId = 'id_video';
+      const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+      const video = videoMockFactory({
+        id: videoId,
+        active_shared_live_media: null,
+        active_shared_live_media_page: null,
+        shared_live_medias: [sharedLiveMedia],
+      });
+      fetchMock.patch(`/api/videos/${video.id}/start-sharing/`, 400);
+
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStartSharingMedia(video.id, { onSuccess, onError }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({ sharedlivemedia: sharedLiveMedia.id });
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/start-sharing/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalled();
+    });
+  });
+
+  describe('useStopSharingMedia', () => {
+    it('updates the resource', async () => {
+      const videoId = 'id_video';
+      const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+      const video = videoMockFactory({
+        id: videoId,
+        active_shared_live_media: null,
+        active_shared_live_media_page: null,
+        shared_live_medias: [sharedLiveMedia],
+      });
+      fetchMock.patch(`/api/videos/${video.id}/end-sharing/`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        status: 200,
+        body: JSON.stringify(video),
+      });
+
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStopSharingMedia(video.id, { onSuccess, onError }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/end-sharing/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+
+      expect(onSuccess).toHaveBeenCalled();
+      expect(onError).not.toHaveBeenCalled();
+    });
+
+    it('fails to update the resource', async () => {
+      const videoId = 'id_video';
+      const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+      const video = videoMockFactory({
+        id: videoId,
+        active_shared_live_media: sharedLiveMedia,
+        active_shared_live_media_page: 1,
+        shared_live_medias: [sharedLiveMedia],
+      });
+      fetchMock.patch(`/api/videos/${video.id}/end-sharing/`, 400);
+
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+      const { result, waitFor } = renderHook(
+        () => useStopSharingMedia(video.id, { onSuccess, onError }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate();
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${video.id}/end-sharing/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalled();
     });
   });
 });
