@@ -78,20 +78,19 @@ const VideoPlayer = ({
 
     if (video) {
       // Instantiate the player and keep the instance in state
-      setPlayer(
-        createPlayer(
-          playerType,
-          videoNodeRef.current!,
-          setPlayerCurrentTime,
-          video,
-          intl.locale,
-          (videoPlayer) => {
-            if (defaultVolume !== undefined) {
-              videoPlayer.volume(Math.min(1, Math.max(0, defaultVolume)));
-            }
-          },
-        ),
+      const createdPlayer = createPlayer(
+        playerType,
+        videoNodeRef.current!,
+        setPlayerCurrentTime,
+        video,
+        intl.locale,
+        (videoPlayer) => {
+          if (defaultVolume !== undefined) {
+            videoPlayer.volume(Math.min(1, Math.max(0, defaultVolume)));
+          }
+        },
       );
+      setPlayer(createdPlayer);
 
       document.dispatchEvent(
         new CustomEvent('marsha_player_created', {
@@ -102,7 +101,7 @@ const VideoPlayer = ({
       );
 
       /** Make sure to destroy the player on unmount. */
-      return () => player && player.destroy();
+      return () => createdPlayer && createdPlayer.destroy();
     }
   }, []);
 
