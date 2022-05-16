@@ -327,8 +327,10 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         start_live_channel(video.get_medialive_channel().get("id"))
 
         # if the video has been harvested, we need to reset its recordings
+        # and its related live attendances
         if video.live_state == defaults.HARVESTED:
             video.recording_slices = []
+            LiveSession.objects.filter(video=video).update(live_attendance=None)
 
         video.live_state = defaults.STARTING
         video.upload_state = defaults.PENDING

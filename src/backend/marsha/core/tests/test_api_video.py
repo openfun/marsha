@@ -27,6 +27,7 @@ from ..defaults import (
     STOPPED,
     STOPPING,
 )
+from ..factories import LiveSessionFactory
 from ..utils.api_utils import generate_hash
 from ..utils.medialive_utils import ManifestMissingException
 from ..utils.time_utils import to_timestamp
@@ -5025,6 +5026,16 @@ class VideoAPITest(TestCase):
             video=video,
         )
 
+        livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            email=None,
+            is_registered=False,
+            live_attendance={"key1": {"sound": "OFF", "tabs": "OFF"}},
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
@@ -5188,6 +5199,8 @@ class VideoAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.resolutions, None)
         self.assertEqual(video.recording_slices, [])
+        livesession.refresh_from_db()
+        self.assertEqual(livesession.live_attendance, None)
 
     def test_api_instructor_start_non_live_video(self):
         """An instructor should not start a video when not in live mode."""
