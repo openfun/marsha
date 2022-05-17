@@ -23,6 +23,38 @@
     "description": "Text helper displayed if a meeting is started.",
     "message": "Started"
   },
+  "apps.markdown.SelectContent.addDocument": {
+    "description": "Text displayed on a button to add a new markdown document.",
+    "message": "Add a markdown document"
+  },
+  "apps.markdown.SelectContent.draft": {
+    "description": "Text helper displayed if a markdown document is still a draft.",
+    "message": "Draft"
+  },
+  "apps.markdown.SelectContent.loadingDocuments": {
+    "description": "Accessible message for the spinner while loading the markdown document in lti select view.",
+    "message": "Loading documents..."
+  },
+  "apps.markdown.SelectContent.missingTitle": {
+    "description": "Text helper displayed if a markdown document has no translated title.",
+    "message": "Missing title"
+  },
+  "apps.markdown.SelectContent.newDocument": {
+    "description": "Default LTI consumer title for a new markdown document.",
+    "message": "New markdown document"
+  },
+  "apps.markdown.SelectContent.published": {
+    "description": "Text helper displayed if a markdown document is published.",
+    "message": "Published"
+  },
+  "apps.markdown.SelectContent.select": {
+    "description": "Accessible message for selecting a markdown document.",
+    "message": "Select {title}"
+  },
+  "apps.markdown.SelectContent.tabTitleMarkdown": {
+    "description": "Tab label to display markdown documents list.",
+    "message": "Markdown"
+  },
   "component.ChatAvatar.avatarTitle": {
     "description": "A title describing the avatar icon purpose.",
     "message": "The user's avatar"
@@ -30,14 +62,6 @@
   "component.ChatMessage.sentAt": {
     "description": "'Sent at' text for message's datetime display.",
     "message": "sent at {sentAt}"
-  },
-  "component.ChatPresenceItem.joinedChatLabel": {
-    "description": "A label to announce that a user has joined the chat.",
-    "message": "{participant} has joined"
-  },
-  "component.ChatPresenceItem.leftChatLabel": {
-    "description": "A label to announce that a user has left the chat.",
-    "message": "{participant} has left"
   },
   "component.DashboardMeeting.loadingMeeting": {
     "description": "Accessible message for the spinner while loading the meeting in dashboard view.",
@@ -155,9 +179,45 @@
     "description": "Message when meeting is started.",
     "message": "Meeting is started."
   },
-  "component.DashboardVideoLiveWidgetTemplate.infoTitle": {
-    "description": "The title displays in the info modal.",
-    "message": "Widget's function"
+  "component.DashboardVideoLiveWidgetGeneralTitle.updateTitleBlank": {
+    "description": "Message displayed when the user tried to enter a blank title.",
+    "message": "Title can't be blank !"
+  },
+  "component.DashboardVideoLiveWidgetGeneralTitle.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "component.DashboardVideoLiveWidgetGeneralTitle.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
+  },
+  "component.DashboardVideoLiveWidgetSchedulingAndDescription.updateDescriptionBlank": {
+    "description": "Message displayed when the user tried to enter a blank description.",
+    "message": "Description can't be blank !"
+  },
+  "component.DashboardVideoLiveWidgetSchedulingAndDescription.updateVideoFail": {
+    "description": "Message displayed when video update failed.",
+    "message": "Video update has failed !"
+  },
+  "component.DashboardVideoLiveWidgetSchedulingAndDescription.updateVideoSuccess": {
+    "description": "Message displayed when video update is successful.",
+    "message": "Video updated."
+  },
+  "component.DashboardVideoLiveWidgetToolsAndApplications.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "component.DashboardVideoLiveWidgetToolsAndApplications.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
+  },
+  "component.DashboardVideoLiveWidgetVisibilityAndInteraction.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "component.DashboardVideoLiveWidgetVisibilityAndInteraction.updateVideoSucces": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
   },
   "component.DashboardVideoPaneDownloadOption.allowDownload": {
     "description": "",
@@ -194,6 +254,54 @@
   "component.LiveVideoPanel.LiveVideoTabPanel.joinDiscussion": {
     "description": "Viewers and join discussion tab title in live panel",
     "message": "viewers"
+  },
+  "component.MarkdownEditor.editorEmptyDragDropHelper": {
+    "description": "Displayed help text when editor is empty",
+    "message": "💡 You can easily add some content by drag and dropping a text file in one of the editor's line."
+  },
+  "component.MarkdownEditor.mathjaxDisabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is disabled",
+    "message": "Mathjax disabled"
+  },
+  "component.MarkdownEditor.mathjaxEnabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is enabled",
+    "message": "Mathjax enabled"
+  },
+  "component.MarkdownEditor.mdxDisabled": {
+    "description": "Button to toggle MDX rendering option when MDX is disabled",
+    "message": "MDX disabled"
+  },
+  "component.MarkdownEditor.mdxEnabled": {
+    "description": "Button to toggle MDX rendering option when MDX is enabled",
+    "message": "MDX enabled"
+  },
+  "component.MarkdownEditor.publish": {
+    "description": "Button to mark edited markdown document as published (not draft)",
+    "message": "Publish"
+  },
+  "component.MarkdownEditor.save": {
+    "description": "Button to save edited markdown document",
+    "message": "Save"
+  },
+  "component.MarkdownEditor.saveFailure": {
+    "description": "Displayed message in toast when the markdown document saving request failed",
+    "message": "An error occurred, the document is not saved"
+  },
+  "component.MarkdownEditor.saveSuccess": {
+    "description": "Displayed message in toast when the markdown document is successfully saved",
+    "message": "Document is saved"
+  },
+  "component.MarkdownEditor.settings": {
+    "description": "Accessibility text for settings menu in markdown editor",
+    "message": "Settings"
+  },
+  "component.MarkdownEditor.title": {
+    "description": "Label for markdown document's title",
+    "message": "Title"
+  },
+  "component.MarkdownEditor.translationNotFound": {
+    "description": "Error message displayed when translation is not found",
+    "message": "Translation not found"
   },
   "component.MessageMetadatas.messageTimeTitle": {
     "description": "A title describing the div where the sending time is displayed",
@@ -263,6 +371,18 @@
     "description": "Label of the input field to add/update the start time of the scheduled event",
     "message": "Starting time"
   },
+  "component.ScreenDispositionSelector.editorOnly": {
+    "description": "Navigation bar, icon to display editor only",
+    "message": "Editor only"
+  },
+  "component.ScreenDispositionSelector.renderingOnly": {
+    "description": "Navigation bar, icon to display rendering only",
+    "message": "Rendering only"
+  },
+  "component.ScreenDispositionSelector.splitScreen": {
+    "description": "Navigation bar, icon to display both editor and rendering",
+    "message": "Split screen"
+  },
   "component.SelectContent.playlistTitle": {
     "description": "Title for the current playlist.",
     "message": "Playlist {title} ({id})"
@@ -275,6 +395,10 @@
     "description": "Title for the button in actions during a live in raw mode for a teacher to show his live feedback.",
     "message": "Show live feedback"
   },
+  "component.StudentLiveAdvertising.StudentLiveDescription.noTitle": {
+    "description": "Title to advertise a live which has no title set yet.",
+    "message": "This live has no title yet."
+  },
   "component.TeacherLiveTypeSwitch.JITSI": {
     "description": "Title for live mode JITSI",
     "message": "Jitsi"
@@ -286,14 +410,6 @@
   "component.TeacherLiveTypeSwitch.message": {
     "description": "Message displayed when an error occured when trying to switch live mode",
     "message": "An error occured, pease try again."
-  },
-  "components.ConfirmationLayer.Cancel": {
-    "description": "Label for the cancel button",
-    "message": "Cancel"
-  },
-  "components.ConfirmationLayer.Confirmation": {
-    "description": "Label for the confirmation button",
-    "message": "Ok"
   },
   "components.Dashboard.DashboardPaneButtons.documents.btnPlay": {
     "description": "Dashboard button to display the existing document, if there is one.",
@@ -383,21 +499,37 @@
     "description": "Title for the transcripts management in the dashboard.",
     "message": "Transcripts"
   },
-  "components.DashboardVideoHarvested.publish": {
-    "description": "Call to action to publish a live video in VOD",
-    "message": "publish the video"
+  "components.DashboardVideoLiveControlPane.widgets.DashboardVideoLiveWidgetLiePairing.info": {
+    "description": "Helper explaining what contains the external sources widget and how to use the appairing button",
+    "message": "The appairing button allows you to appair an external device and connect you to the current jitsi room."
   },
-  "components.DashboardVideoHarvested.watch": {
-    "description": "Button to watch the video.",
-    "message": "watch"
+  "components.DashboardVideoLiveControlPane.widgets.DashboardVideoLiveWidgetLiePairing.title": {
+    "description": "Title used in the external broadcast dashboard widget",
+    "message": "External broadcast sources"
   },
-  "components.DashboardVideoLiveEndButton.confirmEndLive": {
-    "description": "Confirmation to end the video streaming.",
-    "message": "Are you sure you want to end the video streaming ? This action is definitive"
+  "components.DashboardVideoLiveEndButton.alertInfo": {
+    "description": "Message shows when the teacher needs to confirm he wants to stop the live.",
+    "message": "You are about to stop the live.{br}Every viewers will be disconnected.{br}Are you sure you want to stop this Live ?{br}Beware, live is still running until stopped."
+  },
+  "components.DashboardVideoLiveEndButton.cancel": {
+    "description": "Button label to cancel stopping a live",
+    "message": "Cancel"
   },
   "components.DashboardVideoLiveEndButton.endLive": {
     "description": "Title for the button to end streaming as a teacher.",
     "message": "End live"
+  },
+  "components.DashboardVideoLiveEndButton.error": {
+    "description": "Error message displayed when and error occured when trying to pause",
+    "message": "An error occured, please try again."
+  },
+  "components.DashboardVideoLiveEndButton.noTitle": {
+    "description": "Title placeholder when no title is defined for this live",
+    "message": "No title"
+  },
+  "components.DashboardVideoLiveEndButton.stopButtonTitle": {
+    "description": "Stop Button title",
+    "message": "Stop the live"
   },
   "components.DashboardVideoLivePairing.pairingSecretCountdownExpired": {
     "description": "Message displayed when the secret for pairing an external device has expired.",
@@ -435,33 +567,109 @@
     "description": "Video url streaming.",
     "message": "url"
   },
-  "components.DashboardVideoLiveStartButton.confirmResumeLive": {
-    "description": "Confirmation to resume a video streaming.",
-    "message": "Are you sure you want to resume a video streaming ?"
+  "components.DashboardVideoLiveWidgetGeneralTitle.info": {
+    "description": "Info of the widget used for setting title and live recording.",
+    "message": "This widget allows you to set the title of your live, alongside activate / deactivate recording of it."
   },
-  "components.DashboardVideoLiveStartButton.confirmStartLive": {
-    "description": "Confirmation to start a video streaming.",
-    "message": "Are you sure you want to start a video streaming ?"
+  "components.DashboardVideoLiveWidgetGeneralTitle.liveRecordingToggleLabel": {
+    "description": "The label associated to the toggle button reponsible of live recording activation / deactivation.",
+    "message": "Activate live recording"
   },
-  "components.DashboardVideoLiveStartButton.resumeLive": {
-    "description": "Resume a video streaming.",
-    "message": "Resume streaming"
+  "components.DashboardVideoLiveWidgetGeneralTitle.placeholderTitleInput": {
+    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
+    "message": "Enter title of your live here"
   },
-  "components.DashboardVideoLiveStartButton.startLive": {
-    "description": "Start a video streaming.",
-    "message": "Start streaming"
+  "components.DashboardVideoLiveWidgetGeneralTitle.title": {
+    "description": "Title of the widget used for setting live title and activate recording.",
+    "message": "General"
   },
-  "components.DashboardVideoLiveStartButton.startLiveHelper": {
-    "description": "Helper message explaining why the start live button is disabled",
-    "message": "Only moderators can start a live"
+  "components.DashboardVideoLiveWidgetSchedulingAndDescription.endDateWebinarLabel": {
+    "description": "When the webinar will end.",
+    "message": "Webinar's end"
   },
-  "components.DashboardVideoLiveStopButton.confirmStopLive": {
-    "description": "Confirmation to stop the video streaming.",
-    "message": "Are you sure you want to pause the video streaming ?"
+  "components.DashboardVideoLiveWidgetSchedulingAndDescription.info": {
+    "description": "Info of the widget used for scheduling and change description of a webinar.",
+    "message": "This widget allows you to schedule a webinar, and modify its description."
   },
-  "components.DashboardVideoLiveStopButton.startLive": {
-    "description": "Stop a video streaming.",
-    "message": "pause ⏸"
+  "components.DashboardVideoLiveWidgetSchedulingAndDescription.notScheduledWebinar": {
+    "description": "The message displayed when the live is not scheduled",
+    "message": "Your live is not scheduled"
+  },
+  "components.DashboardVideoLiveWidgetSchedulingAndDescription.placeholderDescriptionInput": {
+    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
+    "message": "Description..."
+  },
+  "components.DashboardVideoLiveWidgetSchedulingAndDescription.title": {
+    "description": "Title of the widget used for setting live title and activate recording.",
+    "message": "Description"
+  },
+  "components.DashboardVideoLiveWidgetTemplate.helpButtonTitle": {
+    "description": "title for widget help button",
+    "message": "help"
+  },
+  "components.DashboardVideoLiveWidgetToolsAndApplications.chatActiveLabel": {
+    "description": "The label associated to the toggle button reponsible of live chat activation / deactivation.",
+    "message": "Activate chat"
+  },
+  "components.DashboardVideoLiveWidgetToolsAndApplications.info": {
+    "description": "Info of the widget used for setting live features.",
+    "message": "This widget allows you to activate / deactivate some live features."
+  },
+  "components.DashboardVideoLiveWidgetToolsAndApplications.title": {
+    "description": "Title of the widget used for setting live title and activate recording.",
+    "message": "Tools and applications"
+  },
+  "components.DashboardVideoLiveWidgetVOD.harvestLiveButtonLabel": {
+    "description": "Label of the button to harvest the live and create the VOD",
+    "message": "Generate file"
+  },
+  "components.DashboardVideoLiveWidgetVOD.harvestLiveMessage": {
+    "description": "Message displays when we can harvest a live to create the VOD.",
+    "message": "To transform your recorded session in VOD, you have first to generate it to become available. Then you will be able to download it and convert it in VOD when you will be ready."
+  },
+  "components.DashboardVideoLiveWidgetVOD.harvestingInProgress": {
+    "description": "Message displays when live is harvesting.",
+    "message": "Harvesting in progress..."
+  },
+  "components.DashboardVideoLiveWidgetVOD.info": {
+    "description": "Info of the widget used for live vod.",
+    "message": "This widget allows you to handle live VOD features."
+  },
+  "components.DashboardVideoLiveWidgetVOD.noHarvestMessage": {
+    "description": "Message displays in the VOD widget when the is nothing to harvest.",
+    "message": "There is nothing to harvest. To create your video, you have to record your stream.{br}Harvest will be available at the end of the live."
+  },
+  "components.DashboardVideoLiveWidgetVOD.publishVODButtonLabel": {
+    "description": "Button label to publish the VOD",
+    "message": "Publish the VOD"
+  },
+  "components.DashboardVideoLiveWidgetVOD.publishVODMessage": {
+    "description": "Message displayed in the VOD widget when live have been harvested and we can publish the VOD",
+    "message": "Your VOD is now available, you can download it to control the content then convert it into VOD."
+  },
+  "components.DashboardVideoLiveWidgetVOD.title": {
+    "description": "Title of the widget used for live VOD.",
+    "message": "VOD"
+  },
+  "components.DashboardVideoLiveWidgetVisibilityAndInteraction.copyButtonTitle": {
+    "description": "A message informing the user on the action of the copy-in-clipboard button.",
+    "message": "A button to copy the video's publicly available url in clipboard"
+  },
+  "components.DashboardVideoLiveWidgetVisibilityAndInteraction.copySuccess": {
+    "description": "Message displayed when video's publicly available url is copied in clipboard.",
+    "message": "Url copied in clipboard !"
+  },
+  "components.DashboardVideoLiveWidgetVisibilityAndInteraction.info": {
+    "description": "Info of the widget used for setting live features.",
+    "message": "This widget allows you to make the video publicly available."
+  },
+  "components.DashboardVideoLiveWidgetVisibilityAndInteraction.publiclyAvailableLabel": {
+    "description": "The label associated to the toggle button reponsible of video public visibility.",
+    "message": "Make the video publicly available"
+  },
+  "components.DashboardVideoLiveWidgetVisibilityAndInteraction.title": {
+    "description": "Title of the widget used for set the public availability of the video.",
+    "message": "Visibility and interaction parameters"
   },
   "components.DashboardVideoPane.helpTextDeleted": {
     "description": "Dashboard helptext for when the video is in DELETED state",
@@ -470,14 +678,6 @@
   "components.DashboardVideoPane.helptextError": {
     "description": "Dashboard helptext for when the video failed to upload or get processed.",
     "message": "There was an error with your video. Retry or upload another one."
-  },
-  "components.DashboardVideoPane.helptextHarvested": {
-    "description": "Dashboard helptext to ask user to finish VOD conversion",
-    "message": "The video has been converted in VOD. You must explicitly publish the video by clicking the button below."
-  },
-  "components.DashboardVideoPane.helptextHarvesting": {
-    "description": "Dashboard helptext to warn users not to wait for video processing in front of this page.",
-    "message": "Your video is currently converting from a live video to a VOD. This may take up to an hour. You can close the window and come back later."
   },
   "components.DashboardVideoPane.helptextPending": {
     "description": "Dashboard helptext for the case when there is no existing video nor anything in progress.",
@@ -643,6 +843,10 @@
     "description": "Status information for a video/audio/timed text track",
     "message": "Deleted"
   },
+  "components.ObjectStatusPicker.ENDED": {
+    "description": "The video is in live state and is ended",
+    "message": "Live has ended"
+  },
   "components.ObjectStatusPicker.ERROR": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Error"
@@ -658,10 +862,6 @@
   "components.ObjectStatusPicker.IDLE": {
     "description": "The video is in live state and ready to be start",
     "message": "Ready to start live"
-  },
-  "components.ObjectStatusPicker.PAUSED": {
-    "description": "The video is in live state and is paused",
-    "message": "Live is paused"
   },
   "components.ObjectStatusPicker.PENDING": {
     "description": "Status information for a video/audio/timed text track",
@@ -727,14 +927,6 @@
     "description": "Title for the list of videos in the organization view.",
     "message": "Videos"
   },
-  "components.PauseLiveButton.endLive": {
-    "description": "Title for the button to pause streaming as a teacher",
-    "message": "Pause live"
-  },
-  "components.PauseLiveButton.error": {
-    "description": "Error message displayed when and error occured when trying to pause",
-    "message": "An error occured, please try again."
-  },
   "components.PlaylistPortability.copied": {
     "description": "Message displayed when playlist info are copied.",
     "message": "{text} copied!"
@@ -767,73 +959,17 @@
     "description": "Title for the public paused live component",
     "message": "Webinar is paused"
   },
-  "components.ResumeLiveButton.error": {
-    "description": "Error message displayed when and error occured when trying to pause",
-    "message": "An error occured, please try again."
+  "components.PublishVOD.buttonLabel": {
+    "description": "Button label to publish a live VOD.",
+    "message": "Convert into VOD"
   },
-  "components.ResumeLiveButton.title": {
-    "description": "Title for the button to resume streaming as a teacher.",
-    "message": "Resume streaming"
+  "components.PublishVOD.downloadTitle": {
+    "description": "Button title to download the harvested video",
+    "message": "Download the video"
   },
-  "components.ScheduledVideo.form.date": {
-    "description": "Label of the input field to add/update the scheduled date and time of the webinar",
-    "message": "Starting date and time"
-  },
-  "components.ScheduledVideo.form.description": {
-    "description": "Label of the input field to add/update the description of the webinar",
-    "message": "Description"
-  },
-  "components.ScheduledVideo.form.error": {
-    "description": "Error message while saving the form",
-    "message": "An error occured while updating the scheduled webinar, please try again."
-  },
-  "components.ScheduledVideo.form.error.starting_at": {
-    "description": "Error message while saving the form, date is not defined or in the past",
-    "message": "Scheduled date must be in the future and have a date and hour defined."
-  },
-  "components.ScheduledVideo.form.error.starting_at_already_past": {
-    "description": "Error message while saving the form, initial scheduled date of this webinar is already past, invit user to create a new webinar or to start this one.",
-    "message": "This webinar has an initial date that is already past, it can't be updated in the future. Please, create a new webinar or start this one."
-  },
-  "components.ScheduledVideo.form.error.title": {
-    "description": "Error on field title, this one cannot be empty",
-    "message": "Title must be defined."
-  },
-  "components.ScheduledVideo.form.intro": {
-    "description": "Title of the form to create or update the scheduled webinar",
-    "message": "Schedule a webinar"
-  },
-  "components.ScheduledVideo.form.placeholder.description": {
-    "description": "Placeholder of the description field in the form",
-    "message": "Description"
-  },
-  "components.ScheduledVideo.form.placeholder.title": {
-    "description": "Placeholder of the title field in the form",
-    "message": "Title"
-  },
-  "components.ScheduledVideo.form.success": {
-    "description": "message to confirm webinar has been updated",
-    "message": "Your webinar has been updated"
-  },
-  "components.ScheduledVideo.form.success.openregistration": {
-    "description": "message to confirm users can now register to the webinar",
-    "message": "Your can now ask users to register to your webinar"
-  },
-  "components.ScheduledVideo.form.title": {
-    "description": "Label of the input field to add/update the title to the webinar",
-    "message": "Title"
-  },
-  "components.ScheduledVideo.infoScheduledEvent": {
-    "description": "Message informing webinar is scheduled and giving the current date.",
-    "message": "Webinar is scheduled at {date}."
-  },
-  "components.ScheduledVideo.infoWasScheduledEvent": {
-    "description": "Message informing webinar was scheduled and giving the initial scheduled date.",
-    "message": "Webinar was scheduled at {date}."
-  },
-  "components.ScheduledVideo.infoWasScheduledEventDescription": {
-    "description": "Message informing that scheduled date is past and telling the user he can either start it or create a new one.",
-    "message": "Date is past, please, create a new webinar or start this one"
+  "components.PublishVOD.message": {
+    "description": "Message displayed to teacher when live has been harvested.",
+    "message": "Your live has been harvested, you can convert into VOD for students to watch it."
   },
   "components.SelectContent.addDocument": {
     "description": "Text displayed on a button to add a new document.",
@@ -895,9 +1031,25 @@
     "description": "Text for the login button in the header of the marsha site",
     "message": "Log in"
   },
+  "components.SiteHeader.logOutLabel": {
+    "description": "Text for the logout button in the header of the marsha site",
+    "message": "Log out"
+  },
+  "components.StartLiveButton.alertInfo": {
+    "description": "Modale message rendered when a teacher tries to start a live he has already harvested.",
+    "message": "Beware, you are about to start a live you have already harvested.{br}If you proceed, your previous live record will be lost.{br}Please confirm you want to erase your previous video and start a new live."
+  },
+  "components.StartLiveButton.cancel": {
+    "description": "Button label to cancel starting a live when a video is already harvested.",
+    "message": "Cancel"
+  },
   "components.StartLiveButton.error": {
     "description": "Error message displayed when and error occured when trying to pause",
     "message": "An error occured, please try again."
+  },
+  "components.StartLiveButton.modaleTitle": {
+    "description": "Modale title rendered when a teacher try to start a live he has already harvest.",
+    "message": "Start a live"
   },
   "components.StartLiveButton.title": {
     "description": "Title for the button to start streaming as a teacher.",
@@ -1051,30 +1203,6 @@
     "description": "Title placeholder when no title is defined for this live",
     "message": "No title"
   },
-  "components.TeacherLiveStopConfirmation.alertInfo": {
-    "description": "Message shows when the teacher needs to confirm he wants to stop the live.",
-    "message": "You are about to stop the live.{br}Every viewers will be disconnected.{br}Are you sure you want to stop this Live ?"
-  },
-  "components.TeacherLiveStopConfirmation.cancelButtonTitle": {
-    "description": "Cancel button title",
-    "message": "Cancel"
-  },
-  "components.TeacherLiveStopConfirmation.error": {
-    "description": "Error message displayed when and error occured when trying to pause",
-    "message": "An error occured, please try again."
-  },
-  "components.TeacherLiveStopConfirmation.noTitle": {
-    "description": "Title placeholder when no title is defined for this live",
-    "message": "No title"
-  },
-  "components.TeacherLiveStopConfirmation.stopButtonTitle": {
-    "description": "Stop Button title",
-    "message": "Stop the live"
-  },
-  "components.TeacherLiveStopConfirmation.stopped": {
-    "description": "Message displayed at the end of a live until harvesting began.",
-    "message": "Live is stopped, harvesting will begin soon."
-  },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
     "message": "Upload the file"
@@ -1166,14 +1294,6 @@
   "components.UploadableObjectStatusBadge.error": {
     "description": "Badge text for an uploadable object that encountered an error.",
     "message": "Error"
-  },
-  "components.UploadableObjectStatusBadge.harvested": {
-    "description": "Badge text for an uploadable object that was harvested.",
-    "message": "Harvested"
-  },
-  "components.UploadableObjectStatusBadge.harvesting": {
-    "description": "Badge text for an uploadable object for which harvesting is in progress..",
-    "message": "Harvesting"
   },
   "components.UploadableObjectStatusBadge.pending": {
     "description": "Badge text for an uploadable object that has no file at all and is still pending.",
@@ -1350,6 +1470,18 @@
   "components.dashboardThumbnail.replaceThumbnailButton": {
     "description": "",
     "message": "Replace this thumbnail"
+  },
+  "components.useFetchButton.defaultErrorMessage": {
+    "description": "Default error toasted on user input error while performing the async action.",
+    "message": "An error occurred, please try again later."
+  },
+  "markdown.MarkdownView.notFound.text": {
+    "description": "Base \"resource not found\" text, displayed when no JWT token is provided\"",
+    "message": "The resource you are looking for is not available. If you are an instructor try to re-authenticate."
+  },
+  "markdown.MarkdownView.notFound.title": {
+    "description": "Base \"resource not found\" heading, displayed when no JWT token is provided\"",
+    "message": "Resource not found"
   },
   "message.key": {
     "description": "",
