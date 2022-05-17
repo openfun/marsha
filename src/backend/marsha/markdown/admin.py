@@ -5,12 +5,12 @@ from django.utils.translation import gettext_lazy as _
 
 from parler.admin import TranslatableAdmin
 
-from marsha.core.admin import admin_site, link_field
+from marsha.core.admin import link_field
 
 from .models import MarkdownDocument
 
 
-@admin.register(MarkdownDocument, site=admin_site)
+@admin.register(MarkdownDocument)
 class MarkdownDocumentAdmin(TranslatableAdmin):
     """Admin class for the MarkdownDocument model."""
 

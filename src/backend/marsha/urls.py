@@ -1,6 +1,7 @@
 """Marsha URLs configuration."""
 
 from django.conf import settings
+from django.contrib import admin
 from django.urls import include, path, re_path
 
 from rest_framework.renderers import CoreJSONRenderer
@@ -8,7 +9,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
 from marsha.core import models
-from marsha.core.admin import admin_site
 from marsha.core.api import (
     DocumentViewSet,
     LiveSessionViewSet,
@@ -66,7 +66,7 @@ urlpatterns = [
     # Account
     path("account/", include("marsha.account.urls")),
     # Admin
-    path(f"{admin_site.name}/", admin_site.urls),
+    path("admin/", admin.site.urls),
     # LTI
     path("lti/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
     path("lti/select/", LTISelectView.as_view(), name="select_lti_view"),
