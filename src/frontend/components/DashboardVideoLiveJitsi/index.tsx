@@ -1,12 +1,15 @@
 import { Box } from 'grommet';
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-
+import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { PLAYER_ROUTE } from 'components/routes';
 import { getDecodedJwt } from 'data/appData';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { useIntl } from 'react-intl';
 import { modelName } from 'types/models';
 import { Video, liveState } from 'types/tracks';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
@@ -26,6 +29,7 @@ interface DashboardVideoLiveJitsiInstructorProps {
 }
 
 const DashboardVideoLiveJitsi = ({
+  // here
   setCanStartLive = () => undefined,
   setCanShowStartButton = () => undefined,
   video,
@@ -39,7 +43,8 @@ const DashboardVideoLiveJitsi = ({
   const retryStartRecordingDelay = useRef(retryDelayStep);
   const reset = useParticipantWorkflow((state) => state.reset);
   const history = useHistory();
-
+  const locale = useIntl().locale!;
+  const anonymousId = getOrInitAnonymousId();
   const loadJitsiScript = () =>
     new Promise((resolve) => {
       const script = document.createElement('script');
@@ -60,7 +65,14 @@ const DashboardVideoLiveJitsi = ({
     });
     jitsiIsRecording.current = true;
   };
-
+  const trackAttendance = () => {
+    const attendance = {
+      [Date.now()]: {
+        onStage: true,
+      },
+    };
+    pushAttendance(attendance, locale!, anonymousId);
+  };
   const initialiseJitsi = async () => {
     if (!window.JitsiMeetExternalAPI) {
       await loadJitsiScript();
@@ -188,9 +200,17 @@ const DashboardVideoLiveJitsi = ({
     });
 
     if (!isInstructor) {
+      // initialize attendances
+      const interval = window.setInterval(
+        trackAttendance,
+        PUSH_ATTENDANCE_DELAY,
+      );
       _jitsi.addListener('videoConferenceLeft', () => {
         _jitsi.dispose();
         converse.participantLeaves();
+        if (interval) {
+          window.clearInterval(interval);
+        }
         reset();
         history.push(PLAYER_ROUTE(modelName.VIDEOS));
       });

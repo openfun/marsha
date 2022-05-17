@@ -24,6 +24,7 @@ students
   public key id created on AWS cloudfront public keys
 - Push attendances for students watching a live
 - Add a login page to authenticate Marsha users
+- Push attendance when a student is on stage
 
 ### Changed
 

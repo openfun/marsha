@@ -1,12 +1,14 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { PLAYER_ROUTE } from 'components/routes';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { LiveModeType, liveState } from 'types/tracks';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { videoMockFactory } from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+import * as mockWindow from 'utils/window';
 
-import { LiveModeType, liveState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import * as mockWindow from '../../utils/window';
-import { PLAYER_ROUTE } from '../routes';
 import DashboardVideoLiveJitsi from '.';
 
 let events: any = {};
@@ -23,17 +25,23 @@ const mockJitsi = jest.fn().mockImplementation(() => ({
     events[eventName] = callback;
   },
 }));
-jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('../../utils/window', () => ({
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('utils/window', () => ({
   converse: {
     participantLeaves: jest.fn(),
   },
 }));
 let mockDecodedJwtToken = {};
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
 }));
 
+jest.mock('data/sideEffects/pushAttendance', () => ({
+  pushAttendance: jest.fn(),
+}));
+const mockPushAttendance = pushAttendance as jest.MockedFunction<
+  typeof pushAttendance
+>;
 describe('<DashboardVideoLiveJitsi />', () => {
   beforeEach(() => {
     mockDecodedJwtToken = {
@@ -41,6 +49,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
         id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
         username: 'jane_doe',
       },
+      locale: 'en',
     };
     events = {};
     jest.clearAllMocks();
@@ -679,6 +688,8 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockCanStartLive).not.toHaveBeenCalled();
     expect(mockCanShowStartButton).not.toHaveBeenCalled();
     expect(mockJitsi).toHaveBeenCalledTimes(1);
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).not.toHaveBeenCalled();
 
     // simulates user leave the conference
     dispatch('videoConferenceLeft', {});
@@ -786,7 +797,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
     });
     global.JitsiMeetExternalAPI = mockJitsi;
 
-    render(<DashboardVideoLiveJitsi video={video} isInstructor={false} />);
+    render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+      ),
+    );
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
@@ -815,7 +830,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInRouter(
-        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+        wrapInIntlProvider(
+          <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+        ),
         [
           {
             path: PLAYER_ROUTE(),
@@ -930,5 +947,127 @@ describe('<DashboardVideoLiveJitsi />', () => {
       });
     });
     expect(mockExecuteCommand).toHaveBeenCalledTimes(3);
+  });
+
+  it("pushes attendance when it's not an instructor", async () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(
+          <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+        ),
+        [
+          {
+            path: PLAYER_ROUTE(),
+            render: () => {
+              return <span>{'video player'}</span>;
+            },
+          },
+        ],
+      ),
+    );
+    const toolbarButtons = [
+      'microphone',
+      'camera',
+      'closedcaptions',
+      'desktop',
+      'fullscreen',
+      'fodeviceselection',
+      'hangup',
+      'profile',
+      'settings',
+      'raisehand',
+      'videoquality',
+      'filmstrip',
+      'feedback',
+      'shortcuts',
+      'tileview',
+      'select-background',
+      'help',
+      'mute-everyone',
+      'mute-video-everyone',
+      'security',
+    ];
+    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
+      configOverwrite: {
+        constraints: {
+          video: {
+            height: {
+              ideal: 720,
+              max: 720,
+              min: 240,
+            },
+          },
+        },
+        conferenceInfo: {
+          alwaysVisible: ['recording'],
+
+          autoHide: [],
+        },
+        disableDeepLinking: true,
+        disablePolls: true,
+        doNotStoreRoom: true,
+        hideConferenceSubject: true,
+        hideConferenceTimer: true,
+        prejoinPageEnabled: false,
+        resolution: 720,
+        toolbarButtons,
+      },
+      interfaceConfigOverwrite: {
+        HIDE_INVITE_MORE_HEADER: true,
+        TOOLBAR_BUTTONS: toolbarButtons,
+      },
+      parentNode: expect.any(HTMLElement),
+      roomName: 'jitsi_conference',
+      userInfo: {
+        displayName: 'jane_doe',
+      },
+    });
+
+    Date.now = jest.fn(() => 1651732370000);
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).toHaveBeenCalledWith(
+      {
+        1651732370000: {
+          onStage: true,
+        },
+      },
+      'en',
+      getOrInitAnonymousId(),
+    );
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
+
+    // simulates user leave the conference
+    dispatch('videoConferenceLeft', {});
+    jest.runOnlyPendingTimers();
+
+    expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
+    // it didn't get called a new time
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
+
+    screen.getByText('video player');
   });
 });
