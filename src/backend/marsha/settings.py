@@ -291,6 +291,15 @@ class Base(Configuration):
     AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
 
+    # LTI Config
+    LTI_CONFIG_TITLE = values.Value("Marsha")
+    LTI_CONFIG_DESCRIPTION = values.Value(
+        "An LTI first, opensource and extensible Learning Content Management System"
+    )
+    LTI_CONFIG_ICON = values.Value("marsha_32x32_blue.png")
+    LTI_CONFIG_URL = values.Value()
+    LTI_CONFIG_CONTACT_EMAIL = values.Value()
+
     # BBB
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()

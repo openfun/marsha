@@ -20,6 +20,53 @@ Go to `Plugins` tab, and click on `Manage tools` under `External Tools`:
   <td><img src="images/moodle_lti_select_admin_2.png" alt="Moodle LTI select admin view 2"/></td>
 </tr></table>
 
+##### Semi-automatic configuration
+
+A legacy LTI configuration tool is available, which presets the tool with a few parameters, but additional configuration is needed.
+
+To use it, in the `Tool URL…` field, paste the following URL: `https://marsha.education/lti/config.xml` and click on `Add Legacy LTI`
+
+<table><tr>
+  <td><img src="images/moodle_lti_config_1.png" alt="Moodle configure LTI 1"/></td>
+</tr></table>
+
+A form will be displayed, asking for the following parameters:
+
+| Label         | Value                   |
+|---------------|-------------------------|
+| Consumer key  | [found in the passport] |
+| Shared secret | [found in the passport] |
+
+Fill them with the values found in the passport, and click on `Save changes`.
+
+<table><tr>
+  <td><img src="images/moodle_lti_config_2.png" alt="Moodle configure LTI 2"/></td>
+</tr></table>
+
+Marsha will be available in the `Tools` list:
+
+<table><tr>
+  <td><img src="images/moodle_lti_config_3.png" alt="Moodle configure LTI 3"/></td>
+</tr></table>
+
+Additional configuration is needed. Click on the `Edit` button in the Marsha tool:
+
+<table><tr>
+  <td><img src="images/moodle_lti_config_4.png" alt="Moodle configure LTI 4"/></td>
+</tr></table>
+
+Fill the form with following data:
+
+| Label                    | Value                                                |
+|--------------------------|------------------------------------------------------|
+| Tool configuration usage | Show in activity chooser and as a preconfigured tool |
+| Supports Deep Linking    | Checked                                              |
+| Content Selection URL    | https://marsha.education/lti/select/                 |
+
+Please follow the instructions in [Cookies configuration](#cookies-configuration) and [Iframe resizer](#iframe-resizer) sections below.
+
+##### Manual configuration
+
 Click on `configure a tool manually`:
 
 <table><tr>
@@ -28,15 +75,16 @@ Click on `configure a tool manually`:
 
 Fill the form with following data:
 
-Label                 | Value
---------------------- | ------------------------------------
-Tool name             | marsha
-Tool URL              | https://marsha.education/
-LTI version           | LTI 1.0/1.1
-Consumer key          | [found in the passport]
-Shared secret         | [found in the passport]
-Supports Deep Linking | Checked
-Content Selection URL | https://marsha.education/lti/select/
+| Label                    | Value                                                |
+|--------------------------|------------------------------------------------------|
+| Tool name                | marsha                                               |
+| Tool URL                 | https://marsha.education/                            |
+| LTI version              | LTI 1.0/1.1                                          |
+| Consumer key             | [found in the passport]                              |
+| Shared secret            | [found in the passport]                              |
+| Tool configuration usage | Show in activity chooser and as a preconfigured tool |
+| Supports Deep Linking    | Checked                                              |
+| Content Selection URL    | https://marsha.education/lti/select/                 |
 
 <table><tr>
   <td><img src="images/moodle_lti_select_admin_4.png" alt="Moodle LTI select admin view 4"/></td>
@@ -58,7 +106,7 @@ You may want to customize the tool's icon and use one of the following in resolu
   <td><img src="images/marsha_32x32_yellow.png" alt="Marsha icon yellow 32x32"/></td>
   <td><img src="images/marsha_32x32_black.png" alt="Marsha icon black 32x32"/></td>
   <td><img src="images/marsha_32x32_white.png" alt="Marsha icon white 32x32"/></td>
-</td></tr></table>
+</tr></table>
 
 #### Cookies configuration
 
