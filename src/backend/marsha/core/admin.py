@@ -2,14 +2,9 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
-from django.contrib.auth.models import Group
-from django.contrib.sites.admin import SiteAdmin
-from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-
-from waffle import admin as waffle_admin
 
 from marsha.core.models import (
     AudioTrack,
@@ -162,16 +157,6 @@ class MarshaAdminSite(admin.AdminSite):
     site_header = "Marsha"
 
 
-admin_site = MarshaAdminSite(name="admin")
-
-admin_site.register(waffle_admin.Flag, waffle_admin.FlagAdmin)
-admin_site.register(waffle_admin.Sample, waffle_admin.SampleAdmin)
-admin_site.register(waffle_admin.Switch, waffle_admin.SwitchAdmin)
-admin_site.register(Group)
-admin_site.register(Site, SiteAdmin)
-admin.autodiscover()
-
-
 class UserOrganizationsInline(admin.TabularInline):
     """Inline to display organizations to which a user has been granted access."""
 
@@ -180,7 +165,7 @@ class UserOrganizationsInline(admin.TabularInline):
     verbose_name_plural = _("organizations")
 
 
-@admin.register(User, site=admin_site)
+@admin.register(User)
 class UserAdmin(DefaultUserAdmin):
     """Admin class for the User model."""
 
@@ -212,7 +197,7 @@ class ConsumerSitePortabilityInline(admin.TabularInline):
     verbose_name_plural = _("portable to")
 
 
-@admin.register(ConsumerSite, site=admin_site)
+@admin.register(ConsumerSite)
 class ConsumerSiteAdmin(admin.ModelAdmin):
     """Admin class for the ConsumerSite model."""
 
@@ -254,7 +239,7 @@ class OrganizationConsumerSitesInline(admin.TabularInline):
     verbose_name_plural = _("consumer sites")
 
 
-@admin.register(Organization, site=admin_site)
+@admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     """Admin class for the Organization model."""
 
@@ -283,7 +268,7 @@ class SignTrackInline(admin.TabularInline):
     readonly_fields = ["upload_state", "uploaded_on"]
 
 
-@admin.register(Video, site=admin_site)
+@admin.register(Video)
 class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
@@ -324,7 +309,7 @@ class PlaylistPortabilityInline(admin.TabularInline):
     verbose_name_plural = _("portable to")
 
 
-@admin.register(Document, site=admin_site)
+@admin.register(Document)
 class DocumentAdmin(BaseFileAdmin):
     """Admin class for the Document model."""
 
@@ -341,7 +326,7 @@ class DocumentsInline(BaseFileInline):
     verbose_name_plural = _("documents")
 
 
-@admin.register(Playlist, site=admin_site)
+@admin.register(Playlist)
 class PlaylistAdmin(admin.ModelAdmin):
     """Admin class for the Playlist model."""
 
@@ -407,7 +392,7 @@ class PlaylistAdmin(admin.ModelAdmin):
     verbose_name = _("Playlist")
 
 
-@admin.register(LTIPassport, site=admin_site)
+@admin.register(LTIPassport)
 class LTIPassportAdmin(admin.ModelAdmin):
     """Admin class for the LTIPassport model."""
 
