@@ -151,7 +151,6 @@ export const createVideojsPlayer = (
     };
     pushAttendance(attendance, locale!, anonymousId);
   };
-
   const getCurrentTrack = (): Nullable<TextTrack> => {
     // TextTrackList is not an iterable object
     // tslint:disable-next-line:prefer-for-of
@@ -182,7 +181,7 @@ export const createVideojsPlayer = (
     isInitialized = true;
     // setTimer
     if (hasAttendance) {
-      interval = window.setInterval(trackAttendance, PUSH_ATTENDANCE_DELAY);
+      interval = player.setInterval(trackAttendance, PUSH_ATTENDANCE_DELAY);
     }
   };
 
@@ -213,6 +212,7 @@ export const createVideojsPlayer = (
     seekingAt = currentTime;
     hasSeeked = true;
   });
+
   player.on('seeked', () => {
     if (!hasSeeked) {
       return;
@@ -278,7 +278,7 @@ export const createVideojsPlayer = (
     xapiStatement.terminated({ time: player.currentTime() });
 
     if (interval) {
-      window.clearInterval(interval);
+      player.clearInterval(interval);
     }
   });
 
