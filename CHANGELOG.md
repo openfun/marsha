@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.4] - 2022-05-17
+
 ### Added
 
 - Add a control pane destined to contain widgets for the instructor to 
@@ -1114,7 +1116,8 @@ the video to the ViewersList in the right panel
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.3...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.4...master
+[4.0.0-beta.4]: https://github.com/openfun/marsha/compare/v4.0.0-beta.3...v4.0.0-beta.4
 [4.0.0-beta.3]: https://github.com/openfun/marsha/compare/v4.0.0-beta.2...v4.0.0-beta.3
 [4.0.0-beta.2]: https://github.com/openfun/marsha/compare/v4.0.0-beta.1...v4.0.0-beta.2
 [4.0.0-beta.1]: https://github.com/openfun/marsha/compare/v3.27.0...v4.0.0-beta.1
