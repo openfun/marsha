@@ -595,6 +595,48 @@ class DocumentView(BaseLTIView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(xframe_options_exempt, name="dispatch")
+class LTIConfigView(TemplateResponseMixin, View):
+    """LTI view called to configure Marsha LTI provider."""
+
+    template_name = "core/lti_config.xml"
+    content_type = "text/xml; charset=utf-8"
+
+    # pylint: disable=unused-argument
+    def get(self, request, *args, **kwargs):
+        """Respond to GET request.
+
+        Parameters
+        ----------
+        request : Request
+            passed by Django
+        args : list
+            positional extra arguments
+        kwargs : dictionary
+            keyword extra arguments
+
+        Returns
+        -------
+        XML
+            generated from applying the data to the template
+
+        """
+        return self.render_to_response(
+            {
+                "code": settings.LTI_CONFIG_TITLE.lower()
+                if settings.LTI_CONFIG_TITLE
+                else None,
+                "contact_email": settings.LTI_CONFIG_CONTACT_EMAIL,
+                "description": settings.LTI_CONFIG_DESCRIPTION,
+                "host": request.get_host(),
+                "icon": settings.LTI_CONFIG_ICON,
+                "title": settings.LTI_CONFIG_TITLE,
+                "url": settings.LTI_CONFIG_URL,
+            }
+        )
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(xframe_options_exempt, name="dispatch")
 class LTISelectView(TemplateResponseMixin, View):
     """LTI view called to select LTI content through Deep Linking.
 

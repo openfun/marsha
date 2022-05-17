@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Push attendance when a student is on stage
+- Add Legacy LTI configuration XML
 
 ### Changed
 

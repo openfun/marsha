@@ -21,6 +21,13 @@ DJANGO_AWS_ACCESS_KEY_ID=yourAwsAccesKey
 DJANGO_AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKeyId
 DJANGO_AWS_S3_REGION_NAME=eu-west-1
 
+# LTI provider xml configuration (legacy)
+DJANGO_LTI_CONFIG_TITLE=Marsha Dev
+DJANGO_LTI_CONFIG_DESCRIPTION=Test cartridge for Marsha Dev
+DJANGO_LTI_CONFIG_DESCRIPTION=marsha_32x32_blue.png
+DJANGO_LTI_CONFIG_URL=https://github.com/openfun/marsha
+DJANGO_LTI_CONFIG_CONTACT_EMAIL=fun.dev@fun-mooc.fr
+
 # BBB server credentials
 DJANGO_BBB_ENABLED=False
 DJANGO_BBB_API_ENDPOINT=https://example.com/bbb/api

@@ -1,0 +1,49 @@
+{% load static %}<?xml version="1.0" encoding="UTF-8"?>
+<cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
+    xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
+    xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
+    xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
+    xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
+    http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
+    http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
+    http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
+    {% if title %}
+        <blti:title>{{ title }}</blti:title>
+    {% endif %}
+    {% if description %}
+        <blti:description>{{ description }}</blti:description>
+    {% endif %}
+    <blti:launch_url>http://{{ host }}</blti:launch_url>
+    <blti:secure_launch_url>https://{{ host }}</blti:secure_launch_url>
+
+    {% if icon %}
+        <blti:icon>http://{{ host }}{% static icon %}</blti:icon>
+        <blti:secure_icon>https://{{ host }}{% static icon %}</blti:secure_icon>
+    {% endif %}
+
+    {% if code or title or description or url or contact_email %}
+        <blti:vendor>
+            {% if code %}
+                <lticp:code>{{ code }}</lticp:code>
+            {% endif %}
+            {% if title %}
+                <lticp:name>{{ title }}</lticp:name>
+            {% endif %}
+            {% if description %}
+                <lticp:description>{{ description }}</lticp:description>
+            {% endif %}
+            {% if url %}
+                <lticp:url>{{ url }}</lticp:url>
+            {% endif %}
+            {% if contact_email %}
+                <lticp:contact>
+                    <lticp:email>{{ contact_email }}</lticp:email>
+                </lticp:contact>
+            {% endif %}
+        </blti:vendor>
+    {% endif %}
+
+    <cartridge_bundle identifierref="BLTI001_Bundle"/>
+    <cartridge_icon identifierref="BLTI001_Icon"/>
+</cartridge_basiclti_link>

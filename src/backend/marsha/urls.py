@@ -27,6 +27,7 @@ from marsha.core.api import (
 )
 from marsha.core.views import (
     DocumentView,
+    LTIConfigView,
     LTIRespondView,
     LTISelectView,
     RemindersCancelView,
@@ -65,6 +66,7 @@ urlpatterns = [
     # Admin
     path(f"{admin_site.name}/", admin_site.urls),
     # LTI
+    path("lti/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
     path("lti/select/", LTISelectView.as_view(), name="select_lti_view"),
     path("lti/respond/", LTIRespondView.as_view(), name="respond_lti_view"),
     path("lti/videos/<uuid:uuid>", VideoView.as_view(), name="video_lti_view"),
