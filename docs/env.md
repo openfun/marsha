@@ -568,3 +568,11 @@ the event should be routed.
 - Type: string
 - Required: Yes
 - Default: marsha-medialive
+
+#### TF_VAR_lambda_convert_memory
+
+This variable allow you to configure the amount of memory allocated for the lambda convert. Depending the environment you are using you would like to increase this value.
+
+- Type: number
+- Required: No
+- Default: 1536

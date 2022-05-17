@@ -55,7 +55,7 @@ resource "aws_lambda_function" "marsha_convert_lambda" {
   image_uri        = "${var.lambda_image_name}:${var.lambda_image_tag}"
   package_type     = "Image"
   role             = aws_iam_role.lambda_invocation_role.arn
-  memory_size      = "1536"
+  memory_size      = "${var.lambda_convert_memory}"
   timeout          = "90"
 
   image_config {

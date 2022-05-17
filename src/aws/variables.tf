@@ -108,3 +108,8 @@ variable "ffmpeg_transmux_container_port" {
   type    = number
   default = 8081
 }
+
+variable "lambda_convert_memory" {
+  type    = number
+  default = 1536
+}
