@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-22 07:14+0000\n"
-"PO-Revision-Date: 2022-04-22 08:01\n"
+"POT-Creation-Date: 2022-05-17 15:10+0000\n"
+"PO-Revision-Date: 2022-05-17 15:44\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -17,6 +17,94 @@ msgstr ""
 "X-Crowdin-File: backend.pot\n"
 "X-Crowdin-File-ID: 6\n"
 
+#: marsha/account/apps.py:12
+msgid "Account"
+msgstr "Compte"
+
+#: marsha/account/templates/account/login.html:10
+msgid "Please correct the error below."
+msgstr "Merci de corriger l'erreur ci-dessous."
+
+#: marsha/account/templates/account/login.html:10
+msgid "Please correct the errors below."
+msgstr "Merci de corriger les erreurs ci-dessous."
+
+#: marsha/account/templates/account/login.html:33
+msgid "Forgotten your password or username?"
+msgstr "Mot de passe ou identifiant oublié ?"
+
+#: marsha/account/templates/account/login.html:36
+#: marsha/account/templates/account/password_reset_complete.html:8
+msgid "Log in"
+msgstr "Se connecter"
+
+#: marsha/account/templates/account/password_reset_complete.html:7
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr "Votre mot de passe a été défini.  Vous pouvez vous connecter à présent."
+
+#: marsha/account/templates/account/password_reset_confirm.html:8
+msgid "Please enter your new password twice so we can verify you typed it in correctly."
+msgstr "Entrez votre nouveau mot de passe deux fois, afin de vérifier qu'il est bien écrit."
+
+#: marsha/account/templates/account/password_reset_confirm.html:14
+msgid "New password:"
+msgstr "Nouveau mot de passe :"
+
+#: marsha/account/templates/account/password_reset_confirm.html:19
+msgid "Confirm password:"
+msgstr "Confirmez le mot de passe :"
+
+#: marsha/account/templates/account/password_reset_confirm.html:23
+msgid "Change my password"
+msgstr "Changer mon mot de passe"
+
+#: marsha/account/templates/account/password_reset_confirm.html:28
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
+msgstr "Le lien de réinitialisation du mot de passe n'a pas fonctionné, peut-être parce qu'il a déjà été utilisé. Merci de bien vouloir demander une nouvelle réinitialisation."
+
+#: marsha/account/templates/account/password_reset_done.html:7
+msgid "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly."
+msgstr "Nous vous avons envoyé des instructions pour définir votre mot de passe, si un compte existe avec le courrier électronique que vous avez entré. Vous devriez les recevoir sous peu."
+
+#: marsha/account/templates/account/password_reset_done.html:8
+msgid "If you don’t receive an email, please make sure you’ve entered the address you registered with, and check your spam folder."
+msgstr "Si vous ne recevez pas de courriel, assurez-vous d'avoir saisi la même adresse avec laquelle vous vous êtes inscrit et vérifiez votre dossier de courriers indésirables / pourriel."
+
+#: marsha/account/templates/account/password_reset_email.html:2
+#, python-format
+msgid "You're receiving this email because you requested a password reset for your user account at %(site_name)s."
+msgstr "Vous recevez ce courrier électronique car vous avez demandé une réinitialisation de mot de passe\n"
+"pour votre compte utilisateur sur %(site_name)s."
+
+#: marsha/account/templates/account/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
+msgstr "Rendez-vous sur la page suivante et choisissez un nouveau mot de passe :"
+
+#: marsha/account/templates/account/password_reset_email.html:8
+msgid "Your username, in case you’ve forgotten:"
+msgstr "Votre nom d'utilisateur, au cas où vous l'auriez oublié :"
+
+#: marsha/account/templates/account/password_reset_email.html:10
+msgid "Thanks for using our site!"
+msgstr "Merci d'utiliser notre site !"
+
+#: marsha/account/templates/account/password_reset_email.html:12
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "L'équipe %(site_name)s"
+
+#: marsha/account/templates/account/password_reset_form.html:7
+msgid "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one."
+msgstr "Vous avez oublié votre mot de passe ? Saisissez votre adresse email ci-dessous et nous vous enverrons les instructions pour en définir un nouveau."
+
+#: marsha/account/templates/account/password_reset_form.html:11
+msgid "Email address:"
+msgstr "Adresse e-mail:"
+
+#: marsha/account/templates/account/password_reset_form.html:15
+msgid "Reset my password"
+msgstr "Réinitialiser mon mot de passe"
+
 #: marsha/bbb/admin.py:15
 msgid "Meeting"
 msgstr "Classe virtuelle"
@@ -27,6 +115,7 @@ msgstr "Big Blue Button"
 
 #: marsha/bbb/models.py:39 marsha/core/models/file.py:95
 #: marsha/core/models/playlist.py:92 marsha/core/models/playlist.py:180
+#: marsha/markdown/models.py:38
 msgid "playlist"
 msgstr "liste de lecture"
 
@@ -35,17 +124,20 @@ msgid "playlist to which this meeting belongs"
 msgstr "liste de lecture à laquelle appartient cette classe virtuelle"
 
 #: marsha/bbb/models.py:46 marsha/core/models/file.py:77
-#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:637
+#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:630
+#: marsha/markdown/models.py:30
 msgid "lti id"
 msgstr "ID LTI"
 
 #: marsha/bbb/models.py:47 marsha/core/models/file.py:78
-#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:634
+#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:627
+#: marsha/markdown/models.py:31
 msgid "ID for synchronization with an external LTI tool"
 msgstr "ID pour la synchronisation avec un outil LTI externe"
 
 #: marsha/bbb/models.py:53 marsha/core/models/file.py:70
-#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:879
+#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:872
+#: marsha/markdown/models.py:87
 msgid "title"
 msgstr "titre"
 
@@ -62,6 +154,7 @@ msgid "description of the meeting"
 msgstr "description de la classe virtuelle"
 
 #: marsha/bbb/models.py:65 marsha/core/models/file.py:118
+#: marsha/markdown/models.py:44
 msgid "position"
 msgstr "position"
 
@@ -127,6 +220,7 @@ msgstr "classes virtuelles"
 
 #: marsha/bbb/models.py:158 marsha/core/models/account.py:259
 #: marsha/core/models/file.py:132 marsha/core/models/playlist.py:106
+#: marsha/markdown/models.py:143
 msgid "{:s} [deleted]"
 msgstr "{:s} [deleted]"
 
@@ -172,13 +266,13 @@ msgid "consumer sites"
 msgstr "sites clients"
 
 #: marsha/core/admin.py:299 marsha/core/models/video.py:42
-#: marsha/core/models/video.py:682 marsha/core/models/video.py:872
+#: marsha/core/models/video.py:675 marsha/core/models/video.py:865
 msgid "Video"
 msgstr "Vidéo"
 
 #: marsha/core/admin.py:306 marsha/core/models/video.py:142
-#: marsha/core/models/video.py:333 marsha/core/models/video.py:498
-#: marsha/core/models/video.py:808
+#: marsha/core/models/video.py:326 marsha/core/models/video.py:491
+#: marsha/core/models/video.py:801
 msgid "video"
 msgstr "vidéo"
 
@@ -224,63 +318,63 @@ msgstr "Inscription validée !"
 msgid "Marsha"
 msgstr "Marsha"
 
-#: marsha/core/defaults.py:35
+#: marsha/core/defaults.py:37
 msgid "pending"
 msgstr "en attente"
 
-#: marsha/core/defaults.py:36
+#: marsha/core/defaults.py:38
 msgid "processing"
 msgstr "en cours de traitement"
 
-#: marsha/core/defaults.py:37
-msgid "processing live to VOD"
-msgstr "conversion du direct en VOD"
-
-#: marsha/core/defaults.py:38
+#: marsha/core/defaults.py:39
 msgid "error"
 msgstr "erreur"
 
-#: marsha/core/defaults.py:39
+#: marsha/core/defaults.py:40
 msgid "ready"
 msgstr "prêt"
-
-#: marsha/core/defaults.py:40
-msgid "harvested"
-msgstr "récupéré"
 
 #: marsha/core/defaults.py:41
 msgid "deleted"
 msgstr "supprimé"
 
 #: marsha/core/defaults.py:45
+msgid "ended"
+msgstr "terminé"
+
+#: marsha/core/defaults.py:46
+msgid "harvested"
+msgstr "récupéré"
+
+#: marsha/core/defaults.py:47
+msgid "processing live to VOD"
+msgstr "conversion du direct en VOD"
+
+#: marsha/core/defaults.py:48
 msgid "idle"
 msgstr "inactif"
 
-#: marsha/core/defaults.py:46
-msgid "paused"
-msgstr "en pause"
-
-#: marsha/core/defaults.py:47
+#: marsha/core/defaults.py:49
 msgid "running"
 msgstr "en cours"
 
-#: marsha/core/defaults.py:48
+#: marsha/core/defaults.py:50
 msgid "starting"
 msgstr "démarrage"
 
-#: marsha/core/defaults.py:49
+#: marsha/core/defaults.py:51
 msgid "stopped"
 msgstr "arrêté"
 
-#: marsha/core/defaults.py:50
+#: marsha/core/defaults.py:52
 msgid "stopping"
 msgstr "en cours d'arrêt"
 
-#: marsha/core/defaults.py:56
+#: marsha/core/defaults.py:58
 msgid "raw"
 msgstr "raw"
 
-#: marsha/core/defaults.py:56
+#: marsha/core/defaults.py:58
 msgid "jitsi"
 msgstr "jitsi"
 
@@ -586,23 +680,24 @@ msgstr "état de l'envoi dans AWS."
 msgid "title of the file"
 msgstr "titre du document"
 
-#: marsha/core/models/file.py:85
+#: marsha/core/models/file.py:85 marsha/markdown/models.py:63
 msgid "author"
 msgstr "auteur"
 
-#: marsha/core/models/file.py:86
+#: marsha/core/models/file.py:86 marsha/markdown/models.py:64
 msgid "author of the file"
 msgstr "auteur du document"
 
-#: marsha/core/models/file.py:96
+#: marsha/core/models/file.py:96 marsha/markdown/models.py:39
 msgid "playlist to which this file belongs"
 msgstr "liste de lecture à laquelle le fichier appartient"
 
 #: marsha/core/models/file.py:103 marsha/core/models/playlist.py:52
+#: marsha/markdown/models.py:51
 msgid "duplicated from"
 msgstr "dupliqué de"
 
-#: marsha/core/models/file.py:104
+#: marsha/core/models/file.py:104 marsha/markdown/models.py:52
 msgid "original file this one was duplicated from"
 msgstr "fichier d'origine depuis lequel celui-ci a été dupliqué"
 
@@ -610,7 +705,7 @@ msgstr "fichier d'origine depuis lequel celui-ci a été dupliqué"
 msgid "description of the file"
 msgstr "description du fichier"
 
-#: marsha/core/models/file.py:119
+#: marsha/core/models/file.py:119 marsha/markdown/models.py:45
 msgid "position of this file in the playlist"
 msgstr "position de ce fichier dans la liste de lecture"
 
@@ -618,8 +713,8 @@ msgstr "position de ce fichier dans la liste de lecture"
 msgid "file extension"
 msgstr "extension de fichier"
 
-#: marsha/core/models/file.py:152 marsha/core/models/video.py:402
-#: marsha/core/models/video.py:897
+#: marsha/core/models/file.py:152 marsha/core/models/video.py:395
+#: marsha/core/models/video.py:890
 msgid "extension"
 msgstr "extension"
 
@@ -823,207 +918,207 @@ msgstr "vidéo publique"
 msgid "Is the video publicly accessible?"
 msgstr "La vidéo est-elle accessible publiquement ?"
 
-#: marsha/core/models/video.py:334
+#: marsha/core/models/video.py:327
 msgid "video for which this track is"
 msgstr "vidéo à laquelle cette piste est"
 
-#: marsha/core/models/video.py:341 marsha/core/models/video.py:599
+#: marsha/core/models/video.py:334 marsha/core/models/video.py:592
 msgid "language"
 msgstr "langue"
 
-#: marsha/core/models/video.py:342
+#: marsha/core/models/video.py:335
 msgid "language of this track"
 msgstr "langue de cette piste"
 
-#: marsha/core/models/video.py:358
+#: marsha/core/models/video.py:351
 msgid "audio track"
 msgstr "piste audio"
 
-#: marsha/core/models/video.py:359
+#: marsha/core/models/video.py:352
 msgid "audio tracks"
 msgstr "pistes audio"
 
-#: marsha/core/models/video.py:379
+#: marsha/core/models/video.py:372
 msgid "Subtitle"
 msgstr "Sous-titre"
 
-#: marsha/core/models/video.py:380
+#: marsha/core/models/video.py:373
 msgid "Transcript"
 msgstr "Transcription"
 
-#: marsha/core/models/video.py:381
+#: marsha/core/models/video.py:374
 msgid "Closed captioning"
 msgstr "Sous-titres"
 
-#: marsha/core/models/video.py:385
+#: marsha/core/models/video.py:378
 msgid "mode"
 msgstr "mode"
 
-#: marsha/core/models/video.py:389
+#: marsha/core/models/video.py:382
 msgid "Activate a special mode for this timed text track: simple subtitles, closed captioning (for deaf or hard of hearing viewers) or transcription (complete text below aside of the player)."
 msgstr "Activez un mode spécial pour cette piste de texte temporisé : sous-titres simples, sous-titres codés (sourds et malentendants) ou transcription (texte complet sous la vidéo)."
 
-#: marsha/core/models/video.py:399
+#: marsha/core/models/video.py:392
 msgid "timed text track extension"
 msgstr "extension de piste de texte temporisé"
 
-#: marsha/core/models/video.py:409
+#: marsha/core/models/video.py:402
 msgid "timed text track"
 msgstr "piste de texte temporisé"
 
-#: marsha/core/models/video.py:410
+#: marsha/core/models/video.py:403
 msgid "timed text tracks"
 msgstr "pistes de texte temporisé"
 
-#: marsha/core/models/video.py:479
+#: marsha/core/models/video.py:472
 msgid "signs language track"
 msgstr "piste langue des signes"
 
-#: marsha/core/models/video.py:480
+#: marsha/core/models/video.py:473
 msgid "signs language tracks"
 msgstr "pistes langue des signes"
 
-#: marsha/core/models/video.py:499
+#: marsha/core/models/video.py:492
 msgid "video for which this thumbnail is"
 msgstr "vidéo pour laquelle cette vignette est"
 
-#: marsha/core/models/video.py:508
+#: marsha/core/models/video.py:501
 msgid "thumbnail"
 msgstr "vignette"
 
-#: marsha/core/models/video.py:580
+#: marsha/core/models/video.py:573
 msgid "Display username"
 msgstr "Afficher le nom d'utilisateur"
 
-#: marsha/core/models/video.py:583
+#: marsha/core/models/video.py:576
 msgid "email address"
 msgstr "adresse e-mail"
 
-#: marsha/core/models/video.py:587
+#: marsha/core/models/video.py:580
 msgid "Only present for lti users."
 msgstr "Présent seulement pour les utilisateurs lti."
 
-#: marsha/core/models/video.py:592
+#: marsha/core/models/video.py:585
 msgid "LTI consumer site"
 msgstr "Site client LTI"
 
-#: marsha/core/models/video.py:600
+#: marsha/core/models/video.py:593
 msgid "language of this livesession"
 msgstr "langue de cette livesession"
 
-#: marsha/core/models/video.py:606
+#: marsha/core/models/video.py:599
 msgid "is the user registered"
 msgstr "est un utilisateur enregistré"
 
-#: marsha/core/models/video.py:607
+#: marsha/core/models/video.py:600
 msgid "Is the user registered?"
 msgstr "L'utilisateur est-il enregistré ?"
 
-#: marsha/core/models/video.py:611
+#: marsha/core/models/video.py:604
 msgid "registered at"
 msgstr "enregistré le"
 
-#: marsha/core/models/video.py:612
+#: marsha/core/models/video.py:605
 msgid "date and time at which the user registered"
 msgstr "date et heure à laquelle l'utilisateur s'est enregistré"
 
-#: marsha/core/models/video.py:620
+#: marsha/core/models/video.py:613
 msgid "Field to build url with encryption to target the record"
 msgstr "Champ pour construire une url avec chiffrement pour cibler l'enregistrement"
 
-#: marsha/core/models/video.py:628
+#: marsha/core/models/video.py:621
 msgid "Live attendance"
 msgstr "Présence en direct"
 
-#: marsha/core/models/video.py:629
+#: marsha/core/models/video.py:622
 msgid "Live online presence"
 msgstr "Présence au direct"
 
-#: marsha/core/models/video.py:644
+#: marsha/core/models/video.py:637
 msgid "Unique identifier for the user on the tool consumer, only present for lti users."
 msgstr "Identifiant unique de l'utilisateur au sein du consommateur, présent seulement pour les utilisateurs lti."
 
-#: marsha/core/models/video.py:648
+#: marsha/core/models/video.py:641
 msgid "LTI user identifier"
 msgstr "Identifiant de l'utilisateur LTI"
 
-#: marsha/core/models/video.py:655 marsha/core/models/video.py:656
+#: marsha/core/models/video.py:648 marsha/core/models/video.py:649
 msgid "List of new notifications to send"
 msgstr "Liste des nouvelles notifications à envoyer"
 
-#: marsha/core/models/video.py:662
+#: marsha/core/models/video.py:655
 msgid "List of reminders already sent"
 msgstr "Liste des rappels déjà envoyés"
 
-#: marsha/core/models/video.py:664
+#: marsha/core/models/video.py:657
 msgid "List of reminders sent"
 msgstr "Liste des rappels déjà envoyés"
 
-#: marsha/core/models/video.py:670
+#: marsha/core/models/video.py:663
 msgid "whether user reminders are enabled for this live"
 msgstr "si les rappels d'utilisateurs sont activés pour ce live"
 
-#: marsha/core/models/video.py:671
+#: marsha/core/models/video.py:664
 msgid "should send reminders"
 msgstr "devrait envoyer des rappels"
 
-#: marsha/core/models/video.py:675
+#: marsha/core/models/video.py:668
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: marsha/core/models/video.py:689
+#: marsha/core/models/video.py:682
 msgid "Websocket channel_name"
 msgstr "Nom du websocket"
 
-#: marsha/core/models/video.py:743
+#: marsha/core/models/video.py:736
 msgid "live session"
 msgstr "Session active"
 
-#: marsha/core/models/video.py:801
+#: marsha/core/models/video.py:794
 msgid "secret"
 msgstr "secret"
 
-#: marsha/core/models/video.py:802
+#: marsha/core/models/video.py:795
 msgid "live pairing secret"
 msgstr "secret d'appairage"
 
-#: marsha/core/models/video.py:809
+#: marsha/core/models/video.py:802
 msgid "live pairing video"
 msgstr "vidéo appairée"
 
-#: marsha/core/models/video.py:819
+#: marsha/core/models/video.py:812
 msgid "live pairing"
 msgstr "appairage vidéo"
 
-#: marsha/core/models/video.py:820
+#: marsha/core/models/video.py:813
 msgid "live pairings"
 msgstr "appairage vidéos"
 
-#: marsha/core/models/video.py:859
+#: marsha/core/models/video.py:852
 msgid "device"
 msgstr "appareil"
 
-#: marsha/core/models/video.py:860
+#: marsha/core/models/video.py:853
 msgid "devices"
 msgstr "appareils"
 
-#: marsha/core/models/video.py:880
+#: marsha/core/models/video.py:873
 msgid "title of the shared live media"
 msgstr "titre du document partagé"
 
-#: marsha/core/models/video.py:888
+#: marsha/core/models/video.py:881
 msgid "Number of pages contained by the media"
 msgstr "Nombre de pages contenues dans le document partagé"
 
-#: marsha/core/models/video.py:894
+#: marsha/core/models/video.py:887
 msgid "media extension"
 msgstr "extension du document partagé"
 
-#: marsha/core/models/video.py:904
+#: marsha/core/models/video.py:897
 msgid "shared live media"
 msgstr "document partagé"
 
-#: marsha/core/models/video.py:905
+#: marsha/core/models/video.py:898
 msgid "shared live medias"
 msgstr "documents partagés"
 
@@ -1174,35 +1269,91 @@ msgstr "Vous ne recevrez plus d'alertes concernant ce webinaire."
 msgid "Best regards, see you soon!"
 msgstr "Cordialement, à bientôt !"
 
-#: marsha/settings.py:228
+#: marsha/markdown/admin.py:17 marsha/markdown/models.py:118
+msgid "Markdown document"
+msgstr "Document markdown"
+
+#: marsha/markdown/apps.py:12
+msgid "Markdown"
+msgstr "Markdown"
+
+#: marsha/markdown/models.py:72
+msgid "is Markdown document public"
+msgstr "le document Markdown est-il public ?"
+
+#: marsha/markdown/models.py:73
+msgid "Is the Markdown document publicly accessible?"
+msgstr "Le document markdown est-il accessible publiquement ?"
+
+#: marsha/markdown/models.py:79
+msgid "is Markdown document still a draft"
+msgstr "le document Markdown est-il toujours un brouillon ?"
+
+#: marsha/markdown/models.py:80
+msgid "Is the Markdown document a draft?"
+msgstr "Le document Markdown est-il un brouillon ?"
+
+#: marsha/markdown/models.py:88
+msgid "Markdown document's title"
+msgstr "Titre du document Markdown"
+
+#: marsha/markdown/models.py:91
+msgid "Markdown document content"
+msgstr "Contenu du document markdown"
+
+#: marsha/markdown/models.py:92
+msgid "The document Markdown formatted content"
+msgstr "Le contenu formaté du document Markdown"
+
+#: marsha/markdown/models.py:96
+msgid "Markdown document rendered content"
+msgstr "Rendu du contenu du document Markdown"
+
+#: marsha/markdown/models.py:97
+msgid "The Markdown document formatted content for students"
+msgstr "Le contenu formaté du document Markdown pour les étudiants"
+
+#: marsha/markdown/models.py:104
+msgid "Markdown rendering options"
+msgstr "Paramètres de rendu du document Markdown"
+
+#: marsha/markdown/models.py:106
+msgid "Markdown rendering options are use by the frontend's markdown to HTML renderer"
+msgstr "Les options de rendu Markdown sont utilisées par le moteur de rendu HTML côté navigateur"
+
+#: marsha/markdown/models.py:119
+msgid "Markdown documents"
+msgstr "Documents Markdown"
+
+#: marsha/settings.py:236
 msgid "english"
 msgstr "anglais"
 
-#: marsha/settings.py:228
+#: marsha/settings.py:236
 msgid "french"
 msgstr "français"
 
-#: marsha/settings.py:392
+#: marsha/settings.py:416
 msgid "5 minutes"
 msgstr "5 minutes"
 
-#: marsha/settings.py:396
+#: marsha/settings.py:420
 msgid "Live starts in less than 5 minutes"
 msgstr "Le webinaire va démarrer dans moins de 5 minutes"
 
-#: marsha/settings.py:399
+#: marsha/settings.py:423
 msgid "3 hours"
 msgstr "3 heures"
 
-#: marsha/settings.py:405
+#: marsha/settings.py:429
 msgid "Live starts in less than 3 hours"
 msgstr "Le webinaire va débuter dans moins de 3 heures"
 
-#: marsha/settings.py:408
+#: marsha/settings.py:432
 msgid "3 days"
 msgstr "3 jours"
 
-#: marsha/settings.py:413
+#: marsha/settings.py:437
 msgid "Live starts in less than 3 days"
 msgstr "Le webinaire va débuter dans moins de 3 jours"
 
