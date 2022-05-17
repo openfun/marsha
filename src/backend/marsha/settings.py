@@ -103,7 +103,6 @@ class Base(Configuration):
     # Application definition
 
     INSTALLED_APPS = [
-        "django.contrib.admin.apps.SimpleAdminConfig",
         "django.contrib.auth",
         "django.contrib.contenttypes",
         "django.contrib.sessions",
@@ -119,6 +118,7 @@ class Base(Configuration):
         "parler",  # django-parler, for translated models
         # Marsha
         "marsha.account.apps.AccountConfig",
+        "marsha.core.apps.MarshaAdminConfig",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
         "marsha.markdown.apps.MarkdownConfig",

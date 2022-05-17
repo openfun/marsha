@@ -3,12 +3,12 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from marsha.core.admin import admin_site, link_field
+from marsha.core.admin import link_field
 
 from .models import Meeting
 
 
-@admin.register(Meeting, site=admin_site)
+@admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
     """Admin class for the Meeting model."""
 
