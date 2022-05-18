@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Push attendance when a student is on stage
+
 ## [4.0.0-beta.4] - 2022-05-17
 
 ### Added
