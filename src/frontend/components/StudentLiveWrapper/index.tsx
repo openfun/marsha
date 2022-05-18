@@ -8,11 +8,14 @@ import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { Video } from 'types/tracks';
 
 const messages = defineMessages({
@@ -45,6 +48,23 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     (state) => state.accepted,
   );
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
+
+  useEffect(() => {
+    if (isParticipantOnstage) {
+      const interval = window.setInterval(() => {
+        const attendance = {
+          [Date.now()]: {
+            onStage: true,
+          },
+        };
+        pushAttendance(attendance, intl.locale, getOrInitAnonymousId());
+      }, PUSH_ATTENDANCE_DELAY);
+      return () => {
+        // Stop tracking attendances as we unmount
+        window.clearInterval(interval);
+      };
+    }
+  }, [isParticipantOnstage, intl.locale]);
 
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled

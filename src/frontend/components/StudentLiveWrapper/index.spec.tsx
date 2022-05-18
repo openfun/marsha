@@ -18,6 +18,9 @@ import { createPlayer } from 'Player/createPlayer';
 
 import { StudentLiveWrapper } from '.';
 
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
   appData: {
@@ -65,7 +68,12 @@ jest.mock('components/ConverseInitializer', () => ({
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
-
+jest.mock('data/sideEffects/pushAttendance', () => ({
+  pushAttendance: jest.fn(),
+}));
+const mockPushAttendance = pushAttendance as jest.MockedFunction<
+  typeof pushAttendance
+>;
 window.HTMLElement.prototype.scrollTo = jest.fn();
 
 describe('<StudentLiveWrapper /> as a viewer', () => {
@@ -296,6 +304,9 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       LivePanelItem.VIEWERS_LIST,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
+
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).not.toHaveBeenCalled();
   });
 
   it('configures live state without chat when XMPP is disabled', async () => {
@@ -441,6 +452,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       isStarted: true,
     });
     useParticipantWorkflow.getState().setAccepted();
+    jest.useFakeTimers();
   });
 
   beforeAll(() => {
@@ -449,6 +461,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   it('configures live state with panel closed', () => {
@@ -781,5 +795,94 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     );
 
     screen.getByText('No title');
+  });
+
+  it('pushes attendance when student is on stage', async () => {
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: {
+          POST: {
+            language: {
+              choices: [
+                { display_name: 'English', value: 'en' },
+                { display_name: 'French', value: 'fr' },
+              ],
+            },
+          },
+        },
+      },
+      { method: 'OPTIONS' },
+    );
+    mockCreatePlayer.mockReturnValue({
+      destroy: jest.fn(),
+      getSource: jest.fn(),
+      setSource: jest.fn(),
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
+    const video = videoMockFactory({
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInIntlProvider(
+        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+    // when component is loaded, a first attendance is registered
+    expect(mockPushAttendance).toHaveBeenCalledTimes(1);
+    Date.now = jest.fn(() => 1651732370000);
+    jest.runOnlyPendingTimers();
+    expect(mockPushAttendance).toHaveBeenCalledWith(
+      {
+        1651732370000: {
+          onStage: true,
+        },
+      },
+      'en',
+      getOrInitAnonymousId(),
+    );
+
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
+
+    act(() => useParticipantWorkflow.getState().setKicked());
+    jest.runOnlyPendingTimers();
+    // it didn't get called a new time
+    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
+
+    // student is not on stage, player is created
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
+      ),
+    );
   });
 });
