@@ -1,6 +1,7 @@
 import { within } from '@testing-library/dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import faker from 'faker';
 import { ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -30,7 +31,7 @@ describe('<DashboardVideoLiveControlPane />', () => {
     jest.useRealTimers();
   });
   it('renders DashboardVideoLiveControlPane', () => {
-    const videoId = 'videoId';
+    const videoId = faker.datatype.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -115,6 +116,20 @@ describe('<DashboardVideoLiveControlPane />', () => {
     userEvent.click(openButton);
     screen.getByRole('button', {
       name: /pair an external device/i,
+    });
+
+    // DashboardVideoLiveWidgetSharedLiveMedia
+    screen.getByText('Supports sharing');
+    screen.getByRole('button', {
+      name: 'Upload a presentation support',
+    });
+    screen.getByRole('button', {
+      name: 'Click on this button to stop allowing students to download this media.',
+    });
+    screen.getByRole('button', { name: 'Share' });
+    screen.getByRole('link', { name: 'Title of the file' });
+    screen.getByRole('button', {
+      name: 'Click on this button to delete the media.',
     });
 
     // DashboardVideoLiveWidgetVOD

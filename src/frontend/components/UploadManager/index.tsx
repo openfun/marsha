@@ -14,14 +14,16 @@ export enum UploadManagerStatus {
   UPLOADING = 'uploading',
 }
 
+export interface UploadingObject {
+  file: File;
+  objectType: modelName;
+  objectId: string;
+  progress: number;
+  status: UploadManagerStatus;
+}
+
 export interface UploadManagerState {
-  [key: string]: {
-    file: File;
-    objectType: modelName;
-    objectId: string;
-    progress: number;
-    status: UploadManagerStatus;
-  };
+  [key: string]: UploadingObject;
 }
 
 // Initialize the context with empty values and a setter that just throws.
