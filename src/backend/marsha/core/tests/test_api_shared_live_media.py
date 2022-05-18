@@ -759,7 +759,6 @@ class SharedLiveMediaAPITest(TestCase):
         """Users authenticated via a session shouldn't be able to read a shared live medias."""
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
-
             self.client.login(username=user.username, password="test")
             response = self.client.get(f"/api/sharedlivemedias/{shared_live_media.id}/")
             self.assertEqual(response.status_code, 401)
@@ -1217,7 +1216,6 @@ class SharedLiveMediaAPITest(TestCase):
         """Users authenticated via a session shouldn't be able to list shared live medias."""
         SharedLiveMediaFactory.create_batch(2)
         for user in [UserFactory(), UserFactory(is_staff=True)]:
-
             self.client.login(username=user.username, password="test")
             response = self.client.get("/api/sharedlivemedias/")
             self.assertEqual(response.status_code, 401)
@@ -1607,12 +1605,16 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            {"title": "Give me the red pill"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
+        ) as mock_dispatch_shared_live_media:
+            response = self.client.put(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                {"title": "Give me the red pill"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            mock_dispatch_shared_live_media.assert_called_once_with(shared_live_media)
 
         self.assertEqual(response.status_code, 200)
 
@@ -1637,7 +1639,6 @@ class SharedLiveMediaAPITest(TestCase):
         """Users authenticated via a session shouldn't be able to update a shared live medias."""
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
-
             self.client.login(username=user.username, password="test")
             response = self.client.put(
                 f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1720,12 +1721,16 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            {"title": "give me the red pill!"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
+        ) as mock_dispatch_shared_live_media:
+            response = self.client.put(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                {"title": "give me the red pill!"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            mock_dispatch_shared_live_media.assert_called_once_with(shared_live_media)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -1800,12 +1805,16 @@ class SharedLiveMediaAPITest(TestCase):
         jwt_token.payload["resource_id"] = str(user.id)
         jwt_token.payload["user"] = {"id": str(user.id)}
 
-        response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            {"title": "give me the red pill!"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
+        ) as mock_dispatch_shared_live_media:
+            response = self.client.put(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                {"title": "give me the red pill!"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            mock_dispatch_shared_live_media.assert_called_once_with(shared_live_media)
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -1853,6 +1862,8 @@ class SharedLiveMediaAPITest(TestCase):
     def test_api_shared_live_media_delete_instructor(self):
         """An instructor can delete a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
+        video = VideoFactory()
+        video.shared_live_medias.set([shared_live_media])
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
@@ -1861,10 +1872,14 @@ class SharedLiveMediaAPITest(TestCase):
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
-        response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.delete(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SharedLiveMedia.objects.exists())
@@ -1873,7 +1888,6 @@ class SharedLiveMediaAPITest(TestCase):
         """Users authenticated via a session shouldn't be able to delete a shared live medias."""
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
-
             self.client.login(username=user.username, password="test")
             response = self.client.delete(
                 f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1953,10 +1967,14 @@ class SharedLiveMediaAPITest(TestCase):
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
-        response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.delete(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SharedLiveMedia.objects.exists())
@@ -2016,10 +2034,14 @@ class SharedLiveMediaAPITest(TestCase):
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
-        response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.delete(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SharedLiveMedia.objects.exists())
@@ -2044,10 +2066,14 @@ class SharedLiveMediaAPITest(TestCase):
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
-        response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.delete(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(SharedLiveMedia.objects.exists())
@@ -2279,7 +2305,6 @@ class SharedLiveMediaAPITest(TestCase):
         """
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
-
             self.client.login(username=user.username, password="test")
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
