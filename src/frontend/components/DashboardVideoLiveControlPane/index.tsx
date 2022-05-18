@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { Video } from 'types/tracks';
 import { DashboardVideoLiveWidgetsContainer } from './widgets/DashboardVideoLiveWidgetsContainer';
@@ -11,6 +12,7 @@ import { DashboardVideoLiveWidgetThumbnail } from './widgets/DashboardVideoLiveW
 import { DashboardVideoLiveWidgetToolsAndApplications } from './widgets/DashboardVideoLiveWidgetToolsAndApplications';
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from './widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from './widgets/DashboardVideoLiveWidgetVOD';
+import { DashboardVideoLiveWidgetSharedLiveMedia } from './widgets/DashboardVideoLiveWidgetSharedLiveMedia';
 
 interface DashboardVideoLiveControlPaneProps {
   video: Video;
@@ -30,6 +32,9 @@ export const DashboardVideoLiveControlPane = ({
         <DashboardVideoLiveWidgetVOD video={video} />
         <DashboardVideoLiveWidgetJoinMode video={video} />
         <DashboardVideoLiveWidgetThumbnail />
+        <DeleteUploadModalProvider value={null}>
+          <DashboardVideoLiveWidgetSharedLiveMedia video={video} />
+        </DeleteUploadModalProvider>
       </DashboardVideoLiveWidgetsContainer>
     </InfoWidgetModalProvider>
   );

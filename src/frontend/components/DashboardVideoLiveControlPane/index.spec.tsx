@@ -133,6 +133,20 @@ describe('<DashboardVideoLiveControlPane />', () => {
       name: /pair an external device/i,
     });
 
+    // DashboardVideoLiveWidgetSharedLiveMedia
+    screen.getByText('Supports sharing');
+    screen.getByRole('button', {
+      name: 'Upload a presentation support',
+    });
+    screen.getByRole('button', {
+      name: 'Click on this button to stop allowing students to download this media.',
+    });
+    screen.getByRole('button', { name: 'Share' });
+    screen.getByRole('link', { name: 'Title of the file' });
+    screen.getByRole('button', {
+      name: 'Click on this button to delete the media.',
+    });
+
     // DashboardVideoLiveWidgetVOD
     screen.getByText(/There is nothing to harvest/);
 

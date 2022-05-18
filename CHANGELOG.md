@@ -65,6 +65,7 @@ students
 - Push attendances for students watching a live
 - Add a login page to authenticate Marsha users
 - Allow live restarting after harvesting
+- Add a widget to upload and manage shared supports
 
 ### Changed
 
