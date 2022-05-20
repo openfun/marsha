@@ -13,13 +13,13 @@ import { updateOne } from 'data/queries/updateOne';
 import { actionOne } from 'data/queries/actionOne';
 
 import {
-  EndMeetingRequest,
-  EndMeetingResponse,
-  JoinMeetingRequest,
-  JoinMeetingResponse,
+  EndMeetingActionRequest,
+  EndMeetingActionResponse,
+  JoinMeetingActionRequest,
+  JoinMeetingActionResponse,
   Meeting,
-  CreateMeetingRequest,
-  CreateMeetingResponse,
+  CreateMeetingActionRequest,
+  CreateMeetingActionResponse,
 } from 'apps/bbb/types/models';
 
 type MeetingsResponse = APIList<Meeting>;
@@ -156,15 +156,15 @@ const meetingActionMutation =
     );
   };
 
-export const useCreateMeeting = meetingActionMutation<
-  CreateMeetingResponse,
-  CreateMeetingRequest
+export const useCreateMeetingAction = meetingActionMutation<
+  CreateMeetingActionResponse,
+  CreateMeetingActionRequest
 >(MutationMeetingAction.CREATE);
-export const useJoinMeeting = meetingActionMutation<
-  JoinMeetingResponse,
-  JoinMeetingRequest
+export const useJoinMeetingAction = meetingActionMutation<
+  JoinMeetingActionResponse,
+  JoinMeetingActionRequest
 >(MutationMeetingAction.JOIN);
-export const useEndMeeting = meetingActionMutation<
-  EndMeetingResponse,
-  EndMeetingRequest
+export const useEndMeetingAction = meetingActionMutation<
+  EndMeetingActionResponse,
+  EndMeetingActionRequest
 >(MutationMeetingAction.END);

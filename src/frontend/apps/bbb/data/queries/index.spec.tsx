@@ -7,8 +7,8 @@ import {
   useMeeting,
   useMeetings,
   useUpdateMeeting,
-  useCreateMeeting,
-  useJoinMeeting,
+  useCreateMeetingAction,
+  useJoinMeetingAction,
 } from './index';
 import { meetingMockFactory } from '../../utils/tests/factories';
 
@@ -207,13 +207,13 @@ describe('queries', () => {
     });
   });
 
-  describe('useCreateMeeting', () => {
+  describe('useCreateMeetingAction', () => {
     it('updates the resource', async () => {
       const meeting = meetingMockFactory();
       fetchMock.patch(`/api/meetings/${meeting.id}/create/`, meeting);
 
       const { result, waitFor } = renderHook(
-        () => useCreateMeeting(meeting.id),
+        () => useCreateMeetingAction(meeting.id),
         {
           wrapper: Wrapper,
         },
@@ -245,7 +245,7 @@ describe('queries', () => {
       fetchMock.patch(`/api/meetings/${meeting.id}/create/`, 400);
 
       const { result, waitFor } = renderHook(
-        () => useCreateMeeting(meeting.id),
+        () => useCreateMeetingAction(meeting.id),
         {
           wrapper: Wrapper,
         },
@@ -273,14 +273,17 @@ describe('queries', () => {
     });
   });
 
-  describe('useJoinMeeting', () => {
+  describe('useJoinMeetingAction', () => {
     it('updates the resource', async () => {
       const meeting = meetingMockFactory();
       fetchMock.patch(`/api/meetings/${meeting.id}/join/`, meeting);
 
-      const { result, waitFor } = renderHook(() => useJoinMeeting(meeting.id), {
-        wrapper: Wrapper,
-      });
+      const { result, waitFor } = renderHook(
+        () => useJoinMeetingAction(meeting.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
       result.current.mutate({
         fullname: 'John Doe',
       });
@@ -307,9 +310,12 @@ describe('queries', () => {
       const meeting = meetingMockFactory();
       fetchMock.patch(`/api/meetings/${meeting.id}/join/`, 400);
 
-      const { result, waitFor } = renderHook(() => useJoinMeeting(meeting.id), {
-        wrapper: Wrapper,
-      });
+      const { result, waitFor } = renderHook(
+        () => useJoinMeetingAction(meeting.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
       result.current.mutate({
         fullname: 'John Doe',
       });

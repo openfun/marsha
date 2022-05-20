@@ -59,11 +59,11 @@ export enum modelName {
   MEETINGS = 'meetings',
 }
 
-export interface CreateMeetingRequest {
+export interface CreateMeetingActionRequest {
   welcome_text: string;
 }
 
-export interface CreateMeetingResponse {
+export interface CreateMeetingActionResponse {
   createDate: string;
   createTime: string;
   dialNumber: string;
@@ -80,11 +80,11 @@ export interface CreateMeetingResponse {
   voiceBridge: string;
 }
 
-export interface JoinMeetingRequest {
+export interface JoinMeetingActionRequest {
   fullname: string;
 }
 
-export interface JoinMeetingResponse {
+export interface JoinMeetingActionResponse {
   auth_token: string;
   guestStatus: string;
   meeting_id: string;
@@ -96,11 +96,11 @@ export interface JoinMeetingResponse {
   user_id: string;
 }
 
-export interface EndMeetingRequest {
+export interface EndMeetingActionRequest {
   welcome_text: string;
 }
 
-export interface EndMeetingResponse {
+export interface EndMeetingActionResponse {
   message: string;
   messageKey: string;
   returncode: string;
