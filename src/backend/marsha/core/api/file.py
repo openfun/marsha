@@ -7,12 +7,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers, storage
+from ..forms import DocumentForm
 from ..models import Document
 from .base import ObjectPkMixin
 
 
 class DocumentViewSet(
     ObjectPkMixin,
+    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
@@ -25,6 +27,30 @@ class DocumentViewSet(
         permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
         | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
     ]
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the ViewSet's default permissions.
+        """
+        if self.action in ["create"]:
+            permission_classes = [permissions.HasPlaylistToken]
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        """Create one document based on the request payload."""
+        try:
+            form = DocumentForm(request.data)
+            document = form.save()
+        except ValueError:
+            return Response({"errors": [dict(form.errors)]}, status=400)
+
+        serializer = self.get_serializer(document)
+
+        return Response(serializer.data, status=201)
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument

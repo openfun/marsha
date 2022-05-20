@@ -15,11 +15,13 @@ from marsha.core.api import ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
+from .forms import MeetingForm
 from .models import Meeting
 
 
 class MeetingViewSet(
     ObjectPkMixin,
+    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,
@@ -42,11 +44,25 @@ class MeetingViewSet(
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["retrieve"]:
+        if self.action in ["create"]:
+            permission_classes = [core_permissions.HasPlaylistToken]
+        elif self.action in ["retrieve"]:
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        """Create one meeting based on the request payload."""
+        try:
+            form = MeetingForm(request.data)
+            meeting = form.save()
+        except ValueError:
+            return Response({"errors": [dict(form.errors)]}, status=400)
+
+        serializer = self.get_serializer(meeting)
+
+        return Response(serializer.data, status=201)
 
     @action(
         methods=["get"],

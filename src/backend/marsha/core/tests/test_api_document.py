@@ -9,7 +9,8 @@ from django.test import TestCase, override_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api import timezone
-from ..factories import DocumentFactory
+from ..factories import DocumentFactory, PlaylistFactory
+from ..models import Document
 
 
 # We don't enforce arguments documentation in tests
@@ -119,7 +120,7 @@ class DocumentAPITest(TestCase):
     def test_api_document_fetch_list_anonymous(self):
         """An anonymous should not be able to fetch a list of document."""
         response = self.client.get("/api/documents/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_fetch_list_student(self):
         """A student should not be able to fetch a list of document."""
@@ -133,7 +134,7 @@ class DocumentAPITest(TestCase):
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_fetch_list_instructor(self):
         """An instrustor should not be able to fetch a document list."""
@@ -147,12 +148,12 @@ class DocumentAPITest(TestCase):
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_anonymous(self):
         """An anonymous should not be able to create a document."""
         response = self.client.post("/api/documents/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_create_student(self):
         """A student should not be able to create a document."""
@@ -166,7 +167,7 @@ class DocumentAPITest(TestCase):
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_instructor(self):
         """An instrustor should not be able to create a document."""
@@ -177,10 +178,59 @@ class DocumentAPITest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
-        response = self.client.get(
+        response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_document_create_by_playlist_token(self):
+        """
+        Create document with playlist token.
+
+        Used in the context of a lti select request (deep linking).
+        """
+        playlist = PlaylistFactory(title="Playlist")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        self.assertEqual(Document.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/documents/",
+            {
+                "lti_id": "document_one",
+                "playlist": str(playlist.id),
+                "title": "Some document",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(Document.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        document = Document.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "extension": None,
+                "filename": "playlist_some-document",
+                "id": str(document.id),
+                "is_ready_to_show": False,
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "show_download": True,
+                "title": "Some document",
+                "upload_state": "pending",
+                "url": None,
+            },
+        )
 
     def test_api_document_delete_anonymous(self):
         """An anonymous should not be able to delete a document."""

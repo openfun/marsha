@@ -2360,6 +2360,76 @@ class VideoAPITest(TestCase):
         self.assertEqual(models.Video.objects.count(), 0)
         self.assertEqual(response.status_code, 403)
 
+    def test_api_video_create_by_playlist_token(self):
+        """
+        Create video with playlist token.
+
+        Used in the context of a lti select request (deep linking).
+        """
+        playlist = factories.PlaylistFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        self.assertEqual(models.Video.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/videos/",
+            {
+                "lti_id": "video_one",
+                "playlist": str(playlist.id),
+                "title": "Some video",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "description": "",
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "has_transcript": False,
+                "id": str(models.Video.objects.get().id),
+                "is_public": False,
+                "is_ready_to_show": False,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "live_info": {},
+                "live_state": None,
+                "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": "Some video",
+                "upload_state": "pending",
+                "urls": None,
+                "xmpp": None,
+            },
+        )
+
     def test_api_video_update_detail_anonymous(self):
         """Anonymous users should not be allowed to update a video through the API."""
         video = factories.VideoFactory(title="my title")
