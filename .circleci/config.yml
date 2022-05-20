@@ -115,6 +115,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -147,6 +148,7 @@ jobs:
   build-lambda-docker-and-test-lambda-convert:
     machine:
       image: ubuntu-2004:202107-02
+    resource_class: large
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -181,6 +183,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -284,6 +287,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -340,6 +344,7 @@ jobs:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
           POSTGRES_PASSWORD: pass
+    resource_class: large
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -376,6 +381,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -463,6 +469,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -514,7 +521,7 @@ jobs:
               xdg-utils
       - run:
           name: Run tests
-          command: yarn test -w 2
+          command: yarn test -w 4
       - store_artifacts:
           path: ~/marsha/src/frontend/__diff_output__
 
@@ -571,6 +578,7 @@ jobs:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
           POSTGRES_PASSWORD: pass
+    resource_class: large
     working_directory: ~/marsha/src/backend
     parameters:
       browser:
@@ -925,6 +933,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+    resource_class: large
     working_directory: ~/marsha
     steps:
       - checkout
