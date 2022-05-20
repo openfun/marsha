@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from marsha.core import factories as core_factories
 
 from ..factories import MarkdownDocumentFactory
+from ..models import MarkdownDocument
 
 
 # We don't enforce arguments documentation in tests
@@ -121,8 +122,8 @@ class MarkdownAPITest(TestCase):
 
     def test_api_document_fetch_list_anonymous(self):
         """An anonymous should not be able to fetch a list of Markdown document."""
-        response = self.client.get("/api/documents/")
-        self.assertEqual(response.status_code, 404)
+        response = self.client.get("/api/markdown-documents/")
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_fetch_list_student(self):
         """A student should not be able to fetch a list of Markdown document."""
@@ -136,7 +137,7 @@ class MarkdownAPITest(TestCase):
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_fetch_list_instructor(self):
         """An instrustor should not be able to fetch a Markdown document list."""
@@ -150,12 +151,12 @@ class MarkdownAPITest(TestCase):
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_anonymous(self):
         """An anonymous should not be able to create a Markdown document."""
         response = self.client.post("/api/markdown-documents/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_api_document_create_student(self):
         """A student should not be able to create a Markdown document."""
@@ -169,7 +170,7 @@ class MarkdownAPITest(TestCase):
         response = self.client.post(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_instructor(self):
         """An instrustor should not be able to create a Markdown document."""
@@ -183,7 +184,59 @@ class MarkdownAPITest(TestCase):
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_document_create_by_playlist_token(self):
+        """
+        Create document with playlist token.
+
+        Used in the context of a lti select request (deep linking).
+        """
+        playlist = core_factories.PlaylistFactory(title="Playlist")
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        self.assertEqual(MarkdownDocument.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/markdown-documents/",
+            {
+                "lti_id": "document_one",
+                "playlist": str(playlist.id),
+                "title": "Some document",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(MarkdownDocument.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        document = MarkdownDocument.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(document.id),
+                "is_draft": True,
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "position": 0,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "content": "",
+                        "language_code": "en",
+                        "rendered_content": "",
+                        "title": "Some document",
+                    }
+                ],
+            },
+        )
 
     def test_api_document_delete_anonymous(self):
         """An anonymous should not be able to delete a Markdown document."""
@@ -226,7 +279,7 @@ class MarkdownAPITest(TestCase):
     def test_api_document_update_anonymous(self):
         """An anonymous should not be able to update a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
-        response = self.client.put(f"/api/documents/{markdown_document.pk}/")
+        response = self.client.put(f"/api/markdown-documents/{markdown_document.pk}/")
         self.assertEqual(response.status_code, 401)
 
         response = self.client.patch(
