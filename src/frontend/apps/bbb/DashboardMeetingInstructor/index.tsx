@@ -8,7 +8,7 @@ import { Nullable } from 'utils/types';
 
 import { Meeting } from 'apps/bbb/types/models';
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useEndMeeting } from 'apps/bbb/data/queries';
+import { useEndMeetingAction } from 'apps/bbb/data/queries';
 import {
   DashboardMeetingLayout,
   DashboardMeetingMessage,
@@ -65,7 +65,7 @@ const DashboardMeetingInstructor = ({
   const intl = useIntl();
   const size = useContext(ResponsiveContext);
 
-  const endMeetingMutation = useEndMeeting(bbbAppData.meeting!.id, {
+  const endMeetingMutation = useEndMeetingAction(bbbAppData.meeting!.id, {
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.endingMeetingPending));
       meetingEnded();
