@@ -64,7 +64,7 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         # Calling the same resource a second time with the same LTI parameters
         # should hit the cache and be ultra fast
@@ -78,7 +78,7 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(5):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(url, data)
@@ -90,7 +90,7 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(5):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         with self.assertNumQueries(0):
             elapsed, resource = self._fetch_lti_request(
@@ -143,7 +143,7 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         # Calling the same resource a second time with the same LTI parameters
         # should not hit the cache
@@ -166,7 +166,7 @@ class CacheLTIViewTestCase(TestCase):
         with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         with self.assertNumQueries(0):
             elapsed, resource_origin = self._fetch_lti_request(url)
@@ -222,7 +222,7 @@ class CacheLTIViewTestCase(TestCase):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertLess(elapsed, 0.2)
+        self.assertLess(elapsed, 0.1)
 
         with self.assertNumQueries(2):
             elapsed, resource_origin = self._fetch_lti_request(url)
