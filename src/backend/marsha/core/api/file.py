@@ -35,7 +35,10 @@ class DocumentViewSet(
         Default to the ViewSet's default permissions.
         """
         if self.action in ["create"]:
-            permission_classes = [permissions.HasPlaylistToken]
+            permission_classes = [
+                permissions.HasPlaylistToken
+                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+            ]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]

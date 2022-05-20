@@ -2360,7 +2360,7 @@ class VideoAPITest(TestCase):
         self.assertEqual(models.Video.objects.count(), 0)
         self.assertEqual(response.status_code, 403)
 
-    def test_api_video_create_by_playlist_token(self):
+    def test_api_video_create_instructor_with_playlist_token(self):
         """
         Create video with playlist token.
 

@@ -1,9 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 
-import uuid
-
-from django.urls import reverse
-
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -45,7 +41,10 @@ class MeetingViewSet(
         to the ViewSet's default permissions.
         """
         if self.action in ["create"]:
-            permission_classes = [core_permissions.HasPlaylistToken]
+            permission_classes = [
+                core_permissions.HasPlaylistToken
+                & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+            ]
         elif self.action in ["retrieve"]:
             permission_classes = [IsAuthenticated]
         else:
@@ -73,8 +72,8 @@ class MeetingViewSet(
     def lti_select(self, request):
         """Get selectable content for LTI.
 
-        Calling the endpoint returns a new uuid for a metting
-        and a list of available meetings.
+        Calling the endpoint returns a base URL for building a new meeting
+        LTI URL and a list of available meetings.
 
         Parameters
         ----------
@@ -87,11 +86,7 @@ class MeetingViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_uuid = str(uuid.uuid4())
-        new_url = build_absolute_uri_behind_proxy(
-            self.request,
-            reverse("bbb:meeting_lti_view", args=[new_uuid]),
-        )
+        new_url = build_absolute_uri_behind_proxy(self.request, "/lti/meetings/")
 
         meetings = serializers.MeetingSelectLTISerializer(
             Meeting.objects.filter(

@@ -774,8 +774,8 @@ class LTISelectView(TemplateResponseMixin, View):
 
             - lti_select_form_action_url: URL to post data to.
             - lti_select_form_data: Data to post.
-            - new_document_url: LTI URL to a new document.
-            - new_video_url: LTI URL to a new video.
+            - new_document_url: base URL for building a new document LTI URL.
+            - new_video_url: base URL for building a new video LTI URL.
             - documents: Documents list with their LTI URLs.
             - videos: Videos list with their LTI URLs.
 
@@ -792,7 +792,6 @@ class LTISelectView(TemplateResponseMixin, View):
             context={"request": self.request},
         ).data
 
-        new_uuid = str(uuid.uuid4())
         app_data = _get_base_app_data()
 
         lti_select_form_data = self.request.POST.copy()
@@ -802,14 +801,10 @@ class LTISelectView(TemplateResponseMixin, View):
         jwt_token.payload["lti_select_form_data"] = lti_select_form_data
 
         new_document_url = build_absolute_uri_behind_proxy(
-            self.request,
-            reverse("document_lti_view", args=[new_uuid]),
+            self.request, "/lti/documents/"
         )
 
-        new_video_url = build_absolute_uri_behind_proxy(
-            self.request,
-            reverse("video_lti_view", args=[new_uuid]),
-        )
+        new_video_url = build_absolute_uri_behind_proxy(self.request, "/lti/videos/")
 
         app_data.update(
             {
