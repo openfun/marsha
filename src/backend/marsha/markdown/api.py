@@ -1,9 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 
-import uuid
-
-from django.urls import reverse
-
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -43,7 +39,10 @@ class MarkdownDocumentViewSet(
         Default to the ViewSet's default permissions.
         """
         if self.action in ["create"]:
-            permission_classes = [core_permissions.HasPlaylistToken]
+            permission_classes = [
+                core_permissions.HasPlaylistToken
+                & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+            ]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
@@ -69,8 +68,8 @@ class MarkdownDocumentViewSet(
     def lti_select(self, request):
         """Get selectable content for LTI.
 
-        Calling the endpoint returns a new uuid for a markdown
-        document and a list of available documents.
+        Calling the endpoint returns a base URL for building a new markdown document
+        LTI URL and a list of available documents.
 
         Parameters
         ----------
@@ -83,10 +82,8 @@ class MarkdownDocumentViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_uuid = str(uuid.uuid4())
         new_url = build_absolute_uri_behind_proxy(
-            self.request,
-            reverse("markdown:markdown_document_lti_view", args=[new_uuid]),
+            self.request, "/lti/markdown_documents/"
         )
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(
