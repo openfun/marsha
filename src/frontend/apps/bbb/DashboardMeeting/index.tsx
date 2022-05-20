@@ -10,7 +10,7 @@ import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useJoinMeeting, useMeeting } from 'apps/bbb/data/queries';
+import { useJoinMeetingAction, useMeeting } from 'apps/bbb/data/queries';
 import { Attendee } from 'apps/bbb/types/models';
 import { DashboardMeetingError } from 'apps/bbb/DashboardMeetingError';
 
@@ -160,7 +160,7 @@ const DashboardMeeting = () => {
     }
   }, [meeting]);
 
-  const joinMeetingMutation = useJoinMeeting(bbbAppData.meeting!.id, {
+  const joinMeetingMutation = useJoinMeetingAction(bbbAppData.meeting!.id, {
     onSuccess: (data) => {
       const openedWindow = window.open(data.url, '_blank');
       if (!openedWindow) {

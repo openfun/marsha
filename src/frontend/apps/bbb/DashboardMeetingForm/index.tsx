@@ -7,7 +7,10 @@ import { SchedulingFields } from 'components/SchedulingFields';
 import { Maybe } from 'utils/types';
 
 import { DashboardMeetingLayout } from 'apps/bbb/DashboardMeetingLayout';
-import { useCreateMeeting, useUpdateMeeting } from 'apps/bbb/data/queries';
+import {
+  useCreateMeetingAction,
+  useUpdateMeeting,
+} from 'apps/bbb/data/queries';
 import { Meeting } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
@@ -64,7 +67,7 @@ interface DashboardMeetingFormProps {
 
 const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
   const intl = useIntl();
-  const createMeetingMutation = useCreateMeeting(meeting.id, {
+  const createMeetingMutation = useCreateMeetingAction(meeting.id, {
     onSuccess: (data) => {
       toast.success(data.message);
     },
