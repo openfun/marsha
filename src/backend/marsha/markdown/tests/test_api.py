@@ -2,8 +2,6 @@
 
 import json
 import random
-import re
-import uuid
 
 from django.test import TestCase, override_settings
 
@@ -186,13 +184,13 @@ class MarkdownAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_document_create_by_playlist_token(self):
+    def test_api_document_create_instructor_with_playlist_token(self):
         """
         Create document with playlist token.
 
         Used in the context of a lti select request (deep linking).
         """
-        playlist = core_factories.PlaylistFactory(title="Playlist")
+        playlist = core_factories.PlaylistFactory()
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = "None"
@@ -456,14 +454,9 @@ class MarkdownAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        new_uuid = re.search(
-            "http://testserver/lti/markdown_documents/(.*)",
-            response.json().get("new_url", ""),
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
         self.assertDictEqual(
             {
-                "new_url": f"http://testserver/lti/markdown_documents/{new_uuid}",
+                "new_url": "http://testserver/lti/markdown_documents/",
                 "markdown_documents": [],
             },
             response.json(),
@@ -488,14 +481,9 @@ class MarkdownAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        new_uuid = re.search(
-            "http://testserver/lti/markdown_documents/(.*)",
-            response.json().get("new_url", ""),
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
         self.assertDictEqual(
             {
-                "new_url": f"http://testserver/lti/markdown_documents/{new_uuid}",
+                "new_url": "http://testserver/lti/markdown_documents/",
                 "markdown_documents": [
                     {
                         "id": str(markdown_document.id),

@@ -2,10 +2,8 @@
 from datetime import datetime, timedelta
 import json
 import random
-import re
 from unittest import mock
 from urllib.parse import quote_plus
-import uuid
 import zoneinfo
 
 from django.test import TestCase, override_settings
@@ -23,7 +21,7 @@ from ..utils.bbb_utils import ApiMeetingException
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,too-many-lines
 
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
@@ -225,6 +223,22 @@ class MeetingAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_api_meeting_create_student_with_playlist_token(self):
+        """A student with a playlist token should not be able to create a meeting."""
+        playlist = core_factories.PlaylistFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        response = self.client.post(
+            "/api/meetings/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Meeting.objects.count(), 0)
+
     def test_api_meeting_create_instructor(self):
         """An instructor without playlist token should not be able to create a meeting."""
         meeting = MeetingFactory()
@@ -240,13 +254,15 @@ class MeetingAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_meeting_create_by_playlist_token(self, mock_get_meeting_infos):
+    def test_api_meeting_create_instructor_with_playlist_token(
+        self, mock_get_meeting_infos
+    ):
         """
         Create meeting with playlist token.
 
         Used in the context of a lti select request (deep linking).
         """
-        playlist = core_factories.PlaylistFactory(title="Playlist")
+        playlist = core_factories.PlaylistFactory()
 
         mock_get_meeting_infos.return_value = {
             "returncode": "SUCCESS",
@@ -619,13 +635,9 @@ class MeetingAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        new_uuid = re.search(
-            "http://testserver/lti/meetings/(.*)", response.json().get("new_url", "")
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
         self.assertDictEqual(
             {
-                "new_url": f"http://testserver/lti/meetings/{new_uuid}",
+                "new_url": "http://testserver/lti/meetings/",
                 "meetings": [],
             },
             response.json(),
@@ -646,13 +658,9 @@ class MeetingAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        new_uuid = re.search(
-            "http://testserver/lti/meetings/(.*)", response.json().get("new_url", "")
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
         self.assertDictEqual(
             {
-                "new_url": f"http://testserver/lti/meetings/{new_uuid}",
+                "new_url": "http://testserver/lti/meetings/",
                 "meetings": [],
             },
             response.json(),
@@ -660,8 +668,6 @@ class MeetingAPITest(TestCase):
 
     def test_api_select_instructor(self):
         """An instructor should be able to fetch a meeting lti select."""
-        # playlist = core_factories.PlaylistFactory()
-        # MeetingFactory.build_batch(3, playlist=playlist)
         meeting = MeetingFactory()
 
         jwt_token = AccessToken()
@@ -675,13 +681,9 @@ class MeetingAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        new_uuid = re.search(
-            "http://testserver/lti/meetings/(.*)", response.json().get("new_url", "")
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
         self.assertDictEqual(
             {
-                "new_url": f"http://testserver/lti/meetings/{new_uuid}",
+                "new_url": "http://testserver/lti/meetings/",
                 "meetings": [
                     {
                         "id": str(meeting.id),

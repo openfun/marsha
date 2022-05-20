@@ -5,7 +5,6 @@ from logging import Logger
 import random
 import re
 from unittest import mock
-import uuid
 
 from django.test import TestCase
 from django.utils import timezone
@@ -94,18 +93,10 @@ class SelectLTIViewTestCase(TestCase):
             f"http://testserver/lti/documents/{document.id}",
         )
 
-        new_document_url = context.get("new_document_url")
-        new_uuid = re.search(
-            "http://testserver/lti/documents/(.*)", new_document_url
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
-
         self.assertEqual(
-            new_document_url, f"http://testserver/lti/documents/{new_uuid}"
+            context.get("new_document_url"), "http://testserver/lti/documents/"
         )
-        self.assertEqual(
-            context.get("new_video_url"), f"http://testserver/lti/videos/{new_uuid}"
-        )
+        self.assertEqual(context.get("new_video_url"), "http://testserver/lti/videos/")
         self.assertEqual(
             context.get("lti_select_form_data").get("activity_title"),
             "Sent LMS activity title",
@@ -171,19 +162,11 @@ class SelectLTIViewTestCase(TestCase):
             f"https://testserver/lti/documents/{document.id}",
         )
 
-        new_document_url = context.get("new_document_url")
-        new_uuid = re.search(
-            "https://testserver/lti/documents/(.*)", new_document_url
-        ).group(1)
-        self.assertEqual(uuid.UUID(new_uuid).version, 4)
-
         self.assertEqual(
-            new_document_url, f"https://testserver/lti/documents/{new_uuid}"
+            context.get("new_document_url"), "https://testserver/lti/documents/"
         )
 
-        self.assertEqual(
-            context.get("new_video_url"), f"https://testserver/lti/videos/{new_uuid}"
-        )
+        self.assertEqual(context.get("new_video_url"), "https://testserver/lti/videos/")
 
         form_data = context.get("lti_select_form_data")
         jwt_token = AccessToken(form_data.get("jwt"))

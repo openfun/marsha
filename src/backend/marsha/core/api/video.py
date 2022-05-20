@@ -84,7 +84,10 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             permission_classes = [
                 permissions.IsParamsPlaylistAdmin
                 | permissions.IsParamsPlaylistAdminThroughOrganization
-                | permissions.HasPlaylistToken
+                | (
+                    permissions.HasPlaylistToken
+                    & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+                )
             ]
         elif self.action in ["destroy"]:
             permission_classes = [
