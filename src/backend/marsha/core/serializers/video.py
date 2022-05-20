@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
 from ..defaults import (
@@ -23,7 +22,7 @@ from ..defaults import (
 from ..models import Thumbnail, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from ..utils.url_utils import build_absolute_uri_behind_proxy
-from .base import TimestampField
+from .base import TimestampField, get_video_cloudfront_url_params
 from .playlist import PlaylistLiteSerializer
 from .shared_live_media import SharedLiveMediaSerializer
 from .thumbnail import ThumbnailSerializer
@@ -116,9 +115,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
-        date_less_than = timezone.now() + timedelta(
-            seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-        )
+        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            params = get_video_cloudfront_url_params(obj.pk)
+
         filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
         content_disposition = quote_plus(f"attachment; filename={filename}")
         for resolution in obj.resolutions:
@@ -136,13 +135,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
             # Sign the urls of mp4 videos only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                cloudfront_signer = CloudFrontSigner(
-                    settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID,
-                    cloudfront_utils.rsa_signer,
-                )
-                mp4_url = cloudfront_signer.generate_presigned_url(
-                    mp4_url, date_less_than=date_less_than
-                )
+                mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
 
             urls["mp4"][resolution] = mp4_url
 

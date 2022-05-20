@@ -1,18 +1,15 @@
 """Structure of TimedTextTrack related models API responses with DRF serializers."""
-from datetime import timedelta
 from urllib.parse import quote_plus
 
 from django.conf import settings
-from django.utils import timezone
 from django.utils.text import slugify
 
-from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from ..models import TimedTextTrack
 from ..utils import cloudfront_utils, time_utils
-from .base import TimestampField
+from .base import TimestampField, get_video_cloudfront_url_params
 
 
 class TimedTextTrackSerializer(serializers.ModelSerializer):
@@ -81,7 +78,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             validated_data["video_id"] = user.id
         return super().create(validated_data)
 
-    def _sign_url(self, url):
+    def _sign_url(self, url, video_id):
         """Generate a presigned cloudfront url.
 
         Parameters
@@ -94,15 +91,8 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             The signed url
 
         """
-        date_less_than = timezone.now() + timedelta(
-            seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-        )
-        cloudfront_signer = CloudFrontSigner(
-            settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
-        )
-        return cloudfront_signer.generate_presigned_url(
-            url, date_less_than=date_less_than
-        )
+        params = get_video_cloudfront_url_params(video_id)
+        return cloudfront_utils.build_signed_url(url, params)
 
     def _generate_url(self, obj, object_path, extension=None, content_disposition=None):
         """Generate an url to fetch a timed text track file depending on argument passed.
@@ -120,7 +110,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         content_disposition: string or None
             Add a response-content-disposition query string to url if present
         """
-        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
+        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video_id}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
         mode = f"_{obj.mode}" if obj.mode else ""
         url = f"{base}/{object_path}/{stamp}_{obj.language:s}{mode:s}"
@@ -159,7 +149,7 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
             # Sign the url only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                url = self._sign_url(url)
+                url = self._sign_url(url, obj.video_id)
             return url
         return None
 
@@ -184,6 +174,6 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
             # Sign the url only if the functionality is activated
             if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                url = self._sign_url(url)
+                url = self._sign_url(url, obj.video_id)
             return url
         return None

@@ -308,6 +308,7 @@ class Base(Configuration):
     )
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
+    CLOUDFRONT_SIGNED_URL_CACHE_DURATION = values.Value(900)  # 15 minutes
     CLOUDFRONT_SIGNED_PUBLIC_KEY_ID = values.Value(None)
 
     CLOUDFRONT_DOMAIN = values.Value(None)
