@@ -1,17 +1,18 @@
 """Structure of SharedLiveMedia related models API responses with DRF serializers."""
-from datetime import timedelta
 from urllib.parse import quote_plus
 
 from django.conf import settings
-from django.utils import timezone
 
-from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from ..models import SharedLiveMedia
 from ..utils import cloudfront_utils, time_utils
-from .base import TimestampField, UploadableFileWithExtensionSerializerMixin
+from .base import (
+    TimestampField,
+    UploadableFileWithExtensionSerializerMixin,
+    get_video_cloudfront_url_params,
+)
 
 
 class SharedLiveMediaSerializer(
@@ -100,36 +101,30 @@ class SharedLiveMediaSerializer(
         stamp = time_utils.to_timestamp(obj.uploaded_on)
         base = (
             f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-            f"{obj.video.pk}/sharedlivemedia/{obj.pk}/{stamp}"
+            f"{obj.video_id}/sharedlivemedia/{obj.pk}/{stamp}"
         )
 
-        cloudfront_signer = None
         if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            date_less_than = timezone.now() + timedelta(
-                seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-            )
-            cloudfront_signer = CloudFrontSigner(
-                settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
-            )
+            params = get_video_cloudfront_url_params(obj.video_id)
 
         pages = {}
         for page_number in range(1, obj.nb_pages + 1):
             url = f"{base:s}_{page_number:d}.svg"
-            if cloudfront_signer:
-                url = cloudfront_signer.generate_presigned_url(
-                    url, date_less_than=date_less_than
-                )
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                url = cloudfront_utils.build_signed_url(url, params)
             pages[page_number] = url
 
         urls["pages"] = pages
 
         # Downloadable link can be generated only when cloudfront request is signed
-        if (self.context.get("is_admin") or obj.show_download) and cloudfront_signer:
+        if (
+            self.context.get("is_admin") or obj.show_download
+        ) and settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
             extension = f".{obj.extension}" if obj.extension else ""
-            urls["media"] = cloudfront_signer.generate_presigned_url(
+            urls["media"] = cloudfront_utils.build_signed_url(
                 f"{base}{extension}?response-content-disposition="
                 f"{quote_plus('attachment; filename=' + self.get_filename(obj))}",
-                date_less_than=date_less_than,
+                params,
             )
 
         return urls

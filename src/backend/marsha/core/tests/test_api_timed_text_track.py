@@ -405,16 +405,23 @@ class TimedTextTrackAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
+        expected_cloudfront_signature = (
+            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6"
+            "Ly9hYmMuY2xvdWRmcm9udC5uZXQvYjhkNDBlZDctOTViOC00ODQ4LTk4YzktNTA3MjhkZmVlM"
+            "jVkLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE1Mz"
+            "M2OTM2MDB9fX1dfQ__&Signature=PkRZOcfOxbalcuNG9XN6wO72enDenSetWgTthNjR4Nsy"
+            "UvCao1rZ9s4MZbqU61NDxB8Q3yDoWZUm-PP0uFa6v2Rz9g6XSTCA~-x8Yhh72-jc1J5NZOavh"
+            "~HT6lbC2HnPAesaxbVG4EejSDuXjncE8kBiUdT6YNotAv1JzbqidXuOBdkSjR32PEav98PT0r"
+            "UKmXohNAL-RFdwHL1cKGhy17CoxABn4ToDJ-t0Z4cT4husb5HebH~6nOmhlDDdFMSdmD7FjZ~"
+            "qaJwagJ3sAqG1ph9NcTX45bDn2rcrDXUy0jHWxBPYUId6NGbKCITp1SFj0QAsoxsXnh90Ibkr"
+            "GQ4XUA__&Key-Pair-Id=cloudfront-access-key-id"
+        )
+
         self.assertEqual(
             content["url"],
             (
                 "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
-                "/1533686400_fr_cc.vtt?Expires=1533693600&Signature=CWr09YDiSe-j2sKML3f29n"
-                "KfjCdF8nUMUeL1~yHPkMkQpxDXGc5mnKDKkelvzLyAhIUmEi1CtZgG18siFD4RzDVCNufOINx"
-                "KCWzKYmVjN67PJAitNi2nUazFhOA-QODJ03gEpCPgea7ntwgJemOtqkd1uj7kgay~HeslK1L2"
-                "HEIRHjbjaYEoCldCISC8l2FIh~fFryFv9Ptu9ajm4OfIrpc2~oDqe5QkGotQ7IrcZlq8MqMte"
-                "1tbDaGkaQD-NpURCj7rmkt8vkqpWij-IkWxzNWyX38SL1bg2Co762Ab~YKpdiS8jf-WppVS31"
-                "cCehf1bPdsqypBzSFMCqORZvEBtw__&Key-Pair-Id=cloudfront-access-key-id"
+                f"/1533686400_fr_cc.vtt?{expected_cloudfront_signature}"
             ),
         )
         self.assertEqual(
@@ -422,12 +429,7 @@ class TimedTextTrackAPITest(TestCase):
             (
                 "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
                 "/source/1533686400_fr_cc?response-content-disposition=attachment%3B+filen"
-                "ame%3Dfoo_1533686400.srt&Expires=1533693600&Signature=Fcb5y9wuTPBPQ2PETBZ"
-                "qAnlMYKTHWkv9fCm5uItq4t28GMMtITGKjpjzlnnUmRvlP0DI6IUjDKXWkZEFN8mM70z4oSn9"
-                "NSh9OLIOG0mAyXRq3XNPh4P0UG8RBkbq2JLSJHgzsDy~AS06LS6i14IQonXoTLsvXGoELNVuN"
-                "sIImqHh2jeH0qaOo34pTWc~GXROYKwwYGEhkmuI1LhX5tJ14aFAEq9ggcm1YRu-aFabQj6yin"
-                "ZkZAgfEqIOScVyG78h5NNDWdU4JbPoQgUr-r97uN91FuoZYn2nJDTxYS0wQQVAc5LGNFB4pjq"
-                "57uxu-aKIRDzKaxOiTrOn75GztmV4OA__&Key-Pair-Id=cloudfront-access-key-id"
+                f"ame%3Dfoo_1533686400.srt&{expected_cloudfront_signature}"
             ),
         )
 
