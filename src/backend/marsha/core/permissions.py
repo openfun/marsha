@@ -231,14 +231,16 @@ class IsParamsPlaylistAdmin(permissions.BasePermission):
         Allow the request only if the playlist from the params of body of the request exists
         and the current logged in user is one of its administrators.
         """
-        playlist_id = request.data.get("playlist") or request.query_params.get(
-            "playlist"
-        )
-        return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
-            playlist__id=playlist_id,
-            user__id=request.user.id,
-        ).exists()
+        if request.user.id != "None":
+            playlist_id = request.data.get("playlist") or request.query_params.get(
+                "playlist"
+            )
+            return models.PlaylistAccess.objects.filter(
+                role=ADMINISTRATOR,
+                playlist__id=playlist_id,
+                user__id=request.user.id,
+            ).exists()
+        return False
 
 
 class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
@@ -256,14 +258,16 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
         Allow the request only if the playlist from the params of body of the request exists
         and the current logged in user is one of the administrators of its parent organization.
         """
-        playlist_id = request.data.get("playlist") or request.query_params.get(
-            "playlist"
-        )
-        return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            organization__playlists__id=playlist_id,
-            user__id=request.user.id,
-        ).exists()
+        if request.user.id != "None":
+            playlist_id = request.data.get("playlist") or request.query_params.get(
+                "playlist"
+            )
+            return models.OrganizationAccess.objects.filter(
+                role=ADMINISTRATOR,
+                organization__playlists__id=playlist_id,
+                user__id=request.user.id,
+            ).exists()
+        return False
 
 
 class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):

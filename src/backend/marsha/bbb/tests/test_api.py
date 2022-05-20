@@ -131,6 +131,39 @@ class MeetingAPITest(TestCase):
             content,
         )
 
+    def test_api_meeting_fetch_list_anonymous(self):
+        """An anonymous should not be able to fetch a list of meeting."""
+        response = self.client.get("/api/meetings/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_meeting_fetch_list_student(self):
+        """A student should not be able to fetch a list of meeting."""
+        meeting = MeetingFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            "/api/meetings/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_fetch_list_instructor(self):
+        """An instructor should not be able to fetch a meeting list."""
+        meeting = MeetingFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            "/api/meetings/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_meeting_fetch_instructor(self, mock_get_meeting_infos):
         """An instructor should be able to fetch a meeting."""
@@ -171,6 +204,96 @@ class MeetingAPITest(TestCase):
                 "estimated_duration": None,
             },
             content,
+        )
+
+    def test_api_meeting_create_anonymous(self):
+        """An anonymous should not be able to create a meeting."""
+        response = self.client.post("/api/meetings/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_meeting_create_student(self):
+        """A student should not be able to create a meeting."""
+        meeting = MeetingFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.post(
+            "/api/meetings/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_meeting_create_instructor(self):
+        """An instructor without playlist token should not be able to create a meeting."""
+        meeting = MeetingFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(meeting.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.post(
+            "/api/meetings/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_meeting_create_by_playlist_token(self, mock_get_meeting_infos):
+        """
+        Create meeting with playlist token.
+
+        Used in the context of a lti select request (deep linking).
+        """
+        playlist = core_factories.PlaylistFactory(title="Playlist")
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        self.assertEqual(Meeting.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/meetings/",
+            {
+                "lti_id": "meeting_one",
+                "playlist": str(playlist.id),
+                "title": "Some meeting",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(Meeting.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        meeting = Meeting.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(meeting.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "meeting_one",
+                "meeting_id": str(meeting.meeting_id),
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "Some meeting",
+                "welcome_text": "Welcome!",
+            },
         )
 
     def test_api_meeting_update_anonymous(self):

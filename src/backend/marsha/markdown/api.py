@@ -14,12 +14,14 @@ from marsha.core.api import ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
+from .forms import MarkdownDocumentForm
 from .models import MarkdownDocument
 from .utils.converter import LatexConversionException, render_latex_to_image
 
 
 class MarkdownDocumentViewSet(
     ObjectPkMixin,
+    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
@@ -33,6 +35,30 @@ class MarkdownDocumentViewSet(
         core_permissions.IsTokenResourceRouteObject
         & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
     ]
+
+    def get_permissions(self):
+        """
+        Manage permissions for built-in DRF methods.
+
+        Default to the ViewSet's default permissions.
+        """
+        if self.action in ["create"]:
+            permission_classes = [core_permissions.HasPlaylistToken]
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        """Create one document based on the request payload."""
+        try:
+            form = MarkdownDocumentForm(request.data)
+            document = form.save()
+        except ValueError:
+            return Response({"errors": [dict(form.errors)]}, status=400)
+
+        serializer = self.get_serializer(document)
+
+        return Response(serializer.data, status=201)
 
     @action(
         methods=["get"],
