@@ -17,6 +17,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Use custom policy to generate cloudfront signed url
 
+### Fixed
+
+- Do not execute start streaming in jitsi for non moderator
+
 ## [4.0.0-beta.4] - 2022-05-17
 
 ### Added

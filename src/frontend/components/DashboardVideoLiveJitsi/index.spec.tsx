@@ -144,6 +144,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
       },
     });
 
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
       expect.any({}),
@@ -432,6 +437,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
       ),
     );
 
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
     expect(events.recordingStatusChanged).toBeDefined();
 
     await waitFor(() => {
@@ -502,6 +512,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
         />,
       ),
     );
+
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
 
     expect(events.recordingStatusChanged).toBeDefined();
 
@@ -797,6 +812,41 @@ describe('<DashboardVideoLiveJitsi />', () => {
       expect.any(String),
     );
   });
+
+  it('does not start recording when the user is an instructor but not a moderator', () => {
+    const video = videoMockFactory({
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      <DashboardVideoLiveJitsi
+        video={video}
+        isInstructor={true}
+        setCanStartLive={jest.fn()}
+        setCanShowStartButton={jest.fn()}
+      />,
+    );
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any({}),
+    );
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+  });
   it('redirects to the player when user leaves the conference and is not an instructor', () => {
     const video = videoMockFactory({
       live_info: {
@@ -870,6 +920,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
       ),
     );
 
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
     expect(events.recordingStatusChanged).toBeDefined();
 
     await waitFor(() => {
@@ -930,5 +985,70 @@ describe('<DashboardVideoLiveJitsi />', () => {
       });
     });
     expect(mockExecuteCommand).toHaveBeenCalledTimes(3);
+  });
+  it('stop retrying to start streaming when the error is not-allowed', async () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
+    expect(events.recordingStatusChanged).toBeDefined();
+
+    await waitFor(() => {
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      });
+    });
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
+
+    // simulates recording interruption
+    dispatch('recordingStatusChanged', {
+      on: false,
+      mode: 'stream',
+      error: 'not-allowed',
+    });
+
+    jest.advanceTimersToNextTimer();
+
+    expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
   });
 });
