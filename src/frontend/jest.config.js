@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
     'is-reference': '<rootDir>/node_modules/is-reference/src/index.js',
+    'estree-walker': '<rootDir>/node_modules/estree-walker/src/index.js',
   },
   reporters: [
     'default',
@@ -33,6 +34,7 @@ module.exports = {
       'micromark[^/]*|' +
       'unist-util-position-from-estree|' +
       'estree-util[^/]+|' +
+      'estree-walker|' +
       'decode-named-character-reference|' +
       'character-entities|' +
       'mdast-util[^/]+|' +
