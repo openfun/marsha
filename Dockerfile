@@ -18,7 +18,7 @@ RUN mkdir /install && \
     pip install --prefix=/install .
 
 # ---- front-end builder image ----
-FROM node:14 as front-builder
+FROM node:16 as front-builder
 
 WORKDIR /app
 
@@ -31,7 +31,7 @@ RUN yarn install --frozen-lockfile && \
     yarn build --mode=production --output-path /app/marsha/static/js/build/
 
 # ---- mails ----
-FROM node:14 as mail-builder
+FROM node:16 as mail-builder
 RUN mkdir -p /app/backend/marsha/core/templates/core/mail/html/ && \
     mkdir -p /app/backend/marsha/core/templates/core/mail/text/ && \
     mkdir -p /app/mail
