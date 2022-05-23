@@ -34,6 +34,7 @@ const DashboardVideoLiveJitsi = ({
   const jitsiNode = useRef(null);
   const jitsi = useRef<JitsiMeetExternalAPI>();
   const jitsiIsRecording = useRef(false);
+  const isModerator = useRef(false);
   const endpoints = useRef<string[]>();
   const retryDelayStep = 2000;
   const retryStartRecordingDelay = useRef(retryDelayStep);
@@ -50,7 +51,11 @@ const DashboardVideoLiveJitsi = ({
     });
 
   const startRecording = (jitsiApi: JitsiMeetExternalAPI) => {
-    if (!isInstructor || jitsiIsRecording.current) {
+    if (
+      !isInstructor ||
+      jitsiIsRecording.current ||
+      isModerator.current === false
+    ) {
       return;
     }
 
@@ -163,7 +168,7 @@ const DashboardVideoLiveJitsi = ({
         // Only one will success all others will fail with the error `unexpected-request`.
         // In that case we must not start trying to start the recording again and again like
         // for other errors. We must stop the function here.
-        if (event.error === 'unexpected-request') {
+        if (['unexpected-request', 'not-allowed'].includes(event.error)) {
           return;
         }
         jitsiIsRecording.current = false;
@@ -198,11 +203,8 @@ const DashboardVideoLiveJitsi = ({
 
     if (isInstructor) {
       _jitsi.addListener('participantRoleChanged', (event) => {
-        if (event.role === 'moderator') {
-          setCanStartLive(true);
-        } else {
-          setCanStartLive(false);
-        }
+        isModerator.current = event.role === 'moderator';
+        setCanStartLive(isModerator.current);
       });
 
       _jitsi.addListener('videoConferenceJoined', () => {
