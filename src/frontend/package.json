@@ -19,8 +19,7 @@
     "build-sass-production": "sass scss/_main.scss ../backend/marsha/static/css/main.css --style=compressed --load-path=node_modules",
     "test": "TZ=UTC jest",
     "test-summary": "TZ=UTC jest 2>&1 | grep 'FAIL' | sort -t: -u -k1,1",
-    "test-coverage": "sh -c 'TZ=UTC jest $0 --coverage --collectCoverageFrom=\"$0/**\"'",
-    "storybook": "start-storybook -p 6006"
+    "test-coverage": "sh -c 'TZ=UTC jest $0 --coverage --collectCoverageFrom=\"$0/**\"'"
   },
   "repository": "git@github.com:openfun/marsha.git",
   "author": "France Université Numérique",
@@ -33,10 +32,6 @@
     "@babel/preset-env": "7.18.0",
     "@babel/preset-typescript": "7.17.12",
     "@formatjs/cli": "5.0.1",
-    "@storybook/addon-a11y": "6.3.12",
-    "@storybook/addon-actions": "6.3.12",
-    "@storybook/addon-essentials": "6.3.12",
-    "@storybook/react": "6.3.12",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "8.0.0",

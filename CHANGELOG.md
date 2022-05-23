@@ -22,6 +22,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Do not execute start streaming in jitsi for non moderator
 
+### Removed
+
+- Remove storybook
+
 ## [4.0.0-beta.4] - 2022-05-17
 
 ### Added
