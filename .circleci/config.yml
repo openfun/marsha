@@ -518,23 +518,6 @@ jobs:
       - store_artifacts:
           path: ~/marsha/src/frontend/__diff_output__
 
-  test-storybook-build:
-    docker:
-      - image: cimg/node:16.15
-        auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
-    working_directory: ~/marsha/src/frontend
-    steps:
-      - checkout:
-          path: ~/marsha
-      - restore_cache:
-          keys:
-            - v6-front-dependencies-{{ checksum "yarn.lock" }}
-      - run:
-          name: Ensure storybook builds
-          command: yarn storybook --smoke-test
-
   test-e2e:
     docker:
       - image: mcr.microsoft.com/playwright:focal
@@ -1147,12 +1130,6 @@ workflows:
             tags:
               only: /.*/
       - test-front:
-          requires:
-            - build-front
-          filters:
-            tags:
-              only: /.*/
-      - test-storybook-build:
           requires:
             - build-front
           filters:
