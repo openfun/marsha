@@ -80,13 +80,13 @@ services:
     working_dir: /app
 
   node:
-    image: node:14
+    image: node:16
     volumes:
       - ".:/app"
     working_dir: /app/src/frontend
 
   mail-generator:
-    image: node:14
+    image: node:16
     volumes:
       - ".:/app"
     working_dir: /app/src/mail

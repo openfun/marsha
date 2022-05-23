@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Use custom policy to generate cloudfront signed url
+- Upgrade front and mail apps to node version 16, the current LTS 
 
 ### Fixed
 
