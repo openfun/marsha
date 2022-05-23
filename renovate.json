@@ -12,10 +12,6 @@
       "matchPackageNames": [
         "@codemirror/view",
         "@converse/headless",
-        "@storybook/addon-a11y",
-        "@storybook/addon-actions",
-        "@storybook/addon-essentials",
-        "@storybook/react",
         "@testing-library/react",
         "@testing-library/user-event",
         "@types/faker",
