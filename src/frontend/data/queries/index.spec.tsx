@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import {
+  documentMockFactory,
   organizationMockFactory,
   playlistMockFactory,
   thumbnailMockFactory,
@@ -12,6 +13,7 @@ import {
 } from 'utils/tests/factories';
 
 import {
+  useCreateDocument,
   useCreateVideo,
   useOrganization,
   usePairingVideo,
@@ -411,6 +413,37 @@ describe('queries', () => {
       expect(result.current.status).toEqual('success');
     });
 
+    it('creates the resource with description', async () => {
+      const video = videoMockFactory();
+      fetchMock.post('/api/videos/', video);
+
+      const { result, waitFor } = renderHook(() => useCreateVideo(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        playlist: video.playlist.id,
+        title: video.title!,
+        description: video.description!,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: video.playlist.id,
+          title: video.title,
+          description: video.description,
+        }),
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+    });
+
     it('fails to create the resource', async () => {
       const video = videoMockFactory();
       fetchMock.post('/api/videos/', 400);
@@ -764,6 +797,67 @@ describe('queries', () => {
       expect(result.current.status).toEqual('error');
 
       expect(onError).toHaveBeenCalled();
+    });
+  });
+
+  describe('useCreateDocument', () => {
+    it('creates the resource', async () => {
+      const document = documentMockFactory();
+      fetchMock.post('/api/documents/', document);
+
+      const { result, waitFor } = renderHook(() => useCreateDocument(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        playlist: document.playlist.id,
+        title: document.title!,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: document.playlist.id,
+          title: document.title,
+        }),
+      });
+      expect(result.current.data).toEqual(document);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to create the resource', async () => {
+      const document = documentMockFactory();
+      fetchMock.post('/api/documents/', 400);
+
+      const { result, waitFor } = renderHook(() => useCreateDocument(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        playlist: document.playlist.id,
+        title: document.title!,
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: document.playlist.id,
+          title: document.title,
+        }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
     });
   });
 });
