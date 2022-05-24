@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 
 import { actionOne } from 'data/queries/actionOne';
+import { createOne } from 'data/queries/createOne';
 import { fetchOne } from 'data/queries/fetchOne';
 import { updateOne } from 'data/queries/updateOne';
 
@@ -48,6 +49,46 @@ export const useMarkdownDocument = (
     key,
     fetchOne,
     queryConfig,
+  );
+};
+
+type UseCreateMarkdownDocumentData = {
+  playlist: string;
+  title: string;
+  description?: string;
+  lti_id?: string;
+};
+type UseCreateMarkdownDocumentError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseCreateMarkdownDocumentData]?: string[] }[];
+    };
+type UseCreateMarkdownDocumentOptions = UseMutationOptions<
+  MarkdownDocument,
+  UseCreateMarkdownDocumentError,
+  UseCreateMarkdownDocumentData
+>;
+export const useCreateMarkdownDocument = (
+  options?: UseCreateMarkdownDocumentOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    MarkdownDocument,
+    UseCreateMarkdownDocumentError,
+    UseCreateMarkdownDocumentData
+  >(
+    (newMarkdownDocument) =>
+      createOne({ name: 'markdown-documents', object: newMarkdownDocument }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('markdown-documents');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+    },
   );
 };
 
