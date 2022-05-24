@@ -1,6 +1,5 @@
 """Marsha accounts URLs configuration."""
-
-from django.urls import path
+from django.urls import include, path
 
 from .views import (
     LoginView,
@@ -34,4 +33,6 @@ urlpatterns = [
         PasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
+    # Django social auth
+    path("", include("social_django.urls", namespace="social")),
 ]
