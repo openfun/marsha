@@ -8,6 +8,8 @@ from .views import (
     PasswordResetConfirmView,
     PasswordResetDoneView,
     PasswordResetView,
+    RenaterIdpChoiceView,
+    SAMLMetadataView,
 )
 
 
@@ -35,4 +37,11 @@ urlpatterns = [
     ),
     # Django social auth
     path("", include("social_django.urls", namespace="social")),
+    # SAML
+    path("saml/metadata/", SAMLMetadataView.as_view(), name="saml_metadata"),
+    path(
+        "saml/renater_idp_choice/",
+        RenaterIdpChoiceView.as_view(),
+        name="saml_renater_choice",
+    ),
 ]

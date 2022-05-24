@@ -11,6 +11,8 @@ from django.contrib.auth.views import (
 from django.urls import reverse_lazy
 from django.views.generic import RedirectView
 
+from marsha.core.defaults import RENATER_SAML
+
 
 class LoginView(AuthLoginView):
     """
@@ -19,6 +21,12 @@ class LoginView(AuthLoginView):
 
     template_name = "account/login.html"
     redirect_authenticated_user = True
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add switch name for Renater SAML
+        context["RENATER_SAML"] = RENATER_SAML
+        return context
 
 
 class LogoutView(RedirectView):

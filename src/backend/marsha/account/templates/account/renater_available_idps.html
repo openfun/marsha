@@ -1,0 +1,113 @@
+{% extends 'account/base.html' %}
+{% load i18n %}
+
+{% block js_scripts %}
+  {{ renater_shibboleth_idps|json_script:"renater-idps-data" }}
+
+  <script type="text/javascript">
+    function filterResults(val) {
+        const reg = new RegExp(val, 'i')
+
+        const availableIdpList = document.getElementsByTagName("button");
+        for (let i = 0; i < availableIdpList.length; i++) {
+            const idp_element = availableIdpList[i]
+            if (
+                val &&
+                !idp_element.classList.contains("recently-used-idp") &&
+                !idp_element.textContent.match(reg)
+            ) { {# idp[1] is the display name #}
+                idp_element.style.display = "none";
+            } else {
+                idp_element.style.display = "block";
+            }
+        }
+    }
+
+    function _getCookie(name) {
+      // Thanks to https://daily-dev-tips.com/posts/vanilla-javascript-cookies/
+      // Add the = sign
+      name = name + '=';
+
+      // Get the decoded cookie
+      const decodedCookie = decodeURIComponent(document.cookie);
+
+      // Get all cookies, split on ; sign
+      const cookies = decodedCookie.split(';');
+
+      // Loop over the cookies
+      for (let i = 0; i < cookies.length; i++) {
+        // Define the single cookie, and remove whitespace
+        const cookie = cookies[i].trim();
+
+        // If this cookie has the name of what we are searching
+        if (cookie.indexOf(name) == 0) {
+          // Return everything after the cookies name
+          return cookie.substring(name.length, cookie.length);
+        }
+      }
+    }
+
+    function storeRecentIdpCookie(idp_name) {
+        const currentCookie = _getCookie("{{ recent_use_cookie_name }}");
+        if (!currentCookie) {
+            document.cookie = `{{ recent_use_cookie_name }}=${idp_name}; SameSite=strict; Secure`;
+        } else if (!currentCookie.includes(idp_name)) {
+            document.cookie = `{{ recent_use_cookie_name }}=${currentCookie}+${idp_name}; SameSite=strict; Secure`;
+        }
+    }
+
+    function removeRecentIdpCookie(event, idp_name) {
+        event.preventDefault();  {#  No not follow the link #}
+
+        const currentCookie = _getCookie("{{ recent_use_cookie_name }}");
+        if (currentCookie.includes(idp_name)) {
+            let idp_name_list = currentCookie.split('+');
+            idp_name_list.splice(idp_name_list.indexOf(idp_name), 1);
+
+            if (idp_name_list.length === 0) {
+                document.cookie = `{{ recent_use_cookie_name }}=; Max-Age=0; SameSite=strict; Secure`;
+            } else {
+                document.cookie = `{{ recent_use_cookie_name }}=${idp_name_list.join('+')}; SameSite=strict; Secure`;
+            }
+        }
+
+        {# Hide the button #}
+        event.target.parentElement.style.display = "none";
+    }
+  </script>
+{% endblock %}
+
+{% block content %}
+  {{ block.super }}
+  <div id="content-main" class="inner-container">
+    <form action="{% url 'account:social:begin' 'renater_saml' %}" method="get" autocomplete="off">
+      <p>{% translate 'Please choose your identity provider in the list below.' %}</p>
+
+      <div class="form-row inline-row">
+        <label>{% translate 'Filter results:' %}</label>
+        <input type="text" onKeyUp="filterResults(this.value)" />
+      </div>
+
+      {% if latest_selected_idps %}
+        <div class="submit-row">
+          {% for idp_name, idp_display_name in latest_selected_idps %}
+              <button class="btn-idp-link recently-used-idp" type="submit" name="idp" value="{{ idp_name }}">
+                {{ idp_display_name }}
+                <span class="remove-idp-btn" onclick="removeRecentIdpCookie(event, '{{ idp_name }}')">x</span>
+              </button>
+          {% endfor %}
+        </div>
+
+        {% if renater_shibboleth_idps %}
+          <div class="separator"></div>
+        {% endif %}
+      {% endif %}
+
+      <div class="submit-row">
+        {% for idp_name, idp_display_name in renater_shibboleth_idps %}
+            <button class="btn-idp-link" type="submit" name="idp" value="{{ idp_name }}" onclick="storeRecentIdpCookie('{{ idp_name }}')">{{ idp_display_name }}</button>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+{% endblock %}

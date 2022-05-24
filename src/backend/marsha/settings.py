@@ -16,6 +16,7 @@ from configurations import Configuration, values
 from corsheaders.defaults import default_headers
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from social_core.pipeline import DEFAULT_AUTH_PIPELINE
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -162,6 +163,11 @@ class Base(Configuration):
     ]
 
     AUTH_USER_MODEL = "core.User"
+
+    AUTHENTICATION_BACKENDS = [
+        "marsha.account.social_backends.renater_saml.RenaterShibbolethSAMLAuth",
+        "django.contrib.auth.backends.ModelBackend",
+    ]
 
     ASGI_APPLICATION = "marsha.asgi.application"
 
@@ -457,6 +463,83 @@ class Base(Configuration):
     # Python social auth
     SOCIAL_AUTH_JSONFIELD_ENABLED = True
     SOCIAL_AUTH_URL_NAMESPACE = "account:social"
+    SOCIAL_AUTH_RENATER_SAML_IDP_FAKER = False
+
+    SOCIAL_AUTH_RENATER_SAML_SECURITY_CONFIG = {
+        "authnRequestsSigned": True,
+        "signMetadata": True,
+        "wantMessagesSigned": True,
+        "wantAssertionsSigned": True,
+        "wantAssertionsEncrypted": True,
+        "rejectDeprecatedAlgorithm": True,
+    }
+
+    # SOCIAL_AUTH_RENATER_SAML_SP_ENTITY_ID should be a URL that includes a domain name you own
+    SOCIAL_AUTH_RENATER_SAML_SP_ENTITY_ID = values.Value()
+    # SOCIAL_AUTH_RENATER_SAML_SP_PUBLIC_CERT X.509 certificate for the key pair that
+    # your app will use
+    SOCIAL_AUTH_RENATER_SAML_SP_PUBLIC_CERT = values.Value()
+    # SOCIAL_AUTH_RENATER_SAML_SP_PRIVATE_KEY The private key to be used by your app
+    SOCIAL_AUTH_RENATER_SAML_SP_PRIVATE_KEY = values.Value()
+
+    # Next certificate management, keep empty when next certificate is still not known
+    SOCIAL_AUTH_RENATER_SAML_SP_NEXT_PUBLIC_CERT = values.Value()
+    SOCIAL_AUTH_RENATER_SAML_SP_EXTRA = (
+        {
+            "x509certNew": SOCIAL_AUTH_RENATER_SAML_SP_NEXT_PUBLIC_CERT,
+        }
+        if SOCIAL_AUTH_RENATER_SAML_SP_NEXT_PUBLIC_CERT
+        else {}
+    )
+
+    SOCIAL_AUTH_RENATER_SAML_ORG_INFO = {  # specify values for English at a minimum
+        "en-US": {
+            "name": values.Value(
+                "marsha",
+                environ_name="SOCIAL_AUTH_RENATER_SAML_ORG_INFO_NAME",
+            ),
+            "displayname": values.Value(
+                "Marsha",
+                environ_name="SOCIAL_AUTH_RENATER_SAML_ORG_INFO_DISPLAY_NAME",
+            ),
+            "url": values.Value(
+                environ_name="SOCIAL_AUTH_RENATER_SAML_ORG_INFO_URL",
+            ),
+        }
+    }
+    # SOCIAL_AUTH_RENATER_SAML_TECHNICAL_CONTACT technical contact responsible for your app
+    SOCIAL_AUTH_RENATER_SAML_TECHNICAL_CONTACT = {
+        "givenName": values.Value(
+            "Marsha dev team",
+            environ_name="SOCIAL_AUTH_RENATER_SAML_TECHNICAL_CONTACT_NAME",
+        ),
+        "emailAddress": values.Value(
+            environ_name="SOCIAL_AUTH_RENATER_SAML_TECHNICAL_CONTACT_EMAIL",
+        ),
+    }
+    # SOCIAL_AUTH_RENATER_SAML_SUPPORT_CONTACT support contact for your app
+    SOCIAL_AUTH_RENATER_SAML_SUPPORT_CONTACT = {
+        "givenName": values.Value(
+            "Marsha dev team",
+            environ_name="SOCIAL_AUTH_RENATER_SAML_SUPPORT_CONTACT_NAME",
+        ),
+        "emailAddress": values.Value(
+            environ_name="SOCIAL_AUTH_RENATER_SAML_SUPPORT_CONTACT_EMAIL",
+        ),
+    }
+    # SOCIAL_AUTH_RENATER_SAML_ENABLED_IDPS is not required since the
+    # SAML backend is overridden to allow dynamic IdPs.
+    # see marsha.account.backends.SAMLAuth.get_idp(idp_name)
+
+    # Custom parameter to define the Renater Federation Metadata
+    SOCIAL_AUTH_RENATER_SAML_METADATA = values.Value(
+        "https://metadata.federation.renater.fr/renater/main/main-idps-renater-metadata.xml"
+    )
+
+    SOCIAL_AUTH_RENATER_SAML_PIPELINE = DEFAULT_AUTH_PIPELINE + (
+        "marsha.account.social_pipeline.organization.create_organization_from_saml",
+    )
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
@@ -616,6 +699,26 @@ class Development(Base):
             },
         }
     )
+
+    @classmethod
+    def setup(cls):
+        # Add settings from the Renater SAML testing suite
+        # pylint: disable=import-outside-toplevel
+        from marsha.account.social_testing.settings import renater_saml_settings
+
+        # pylint: enable=import-outside-toplevel
+
+        for setting_name, setting_value in renater_saml_settings.items():
+            setattr(cls, setting_name, values.Value(setting_value))
+
+        cls.SOCIAL_AUTH_RENATER_SAML_METADATA = values.Value(
+            "https://pub.federation.renater.fr/metadata/test/preview/preview-idps-test-metadata.xml"
+        )
+
+        cls.SOCIAL_AUTH_RENATER_SAML_IDP_FAKER = values.Value(True)
+
+        # Call setup afterward
+        super().setup()
 
 
 class Test(Base):

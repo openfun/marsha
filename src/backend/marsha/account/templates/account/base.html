@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/account/account.css' %}">
     <meta name="public-path" value="{{ static_base_url }}" />
+    {% block js_scripts %}
+    {% endblock %}
   </head>
   <body>
   <div id="content-main" class="container">
