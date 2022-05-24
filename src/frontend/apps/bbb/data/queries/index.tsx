@@ -7,10 +7,11 @@ import {
 } from 'react-query';
 
 import { APIList } from 'types/api';
+import { actionOne } from 'data/queries/actionOne';
+import { createOne } from 'data/queries/createOne';
 import { fetchList } from 'data/queries/fetchList';
 import { fetchOne } from 'data/queries/fetchOne';
 import { updateOne } from 'data/queries/updateOne';
-import { actionOne } from 'data/queries/actionOne';
 
 import {
   EndMeetingActionRequest,
@@ -57,6 +58,39 @@ export const useMeeting = (
 ) => {
   const key = ['meetings', meetingId];
   return useQuery<Meeting, 'meetings'>(key, fetchOne, queryConfig);
+};
+
+type UseCreateMeetingData = {
+  playlist: string;
+  title: string;
+  description?: string;
+  lti_id?: string;
+};
+type UseCreateMeetingError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseCreateMeetingData]?: string[] }[];
+    };
+type UseCreateMeetingOptions = UseMutationOptions<
+  Meeting,
+  UseCreateMeetingError,
+  UseCreateMeetingData
+>;
+export const useCreateMeeting = (options?: UseCreateMeetingOptions) => {
+  const queryClient = useQueryClient();
+  return useMutation<Meeting, UseCreateMeetingError, UseCreateMeetingData>(
+    (newMeeting) => createOne({ name: 'meetings', object: newMeeting }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('meetings');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+    },
+  );
 };
 
 type UseUpdateMeetingData = Partial<

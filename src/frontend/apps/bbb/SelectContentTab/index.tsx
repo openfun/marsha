@@ -13,7 +13,7 @@ import { ErrorMessage } from 'components/ErrorComponents';
 import { SelectContentTabProps } from 'components/SelectContent';
 import { Nullable } from 'utils/types';
 
-import { useSelectMeeting } from 'apps/bbb/data/queries';
+import { useCreateMeeting, useSelectMeeting } from 'apps/bbb/data/queries';
 import { Meeting } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
@@ -133,6 +133,7 @@ const ContentCard = ({
 
 interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
+  addAndSelectContent: () => void;
   newLtiUrl: string;
   items: Nullable<Meeting[]>;
   selectContent: (
@@ -144,7 +145,7 @@ interface SelectContentSectionProps {
 
 export const SelectContentSection = ({
   addMessage,
-  newLtiUrl,
+  addAndSelectContent,
   items,
   selectContent,
 }: SelectContentSectionProps) => {
@@ -156,7 +157,7 @@ export const SelectContentSection = ({
           justify="center"
           background="light-3"
           align="center"
-          onClick={() => selectContent(newLtiUrl)}
+          onClick={addAndSelectContent}
         >
           <Text alignSelf="center">
             <FormattedMessage {...addMessage} />
@@ -177,9 +178,22 @@ export const SelectContentSection = ({
   );
 };
 
-const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
+const SelectContentTab = ({
+  playlist,
+  selectContent,
+  lti_select_form_data,
+}: SelectContentTabProps) => {
   const { data: selectMeeting, status: useSelectMeetingStatus } =
     useSelectMeeting({});
+
+  const useCreateMeetingMutation = useCreateMeeting({
+    onSuccess: (meeting) =>
+      selectContent(
+        selectMeeting!.new_url! + meeting.id,
+        meeting.title,
+        meeting.description,
+      ),
+  });
 
   let content: JSX.Element;
   switch (useSelectMeetingStatus) {
@@ -200,6 +214,13 @@ const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
       content = (
         <SelectContentSection
           addMessage={messages.addMeeting}
+          addAndSelectContent={() => {
+            useCreateMeetingMutation.mutate({
+              playlist: playlist!.id,
+              title: lti_select_form_data?.activity_title,
+              description: lti_select_form_data?.activity_description,
+            });
+          }}
           newLtiUrl={selectMeeting!.new_url!}
           items={selectMeeting!.meetings!}
           selectContent={selectContent}

@@ -108,16 +108,32 @@ def _preview_meeting(page: Page, live_server: LiveServer):
 #         yield mock_aws_s3_meeting
 
 
+@responses.activate
 @pytest.mark.django_db()
 @override_settings(
     DEBUG=True,
     FRONT_UPLOAD_POLL_INTERVAL="1",
     STORAGE_BACKEND="marsha.core.storage.dummy",
     X_FRAME_OPTIONS="",
+    BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api",
+    BBB_API_SECRET="SuperSecret",
 )
 def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     """Test LTI select."""
     settings.BBB_ENABLED = True
+
+    responses.add(
+        responses.GET,
+        "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+        body="""<response>
+            <returncode>FAILED</returncode>
+            <messageKey>notFound</messageKey>
+            <message>We could not find a meeting with that meeting ID</message>
+        </response>
+        """,
+        status=200,
+    )
+
     lti_consumer_parameters = {
         "roles": random.choice(["instructor", "administrator"]),
         "content_item_return_url": f"{live_server.url}/development/",
@@ -190,8 +206,33 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         lti_select_iframe.click("text=Add a meeting")
     lti_select_iframe.wait_for_selector("dd")
 
-    assert sent_title_and_text in lti_select_iframe.content()
-    assert Meeting.objects.count() == 1
+    # assert sent_title_and_text in lti_select_iframe.content()
+    # assert Meeting.objects.count() == 1
+
+    # added meeting is created
+    assert Meeting.objects.count() == 2
+    added_meeting = Meeting.objects.exclude(id=meeting.id).first()
+    assert added_meeting.title == lti_consumer_parameters.get("title")
+    assert added_meeting.description == lti_consumer_parameters.get("text")
+    meeting_content_items = (
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server}/lti/meetings/{added_meeting.id}",
+                        "frame": [],
+                        "title": lti_consumer_parameters.get("title"),
+                        "text": lti_consumer_parameters.get("text"),
+                    }
+                ],
+            }
+        )
+        .replace(", ", ",")
+        .replace(": ", ":")
+    )
+    assert meeting_content_items in lti_select_iframe.content()
 
 
 @pytest.mark.django_db()

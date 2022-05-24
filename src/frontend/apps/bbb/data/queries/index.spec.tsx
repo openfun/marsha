@@ -3,14 +3,16 @@ import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
+import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
+
 import {
   useMeeting,
   useMeetings,
+  useCreateMeeting,
   useUpdateMeeting,
   useCreateMeetingAction,
   useJoinMeetingAction,
-} from './index';
-import { meetingMockFactory } from '../../utils/tests/factories';
+} from '.';
 
 setLogger({
   // tslint:disable-next-line:no-console
@@ -139,6 +141,67 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useCreateMeeting', () => {
+    it('creates the resource', async () => {
+      const meeting = meetingMockFactory();
+      fetchMock.post('/api/meetings/', meeting);
+
+      const { result, waitFor } = renderHook(() => useCreateMeeting(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        playlist: meeting.playlist.id,
+        title: meeting.title!,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: meeting.playlist.id,
+          title: meeting.title,
+        }),
+      });
+      expect(result.current.data).toEqual(meeting);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to create the resource', async () => {
+      const meeting = meetingMockFactory();
+      fetchMock.post('/api/meetings/', 400);
+
+      const { result, waitFor } = renderHook(() => useCreateMeeting(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate({
+        playlist: meeting.playlist.id,
+        title: meeting.title!,
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: meeting.playlist.id,
+          title: meeting.title,
+        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
