@@ -30,6 +30,7 @@ import { Nullable } from 'utils/types';
 import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 import { Loader } from 'components/Loader';
 import { appConfigs } from 'data/appConfigs';
+import { useCreateDocument, useCreateVideo } from 'data/queries';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -229,6 +230,7 @@ const ContentCard = ({
 
 export interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
+  addAndSelectContent: () => void;
   newLtiUrl: string;
   items: Nullable<Video[] | Document[]>;
   selectContent: (
@@ -240,7 +242,7 @@ export interface SelectContentSectionProps {
 
 export const SelectContentSection = ({
   addMessage,
-  newLtiUrl,
+  addAndSelectContent,
   items,
   selectContent,
 }: SelectContentSectionProps) => {
@@ -252,7 +254,7 @@ export const SelectContentSection = ({
           justify="center"
           background="light-3"
           align="center"
-          onClick={() => selectContent(newLtiUrl)}
+          onClick={addAndSelectContent}
         >
           <Text alignSelf="center">
             <FormattedMessage {...addMessage} />
@@ -298,6 +300,18 @@ export const SelectContent = ({
 }: SelectContentProps) => {
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
+  const useCreateVideoMutation = useCreateVideo({
+    onSuccess: (video) =>
+      selectContent(new_video_url + video.id, video.title, video.description),
+  });
+  const useCreateDocumentMutation = useCreateDocument({
+    onSuccess: (document) =>
+      selectContent(
+        new_document_url + document.id,
+        document.title,
+        document.description,
+      ),
+  });
   const intl = useIntl();
 
   const appTabs: React.LazyExoticComponent<
@@ -410,6 +424,13 @@ export const SelectContent = ({
         <Tab title="Videos">
           <SelectContentSection
             addMessage={messages.addVideo}
+            addAndSelectContent={() => {
+              useCreateVideoMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+              });
+            }}
             newLtiUrl={new_video_url!}
             items={videos!}
             selectContent={selectContent}
@@ -419,6 +440,13 @@ export const SelectContent = ({
         <Tab title="Documents">
           <SelectContentSection
             addMessage={messages.addDocument}
+            addAndSelectContent={() => {
+              useCreateDocumentMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+              });
+            }}
             newLtiUrl={new_document_url!}
             items={documents!}
             selectContent={selectContent}
@@ -427,7 +455,11 @@ export const SelectContent = ({
 
         {appTabs.map((LazyComponent, index) => (
           <Suspense key={index} fallback={<Loader />}>
-            <LazyComponent selectContent={selectContent} />
+            <LazyComponent
+              lti_select_form_data={lti_select_form_data!}
+              playlist={playlist!}
+              selectContent={selectContent}
+            />
           </Suspense>
         ))}
       </Tabs>
@@ -436,9 +468,13 @@ export const SelectContent = ({
 };
 
 export interface SelectContentTabProps {
+  playlist: Playlist;
   selectContent: (
     url: string,
     title: Nullable<string>,
     description: Nullable<string>,
   ) => void;
+  lti_select_form_data: {
+    [key: string]: string;
+  };
 }
