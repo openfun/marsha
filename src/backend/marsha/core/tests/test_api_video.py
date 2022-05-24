@@ -29,7 +29,7 @@ from ..defaults import (
     STOPPED,
     STOPPING,
 )
-from ..factories import LiveSessionFactory
+from ..factories import LiveSessionFactory, PlaylistFactory
 from ..utils.api_utils import generate_hash
 from ..utils.medialive_utils import ManifestMissingException
 from ..utils.time_utils import to_timestamp
@@ -2022,6 +2022,24 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(models.Video.objects.count(), 1)
+
+    def test_api_video_create_student_with_playlist_token(self):
+        """A student with a playlist token should not be able to create a video."""
+        playlist = PlaylistFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        response = self.client.post(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(models.Video.objects.count(), 0)
 
     def test_api_video_create_staff_or_user(self):
         """Users authenticated via a session should not be able to create videos."""

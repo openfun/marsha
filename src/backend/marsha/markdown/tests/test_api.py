@@ -170,6 +170,21 @@ class MarkdownAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_api_document_create_student_with_playlist_token(self):
+        """A student with a playlist token should not be able to create a Markdown document."""
+        playlist = core_factories.PlaylistFactory()
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(playlist.id)
+
+        response = self.client.post(
+            "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_document_create_instructor(self):
         """An instrustor should not be able to create a Markdown document."""
         markdown_document = MarkdownDocumentFactory()

@@ -1,4 +1,6 @@
 """Custom permission classes for the Marsha project."""
+import uuid
+
 from django.db.models import Q
 from django.http.response import Http404
 
