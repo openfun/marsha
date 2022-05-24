@@ -712,7 +712,8 @@ class Development(Base):
             setattr(cls, setting_name, values.Value(setting_value))
 
         cls.SOCIAL_AUTH_RENATER_SAML_METADATA = values.Value(
-            "https://pub.federation.renater.fr/metadata/test/preview/preview-idps-test-metadata.xml"
+            # Metadata is fetched from inside the docker, hence the 8000 port
+            "http://localhost:8000/account/saml/idp/metadata/"
         )
 
         cls.SOCIAL_AUTH_RENATER_SAML_IDP_FAKER = values.Value(True)

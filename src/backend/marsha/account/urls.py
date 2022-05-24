@@ -1,4 +1,5 @@
 """Marsha accounts URLs configuration."""
+from django.conf import settings
 from django.urls import include, path
 
 from .views import (
@@ -45,3 +46,6 @@ urlpatterns = [
         name="saml_renater_choice",
     ),
 ]
+
+if settings.SOCIAL_AUTH_RENATER_SAML_IDP_FAKER:
+    urlpatterns += [path("", include("marsha.account.social_testing.urls"))]
