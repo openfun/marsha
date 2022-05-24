@@ -7,6 +7,7 @@ import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories
 
 import {
   markdownRenderLatex,
+  useCreateMarkdownDocument,
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
@@ -102,6 +103,73 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useCreateMarkdownDocument', () => {
+    it('creates the resource', async () => {
+      const markdownDocument = markdownDocumentMockFactory();
+      fetchMock.post('/api/markdown-documents/', markdownDocument);
+
+      const { result, waitFor } = renderHook(
+        () => useCreateMarkdownDocument(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        playlist: markdownDocument.playlist.id,
+        title: markdownDocument.translations[0].title!,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: markdownDocument.playlist.id,
+          title: markdownDocument.translations[0].title,
+        }),
+      });
+      expect(result.current.data).toEqual(markdownDocument);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to create the resource', async () => {
+      const markdownDocument = markdownDocumentMockFactory();
+      fetchMock.post('/api/markdown-documents/', 400);
+
+      const { result, waitFor } = renderHook(
+        () => useCreateMarkdownDocument(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        playlist: markdownDocument.playlist.id,
+        title: markdownDocument.translations[0].title!,
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: markdownDocument.playlist.id,
+          title: markdownDocument.translations[0].title,
+        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
