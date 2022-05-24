@@ -7,8 +7,13 @@ COPY src/backend/setup.cfg /app/src/backend/
 
 WORKDIR /app/src/backend
 
-# Ensure pip is insta
-RUN apt-get update && apt-get install -y python3-pip
+# Ensure pip is installed
+# Install xmlsec1 dependencies required for xmlsec (for SAML)
+# Needs to be kept before the `pip install`
+RUN apt-get update && \
+    apt-get install -y \
+    python3-pip pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install development dependencies
 # and forcibly remove the marsha package

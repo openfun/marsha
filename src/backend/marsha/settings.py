@@ -116,6 +116,7 @@ class Base(Configuration):
         "corsheaders",
         "channels",
         "parler",  # django-parler, for translated models
+        "social_django.apps.PythonSocialAuthConfig",  # python-social-auth for Django
         # Marsha
         "marsha.account.apps.AccountConfig",
         "marsha.core.apps.MarshaAdminConfig",
@@ -137,6 +138,7 @@ class Base(Configuration):
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "dockerflow.django.middleware.DockerflowMiddleware",
         "waffle.middleware.WaffleMiddleware",
+        "social_django.middleware.SocialAuthExceptionMiddleware",
     ]
 
     ROOT_URLCONF = "marsha.urls"
@@ -152,6 +154,8 @@ class Base(Configuration):
                     "django.template.context_processors.request",
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
+                    "social_django.context_processors.backends",
+                    "social_django.context_processors.login_redirect",
                 ]
             },
         }
@@ -450,6 +454,9 @@ class Base(Configuration):
     )
     REMINDERS_SECRET = values.Value()
 
+    # Python social auth
+    SOCIAL_AUTH_JSONFIELD_ENABLED = True
+    SOCIAL_AUTH_URL_NAMESPACE = "account:social"
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
