@@ -186,9 +186,11 @@ const DashboardVideoLiveJitsi = ({
         jitsiIsRecording.current = false;
       }
 
-      // recording has started. Reset the retry delay
+      // recording has started. Reset the retry delay and set jitsiIsRecording to true
+      // to avoid intempestive start for other moderators.
       if (event.on) {
         retryStartRecordingDelay.current = retryDelayStep;
+        jitsiIsRecording.current = true;
       }
     });
 
@@ -240,7 +242,7 @@ const DashboardVideoLiveJitsi = ({
     if (video.live_state === liveState.STOPPING && jitsiIsRecording.current) {
       jitsi.current!.executeCommand('stopRecording', 'stream');
     }
-  }, [video.live_state, video.live_info.medialive]);
+  }, [video.live_state, video.live_info.medialive, isModerator.current]);
 
   return <Box height={'large'} ref={jitsiNode} />;
 };
