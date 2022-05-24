@@ -14,6 +14,13 @@ WORKDIR /builder
 # Only copy the setup files for dependencies install
 COPY src/backend/setup.* /builder/
 
+# Install Install xmlsec1 dependencies required for xmlsec (for SAML)
+# Needs to be kept before the `pip install`
+RUN apt-get update && \
+    apt-get install -y \
+    libxmlsec1-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN mkdir /install && \
     pip install --prefix=/install .
 
@@ -47,10 +54,11 @@ RUN yarn install --frozen-lockfile && \
 FROM base as link-collector
 ARG MARSHA_STATIC_ROOT=/data/static
 
-# Install rdfind
+# Install rdfind & libxmlsec1 (required to run django)
 RUN apt-get update && \
     apt-get install -y \
-    rdfind && \
+    rdfind \
+    libxmlsec1-dev libxmlsec1-openssl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies
@@ -75,9 +83,10 @@ RUN rdfind -makesymlinks true -followsymlinks true -makeresultsfile false ${MARS
 FROM base
 ARG MARSHA_STATIC_ROOT=/data/static
 # Install gettext & latex + dvisvgm
+# Also reinstall xmlsec1 dependency to provide .so required for runtime (SAML)
 RUN apt-get update && \
     apt-get install -y \
-    gettext texlive-latex-extra dvisvgm && \
+    gettext texlive-latex-extra dvisvgm libxmlsec1 libxmlsec1-openssl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies
