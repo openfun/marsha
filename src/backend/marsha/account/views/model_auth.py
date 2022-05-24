@@ -1,4 +1,4 @@
-"""Marsha accounts views."""
+"""Marsha django model authentication views."""
 from django.conf import settings
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import (
