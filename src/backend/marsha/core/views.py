@@ -800,6 +800,10 @@ class LTISelectView(TemplateResponseMixin, View):
         jwt_token = AccessToken()
         jwt_token.payload["lti_select_form_data"] = lti_select_form_data
 
+        activity_title = ""
+        if self.request.POST.get("title") != settings.LTI_CONFIG_TITLE:
+            activity_title = self.request.POST.get("title")
+
         new_document_url = build_absolute_uri_behind_proxy(
             self.request, "/lti/documents/"
         )
@@ -812,7 +816,7 @@ class LTISelectView(TemplateResponseMixin, View):
                 "lti_select_form_action_url": reverse("respond_lti_view"),
                 "lti_select_form_data": {
                     "jwt": str(jwt_token),
-                    "activity_title": self.request.POST.get("title"),
+                    "activity_title": activity_title,
                     "activity_description": self.request.POST.get("text"),
                 },
                 "new_document_url": new_document_url,
@@ -824,7 +828,7 @@ class LTISelectView(TemplateResponseMixin, View):
         )
 
         session_id = str(uuid.uuid4())
-        permissions = {"can_access_dashboard": False, "can_update": False}
+        permissions = {"can_access_dashboard": False, "can_update": True}
 
         jwt_token = build_jwt_token(
             permissions=permissions,

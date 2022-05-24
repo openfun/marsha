@@ -6,7 +6,8 @@ import random
 import re
 from unittest import mock
 
-from django.test import TestCase
+from django.conf import settings
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import AccessToken
@@ -104,6 +105,83 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("lti_select_form_data").get("activity_description"),
             "Sent LMS activity text",
+        )
+
+        form_data = context.get("lti_select_form_data")
+        initial_jwt_token = AccessToken(form_data.get("jwt"))
+        lti_parameters.update({"lti_message_type": "ContentItemSelection"})
+        self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
+
+        jwt_token = AccessToken(context.get("jwt"))
+        self.assertEqual(
+            jwt_token.get("permissions"),
+            {"can_access_dashboard": False, "can_update": True},
+        )
+
+    @override_settings(LTI_CONFIG_TITLE="Marsha")
+    def test_views_lti_select_default_title(self):
+        """Validate the context passed to the frontend app for a LTI Content selection."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": settings.LTI_CONFIG_TITLE,
+            "text": "",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        resolutions = [144]
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        video = VideoFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+            resolutions=resolutions,
+        )
+        document = DocumentFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+        )
+
+        response = self.client.post(
+            "/lti/select/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(
+            context.get("videos")[0].get("lti_url"),
+            f"http://testserver/lti/videos/{video.id}",
+        )
+        self.assertEqual(
+            context.get("documents")[0].get("lti_url"),
+            f"http://testserver/lti/documents/{document.id}",
+        )
+
+        self.assertEqual(
+            context.get("new_document_url"), "http://testserver/lti/documents/"
+        )
+        self.assertEqual(context.get("new_video_url"), "http://testserver/lti/videos/")
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_title"),
+            "",
+        )
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_description"),
+            "",
         )
 
         form_data = context.get("lti_select_form_data")

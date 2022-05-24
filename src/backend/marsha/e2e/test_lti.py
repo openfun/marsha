@@ -284,6 +284,7 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
 
     # Select a document
     lti_select_iframe.click('button[role="tab"]:has-text("Documents")')
+    # Use send text in the response to fill the activity text
     document_content_items = (
         json.dumps(
             {
@@ -311,6 +312,7 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     # Select a video
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
+    # Use send text in the response to fill the activity text
     video_content_items = (
         json.dumps(
             {
@@ -503,6 +505,143 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
                         "url": f"{live_server}/lti/videos/{added_video.id}",
                         "frame": [],
                         "title": lti_consumer_parameters.get("title"),
+                    }
+                ],
+            }
+        )
+        .replace(", ", ",")
+        .replace(": ", ":")
+    )
+    assert video_content_items in lti_select_iframe.content()
+
+
+@pytest.mark.django_db()
+@pytest.mark.usefixtures("mock_video_cloud_storage")
+@override_settings(LTI_CONFIG_TITLE="Marsha")
+def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
+    """When the request has a default title don't use it in the created resource,
+    and send the ressource title in the LTI response."""
+    lti_consumer_parameters = {
+        "roles": random.choice(["instructor", "administrator"]),
+        "content_item_return_url": f"{live_server.url}/development/",
+        "context_id": "sent_lti_context_id",
+        "lti_message_type": "ContentItemSelectionRequest",
+        "lti_version": "LTI-1p0",
+        "title": settings.LTI_CONFIG_TITLE,
+        "text": "",
+    }
+    lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+        url=f"{live_server.url}/lti/select/",
+        lti_parameters=lti_consumer_parameters,
+    )
+
+    resolutions = [144]
+    playlist = PlaylistFactory(
+        lti_id=lti_parameters.get("context_id"),
+        consumer_site=passport.consumer_site,
+    )
+    video = VideoFactory(
+        playlist=playlist,
+        uploaded_on=timezone.now(),
+        resolutions=resolutions,
+    )
+    document = DocumentFactory(
+        description="Document description",
+        playlist=playlist,
+        uploaded_on=timezone.now(),
+    )
+
+    page.goto(f"{live_server.url}/development/")
+    lti_select_form = page.query_selector("#lti_select")
+    for key, value in lti_parameters.items():
+        if key in ("roles",):
+            lti_select_form.query_selector(f'select[name="{key}"]').select_option(value)
+        else:
+            lti_select_form.query_selector(f'input[name="{key}"]').fill(value)
+    page.click('#lti_select input[type="submit"]')
+
+    lti_select_iframe = page.frame("lti_select")
+
+    # Select a document
+    lti_select_iframe.click('button[role="tab"]:has-text("Documents")')
+    # Use the document title and description in the response to fill the activity title and text
+    document_content_items = (
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server.url}/lti/documents/{document.id}",
+                        "frame": [],
+                        "title": document.title,
+                        "text": document.description,
+                    }
+                ],
+            }
+        )
+        .replace(", ", ",")
+        .replace(": ", ":")
+    )
+    assert document_content_items not in lti_select_iframe.content()
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click(f'[title="Select {document.title}"]')
+    lti_select_iframe.wait_for_selector("dd")
+    assert document_content_items in lti_select_iframe.content()
+
+    # Select a video
+    page.click('#lti_select input[type="submit"]')
+    lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
+    # Use the video title and description in the response to fill the activity title and text
+    video_content_items = (
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server}/lti/videos/{video.id}",
+                        "frame": [],
+                        "title": video.title,
+                        "text": video.description,
+                    }
+                ],
+            }
+        )
+        .replace(", ", ",")
+        .replace(": ", ":")
+    )
+    assert video_content_items not in lti_select_iframe.content()
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click(f'[title="Select {video.title}"]')
+    lti_select_iframe.wait_for_selector("dd")
+    assert video_content_items in lti_select_iframe.content()
+    assert Video.objects.count() == 1
+
+    # Select a new video
+    page.click('#lti_select input[type="submit"]')
+    lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
+    sent_title = f'"title":"{lti_consumer_parameters.get("title")}"'
+    assert sent_title not in lti_select_iframe.content()
+    with page.expect_request("**/lti/respond/"):
+        lti_select_iframe.click("text=Add a video")
+    lti_select_iframe.wait_for_selector("dd")
+
+    # added video is created
+    assert Video.objects.count() == 2
+    added_video = Video.objects.exclude(id=video.id).first()
+    assert added_video.title != lti_consumer_parameters.get("title")
+    assert added_video.description == lti_consumer_parameters.get("text")
+    # Don't send title nor text in the response
+    video_content_items = (
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server}/lti/videos/{added_video.id}",
+                        "frame": [],
                     }
                 ],
             }
