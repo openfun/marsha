@@ -13,7 +13,10 @@ import { ErrorMessage } from 'components/ErrorComponents';
 import { SelectContentTabProps } from 'components/SelectContent';
 import { Nullable } from 'utils/types';
 
-import { useSelectMarkdownDocument } from 'apps/markdown/data/queries';
+import {
+  useCreateMarkdownDocument,
+  useSelectMarkdownDocument,
+} from 'apps/markdown/data/queries';
 import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
@@ -169,7 +172,7 @@ const ContentCard = ({
 
 interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
-  newTitle: MessageDescriptor;
+  addAndSelectContent: () => void;
   newLtiUrl: string;
   items: Nullable<MarkdownDocument[]>;
   selectContent: (
@@ -182,8 +185,7 @@ interface SelectContentSectionProps {
 
 export const SelectContentSection = ({
   addMessage,
-  newTitle,
-  newLtiUrl,
+  addAndSelectContent,
   items,
   selectContent,
   language,
@@ -198,7 +200,7 @@ export const SelectContentSection = ({
           justify="center"
           background="light-3"
           align="center"
-          onClick={() => selectContent(newLtiUrl, intl.formatMessage(newTitle))}
+          onClick={addAndSelectContent}
         >
           <Text alignSelf="center" textAlign="center">
             <FormattedMessage {...addMessage} />
@@ -226,13 +228,26 @@ export const SelectContentSection = ({
   );
 };
 
-const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
+const SelectContentTab = ({
+  playlist,
+  selectContent,
+  lti_select_form_data,
+}: SelectContentTabProps) => {
   const intl = useIntl();
 
   const {
     data: selectMarkdownDocument,
     status: useSelectMarkdownDocumentStatus,
   } = useSelectMarkdownDocument({ refetchInterval: 10000 }); // refresh every 10 s
+
+  const useCreateMarkdownDocumentMutation = useCreateMarkdownDocument({
+    onSuccess: (markdownDocument) =>
+      selectContent(
+        selectMarkdownDocument!.new_url! + markdownDocument.id,
+        markdownDocument.translations[0].title,
+        null,
+      ),
+  });
 
   // for now, we automatically detect language, a switch may be added later
   const browserLanguage = window.navigator.language.substring(0, 2);
@@ -256,7 +271,12 @@ const SelectContentTab = ({ selectContent }: SelectContentTabProps) => {
       content = (
         <SelectContentSection
           addMessage={messages.addDocument}
-          newTitle={messages.newDocument}
+          addAndSelectContent={() => {
+            useCreateMarkdownDocumentMutation.mutate({
+              playlist: playlist!.id,
+              title: lti_select_form_data?.activity_title,
+            });
+          }}
           newLtiUrl={selectMarkdownDocument!.new_url!}
           items={selectMarkdownDocument!.markdown_documents!}
           selectContent={selectContent}
