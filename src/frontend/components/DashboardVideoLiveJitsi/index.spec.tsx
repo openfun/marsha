@@ -1051,4 +1051,108 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
   });
+  it('does not start streaming when loading the component and jitsi already streaming', async () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
+    // simulates recording already on
+    dispatch('recordingStatusChanged', {
+      on: true,
+      mode: 'stream',
+    });
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any(String),
+    );
+  });
+
+  it('start streaming when the component is loaded and the live_state already running', async () => {
+    const video = videoMockFactory({
+      live_info: {
+        medialive: {
+          input: {
+            endpoints: [
+              'rtmp://1.2.3.4:1935/stream-key-primary',
+              'rtmp://4.3.2.1:1935/stream-key-secondary',
+            ],
+          },
+        },
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
+    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      wrapInIntlProvider(
+        <DashboardVideoLiveJitsi
+          video={video}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+          isInstructor={true}
+        />,
+      ),
+    );
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any(String),
+    );
+
+    // simulates moderator role granted
+    dispatch('participantRoleChanged', {
+      role: 'moderator',
+    });
+
+    await waitFor(() => {
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      });
+    });
+  });
 });
