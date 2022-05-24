@@ -142,7 +142,7 @@ export interface LiveSession extends Resource {
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   allow_recording: boolean;
-  description: string;
+  description: Nullable<string>;
   is_ready_to_show: boolean;
   is_scheduled: boolean;
   has_chat: boolean;

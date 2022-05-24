@@ -8,6 +8,7 @@ import {
 
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { APIList } from 'types/api';
+import { Document } from 'types/file';
 import { Playlist, Thumbnail, TimedText, Video } from 'types/tracks';
 import { Organization } from 'types/Organization';
 
@@ -121,7 +122,12 @@ export const useVideo = (
   return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
 };
 
-type UseCreateVideoData = { playlist: string; title: string };
+type UseCreateVideoData = {
+  playlist: string;
+  title: string;
+  description?: string;
+  lti_id?: string;
+};
 type UseCreateVideoError =
   | { code: 'exception' }
   | {
@@ -273,6 +279,39 @@ export const useStopLiveRecording = (id: string, onError: () => void) => {
       onError: () => {
         queryClient.invalidateQueries('videos');
         onError();
+      },
+    },
+  );
+};
+
+type UseCreateDocumentData = {
+  playlist: string;
+  title: string;
+  description?: string;
+  lti_id?: string;
+};
+type UseCreateDocumentError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseCreateDocumentData]?: string[] }[];
+    };
+type UseCreateDocumentOptions = UseMutationOptions<
+  Document,
+  UseCreateDocumentError,
+  UseCreateDocumentData
+>;
+export const useCreateDocument = (options?: UseCreateDocumentOptions) => {
+  const queryClient = useQueryClient();
+  return useMutation<Document, UseCreateDocumentError, UseCreateDocumentData>(
+    (newDocument) => createOne({ name: 'documents', object: newDocument }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('documents');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
       },
     },
   );

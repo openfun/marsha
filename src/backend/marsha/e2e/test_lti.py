@@ -348,8 +348,31 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
         lti_select_iframe.click("text=Add a video")
     lti_select_iframe.wait_for_selector("dd")
 
-    assert sent_title_and_text in lti_select_iframe.content()
-    assert Video.objects.count() == 1
+    # added video is created
+    assert Video.objects.count() == 2
+    added_video = Video.objects.exclude(id=video.id).first()
+    assert added_video.title == lti_consumer_parameters.get("title")
+    assert added_video.description == lti_consumer_parameters.get("text")
+    # Use send text in the response to fill the activity text
+    video_content_items = (
+        json.dumps(
+            {
+                "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                "@graph": [
+                    {
+                        "@type": "ContentItem",
+                        "url": f"{live_server}/lti/videos/{added_video.id}",
+                        "frame": [],
+                        "title": lti_consumer_parameters.get("title"),
+                        "text": lti_consumer_parameters.get("text"),
+                    }
+                ],
+            }
+        )
+        .replace(", ", ",")
+        .replace(": ", ":")
+    )
+    assert video_content_items in lti_select_iframe.content()
 
 
 @pytest.mark.django_db()
