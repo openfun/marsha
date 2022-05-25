@@ -170,6 +170,7 @@ class VideoSerializer(VideoBaseSerializer):
             "is_ready_to_show",
             "is_recording",
             "is_scheduled",
+            "join_mode",
             "timed_text_tracks",
             "thumbnail",
             "title",

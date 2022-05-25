@@ -17,6 +17,8 @@ from django.utils.translation import gettext_lazy as _
     RUNNING,
     DELETED,
     PAUSED,
+    APPROVAL,
+    DENIED,
 ) = (
     "pending",
     "processing",
@@ -32,6 +34,8 @@ from django.utils.translation import gettext_lazy as _
     "running",
     "deleted",
     "paused",
+    "approval",
+    "denied",
 )
 STATE_CHOICES = (
     (PENDING, _("pending")),
@@ -56,6 +60,11 @@ LIVE_CHOICES = (
 (RAW, JITSI) = ("raw", "jitsi")
 
 LIVE_TYPE_CHOICES = ((RAW, _("raw")), (JITSI, _("jitsi")))
+
+JOIN_MODE_CHOICES = (
+    (APPROVAL, _("approval")),
+    (DENIED, _("denied")),
+)
 
 # FLAGS
 SENTRY = "sentry"

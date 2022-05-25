@@ -15,9 +15,11 @@ from django.utils.translation import gettext_lazy as _
 from safedelete import HARD_DELETE_NOCASCADE
 
 from ..defaults import (
+    APPROVAL,
     DELETED,
     HARVESTED,
     IDLE,
+    JOIN_MODE_CHOICES,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     PENDING,
@@ -66,6 +68,13 @@ class Video(BaseFile):
         default=True,
         verbose_name=_("enable video live media"),
         help_text=_("Enable video live media?"),
+    )
+    join_mode = models.CharField(
+        max_length=20,
+        verbose_name=_("Join the discussion mode"),
+        help_text=_("Join the discussion mode."),
+        choices=JOIN_MODE_CHOICES,
+        default=APPROVAL,
     )
     participants_asking_to_join = models.JSONField(
         blank=True,
