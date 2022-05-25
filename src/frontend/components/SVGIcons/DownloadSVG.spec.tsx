@@ -5,7 +5,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { DownloadSVG } from './DownloadSVG';
 
 describe('DownloadSVG', () => {
-  it('renders DownloadSVG correctly', async () => {
+  it('renders DownloadSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <DownloadSVG
         containerStyle={{

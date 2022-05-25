@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import SVGIcon from '.';
 
 describe('<SVGIcon />', () => {
-  it('renders SVGIcon component correctly', async () => {
+  it('renders SVGIcon component correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <SVGIcon iconColor="#035ccd">
         <g fillRule="evenodd" stroke="none" strokeWidth="1">

@@ -58,7 +58,7 @@ describe('<ChatConversationDisplayer />', () => {
     expect(mockScrollTo).toHaveBeenCalledTimes(6);
   });
 
-  it('renders components with messages and presences and compares it with previous render.', async () => {
+  it('renders components with messages and presences and compares it with previous render. [screenshot]', async () => {
     render(
       wrapInIntlProvider(
         <Grommet theme={theme}>

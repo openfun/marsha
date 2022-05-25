@@ -43,7 +43,7 @@ describe('<LiveVideoTabPanel /> titles', () => {
 });
 
 describe('<LiveVideoTabPanel /> styles', () => {
-  it('renders with default style when not selected, not hovered, not focused', async () => {
+  it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
     render(
       wrapInIntlProvider(
         <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />,
@@ -68,7 +68,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
     await imageSnapshot();
   });
 
-  it('renders with selected style', async () => {
+  it('renders with selected style [screenshot]', async () => {
     render(
       wrapInIntlProvider(
         <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />,

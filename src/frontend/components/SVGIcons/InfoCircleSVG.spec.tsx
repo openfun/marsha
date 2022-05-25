@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { InfoCircleSVG } from './InfoCircleSVG';
 
 describe('<InfoCircleSVG />', () => {
-  it('renders InfoCircleSVG correctly', async () => {
+  it('renders InfoCircleSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <InfoCircleSVG
         containerStyle={{

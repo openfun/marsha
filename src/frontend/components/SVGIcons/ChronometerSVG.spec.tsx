@@ -7,7 +7,7 @@ import { theme } from 'utils/theme/theme';
 import { ChronometerSVG } from './ChronometerSVG';
 
 describe('<ChronometerSVG />', () => {
-  it('renders ChronometerSVG correctly', async () => {
+  it('renders ChronometerSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <ChronometerSVG iconColor={normalizeColor('blue-active', theme)} />,
     );

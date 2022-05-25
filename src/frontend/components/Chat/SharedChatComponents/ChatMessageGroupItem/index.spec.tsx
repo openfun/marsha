@@ -35,7 +35,7 @@ const groupWithSeveralMessages: ChatMessageGroupType = {
 };
 
 describe('<ChatMessageGroupItem />', () => {
-  it('renders the component when there is only one message and compares it with previous render', async () => {
+  it('renders the component when there is only one message and compares it with previous render [screenshot]', async () => {
     await renderImageSnapshot(
       <ChatMessageGroupItem msgGroup={groupWithOneMessage} />,
     );
@@ -44,7 +44,7 @@ describe('<ChatMessageGroupItem />', () => {
     screen.getByText('This is an example message');
   });
 
-  it('renders the component when there are several messages and compares it with previous render', async () => {
+  it('renders the component when there are several messages and compares it with previous render [screenshot]', async () => {
     await renderImageSnapshot(
       <ChatMessageGroupItem msgGroup={groupWithSeveralMessages} />,
     );
