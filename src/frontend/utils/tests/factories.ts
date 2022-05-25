@@ -5,6 +5,7 @@ import { DecodedJwt, DecodedJwtPermission, DecodedJwtUser } from 'types/jwt';
 import { Organization } from 'types/Organization';
 import { Participant } from 'types/Participant';
 import {
+  JoinMode,
   LiveSession,
   Playlist,
   PlaylistLite,
@@ -110,6 +111,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     is_scheduled: false,
     has_chat: true,
     is_public: false,
+    join_mode: JoinMode.APPROVAL,
     lti_url: `https://example.com/lti/videos/${id}`,
     show_download: true,
     starting_at: null,
