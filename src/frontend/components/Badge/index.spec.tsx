@@ -6,7 +6,7 @@ import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { Badge } from '.';
 
 describe('<Badge />', () => {
-  it('renders the badge component', async () => {
+  it('renders the badge component [screenshot]', async () => {
     render(<Badge value="24" />);
 
     screen.getByText('24');

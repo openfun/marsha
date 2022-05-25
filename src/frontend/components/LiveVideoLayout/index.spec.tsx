@@ -17,7 +17,7 @@ jest.mock('data/appData', () => ({
 }));
 
 describe('<LiveVideoLayout />', () => {
-  it('renders components with panel', async () => {
+  it('renders components with panel [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout
@@ -42,7 +42,7 @@ describe('<LiveVideoLayout />', () => {
     await imageSnapshot();
   });
 
-  it('hides the panel when isPanelOpen is false', async () => {
+  it('hides the panel when isPanelOpen is false [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout
@@ -66,7 +66,7 @@ describe('<LiveVideoLayout />', () => {
     await imageSnapshot();
   });
 
-  it('does not render panel when is isPanelOpen is not defined', async () => {
+  it('does not render panel when is isPanelOpen is not defined [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout
@@ -90,7 +90,7 @@ describe('<LiveVideoLayout />', () => {
     await imageSnapshot();
   });
 
-  it('does not render panel when sideElement is not defined even if isPanelOpen is true', async () => {
+  it('does not render panel when sideElement is not defined even if isPanelOpen is true [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout

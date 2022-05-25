@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { CopySVG } from './CopySVG';
 
 describe('<CopySVG />', () => {
-  it('renders CopySVG correctly', async () => {
+  it('renders CopySVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <CopySVG
         containerStyle={{

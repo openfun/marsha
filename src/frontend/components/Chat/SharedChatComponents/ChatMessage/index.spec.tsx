@@ -12,8 +12,8 @@ const exampleMessage: ChatMessageType = {
 };
 
 describe('<ChatMessage />', () => {
-  it('renders the message content container and compares it with previous render', () => {
-    renderImageSnapshot(<ChatMessage message={exampleMessage} />);
+  it('renders the message content container and compares it with previous render [screenshot]', async () => {
+    await renderImageSnapshot(<ChatMessage message={exampleMessage} />);
     screen.getByText('This is an example message');
     screen.getByTitle('sent at 12:12:12');
   });

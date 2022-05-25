@@ -170,7 +170,7 @@ describe('<InputBar /> UI', () => {
     jest.clearAllMocks();
   });
 
-  it("displays the component in 'chatInput' format (without value typed) and compares it with previous renders.", async () => {
+  it("displays the component in 'chatInput' format (without value typed) and compares it with previous renders. [screenshot]", async () => {
     await renderImageSnapshot(
       <InputBar
         handleUserInput={mockHandleUserInputSuccess}
@@ -181,7 +181,7 @@ describe('<InputBar /> UI', () => {
     screen.getByText(exampleTextPlaceholder);
   });
 
-  it("displays the component in 'chatInput' format (with value typed) and compares it with previous renders.", async () => {
+  it("displays the component in 'chatInput' format (with value typed) and compares it with previous renders. [screenshot]", async () => {
     render(
       wrapInIntlProvider(
         <Grommet theme={theme} style={{ height: '100%' }}>
@@ -198,7 +198,7 @@ describe('<InputBar /> UI', () => {
     await imageSnapshot();
   });
 
-  it("displays the component in 'not-chatInput' format (without value typed) and compares it with previous renders.", async () => {
+  it("displays the component in 'not-chatInput' format (without value typed) and compares it with previous renders. [screenshot]", async () => {
     await renderImageSnapshot(
       <InputBar
         handleUserInput={mockHandleUserInputSuccess}
@@ -209,7 +209,7 @@ describe('<InputBar /> UI', () => {
     screen.getByText(exampleTextPlaceholder);
   });
 
-  it("displays the component in 'not-chatInput' format (with value typed) and compares it with previous renders.", async () => {
+  it("displays the component in 'not-chatInput' format (with value typed) and compares it with previous renders. [screenshot]", async () => {
     render(
       wrapInIntlProvider(
         <Grommet theme={theme} style={{ height: '100%' }}>
@@ -226,7 +226,7 @@ describe('<InputBar /> UI', () => {
     await imageSnapshot();
   });
 
-  it("displays the component in 'not-chatInput' format, with little width (for text placeholder ellipsis) and compares it with previous renders.", async () => {
+  it("displays the component in 'not-chatInput' format, with little width (for text placeholder ellipsis) and compares it with previous renders. [screenshot]", async () => {
     await renderImageSnapshot(
       <InputBar
         handleUserInput={mockHandleUserInputSuccess}

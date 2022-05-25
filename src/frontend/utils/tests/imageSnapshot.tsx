@@ -9,7 +9,15 @@ import { wrapInRouter } from './router';
 import { theme } from '../theme/theme';
 import { GlobalStyles } from '../theme/baseStyles';
 
+const checkSnapshot = () => {
+  // check if test name contains '[screenshot]'
+  if (!expect.getState().currentTestName.includes('[screenshot]')) {
+    throw new Error('[screenshot] is missing from test name');
+  }
+};
+
 export const imageSnapshot = async (width?: number, height?: number) => {
+  checkSnapshot();
   width = width || 800;
   height = height || 600;
   const screenshot = await generateImage({ viewport: { width, height } });
@@ -25,6 +33,7 @@ export const renderImageSnapshot = async (
   width?: number,
   height?: number,
 ) => {
+  checkSnapshot();
   cleanup();
   render(
     wrapInIntlProvider(
@@ -40,5 +49,6 @@ export const renderImageSnapshot = async (
 };
 
 export const renderIconSnapshot = async (component: JSX.Element) => {
+  checkSnapshot();
   await renderImageSnapshot(component, 100, 100);
 };

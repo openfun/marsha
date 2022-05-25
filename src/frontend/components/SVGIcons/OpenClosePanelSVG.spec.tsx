@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { OpenClosePanelSVG } from './OpenClosePanelSVG';
 
 describe('<OpenClosePanelSVG />', () => {
-  it('renders OpenClosePanelSVG correctly', async () => {
+  it('renders OpenClosePanelSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <OpenClosePanelSVG
         containerStyle={{

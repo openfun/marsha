@@ -15,7 +15,7 @@ describe('<JoinChatButton />', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-  it('renders the button and compares it with previous snapshot.', async () => {
+  it('renders the button and compares it with previous snapshot. [screenshot]', async () => {
     await renderImageSnapshot(
       <JoinChatButton disabled={false} handleClick={mockHandleClick} />,
     );

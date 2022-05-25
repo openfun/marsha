@@ -12,7 +12,7 @@ describe('<StudentHideChatButton />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders the hide chat button', async () => {
+  it('renders the hide chat button [screenshot]', async () => {
     useLivePanelState.setState({
       setPanelVisibility: jest.fn(),
     });
