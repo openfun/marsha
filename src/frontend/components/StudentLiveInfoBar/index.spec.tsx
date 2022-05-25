@@ -11,7 +11,7 @@ describe('<StudentLiveInfoBar />', () => {
     screen.getByText('title');
   });
 
-  it('renders live title and live start datetime', async () => {
+  it('renders live title and live start datetime [screenshot]', async () => {
     render(
       <StudentLiveInfoBar title="title" startDate="2021/12/12 14:00:00" />,
     );

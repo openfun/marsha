@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { ExitCrossSVG } from './ExitCrossSVG';
 
 describe('<ExitCrossSVG />', () => {
-  it('renders ExitCrossSVG correctly', async () => {
+  it('renders ExitCrossSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <ExitCrossSVG
         containerStyle={{

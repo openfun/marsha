@@ -12,7 +12,7 @@ describe('<StudentHideAppsButton />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders the hide apps button', async () => {
+  it('renders the hide apps button [screenshot]', async () => {
     useLivePanelState.setState({
       setPanelVisibility: jest.fn(),
     });

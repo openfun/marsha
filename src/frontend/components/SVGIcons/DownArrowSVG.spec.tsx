@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { DownArrowSVG } from './DownArrowSVG';
 
 describe('<DownArrowSVG />', () => {
-  it('renders DownArrowSVG correctly', async () => {
+  it('renders DownArrowSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <DownArrowSVG
         containerStyle={{

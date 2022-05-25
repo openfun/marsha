@@ -4,7 +4,7 @@ import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
 import { DoubleArrowResizerSVG } from './DoubleArrowResizerSVG';
 
 describe('<DoubleArrowResizerSVG />', () => {
-  it('renders DoubleArrowResizerSVG correctly', async () => {
+  it('renders DoubleArrowResizerSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <DoubleArrowResizerSVG
         containerStyle={{

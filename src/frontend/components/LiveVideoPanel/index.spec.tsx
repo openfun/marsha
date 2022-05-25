@@ -194,7 +194,7 @@ describe('<LiveVideoPanel />', () => {
     screen.getByText('application content');
   });
 
-  it('renders with appropriate style on large screen', async () => {
+  it('renders with appropriate style on large screen [screenshot]', async () => {
     mockGetDecodedJwt.mockReturnValue({
       permissions: {
         can_access_dashboard: false,
@@ -213,7 +213,7 @@ describe('<LiveVideoPanel />', () => {
     await renderImageSnapshot(<LiveVideoPanel video={mockVideo} />);
   });
 
-  it('renders with appropriate style on small screen', async () => {
+  it('renders with appropriate style on small screen [screenshot]', async () => {
     mockGetDecodedJwt.mockReturnValue({
       permissions: {
         can_access_dashboard: false,
