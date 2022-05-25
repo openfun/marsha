@@ -13,6 +13,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
+    APPROVAL,
+    DENIED,
     ENDED,
     HARVESTED,
     HARVESTING,
@@ -252,6 +254,7 @@ class VideoAPITest(TestCase):
                 "is_recording": False,
                 "is_ready_to_show": True,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "recording_time": 0,
                 "show_download": True,
                 "starting_at": None,
@@ -452,6 +455,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "recording_time": 0,
                 "show_download": True,
                 "starting_at": None,
@@ -668,6 +672,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "recording_time": 0,
                 "show_download": True,
                 "starting_at": None,
@@ -826,6 +831,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "description": video.description,
@@ -908,6 +914,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -972,6 +979,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": state,
@@ -1125,6 +1133,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -1211,6 +1220,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -1347,6 +1357,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1436,6 +1447,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1473,6 +1485,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1576,6 +1589,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1654,6 +1668,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1761,6 +1776,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1838,6 +1854,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -1875,6 +1892,7 @@ class VideoAPITest(TestCase):
                         "is_ready_to_show": False,
                         "is_recording": False,
                         "is_scheduled": False,
+                        "join_mode": "approval",
                         "live_info": {},
                         "live_state": None,
                         "live_type": None,
@@ -2064,6 +2082,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -2201,6 +2220,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -2279,6 +2299,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": False,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "live_info": {},
                 "live_state": None,
                 "live_type": None,
@@ -2807,6 +2828,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "description": video.description,
@@ -2865,6 +2887,33 @@ class VideoAPITest(TestCase):
         )
         video.refresh_from_db()
         self.assertEqual(video.upload_state, PENDING)
+
+    def test_api_video_update_detail_token_user_join_mode(self):
+        """Token users should be able to update the join mode of their video through the API."""
+        video = factories.VideoFactory(
+            description="my description",
+            join_mode=APPROVAL,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        data = json.loads(response.content)
+        data["join_mode"] = DENIED
+        response = self.client.put(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.join_mode, DENIED)
 
     def test_api_video_instructor_update_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to update the video."""
@@ -4309,6 +4358,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -4376,6 +4426,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -4455,6 +4506,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -4581,6 +4633,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -4720,6 +4773,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -4867,6 +4921,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": "pending",
@@ -5039,6 +5094,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": PENDING,
@@ -5310,6 +5366,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": PENDING,
@@ -5572,6 +5629,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": PENDING,
@@ -5706,6 +5764,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": PENDING,
@@ -5908,6 +5967,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "upload_state": PENDING,
@@ -6024,6 +6084,7 @@ class VideoAPITest(TestCase):
                 "is_ready_to_show": True,
                 "is_recording": False,
                 "is_scheduled": False,
+                "join_mode": "approval",
                 "show_download": True,
                 "starting_at": None,
                 "description": video.description,
