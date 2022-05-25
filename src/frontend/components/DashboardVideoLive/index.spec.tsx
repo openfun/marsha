@@ -55,6 +55,8 @@ let queryClient: QueryClient;
 
 window.HTMLElement.prototype.scrollTo = jest.fn();
 
+jest.setTimeout(10000);
+
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => {
     queryClient = new QueryClient({
