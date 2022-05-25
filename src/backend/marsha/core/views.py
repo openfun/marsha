@@ -53,6 +53,8 @@ from .utils.react_locales_utils import react_locale
 from .utils.url_utils import build_absolute_uri_behind_proxy
 
 
+# pylint: disable=too-many-lines
+
 logger = getLogger(__name__)
 
 
@@ -368,6 +370,8 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                     "state": "success",
                     "player": settings.VIDEO_PLAYER,
                     "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
+                    # front is expecting duration in milliseconds
+                    "attendanceDelay": settings.ATTENDANCE_PUSH_DELAY * 1000,
                 }
             )
 
@@ -604,6 +608,8 @@ class VideoView(BaseView):
                         "state": "success",
                         "player": settings.VIDEO_PLAYER,
                         "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
+                        # front is expecting duration in milliseconds
+                        "attendanceDelay": settings.ATTENDANCE_PUSH_DELAY * 1000,
                     }
                 )
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
