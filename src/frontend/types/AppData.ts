@@ -25,6 +25,7 @@ export enum appNames {
 }
 
 export interface AppData {
+  attendanceDelay: number;
   jwt?: string;
   state: appState;
   video?: Nullable<Video>;

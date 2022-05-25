@@ -45,6 +45,7 @@ jest.mock('./createPlayer', () => ({
 }));
 jest.mock('data/appData', () => ({
   appData: {
+    attendanceDelay: 10,
     jwt: 'foo',
     video: mockVideo,
   },
