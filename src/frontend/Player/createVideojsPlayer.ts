@@ -9,7 +9,6 @@ import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
 import { appData, getDecodedJwt } from 'data/appData';
-import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
 import { liveState } from 'types/tracks';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
@@ -183,7 +182,7 @@ export const createVideojsPlayer = (
     isInitialized = true;
     // setTimer
     if (hasAttendance) {
-      interval = player.setInterval(trackAttendance, PUSH_ATTENDANCE_DELAY);
+      interval = player.setInterval(trackAttendance, appData.attendanceDelay);
     }
   };
 

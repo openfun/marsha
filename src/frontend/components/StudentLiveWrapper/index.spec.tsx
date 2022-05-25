@@ -30,6 +30,7 @@ import { Deferred } from 'utils/tests/Deferred';
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
   appData: {
+    attendanceDelay: 10000,
     video: mockVideo,
     static: {
       img: {

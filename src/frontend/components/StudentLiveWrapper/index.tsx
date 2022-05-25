@@ -13,6 +13,7 @@ import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
+import { appData } from 'data/appData';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import {
   LivePanelItem,
@@ -20,7 +21,6 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
-import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { Video } from 'types/tracks';
@@ -67,7 +67,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
           },
         };
         pushAttendance(attendance, intl.locale, getOrInitAnonymousId());
-      }, PUSH_ATTENDANCE_DELAY);
+      }, appData.attendanceDelay);
       return () => {
         // Stop tracking attendances as we unmount
         window.clearInterval(interval);
