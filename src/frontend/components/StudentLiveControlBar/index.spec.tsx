@@ -5,7 +5,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { LiveModeType, liveState } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -255,6 +255,43 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
 
       cleanup();
     });
+  });
+
+  it('does not render wrapper if join_mode is not JoinMode.ASK_FOR_APPROVAL', () => {
+    useLivePanelState.setState({});
+
+    const mockVideo = videoMockFactory({
+      join_mode: JoinMode.DENIED,
+      live_type: LiveModeType.JITSI,
+      live_state: liveState.RUNNING,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInRouter(
+        wrapInIntlProvider(<StudentLiveControlBar video={mockVideo} />),
+      ),
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Show apps' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Send request to join the discussion',
+      }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders leave/join discussion button', () => {

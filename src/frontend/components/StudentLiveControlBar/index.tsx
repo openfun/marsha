@@ -8,7 +8,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { LiveModeType, liveState, Video } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState, Video } from 'types/tracks';
 
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
 
@@ -28,7 +28,8 @@ export const StudentLiveControlBar = ({
     video.xmpp &&
     video.live_type === LiveModeType.JITSI &&
     video.live_state &&
-    video.live_state === liveState.RUNNING;
+    video.live_state === liveState.RUNNING &&
+    video.join_mode === JoinMode.APPROVAL;
 
   return (
     <Box
