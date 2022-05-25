@@ -465,6 +465,7 @@ jobs:
           password: $DOCKER_PASS
     working_directory: ~/marsha/src/frontend
     parallelism: 4
+    resource_class: large
     steps:
       - checkout:
           path: ~/marsha
@@ -515,7 +516,7 @@ jobs:
               xdg-utils
       - run:
           name: Run tests
-          command: yarn test -w 2 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
           path: ~/marsha/src/frontend/__diff_output__
 
