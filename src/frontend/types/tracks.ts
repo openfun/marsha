@@ -118,6 +118,11 @@ export enum LiveModeType {
   JITSI = 'jitsi',
 }
 
+export enum JoinMode {
+  APPROVAL = 'approval',
+  DENIED = 'denied',
+}
+
 export interface LiveSession extends Resource {
   anonymous_id: Nullable<string>;
   consumer_site: Nullable<string>;
@@ -156,6 +161,7 @@ export interface Video extends Resource {
   participants_asking_to_join: Participant[];
   participants_in_discussion: Participant[];
   playlist: Playlist;
+  join_mode: JoinMode;
   live_state: Nullable<liveState>;
   live_info: {
     medialive?: {
