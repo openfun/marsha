@@ -194,6 +194,19 @@ export const theme: ThemeType = {
       size: '1.5rem',
     },
   },
+  select: {
+    control: {
+      extend: `font-size: 1rem; font-family: Roboto-Medium; border-color: ${colorsGeneric['blue-active']}; padding: 0;`,
+    },
+    options: {
+      container: {
+        pad: 'none',
+      },
+      text: {
+        size: '1rem',
+      },
+    },
+  },
   tab: {
     color: 'text',
     border: {
