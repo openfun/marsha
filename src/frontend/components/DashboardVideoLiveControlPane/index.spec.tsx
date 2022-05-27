@@ -1,3 +1,4 @@
+import { within } from '@testing-library/dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
@@ -5,6 +6,7 @@ import { DateTime } from 'luxon';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { JoinMode } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { DashboardVideoLiveControlPane } from './index';
@@ -28,6 +30,7 @@ describe('<DashboardVideoLiveControlPane />', () => {
       title: 'An example title',
       allow_recording: false,
       is_public: true,
+      join_mode: JoinMode.APPROVAL,
       starting_at: currentDate.toString(),
       estimated_duration: '00:30',
       description: 'An example description',
@@ -104,5 +107,13 @@ describe('<DashboardVideoLiveControlPane />', () => {
 
     // DashboardVideoLiveWidgetVOD
     screen.getByText(/There is nothing to harvest/);
+
+    // DashboardVideoLiveWidgetJoinMode
+    screen.getByText('Join the discussion');
+    const button = screen.getByRole('button', {
+      name: /select join the discussion mode/i,
+    });
+    const select = within(button).getByRole('textbox');
+    expect(select).toHaveValue('Accept joining the discussion after approval');
   });
 });
