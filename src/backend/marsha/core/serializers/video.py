@@ -11,6 +11,7 @@ from rest_framework import serializers
 
 from ..defaults import (
     ENDED,
+    FORCED,
     HARVESTED,
     IDLE,
     JITSI,
@@ -323,7 +324,7 @@ class VideoSerializer(VideoBaseSerializer):
                 if obj.live_info.get(attribute):
                     live_info.update({attribute: obj.live_info[attribute]})
 
-        if not self.context.get("is_admin"):
+        if not self.context.get("is_admin") and obj.join_mode != FORCED:
             return live_info
 
         if obj.live_info is not None and obj.live_info.get("medialive"):

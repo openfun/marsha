@@ -16,10 +16,12 @@ from ..defaults import (
     APPROVAL,
     DENIED,
     ENDED,
+    FORCED,
     HARVESTED,
     HARVESTING,
     IDLE,
     JITSI,
+    JOIN_MODE_CHOICES,
     LIVE_CHOICES,
     PENDING,
     RAW,
@@ -153,6 +155,57 @@ class VideoAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_video_read_detail_student_join_forced(self):
+        """Student users should be allowed to read jitsi info
+        when join mode is forced."""
+        video = factories.VideoFactory(
+            join_mode=FORCED,
+            live_state=RUNNING,
+            live_type=JITSI,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json().get("live_info"),
+            {
+                "jitsi": {
+                    "config_overwrite": {},
+                    "domain": "meet.jit.si",
+                    "external_api_url": "https://meet.jit.si/external_api.js",
+                    "interface_config_overwrite": {},
+                    "room_name": str(video.id),
+                }
+            },
+        )
+
+    def test_api_video_read_detail_student_join_not_forced(self):
+        """Student users should not be allowed to read jitsi info
+        when join mode is not forced."""
+        video = factories.VideoFactory(
+            join_mode=random.choice([APPROVAL, DENIED]),
+            live_state=RUNNING,
+            live_type=JITSI,
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+        jwt_token.payload["permissions"] = {"can_update": False}
+        # Get the video linked to the JWT token
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get("live_info"), {})
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_admin_token_user(self):
@@ -2992,7 +3045,7 @@ class VideoAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
-        data["join_mode"] = DENIED
+        data["join_mode"] = random.choice([mode for (mode, _) in JOIN_MODE_CHOICES])
         response = self.client.put(
             f"/api/videos/{video.id}/",
             data,
@@ -3001,7 +3054,7 @@ class VideoAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.join_mode, DENIED)
+        self.assertEqual(video.join_mode, data["join_mode"])
 
     def test_api_video_instructor_update_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to update the video."""
