@@ -10,10 +10,11 @@ import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
-import { liveState, Live } from 'types/tracks';
+import { JoinMode, Live, liveState } from 'types/tracks';
 import { initWebinarContext } from 'utils/initWebinarContext';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 
@@ -105,5 +106,8 @@ export const PublicLiveDashboard = ({
     return <StudentLiveAdvertising video={live} />;
   }
 
+  if (live.join_mode === JoinMode.FORCED) {
+    useParticipantWorkflow.getState().setAccepted();
+  }
   return <StudentLiveWrapper video={live} playerType={playerType} />;
 };

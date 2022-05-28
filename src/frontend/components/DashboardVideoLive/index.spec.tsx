@@ -9,11 +9,21 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { LiveModeType, liveState, uploadState, Video } from 'types/tracks';
+import {
+  JoinMode,
+  LiveModeType,
+  liveState,
+  uploadState,
+  Video,
+} from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import { videoMockFactory } from 'utils/tests/factories';
+import {
+  participantMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
+import { converse } from 'utils/window';
 
 import { DashboardVideoLive } from '.';
 
@@ -50,6 +60,12 @@ jest.mock(
   'components/DashboardVideoLiveJitsi',
   () => mockDashboardVideoLiveJitsi,
 );
+
+jest.mock('utils/window', () => ({
+  converse: {
+    acceptParticipantToJoin: jest.fn(),
+  },
+}));
 
 let queryClient: QueryClient;
 
@@ -328,5 +344,86 @@ describe('components/DashboardVideoLive', () => {
       LivePanelItem.VIEWERS_LIST,
     );
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
+  });
+
+  it('accepts participants asking to join if join mode is forced', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.FORCED,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
+        ),
+      ),
+    );
+
+    expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not accept participants asking to join if join mode is approval', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.APPROVAL,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
+        ),
+      ),
+    );
+
+    expect(converse.acceptParticipantToJoin).not.toHaveBeenCalled();
+  });
+
+  it('accepts participants asking to join if join mode is forced', () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <QueryClientProvider client={queryClient}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.FORCED,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </QueryClientProvider>,
+        ),
+      ),
+    );
+
+    expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
   });
 });
