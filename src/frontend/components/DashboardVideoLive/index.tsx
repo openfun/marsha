@@ -18,7 +18,8 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
-import { Video, liveState, LiveModeType } from 'types/tracks';
+import { Video, liveState, LiveModeType, JoinMode } from 'types/tracks';
+import { converse } from 'utils/window';
 
 interface DashboardVideoLiveProps {
   video: Video;
@@ -58,6 +59,16 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
       configPanel([]);
     }
   }, [video, configPanel]);
+
+  useEffect(() => {
+    if (video.join_mode !== JoinMode.FORCED) {
+      return;
+    }
+
+    video.participants_asking_to_join.forEach((participant) => {
+      converse.acceptParticipantToJoin(participant, video);
+    });
+  }, [video.join_mode, video.participants_asking_to_join]);
 
   //  When the live is started,
   //  XMPP is ready to be used and therefore we can show chat and viewers buttons
