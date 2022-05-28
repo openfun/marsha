@@ -8,7 +8,7 @@ import { useUpdateVideo } from 'data/queries';
 import { JoinMode, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 
-const { APPROVAL, DENIED } = JoinMode;
+const { APPROVAL, DENIED, FORCED } = JoinMode;
 
 const messages = defineMessages({
   info: {
@@ -36,6 +36,11 @@ const messages = defineMessages({
     defaultMessage: 'Not allowed',
     description: 'The label associated to the denied join mode.',
     id: 'components.DashboardVideoLiveWidgetJoinMode.deniedLabel',
+  },
+  [FORCED]: {
+    defaultMessage: 'Everybody will join the discussion',
+    description: 'The label associated to the forced join mode.',
+    id: 'components.DashboardVideoLiveWidgetJoinMode.forcedLabel',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
@@ -80,6 +85,10 @@ export const DashboardVideoLiveWidgetJoinMode = ({
     {
       label: intl.formatMessage(messages[DENIED]),
       value: DENIED,
+    },
+    {
+      label: intl.formatMessage(messages[FORCED]),
+      value: FORCED,
     },
   ];
 
