@@ -13,8 +13,9 @@ import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
-import { Live, liveState } from 'types/tracks';
+import { JoinMode, Live, liveState } from 'types/tracks';
 import { initWebinarContext } from 'utils/initWebinarContext';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -457,5 +458,63 @@ describe('PublicLiveDashboard', () => {
     );
 
     jest.useRealTimers();
+  });
+
+  it('displays advertising for non started non scheduled live and join mode is forced', async () => {
+    const values: (liveState.IDLE | liveState.STARTING)[] = [
+      liveState.IDLE,
+      liveState.STARTING,
+    ];
+
+    for (const state of values) {
+      const video = videoMockFactory();
+      const live: Live = {
+        ...video,
+        live_state: state,
+        join_mode: JoinMode.FORCED,
+      };
+
+      render(
+        wrapInIntlProvider(
+          <PublicLiveDashboard live={live} playerType="someplayer" />,
+        ),
+      );
+
+      await screen.findByText(/Live is starting/);
+      expect(useParticipantWorkflow.getState().accepted).toBe(false);
+      expect(mockedStudentLiveWrapper).not.toBeCalled();
+
+      cleanup();
+    }
+  });
+
+  it('displays the player once manifest is pulled and put the user on stage when join mode is forced', async () => {
+    const video = videoMockFactory();
+    const live: Live = {
+      ...video,
+      live_state: liveState.RUNNING,
+      join_mode: JoinMode.FORCED,
+    };
+    const deferred = new Deferred<null>();
+    mockedPollForLive.mockReturnValue(deferred.promise);
+
+    render(
+      wrapInIntlProvider(
+        <PublicLiveDashboard live={live} playerType="someplayer" />,
+      ),
+    );
+    await screen.findByText(/Live is starting/);
+
+    deferred.resolve(null);
+
+    await screen.findByText('live wrapper');
+    expect(useParticipantWorkflow.getState().accepted).toBe(true);
+    expect(mockedStudentLiveWrapper).toHaveBeenCalledWith(
+      {
+        video: live,
+        playerType: 'someplayer',
+      },
+      {},
+    );
   });
 });
