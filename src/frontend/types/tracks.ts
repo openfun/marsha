@@ -121,6 +121,7 @@ export enum LiveModeType {
 export enum JoinMode {
   APPROVAL = 'approval',
   DENIED = 'denied',
+  FORCED = 'forced',
 }
 
 export interface LiveSession extends Resource {
