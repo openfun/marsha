@@ -214,6 +214,71 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     );
   });
 
+  it('selects join mode forced', async () => {
+    const mockedVideo = videoMockFactory({
+      join_mode: JoinMode.APPROVAL,
+    });
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      join_mode: JoinMode.FORCED,
+    });
+
+    const queryClient = new QueryClient();
+
+    const { rerender } = render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <Toaster />
+          <ToastHack />
+          <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+        </QueryClientProvider>,
+      ),
+    );
+
+    const button = screen.getByRole('button', {
+      name: /select join the discussion mode/i,
+    });
+    const select = within(button).getByRole('textbox');
+    expect(select).toHaveValue('Accept joining the discussion after approval');
+
+    userEvent.click(button);
+    await act(async () => {
+      userEvent.click(screen.getByText(/everybody will join the discussion/i));
+    });
+
+    expect(fetchMock.calls()).toHaveLength(1);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        join_mode: 'forced',
+      }),
+    });
+    expect(report).not.toHaveBeenCalled();
+    screen.getByText('Video updated.');
+
+    // simulate video update
+    rerender(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <Toaster />
+          <ToastHack />
+          <DashboardVideoLiveWidgetJoinMode
+            video={{ ...mockedVideo, join_mode: JoinMode.FORCED }}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+    expect(within(button).getByRole('textbox')).toHaveValue(
+      'Everybody will join the discussion',
+    );
+  });
+
   it('selects join mode denied, but backend returns an error', async () => {
     const mockedVideo = videoMockFactory({
       is_public: false,
