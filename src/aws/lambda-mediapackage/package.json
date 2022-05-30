@@ -22,7 +22,7 @@
     "prettier": "2.6.2"
   },
   "dependencies": {
-    "aws-sdk": "2.1140.0",
+    "aws-sdk": "2.1145.0",
     "m3u8-parser": "4.7.1",
     "node-fetch": "2.6.7",
     "update-state": "file:../utils/update-state"
