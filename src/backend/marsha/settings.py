@@ -186,7 +186,7 @@ class Base(Configuration):
 
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
+            "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
         ),
         "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
