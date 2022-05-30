@@ -17,6 +17,8 @@ import { JoinMode, Live, liveState } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { converse } from 'utils/window';
 import { useLiveSession } from 'data/stores/useLiveSession';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 
 interface StudentLiveStarterProps {
   live: Live;
@@ -181,5 +183,12 @@ export const StudentLiveStarter = ({
   ) {
     return <StudentLiveWaitingRoom video={live} />;
   }
-  return <StudentLiveWrapper video={live} playerType={playerType} />;
+
+  return (
+    <PictureInPictureProvider value={{ reversed: true }}>
+      <JitsiApiProvider value={undefined}>
+        <StudentLiveWrapper video={live} playerType={playerType} />
+      </JitsiApiProvider>
+    </PictureInPictureProvider>
+  );
 };
