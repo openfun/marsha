@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - On LTI select request, only send title and description for existing resources
 - Adding a new resource through LTI select (deeplinking) now creates it
 with data from Moodle activity titles and description.
+- Fetch video data after websocket reconnection
 
 ### Fixed
 
