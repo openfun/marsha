@@ -5,15 +5,15 @@ import { normalizeColor } from 'grommet/utils';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
-  useParticipantsStore,
   ParticipantType,
+  useParticipantsStore,
 } from 'data/stores/useParticipantsStore';
-import { Video } from 'types/tracks';
 import { ViewersListHeader } from 'components/ViewersList/components/ViewersListHeader';
 import { ViewersListItem } from 'components/ViewersList/components/ViewersListItem';
-import { converse } from 'utils/window';
 import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
 import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
+import { JoinMode, Video } from 'types/tracks';
+import { converse } from 'utils/window';
 import { colors } from 'utils/theme/theme';
 
 import { sortParticipantNotOnStage } from './utils';
@@ -208,12 +208,13 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
           )
         }
       </Section>
-
-      <Section
-        items={participantsNotOnStageAndNotAsking}
-        noItemsTitle={intl.formatMessage(messages.noViewers)}
-        title={intl.formatMessage(messages.otherViewers)}
-      />
+      {video.join_mode !== JoinMode.FORCED && (
+        <Section
+          items={participantsNotOnStageAndNotAsking}
+          noItemsTitle={intl.formatMessage(messages.noViewers)}
+          title={intl.formatMessage(messages.otherViewers)}
+        />
+      )}
     </Box>
   );
 };
