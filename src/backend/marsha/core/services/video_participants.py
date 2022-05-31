@@ -1,4 +1,5 @@
 """Services for video live participants."""
+from marsha.core.defaults import FORCED
 
 
 class VideoParticipantsException(Exception):
@@ -28,10 +29,16 @@ def remove_participant_asking_to_join(video, participant):
 
 def move_participant_to_discussion(video, participant):
     """Move a participant to the discussion."""
-    if participant not in video.participants_asking_to_join:
+    if (participant not in video.participants_asking_to_join) and (
+        video.join_mode != FORCED
+    ):
         raise VideoParticipantsException("Participant did not asked to join.")
 
-    video.participants_asking_to_join.remove(participant)
+    try:
+        video.participants_asking_to_join.remove(participant)
+    except ValueError as error:
+        if video.join_mode != FORCED:
+            raise error
     video.participants_in_discussion.append(participant)
     video.save()
 

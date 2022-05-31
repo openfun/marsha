@@ -1,6 +1,7 @@
 """Tests for the video_participants service in the ``core`` app of the Marsha project."""
 from django.test import TestCase
 
+from ..defaults import FORCED
 from ..factories import VideoFactory
 from ..services.video_participants import (
     VideoParticipantsException,
@@ -179,10 +180,30 @@ class VideoParticipantsServicesTestCase(TestCase):
         self.assertEqual(video.participants_asking_to_join, [])
         self.assertEqual(video.participants_in_discussion, [participant])
 
+    def test_services_video_participants_move_participant_to_discussion_join_mode_forced(
+        self,
+    ):
+        """An unexisting participant asking to join should be added to discussion
+        if join mode is forced."""
+        participant = {
+            "id": "1",
+            "name": "Instructor",
+        }
+        video = VideoFactory(
+            join_mode=FORCED,
+            participants_asking_to_join=[participant],
+            participants_in_discussion=[],
+        )
+
+        move_participant_to_discussion(video, participant)
+
+        self.assertEqual(video.participants_asking_to_join, [])
+        self.assertEqual(video.participants_in_discussion, [participant])
+
     def test_services_video_participants_move_participant_to_discussion_non_existing_asking(
         self,
     ):
-        """An existing participant asking to join should be moved to discussion."""
+        """An unexisting participant asking to join should not be added to discussion."""
         participant = {
             "id": "1",
             "name": "Instructor",
