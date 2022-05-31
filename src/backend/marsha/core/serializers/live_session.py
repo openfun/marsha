@@ -1,5 +1,6 @@
 """Structure of liveSession related models API responses with DRF serializers."""
 import collections
+from datetime import datetime
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -223,6 +224,19 @@ class LiveAttendanceSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {"live_attendance": {"allow_null": False, "required": True}}
+
+    def validate_live_attendance(self, value):
+        """Controls that each keys are timestamps values"""
+        if value:
+            for key in value.keys():
+                try:
+                    datetime.fromtimestamp(int(key))
+                except ValueError as error:
+                    raise serializers.ValidationError(
+                        "Field live_attendance doesn't contain expected key "
+                        f"`{key}`, it should be a timestamp"
+                    ) from error
+        return value
 
     # Make sure video UUID is converted to a string during serialization
     video = serializers.PrimaryKeyRelatedField(
