@@ -20,6 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
       "converse": ["types/libs/converse"],
       "intl-pluralrules": ["types/libs/intl-pluralrules"],
       "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
