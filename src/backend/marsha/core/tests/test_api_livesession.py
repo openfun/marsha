@@ -3019,7 +3019,9 @@ class LiveSessionApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"detail": "Invalid request."})
+        self.assertEqual(
+            response.json(), {"live_attendance": ["This field is required."]}
+        )
 
     def test_api_livesession_post_attendance_token_lti_video_not_existing(
         self,
@@ -3040,7 +3042,11 @@ class LiveSessionApiTest(TestCase):
         }
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"data": "test"}},
+            {
+                "live_attendance": {
+                    to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
+                }
+            },
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3093,9 +3099,10 @@ class LiveSessionApiTest(TestCase):
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
+        live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"data": "test"}, "language": "fr"},
+            {"live_attendance": live_attendance, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3112,7 +3119,7 @@ class LiveSessionApiTest(TestCase):
                 "id": str(created_livesession.id),
                 "is_registered": False,
                 "language": "fr",
-                "live_attendance": {"data": "test"},
+                "live_attendance": live_attendance,
                 "lti_id": str(video.playlist.lti_id),
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
@@ -3128,7 +3135,7 @@ class LiveSessionApiTest(TestCase):
         )
         self.assertEqual(created_livesession.email, None)
         self.assertEqual(created_livesession.username, "Token")
-        self.assertEqual(created_livesession.live_attendance, {"data": "test"})
+        self.assertEqual(created_livesession.live_attendance, live_attendance)
         self.assertEqual(created_livesession.is_registered, False)
 
     def test_api_livesession_post_attendance_token_lti_existing_record(
@@ -3158,7 +3165,7 @@ class LiveSessionApiTest(TestCase):
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "Token",
         }
-        timestamp = str(timezone.now())
+        timestamp = to_timestamp(timezone.now())
         response = self.client.post(
             "/api/livesessions/push_attendance/",
             {"live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}}},
@@ -3271,7 +3278,7 @@ class LiveSessionApiTest(TestCase):
             video=video,
         )
         self.assertEqual(LiveSession.objects.count(), 1)
-        timestamp = str(timezone.now())
+        timestamp = to_timestamp(timezone.now())
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -3326,7 +3333,7 @@ class LiveSessionApiTest(TestCase):
         video = VideoFactory()
 
         self.assertEqual(LiveSession.objects.count(), 0)
-        timestamp = str(timezone.now())
+        timestamp = to_timestamp(timezone.now())
 
         jwt_token = AccessToken()
         jwt_token.payload["resource_id"] = str(video.id)
@@ -3349,10 +3356,11 @@ class LiveSessionApiTest(TestCase):
             {"detail": "anonymous_id is missing"},
         )
 
-    def test_api_livesession_post_attendance_token_ok_user_record_empty_attendance(
+    def test_api_livesession_post_attendance_token_live_attendance_timestamps(
         self,
     ):
-        """Endpoint push_attendance updates an existing record without previous live_attendance."""
+        """Endpoint push_attendance expects the live_attendance field to only
+        contain timestamps as keys"""
         video = VideoFactory()
         livesession = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
@@ -3385,6 +3393,55 @@ class LiveSessionApiTest(TestCase):
         )
         livesession.refresh_from_db()
 
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "live_attendance": [
+                    "Field live_attendance doesn't contain expected key "
+                    "`key1`, it should be a timestamp"
+                ]
+            },
+        )
+
+    def test_api_livesession_post_attendance_token_ok_user_record_empty_attendance(
+        self,
+    ):
+        """Endpoint push_attendance updates an existing record without previous live_attendance."""
+        video = VideoFactory()
+        livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            email="chantal@aol.com",
+            is_registered=True,
+            lti_user_id="56255f3807599c377bf0e5bf072359fd",
+            lti_id="Maths",
+            video=video,
+        )
+        self.assertEqual(LiveSession.objects.count(), 1)
+        self.assertEqual(livesession.live_attendance, None)
+        jwt_token = AccessToken()
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["context_id"] = "Maths"
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [
+            random.choice(["administrator", "instructor", "student", ""])
+        ]
+        jwt_token.payload["user"] = {
+            "email": "chantal@aol.com",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+            "username": "Token",
+        }
+
+        live_attendance = {to_timestamp(timezone.now()): "val1"}
+
+        response = self.client.post(
+            "/api/livesessions/push_attendance/",
+            {"live_attendance": live_attendance},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        livesession.refresh_from_db()
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
@@ -3396,7 +3453,7 @@ class LiveSessionApiTest(TestCase):
                 "id": str(livesession.id),
                 "is_registered": True,
                 "language": "en",
-                "live_attendance": {"key1": "val1"},
+                "live_attendance": live_attendance,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
@@ -3411,7 +3468,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(livesession.email, "chantal@aol.com")
         self.assertEqual(livesession.username, "Token")
         # live_attendance has been set
-        self.assertEqual(livesession.live_attendance, {"key1": "val1"})
+        self.assertEqual(livesession.live_attendance, live_attendance)
 
     def test_api_livesession_post_attendance_token_lti_no_update_username_email_none(
         self,
@@ -3440,10 +3497,10 @@ class LiveSessionApiTest(TestCase):
         jwt_token.payload["user"] = {
             "id": "56255f3807599c377bf0e5bf072359fd",
         }
-
+        live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"key1": "val1"}},
+            {"live_attendance": live_attendance},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3460,7 +3517,7 @@ class LiveSessionApiTest(TestCase):
                 "id": str(livesession.id),
                 "is_registered": True,
                 "language": "en",
-                "live_attendance": {"key1": "val1"},
+                "live_attendance": live_attendance,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
@@ -3475,7 +3532,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(livesession.email, "chantal@aol.com")
         self.assertEqual(livesession.username, "Sylvie")
         # live_attendance has been set
-        self.assertEqual(livesession.live_attendance, {"key1": "val1"})
+        self.assertEqual(livesession.live_attendance, live_attendance)
 
     def test_api_livesession_post_attendance_token_lti_no_update_username_email_empty(
         self,
@@ -3506,10 +3563,10 @@ class LiveSessionApiTest(TestCase):
             "id": "56255f3807599c377bf0e5bf072359fd",
             "username": "",
         }
-
+        live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"key1": "val1"}, "language": "fr"},
+            {"live_attendance": live_attendance, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -3526,7 +3583,7 @@ class LiveSessionApiTest(TestCase):
                 "id": str(livesession.id),
                 "is_registered": True,
                 "language": "fr",
-                "live_attendance": {"key1": "val1"},
+                "live_attendance": live_attendance,
                 "lti_id": "Maths",
                 "lti_user_id": "56255f3807599c377bf0e5bf072359fd",
                 "should_send_reminders": True,
@@ -3541,7 +3598,7 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(livesession.email, "chantal@aol.com")
         self.assertEqual(livesession.username, "Sylvie")
         # live_attendance has been set
-        self.assertEqual(livesession.live_attendance, {"key1": "val1"})
+        self.assertEqual(livesession.live_attendance, live_attendance)
 
     def test_api_livesession_post_attendance_wrong_language(self):
         """Wrong value of language generates an error"""
@@ -3579,19 +3636,30 @@ class LiveSessionApiTest(TestCase):
         livesession.refresh_from_db()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+        self.assertEqual(
+            response.json(),
+            {
+                "language": ['"whatever" is not a valid choice.'],
+                "live_attendance": [
+                    "Field live_attendance doesn't contain expected key "
+                    "`key1`, it should be a timestamp"
+                ],
+            },
+        )
 
         # now with empty
         response = self.client.post(
             "/api/livesessions/push_attendance/",
-            {"live_attendance": {"key1": "val1"}, "language": ""},
+            {"live_attendance": {to_timestamp(timezone.now()): "val1"}, "language": ""},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         livesession.refresh_from_db()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"detail": "Invalid request."})
+
+        self.assertEqual(response.json(), {"language": ['"" is not a valid choice.']})
 
     def test_api_livesession_post_attendance_token_with_could_match_other_records(
         self,
@@ -3672,7 +3740,7 @@ class LiveSessionApiTest(TestCase):
             "id": "55555",
             "username": "Token",
         }
-        timestamp = str(timezone.now())
+        timestamp = to_timestamp(timezone.now())
         response = self.client.post(
             "/api/livesessions/push_attendance/",
             {
@@ -5074,6 +5142,7 @@ class LiveSessionApiTest(TestCase):
             consumer_site=video.playlist.consumer_site,
             display_name="Aurélie",
             email="ignored_email@test-fun-mooc.fr",
+            live_attendance={"1533686400": {"wonderful": True}},
             lti_id=str(video.playlist.lti_id),
             lti_user_id="77255f3807599c377bf0e5bf072359fd",
             username="Ignored",
@@ -6591,4 +6660,51 @@ class LiveSessionApiTest(TestCase):
                 "results": [],
             },
         )
-    
+
+    def test_api_livesession_read_attendances_admin_live_attendance_key_string(self):
+        """
+        live_attendance field should be composed of timestamps, if one live_attendance
+        is wrongly formated, an error is generated
+        """
+        video = VideoFactory(
+            live_state=RUNNING,
+            live_info={
+                "started_at": "1533686400",
+            },
+            live_type=JITSI,
+        )
+
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            live_attendance={"data": True},
+            video=video,
+        )
+
+        LiveSessionFactory(
+            anonymous_id=uuid.uuid4(),
+            live_attendance={"1533686400": {"wonderful": True}},
+            video=video,
+        )
+
+        # token with right context_id and lti_user_id
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
+        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {
+            "email": "samia@test-fun-mooc.fr",
+            "id": "56255f3807599c377bf0e5bf072359fd",
+        }
+
+        response = self.client.get(
+            "/api/livesessions/list_attendances/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+        self.assertEqual(
+            response.json(), {"live_attendance": "keys in fields should be timestamps"}
+        )
