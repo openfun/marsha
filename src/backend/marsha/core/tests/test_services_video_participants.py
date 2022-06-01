@@ -1,6 +1,7 @@
 """Tests for the video_participants service in the ``core`` app of the Marsha project."""
 from django.test import TestCase
 
+from ..defaults import DENIED
 from ..factories import VideoFactory
 from ..services.video_participants import (
     VideoParticipantsException,
@@ -126,6 +127,26 @@ class VideoParticipantsServicesTestCase(TestCase):
         self.assertEqual(video.participants_asking_to_join, [])
         self.assertEqual(video.participants_in_discussion, [participant])
 
+    def test_services_video_participants_add_participant_join_mode_denied(self):
+        """An asking participant should not be added if join mode is denied."""
+        participant = {
+            "id": "1",
+            "name": "Instructor",
+        }
+        video = VideoFactory(
+            join_mode=DENIED,
+            participants_asking_to_join=[],
+            participants_in_discussion=[],
+        )
+
+        with self.assertRaises(VideoParticipantsException) as context:
+            add_participant_asking_to_join(video, participant)
+
+        self.assertEqual(str(context.exception), "No join allowed.")
+
+        self.assertEqual(video.participants_asking_to_join, [])
+        self.assertEqual(video.participants_in_discussion, [])
+
     def test_services_video_participants_remove_participant_asking_to_join(self):
         """An asking participant should be removed."""
         participant = {
@@ -198,6 +219,29 @@ class VideoParticipantsServicesTestCase(TestCase):
         self.assertEqual(str(context.exception), "Participant did not asked to join.")
 
         self.assertEqual(video.participants_asking_to_join, [])
+        self.assertEqual(video.participants_in_discussion, [])
+
+    def test_services_video_participants_move_participant_to_discussion_join_mode_denied(
+        self,
+    ):
+        """An existing participant asking to join should not be moved to discussion
+        if join mode is denied."""
+        participant = {
+            "id": "1",
+            "name": "Instructor",
+        }
+        video = VideoFactory(
+            join_mode=DENIED,
+            participants_asking_to_join=[participant],
+            participants_in_discussion=[],
+        )
+
+        with self.assertRaises(VideoParticipantsException) as context:
+            move_participant_to_discussion(video, participant)
+
+        self.assertEqual(str(context.exception), "No join allowed.")
+
+        self.assertEqual(video.participants_asking_to_join, [participant])
         self.assertEqual(video.participants_in_discussion, [])
 
     def test_services_video_participants_remove_participant_from_discussion(self):
