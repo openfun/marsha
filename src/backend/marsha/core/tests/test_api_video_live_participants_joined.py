@@ -7,6 +7,7 @@ from django.test import TestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
 from ..api.video import channel_layers_utils
+from ..defaults import DENIED
 from ..factories import UserFactory, VideoFactory
 
 
@@ -171,6 +172,52 @@ class VideoParticipantsJoinedAPITest(TestCase):
                     "name": ["This field is required."],
                 },
             )
+
+    def test_api_video_participants_post_joined_instructor_join_mode_denied(self):
+        """In join mode denied, request must return a 400 error."""
+
+        video = VideoFactory(
+            join_mode=DENIED,
+            participants_asking_to_join=[
+                {
+                    "id": "1",
+                    "name": "Instructor",
+                },
+                {
+                    "id": "2",
+                    "name": "Student 1",
+                },
+            ],
+        )
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+
+        data = {
+            "id": "2",
+            "name": "Student 1",
+        }
+
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            response = self.client.post(
+                f"/api/videos/{video.id}/participants-in-discussion/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data=data,
+                content_type="application/json",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_not_called()
+
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.json(), {"detail": "No join allowed."})
 
     def test_api_video_participants_delete_joined_anonymous(self):
         """An anonymous user can not set participants."""

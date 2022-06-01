@@ -1,4 +1,5 @@
 """Services for video live participants."""
+from marsha.core.defaults import DENIED
 
 
 class VideoParticipantsException(Exception):
@@ -7,6 +8,9 @@ class VideoParticipantsException(Exception):
 
 def add_participant_asking_to_join(video, participant):
     """Add a participant asking to join a video."""
+    if video.join_mode == DENIED:
+        raise VideoParticipantsException("No join allowed.")
+
     if participant in video.participants_asking_to_join:
         raise VideoParticipantsException("Participant already asked to join.")
 
@@ -28,6 +32,9 @@ def remove_participant_asking_to_join(video, participant):
 
 def move_participant_to_discussion(video, participant):
     """Move a participant to the discussion."""
+    if video.join_mode == DENIED:
+        raise VideoParticipantsException("No join allowed.")
+
     if participant not in video.participants_asking_to_join:
         raise VideoParticipantsException("Participant did not asked to join.")
 

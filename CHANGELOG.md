@@ -12,7 +12,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Push attendance when a student is on stage
 - Add Legacy LTI configuration XML
-- Add an instructor widget to modify join the discusion mode
+- Add an instructor widget to modify join the discussion mode
+- Prevent join API calls in join mode denied
 
 ### Changed
 
