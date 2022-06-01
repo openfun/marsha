@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Adding a new resource through LTI select (deeplinking) now creates it
 with data from Moodle activity titles and description.
 - Fetch video data after websocket reconnection
+- Use Roboto-Regular by default in our UI
 
 ### Fixed
 
