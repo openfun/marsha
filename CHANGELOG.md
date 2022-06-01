@@ -28,6 +28,7 @@ with data from Moodle activity titles and description.
 ### Fixed
 
 - Do not execute start streaming in jitsi for non moderator
+- Prevent scroll when hovering a select on an iframe
 
 ### Removed
 
