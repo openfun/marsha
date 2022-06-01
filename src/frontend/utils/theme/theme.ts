@@ -134,6 +134,9 @@ export const theme: ThemeType = {
       weight: 'normal',
       extend: `color: ${colorsGeneric['blue-chat']};`,
     },
+    font: {
+      family: 'Roboto-Regular',
+    },
   },
   heading: {
     level: {
@@ -196,7 +199,7 @@ export const theme: ThemeType = {
   },
   select: {
     control: {
-      extend: `font-size: 1rem; font-family: Roboto-Medium; border-color: ${colorsGeneric['blue-active']}; padding: 0;`,
+      extend: `font-size: 1rem; border-color: ${colorsGeneric['blue-active']}; padding: 0;`,
     },
     options: {
       container: {
