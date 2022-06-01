@@ -94,6 +94,7 @@ export const DashboardVideoLiveWidgetJoinMode = ({
           aria-label={intl.formatMessage(messages.selectLabel)}
           options={options}
           labelKey="label"
+          replace={false}
           valueKey={{ key: 'value', reduce: true }}
           value={video.join_mode}
           onChange={({ option }) => {
