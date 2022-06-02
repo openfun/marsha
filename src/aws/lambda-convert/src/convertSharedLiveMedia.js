@@ -38,6 +38,7 @@ module.exports = async (objectKey, sourceBucket) => {
       await s3
         .putObject({
           Body: Buffer.from(outputBuffer),
+          ContentType: 'image/svg+xml',
           Bucket: destinationBucket,
           Key: `${videoId}/sharedlivemedia/${sharedliveMediaId}/${stamp}_${page}.svg`,
         })
