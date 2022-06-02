@@ -1,15 +1,20 @@
 import { within } from '@testing-library/dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import faker from 'faker';
 import { ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { JoinMode } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
+import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import {
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardVideoLiveControlPane } from './index';
+import { DashboardVideoLiveControlPane } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {},
@@ -26,7 +31,13 @@ describe('<DashboardVideoLiveControlPane />', () => {
     jest.useRealTimers();
   });
   it('renders DashboardVideoLiveControlPane', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
     const mockVideo = videoMockFactory({
+      id: videoId,
       title: 'An example title',
       allow_recording: false,
       is_public: true,
@@ -34,8 +45,10 @@ describe('<DashboardVideoLiveControlPane />', () => {
       starting_at: currentDate.toString(),
       estimated_duration: '00:30',
       description: 'An example description',
+      shared_live_medias: [mockedSharedLiveMedia],
     });
 
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
     const queryClient = new QueryClient();
 
     render(
@@ -56,18 +69,6 @@ describe('<DashboardVideoLiveControlPane />', () => {
     expect(hasChatToggleButton).toBeChecked();
     screen.getByText('Activate chat');
 
-    // DashboardVideoLiveWidgetVisibilityAndInteraction
-    screen.getByText('Visibility and interaction parameters');
-    const visibilityToggleButton = screen.getByRole('checkbox', {
-      name: 'Make the video publicly available',
-    });
-    expect(visibilityToggleButton).toBeChecked();
-    screen.getByText('Make the video publicly available');
-    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
-    screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
-    });
-
     // DashboardVideoLiveWidgetGeneralTitle
     screen.getByText('General');
     const textInput = screen.getByRole('textbox', {
@@ -79,6 +80,18 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     expect(liveRecordingToggleButton).not.toBeChecked();
     screen.getByText('Activate live recording');
+
+    // DashboardVideoLiveWidgetVisibilityAndInteraction
+    screen.getByText('Visibility and interaction parameters');
+    const visibilityToggleButton = screen.getByRole('checkbox', {
+      name: 'Make the video publicly available',
+    });
+    expect(visibilityToggleButton).toBeChecked();
+    screen.getByText('Make the video publicly available');
+    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
+    screen.getByRole('button', {
+      name: "A button to copy the video's publicly available url in clipboard",
+    });
 
     // DashboardVideoLiveWidgetSchedulingAndDescription
     screen.getByText('Description');
@@ -103,6 +116,20 @@ describe('<DashboardVideoLiveControlPane />', () => {
     userEvent.click(openButton);
     screen.getByRole('button', {
       name: /pair an external device/i,
+    });
+
+    // DashboardVideoLiveWidgetSharedLiveMedia
+    screen.getByText('Supports sharing');
+    screen.getByRole('button', {
+      name: 'Upload a presentation support',
+    });
+    screen.getByRole('button', {
+      name: 'Click on this button to stop allowing students to download this media.',
+    });
+    screen.getByRole('button', { name: 'Share' });
+    screen.getByRole('link', { name: 'Title of the file' });
+    screen.getByRole('button', {
+      name: 'Click on this button to delete the media.',
     });
 
     // DashboardVideoLiveWidgetVOD

@@ -1,18 +1,17 @@
 import React from 'react';
 
 import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
-
 import { DownloadSVG } from './DownloadSVG';
 
-describe('DownloadSVG', () => {
+describe('<DownloadSVG />', () => {
   it('renders DownloadSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <DownloadSVG
         containerStyle={{
-          height: '7px',
-          width: '12px',
+          height: '24px',
+          width: '24px',
         }}
-        iconColor="blue-focus"
+        iconColor="blue-active"
       />,
     );
   });

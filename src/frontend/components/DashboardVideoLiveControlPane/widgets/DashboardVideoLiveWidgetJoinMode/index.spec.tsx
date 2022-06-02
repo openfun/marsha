@@ -7,6 +7,7 @@ import React from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -71,7 +72,9 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -101,7 +104,9 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -138,9 +143,11 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode
-            video={{ ...mockedVideo, join_mode: JoinMode.DENIED }}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode
+              video={{ ...mockedVideo, join_mode: JoinMode.DENIED }}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -164,7 +171,9 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -203,9 +212,11 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode
-            video={{ ...mockedVideo, join_mode: JoinMode.APPROVAL }}
-          />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode
+              video={{ ...mockedVideo, join_mode: JoinMode.APPROVAL }}
+            />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );
@@ -228,7 +239,9 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
         <QueryClientProvider client={queryClient}>
           <Toaster />
           <ToastHack />
-          <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          <InfoWidgetModalProvider value={null}>
+            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+          </InfoWidgetModalProvider>
         </QueryClientProvider>,
       ),
     );

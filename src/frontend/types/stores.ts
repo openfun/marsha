@@ -1,6 +1,12 @@
 import { Document } from './file';
 import { modelName } from './models';
-import { Resource, Thumbnail, TimedText, Video } from './tracks';
+import {
+  Resource,
+  Thumbnail,
+  TimedText,
+  Video,
+  SharedLiveMedia,
+} from './tracks';
 
 export type StoreState<R extends Resource> = {
   addResource: (Resource: R) => void;
@@ -17,5 +23,8 @@ export type StoreState<R extends Resource> = {
   };
   [modelName.DOCUMENTS]?: {
     [id: string]: Document;
+  };
+  [modelName.SHAREDLIVEMEDIAS]?: {
+    [id: string]: SharedLiveMedia;
   };
 };

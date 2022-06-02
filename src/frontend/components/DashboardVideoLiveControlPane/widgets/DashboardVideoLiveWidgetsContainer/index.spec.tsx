@@ -2,7 +2,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { ResponsiveContext } from 'grommet';
 
-import { DashboardVideoLiveWidgetsContainer } from './index';
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
+import { DashboardVideoLiveWidgetsContainer } from '.';
 
 const GenericComponent1 = () => <p>Generic component 1</p>;
 const GenericComponent2 = () => <p>Generic component 2</p>;
@@ -23,9 +24,11 @@ const genericComponentsList = [
 describe('<DashboardVideoLiveWidgetContainer />', () => {
   it('renders DashboardVideoLiveWidgetContainer empty', () => {
     const { container } = render(
-      <DashboardVideoLiveWidgetsContainer>
-        {[]}
-      </DashboardVideoLiveWidgetsContainer>,
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetsContainer>
+          {[]}
+        </DashboardVideoLiveWidgetsContainer>
+      </InfoWidgetModalProvider>,
     );
     expect(container).toBeEmptyDOMElement();
   });
@@ -33,9 +36,11 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   it('renders DashboardVideoLiveWidgetContainer on a large screen', () => {
     const { container } = render(
       <ResponsiveContext.Provider value="large">
-        <DashboardVideoLiveWidgetsContainer>
-          {genericComponentsList}
-        </DashboardVideoLiveWidgetsContainer>
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetsContainer>
+            {genericComponentsList}
+          </DashboardVideoLiveWidgetsContainer>
+        </InfoWidgetModalProvider>
       </ResponsiveContext.Provider>,
     );
 
@@ -74,9 +79,11 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   it('renders DashboardVideoLiveWidgetContainer on a medium screen', () => {
     const { container } = render(
       <ResponsiveContext.Provider value="medium">
-        <DashboardVideoLiveWidgetsContainer>
-          {genericComponentsList}
-        </DashboardVideoLiveWidgetsContainer>
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetsContainer>
+            {genericComponentsList}
+          </DashboardVideoLiveWidgetsContainer>
+        </InfoWidgetModalProvider>
       </ResponsiveContext.Provider>,
     );
 
@@ -113,9 +120,11 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   it('renders DashboardVideoLiveWidgetContainer on a small screen', () => {
     const { container } = render(
       <ResponsiveContext.Provider value="small">
-        <DashboardVideoLiveWidgetsContainer>
-          {genericComponentsList}
-        </DashboardVideoLiveWidgetsContainer>
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetsContainer>
+            {genericComponentsList}
+          </DashboardVideoLiveWidgetsContainer>
+        </InfoWidgetModalProvider>
       </ResponsiveContext.Provider>,
     );
 

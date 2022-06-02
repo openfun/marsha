@@ -4,7 +4,7 @@ from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from marsha.core.models import Thumbnail, TimedTextTrack, Video
+from marsha.core.models import SharedLiveMedia, Thumbnail, TimedTextTrack, Video
 from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
 from marsha.core.services import live_session as LiveSessionServices
 from marsha.websocket import defaults
@@ -132,5 +132,13 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         message = {
             "type": TimedTextTrack.RESOURCE_NAME,
             "resource": event["timed_text_track"],
+        }
+        await self.send_json(message)
+
+    async def shared_live_media_updated(self, event):
+        """Listener for the shared_live_media updated event."""
+        message = {
+            "type": SharedLiveMedia.RESOURCE_NAME,
+            "resource": event["shared_live_media"],
         }
         await self.send_json(message)

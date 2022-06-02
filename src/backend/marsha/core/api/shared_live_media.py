@@ -8,6 +8,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.models import TokenUser
 
+from marsha.websocket.utils import channel_layers_utils
+
 from .. import defaults, permissions, serializers
 from ..models import SharedLiveMedia
 from ..utils.s3_utils import create_presigned_post
@@ -72,7 +74,9 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
             video.active_shared_live_media = None
             video.active_shared_live_media_page = None
             video.save()
-        return super().destroy(request, *args, **kwargs)
+        response = super().destroy(request, *args, **kwargs)
+        channel_layers_utils.dispatch_video_to_groups(video)
+        return response
 
     def list(self, request, *args, **kwargs):
         """List shared live media through the API."""
@@ -102,6 +106,10 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        channel_layers_utils.dispatch_shared_live_media(serializer.instance)
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument

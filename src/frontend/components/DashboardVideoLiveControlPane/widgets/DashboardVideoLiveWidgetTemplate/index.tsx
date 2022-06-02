@@ -1,12 +1,11 @@
 import { Box, Button, Collapsible, Text } from 'grommet';
 import React, { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { DownArrowSVG } from 'components/SVGIcons/DownArrowSVG';
 import { InfoCircleSVG } from 'components/SVGIcons/InfoCircleSVG';
-import { DashboardVideoLiveInfoModal } from 'components/DashboardVideoLiveInfoModal';
-import { defineMessages } from '@formatjs/intl';
-import { useIntl } from 'react-intl';
+import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal/index';
 
 const messages = defineMessages({
   helpButtonTitle: {
@@ -35,7 +34,7 @@ export const DashboardVideoLiveWidgetTemplate = ({
 }: DashboardVideoLiveWidgetTemplateProps) => {
   const intl = useIntl();
   const [open, setOpen] = useState(initialOpenValue);
-  const [showInfoTextModal, setShowInfoTextModal] = useState(false);
+  const [_, setInfoWidgetModalProvider] = useInfoWidgetModal();
 
   return (
     <Box
@@ -51,7 +50,12 @@ export const DashboardVideoLiveWidgetTemplate = ({
         <Button
           disabled={!infoText}
           margin={{ left: 'auto' }}
-          onClick={() => setShowInfoTextModal(true)}
+          onClick={() =>
+            setInfoWidgetModalProvider({
+              text: infoText!,
+              title,
+            })
+          }
           plain
           style={{ display: 'flex', padding: 0 }}
           a11yTitle={intl.formatMessage(messages.helpButtonTitle)}
@@ -60,14 +64,6 @@ export const DashboardVideoLiveWidgetTemplate = ({
           <InfoCircleSVG height="17px" iconColor="blue-active" width="17px" />
         </Button>
       </Box>
-
-      {infoText && showInfoTextModal && (
-        <DashboardVideoLiveInfoModal
-          text={infoText}
-          title={title}
-          onModalClose={() => setShowInfoTextModal(false)}
-        />
-      )}
 
       <Box pad={{ horizontal: '20px' }}>
         <Button onClick={() => setOpen(!open)} plain style={{ padding: 0 }}>
