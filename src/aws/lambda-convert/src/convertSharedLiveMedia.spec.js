@@ -54,16 +54,19 @@ describe("lambda-convert/src/convertSharedLiveMedia", () => {
     expect(mockPutObject).toHaveBeenCalledTimes(nbPages);
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: fs.readFileSync(svgFiles[0]),
+      ContentType: 'image/svg+xml',
       Key: "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200_1.svg",
       Bucket: "destination_bucket",
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: fs.readFileSync(svgFiles[1]),
+      ContentType: 'image/svg+xml',
       Key: "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200_2.svg",
       Bucket: "destination_bucket",
     });
     expect(mockPutObject).toHaveBeenCalledWith({
       Body: fs.readFileSync(svgFiles[2]),
+      ContentType: 'image/svg+xml',
       Key: "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200_3.svg",
       Bucket: "destination_bucket",
     });
