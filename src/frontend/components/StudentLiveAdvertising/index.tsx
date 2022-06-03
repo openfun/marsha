@@ -1,4 +1,4 @@
-import { Box, ResponsiveContext } from 'grommet';
+import { Box, ResponsiveContext, Stack } from 'grommet';
 import { DateTime } from 'luxon';
 import React, {
   CSSProperties,
@@ -9,9 +9,9 @@ import React, {
 } from 'react';
 import { useIntl } from 'react-intl';
 
+import { ThumbnailDisplayer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail/ThumbnailDisplayer';
 import { appData } from 'data/appData';
 import { liveState, Video } from 'types/tracks';
-
 import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';
 import { StudentLiveRegistration } from './StudentLiveRegistration';
@@ -51,23 +51,23 @@ export const StudentLiveAdvertising = ({
     }
   }, [video]);
 
+  const urlsToDisplay =
+    video.thumbnail && video.thumbnail.urls
+      ? video.thumbnail.urls
+      : { 1080: appData.static.img.liveBackground };
+
   let containerStyle: CSSProperties;
   if (size === 'small') {
     containerStyle = { width: '90%', maxWidth: '400px' };
   } else {
     containerStyle = { maxWidth: '40%', minWidth: '600px' };
   }
-
   return (
-    <Box
-      background={{
-        image: `url(${appData.static.img.liveBackground})`,
-        position: 'top',
-        repeat: 'no-repeat',
-        size: 'cover',
-      }}
-      flex="grow"
-    >
+    <Stack guidingChild="last">
+      <Box width="100%" height="100%">
+        <ThumbnailDisplayer fitted urlsThumbnail={urlsToDisplay} />
+      </Box>
+
       <Box
         margin="auto"
         pad={{ horizontal: 'none', vertical: 'large' }}
@@ -87,6 +87,6 @@ export const StudentLiveAdvertising = ({
 
         {liveScheduleStartDate && !isWaitingOver && <StudentLiveRegistration />}
       </Box>
-    </Box>
+    </Stack>
   );
 };
