@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ConverseInitializer } from 'components/ConverseInitializer';
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
@@ -95,31 +94,29 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   }, [video.xmpp, currentItem, showPanelTrigger]);
 
   return (
-    <ConverseInitializer video={video}>
-      <LiveVideoLayout
-        actionsElement={<StudentLiveControlBar video={video} />}
-        displayActionsElement={!!video.xmpp}
-        isPanelOpen={isPanelVisible}
-        isXmppReady={!!video.xmpp}
-        liveTitleElement={
-          <StudentLiveInfoBar
-            title={video.title ?? intl.formatMessage(messages.defaultLiveTitle)}
-            startDate={null}
+    <LiveVideoLayout
+      actionsElement={<StudentLiveControlBar video={video} />}
+      displayActionsElement={!!video.xmpp}
+      isPanelOpen={isPanelVisible}
+      isXmppReady={!!video.xmpp}
+      liveTitleElement={
+        <StudentLiveInfoBar
+          title={video.title ?? intl.formatMessage(messages.defaultLiveTitle)}
+          startDate={null}
+        />
+      }
+      mainElement={
+        isParticipantOnstage ? (
+          <DashboardVideoLiveJitsi video={video} />
+        ) : (
+          <VideoPlayer
+            playerType={playerType}
+            timedTextTracks={[]}
+            video={video}
           />
-        }
-        mainElement={
-          isParticipantOnstage ? (
-            <DashboardVideoLiveJitsi video={video} />
-          ) : (
-            <VideoPlayer
-              playerType={playerType}
-              timedTextTracks={[]}
-              video={video}
-            />
-          )
-        }
-        sideElement={<LiveVideoPanel video={video} />}
-      />
-    </ConverseInitializer>
+        )
+      }
+      sideElement={<LiveVideoPanel video={video} />}
+    />
   );
 };
