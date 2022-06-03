@@ -2,13 +2,14 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 
+import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
+import { JoinMode } from 'types/tracks';
+import { converse } from 'utils/window';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
-import { converse } from 'utils/window';
 
 import { ViewersList } from '.';
 
@@ -196,6 +197,34 @@ describe('<ViewersList /> when user is an instructor', () => {
     const terminateButton = screen.getByRole('button', { name: 'Terminate' });
     act(() => userEvent.click(terminateButton));
     expect(converse.kickParticipant).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not display the kick button when join mode is forced', async () => {
+    const video = videoMockFactory({
+      join_mode: JoinMode.FORCED,
+      participants_in_discussion: [mockedParticipantOnStage1],
+    });
+
+    useParticipantsStore.setState({
+      participants: [mockedParticipantOnStage1Full],
+    });
+
+    render(
+      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
+    );
+    expect(screen.queryByText('Terminate')).not.toBeInTheDocument();
+  });
+
+  it('does not display participants not in stage list when join mode is forced', () => {
+    const video = videoMockFactory({ join_mode: JoinMode.FORCED });
+
+    render(
+      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
+    );
+    expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('No viewers are currently connected to your stream.'),
+    ).not.toBeInTheDocument();
   });
 });
 
