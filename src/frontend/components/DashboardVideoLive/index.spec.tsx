@@ -29,7 +29,14 @@ import { DashboardVideoLive } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
+  appData: {
+    jwt: 'cool_token_m8',
+    static: {
+      img: {
+        liveBackground: 'path/to/image.png',
+      },
+    },
+  },
   getDecodedJwt: () => ({
     permissions: {
       can_access_dashboard: false,

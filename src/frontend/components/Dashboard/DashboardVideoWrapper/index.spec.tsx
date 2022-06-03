@@ -28,6 +28,11 @@ jest.mock('data/appData', () => ({
       timed_text_tracks: [],
       upload_state: 'processing',
     },
+    static: {
+      img: {
+        liveBackground: 'path/to/image.png',
+      },
+    },
   },
   getDecodedJwt: () => ({
     maintenance: false,
