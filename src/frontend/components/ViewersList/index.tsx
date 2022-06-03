@@ -8,7 +8,7 @@ import {
   useParticipantsStore,
   ParticipantType,
 } from 'data/stores/useParticipantsStore';
-import { Video } from 'types/tracks';
+import { JoinMode, Video } from 'types/tracks';
 import { ViewersListHeader } from 'components/ViewersList/components/ViewersListHeader';
 import { ViewersListItem } from 'components/ViewersList/components/ViewersListItem';
 import { converse } from 'utils/window';
@@ -171,7 +171,7 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
         vertical: 'auto',
       }}
     >
-      {isInstructor && (
+      {isInstructor && video.join_mode === JoinMode.APPROVAL && (
         <Section
           items={participantsAskingToJoin}
           title={intl.formatMessage(messages.demands)}
@@ -200,7 +200,8 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
       >
         {(item: ParticipantType) =>
           isInstructor &&
-          !item.isInstructor && (
+          !item.isInstructor &&
+          video.join_mode !== JoinMode.FORCED && (
             <ViewersListTextButton
               onClick={() => converse.kickParticipant(item)}
               text={intl.formatMessage(messages.endOnStageButton)}
@@ -209,11 +210,13 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
         }
       </Section>
 
-      <Section
-        items={participantsNotOnStageAndNotAsking}
-        noItemsTitle={intl.formatMessage(messages.noViewers)}
-        title={intl.formatMessage(messages.otherViewers)}
-      />
+      {video.join_mode !== JoinMode.FORCED && (
+        <Section
+          items={participantsNotOnStageAndNotAsking}
+          noItemsTitle={intl.formatMessage(messages.noViewers)}
+          title={intl.formatMessage(messages.otherViewers)}
+        />
+      )}
     </Box>
   );
 };

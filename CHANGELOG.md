@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add Legacy LTI configuration XML
 - Add an instructor widget to modify join the discussion mode
 - Prevent join API calls in join mode denied
+- Add a forced join mode which automatically joins students to the discussion
 
 ### Changed
 
