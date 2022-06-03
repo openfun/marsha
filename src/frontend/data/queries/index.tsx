@@ -14,6 +14,7 @@ import { Organization } from 'types/Organization';
 
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
+import { deleteOne } from './deleteOne';
 import { fetchList } from './fetchList';
 import { fetchOne } from './fetchOne';
 import { updateOne } from './updateOne';
@@ -111,6 +112,48 @@ export const useTimedTextTracks = (
     key,
     fetchList,
     queryConfig,
+  );
+};
+
+type UseDeleteThumbnailData = string;
+type UseDeleteThumbnailError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseDeleteThumbnailData]?: string[] }[];
+    };
+type UseDeleteThumbnailOptions = UseMutationOptions<
+  Thumbnail,
+  UseDeleteThumbnailError,
+  UseDeleteThumbnailData
+>;
+export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    Thumbnail,
+    UseDeleteThumbnailError,
+    UseDeleteThumbnailData
+  >(
+    (thumbnailId) =>
+      deleteOne({
+        name: 'thumbnails',
+        id: thumbnailId,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('thumbnails');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('thumbnails');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
   );
 };
 
