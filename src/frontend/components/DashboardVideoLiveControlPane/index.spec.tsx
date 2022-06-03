@@ -1,18 +1,26 @@
 import { within } from '@testing-library/dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import faker from 'faker';
 import { ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { useThumbnail } from 'data/stores/useThumbnail';
 import { JoinMode } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
+import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardVideoLiveControlPane } from './index';
+import { DashboardVideoLiveControlPane } from '.';
 
 jest.mock('data/appData', () => ({
-  appData: {},
+  appData: {
+    static: {
+      img: {
+        liveBackground: 'path/to/image',
+      },
+    },
+  },
 }));
 
 const currentDate = DateTime.fromISO('2022-01-13T12:00');
@@ -26,7 +34,13 @@ describe('<DashboardVideoLiveControlPane />', () => {
     jest.useRealTimers();
   });
   it('renders DashboardVideoLiveControlPane', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedThumbnail = thumbnailMockFactory({
+      video: videoId,
+      is_ready_to_show: true,
+    });
     const mockVideo = videoMockFactory({
+      id: videoId,
       title: 'An example title',
       allow_recording: false,
       is_public: true,
@@ -34,7 +48,10 @@ describe('<DashboardVideoLiveControlPane />', () => {
       starting_at: currentDate.toString(),
       estimated_duration: '00:30',
       description: 'An example description',
+      thumbnail: mockedThumbnail,
     });
+
+    useThumbnail.getState().addResource(mockedThumbnail);
 
     const queryClient = new QueryClient();
 
@@ -115,5 +132,17 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
     const select = within(button).getByRole('textbox');
     expect(select).toHaveValue('Accept joining the discussion after approval');
+
+    // DashboardVideoLiveWidgetThumbnail
+    screen.getByText('Thumbnail');
+    const img = screen.getByRole('img', { name: 'Live video thumbnail' });
+    expect(img.getAttribute('src')).toEqual(
+      'https://example.com/default_thumbnail/144',
+    );
+    expect(img.getAttribute('srcset')).toEqual(
+      'https://example.com/default_thumbnail/144 256w, https://example.com/default_thumbnail/240 426w, https://example.com/default_thumbnail/480 854w, https://example.com/default_thumbnail/720 1280w, https://example.com/default_thumbnail/1080 1920w',
+    );
+    screen.getByRole('button', { name: 'Delete thumbnail' });
+    screen.getByRole('button', { name: 'Upload an image' });
   });
 });

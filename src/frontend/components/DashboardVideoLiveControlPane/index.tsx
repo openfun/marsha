@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { Video } from 'types/tracks';
-
 import { DashboardVideoLiveWidgetsContainer } from './widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from './widgets/DashboardVideoLiveWidgetGeneralTitle';
-import { DashboardVideoLiveWidgetToolsAndApplications } from './widgets/DashboardVideoLiveWidgetToolsAndApplications';
 import { DashboardVideoLiveWidgetJoinMode } from './widgets/DashboardVideoLiveWidgetJoinMode';
 import { DashboardVideoLiveWidgetLivePairing } from './widgets/DashboardVideoLiveWidgetLivePairing';
 import { DashboardVideoLiveWidgetSchedulingAndDescription } from './widgets/DashboardVideoLiveWidgetSchedulingAndDescription';
+import { DashboardVideoLiveWidgetThumbnail } from './widgets/DashboardVideoLiveWidgetThumbnail';
+import { DashboardVideoLiveWidgetToolsAndApplications } from './widgets/DashboardVideoLiveWidgetToolsAndApplications';
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from './widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from './widgets/DashboardVideoLiveWidgetVOD';
 
@@ -27,6 +27,7 @@ export const DashboardVideoLiveControlPane = ({
       <DashboardVideoLiveWidgetLivePairing video={video} />
       <DashboardVideoLiveWidgetVOD video={video} />
       <DashboardVideoLiveWidgetJoinMode video={video} />
+      <DashboardVideoLiveWidgetThumbnail />
     </DashboardVideoLiveWidgetsContainer>
   );
 };
