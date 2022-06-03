@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add a widget for the instructor to upload thumbnail
+
 ### Fixed
 
 - A thumbnail resource can be deleted and recreated.
