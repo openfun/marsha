@@ -4,7 +4,6 @@ from importlib import reload
 import sys
 from urllib.parse import unquote, urlparse
 
-from django.conf import settings
 from django.urls import clear_url_caches
 
 from oauthlib import oauth1
@@ -18,10 +17,12 @@ def reload_urlconf():
     Required when using override_settings for a
     setting present in `marsha.urls`.
     """
-    if settings.ROOT_URLCONF in sys.modules:
+    # Look for all URLs modules because the `settings.ROOT_URLCONF` is not enough
+    # for settings in application's URL configuration.
+    for module in [module for module in sys.modules if module.endswith(".urls")]:
         # The module is already loaded, need to reload
-        reload(sys.modules[settings.ROOT_URLCONF])
-        clear_url_caches()
+        reload(sys.modules[module])
+    clear_url_caches()
     # Otherwise, the module will be loaded normally by Django
 
 
