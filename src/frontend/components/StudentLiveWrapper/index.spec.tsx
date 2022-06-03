@@ -59,12 +59,6 @@ jest.mock('video.js', () => ({
   },
 }));
 
-jest.mock('components/ConverseInitializer', () => ({
-  ConverseInitializer: ({ children }: { children: React.ReactNode }) => {
-    return children;
-  },
-}));
-
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
