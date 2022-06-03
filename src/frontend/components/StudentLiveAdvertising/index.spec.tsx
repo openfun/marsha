@@ -1,12 +1,12 @@
 import { cleanup, render, screen } from '@testing-library/react';
+import faker from 'faker';
 import { DateTime } from 'luxon';
 import React, { Fragment } from 'react';
 import { Toaster } from 'react-hot-toast';
+
 import { liveState } from 'types/tracks';
-
-import { videoMockFactory } from 'utils/tests/factories';
+import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-
 import { StudentLiveAdvertising } from '.';
 
 jest.mock('data/appData', () => ({
@@ -17,7 +17,7 @@ jest.mock('data/appData', () => ({
     },
     static: {
       img: {
-        liveBackground: 'some_url',
+        liveBackground: 'path/to/image.png',
       },
     },
   },
@@ -116,7 +116,7 @@ describe('<StudentLiveAdvertising />', () => {
     });
   });
 
-  it('renders live information only when live is not STARTING or RUNNING', async () => {
+  it('renders live information only when live is not STARTING or RUNNING', () => {
     const states = [liveState.STARTING, liveState.RUNNING];
 
     states.forEach((state) => {
@@ -153,7 +153,7 @@ describe('<StudentLiveAdvertising />', () => {
     });
   });
 
-  it('renders live information only when live is idling and starting_at is in the past', async () => {
+  it('renders live information only when live is idling and starting_at is in the past', () => {
     const video = videoMockFactory({
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
       live_state: liveState.IDLE,
@@ -180,5 +180,85 @@ describe('<StudentLiveAdvertising />', () => {
     screen.getByRole('heading', {
       name: 'Live is starting',
     });
+  });
+
+  it('renders live information with no uploaded thumbnail', () => {
+    const video = videoMockFactory({
+      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      live_state: liveState.IDLE,
+      title: 'live title',
+      description: 'live description',
+    });
+
+    render(
+      wrapInIntlProvider(
+        <Fragment>
+          <Toaster />
+          <StudentLiveAdvertising video={video} />
+        </Fragment>,
+      ),
+    );
+
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toEqual('path/to/image.png');
+  });
+
+  it('renders live information with uploaded thumbnail but with no urls', () => {
+    const videoId = faker.datatype.uuid();
+    const video = videoMockFactory({
+      id: videoId,
+      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      live_state: liveState.IDLE,
+      title: 'live title',
+      description: 'live description',
+      thumbnail: thumbnailMockFactory({
+        is_ready_to_show: true,
+        video: videoId,
+        urls: undefined,
+      }),
+    });
+
+    render(
+      wrapInIntlProvider(
+        <Fragment>
+          <Toaster />
+          <StudentLiveAdvertising video={video} />
+        </Fragment>,
+      ),
+    );
+
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toEqual('path/to/image.png');
+  });
+
+  it('renders live information with an uploaded thumbnail', () => {
+    const videoId = faker.datatype.uuid();
+    const video = videoMockFactory({
+      id: videoId,
+      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      live_state: liveState.IDLE,
+      title: 'live title',
+      description: 'live description',
+      thumbnail: thumbnailMockFactory({
+        video: videoId,
+      }),
+    });
+
+    render(
+      wrapInIntlProvider(
+        <Fragment>
+          <Toaster />
+          <StudentLiveAdvertising video={video} />
+        </Fragment>,
+      ),
+    );
+
+    const img = screen.getByRole('img', { name: 'Live video thumbnail' });
+    expect(img.getAttribute('src')).toEqual(
+      'https://example.com/default_thumbnail/144',
+    );
+    expect(img.getAttribute('srcset')).toEqual(
+      'https://example.com/default_thumbnail/144 256w, https://example.com/default_thumbnail/240 426w, https://example.com/default_thumbnail/480 854w, https://example.com/default_thumbnail/720 1280w, https://example.com/default_thumbnail/1080 1920w',
+    );
   });
 });
