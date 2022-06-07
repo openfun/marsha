@@ -70,6 +70,14 @@ const mockPushAttendance = pushAttendance as jest.MockedFunction<
 >;
 window.HTMLElement.prototype.scrollTo = jest.fn();
 
+let mockJitsiValue: any;
+const mockSetJitsi = jest.fn().mockImplementation((newValue: any) => {
+  mockJitsiValue = newValue;
+});
+jest.mock('data/stores/useJitsiApi', () => ({
+  useJitsiApi: () => [mockJitsiValue, mockSetJitsi],
+}));
+
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -439,6 +447,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
   const mockJitsi = jest.fn().mockImplementation(() => ({
     executeCommand: mockExecuteCommand,
     addListener: jest.fn(),
+    removeListener: jest.fn(),
   }));
 
   beforeEach(() => {
@@ -447,6 +456,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
     useParticipantWorkflow.getState().setAccepted();
     jest.useFakeTimers();
+    mockJitsiValue = undefined;
   });
 
   beforeAll(() => {
@@ -459,7 +469,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     jest.useRealTimers();
   });
 
-  it('configures live state with panel closed', () => {
+  it('configures live state with panel closed', async () => {
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: undefined,
@@ -495,8 +505,9 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
         <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
+
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
     act(() => useLivePanelState.getState().setPanelVisibility(false));
-    expect(mockJitsi).toHaveBeenCalled();
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
@@ -513,7 +524,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 
-  it('configures live state with panel opened on chat', () => {
+  it('configures live state with panel opened on chat', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -549,7 +560,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     screen.getByText('Join the chat');
     screen.getByText('live title');
@@ -565,7 +576,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 
-  it('configures live state with panel opened on viewers list', () => {
+  it('configures live state with panel opened on viewers list', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -601,7 +612,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
     screen.getByText('live title');
@@ -625,7 +636,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 
-  it('configures live state without chat when XMPP is disabled', () => {
+  it('configures live state without chat when XMPP is disabled', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.CHAT,
@@ -652,7 +663,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
@@ -667,7 +678,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 
-  it('configures live state without chat when chat is disabled', () => {
+  it('configures live state without chat when chat is disabled', async () => {
     const video = videoMockFactory({
       title: 'live title',
       has_chat: false,
@@ -698,7 +709,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
@@ -749,6 +760,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
+
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',
     });
@@ -757,7 +770,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await screen.findByText('Display name');
   });
 
-  it('inits the live title bar with the default title', () => {
+  it('inits the live title bar with the default title', async () => {
     const video = videoMockFactory({
       title: null,
       live_info: {
@@ -787,6 +800,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
         <StudentLiveWrapper video={video} playerType={'player_type'} />,
       ),
     );
+
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     screen.getByText('No title');
   });
@@ -844,7 +859,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
+
     // when component is loaded, a first attendance is registered
     expect(mockPushAttendance).toHaveBeenCalledTimes(1);
     Date.now = jest.fn(() => 1651732370000);

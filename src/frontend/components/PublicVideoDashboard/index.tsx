@@ -10,13 +10,12 @@ import VideoPlayer from 'components/VideoPlayer';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import {
-  Live,
-  liveState,
   timedTextMode,
   TimedTextTranscript,
   uploadState,
   Video,
 } from 'types/tracks';
+import { convertVideoToLive } from 'utils/conversions/convertVideo';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -32,8 +31,8 @@ const PublicVideoDashboard = ({
     state.getTimedTextTracks(),
   );
 
-  if (video.live_state !== null && video.live_state !== liveState.ENDED) {
-    const live: Live = { ...video, live_state: video.live_state };
+  const live = convertVideoToLive(video);
+  if (live) {
     return <PublicLiveDashboard live={live} playerType={playerType} />;
   }
 

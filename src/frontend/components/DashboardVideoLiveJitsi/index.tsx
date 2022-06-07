@@ -1,174 +1,124 @@
 import { Box } from 'grommet';
-import React, { useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Redirect } from 'react-router-dom';
 
 import { PLAYER_ROUTE } from 'components/routes';
-import { getDecodedJwt } from 'data/appData';
-import { useLiveSession } from 'data/stores/useLiveSession';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
-import { JoinMode, liveState, Video } from 'types/tracks';
+import { LiveJitsi, liveState } from 'types/tracks';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
+import { useJitsiApi } from 'data/stores/useJitsiApi';
+import { Nullable } from 'utils/types';
+
+import { initializeJitsi } from './utils';
+
+const retryDelayStep = 2000;
 
 interface DashboardVideoLiveJitsiProps {
   setCanStartLive?: undefined;
   setCanShowStartButton?: undefined;
-  video: Video;
+  liveJitsi: LiveJitsi;
   isInstructor?: false;
 }
 
 interface DashboardVideoLiveJitsiInstructorProps {
   setCanStartLive: (canStartLive: boolean) => void;
   setCanShowStartButton: (canShowStartButton: boolean) => void;
-  video: Video;
+  liveJitsi: LiveJitsi;
   isInstructor: true;
 }
 
 const DashboardVideoLiveJitsi = ({
   setCanStartLive = () => undefined,
   setCanShowStartButton = () => undefined,
-  video,
+  liveJitsi,
   isInstructor = false,
 }: DashboardVideoLiveJitsiProps | DashboardVideoLiveJitsiInstructorProps) => {
-  const jitsiNode = useRef(null);
-  const jitsi = useRef<JitsiMeetExternalAPI>();
-  const jitsiIsRecording = useRef(false);
-  const isModerator = useRef(false);
-  const endpoints = useRef<string[]>();
-  const retryDelayStep = 2000;
-  const retryStartRecordingDelay = useRef(retryDelayStep);
-  const reset = useParticipantWorkflow((state) => state.reset);
-  const history = useHistory();
+  const jitsiNode = useRef<Nullable<HTMLDivElement>>(null);
+  const [jitsi, setJitsiApi] = useJitsiApi();
+  const [isJitsiRecording, setIsJitsiRecording] = useState(false);
+  const [isModerator, setIsModerator] = useState(false);
+  const [redirectPath, setRedirectPath] = useState<Nullable<string>>(null);
+  const resetParticipantWorkflow = useParticipantWorkflow(
+    (state) => state.reset,
+  );
+  const [height, setHeight] = useState(0);
 
-  const loadJitsiScript = () =>
-    new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = video.live_info.jitsi!.external_api_url!;
-      script.async = true;
-      script.onload = resolve;
-      document.body.appendChild(script);
+  const endpoints = useMemo(() => {
+    const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
+    return liveJitsi.live_info.medialive?.input.endpoints.map((endpoint) => {
+      const matches = endpoint.match(endpointIdentifier)!;
+      return `${matches[1]}/marsha/${matches[2]}`;
     });
+  }, [liveJitsi]);
 
-  const startRecording = (jitsiApi: JitsiMeetExternalAPI) => {
-    if (
-      !isInstructor ||
-      jitsiIsRecording.current ||
-      isModerator.current === false
-    ) {
+  const retryStartRecordingDelay = useRef(retryDelayStep);
+
+  const startRecording = useCallback(
+    (jitsiApi: JitsiMeetExternalAPI) => {
+      if (
+        !isInstructor ||
+        !isModerator ||
+        isJitsiRecording ||
+        !endpoints ||
+        endpoints.length === 0
+      ) {
+        return;
+      }
+
+      jitsiApi.executeCommand('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: endpoints[0],
+      });
+      setIsJitsiRecording(true);
+    },
+    [isInstructor, isModerator, isJitsiRecording, endpoints],
+  );
+
+  //  initialize jitsi api
+  useAsyncEffect(async () => {
+    if (jitsi || !jitsiNode.current) {
       return;
     }
 
-    jitsiApi.executeCommand('startRecording', {
-      mode: 'stream',
-      rtmpStreamKey: endpoints.current![0]!,
-    });
-    jitsiIsRecording.current = true;
-  };
-
-  const initialiseJitsi = async () => {
-    if (!window.JitsiMeetExternalAPI) {
-      await loadJitsiScript();
-    }
-
-    // toolbar config must be set in both configOverwrite and interfaceConfigOverwrite. This settings
-    // has moved from interfaceConfigOverwrite to configOverwrite and depending the jitsi version used
-    // we don't know which one to use. Settings both does not raise an error, there is no check on
-    // extra settings.
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-
-    const configOverwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions = {
-      constraints: {
-        video: {
-          height: {
-            ideal: 720,
-            max: 720,
-            min: 240,
-          },
-        },
-      },
-      // Controls the visibility and behavior of the top header conference info labels.
-      // If a label's id is not in any of the 2 arrays, it will not be visible at all on the header.
-      conferenceInfo: {
-        // those labels will not be hidden in tandem with the toolbox.
-        alwaysVisible: [
-          'recording',
-          // 'local-recording'
-        ],
-        // those labels will be auto-hidden in tandem with the toolbox buttons.
-        autoHide: [
-          // 'subject',
-          // 'conference-timer',
-          // 'participants-count',
-          // 'e2ee',
-          // 'transcribing',
-          // 'video-quality',
-          // 'insecure-room'
-        ],
-      },
-      // If true, any checks to handoff to another application will be prevented
-      // and instead the app will continue to display in the current browser.
-      disableDeepLinking: true,
-      disablePolls: true,
-      // Disables storing the room name to the recents list
-      doNotStoreRoom: true,
-      // Hides the conference subject
-      hideConferenceSubject: true,
-      // Hides the conference timer.
-      hideConferenceTimer: true,
-      prejoinPageEnabled: false,
-      resolution: 720,
-      toolbarButtons,
-      ...video.live_info.jitsi!.config_overwrite,
-    };
-
-    if (video.join_mode === JoinMode.FORCED && !isInstructor) {
-      configOverwrite.prejoinPageEnabled = false;
-    }
-
-    const _jitsi = new window.JitsiMeetExternalAPI(
-      video.live_info.jitsi!.domain!,
-      {
-        configOverwrite,
-        interfaceConfigOverwrite: {
-          HIDE_INVITE_MORE_HEADER: true,
-          TOOLBAR_BUTTONS: toolbarButtons,
-          ...video.live_info.jitsi!.interface_config_overwrite,
-        },
-        jwt: video.live_info.jitsi?.token,
-        parentNode: jitsiNode.current!,
-        roomName: video.live_info.jitsi!.room_name,
-        userInfo: {
-          displayName:
-            useLiveSession.getState().liveSession?.display_name ||
-            getDecodedJwt().user?.username,
-        },
-      },
+    const _jitsi = await initializeJitsi(
+      liveJitsi,
+      isInstructor,
+      jitsiNode.current,
     );
+    setJitsiApi(_jitsi);
+  }, [jitsi, isInstructor]);
 
-    _jitsi.addListener('recordingStatusChanged', async (event) => {
+  //  handle jitsi recording according to live state
+  useEffect(() => {
+    if (!jitsi) {
+      return;
+    }
+
+    if (liveJitsi.live_state === liveState.RUNNING && isModerator) {
+      startRecording(jitsi);
+    }
+
+    if (liveJitsi.live_state === liveState.STOPPING && isJitsiRecording) {
+      jitsi.executeCommand('stopRecording', 'stream');
+    }
+  }, [jitsi, liveJitsi, isModerator, startRecording]);
+
+  //  configure jitsi api event handlers
+  useEffect(() => {
+    if (!jitsi) {
+      return;
+    }
+
+    const recordingStatusChanged = async (event: any) => {
       // recording as stopped with an error
       if (!event.on && event.error) {
         // When a live is running, all moderators are triggering the startRecording command
@@ -178,80 +128,98 @@ const DashboardVideoLiveJitsi = ({
         if (['unexpected-request', 'not-allowed'].includes(event.error)) {
           return;
         }
-        jitsiIsRecording.current = false;
+        setIsJitsiRecording(false);
         report(event);
         await new Promise((resolve) =>
           window.setTimeout(resolve, retryStartRecordingDelay.current),
         );
         if (retryStartRecordingDelay.current < 20000)
           retryStartRecordingDelay.current += retryDelayStep;
-        startRecording(_jitsi);
+        startRecording(jitsi);
       }
 
       // Normal stop, set jitsiIsRecording to false to allow a resume
       if (!event.on && !event.error) {
-        jitsiIsRecording.current = false;
+        setIsJitsiRecording(false);
       }
 
       // recording has started. Reset the retry delay and set jitsiIsRecording to true
       // to avoid intempestive start for other moderators.
       if (event.on) {
         retryStartRecordingDelay.current = retryDelayStep;
-        jitsiIsRecording.current = true;
+        setIsJitsiRecording(true);
       }
-    });
+    };
+    jitsi.addListener('recordingStatusChanged', recordingStatusChanged);
 
     if (!isInstructor) {
-      _jitsi.addListener('videoConferenceLeft', () => {
-        _jitsi.dispose();
+      jitsi.addListener('videoConferenceLeft', () => {
+        jitsi.dispose();
+        setJitsiApi(undefined);
+
         converse.participantLeaves();
-        reset();
-        history.push(PLAYER_ROUTE(modelName.VIDEOS));
+        resetParticipantWorkflow();
+        setRedirectPath(PLAYER_ROUTE(modelName.VIDEOS));
       });
-    }
-
-    if (isInstructor) {
-      _jitsi.addListener('participantRoleChanged', (event) => {
-        isModerator.current = event.role === 'moderator';
-        setCanStartLive(isModerator.current);
+    } else {
+      jitsi.addListener('participantRoleChanged', (event) => {
+        setIsModerator(event.role === 'moderator');
       });
 
-      _jitsi.addListener('videoConferenceJoined', () => {
+      jitsi.addListener('videoConferenceJoined', () => {
         setCanShowStartButton(true);
       });
 
-      _jitsi.addListener('videoConferenceLeft', () => {
-        _jitsi.dispose();
+      jitsi.addListener('videoConferenceLeft', () => {
+        jitsi.dispose();
+        setJitsiApi(undefined);
+
         setCanStartLive(false);
         setCanShowStartButton(false);
-        initialiseJitsi();
       });
     }
 
-    jitsi.current = _jitsi;
-  };
+    return () => {
+      if (!jitsi) {
+        return;
+      }
 
-  useAsyncEffect(async () => {
-    if (!jitsi.current) {
-      await initialiseJitsi();
-    }
-    if (video.live_state === liveState.RUNNING && video.live_info.medialive) {
-      const endpointIdentifier = /^(rtmp:\/\/.*)\/(.*)$/;
-      endpoints.current = video.live_info.medialive.input.endpoints.map(
-        (endpoint) => {
-          const matches = endpoint.match(endpointIdentifier)!;
-          return `${matches[1]}/marsha/${matches[2]}`;
-        },
-      );
-      startRecording(jitsi.current!);
+      jitsi.removeListener('recordingStatusChanged', recordingStatusChanged);
+    };
+  }, [jitsi, startRecording]);
+
+  useEffect(() => {
+    setCanStartLive(isModerator);
+  }, [isModerator]);
+
+  useEffect(() => {
+    if (!jitsiNode.current) {
+      return;
     }
 
-    if (video.live_state === liveState.STOPPING && jitsiIsRecording.current) {
-      jitsi.current!.executeCommand('stopRecording', 'stream');
-    }
-  }, [video.live_state, video.live_info.medialive, isModerator.current]);
+    const observer = new ResizeObserver(() => {
+      if (!jitsiNode.current) {
+        return;
+      }
 
-  return <Box height={'large'} ref={jitsiNode} />;
+      const ratio = 16 / 9;
+      setHeight(jitsiNode.current.offsetWidth / ratio);
+    });
+    observer.observe(jitsiNode.current);
+    return () => {
+      if (!jitsiNode.current) {
+        return;
+      }
+
+      observer.unobserve(jitsiNode.current);
+    };
+  }, []);
+
+  if (redirectPath) {
+    return <Redirect to={redirectPath} />;
+  }
+
+  return <Box ref={jitsiNode} width="100%" height={`${height}px`} />;
 };
 
 export default DashboardVideoLiveJitsi;
