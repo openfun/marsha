@@ -6,6 +6,8 @@ import { DashboardVideoLive } from 'components/DashboardVideoLive';
 import { LTINav } from 'components/LTINav';
 import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -21,7 +23,13 @@ export const DashboardVideoWrapper = ({
     currentVideo.live_state &&
     currentVideo.upload_state === uploadState.PENDING
   ) {
-    return <DashboardVideoLive video={currentVideo} />;
+    return (
+      <PictureInPictureProvider value={{ reversed: true }}>
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLive video={currentVideo} />
+        </JitsiApiProvider>
+      </PictureInPictureProvider>
+    );
   }
 
   return (
