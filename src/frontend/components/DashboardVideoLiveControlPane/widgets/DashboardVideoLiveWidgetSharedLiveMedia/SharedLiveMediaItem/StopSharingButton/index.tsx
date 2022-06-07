@@ -63,6 +63,7 @@ export const StopSharingButton = ({ video }: StopSharingButtonProps) => {
       onClick={() => shareMediaStop.mutate()}
       primary
       title={intl.formatMessage(messages.unpublishSharedLiveMediaBtn)}
+      style={{ whiteSpace: 'nowrap' }}
     />
   );
 };
