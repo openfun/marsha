@@ -314,12 +314,30 @@ class ThumbnailApiTest(TestCase):
         jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
         jwt_token.payload["permissions"] = {"can_update": True}
 
+        self.assertEqual(Thumbnail.objects.count(), 1)
+
         response = self.client.delete(
             f"/api/thumbnails/{thumbnail.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Thumbnail.objects.filter(id=thumbnail.id).exists())
+        self.assertEqual(Thumbnail.objects.count(), 0)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        content = response.json()
+        self.assertIsNone(content["thumbnail"])
+
+        # Creating a new thumbnail should be allowed.
+        response = self.client.post(
+            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 201)
 
     def test_api_thumbnail_delete_instructor_in_read_only(self):
         """Instructor should not be able to delete thumbnails in a read_only mode."""
