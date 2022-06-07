@@ -8,6 +8,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
+import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -26,7 +27,9 @@ export const DashboardVideoWrapper = ({
     return (
       <PictureInPictureProvider value={{ reversed: true }}>
         <JitsiApiProvider value={undefined}>
-          <DashboardVideoLive video={currentVideo} />
+          <LiveModaleConfigurationProvider value={null}>
+            <DashboardVideoLive video={currentVideo} />
+          </LiveModaleConfigurationProvider>
         </JitsiApiProvider>
       </PictureInPictureProvider>
     );
