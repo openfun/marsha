@@ -5,12 +5,16 @@ import React, { Suspense, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
+import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import {
   JoinMode,
+  LiveJitsi,
   LiveModeType,
   liveState,
   uploadState,
@@ -52,16 +56,14 @@ jest.mock(
 
 let mockCanShowStartButton = false;
 const mockDashboardVideoLiveJitsi = (props: {
-  video: Video;
+  liveJitsi: LiveJitsi;
   setCanShowStartButton: (canShowStartButton: boolean) => void;
 }) => {
   useEffect(() => {
-    if (mockCanShowStartButton) {
-      props.setCanShowStartButton(true);
-    }
-  }, [mockCanShowStartButton]);
+    props.setCanShowStartButton(mockCanShowStartButton);
+  }, []);
 
-  return <span title={props.video.id}>jitsi</span>;
+  return <span title={props.liveJitsi.id}>jitsi</span>;
 };
 jest.mock(
   'components/DashboardVideoLiveJitsi',
@@ -130,13 +132,19 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{ ...video, live_state: liveState.IDLE }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{ ...video, live_state: liveState.IDLE }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -151,17 +159,32 @@ describe('components/DashboardVideoLive', () => {
     const { rerender } = render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  live_state: liveState.IDLE,
-                  live_type: LiveModeType.JITSI,
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        live_state: liveState.IDLE,
+                        live_type: LiveModeType.JITSI,
+                        live_info: {
+                          jitsi: {
+                            external_api_url: 'some_external_api_url',
+                            domain: 'some_domain',
+                            config_overwrite: {},
+                            interface_config_overwrite: {},
+                            room_name: 'some_room_name',
+                          },
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -172,17 +195,32 @@ describe('components/DashboardVideoLive', () => {
     rerender(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  live_state: liveState.IDLE,
-                  live_type: LiveModeType.JITSI,
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        live_state: liveState.IDLE,
+                        live_type: LiveModeType.JITSI,
+                        live_info: {
+                          jitsi: {
+                            external_api_url: 'some_external_api_url',
+                            domain: 'some_domain',
+                            config_overwrite: {},
+                            interface_config_overwrite: {},
+                            room_name: 'some_room_name',
+                          },
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -194,13 +232,19 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{ ...video, live_state: liveState.RUNNING }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{ ...video, live_state: liveState.RUNNING }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -213,13 +257,19 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{ ...video, live_state: liveState.RUNNING }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{ ...video, live_state: liveState.RUNNING }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -247,23 +297,32 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  description: 'Wonderful class!',
-                  live_state: liveState.IDLE,
-                  starting_at: dateScheduled.toISOString(),
-                  title: 'Maths',
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        description: 'Wonderful class!',
+                        live_state: liveState.IDLE,
+                        starting_at: dateScheduled.toISOString(),
+                        title: 'Maths',
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
-    screen.getByRole('textbox', { name: 'Enter title of your live here' });
+
+    await screen.findByRole('textbox', {
+      name: 'Enter title of your live here',
+    });
     screen.getByDisplayValue(/maths/i);
   });
 
@@ -275,24 +334,31 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  live_state: liveState.RUNNING,
-                  xmpp: {
-                    bosh_url: null,
-                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
-                    conference_url: 'conference-url',
-                    jid: 'jid',
-                    prebind_url: 'prebind_url',
-                    websocket_url: null,
-                  },
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        live_state: liveState.RUNNING,
+                        xmpp: {
+                          bosh_url: null,
+                          converse_persistent_store:
+                            PersistentStore.LOCALSTORAGE,
+                          conference_url: 'conference-url',
+                          jid: 'jid',
+                          prebind_url: 'prebind_url',
+                          websocket_url: null,
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -311,25 +377,32 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  has_chat: false,
-                  live_state: liveState.STARTING,
-                  xmpp: {
-                    bosh_url: null,
-                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
-                    conference_url: 'conference-url',
-                    jid: 'jid',
-                    prebind_url: 'prebind_url',
-                    websocket_url: null,
-                  },
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        has_chat: false,
+                        live_state: liveState.STARTING,
+                        xmpp: {
+                          bosh_url: null,
+                          converse_persistent_store:
+                            PersistentStore.LOCALSTORAGE,
+                          conference_url: 'conference-url',
+                          jid: 'jid',
+                          prebind_url: 'prebind_url',
+                          websocket_url: null,
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -357,22 +430,28 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  join_mode: JoinMode.FORCED,
-                  live_state: liveState.STARTING,
-                  participants_asking_to_join: [
-                    participantMockFactory(),
-                    participantMockFactory(),
-                    participantMockFactory(),
-                  ],
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        join_mode: JoinMode.FORCED,
+                        live_state: liveState.STARTING,
+                        participants_asking_to_join: [
+                          participantMockFactory(),
+                          participantMockFactory(),
+                          participantMockFactory(),
+                        ],
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -384,22 +463,28 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  join_mode: JoinMode.APPROVAL,
-                  live_state: liveState.STARTING,
-                  participants_asking_to_join: [
-                    participantMockFactory(),
-                    participantMockFactory(),
-                    participantMockFactory(),
-                  ],
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        join_mode: JoinMode.APPROVAL,
+                        live_state: liveState.STARTING,
+                        participants_asking_to_join: [
+                          participantMockFactory(),
+                          participantMockFactory(),
+                          participantMockFactory(),
+                        ],
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
@@ -411,26 +496,84 @@ describe('components/DashboardVideoLive', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback="loading...">
-              <DashboardVideoLive
-                video={{
-                  ...video,
-                  join_mode: JoinMode.FORCED,
-                  live_state: liveState.STARTING,
-                  participants_asking_to_join: [
-                    participantMockFactory(),
-                    participantMockFactory(),
-                    participantMockFactory(),
-                  ],
-                }}
-              />
-            </Suspense>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        join_mode: JoinMode.FORCED,
+                        live_state: liveState.STARTING,
+                        participants_asking_to_join: [
+                          participantMockFactory(),
+                          participantMockFactory(),
+                          participantMockFactory(),
+                        ],
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
 
     expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
+  });
+
+  it('starts picture in picture mode when a file is shared', async () => {
+    render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <LiveModaleConfigurationProvider value={null}>
+            <PictureInPictureProvider value={{ reversed: false }}>
+              <JitsiApiProvider value={undefined}>
+                <QueryClientProvider client={queryClient}>
+                  <Suspense fallback="loading...">
+                    <DashboardVideoLive
+                      video={{
+                        ...video,
+                        live_type: LiveModeType.JITSI,
+                        has_chat: false,
+                        live_state: liveState.STARTING,
+                        xmpp: {
+                          bosh_url: null,
+                          converse_persistent_store:
+                            PersistentStore.LOCALSTORAGE,
+                          conference_url: 'conference-url',
+                          jid: 'jid',
+                          prebind_url: 'prebind_url',
+                          websocket_url: null,
+                        },
+                        active_shared_live_media: {
+                          active_stamp: null,
+                          filename: 'file name',
+                          is_ready_to_show: true,
+                          show_download: false,
+                          title: 'title',
+                          upload_state: uploadState.READY,
+                          video: video.id,
+                          id: 'some id',
+                          nb_pages: 10,
+                          urls: {
+                            pages: {},
+                          },
+                        },
+                      }}
+                    />
+                  </Suspense>
+                </QueryClientProvider>
+              </JitsiApiProvider>
+            </PictureInPictureProvider>
+          </LiveModaleConfigurationProvider>,
+        ),
+      ),
+    );
+
+    await screen.findByTestId('picture-in-picture-slave');
   });
 });

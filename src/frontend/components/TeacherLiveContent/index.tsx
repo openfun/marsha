@@ -1,12 +1,10 @@
-import { Stack } from 'grommet';
 import React, { Dispatch, lazy, SetStateAction } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { LiveModale } from 'components/LiveModale';
-import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { LiveModeType, Video } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
+import { ShouldNotHappen } from 'utils/errors/exception';
 
 const TeacherLiveRawWrapper = lazy(
   () => import('components/TeacherLiveRawWrapper'),
@@ -26,26 +24,27 @@ export const TeacherLiveContent = ({
   setCanStartLive,
   video,
 }: TeacherLiveContentProps) => {
-  const [modaleConfiguration] = useLiveModaleConfiguration();
-
   const jitsiLive = convertVideoToJitsiLive(video);
 
-  return (
-    <Stack fill interactiveChild="last">
-      {video.live_type === LiveModeType.RAW && (
-        <TeacherLiveRawWrapper video={video} />
-      )}
-      {video.live_type === LiveModeType.JITSI && jitsiLive ? (
-        <DashboardVideoLiveJitsi
-          isInstructor={true}
-          setCanShowStartButton={setCanShowStartButton}
-          setCanStartLive={setCanStartLive}
-          liveJitsi={jitsiLive}
-        />
-      ) : (
-        <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
-      )}
-      {modaleConfiguration && <LiveModale {...modaleConfiguration} />}
-    </Stack>
-  );
+  switch (video.live_type) {
+    case null:
+      return <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />;
+    case LiveModeType.RAW:
+      return <TeacherLiveRawWrapper video={video} />;
+    case LiveModeType.JITSI:
+      if (jitsiLive) {
+        return (
+          <DashboardVideoLiveJitsi
+            isInstructor={true}
+            setCanShowStartButton={setCanShowStartButton}
+            setCanStartLive={setCanStartLive}
+            liveJitsi={jitsiLive}
+          />
+        );
+      } else {
+        return <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />;
+      }
+    default:
+      throw new ShouldNotHappen(video.live_type);
+  }
 };
